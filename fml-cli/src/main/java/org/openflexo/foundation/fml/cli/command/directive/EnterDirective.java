@@ -168,7 +168,7 @@ public class EnterDirective extends Directive {
 	}
 
 	@Override
-	public FlexoObject execute() {
+	public FlexoObject execute() throws ExecutionException {
 		super.execute();
 
 		Object object = getAddressedObject();
@@ -178,8 +178,7 @@ public class EnterDirective extends Directive {
 			return (FlexoObject) object;
 		}
 		else {
-			getErrStream().println("Cannot enter into " + path + " : not a FlexoObject");
-			return null;
+			throw new ExecutionException("Cannot enter into " + path + " : not a FlexoObject");
 		}
 	}
 }

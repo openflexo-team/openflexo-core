@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.cli.command.fml;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -71,12 +73,39 @@ public class FMLAssignation extends FMLCommand {
 	private DataBinding<?> assignation;
 	private DataBinding<?> expression;
 
+	// This is the local BindingModel augmented with new variable declaration if required
+	private BindingModel bindingModel;
+	private BindingVariable localDeclarationVariable;
+
 	public FMLAssignation(AAssignmentExpression node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer, null);
 
 		assignation = retrieveAssignation(node.getLeft());
 		expression = retrieveExpression(node.getRight());
 
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		if (assignation.isNewVariableDeclaration()) {
+			if (getParentCommand() != null) {
+				bindingModel = new BindingModel(getBindingModel());
+				localDeclarationVariable = new BindingVariable(getAssignationVariable(), expression.getAnalyzedType());
+				bindingModel.addToBindingVariables(localDeclarationVariable);
+			}
+			else {
+				localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(), expression.getAnalyzedType());
+			}
+		}
+	}
+
+	@Override
+	public BindingModel getInferedBindingModel() {
+		if (bindingModel != null) {
+			return bindingModel;
+		}
+		return super.getInferedBindingModel();
 	}
 
 	@Override
@@ -89,7 +118,7 @@ public class FMLAssignation extends FMLCommand {
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
 		return assignation != null && (assignation.isValid() || assignation.isNewVariableDeclaration()) && expression != null
 				&& expression.isValid();
 	}
@@ -112,62 +141,51 @@ public class FMLAssignation extends FMLCommand {
 	}
 
 	@Override
-	public Object execute() {
+	public Object execute() throws ExecutionException {
 		super.execute();
-
-		/*if (!assignation.isValid() 
-				&& assignation.isBindingValue() 
-				&& ((BindingValue)assignation.getExpression()))*/
 
 		Object assignedValue = null;
 
 		if (expression.isValid()) {
 			try {
 				assignedValue = expression.getBindingValue(getCommandInterpreter());
-			} catch (TypeMismatchException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
-			} catch (NullReferenceException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
-			} catch (ReflectiveOperationException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
+			} catch (Exception e) {
+				throw new ExecutionException("Cannot execute " + expression, e);
 			}
 		}
 		else {
-			getErrStream().println("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+			throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 		}
 
 		if (assignation.isValid()) {
 			try {
 				assignation.setBindingValue(assignedValue, getCommandInterpreter());
+				getOutStream().println("Assigned " + assignedValue + " to " + assignation);
 			} catch (TypeMismatchException e) {
-				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
-				return assignedValue;
+				throw new ExecutionException("Cannot execute " + assignation, e);
 			} catch (NullReferenceException e) {
-				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
-				return assignedValue;
+				throw new ExecutionException("Cannot execute " + assignation, e);
 			} catch (ReflectiveOperationException e) {
-				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
-				return assignedValue;
+				throw new ExecutionException("Cannot execute " + assignation, e);
 			} catch (NotSettableContextException e) {
-				getErrStream().println("Cannot execute " + assignation + " : not settable binding");
-				return assignedValue;
+				throw new ExecutionException("Cannot execute " + assignation, e);
 			}
-			getOutStream().println("Assigned " + assignedValue + " to " + assignation);
 		}
-		else if (assignation.isNewVariableDeclaration()) {
-			BindingValue bindingPath = (BindingValue) assignation.getExpression();
-			getCommandInterpreter().declareVariable(bindingPath.getBindingVariable().getVariableName(), expression.getAnalyzedType(),
-					assignedValue);
-			getOutStream().println("Declared new variable " + bindingPath.getBindingVariable().getVariableName() + "=" + assignedValue);
+		else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {
+			getCommandInterpreter().setVariableValue(localDeclarationVariable, assignedValue);
+			getOutStream().println("Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue);
 		}
 
 		return assignedValue;
 
-		// getOutStream().println("SET " + variableName + " = " + value);
-		// getCommandInterpreter().declareVariable(variableName, assignation.getAnalyzedType(), value);
-
 	}
+
+	public String getAssignationVariable() {
+		if (assignation.isSimpleVariable()) {
+			BindingValue bindingPath = (BindingValue) assignation.getExpression();
+			return bindingPath.getBindingVariable().getVariableName();
+		}
+		return null;
+	}
+
 }

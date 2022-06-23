@@ -79,7 +79,7 @@ public class ServicesDirective extends Directive {
 	}
 
 	@Override
-	public FlexoServiceManager execute() {
+	public FlexoServiceManager execute() throws ExecutionException {
 		super.execute();
 
 		getOutStream().println("Active services:");

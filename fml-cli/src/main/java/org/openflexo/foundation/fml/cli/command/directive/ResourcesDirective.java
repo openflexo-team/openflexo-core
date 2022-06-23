@@ -139,7 +139,7 @@ public class ResourcesDirective extends Directive {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Object execute() {
+	public Object execute() throws ExecutionException {
 
 		super.execute();
 

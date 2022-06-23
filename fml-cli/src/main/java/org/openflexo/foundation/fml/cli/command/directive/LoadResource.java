@@ -112,12 +112,11 @@ public class LoadResource extends Directive {
 	}
 
 	@Override
-	public ResourceData<?> execute() {
+	public ResourceData<?> execute() throws ExecutionException {
 		super.execute();
 		logger.info("Load resource " + getResultingResource() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
 		if (getResultingResource() == null) {
-			logger.warning("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
-			return null;
+			throw new ExecutionException("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
 		}
 
 		if (getResultingResource().isLoaded()) {
@@ -130,12 +129,12 @@ public class LoadResource extends Directive {
 				getOutStream().println("Loaded " + getResultingResource().getURI() + ".");
 				return getResultingResource().getLoadedResourceData();
 			} catch (FileNotFoundException e) {
-				getErrStream().println("Cannot find resource");
+				throw new ExecutionException("Cannot find resource", e);
 			} catch (ResourceLoadingCancelledException e) {
+				throw new ExecutionException(e);
 			} catch (FlexoException e) {
-				getErrStream().println("Cannot load resource : " + e.getMessage());
+				throw new ExecutionException("Cannot load resource", e);
 			}
 		}
-		return null;
 	}
 }

@@ -42,8 +42,6 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
@@ -79,7 +77,7 @@ public class FMLExpression extends FMLCommand {
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
 		return expression != null && expression.isValid();
 	}
 
@@ -95,7 +93,7 @@ public class FMLExpression extends FMLCommand {
 	}
 
 	@Override
-	public Object execute() {
+	public Object execute() throws ExecutionException {
 
 		super.execute();
 
@@ -104,20 +102,12 @@ public class FMLExpression extends FMLCommand {
 				Object value = expression.getBindingValue(getCommandInterpreter());
 				getOutStream().println("Executed " + expression + " <- " + value);
 				return value;
-			} catch (TypeMismatchException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
-			} catch (NullReferenceException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
-			} catch (ReflectiveOperationException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
+			} catch (Exception e) {
+				throw new ExecutionException("Cannot execute " + expression, e);
 			}
 		}
 		else {
-			getErrStream().println("Cannot execute " + expression + " : " + expression.invalidBindingReason());
-			return null;
+			throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 		}
 
 		/*

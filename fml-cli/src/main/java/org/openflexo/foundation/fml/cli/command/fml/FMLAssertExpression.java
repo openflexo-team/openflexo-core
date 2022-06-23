@@ -41,36 +41,65 @@ package org.openflexo.foundation.fml.cli.command.fml;
 
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.CLIUtils;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
 
 /**
- * Represents context command in FML command-line interpreter<br>
- * Display current evaluation context
+ * Represents an expression in FML command-line interpreter
  * 
- * Usage: context
+ * Usage: <expression>
  * 
  * @author sylvain
  * 
  */
-@FMLCommandDeclaration(keyword = "context", usage = "context", description = "Display current evaluation context", syntax = "context")
-public class FMLContextCommand extends FMLCommand {
+@FMLCommandDeclaration(
+		keyword = "",
+		usage = "assert <expression>",
+		description = "Execute expression and assert that the result is true",
+		syntax = "assert <expression>")
+public class FMLAssertExpression extends FMLCommand {
 
-	private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLAssertExpression.class.getPackage().getName());
 
-	public FMLContextCommand(AContextFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	private DataBinding<?> expression;
+
+	public FMLAssertExpression(AAssertFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer, null);
+		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
+		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
+
+		System.out.println("----------------> On traite ASSERT " + node.getExpression());
+
+		expression = retrieveExpression(node.getExpression());
+
 	}
 
 	@Override
 	public String toString() {
-		return "context";
+		return "assert " + expression.toString();
+	}
+
+	@Override
+	public boolean isSyntaxicallyValid() {
+		return expression != null && expression.isValid() && TypeUtils.isBoolean(expression.getAnalyzedType());
+	}
+
+	@Override
+	public String invalidCommandReason() {
+		if (expression == null) {
+			return "null expression";
+		}
+		if (!expression.isValid()) {
+			return expression.invalidBindingReason();
+		}
+		if (!TypeUtils.isBoolean(expression.getAnalyzedType())) {
+			return "expression cannot be evaluated as a boolean";
+		}
+		return null;
 	}
 
 	@Override
@@ -78,35 +107,21 @@ public class FMLContextCommand extends FMLCommand {
 
 		super.execute();
 
-		if (getCommandInterpreter().getFocusedObject() != null) {
-			getOutStream().println(CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject()));
-		}
-
-		int maxTypeCols = -1;
-		int maxNameCols = -1;
-
-		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
-			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
-			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
-			String name = bv.getVariableName();
-			if (type.length() > maxTypeCols) {
-				maxTypeCols = type.length();
-			}
-			if (name.length() > maxNameCols) {
-				maxNameCols = name.length();
+		if (isSyntaxicallyValid()) {
+			try {
+				Boolean value = (Boolean) expression.getBindingValue(getCommandInterpreter());
+				getOutStream().println("Executed " + expression + " <- " + value);
+				if (value) {
+					return true;
+				}
+				throw new ExecutionException("Assert failed: " + expression);
+			} catch (Exception e) {
+				throw new ExecutionException("Cannot execute " + expression, e);
 			}
 		}
-
-		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
-			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
-			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
-			String name = bv.getVariableName();
-
-			getOutStream().println(type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
-					+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
-					+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv)));
+		else {
+			throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 		}
 
-		return null;
 	}
 }

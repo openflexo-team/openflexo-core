@@ -43,6 +43,9 @@ import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
@@ -50,6 +53,7 @@ import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * Represents a command in FML command-line interpreter
@@ -57,21 +61,54 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public abstract class AbstractCommand {
+public abstract class AbstractCommand extends PropertyChangedSupportDefaultImplementation implements Bindable {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCommand.class.getPackage().getName());
 
 	private Node node;
 	private AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer;
+	// This variable references parent (previous) command if this command is part of a script, otherwise it is null
+	private AbstractCommand parentCommand;
+
+	private boolean wasInitialized = false;
 
 	public AbstractCommand(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		this.node = node;
 		this.commandSemanticsAnalyzer = commandSemanticsAnalyzer;
 	}
 
+	public void init() {
+		wasInitialized = true;
+	}
+
 	public Node getNode() {
 		return node;
+	}
+
+	/**
+	 * Return bindable which defines binding model.<br>
+	 * If this command is part of a script, this is the previous command, otherwise this is the command interpreter itself
+	 * 
+	 * @return
+	 */
+	/*public Bindable getBindable() {
+		if (getParentCommand() != null) {
+			return getParentCommand();
+		}
+		return getCommandInterpreter();
+	}*/
+
+	public AbstractCommand getParentCommand() {
+		return parentCommand;
+	}
+
+	public void setParentCommand(AbstractCommand parentCommand) {
+		if ((parentCommand == null && this.parentCommand != null) || (parentCommand != null && !parentCommand.equals(this.parentCommand))) {
+			AbstractCommand oldValue = this.parentCommand;
+			this.parentCommand = parentCommand;
+			getPropertyChangeSupport().firePropertyChange("parentCommand", oldValue, parentCommand);
+		}
 	}
 
 	@Override
@@ -98,8 +135,11 @@ public abstract class AbstractCommand {
 	 * 
 	 * @return (eventual) returned value after execution
 	 */
-	public Object execute() {
-		if (!isValid()) {
+	public Object execute() throws ExecutionException {
+		if (!wasInitialized) {
+			init();
+		}
+		if (!isValidInThatContext()) {
 			getErrStream().println(invalidCommandReason());
 			return null;
 		}
@@ -115,11 +155,18 @@ public abstract class AbstractCommand {
 	}
 
 	/**
-	 * Return boolean indicating if this {@link AbstractCommand} is valid relatively to semantics analysis
+	 * Return boolean indicating if this {@link AbstractCommand} is syntaxically valid
 	 * 
 	 * @return
 	 */
-	public abstract boolean isValid();
+	public abstract boolean isSyntaxicallyValid();
+
+	/**
+	 * Return boolean indicating if this {@link AbstractCommand} is valid in that run-time context
+	 * 
+	 * @return
+	 */
+	public abstract boolean isValidInThatContext();
 
 	/**
 	 * Return String indicating why this {@link AbstractCommand} is not valid relatively to semantics analysis<br>
@@ -202,7 +249,7 @@ public abstract class AbstractCommand {
 
 	protected DataBinding<?> retrieveExpression(Node expression, Type type, BindingDefinitionType bdType) {
 
-		DataBinding<Object> returned = ExpressionFactory.makeDataBinding(expression, getCommandInterpreter(), bdType, type,
+		DataBinding<Object> returned = ExpressionFactory.makeDataBinding(expression, this, bdType, type,
 				getCommandSemanticsAnalyzer().getModelFactory(), getCommandSemanticsAnalyzer().getTypingSpace(),
 				getCommandSemanticsAnalyzer().getFMLBindingFactory());
 
@@ -210,6 +257,54 @@ public abstract class AbstractCommand {
 		// "Build new binding: " + returned + " valid: " + returned.isValid() + " reason: " + returned.invalidBindingReason());
 
 		return returned;
+	}
+
+	@Override
+	public BindingModel getBindingModel() {
+		if (getParentCommand() != null) {
+			return getParentCommand().getInferedBindingModel();
+		}
+		/*
+		System.out.println("Je suis " + this);
+		if (getBindable() instanceof AbstractCommand) {
+			System.out.println("Mon bindable c'est " + getBindable());
+			System.out.println("Je retourne " + ((AbstractCommand) getBindable()).getInferedBindingModel());
+			return ((AbstractCommand) getBindable()).getInferedBindingModel();
+		}*/
+		return getCommandInterpreter().getBindingModel();
+	}
+
+	public BindingModel getInferedBindingModel() {
+		return getBindingModel();
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		return getCommandInterpreter().getBindingFactory();
+	}
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+	}
+
+	@Override
+	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+	}
+
+	public static class ExecutionException extends Exception {
+
+		public ExecutionException(String message) {
+			super(message);
+		}
+
+		public ExecutionException(String message, Throwable cause) {
+			super(message + " : " + cause.getMessage(), cause);
+		}
+
+		public ExecutionException(Throwable cause) {
+			super("ExecutionException caused by " + cause.getMessage());
+		}
+
 	}
 
 }

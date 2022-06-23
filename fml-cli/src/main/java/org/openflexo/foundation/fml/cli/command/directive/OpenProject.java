@@ -125,7 +125,7 @@ public class OpenProject extends Directive {
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
 		return getProjectDirectory() != null && getProjectDirectory().isDirectory() && getProjectDirectory().exists()
 				&& getProjectDirectory().getName().endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX);
 	}
@@ -149,11 +149,11 @@ public class OpenProject extends Directive {
 	}
 
 	@Override
-	public FlexoProject<?> execute() {
+	public FlexoProject<?> execute() throws ExecutionException {
 
 		super.execute();
 
-		if (isValid()) {
+		if (isSyntaxicallyValid()) {
 
 			for (FlexoResourceCenter<?> rc : getCommandInterpreter().getServiceManager().getResourceCenterService().getResourceCenters()) {
 				if (rc instanceof FlexoProject && ((FlexoProject<?>) rc).getProjectDirectory().equals(getProjectDirectory())) {
@@ -172,9 +172,9 @@ public class OpenProject extends Directive {
 				getOutStream().println("Project " + project.getName() + " successfully opened.");
 				return project;
 			} catch (ProjectInitializerException e) {
-				getErrStream().println("Project initializing exception: " + e.getMessage());
-				e.printStackTrace();
+				throw new ExecutionException("Project initializing exception", e);
 			} catch (ProjectLoadingCancelledException e) {
+				throw new ExecutionException(e);
 			}
 		}
 

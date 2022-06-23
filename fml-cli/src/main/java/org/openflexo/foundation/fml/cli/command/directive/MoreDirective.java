@@ -184,17 +184,17 @@ public class MoreDirective extends Directive {
 	}
 
 	@Override
-	public Object execute() {
+	public Object execute() throws ExecutionException {
 		super.execute();
 
 		Object object = getAddressedObject();
 		if (object instanceof FlexoObject) {
 			renderObject((FlexoObject) object);
+			return getAddressedObject();
 		}
 		else {
-			getErrStream().println("No textual renderer for such data.");
+			throw new ExecutionException("No textual renderer for such data.");
 		}
-		return getAddressedObject();
 	}
 
 	private void renderObject(FlexoObject object) {

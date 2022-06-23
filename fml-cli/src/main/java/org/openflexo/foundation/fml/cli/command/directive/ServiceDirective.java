@@ -173,7 +173,7 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
 		return service != null && serviceOperation != null && isValid;
 	}
 
@@ -183,14 +183,14 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	}
 
 	@Override
-	public S execute() {
+	public S execute() throws ExecutionException {
 		super.execute();
 
-		if (isValid()) {
+		if (isSyntaxicallyValid()) {
 			serviceOperation.execute(service, getOutStream(), getErrStream(), argumentValue, optionValues);
 			return service;
 		}
 
-		return null;
+		throw new ExecutionException(invalidCommandReason());
 	}
 }

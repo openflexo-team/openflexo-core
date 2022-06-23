@@ -74,7 +74,7 @@ public class HelpDirective extends Directive {
 	}
 
 	@Override
-	public Object execute() {
+	public Object execute() throws ExecutionException {
 		super.execute();
 		for (Class<? extends Directive> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
 			String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();

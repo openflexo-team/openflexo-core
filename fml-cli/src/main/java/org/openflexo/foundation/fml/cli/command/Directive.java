@@ -152,8 +152,13 @@ public abstract class Directive extends AbstractCommand {
 	}*/
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
 		return true;
+	}
+
+	@Override
+	public boolean isValidInThatContext() {
+		return isSyntaxicallyValid();
 	}
 
 	@Override
@@ -231,8 +236,7 @@ public abstract class Directive extends AbstractCommand {
 			case Expression:
 				System.out.println("On doit evaluer " + value);
 				System.out.println("En tant que " + tokenType);
-				DataBinding<?> toEvaluate = new DataBinding<>(getText(value), getCommandInterpreter(), Object.class,
-						BindingDefinitionType.GET);
+				DataBinding<?> toEvaluate = new DataBinding<>(getText(value), this, Object.class, BindingDefinitionType.GET);
 				System.out.println("Donc " + toEvaluate);
 				System.out.println("Valide: " + toEvaluate.isValid());
 				try {

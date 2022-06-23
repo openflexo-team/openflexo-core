@@ -77,7 +77,7 @@ public class ExitDirective extends Directive {
 	}
 
 	@Override
-	public FlexoObject execute() {
+	public FlexoObject execute() throws ExecutionException {
 		super.execute();
 		FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
 		if (focusedObject == null) {

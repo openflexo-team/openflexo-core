@@ -72,7 +72,7 @@ public class LsDirective extends Directive {
 	}
 
 	@Override
-	public File execute() {
+	public File execute() throws ExecutionException {
 		super.execute();
 		if (getCommandInterpreter().getWorkingDirectory() != null) {
 			if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
@@ -98,7 +98,7 @@ public class LsDirective extends Directive {
 				}
 			}
 			else {
-				getErrStream().println("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
+				throw new ExecutionException("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
 			}
 		}
 

@@ -42,6 +42,7 @@ package org.openflexo.foundation.fml.cli.command;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
@@ -54,7 +55,8 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
  * @author sylvain
  * 
  */
-@DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class) })
+@DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class),
+		@DeclareCommand(FMLAssertExpression.class) })
 public abstract class FMLCommand extends AbstractCommand {
 
 	@SuppressWarnings("unused")
@@ -65,8 +67,13 @@ public abstract class FMLCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
 		return true;
+	}
+
+	@Override
+	public boolean isValidInThatContext() {
+		return isSyntaxicallyValid();
 	}
 
 	@Override

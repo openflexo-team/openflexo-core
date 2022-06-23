@@ -71,7 +71,7 @@ public class PwdDirective extends Directive {
 	}
 
 	@Override
-	public File execute() {
+	public File execute() throws ExecutionException {
 		super.execute();
 		getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
 		return getCommandInterpreter().getWorkingDirectory();

@@ -81,7 +81,7 @@ public class ActivateTA extends Directive {
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
 		return technologyAdapter != null;
 	}
 
@@ -95,7 +95,7 @@ public class ActivateTA extends Directive {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public TechnologyAdapter<?> execute() {
+	public TechnologyAdapter<?> execute() throws ExecutionException {
 		super.execute();
 		if (!getTechnologyAdapter().isActivated()) {
 			getCommandInterpreter().getServiceManager().getTechnologyAdapterService()
