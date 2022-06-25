@@ -1,0 +1,6 @@
+context;
+a = 1;
+b = 2;
+context;
+c = a + b;
+assert c==3;
