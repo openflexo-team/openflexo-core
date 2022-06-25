@@ -96,6 +96,8 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		conceptB = virtualModel.getFlexoConcept("ConceptB");
 		assertNotNull(conceptB);
 
+		assertTrue(conceptA.isSuperConceptOf(conceptB));
+
 		/*System.out.println(virtualModel.getCompilationUnit().getFMLPrettyPrint());
 		
 		System.out.println("ConceptA BindingModel = " + conceptA.getBindingModel());

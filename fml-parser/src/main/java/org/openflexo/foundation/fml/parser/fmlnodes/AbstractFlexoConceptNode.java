@@ -45,8 +45,8 @@ import java.util.List;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AManySuperTypeList;
 import org.openflexo.foundation.fml.parser.node.AOneSuperTypeList;
@@ -62,7 +62,8 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * 
  * @author sylvain
  */
-public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoConcept> extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
+public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoConcept>
+		extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
 	public AbstractFlexoConceptNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
@@ -84,9 +85,14 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
 		if (parentTypes != null) {
+			System.out.println("Hop pour " + parentTypes + " in " + getASTNode());
 			for (FlexoConceptInstanceType parentType : parentTypes) {
+				System.out.println(" > " + parentType);
+				System.out.println(" > " + parentType.getFlexoConcept());
 				if (parentType != null && parentType.getFlexoConcept() != null) {
 					try {
+						System.out.println(" >> " + getModelObject());
+						// System.exit(-1);
 						getModelObject().addToParentFlexoConcepts(parentType.getFlexoConcept());
 					} catch (InconsistentFlexoConceptHierarchyException e) {
 						throwIssue("Inconsistent concept hierarchy", getSuperTypeListFragment());

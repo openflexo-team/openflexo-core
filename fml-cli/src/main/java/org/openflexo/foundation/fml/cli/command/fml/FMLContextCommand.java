@@ -85,8 +85,7 @@ public class FMLContextCommand extends FMLCommand {
 		int maxTypeCols = -1;
 		int maxNameCols = -1;
 
-		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
-			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
+		for (BindingVariable bv : getCommandInterpreter().getValues().keySet()) {
 			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
 			String name = bv.getVariableName();
 			if (type.length() > maxTypeCols) {
@@ -97,8 +96,7 @@ public class FMLContextCommand extends FMLCommand {
 			}
 		}
 
-		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
-			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
+		for (BindingVariable bv : getCommandInterpreter().getValues().keySet()) {
 			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
 			String name = bv.getVariableName();
 

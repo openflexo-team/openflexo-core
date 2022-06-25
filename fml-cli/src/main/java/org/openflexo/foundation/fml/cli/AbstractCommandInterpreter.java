@@ -97,6 +97,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	private List<AbstractCommand> history;
 
+	private Map<BindingVariable, Object> values = new HashMap<>();
+
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
 	 * 
@@ -608,7 +610,16 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 	}
 
-	private Map<BindingVariable, Object> values = new HashMap<>();
+	/**
+	 * Return a {@link Map} containing all values beeing stored in current {@link CommandInterpreter}
+	 * 
+	 * Take care that some values may be associated to some BindingVariable declared outside this scope, but in another command
+	 * 
+	 * @return
+	 */
+	public Map<BindingVariable, Object> getValues() {
+		return values;
+	}
 
 	public void declareVariable(String variableName, Type type, Object value) {
 		BindingVariable variable = declareVariable(variableName, type);

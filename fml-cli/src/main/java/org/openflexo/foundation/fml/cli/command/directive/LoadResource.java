@@ -40,18 +40,19 @@
 package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.parser.node.ALoadDirective;
 import org.openflexo.foundation.fml.parser.node.APathLoadDirective;
 import org.openflexo.foundation.fml.parser.node.AResourceLoadDirective;
 import org.openflexo.foundation.fml.parser.node.PLoadDirective;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.toolbox.StringUtils;
 
@@ -65,10 +66,10 @@ import org.openflexo.toolbox.StringUtils;
  */
 @DirectiveDeclaration(
 		keyword = "load",
-		usage = "load <file> | -r <resource>",
+		usage = "[declaration = ] load <file> | -r <resource>",
 		description = "Load resource denoted by supplied resource uri",
 		syntax = "load <path> | -r <resource>")
-public class LoadResource extends Directive {
+public class LoadResource extends AssignableDirective {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
@@ -77,7 +78,7 @@ public class LoadResource extends Directive {
 	private String resourcePath;
 
 	public LoadResource(ALoadDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+		super(node, node.getDirectiveAssign(), commandSemanticsAnalyzer);
 
 		PLoadDirective loadDirective = node.getLoadDirective();
 
@@ -87,18 +88,34 @@ public class LoadResource extends Directive {
 		else if (loadDirective instanceof APathLoadDirective) {
 			resourcePath = retrievePath(((APathLoadDirective) loadDirective).getPath());
 		}
+	}
 
+	@Override
+	public boolean isSyntaxicallyValid() {
+		return super.isSyntaxicallyValid();
+	}
+
+	@Override
+	public Type getAssignableType() {
+		if (getResultingResource() != null) {
+			Class<?> rdClass = getResultingResource().getResourceDataClass();
+			if (rdClass.equals(FMLCompilationUnit.class)) {
+				return VirtualModel.class;
+			}
+			return rdClass;
+		}
+		return null;
 	}
 
 	@Override
 	public String toString() {
 		if (StringUtils.isNotEmpty(resourcePath)) {
-			return "load " + resourcePath;
+			return getAssignToString() + "load " + resourcePath;
 		}
 		else if (resource != null) {
-			return "load -r [\"" + resource.getURI() + "\"]";
+			return getAssignToString() + "load -r [\"" + resource.getURI() + "\"]";
 		}
-		return "load";
+		return getAssignToString() + "load";
 	}
 
 	public FlexoResource<?> getResultingResource() {
@@ -112,8 +129,8 @@ public class LoadResource extends Directive {
 	}
 
 	@Override
-	public ResourceData<?> execute() throws ExecutionException {
-		super.execute();
+	public Object performExecute() throws ExecutionException {
+
 		logger.info("Load resource " + getResultingResource() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
 		if (getResultingResource() == null) {
 			throw new ExecutionException("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
@@ -125,9 +142,12 @@ public class LoadResource extends Directive {
 		}
 		else {
 			try {
-				getResultingResource().loadResourceData();
-				getOutStream().println("Loaded " + getResultingResource().getURI() + ".");
-				return getResultingResource().getLoadedResourceData();
+				Object returned = getResultingResource().getResourceData();
+				getOutStream().println("Loaded " + getResultingResource().getURI());
+				if (returned instanceof FMLCompilationUnit) {
+					return ((FMLCompilationUnit) returned).getVirtualModel();
+				}
+				return returned;
 			} catch (FileNotFoundException e) {
 				throw new ExecutionException("Cannot find resource", e);
 			} catch (ResourceLoadingCancelledException e) {

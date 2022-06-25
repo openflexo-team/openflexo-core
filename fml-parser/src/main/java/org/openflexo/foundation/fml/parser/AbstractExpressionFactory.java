@@ -200,7 +200,7 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	private void registerExpressionNode(Node n, Expression e) {
-		System.out.println("REGISTER in " + this + " / " + e + "(" + e.getClass() + ")" + " for node " + n + " as " + n.getClass());
+		//System.out.println("REGISTER in " + this + " / " + e + "(" + e.getClass() + ")" + " for node " + n + " as " + n.getClass());
 
 		/*if (e instanceof FMLBinaryOperatorExpression) {
 			System.out.println("1er arg : " + ((FMLBinaryOperatorExpression) e).getLeftArgument() + " of "

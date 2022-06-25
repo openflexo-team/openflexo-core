@@ -380,12 +380,14 @@ Productions
      {service}     service [service_name]:identifier [action]:identifier [argument]:directive_argument? |
      {activate_ta} activate [technology_adapter]:identifier |
      {resources}   resources_directive |
-     {open}        open_directive |
-     {load}        load_directive |
+     {open}        directive_assign? open_directive |
+     {load}        directive_assign? load_directive |
      {more}        more_directive |
-     {enter}       enter_directive |
+     {enter}       directive_assign? enter_directive |
      {exit}        exit |
      {quit}        quit;
+
+   directive_assign = left_hand_side assign;
 
    directive_argument =
      {expression}       expression |
