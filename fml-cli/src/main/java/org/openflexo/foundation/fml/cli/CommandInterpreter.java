@@ -35,6 +35,7 @@ import org.jboss.jreadline.util.ANSI;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 
 /**
@@ -207,7 +208,9 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 					break;
 				}
 			} catch (ParseException e) {
-				System.err.println(e.getMessage());
+				getErrStream().println(e.getMessage());
+			} catch (ExecutionException e) {
+				getErrStream().println(e.getMessage());
 			}
 
 			/*if (line.getBuffer().equalsIgnoreCase("quit") || line.getBuffer().equalsIgnoreCase("exit")

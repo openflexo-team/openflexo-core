@@ -232,6 +232,7 @@ Tokens
    {command,script} exit = 'exit';
    {command,script} quit = 'quit';
    {command,script} context = 'context';
+   {command,script} assert = 'assert';
  
    // options
    {command,script} minus_r = '-r';
@@ -447,6 +448,7 @@ Productions
 
    fml_command =
      {context} context |
+     {assert}  assert expression |
      {expr}    expression;
 
    // --------------------------------------------------------------------------------------

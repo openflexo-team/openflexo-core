@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
@@ -46,6 +47,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand.CommandTokenType;
+import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
 import org.openflexo.foundation.fml.cli.command.DeclareCommands;
 import org.openflexo.foundation.fml.cli.command.DeclareDirective;
@@ -74,6 +76,8 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  */
 public abstract class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImplementation
 		implements Bindable, SettableBindingEvaluationContext {
+
+	private static final Logger logger = Logger.getLogger(AbstractCommandInterpreter.class.getPackage().getName());
 
 	private File workingDirectory;
 	private FlexoServiceManager serviceManager;
@@ -235,11 +239,11 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		return availableCommands;
 	}
 
-	public AbstractCommand executeCommand(String commandString) throws ParseException {
+	public AbstractCommand executeCommand(String commandString) throws ParseException, ExecutionException {
 		AbstractCommand command = makeCommand(commandString);
 		// System.out.println("Typed: " + commandString + " command=" + command);
 		if (command != null) {
-			if (command.isValid()) {
+			if (command.isSyntaxicallyValid()) {
 				command.execute();
 			}
 			else {
@@ -607,13 +611,27 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private Map<BindingVariable, Object> values = new HashMap<>();
 
 	public void declareVariable(String variableName, Type type, Object value) {
+		BindingVariable variable = declareVariable(variableName, type);
+		setVariableValue(variable, value);
+	}
+
+	public BindingVariable declareVariable(String variableName, Type type) {
 		// System.out.println(variableName + "<-" + value + "[" + TypeUtils.simpleRepresentation(type) + "]");
 		BindingVariable variable = getBindingModel().getBindingVariableNamed(variableName);
 		if (variable == null) {
 			variable = new BindingVariable(variableName, type);
 			getBindingModel().addToBindingVariables(variable);
 		}
-		setValue(value, variable);
+		return variable;
+	}
+
+	public void setVariableValue(BindingVariable variable, Object value) {
+		if (variable != null) {
+			setValue(value, variable);
+		}
+		else {
+			logger.warning("Null variable");
+		}
 	}
 
 	/**

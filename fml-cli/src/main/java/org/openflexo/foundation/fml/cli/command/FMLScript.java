@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -95,14 +96,21 @@ public class FMLScript {
 	}
 
 	public void addToCommands(AbstractCommand command) {
+		AbstractCommand lastCommand = commands.size() > 0 ? commands.get(commands.size() - 1) : null;
 		commands.add(command);
+		if (lastCommand != null) {
+			command.setParentCommand(lastCommand);
+		}
+		command.init();
 	}
 
 	/**
 	 * Execute this {@link FMLScript}
 	 * 
+	 * @throws ExecutionException
+	 * 
 	 */
-	public void execute() {
+	public void execute() throws ExecutionException {
 		for (AbstractCommand command : getCommands()) {
 			logger.info(">>> Execute " + command);
 			getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);

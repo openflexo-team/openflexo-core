@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
@@ -68,6 +69,7 @@ import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AActivateTaDirective;
+import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
@@ -248,6 +250,12 @@ public abstract class AbstractCommandSemanticsAnalyzer extends FMLSemanticsAnaly
 	public void outAContextFmlCommand(AContextFmlCommand node) {
 		super.outAContextFmlCommand(node);
 		registerCommand(node, new FMLContextCommand(node, this));
+	}
+
+	@Override
+	public void outAAssertFmlCommand(AAssertFmlCommand node) {
+		super.outAAssertFmlCommand(node);
+		registerCommand(node, new FMLAssertExpression(node, this));
 	}
 
 	@Override

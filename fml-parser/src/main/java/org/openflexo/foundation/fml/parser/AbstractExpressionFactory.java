@@ -200,7 +200,14 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	private void registerExpressionNode(Node n, Expression e) {
-		// System.out.println("REGISTER in " + this + " / " + e + " for node " + n + " as " + n.getClass());
+		System.out.println("REGISTER in " + this + " / " + e + "(" + e.getClass() + ")" + " for node " + n + " as " + n.getClass());
+
+		/*if (e instanceof FMLBinaryOperatorExpression) {
+			System.out.println("1er arg : " + ((FMLBinaryOperatorExpression) e).getLeftArgument() + " of "
+					+ ((FMLBinaryOperatorExpression) e).getLeftArgument().getClass());
+			System.out.println("2eme arg : " + ((FMLBinaryOperatorExpression) e).getRightArgument() + " of "
+					+ ((FMLBinaryOperatorExpression) e).getRightArgument().getClass());
+		}*/
 		expressionNodes.put(n, e);
 		if (topLevel == null) {
 			topLevel = n;
@@ -285,8 +292,11 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 					return getExpression(((ALitteralUriExpressionPrimary) n).getLitString());
 				}*/
 
-				logger.warning("ExpressionFactory: No expression registered for " + n + " of  " + n.getClass());
-				Thread.dumpStack();
+				logger.warning("In expressionFactory: " + this + " : no expression registered for " + n + " of  " + n.getClass());
+				// Thread.dumpStack();
+				// System.out.println("parentAnalyzer=" + parentAnalyzer);
+				// System.out.println("Virer ce code !!!!");
+				// System.exit(-1);
 			}
 			return returned;
 		}

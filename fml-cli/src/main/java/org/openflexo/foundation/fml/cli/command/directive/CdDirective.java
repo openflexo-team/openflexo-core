@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents #cd directive in FML command-line interpreter
@@ -63,7 +64,6 @@ public class CdDirective extends Directive {
 	private static final Logger logger = Logger.getLogger(CdDirective.class.getPackage().getName());
 
 	private String path;
-	private File newDirectory;
 
 	public CdDirective(ACdDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
@@ -76,24 +76,28 @@ public class CdDirective extends Directive {
 	}
 
 	public File getNewDirectory() {
-		if (newDirectory == null) {
-			if (path.startsWith("/")) {
-				newDirectory = new File(path);
-			}
-			else {
-				newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
-			}
-			try {
-				newDirectory = new File(newDirectory.getCanonicalPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		File newDirectory;
+		if (path.startsWith("/")) {
+			newDirectory = new File(path);
+		}
+		else {
+			newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
+		}
+		try {
+			newDirectory = new File(newDirectory.getCanonicalPath());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return newDirectory;
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isSyntaxicallyValid() {
+		return StringUtils.isNotEmpty(path);
+	}
+
+	@Override
+	public boolean isValidInThatContext() {
 		return getNewDirectory() != null && getNewDirectory().isDirectory() && getNewDirectory().exists();
 	}
 
@@ -112,12 +116,13 @@ public class CdDirective extends Directive {
 	}
 
 	@Override
-	public File execute() {
+	public File execute() throws ExecutionException {
 		super.execute();
-		if (isValid()) {
+		if (isValidInThatContext()) {
+			File newDirectory = getNewDirectory();
 			getCommandInterpreter().setWorkingDirectory(newDirectory);
 			return newDirectory;
 		}
-		return null;
+		throw new ExecutionException(invalidCommandReason());
 	}
 }
