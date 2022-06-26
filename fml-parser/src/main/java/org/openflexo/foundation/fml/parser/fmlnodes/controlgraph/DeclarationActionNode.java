@@ -46,7 +46,8 @@ import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerExpressionVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerFmlActionVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -77,10 +78,10 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		returned.setVariableName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 
-		if (astNode.getVariableDeclarator() instanceof AInitializerVariableDeclarator) {
+		if (astNode.getVariableDeclarator() instanceof AInitializerExpressionVariableDeclarator) {
 
 			ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(
-					((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getExpression(), getSemanticsAnalyzer());
+					((AInitializerExpressionVariableDeclarator) astNode.getVariableDeclarator()).getExpression(), getSemanticsAnalyzer());
 
 			if (assignableActionNode != null) {
 				if (assignableActionNode.getModelObject() instanceof AssignableAction) {
@@ -93,6 +94,10 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 				}
 			}
 
+		}
+
+		if (astNode.getVariableDeclarator() instanceof AInitializerFmlActionVariableDeclarator) {
+			logger.warning("DeclarationAction with EditionAction not implemented yet");
 		}
 
 		return returned;
@@ -126,8 +131,11 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
 				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier());
 			}
-			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getLidentifier());
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier());
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier());
 			}
 		}
 		return null;
@@ -142,7 +150,10 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
 				return false;
 			}
-			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return true;
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
 				return true;
 			}
 		}
@@ -151,14 +162,14 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	private RawSourceFragment getAssignmentFragment() {
 		if (hasInitializer()) {
-			return getFragment(((AInitializerVariableDeclarator) getASTNode().getVariableDeclarator()).getExpression());
+			return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getExpression());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getAssignOperatorFragment() {
 		if (hasInitializer() && getASTNode() != null) {
-			return getFragment(((AInitializerVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
+			return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
 		}
 		return null;
 	}

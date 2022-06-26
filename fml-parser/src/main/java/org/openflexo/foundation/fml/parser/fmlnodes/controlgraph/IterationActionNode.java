@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
+import org.openflexo.foundation.fml.parser.node.AForEnhancedExpressionStatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -56,12 +56,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement, IterationAction> {
+public class IterationActionNode extends ControlGraphNode<AForEnhancedExpressionStatement, IterationAction> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IterationActionNode.class.getPackage().getName());
 
-	public IterationActionNode(AForEnhancedStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public IterationActionNode(AForEnhancedExpressionStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 	}
 
@@ -70,12 +70,13 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	}
 
 	@Override
-	public IterationAction buildModelObjectFromAST(AForEnhancedStatement astNode) {
+	public IterationAction buildModelObjectFromAST(AForEnhancedExpressionStatement astNode) {
 		IterationAction returned = getFactory().newIterationAction();
 
 		returned.setIteratorName(astNode.getLidentifier().getText());
 
-		ControlGraphNode<?, ?> iterationActionCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getSemanticsAnalyzer());
+		ControlGraphNode<?, ?> iterationActionCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(),
+				getSemanticsAnalyzer());
 		if (iterationActionCGNode.getModelObject() instanceof AssignableAction) {
 			returned.setIterationAction((AssignableAction) iterationActionCGNode.getModelObject());
 			addToChildren(iterationActionCGNode);

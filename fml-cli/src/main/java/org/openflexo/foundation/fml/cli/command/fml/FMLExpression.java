@@ -45,7 +45,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.parser.node.AExprFmlCommand;
+import org.openflexo.foundation.fml.parser.node.AExpressionFmlCommand;
 
 /**
  * Represents an expression in FML command-line interpreter
@@ -62,7 +62,7 @@ public class FMLExpression extends FMLCommand {
 
 	private DataBinding<?> expression;
 
-	public FMLExpression(AExprFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public FMLExpression(AExpressionFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer, null);
 		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
 		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);

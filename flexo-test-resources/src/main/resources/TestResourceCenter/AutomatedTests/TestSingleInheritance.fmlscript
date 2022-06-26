@@ -10,7 +10,7 @@ assert conceptA != null;
 conceptB = virtualModel.getFlexoConcept("ConceptB");
 assert conceptB != null;
 context;
-//log (virtualModel);
+log virtualModel.toString;
 assert conceptA.isSuperConceptOf(conceptB);
 //myVMI = new TestSingleInheritance();
 //a = myVMI.new A();

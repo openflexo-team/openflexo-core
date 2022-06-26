@@ -39,7 +39,8 @@ import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutT
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
-import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
+import org.openflexo.foundation.fml.parser.node.AForEnhancedExpressionStatement;
+import org.openflexo.foundation.fml.parser.node.AForEnhancedFmlActionStatement;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
@@ -524,15 +525,26 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void inAForEnhancedStatement(AForEnhancedStatement node) {
-		super.inAForEnhancedStatement(node);
+	public void inAForEnhancedExpressionStatement(AForEnhancedExpressionStatement node) {
+		super.inAForEnhancedExpressionStatement(node);
 		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new IterationActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
-	public void outAForEnhancedStatement(AForEnhancedStatement node) {
-		super.outAForEnhancedStatement(node);
+	public void outAForEnhancedExpressionStatement(AForEnhancedExpressionStatement node) {
+		super.outAForEnhancedExpressionStatement(node);
 		pop();
+	}
+
+	@Override
+	public void inAForEnhancedFmlActionStatement(AForEnhancedFmlActionStatement node) {
+		logger.warning("inAForEnhancedFmlActionStatement not implemented yet !!!");
+		super.inAForEnhancedFmlActionStatement(node);
+	}
+
+	@Override
+	public void outAForEnhancedFmlActionStatement(AForEnhancedFmlActionStatement node) {
+		super.outAForEnhancedFmlActionStatement(node);
 	}
 
 	/*
