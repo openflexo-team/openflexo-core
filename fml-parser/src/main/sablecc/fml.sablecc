@@ -946,8 +946,8 @@ Productions
 //     | {unqualified} l_par argument_list? r_par
       ;
 
-   in_clause    = kw_in l_par expression r_par;
-   from_clause  = kw_from l_par expression r_par;
+   in_clause    = kw_in /*l_par*/ expression /*r_par*/;
+   from_clause  = kw_from /*l_par*/ expression /*r_par*/;
    where_clause = kw_where l_par argument_list? r_par;
    qualified_where_clause = kw_where l_par qualified_argument_list? r_par;
 

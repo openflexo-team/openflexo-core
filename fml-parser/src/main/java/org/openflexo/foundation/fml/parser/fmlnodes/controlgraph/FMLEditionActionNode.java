@@ -129,15 +129,15 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 
 		when(() -> hasInClause())
 		.thenAppend(staticContents(SPACE, "in",""), getInFragment())
-		.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
-		.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
-		.thenAppend(staticContents(")"), getRParInFragment());
+		//.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
+		.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment());
+		//.thenAppend(staticContents(")"), getRParInFragment());
 
 		when(() -> hasFromClause())
 		.thenAppend(staticContents(SPACE, "from",""), getFromFragment())
-		.thenAppend(staticContents(SPACE, "(",""), getLParFromFragment())
-		.thenAppend(dynamicContents(() -> getFromAsString()), getFromExpressionFragment())
-		.thenAppend(staticContents(")"), getRParFromFragment());
+		//.thenAppend(staticContents(SPACE, "(",""), getLParFromFragment())
+		.thenAppend(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
+		//.thenAppend(staticContents(")"), getRParFromFragment());
 
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
@@ -241,7 +241,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		return null;
 	}
 
-	private RawSourceFragment getLParInFragment() {
+	/*private RawSourceFragment getLParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
 			if (inClause instanceof AInClause) {
@@ -250,7 +250,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
@@ -259,7 +259,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getInExpressionFragment() {
 		if (getASTNode() != null) {
@@ -281,7 +281,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		return null;
 	}
 
-	private RawSourceFragment getLParFromFragment() {
+	/*private RawSourceFragment getLParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause inClause = getASTNode().getFromClause();
 			if (inClause instanceof AFromClause) {
@@ -290,7 +290,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause inClause = getASTNode().getFromClause();
@@ -299,7 +299,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getFromExpressionFragment() {
 		if (getASTNode() != null) {
