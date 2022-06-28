@@ -41,64 +41,69 @@ package org.openflexo.foundation.fml.cli.command.fml;
 
 import java.util.logging.Logger;
 
-import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.parser.node.AFmlActionFmlCommand;
+import org.openflexo.pamela.validation.ValidationReport;
 
 /**
- * Represents an expression in FML command-line interpreter
+ * Represents an EditionAction in FML command-line interpreter
  * 
  * Usage: <expression>
  * 
  * @author sylvain
  * 
  */
-@FMLCommandDeclaration(
-		keyword = "",
-		usage = "assert <expression>",
-		description = "Execute expression and assert that the result is true",
-		syntax = "assert <expression>")
-public class FMLAssertExpression extends FMLCommand {
+@FMLCommandDeclaration(keyword = "", usage = "<action>", description = "Execute FML action", syntax = "<action>")
+public class FMLActionCommand extends FMLCommand {
 
-	private static final Logger logger = Logger.getLogger(FMLAssertExpression.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLActionCommand.class.getPackage().getName());
 
-	private DataBinding<?> expression;
+	private EditionAction editionAction;
 
-	public FMLAssertExpression(AAssertFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public FMLActionCommand(AFmlActionFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
 		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 
-		System.out.println("----------------> On traite ASSERT " + node.getExpression());
-
-		expression = retrieveExpression(node.getExpression());
+		editionAction = retrieveEditionAction(node.getFmlActionExp());
+		System.out.println("Prout: " + editionAction);
+		System.out.println("Owner: " + editionAction.getOwner());
 
 	}
 
 	@Override
 	public String toString() {
-		return "assert " + expression.toString();
+		return editionAction.getFMLPrettyPrint();
 	}
 
 	@Override
 	public boolean isSyntaxicallyValid() {
-		return expression != null && expression.isValid() && TypeUtils.isBoolean(expression.getAnalyzedType());
+
+		FMLValidationModel validationModel = getCommandInterpreter().getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
+
+		ValidationReport validate;
+		try {
+			validate = validationModel.validate(editionAction);
+			System.out.println("Hop: " + validate.reportAsString());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		return true;
 	}
 
 	@Override
 	public String invalidCommandReason() {
-		if (expression == null) {
-			return "null expression";
-		}
-		if (!expression.isValid()) {
-			return expression.invalidBindingReason();
-		}
-		if (!TypeUtils.isBoolean(expression.getAnalyzedType())) {
-			return "expression cannot be evaluated as a boolean";
-		}
+		/*	if (expression == null) {
+				return "null expression";
+			}
+			if (!expression.isValid()) {
+				return expression.invalidBindingReason();
+			}*/
 		return null;
 	}
 
@@ -107,21 +112,19 @@ public class FMLAssertExpression extends FMLCommand {
 
 		super.execute();
 
-		if (isSyntaxicallyValid()) {
-			try {
-				Boolean value = (Boolean) expression.getBindingValue(getCommandInterpreter());
-				getOutStream().println("Executed " + expression + " <- " + value);
-				if (value) {
-					return true;
+		/*		if (expression.isValid()) {
+					try {
+						Object value = expression.getBindingValue(getCommandInterpreter());
+						getOutStream().println("Executed " + expression + " <- " + value);
+						return value;
+					} catch (Exception e) {
+						throw new ExecutionException("Cannot execute " + expression, e);
+					}
 				}
-				throw new ExecutionException("Assert failed: " + expression);
-			} catch (Exception e) {
-				throw new ExecutionException("Cannot execute " + expression, e);
-			}
-		}
-		else {
-			throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
-		}
+				else {
+					throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+				}*/
 
+		return null;
 	}
 }

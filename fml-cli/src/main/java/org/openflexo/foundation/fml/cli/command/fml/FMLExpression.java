@@ -63,7 +63,7 @@ public class FMLExpression extends FMLCommand {
 	private DataBinding<?> expression;
 
 	public FMLExpression(AExpressionFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer, null);
+		super(node, commandSemanticsAnalyzer);
 		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
 		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 

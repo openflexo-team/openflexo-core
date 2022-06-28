@@ -65,7 +65,7 @@ public class FMLContextCommand extends FMLCommand {
 	private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
 
 	public FMLContextCommand(AContextFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer, null);
+		super(node, commandSemanticsAnalyzer);
 	}
 
 	@Override

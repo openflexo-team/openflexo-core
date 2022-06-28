@@ -45,12 +45,14 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.FMLTypingSpace;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
@@ -95,6 +97,7 @@ import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource;
@@ -147,6 +150,18 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
 		typingSpace = new FMLTypingSpaceDuringParsing(this);
+	}
+
+	public FMLCompilationUnitSemanticsAnalyzer(FMLModelFactory modelFactory, FlexoServiceManager serviceManager,
+			PFmlActionExp simpleCommand, RawSource rawSource) {
+		super(modelFactory, simpleCommand);
+		this.rawSource = rawSource;
+		fragmentManager = new FragmentManager(rawSource);
+		fmlFactory = new FMLFactory(this);
+		fmlBindingFactoryDuringDeserialization = new FMLBindingFactory(modelFactory);
+		propertyFactory = new FlexoPropertyFactory(this);
+		behaviourFactory = new FlexoBehaviourFactory(this);
+		typingSpace = new FMLTypingSpace(serviceManager);
 	}
 
 	@Override

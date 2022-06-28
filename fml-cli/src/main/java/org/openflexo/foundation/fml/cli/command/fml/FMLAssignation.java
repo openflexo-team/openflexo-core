@@ -78,7 +78,7 @@ public class FMLAssignation extends FMLCommand {
 	private BindingVariable localDeclarationVariable;
 
 	public FMLAssignation(AAssignmentExpression node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer, null);
+		super(node, commandSemanticsAnalyzer);
 
 		assignation = retrieveAssignation(node.getLeft());
 		expression = retrieveExpression(node.getRight());

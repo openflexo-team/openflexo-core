@@ -78,7 +78,7 @@ public class LoadResource extends AssignableDirective {
 	private String resourcePath;
 
 	public LoadResource(ALoadDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, node.getDirectiveAssign(), commandSemanticsAnalyzer);
+		super(node, node.getCommandAssign(), commandSemanticsAnalyzer);
 
 		PLoadDirective loadDirective = node.getLoadDirective();
 

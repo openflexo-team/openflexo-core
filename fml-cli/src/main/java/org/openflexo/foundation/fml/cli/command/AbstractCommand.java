@@ -51,8 +51,13 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
@@ -257,6 +262,21 @@ public abstract class AbstractCommand extends PropertyChangedSupportDefaultImple
 		// "Build new binding: " + returned + " valid: " + returned.isValid() + " reason: " + returned.invalidBindingReason());
 
 		return returned;
+	}
+
+	protected EditionAction retrieveEditionAction(PFmlActionExp fmlAction) {
+
+		FMLCompilationUnitSemanticsAnalyzer analyzer = new FMLCompilationUnitSemanticsAnalyzer(
+				getCommandSemanticsAnalyzer().getModelFactory(), getCommandSemanticsAnalyzer().getServiceManager(), fmlAction,
+				getCommandSemanticsAnalyzer().getRawSource());
+
+		ControlGraphNode<?, ?> controlGraphNode = ControlGraphFactory.makeControlGraphNode(fmlAction, analyzer);
+
+		if (controlGraphNode != null && controlGraphNode.getModelObject() instanceof EditionAction) {
+			return (EditionAction) controlGraphNode.getModelObject();
+		}
+		return null;
+
 	}
 
 	@Override

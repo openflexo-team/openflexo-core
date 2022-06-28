@@ -47,7 +47,6 @@ import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 /**
  * Represents an FML command in command-line interpreter
@@ -62,7 +61,7 @@ public abstract class FMLCommand extends AbstractCommand {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
 
-	public FMLCommand(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer, FlexoConceptInstance fci) {
+	public FMLCommand(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 	}
 

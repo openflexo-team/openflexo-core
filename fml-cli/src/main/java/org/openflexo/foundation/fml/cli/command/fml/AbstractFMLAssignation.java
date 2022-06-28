@@ -37,7 +37,7 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli.command.directive;
+package org.openflexo.foundation.fml.cli.command.fml;
 
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
@@ -50,21 +50,20 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.Directive;
+import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.parser.node.ACommandAssign;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PCommandAssign;
 
 /**
- * Represents a {@link Directive} whose value can be assigned
+ * A FMLCommand which can be assigned
  * 
  * @author sylvain
  *
  */
-public abstract class AssignableDirective extends Directive {
+public abstract class AbstractFMLAssignation extends FMLCommand {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AssignableDirective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AbstractFMLAssignation.class.getPackage().getName());
 
 	private DataBinding<?> assignation;
 
@@ -72,12 +71,12 @@ public abstract class AssignableDirective extends Directive {
 	private BindingModel bindingModel;
 	private BindingVariable localDeclarationVariable;
 
-	public AssignableDirective(Node node, PCommandAssign assignNode, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public AbstractFMLAssignation(Node node, PCommandAssign assignNode, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 
 		if (assignNode instanceof ACommandAssign) {
-			ACommandAssign commandAssign = (ACommandAssign) assignNode;
-			assignation = retrieveAssignation(commandAssign.getLeftHandSide());
+			ACommandAssign directiveAssign = (ACommandAssign) assignNode;
+			assignation = retrieveAssignation(directiveAssign.getLeftHandSide());
 			System.out.println("assignation=" + assignation);
 		}
 	}

@@ -380,14 +380,14 @@ Productions
      {service}     service [service_name]:identifier [action]:identifier [argument]:directive_argument? |
      {activate_ta} activate [technology_adapter]:identifier |
      {resources}   resources_directive |
-     {open}        directive_assign? open_directive |
-     {load}        directive_assign? load_directive |
+     {open}        command_assign? open_directive |
+     {load}        command_assign? load_directive |
      {more}        more_directive |
-     {enter}       directive_assign? enter_directive |
+     {enter}       command_assign? enter_directive |
      {exit}        exit |
      {quit}        quit;
 
-   directive_assign = left_hand_side assign;
+   command_assign = left_hand_side assign;
 
    directive_argument =
      {expression}       expression |
@@ -453,7 +453,7 @@ Productions
      {assert}     assert expression |
     // {validate} validate expression |
     // {log}      kw_log expression |
-     {fml_action} directive_assign? fml_action_exp |
+     {fml_action} command_assign? fml_action_exp |
      {expression} expression;
 
    // --------------------------------------------------------------------------------------
