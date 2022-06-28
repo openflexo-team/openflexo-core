@@ -209,8 +209,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getOwner() != null) {
-				return getOwner().getFlexoConcept();
+			if (getOwner() instanceof FlexoConceptObject) {
+				return ((FlexoConceptObject) getOwner()).getFlexoConcept();
 			}
 			return null;
 		}

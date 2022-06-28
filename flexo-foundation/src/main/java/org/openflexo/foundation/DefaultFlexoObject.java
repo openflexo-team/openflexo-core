@@ -130,6 +130,10 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
+	public void performSuperInitializer(Object... args) {
+	}
+
+	@Override
 	public boolean isSerializing() {
 		return false;
 	}

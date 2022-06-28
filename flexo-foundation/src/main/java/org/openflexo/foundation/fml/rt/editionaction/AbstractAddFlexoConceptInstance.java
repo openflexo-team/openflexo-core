@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -876,12 +877,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 							}
 						}
 
-						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
-									.getModelSlots(FMLRTModelSlot.class)) {
-								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
-									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+						if (object.getRootOwner() instanceof FlexoConceptObject) {
+							if (((FlexoConceptObject) object.getRootOwner()).getFlexoConcept() instanceof VirtualModel) {
+								for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) ((FlexoConceptObject) object.getRootOwner())
+										.getFlexoConcept()).getModelSlots(FMLRTModelSlot.class)) {
+									// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
+									if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
+										((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+									}
 								}
 							}
 						}

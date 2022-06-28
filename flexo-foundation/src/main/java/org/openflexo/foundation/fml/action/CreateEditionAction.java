@@ -62,6 +62,7 @@ import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -675,11 +676,13 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	 */
 	public VirtualModel getVirtualModel() {
 		if (getFocusedObject() != null && getFocusedObject().getOwner() != null) {
-			if (getFocusedObject().getOwner().getFlexoConcept() instanceof VirtualModel) {
-				return (VirtualModel) getFocusedObject().getOwner().getFlexoConcept();
+			if (getFocusedObject().getOwner() instanceof FlexoConceptObject
+					&& ((FlexoConceptObject) getFocusedObject().getOwner()).getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) ((FlexoConceptObject) getFocusedObject().getOwner()).getFlexoConcept();
 			}
-			else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
-				return getFocusedObject().getOwner().getOwningVirtualModel();
+			else if (getFocusedObject().getOwner() instanceof FlexoConceptObject
+					&& ((FlexoConceptObject) getFocusedObject().getOwner()).getOwningVirtualModel() != null) {
+				return ((FlexoConceptObject) getFocusedObject().getOwner()).getOwningVirtualModel();
 			}
 		}
 		return null;
