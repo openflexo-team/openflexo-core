@@ -210,7 +210,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
 		append(staticContents(SPACE, "in", ""), getInFragment());
 		//append(staticContents(SPACE, "(", ""), getLParInFragment());
-		append(dynamicContents(() -> getInAsString()), getInExpressionFragment());
+		append(dynamicContents(SPACE,() -> getInAsString()), getInExpressionFragment());
 		//append(staticContents(")"), getRParInFragment());
 
 		when(() -> isNormalAction()).thenAppend(staticContents(SPACE, "action", ""), getActionFragment())

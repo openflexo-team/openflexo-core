@@ -131,7 +131,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
 		append(staticContents(SPACE, "from", ""), getFromFragment());
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
+		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
 		//append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());

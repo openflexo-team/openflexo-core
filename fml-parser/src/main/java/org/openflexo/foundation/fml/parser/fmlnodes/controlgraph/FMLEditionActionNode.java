@@ -130,13 +130,13 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		when(() -> hasInClause())
 		.thenAppend(staticContents(SPACE, "in",""), getInFragment())
 		//.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
-		.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment());
+		.thenAppend(dynamicContents(SPACE, () -> getInAsString()), getInExpressionFragment());
 		//.thenAppend(staticContents(")"), getRParInFragment());
 
 		when(() -> hasFromClause())
 		.thenAppend(staticContents(SPACE, "from",""), getFromFragment())
 		//.thenAppend(staticContents(SPACE, "(",""), getLParFromFragment())
-		.thenAppend(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
+		.thenAppend(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
 		//.thenAppend(staticContents(")"), getRParFromFragment());
 
 		// Append semi only when required

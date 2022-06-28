@@ -263,11 +263,11 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
 		when(() -> hasInClause()).thenAppend(staticContents(SPACE, "in", ""), getInFragment())
 				//.thenAppend(staticContents(SPACE, "(", ""), getLParInFragment())
-				.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment());
+				.thenAppend(dynamicContents(SPACE, () -> getInAsString()), getInExpressionFragment());
 				//.thenAppend(staticContents(")"), getRParInFragment());
 		append(staticContents(SPACE, "from", ""), getFromFragment());
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
+		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
 		//append(staticContents(")"), getRParFromFragment());
 		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, "where", ""), getWhereFragment())
 				.thenAppend(staticContents(SPACE, "(", ""), getLParWhereFragment())
