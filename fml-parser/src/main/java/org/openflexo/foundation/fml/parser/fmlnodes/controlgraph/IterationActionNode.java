@@ -45,18 +45,21 @@ import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedExpressionStatement;
+import org.openflexo.foundation.fml.parser.node.AForEnhancedFmlActionStatement;
+import org.openflexo.foundation.fml.parser.node.PStatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * <pre>
- *      | {for_enhanced} kw_for l_par type identifier colon expression r_par statement
+ *      | {for_enhanced_expression} kw_for l_par type lidentifier colon expression r_par statement
+ *      | {for_enhanced_fml_action} kw_for l_par type lidentifier colon fml_action_exp r_par statement
  * </pre>
  * 
  * @author sylvain
  * 
  */
-public class IterationActionNode extends ControlGraphNode<AForEnhancedExpressionStatement, IterationAction> {
+public class IterationActionNode extends ControlGraphNode<PStatement, IterationAction> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IterationActionNode.class.getPackage().getName());
@@ -65,31 +68,75 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedExpression
 		super(astNode, analyzer);
 	}
 
+	public IterationActionNode(AForEnhancedFmlActionStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
+	}
+
 	public IterationActionNode(IterationAction iteration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(iteration, analyzer);
 	}
 
 	@Override
-	public IterationAction buildModelObjectFromAST(AForEnhancedExpressionStatement astNode) {
+	public IterationAction buildModelObjectFromAST(PStatement astNode) {
 		IterationAction returned = getFactory().newIterationAction();
 
-		returned.setIteratorName(astNode.getLidentifier().getText());
+		returned.setIteratorName(getIteratorName(astNode));
 
-		ControlGraphNode<?, ?> iterationActionCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(),
-				getSemanticsAnalyzer());
+		ControlGraphNode<?, ?> iterationActionCGNode = getIterationActionCGNode(astNode);
 		if (iterationActionCGNode.getModelObject() instanceof AssignableAction) {
 			returned.setIterationAction((AssignableAction) iterationActionCGNode.getModelObject());
 			addToChildren(iterationActionCGNode);
 		}
 		else {
-			throwIssue("Cannot iterate on " + iterationActionCGNode.getModelObject(), getFragment(astNode.getExpression()));
+			if (astNode instanceof AForEnhancedExpressionStatement) {
+				throwIssue("Cannot iterate on " + iterationActionCGNode.getModelObject(),
+						getFragment(((AForEnhancedExpressionStatement) astNode).getExpression()));
+			}
+			if (astNode instanceof AForEnhancedFmlActionStatement) {
+				throwIssue("Cannot iterate on " + iterationActionCGNode.getModelObject(),
+						getFragment(((AForEnhancedFmlActionStatement) astNode).getFmlActionExp()));
+			}
+			throwIssue("Cannot iterate on " + iterationActionCGNode.getModelObject(), getFragment(astNode));
 		}
 
-		ControlGraphNode<?, ?> iterationCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getStatement(), getSemanticsAnalyzer());
+		ControlGraphNode<?, ?> iterationCGNode = ControlGraphFactory.makeControlGraphNode(getIterationStatement(astNode),
+				getSemanticsAnalyzer());
 		returned.setControlGraph(iterationCGNode.getModelObject());
 		addToChildren(iterationCGNode);
 
 		return returned;
+	}
+
+	private String getIteratorName(PStatement astNode) {
+		if (astNode instanceof AForEnhancedExpressionStatement) {
+			return ((AForEnhancedExpressionStatement) astNode).getLidentifier().getText();
+		}
+		if (astNode instanceof AForEnhancedFmlActionStatement) {
+			return ((AForEnhancedFmlActionStatement) astNode).getLidentifier().getText();
+		}
+		return null;
+	}
+
+	private PStatement getIterationStatement(PStatement astNode) {
+		if (astNode instanceof AForEnhancedExpressionStatement) {
+			return ((AForEnhancedExpressionStatement) astNode).getStatement();
+		}
+		if (astNode instanceof AForEnhancedFmlActionStatement) {
+			return ((AForEnhancedFmlActionStatement) astNode).getStatement();
+		}
+		return null;
+	}
+
+	private ControlGraphNode<?, ?> getIterationActionCGNode(PStatement astNode) {
+		if (astNode instanceof AForEnhancedExpressionStatement) {
+			return ControlGraphFactory.makeControlGraphNode(((AForEnhancedExpressionStatement) astNode).getExpression(),
+					getSemanticsAnalyzer());
+		}
+		if (astNode instanceof AForEnhancedFmlActionStatement) {
+			return ControlGraphFactory.makeControlGraphNode(((AForEnhancedFmlActionStatement) astNode).getFmlActionExp(),
+					getSemanticsAnalyzer());
+		}
+		return null;
 	}
 
 	/**
@@ -120,50 +167,71 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedExpression
 	}
 
 	protected RawSourceFragment getForFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwFor());
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getKwFor());
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getKwFor());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getColonFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getColon());
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getColon());
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getColon());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getLParFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getLPar());
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getLPar());
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getLPar());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getTypeFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getType());
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getType());
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getType());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getIteratorNameFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getLidentifier());
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getLidentifier());
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getLidentifier());
 		}
 		return null;
 	}
 
-	protected RawSourceFragment getIterationActionFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getExpression());
+	protected RawSourceFragment getIterationFragment() {
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getExpression());
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getFmlActionExp());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getRParFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getRPar());
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getRPar());
 		}
 		return null;
 	}

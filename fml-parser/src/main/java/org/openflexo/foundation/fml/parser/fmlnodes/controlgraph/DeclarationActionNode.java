@@ -97,6 +97,23 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		}
 
 		if (astNode.getVariableDeclarator() instanceof AInitializerFmlActionVariableDeclarator) {
+
+			ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(
+					((AInitializerFmlActionVariableDeclarator) astNode.getVariableDeclarator()).getFmlActionExp(), getSemanticsAnalyzer());
+
+			if (assignableActionNode != null) {
+				System.out.println("On obtient " + assignableActionNode);
+				// System.exit(-1);
+				if (assignableActionNode.getModelObject() instanceof AssignableAction) {
+					returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
+					addToChildren(assignableActionNode);
+				}
+				else {
+					System.err.println("Unexpected " + assignableActionNode.getModelObject());
+					Thread.dumpStack();
+				}
+			}
+
 			logger.warning("DeclarationAction with EditionAction not implemented yet");
 		}
 
@@ -112,7 +129,7 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getVariableName()), getNameFragment());
 		when(() -> hasInitializer()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignOperatorFragment())
-				.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
+		.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on
 
@@ -160,16 +177,21 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		return false;
 	}
 
-	private RawSourceFragment getAssignmentFragment() {
-		if (hasInitializer()) {
-			return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getExpression());
-		}
-		return null;
-	}
+	/*	private RawSourceFragment getAssignmentFragment() {
+			if (hasInitializer()) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getExpression());
+			}
+			return null;
+		}*/
 
 	private RawSourceFragment getAssignOperatorFragment() {
 		if (hasInitializer() && getASTNode() != null) {
-			return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
+			if (getASTNode().getVariableDeclarator() instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
+			}
+			if (getASTNode().getVariableDeclarator() instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
+			}
 		}
 		return null;
 	}

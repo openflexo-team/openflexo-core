@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PBlockStatement;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PStatement;
 import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
 import org.openflexo.p2pp.RawSource;
@@ -96,6 +97,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	public static ControlGraphNode<?, ?> makeControlGraphNode(PExpression cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PFmlActionExp cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
@@ -538,13 +543,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	public void inAForEnhancedFmlActionStatement(AForEnhancedFmlActionStatement node) {
-		logger.warning("inAForEnhancedFmlActionStatement not implemented yet !!!");
 		super.inAForEnhancedFmlActionStatement(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new IterationActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
 	public void outAForEnhancedFmlActionStatement(AForEnhancedFmlActionStatement node) {
 		super.outAForEnhancedFmlActionStatement(node);
+		pop();
 	}
 
 	/*
