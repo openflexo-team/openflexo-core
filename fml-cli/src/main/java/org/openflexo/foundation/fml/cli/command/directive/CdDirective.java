@@ -46,7 +46,10 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -57,72 +60,78 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(CdDirective.CdDirectiveImpl.class)
 @DirectiveDeclaration(keyword = "cd", usage = "cd <directory>", description = "Change working directory", syntax = "cd <path>")
-public class CdDirective extends Directive {
+public interface CdDirective extends Directive<ACdDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdDirective.class.getPackage().getName());
+	public static abstract class CdDirectiveImpl extends DirectiveImpl<ACdDirective> implements CdDirective {
 
-	private String path;
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(CdDirective.class.getPackage().getName());
 
-	public CdDirective(ACdDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-		path = retrievePath(node.getPath());
-	}
+		private String path;
 
-	@Override
-	public String toString() {
-		return "cd " + path;
-	}
-
-	public File getNewDirectory() {
-		File newDirectory;
-		if (path.startsWith("/")) {
-			newDirectory = new File(path);
+		@Override
+		public void create(ACdDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
+			path = retrievePath(node.getPath());
 		}
-		else {
-			newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
-		}
-		try {
-			newDirectory = new File(newDirectory.getCanonicalPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return newDirectory;
-	}
 
-	@Override
-	public boolean isSyntaxicallyValid() {
-		return StringUtils.isNotEmpty(path);
-	}
-
-	@Override
-	public boolean isValidInThatContext() {
-		return getNewDirectory() != null && getNewDirectory().isDirectory() && getNewDirectory().exists();
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		if (getNewDirectory() == null) {
-			return "No directory";
+		@Override
+		public String toString() {
+			return "cd " + path;
 		}
-		else if (!getNewDirectory().exists()) {
-			return "Cannot find directory: " + getNewDirectory().getName();
-		}
-		else if (!getNewDirectory().isDirectory()) {
-			return getNewDirectory().getName() + " is not a directory";
-		}
-		return null;
-	}
 
-	@Override
-	public File execute() throws ExecutionException {
-		super.execute();
-		if (isValidInThatContext()) {
-			File newDirectory = getNewDirectory();
-			getCommandInterpreter().setWorkingDirectory(newDirectory);
+		public File getNewDirectory() {
+			File newDirectory;
+			if (path.startsWith("/")) {
+				newDirectory = new File(path);
+			}
+			else {
+				newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
+			}
+			try {
+				newDirectory = new File(newDirectory.getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return newDirectory;
 		}
-		throw new ExecutionException(invalidCommandReason());
+
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return StringUtils.isNotEmpty(path);
+		}
+
+		@Override
+		public boolean isValidInThatContext() {
+			return getNewDirectory() != null && getNewDirectory().isDirectory() && getNewDirectory().exists();
+		}
+
+		@Override
+		public String invalidCommandReason() {
+			if (getNewDirectory() == null) {
+				return "No directory";
+			}
+			else if (!getNewDirectory().exists()) {
+				return "Cannot find directory: " + getNewDirectory().getName();
+			}
+			else if (!getNewDirectory().isDirectory()) {
+				return getNewDirectory().getName() + " is not a directory";
+			}
+			return null;
+		}
+
+		@Override
+		public File execute() throws ExecutionException {
+			super.execute();
+			if (isValidInThatContext()) {
+				File newDirectory = getNewDirectory();
+				getCommandInterpreter().setWorkingDirectory(newDirectory);
+				return newDirectory;
+			}
+			throw new ExecutionException(invalidCommandReason());
+		}
 	}
 }

@@ -46,14 +46,14 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand.CommandTokenType;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.CommandTokenType;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
 import org.openflexo.foundation.fml.cli.command.DeclareCommands;
 import org.openflexo.foundation.fml.cli.command.DeclareDirective;
 import org.openflexo.foundation.fml.cli.command.DeclareDirectives;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -207,16 +207,16 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		}
 	}
 
-	private List<Class<? extends Directive>> availableDirectives = null;
+	private List<Class<? extends Directive<?>>> availableDirectives = null;
 
-	public List<Class<? extends Directive>> getAvailableDirectives() {
+	public List<Class<? extends Directive<?>>> getAvailableDirectives() {
 		if (availableDirectives == null) {
 			availableDirectives = new ArrayList<>();
 			if (Directive.class.isAnnotationPresent(DeclareDirectives.class)) {
 				DeclareDirectives allDirectives = Directive.class.getAnnotation(DeclareDirectives.class);
 				for (DeclareDirective declareDirective : allDirectives.value()) {
 					if (!availableDirectives.contains(declareDirective.value())) {
-						availableDirectives.add(declareDirective.value());
+						availableDirectives.add((Class) declareDirective.value());
 					}
 				}
 			}
@@ -224,16 +224,16 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		return availableDirectives;
 	}
 
-	private List<Class<? extends FMLCommand>> availableCommands = null;
+	private List<Class<? extends FMLCommand<?>>> availableCommands = null;
 
-	public List<Class<? extends FMLCommand>> getAvailableCommands() {
+	public List<Class<? extends FMLCommand<?>>> getAvailableCommands() {
 		if (availableCommands == null) {
 			availableCommands = new ArrayList<>();
 			if (FMLCommand.class.isAnnotationPresent(DeclareCommands.class)) {
 				DeclareCommands allCommands = FMLCommand.class.getAnnotation(DeclareCommands.class);
 				for (DeclareCommand declareCommand : allCommands.value()) {
 					if (!availableCommands.contains(declareCommand.value())) {
-						availableCommands.add(declareCommand.value());
+						availableCommands.add((Class) declareCommand.value());
 					}
 				}
 			}

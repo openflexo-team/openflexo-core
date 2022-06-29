@@ -42,10 +42,12 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.AExitDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents exit directive in FML command-line interpreter<br>
@@ -57,35 +59,35 @@ import org.openflexo.foundation.fml.parser.node.AExitDirective;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(ExitDirective.ExitDirectiveImpl.class)
 @DirectiveDeclaration(
 		keyword = "exit",
 		usage = "exit",
 		description = "Exit current focused object or quit if no focused object",
 		syntax = "exit")
-public class ExitDirective extends Directive {
+public interface ExitDirective extends Directive<AExitDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExitDirective.class.getPackage().getName());
+	public static abstract class ExitDirectiveImpl extends DirectiveImpl<AExitDirective> implements ExitDirective {
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(ExitDirective.class.getPackage().getName());
 
-	public ExitDirective(AExitDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-	}
-
-	@Override
-	public String toString() {
-		return "exit";
-	}
-
-	@Override
-	public FlexoObject execute() throws ExecutionException {
-		super.execute();
-		FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
-		if (focusedObject == null) {
-			getCommandInterpreter().stop();
+		@Override
+		public String toString() {
+			return "exit";
 		}
-		else {
-			getCommandInterpreter().exitFocusedObject();
+
+		@Override
+		public FlexoObject execute() throws ExecutionException {
+			super.execute();
+			FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
+			if (focusedObject == null) {
+				getCommandInterpreter().stop();
+			}
+			else {
+				getCommandInterpreter().exitFocusedObject();
+			}
+			return focusedObject;
 		}
-		return focusedObject;
 	}
 }

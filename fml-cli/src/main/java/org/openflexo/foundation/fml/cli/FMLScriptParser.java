@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
 import org.openflexo.p2pp.RawSource;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class provides the parsing service for FML scripts. This includes syntactic and semantics analyzer.<br>
@@ -79,9 +80,10 @@ public class FMLScriptParser {
 	 * @return
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
+	 * @throws ModelDefinitionException
 	 */
 	public FMLScript parse(InputStream inputStream, FMLModelFactory modelFactory, AbstractCommandInterpreter commandInterpreter)
-			throws ParseException, IOException {
+			throws ParseException, IOException, ModelDefinitionException {
 
 		// InputStream rawSourceInputStream = IOUtils.toBufferedInputStream(inputStream);
 		// inputStream.reset();
@@ -94,7 +96,7 @@ public class FMLScriptParser {
 	}
 
 	public static FMLScript parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
-			AbstractCommandInterpreter commandInterpreter) throws ParseException, IOException {
+			AbstractCommandInterpreter commandInterpreter) throws ParseException, IOException, ModelDefinitionException {
 		try {
 			// System.out.println("Parsing: " + anExpression);
 

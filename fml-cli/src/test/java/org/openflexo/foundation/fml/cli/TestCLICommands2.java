@@ -49,7 +49,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.test.OpenflexoTestCase;

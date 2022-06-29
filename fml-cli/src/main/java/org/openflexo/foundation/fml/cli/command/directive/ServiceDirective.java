@@ -46,9 +46,13 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.CommandTokenType;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.AServiceDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents #service directive in FML command-line interpreter
@@ -69,74 +73,80 @@ import org.openflexo.foundation.fml.parser.node.AServiceDirective;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(ServiceDirective.ServiceDirectiveImpl.class)
 @DirectiveDeclaration(
 		keyword = "service",
 		usage = "service <service> operation [options]",
 		description = "Execute operation of a given service, type service <service_name> usage to get help",
 		syntax = "service <service> <operation> <ta>")
-public class ServiceDirective<S extends FlexoService> extends Directive {
+public interface ServiceDirective<S extends FlexoService> extends Directive<AServiceDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ServiceDirective.class.getPackage().getName());
+	public static abstract class ServiceDirectiveImpl<S extends FlexoService> extends DirectiveImpl<AServiceDirective>
+			implements ServiceDirective<S> {
 
-	private S service;
-	private ServiceOperation<S> serviceOperation;
-	private final boolean isValid;
-	private String invalidCommandReason = null;
-	private Object argumentValue = null;
-	private Map<String, Object> optionValues = new HashMap<>();
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(ServiceDirective.class.getPackage().getName());
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ServiceDirective(AServiceDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+		private S service;
+		private ServiceOperation<S> serviceOperation;
+		private boolean isValid;
+		private String invalidCommandReason = null;
+		private Object argumentValue = null;
+		private Map<String, Object> optionValues = new HashMap<>();
 
-		service = getCommandInterpreter().getServiceManager().getService(getText(node.getServiceName()));
+		@SuppressWarnings({ "unchecked" })
+		@Override
+		public void create(AServiceDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 
-		if (service != null) {
-			for (ServiceOperation<?> action : service.getAvailableServiceOperations()) {
-				if (action.getOperationName().equals(getText(node.getAction()))) {
-					serviceOperation = (ServiceOperation<S>) action;
-					break;
+			service = getCommandInterpreter().getServiceManager().getService(getText(node.getServiceName()));
+
+			if (service != null) {
+				for (ServiceOperation<?> action : service.getAvailableServiceOperations()) {
+					if (action.getOperationName().equals(getText(node.getAction()))) {
+						serviceOperation = (ServiceOperation<S>) action;
+						break;
+					}
 				}
-			}
-			if (serviceOperation == null) {
-				isValid = false;
-				invalidCommandReason = "Operation " + getText(node.getAction()) + " not found for service " + service.getServiceName();
-			}
-			else {
-				// argument
-				if (serviceOperation.getArgument() != null) {
-					// An argument is required
-					if (node.getArgument() != null) {
-						String argumentType = serviceOperation.getArgument();
-						CommandTokenType tokenType = CommandTokenType.getType(argumentType);
-						argumentValue = evaluateArgument(node.getArgument(), tokenType);
-						if (argumentValue != null) {
-							isValid = true;
+				if (serviceOperation == null) {
+					isValid = false;
+					invalidCommandReason = "Operation " + getText(node.getAction()) + " not found for service " + service.getServiceName();
+				}
+				else {
+					// argument
+					if (serviceOperation.getArgument() != null) {
+						// An argument is required
+						if (node.getArgument() != null) {
+							String argumentType = serviceOperation.getArgument();
+							CommandTokenType tokenType = CommandTokenType.getType(argumentType);
+							argumentValue = evaluateArgument(node.getArgument(), tokenType);
+							if (argumentValue != null) {
+								isValid = true;
+							}
+							else {
+								isValid = false;
+								invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: null argument";
+							}
 						}
 						else {
 							isValid = false;
-							invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: null argument";
+							invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: missing argument";
 						}
 					}
 					else {
-						isValid = false;
-						invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: missing argument";
+						if (node.getArgument() != null) {
+							isValid = false;
+							invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: unexpected argument";
+						}
+						else {
+							isValid = true;
+						}
 					}
-				}
-				else {
-					if (node.getArgument() != null) {
-						isValid = false;
-						invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: unexpected argument";
-					}
-					else {
-						isValid = true;
-					}
-				}
 
-				// options
-				// TODO
-				/*if (serviceOperation.getOptions() != null) {
+					// options
+					// TODO
+					/*if (serviceOperation.getOptions() != null) {
 					// if (serviceOperation.getOptions().size() != node.getOptions().size()) {
 					if (serviceOperation.getOptions().size() != node.getOptions().size()) {
 						invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: wrong arguments number";
@@ -151,46 +161,47 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 						index++;
 						// }
 					}
+					}*/
+				}
+
+				/*getOutStream().println("Service: " + service);
+				getOutStream().println("Action: " + serviceOperation);
+				for (PDirectiveOption pDirectiveOption : node.getOptions()) {
+				getOutStream().println(" > " + pDirectiveOption);
 				}*/
+
+			}
+			else {
+				isValid = false;
+				invalidCommandReason = "Service " + getText(node.getServiceName()) + " not found";
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "service " + service.getServiceName() + " " + serviceOperation.getStringRepresentation(argumentValue);
+		}
+
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return service != null && serviceOperation != null && isValid;
+		}
+
+		@Override
+		public String invalidCommandReason() {
+			return invalidCommandReason;
+		}
+
+		@Override
+		public S execute() throws ExecutionException {
+			super.execute();
+
+			if (isSyntaxicallyValid()) {
+				serviceOperation.execute(service, getOutStream(), getErrStream(), argumentValue, optionValues);
+				return service;
 			}
 
-			/*getOutStream().println("Service: " + service);
-			getOutStream().println("Action: " + serviceOperation);
-			for (PDirectiveOption pDirectiveOption : node.getOptions()) {
-				getOutStream().println(" > " + pDirectiveOption);
-			}*/
-
+			throw new ExecutionException(invalidCommandReason());
 		}
-		else {
-			isValid = false;
-			invalidCommandReason = "Service " + getText(node.getServiceName()) + " not found";
-		}
-	}
-
-	@Override
-	public String toString() {
-		return "service " + service.getServiceName() + " " + serviceOperation.getStringRepresentation(argumentValue);
-	}
-
-	@Override
-	public boolean isSyntaxicallyValid() {
-		return service != null && serviceOperation != null && isValid;
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		return invalidCommandReason;
-	}
-
-	@Override
-	public S execute() throws ExecutionException {
-		super.execute();
-
-		if (isSyntaxicallyValid()) {
-			serviceOperation.execute(service, getOutStream(), getErrStream(), argumentValue, optionValues);
-			return service;
-		}
-
-		throw new ExecutionException(invalidCommandReason());
 	}
 }

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.pamela.annotations.Implementation;
@@ -55,7 +56,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @Imports({ @Import(DefaultFMLControlGraphOwner.class) })
-public abstract interface FMLControlGraphOwner extends FlexoObject {
+public abstract interface FMLControlGraphOwner extends FlexoObject, Bindable {
 
 	/**
 	 * Return control graph identified by supplied owner's context

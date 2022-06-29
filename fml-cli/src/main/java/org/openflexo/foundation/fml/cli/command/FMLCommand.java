@@ -41,12 +41,13 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an FML command in command-line interpreter
@@ -54,30 +55,31 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
+@ModelEntity(isAbstract = true)
+@ImplementationClass(FMLCommand.FMLCommandImpl.class)
 @DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class),
 		@DeclareCommand(FMLAssertExpression.class) })
-public abstract class FMLCommand extends AbstractCommand {
+public interface FMLCommand<N extends Node> extends AbstractCommand<N> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
+	public static abstract class FMLCommandImpl<N extends Node> extends AbstractCommandImpl<N> {
 
-	public FMLCommand(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
 
-	@Override
-	public boolean isSyntaxicallyValid() {
-		return true;
-	}
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return true;
+		}
 
-	@Override
-	public boolean isValidInThatContext() {
-		return isSyntaxicallyValid();
-	}
+		@Override
+		public boolean isValidInThatContext() {
+			return isSyntaxicallyValid();
+		}
 
-	@Override
-	public String invalidCommandReason() {
-		return null;
+		@Override
+		public String invalidCommandReason() {
+			return null;
+		}
 	}
 
 }

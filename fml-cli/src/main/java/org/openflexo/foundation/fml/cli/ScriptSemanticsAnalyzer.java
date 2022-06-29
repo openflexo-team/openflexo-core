@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.parser.FragmentManager;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class implements the main semantics analyzer for a parsed FML compilation unit.<br>
@@ -70,13 +71,14 @@ public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
 	private FMLScript script;
 
-	public ScriptSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree, RawSource rawSource) {
+	public ScriptSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree, RawSource rawSource)
+			throws ModelDefinitionException {
 		super(commandInterpreter, tree);
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);
 		bindingFactory = new FMLBindingFactory(commandInterpreter.getModelFactory());
 		typingSpace = new FMLScriptTypingSpace(this);
-		script = new FMLScript(tree, this);
+		script = scriptModelFactory.newFMLScript(tree, this);
 	}
 
 	@Override

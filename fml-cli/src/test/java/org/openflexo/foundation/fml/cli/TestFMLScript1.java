@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;

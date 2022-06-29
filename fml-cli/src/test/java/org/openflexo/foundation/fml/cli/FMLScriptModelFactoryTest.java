@@ -1,9 +1,8 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2011-2012, AgileBirds
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Connie-core, a component of the software infrastructure 
+ * This file is part of Gina-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -37,43 +36,41 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli.command.directive;
+package org.openflexo.foundation.fml.cli;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.command.Directive;
-import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.parser.node.AHistoryDirective;
-import org.openflexo.pamela.annotations.ImplementationClass;
-import org.openflexo.pamela.annotations.ModelEntity;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openflexo.foundation.fml.cli.command.FMLScriptModelFactory;
+import org.openflexo.logging.FlexoLogger;
+import org.openflexo.pamela.exceptions.MissingImplementationException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.test.OrderedRunner;
+import org.openflexo.test.TestOrder;
 
 /**
- * Represents #history directive in FML command-line interpreter
- * 
- * Usage: history
- * 
- * @author sylvain
+ * Test instanciation of FMLScriptModelFactory<br>
  * 
  */
-@ModelEntity
-@ImplementationClass(HistoryDirective.HistoryDirectiveImpl.class)
-@DirectiveDeclaration(keyword = "history", usage = "history", description = "Display commands history", syntax = "history")
-public interface HistoryDirective extends Directive<AHistoryDirective> {
+@RunWith(OrderedRunner.class)
+public class FMLScriptModelFactoryTest {
 
-	public static abstract class HistoryDirectiveImpl extends DirectiveImpl<AHistoryDirective> implements HistoryDirective {
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = FlexoLogger.getLogger(FMLScriptModelFactoryTest.class.getPackage().getName());
 
-		@SuppressWarnings("unused")
-		private static final Logger logger = Logger.getLogger(HistoryDirective.class.getPackage().getName());
+	private static FMLScriptModelFactory factory;
 
-		@Override
-		public String toString() {
-			return "history";
-		}
-
-		@Override
-		public Object execute() {
-			getCommandInterpreter().displayHistory();
-			return null;
-		}
+	@Test
+	@TestOrder(1)
+	public void instanciateFMLScriptModelFactory() throws ModelDefinitionException {
+		factory = new FMLScriptModelFactory();
 	}
+
+	@Test
+	@TestOrder(2)
+	public void checkMethodImplementations() throws ModelDefinitionException, MissingImplementationException {
+		factory.checkMethodImplementations();
+	}
+
 }

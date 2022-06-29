@@ -48,12 +48,15 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.ALoadDirective;
 import org.openflexo.foundation.fml.parser.node.APathLoadDirective;
 import org.openflexo.foundation.fml.parser.node.AResourceLoadDirective;
 import org.openflexo.foundation.fml.parser.node.PLoadDirective;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -64,96 +67,101 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(LoadResource.LoadResourceImpl.class)
 @DirectiveDeclaration(
 		keyword = "load",
 		usage = "[declaration = ] load <file> | -r <resource>",
 		description = "Load resource denoted by supplied resource uri",
 		syntax = "load <path> | -r <resource>")
-public class LoadResource extends AssignableDirective {
+public interface LoadResource extends AssignableDirective<ALoadDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
+	public static abstract class LoadResourceImpl extends AssignableDirectiveImpl<ALoadDirective> implements LoadResource {
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
 
-	private FlexoResource<?> resource;
-	private String resourcePath;
+		private FlexoResource<?> resource;
+		private String resourcePath;
 
-	public LoadResource(ALoadDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, node.getCommandAssign(), commandSemanticsAnalyzer);
+		@Override
+		public void create(ALoadDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			create(node, node.getCommandAssign(), commandSemanticsAnalyzer);
 
-		PLoadDirective loadDirective = node.getLoadDirective();
+			PLoadDirective loadDirective = node.getLoadDirective();
 
-		if (loadDirective instanceof AResourceLoadDirective) {
-			resource = retrieveResource(((AResourceLoadDirective) loadDirective).getReferenceByUri());
-		}
-		else if (loadDirective instanceof APathLoadDirective) {
-			resourcePath = retrievePath(((APathLoadDirective) loadDirective).getPath());
-		}
-	}
-
-	@Override
-	public boolean isSyntaxicallyValid() {
-		return super.isSyntaxicallyValid();
-	}
-
-	@Override
-	public Type getAssignableType() {
-		if (getResultingResource() != null) {
-			Class<?> rdClass = getResultingResource().getResourceDataClass();
-			if (rdClass.equals(FMLCompilationUnit.class)) {
-				return VirtualModel.class;
+			if (loadDirective instanceof AResourceLoadDirective) {
+				resource = retrieveResource(((AResourceLoadDirective) loadDirective).getReferenceByUri());
 			}
-			return rdClass;
-		}
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		if (StringUtils.isNotEmpty(resourcePath)) {
-			return getAssignToString() + "load " + resourcePath;
-		}
-		else if (resource != null) {
-			return getAssignToString() + "load -r [\"" + resource.getURI() + "\"]";
-		}
-		return getAssignToString() + "load";
-	}
-
-	public FlexoResource<?> getResultingResource() {
-		if (StringUtils.isNotEmpty(resourcePath)) {
-			return retrieveResourceFromPath(resourcePath);
-		}
-		else if (resource != null) {
-			return resource;
-		}
-		return null;
-	}
-
-	@Override
-	public Object performExecute() throws ExecutionException {
-
-		logger.info("Load resource " + getResultingResource() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
-		if (getResultingResource() == null) {
-			throw new ExecutionException("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
+			else if (loadDirective instanceof APathLoadDirective) {
+				resourcePath = retrievePath(((APathLoadDirective) loadDirective).getPath());
+			}
 		}
 
-		if (getResultingResource().isLoaded()) {
-			getOutStream().println("Resource " + resource.getURI() + " already loaded");
-			return getResultingResource().getLoadedResourceData();
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return super.isSyntaxicallyValid();
 		}
-		else {
-			try {
-				Object returned = getResultingResource().getResourceData();
-				getOutStream().println("Loaded " + getResultingResource().getURI());
-				if (returned instanceof FMLCompilationUnit) {
-					return ((FMLCompilationUnit) returned).getVirtualModel();
+
+		@Override
+		public Type getAssignableType() {
+			if (getResultingResource() != null) {
+				Class<?> rdClass = getResultingResource().getResourceDataClass();
+				if (rdClass.equals(FMLCompilationUnit.class)) {
+					return VirtualModel.class;
 				}
-				return returned;
-			} catch (FileNotFoundException e) {
-				throw new ExecutionException("Cannot find resource", e);
-			} catch (ResourceLoadingCancelledException e) {
-				throw new ExecutionException(e);
-			} catch (FlexoException e) {
-				throw new ExecutionException("Cannot load resource", e);
+				return rdClass;
+			}
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			if (StringUtils.isNotEmpty(resourcePath)) {
+				return getAssignToString() + "load " + resourcePath;
+			}
+			else if (resource != null) {
+				return getAssignToString() + "load -r [\"" + resource.getURI() + "\"]";
+			}
+			return getAssignToString() + "load";
+		}
+
+		public FlexoResource<?> getResultingResource() {
+			if (StringUtils.isNotEmpty(resourcePath)) {
+				return retrieveResourceFromPath(resourcePath);
+			}
+			else if (resource != null) {
+				return resource;
+			}
+			return null;
+		}
+
+		@Override
+		public Object performExecute() throws ExecutionException {
+
+			logger.info("Load resource " + getResultingResource() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
+			if (getResultingResource() == null) {
+				throw new ExecutionException("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
+			}
+
+			if (getResultingResource().isLoaded()) {
+				getOutStream().println("Resource " + resource.getURI() + " already loaded");
+				return getResultingResource().getLoadedResourceData();
+			}
+			else {
+				try {
+					Object returned = getResultingResource().getResourceData();
+					getOutStream().println("Loaded " + getResultingResource().getURI());
+					if (returned instanceof FMLCompilationUnit) {
+						return ((FMLCompilationUnit) returned).getVirtualModel();
+					}
+					return returned;
+				} catch (FileNotFoundException e) {
+					throw new ExecutionException("Cannot find resource", e);
+				} catch (ResourceLoadingCancelledException e) {
+					throw new ExecutionException(e);
+				} catch (FlexoException e) {
+					throw new ExecutionException("Cannot load resource", e);
+				}
 			}
 		}
 	}

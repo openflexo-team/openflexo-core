@@ -43,10 +43,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.parser.node.AFmlActionFmlCommand;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.validation.ValidationReport;
 
 /**
@@ -57,74 +60,97 @@ import org.openflexo.pamela.validation.ValidationReport;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(FMLActionCommand.FMLActionCommandImpl.class)
 @FMLCommandDeclaration(keyword = "", usage = "<action>", description = "Execute FML action", syntax = "<action>")
-public class FMLActionCommand extends FMLCommand {
+public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 
-	private static final Logger logger = Logger.getLogger(FMLActionCommand.class.getPackage().getName());
+	public static abstract class FMLActionCommandImpl extends FMLCommandImpl<AFmlActionFmlCommand> implements FMLActionCommand {
 
-	private EditionAction editionAction;
+		private static final Logger logger = Logger.getLogger(FMLActionCommand.class.getPackage().getName());
 
-	public FMLActionCommand(AFmlActionFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
-		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
+		private EditionAction editionAction;
 
-		editionAction = retrieveEditionAction(node.getFmlActionExp());
-		System.out.println("Prout: " + editionAction);
-		System.out.println("Owner: " + editionAction.getOwner());
+		@Override
+		public void create(AFmlActionFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 
-	}
+			editionAction = retrieveEditionAction(node.getFmlActionExp());
+			editionAction.setOwner(this);
+			System.out.println("Prout: " + editionAction);
+			System.out.println("Owner: " + editionAction.getOwner());
 
-	@Override
-	public String toString() {
-		return editionAction.getFMLPrettyPrint();
-	}
-
-	@Override
-	public boolean isSyntaxicallyValid() {
-
-		FMLValidationModel validationModel = getCommandInterpreter().getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
-
-		ValidationReport validate;
-		try {
-			validate = validationModel.validate(editionAction);
-			System.out.println("Hop: " + validate.reportAsString());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 
-		return true;
-	}
+		@Override
+		public String toString() {
+			return editionAction.getFMLPrettyPrint();
+		}
 
-	@Override
-	public String invalidCommandReason() {
-		/*	if (expression == null) {
-				return "null expression";
+		@Override
+		public boolean isSyntaxicallyValid() {
+
+			FMLValidationModel validationModel = getCommandInterpreter().getServiceManager().getVirtualModelLibrary()
+					.getFMLValidationModel();
+
+			ValidationReport validate;
+			try {
+				validate = validationModel.validate(editionAction);
+				System.out.println("Hop: " + validate.reportAsString());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			if (!expression.isValid()) {
-				return expression.invalidBindingReason();
-			}*/
-		return null;
-	}
 
-	@Override
-	public Object execute() throws ExecutionException {
+			// des choses a voir ici
 
-		super.execute();
+			/*System.out.println("WAS: " + editionAction.getBindingModel());
+			
+			editionAction.setOwner(this);
+			
+			System.out.println("NOW: " + editionAction.getBindingModel());
+			
+			try {
+				validate = validationModel.validate(editionAction);
+				System.out.println("Hop2: " + validate.reportAsString());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			System.exit(-1);*/
 
-		/*		if (expression.isValid()) {
-					try {
-						Object value = expression.getBindingValue(getCommandInterpreter());
-						getOutStream().println("Executed " + expression + " <- " + value);
-						return value;
-					} catch (Exception e) {
-						throw new ExecutionException("Cannot execute " + expression, e);
-					}
+			return true;
+		}
+
+		@Override
+		public String invalidCommandReason() {
+			/*	if (expression == null) {
+					return "null expression";
 				}
-				else {
-					throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+				if (!expression.isValid()) {
+					return expression.invalidBindingReason();
 				}*/
+			return null;
+		}
 
-		return null;
+		@Override
+		public Object execute() throws ExecutionException {
+
+			super.execute();
+
+			/*		if (expression.isValid()) {
+						try {
+							Object value = expression.getBindingValue(getCommandInterpreter());
+							getOutStream().println("Executed " + expression + " <- " + value);
+							return value;
+						} catch (Exception e) {
+							throw new ExecutionException("Cannot execute " + expression, e);
+						}
+					}
+					else {
+						throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+					}*/
+
+			return null;
+		}
 	}
 }

@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.parser.FragmentManager;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class implements the main semantics analyzer for a simple parsed FML command ({@link AbstractCommand})<br>
@@ -63,7 +64,7 @@ public class CommandSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 	private final AbstractFMLTypingSpace typingSpace;
 	private FMLBindingFactory bindingFactory;
 
-	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree) {
+	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree) throws ModelDefinitionException {
 		super(commandInterpreter, tree);
 		bindingFactory = new FMLBindingFactory(commandInterpreter.getModelFactory());
 		typingSpace = new FMLCommandTypingSpace(this);

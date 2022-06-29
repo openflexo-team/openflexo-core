@@ -53,7 +53,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoService.Status;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;

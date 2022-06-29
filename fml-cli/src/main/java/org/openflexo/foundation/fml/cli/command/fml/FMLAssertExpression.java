@@ -44,9 +44,12 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an expression in FML command-line interpreter
@@ -56,72 +59,78 @@ import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(FMLAssertExpression.FMLAssertExpressionImpl.class)
 @FMLCommandDeclaration(
 		keyword = "",
 		usage = "assert <expression>",
 		description = "Execute expression and assert that the result is true",
 		syntax = "assert <expression>")
-public class FMLAssertExpression extends FMLCommand {
+public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 
-	private static final Logger logger = Logger.getLogger(FMLAssertExpression.class.getPackage().getName());
+	public static abstract class FMLAssertExpressionImpl extends FMLCommandImpl<AAssertFmlCommand> implements FMLAssertExpression {
+		private static final Logger logger = Logger.getLogger(FMLAssertExpression.class.getPackage().getName());
 
-	private DataBinding<?> expression;
+		private DataBinding<?> expression;
 
-	public FMLAssertExpression(AAssertFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
-		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
+		@Override
+		public void create(AAssertFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 
-		System.out.println("----------------> On traite ASSERT " + node.getExpression());
+			// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
+			// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 
-		expression = retrieveExpression(node.getExpression());
+			System.out.println("----------------> On traite ASSERT " + node.getExpression());
 
-	}
+			expression = retrieveExpression(node.getExpression());
 
-	@Override
-	public String toString() {
-		return "assert " + expression.toString();
-	}
-
-	@Override
-	public boolean isSyntaxicallyValid() {
-		return expression != null && expression.isValid() && TypeUtils.isBoolean(expression.getAnalyzedType());
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		if (expression == null) {
-			return "null expression";
 		}
-		if (!expression.isValid()) {
-			return expression.invalidBindingReason();
+
+		@Override
+		public String toString() {
+			return "assert " + expression.toString();
 		}
-		if (!TypeUtils.isBoolean(expression.getAnalyzedType())) {
-			return "expression cannot be evaluated as a boolean";
+
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return expression != null && expression.isValid() && TypeUtils.isBoolean(expression.getAnalyzedType());
 		}
-		return null;
-	}
 
-	@Override
-	public Object execute() throws ExecutionException {
-
-		super.execute();
-
-		if (isSyntaxicallyValid()) {
-			try {
-				Boolean value = (Boolean) expression.getBindingValue(getCommandInterpreter());
-				getOutStream().println("Executed " + expression + " <- " + value);
-				if (value) {
-					return true;
-				}
-				throw new ExecutionException("Assert failed: " + expression);
-			} catch (Exception e) {
-				throw new ExecutionException("Cannot execute " + expression, e);
+		@Override
+		public String invalidCommandReason() {
+			if (expression == null) {
+				return "null expression";
 			}
-		}
-		else {
-			throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+			if (!expression.isValid()) {
+				return expression.invalidBindingReason();
+			}
+			if (!TypeUtils.isBoolean(expression.getAnalyzedType())) {
+				return "expression cannot be evaluated as a boolean";
+			}
+			return null;
 		}
 
+		@Override
+		public Object execute() throws ExecutionException {
+
+			super.execute();
+
+			if (isSyntaxicallyValid()) {
+				try {
+					Boolean value = (Boolean) expression.getBindingValue(getCommandInterpreter());
+					getOutStream().println("Executed " + expression + " <- " + value);
+					if (value) {
+						return true;
+					}
+					throw new ExecutionException("Assert failed: " + expression);
+				} catch (Exception e) {
+					throw new ExecutionException("Cannot execute " + expression, e);
+				}
+			}
+			else {
+				throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+			}
+
+		}
 	}
 }

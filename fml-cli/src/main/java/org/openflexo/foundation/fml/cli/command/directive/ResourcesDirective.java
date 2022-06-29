@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.ARcResourcesDirective;
 import org.openflexo.foundation.fml.parser.node.AResourcesDirective;
 import org.openflexo.foundation.fml.parser.node.ATaRcResourcesDirective;
@@ -57,6 +58,8 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterGlobalRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -78,138 +81,151 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(ResourcesDirective.ResourcesDirectiveImpl.class)
 @DirectiveDeclaration(
 		keyword = "resources",
 		usage = "resources <ta>|* [<rc>]",
 		description = "Display list of resources for a particular technology adapter and/or resource center",
 		syntax = "resources <ta> <rc>")
-public class ResourcesDirective extends Directive {
+public interface ResourcesDirective extends Directive<AResourcesDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ResourcesDirective.class.getPackage().getName());
+	public TechnologyAdapter<?> getTechnologyAdapter();
 
-	private TechnologyAdapter<?> technologyAdapter;
-	private FlexoResourceCenter<?> resourceCenter;
+	public FlexoResourceCenter<?> getResourceCenter();
 
-	public ResourcesDirective(AResourcesDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+	public static abstract class ResourcesDirectiveImpl extends DirectiveImpl<AResourcesDirective> implements ResourcesDirective {
 
-		PResourcesDirective resourcesDirective = node.getResourcesDirective();
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(ResourcesDirective.class.getPackage().getName());
 
-		if (resourcesDirective instanceof ATaRcResourcesDirective) {
-			technologyAdapter = getTechnologyAdapter(getText(((ATaRcResourcesDirective) resourcesDirective).getTechnologyAdapter()));
-			resourceCenter = retrieveResourceCenter(((ATaRcResourcesDirective) resourcesDirective).getResourceCenter());
-		}
-		else if (resourcesDirective instanceof ATaResourcesDirective) {
-			technologyAdapter = getTechnologyAdapter(getText(((ATaResourcesDirective) resourcesDirective).getTechnologyAdapter()));
-		}
-		else if (resourcesDirective instanceof ARcResourcesDirective) {
-			resourceCenter = retrieveResourceCenter(((ARcResourcesDirective) resourcesDirective).getResourceCenter());
-		}
-	}
+		private TechnologyAdapter<?> technologyAdapter;
+		private FlexoResourceCenter<?> resourceCenter;
 
-	@Override
-	public String toString() {
-		if (technologyAdapter != null) {
-			if (resourceCenter != null) {
-				return "resources " + getTechnologyAdapter().getIdentifier() + " [\"" + resourceCenter.getDefaultBaseURI() + "\"]";
+		@Override
+		public void create(AResourcesDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
+
+			PResourcesDirective resourcesDirective = node.getResourcesDirective();
+
+			if (resourcesDirective instanceof ATaRcResourcesDirective) {
+				technologyAdapter = getTechnologyAdapter(getText(((ATaRcResourcesDirective) resourcesDirective).getTechnologyAdapter()));
+				resourceCenter = retrieveResourceCenter(((ATaRcResourcesDirective) resourcesDirective).getResourceCenter());
 			}
-			else {
-				return "resources " + getTechnologyAdapter().getIdentifier();
+			else if (resourcesDirective instanceof ATaResourcesDirective) {
+				technologyAdapter = getTechnologyAdapter(getText(((ATaResourcesDirective) resourcesDirective).getTechnologyAdapter()));
 			}
-		}
-		else {
-			if (resourceCenter != null) {
-				return "resources * [\"" + resourceCenter.getDefaultBaseURI() + "\"]";
-			}
-			else {
-				return "resources";
+			else if (resourcesDirective instanceof ARcResourcesDirective) {
+				resourceCenter = retrieveResourceCenter(((ARcResourcesDirective) resourcesDirective).getResourceCenter());
 			}
 		}
 
-	}
-
-	public TechnologyAdapter<?> getTechnologyAdapter() {
-		return technologyAdapter;
-	}
-
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return resourceCenter;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public Object execute() throws ExecutionException {
-
-		super.execute();
-
-		Collection<? extends FlexoResource<?>> resourcesToDisplay = null;
-
-		if (getTechnologyAdapter() != null) {
-			if (getResourceCenter() != null) {
-				TechnologyAdapterGlobalRepository<?, ?> repository = getTechnologyAdapter().getGlobalRepository(getResourceCenter());
-				resourcesToDisplay = repository.getAllResources();
-			}
-			else {
-				resourcesToDisplay = new ArrayList<>();
-				List<TechnologyAdapterGlobalRepository<?, ?>> globalRepositories = getTechnologyAdapter().getGlobalRepositories();
-				for (TechnologyAdapterGlobalRepository<?, ?> repository : globalRepositories) {
-					resourcesToDisplay.addAll(repository.getAllResources());
+		@Override
+		public String toString() {
+			if (technologyAdapter != null) {
+				if (resourceCenter != null) {
+					return "resources " + getTechnologyAdapter().getIdentifier() + " [\"" + resourceCenter.getDefaultBaseURI() + "\"]";
+				}
+				else {
+					return "resources " + getTechnologyAdapter().getIdentifier();
 				}
 			}
-		}
-		else {
-			if (getResourceCenter() != null) {
-				resourcesToDisplay = getResourceCenter().getAllResources();
-			}
 			else {
-				resourcesToDisplay = new ArrayList<>();
-				for (FlexoResourceCenter rc : getCommandInterpreter().getServiceManager().getResourceCenterService().getResourceCenters()) {
-					resourcesToDisplay.addAll(rc.getAllResources());
+				if (resourceCenter != null) {
+					return "resources * [\"" + resourceCenter.getDefaultBaseURI() + "\"]";
+				}
+				else {
+					return "resources";
 				}
 			}
+
 		}
 
-		int nameMaxLength = 0;
-		int typeMaxLength = 0;
-		int taMaxLength = 0;
-
-		for (FlexoResource<?> resource : resourcesToDisplay) {
-			String name = resource.getDisplayName();
-			String type = resource.getResourceDataClass().getSimpleName();
-			if (type.equals("FMLRTVirtualModelInstance")) {
-				type = "VirtualModelInstance";
-			}
-			String ta = "-";
-			if (resource instanceof TechnologyAdapterResource) {
-				ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
-			}
-			if (name.length() > nameMaxLength)
-				nameMaxLength = name.length();
-			if (type.length() > typeMaxLength)
-				typeMaxLength = type.length();
-			if (ta.length() > taMaxLength)
-				taMaxLength = ta.length();
+		@Override
+		public TechnologyAdapter<?> getTechnologyAdapter() {
+			return technologyAdapter;
 		}
 
-		for (FlexoResource<?> resource : resourcesToDisplay) {
-			String name = resource.getDisplayName();
-			String type = resource.getResourceDataClass().getSimpleName();
-			if (type.equals("FMLRTVirtualModelInstance")) {
-				type = "VirtualModelInstance";
-			}
-			String ta = "-";
-			String uri = "[\"" + resource.getURI() + "\"]";
-			if (resource instanceof TechnologyAdapterResource) {
-				ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
-			}
-			getOutStream().println(name + StringUtils.buildWhiteSpaceIndentation(nameMaxLength - name.length() + 1) + type
-					+ StringUtils.buildWhiteSpaceIndentation(typeMaxLength - type.length() + 1) + ta
-					+ StringUtils.buildWhiteSpaceIndentation(taMaxLength - ta.length() + 1)
-					+ (resource.isLoaded() ? "[LOADED]   " : "[UNLOADED] ") + uri);
+		@Override
+		public FlexoResourceCenter<?> getResourceCenter() {
+			return resourceCenter;
 		}
 
-		return null;
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		@Override
+		public Object execute() throws ExecutionException {
 
+			super.execute();
+
+			Collection<? extends FlexoResource<?>> resourcesToDisplay = null;
+
+			if (getTechnologyAdapter() != null) {
+				if (getResourceCenter() != null) {
+					TechnologyAdapterGlobalRepository<?, ?> repository = getTechnologyAdapter().getGlobalRepository(getResourceCenter());
+					resourcesToDisplay = repository.getAllResources();
+				}
+				else {
+					resourcesToDisplay = new ArrayList<>();
+					List<TechnologyAdapterGlobalRepository<?, ?>> globalRepositories = getTechnologyAdapter().getGlobalRepositories();
+					for (TechnologyAdapterGlobalRepository<?, ?> repository : globalRepositories) {
+						resourcesToDisplay.addAll(repository.getAllResources());
+					}
+				}
+			}
+			else {
+				if (getResourceCenter() != null) {
+					resourcesToDisplay = getResourceCenter().getAllResources();
+				}
+				else {
+					resourcesToDisplay = new ArrayList<>();
+					for (FlexoResourceCenter rc : getCommandInterpreter().getServiceManager().getResourceCenterService()
+							.getResourceCenters()) {
+						resourcesToDisplay.addAll(rc.getAllResources());
+					}
+				}
+			}
+
+			int nameMaxLength = 0;
+			int typeMaxLength = 0;
+			int taMaxLength = 0;
+
+			for (FlexoResource<?> resource : resourcesToDisplay) {
+				String name = resource.getDisplayName();
+				String type = resource.getResourceDataClass().getSimpleName();
+				if (type.equals("FMLRTVirtualModelInstance")) {
+					type = "VirtualModelInstance";
+				}
+				String ta = "-";
+				if (resource instanceof TechnologyAdapterResource) {
+					ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
+				}
+				if (name.length() > nameMaxLength)
+					nameMaxLength = name.length();
+				if (type.length() > typeMaxLength)
+					typeMaxLength = type.length();
+				if (ta.length() > taMaxLength)
+					taMaxLength = ta.length();
+			}
+
+			for (FlexoResource<?> resource : resourcesToDisplay) {
+				String name = resource.getDisplayName();
+				String type = resource.getResourceDataClass().getSimpleName();
+				if (type.equals("FMLRTVirtualModelInstance")) {
+					type = "VirtualModelInstance";
+				}
+				String ta = "-";
+				String uri = "[\"" + resource.getURI() + "\"]";
+				if (resource instanceof TechnologyAdapterResource) {
+					ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
+				}
+				getOutStream().println(name + StringUtils.buildWhiteSpaceIndentation(nameMaxLength - name.length() + 1) + type
+						+ StringUtils.buildWhiteSpaceIndentation(typeMaxLength - type.length() + 1) + ta
+						+ StringUtils.buildWhiteSpaceIndentation(taMaxLength - ta.length() + 1)
+						+ (resource.isLoaded() ? "[LOADED]   " : "[UNLOADED] ") + uri);
+			}
+
+			return null;
+
+		}
 	}
 }

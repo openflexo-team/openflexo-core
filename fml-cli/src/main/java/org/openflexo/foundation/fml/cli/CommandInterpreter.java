@@ -35,7 +35,7 @@ import org.jboss.jreadline.util.ANSI;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 
 /**
