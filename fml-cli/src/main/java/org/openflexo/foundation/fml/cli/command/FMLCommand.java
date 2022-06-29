@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
@@ -61,10 +62,16 @@ import org.openflexo.pamela.annotations.ModelEntity;
 		@DeclareCommand(FMLAssertExpression.class) })
 public interface FMLCommand<N extends Node> extends AbstractCommand<N> {
 
+	public FMLValidationModel getValidationModel();
+
 	public static abstract class FMLCommandImpl<N extends Node> extends AbstractCommandImpl<N> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
+
+		public FMLValidationModel getValidationModel() {
+			return getCommandInterpreter().getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
+		}
 
 		@Override
 		public boolean isSyntaxicallyValid() {

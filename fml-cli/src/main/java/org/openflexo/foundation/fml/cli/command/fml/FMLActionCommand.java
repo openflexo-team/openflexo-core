@@ -39,9 +39,9 @@
 
 package org.openflexo.foundation.fml.cli.command.fml;
 
+import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
@@ -50,7 +50,9 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.parser.node.AFmlActionFmlCommand;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationReport;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents an EditionAction in FML command-line interpreter
@@ -71,15 +73,41 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 
 		private EditionAction editionAction;
 
+		private boolean isSyntaxicallyValid = true;
+		private String invalidCommandReason = "is valid";
+
 		@Override
 		public void create(AFmlActionFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 			performSuperInitializer(node, commandSemanticsAnalyzer);
 
 			editionAction = retrieveEditionAction(node.getFmlActionExp());
 			editionAction.setOwner(this);
-			System.out.println("Prout: " + editionAction);
-			System.out.println("Owner: " + editionAction.getOwner());
 
+		}
+
+		@Override
+		public void init() {
+			super.init();
+			checkValididity();
+		}
+
+		private void checkValididity() {
+			try {
+				ValidationReport validateReport = getValidationModel().validate(editionAction);
+				Iterator<ValidationError<?, ? super EditionAction>> iterator = validateReport.errorIssuesRegarding(editionAction)
+						.iterator();
+				if (iterator.hasNext()) {
+					ValidationError<?, ? super EditionAction> error = iterator.next();
+					String localizedMessage = getValidationModel().localizedIssueMessage(error);
+					String localizedMessageDetails = getValidationModel().localizedIssueDetailedInformations(error);
+					isSyntaxicallyValid = false;
+					invalidCommandReason = localizedMessage
+							+ (StringUtils.isNotEmpty(localizedMessageDetails) ? " : " + localizedMessageDetails : "");
+				}
+
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 		@Override
@@ -89,47 +117,12 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 
 		@Override
 		public boolean isSyntaxicallyValid() {
-
-			FMLValidationModel validationModel = getCommandInterpreter().getServiceManager().getVirtualModelLibrary()
-					.getFMLValidationModel();
-
-			ValidationReport validate;
-			try {
-				validate = validationModel.validate(editionAction);
-				System.out.println("Hop: " + validate.reportAsString());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			// des choses a voir ici
-
-			/*System.out.println("WAS: " + editionAction.getBindingModel());
-			
-			editionAction.setOwner(this);
-			
-			System.out.println("NOW: " + editionAction.getBindingModel());
-			
-			try {
-				validate = validationModel.validate(editionAction);
-				System.out.println("Hop2: " + validate.reportAsString());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			System.exit(-1);*/
-
-			return true;
+			return isSyntaxicallyValid;
 		}
 
 		@Override
 		public String invalidCommandReason() {
-			/*	if (expression == null) {
-					return "null expression";
-				}
-				if (!expression.isValid()) {
-					return expression.invalidBindingReason();
-				}*/
-			return null;
+			return invalidCommandReason;
 		}
 
 		@Override
