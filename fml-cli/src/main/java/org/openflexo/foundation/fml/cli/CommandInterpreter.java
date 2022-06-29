@@ -172,6 +172,10 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 
 	}
 
+	public DataInputStream getInStream() {
+		return inStream;
+	}
+
 	/**
 	 * Starts the interactive session. When running the user should see the "Ready." prompt. The session ends when the user types the
 	 * <code>byte</code> command.
@@ -203,7 +207,7 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 			}
 
 			try {
-				AbstractCommand command = executeCommand(line.getBuffer());
+				/*AbstractCommand<?> command =*/ executeCommand(line.getBuffer());
 				if (isStopping) {
 					break;
 				}
@@ -317,7 +321,7 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 
 	@Override
 	public void displayHistory() {
-		for (AbstractCommand command : getHistory()) {
+		for (AbstractCommand<?> command : getHistory()) {
 			getOutStream().println(command.toString());
 		}
 	}

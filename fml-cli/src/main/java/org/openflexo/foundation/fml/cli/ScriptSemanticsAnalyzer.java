@@ -58,6 +58,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
  */
 public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ScriptSemanticsAnalyzer.class.getPackage().getName());
 
 	private final AbstractFMLTypingSpace typingSpace;
@@ -118,7 +119,7 @@ public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 	}*/
 
 	@Override
-	protected void registerCommand(Node n, AbstractCommand command) {
+	protected void registerCommand(Node n, AbstractCommand<?> command) {
 		System.out.println("Register new command in script: " + command);
 		script.addToCommands(command);
 		/*if (command instanceof FMLAssignation) {

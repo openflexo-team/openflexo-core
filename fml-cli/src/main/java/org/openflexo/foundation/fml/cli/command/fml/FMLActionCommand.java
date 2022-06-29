@@ -42,12 +42,14 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.parser.node.AFmlActionFmlCommand;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.validation.ValidationError;
@@ -130,20 +132,16 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 
 			super.execute();
 
-			/*		if (expression.isValid()) {
-						try {
-							Object value = expression.getBindingValue(getCommandInterpreter());
-							getOutStream().println("Executed " + expression + " <- " + value);
-							return value;
-						} catch (Exception e) {
-							throw new ExecutionException("Cannot execute " + expression, e);
-						}
-					}
-					else {
-						throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
-					}*/
+			try {
+				return editionAction.execute(getCommandInterpreter());
+			} catch (ReturnException e) {
+				e.printStackTrace();
+				throw new ExecutionException(e);
+			} catch (FlexoException e) {
+				e.printStackTrace();
+				throw new ExecutionException(e);
+			}
 
-			return null;
 		}
 	}
 }

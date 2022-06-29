@@ -83,6 +83,7 @@ import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -707,15 +708,36 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 
-			/*@Override
-			public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-				getFlexoConceptInstance().debug(aLogString, fci, behaviour);
-			}
-			
 			@Override
-			public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-				getFlexoConceptInstance().log(aLogString, logLevel, fci, behaviour);
-			}*/
+			public void logOut(String message, LogLevel logLevel) {
+				getFlexoConceptInstance().logOut(message, logLevel);
+			}
+
+			@Override
+			public void logErr(String message, LogLevel logLevel) {
+				getFlexoConceptInstance().logErr(message, logLevel);
+			}
+
+		}
+
+		@Override
+		public void logOut(String message, LogLevel logLevel) {
+			if (getEditor() != null && getEditor().getFMLConsole() != null) {
+				getEditor().getFMLConsole().log(message, logLevel, this, null);
+			}
+			else {
+				System.out.println(message);
+			}
+		}
+
+		@Override
+		public void logErr(String message, LogLevel logLevel) {
+			if (getEditor() != null && getEditor().getFMLConsole() != null) {
+				getEditor().getFMLConsole().log(message, logLevel, this, null);
+			}
+			else {
+				System.err.println(message);
+			}
 		}
 
 		@Override

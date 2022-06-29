@@ -104,9 +104,10 @@ public interface AssignableDirective<N extends Node> extends Directive<N> {
 						localDeclarationVariable = new BindingVariable(getAssignationVariable(), getAssignableType());
 						bindingModel.addToBindingVariables(localDeclarationVariable);
 					}
-					else {
+					// Too early
+					/*else {
 						localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(), getAssignableType());
-					}
+					}*/
 				}
 			}
 		}
@@ -160,6 +161,9 @@ public interface AssignableDirective<N extends Node> extends Directive<N> {
 					}
 				}
 				else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {
+					if (localDeclarationVariable == null) {
+						localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(), getAssignableType());
+					}
 					getCommandInterpreter().setVariableValue(localDeclarationVariable, assignedValue);
 					getOutStream().println("Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue);
 				}

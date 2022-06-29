@@ -103,9 +103,9 @@ public interface AbstractFMLAssignation<N extends Node> extends FMLCommand<N> {
 						localDeclarationVariable = new BindingVariable(getAssignationVariable(), getAssignableType());
 						bindingModel.addToBindingVariables(localDeclarationVariable);
 					}
-					else {
+					/*else {
 						localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(), getAssignableType());
-					}
+					}*/
 				}
 			}
 		}
@@ -159,6 +159,9 @@ public interface AbstractFMLAssignation<N extends Node> extends FMLCommand<N> {
 					}
 				}
 				else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {
+					if (localDeclarationVariable == null) {
+						localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(), getAssignableType());
+					}
 					getCommandInterpreter().setVariableValue(localDeclarationVariable, assignedValue);
 					getOutStream().println("Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue);
 				}

@@ -46,7 +46,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -143,8 +142,10 @@ public interface LogAction extends EditionAction {
 				e.printStackTrace();
 			}
 
-			if (evaluationContext.getEditor() != null && evaluationContext.getEditor().getFMLConsole() != null) {
+			evaluationContext.logOut(logString, getLogLevel());
 
+			/*if (evaluationContext.getEditor() != null && evaluationContext.getEditor().getFMLConsole() != null) {
+			
 				if (getRootOwner() instanceof FlexoBehaviour) {
 					evaluationContext.getEditor().getFMLConsole().log(logString, getLogLevel(), evaluationContext.getFlexoConceptInstance(),
 							(FlexoBehaviour) getRootOwner());
@@ -154,11 +155,11 @@ public interface LogAction extends EditionAction {
 							null);
 				}
 			}
-
+			
 			else {
 				logger.warning("Cannot access FML console");
 				System.out.println(logString);
-			}
+			}*/
 			return null;
 		}
 

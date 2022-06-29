@@ -102,10 +102,11 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 					localDeclarationVariable = new BindingVariable(getAssignationVariable(), expression.getAnalyzedType());
 					bindingModel.addToBindingVariables(localDeclarationVariable);
 				}
-				else {
+				// Too early !!!
+				/*else {
 					localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(),
 							expression.getAnalyzedType());
-				}
+				}*/
 			}
 		}
 
@@ -128,6 +129,10 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 
 		@Override
 		public boolean isSyntaxicallyValid() {
+			/*System.out.println("assignation=" + assignation);
+			System.out.println("valid=" + assignation.isValid());
+			System.out.println("isNewVariableDeclaration=" + assignation.isNewVariableDeclaration());
+			 */
 			return assignation != null && (assignation.isValid() || assignation.isNewVariableDeclaration()) && expression != null
 					&& expression.isValid();
 		}
@@ -159,6 +164,7 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 				try {
 					assignedValue = expression.getBindingValue(getCommandInterpreter());
 				} catch (Exception e) {
+					e.printStackTrace();
 					throw new ExecutionException("Cannot execute " + expression, e);
 				}
 			}
@@ -181,6 +187,10 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 				}
 			}
 			else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {
+				if (localDeclarationVariable == null) {
+					localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(),
+							expression.getAnalyzedType());
+				}
 				getCommandInterpreter().setVariableValue(localDeclarationVariable, assignedValue);
 				getOutStream().println("Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue);
 			}

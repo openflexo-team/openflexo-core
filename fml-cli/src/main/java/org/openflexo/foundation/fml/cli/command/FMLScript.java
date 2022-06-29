@@ -95,10 +95,6 @@ public interface FMLScript extends HasPropertyChangeSupport {
 
 	public void execute() throws ExecutionException;
 
-	public PrintStream getOutStream();
-
-	public PrintStream getErrStream();
-
 	public static abstract class FMLScriptImpl extends FlexoObjectImpl implements FMLScript {
 
 		@SuppressWarnings("unused")
@@ -108,12 +104,10 @@ public interface FMLScript extends HasPropertyChangeSupport {
 			return getScriptSemanticsAnalyzer().getCommandInterpreter();
 		}
 
-		@Override
 		public PrintStream getOutStream() {
 			return getCommandInterpreter().getOutStream();
 		}
 
-		@Override
 		public PrintStream getErrStream() {
 			return getCommandInterpreter().getErrStream();
 		}

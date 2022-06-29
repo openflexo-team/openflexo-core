@@ -37,7 +37,8 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.SettableBindingEvaluationContext;
+import org.openflexo.connie.expr.ExpressionEvaluator;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
@@ -56,7 +57,11 @@ import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -75,7 +80,7 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * 
  */
 public abstract class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImplementation
-		implements Bindable, SettableBindingEvaluationContext {
+		implements Bindable, RunTimeEvaluationContext {
 
 	private static final Logger logger = Logger.getLogger(AbstractCommandInterpreter.class.getPackage().getName());
 
@@ -586,6 +591,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	@Override
 	public Object getValue(BindingVariable variable) {
+
 		if (variable == focusedBindingVariable) {
 			return getFocusedObject();
 		}
@@ -742,4 +748,55 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	public void willExecute(AbstractCommand command) {
 		history.add(command);
 	}
+
+	@Override
+	public ExpressionEvaluator getEvaluator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FMLRunTimeEngine getFMLRunTimeEngine() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FlexoEditor getEditor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FlexoConceptInstance getFlexoConceptInstance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void declareVariable(String variableName, Object value) {
+		// TODO Harmonize API with RunTimeEvaluationContext (see declareVariable(String,Type))
+	}
+
+	@Override
+	public void dereferenceVariable(String variableName) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void logOut(String message, LogLevel logLevel) {
+		getOutStream().println(message);
+	}
+
+	@Override
+	public void logErr(String message, LogLevel logLevel) {
+		getErrStream().println(message);
+	}
+
 }

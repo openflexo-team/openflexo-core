@@ -43,6 +43,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 
 /**
  * This interface is implemented by all classes defining a run-time context for FML execution<br>
@@ -98,12 +99,9 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	 */
 	public void dereferenceVariable(String variableName);
 
-	/**
-	 * Send supplied logString to debug console
-	 * 
-	 * @param aLogString
-	 */
-	// public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour);
+	public void logOut(String message, LogLevel logLevel);
+
+	public void logErr(String message, LogLevel logLevel);
 
 	@SuppressWarnings("serial")
 	public class ReturnException extends Exception {

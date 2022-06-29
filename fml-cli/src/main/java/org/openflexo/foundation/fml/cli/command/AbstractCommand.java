@@ -136,10 +136,6 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 
 	public AbstractCommandInterpreter getCommandInterpreter();
 
-	public PrintStream getOutStream();
-
-	public PrintStream getErrStream();
-
 	public BindingModel getInferedBindingModel();
 
 	public String getOriginalCommandAsString();
@@ -183,12 +179,10 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 			return getCommandSemanticsAnalyzer().getCommandInterpreter();
 		}
 
-		@Override
 		public PrintStream getOutStream() {
 			return getCommandInterpreter().getOutStream();
 		}
 
-		@Override
 		public PrintStream getErrStream() {
 			return getCommandInterpreter().getErrStream();
 		}
@@ -204,8 +198,7 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 				init();
 			}
 			if (!isValidInThatContext()) {
-				getErrStream().println(invalidCommandReason());
-				return null;
+				throw new ExecutionException(invalidCommandReason());
 			}
 			getCommandInterpreter().willExecute(this);
 			return null;
