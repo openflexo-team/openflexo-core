@@ -72,6 +72,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * FML command-line interpreter<br>
@@ -113,6 +114,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			throws IOException {
 
 		this.serviceManager = serviceManager;
+
+		serviceManager.getResourceCenterService().addToAvailableServiceOperations(new CdResourceCenter());
 
 		history = new ArrayList<>();
 
@@ -375,13 +378,80 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	private List<String> getAvailableCompletion(DirectiveDeclaration directiveDeclaration, String startingBuffer) {
-		String syntax = directiveDeclaration.syntax();
+		if (directiveDeclaration.keyword().equals("service")) {
+			List<String> tokens = tokenize(startingBuffer);
+			if (tokens.size() > 1 && tokens.get(1).equals("TechnologyAdapterService")) {
+				return getAvailableCompletionForService(getServiceManager().getTechnologyAdapterService(), directiveDeclaration,
+						startingBuffer);
+			}
+			if (tokens.size() > 1 && tokens.get(1).equals("ResourceCenterService")) {
+				return getAvailableCompletionForService(getServiceManager().getResourceCenterService(), directiveDeclaration,
+						startingBuffer);
+			}
+		}
+		return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
+
+		/*if (directiveDeclaration.keyword().equals("service")) {
+			String operation = null;
+			List<String> tokens = tokenize(startingBuffer);
+			// System.out.println("tokens=" + tokens);
+			if (tokens.size() > 2) {
+				operation = tokens.get(2);
+			}
+			if (StringUtils.isNotEmpty(operation)) {
+				for (ServiceOperation serviceOperation : getServiceManager().getResourceCenterService().getAvailableServiceOperations()) {
+					if (serviceOperation.getOperationName().equals(operation)) {
+						String syntax = serviceOperation.getSyntax(getServiceManager().getResourceCenterService());
+						return getAvailableCompletion(syntax, directiveDeclaration, startingBuffer);
+					}
+				}
+				// return null;
+			}
+			return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
+			// else {
+			// List<String> returned = new ArrayList<>();
+			// for (ServiceOperation serviceOperation : getServiceManager().getResourceCenterService().getAvailableServiceOperations()) {
+			// String syntax = serviceOperation.getSyntax(getServiceManager().getResourceCenterService());
+			// // System.out.println("search syntax=" + syntax);
+			// returned.addAll(getAvailableCompletion(syntax, directiveDeclaration, startingBuffer));
+			// }
+			// return returned;
+			// }
+		}
+		else {
+			return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
+		}*/
+	}
+
+	private List<String> getAvailableCompletionForService(FlexoService service, DirectiveDeclaration directiveDeclaration,
+			String startingBuffer) {
+		String operation = null;
+		List<String> tokens = tokenize(startingBuffer);
+		if (tokens.size() > 2) {
+			operation = tokens.get(2);
+		}
+		if (StringUtils.isNotEmpty(operation)) {
+			for (ServiceOperation serviceOperation : service.getAvailableServiceOperations()) {
+				if (serviceOperation.getOperationName().equals(operation)) {
+					String syntax = serviceOperation.getSyntax(service);
+					return getAvailableCompletion(syntax, directiveDeclaration, startingBuffer);
+				}
+			}
+			// return null;
+		}
+		return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
+	}
+
+	private List<String> getAvailableCompletion(String syntax, DirectiveDeclaration directiveDeclaration, String startingBuffer) {
+
 		List<String> globalSyntax = tokenize(syntax);
 
-		// System.out.println("OK on cherche toutes les completions pour toutes les syntaxes possibles");
-		// System.out.println("syntax=" + syntax);
-		// System.out.println("expectedSyntax=" + globalSyntax);
-		// System.out.println("expectedSyntax.size=" + globalSyntax.size());
+		// System.out.println("On cherche pour la syntaxe " + syntax);
+
+		/*System.out.println("OK on cherche toutes les completions pour toutes les syntaxes possibles");
+		System.out.println("syntax=" + syntax);
+		System.out.println("expectedSyntax=" + globalSyntax);
+		System.out.println("expectedSyntax.size=" + globalSyntax.size());*/
 
 		if (globalSyntax.get(0).equals(directiveDeclaration.keyword())) {
 			int i = 1;
@@ -419,7 +489,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	private List<String> getAvailableCompletionForSyntax(DirectiveDeclaration directiveDeclaration, String startingBuffer,
 			List<String> expectedSyntax) {
-		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
+		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration + "expectedSyntax:" + expectedSyntax);
 
 		List<String> tokens = tokenize(startingBuffer);
 		int index = tokens.size() - 1;
@@ -493,15 +563,15 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				}
 				return returned;
 			/*case LocalReference:
-				// if (getFocusedObject() == null) {
-				for (File f : getWorkingDirectory().listFiles()) {
-					// System.out.println("On rajoute " + f.getName());
-					if (f.getName().startsWith(currentToken)
-							&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
-						returned.add(f.getName());
-					}
-				}
-				// }
+			// if (getFocusedObject() == null) {
+			for (File f : getWorkingDirectory().listFiles()) {
+			// System.out.println("On rajoute " + f.getName());
+			if (f.getName().startsWith(currentToken)
+					&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+				returned.add(f.getName());
+			}
+			}
+			// }
 			//				else {
 			//					for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
 			//						if (CLIUtils.denoteObject(contained).startsWith(currentToken)) {
@@ -509,7 +579,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			//						}
 			//					}
 			//				}
-				return returned;*/
+			return returned;*/
 			case Path:
 				for (File f : getWorkingDirectory().listFiles()) {
 					// System.out.println("On rajoute " + f.getName());
@@ -656,10 +726,12 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	 * 
 	 * @return
 	 */
+	@Override
 	public FlexoObject getFocusedObject() {
 		if (!focusedObjects.isEmpty()) {
 			return focusedObjects.peek();
 		}
+		System.out.println("Je peux aussi retourner le directory " + getWorkingDirectory());
 		return null;
 	}
 
@@ -769,13 +841,20 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	@Override
 	public FlexoConceptInstance getFlexoConceptInstance() {
-		// TODO Auto-generated method stub
+		if (getFocusedObject() instanceof FlexoConceptInstance) {
+			return (FlexoConceptInstance) getFocusedObject();
+		}
 		return null;
 	}
 
 	@Override
 	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
-		// TODO Auto-generated method stub
+		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance) getFlexoConceptInstance();
+		}
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getOwningVirtualModelInstance();
+		}
 		return null;
 	}
 

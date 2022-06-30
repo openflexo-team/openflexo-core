@@ -738,6 +738,11 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		@Override
+		public String getSyntax(FlexoResourceCenterService service) {
+			return "service " + service.getServiceName() + " " + getOperationName() + " " + getArgument();
+		}
+
+		@Override
 		public String description() {
 			return "add a resource center denoted by supplied path";
 		}

@@ -79,7 +79,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 		keyword = "service",
 		usage = "service <service> operation [options]",
 		description = "Execute operation of a given service, type service <service_name> usage to get help",
-		syntax = "service <service> <operation> <ta>")
+		syntax = "service <service> <operation>")
 public interface ServiceDirective<S extends FlexoService> extends Directive<AServiceDirective> {
 
 	public static abstract class ServiceDirectiveImpl<S extends FlexoService> extends DirectiveImpl<AServiceDirective>

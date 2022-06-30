@@ -659,4 +659,9 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		return availableServiceOperations;
 	}
 
+	@Override
+	public void addToAvailableServiceOperations(ServiceOperation<?> serviceOperation) {
+		getAvailableServiceOperations().add(serviceOperation);
+	}
+
 }

@@ -111,6 +111,13 @@ public interface FlexoService {
 	public Collection<ServiceOperation<?>> getAvailableServiceOperations();
 
 	/**
+	 * Make a new {@link ServiceOperation} available
+	 * 
+	 * @param serviceOperation
+	 */
+	public void addToAvailableServiceOperations(ServiceOperation<?> serviceOperation);
+
+	/**
 	 * Receives a new {@link ServiceNotification} broadcasted from the {@link FlexoServiceManager}
 	 * 
 	 * @param caller
@@ -149,6 +156,8 @@ public interface FlexoService {
 		public abstract String getOperationName();
 
 		public abstract String usage(S service);
+
+		public abstract String getSyntax(S service);
 
 		public abstract String description();
 
@@ -204,6 +213,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "display this help";
 		}
@@ -250,6 +264,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "display status of service";
 		}
@@ -288,6 +307,11 @@ public interface FlexoService {
 		@Override
 		public String usage(FlexoService service) {
 			return "service " + service.getServiceName() + " start";
+		}
+
+		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
 		}
 
 		@Override
@@ -335,6 +359,11 @@ public interface FlexoService {
 		@Override
 		public String usage(FlexoService service) {
 			return "service " + service.getServiceName() + " stop";
+		}
+
+		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
 		}
 
 		@Override

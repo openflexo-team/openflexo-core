@@ -799,6 +799,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 
 		@Override
+		public String getSyntax(TechnologyAdapterService service) {
+			return "service " + service.getServiceName() + " " + getOperationName() + " " + getArgument();
+		}
+
+		@Override
 		public String description() {
 			return "activate technology adapter";
 		}
