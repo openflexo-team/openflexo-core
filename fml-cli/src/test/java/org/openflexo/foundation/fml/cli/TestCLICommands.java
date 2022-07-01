@@ -53,6 +53,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoService.Status;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -84,8 +85,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 	@BeforeClass
 	public static void initialize() throws IOException {
 		instanciateTestServiceManager();
-		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err,
-				new File(System.getProperty("user.dir")));
+		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err, HOME_DIR);
 		workingDirectory = new File(System.getProperty("user.dir"));
 		rcService = commandInterpreter.getServiceManager().getResourceCenterService();
 		rm = commandInterpreter.getServiceManager().getResourceManager();
@@ -103,7 +103,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(1)
-	public void testHelp() throws ParseException {
+	public void testHelp() throws ParseException, ExecutionException {
 		log("tesHelp()");
 		AbstractCommand help = CommandParser.parse("help", commandInterpreter);
 		assertEquals("help", help.toString());
@@ -112,7 +112,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(2)
-	public void testPwd() throws ParseException {
+	public void testPwd() throws ParseException, ExecutionException {
 		log("testPwd()");
 		AbstractCommand pwd = CommandParser.parse("pwd", commandInterpreter);
 		assertEquals("pwd", pwd.toString());
@@ -121,7 +121,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void testCd() throws ParseException {
+	public void testCd() throws ParseException, ExecutionException {
 		log("testCd()");
 		AbstractCommand cd1 = CommandParser.parse("cd ..", commandInterpreter);
 		cd1.execute();
@@ -139,7 +139,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testLs() throws ParseException {
+	public void testLs() throws ParseException, ExecutionException {
 		log("testLs()");
 		AbstractCommand ls = CommandParser.parse("ls", commandInterpreter);
 		assertEquals("ls", ls.toString());
@@ -148,7 +148,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(5)
-	public void testServices() throws ParseException {
+	public void testServices() throws ParseException, ExecutionException {
 		log("testServices()");
 		AbstractCommand services = CommandParser.parse("services", commandInterpreter);
 		assertEquals("services", services.toString());
@@ -157,7 +157,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(6)
-	public void testServiceOnResourceManager() throws ParseException {
+	public void testServiceOnResourceManager() throws ParseException, ExecutionException {
 		log("testServiceOnResourceManager()");
 		AbstractCommand command1 = CommandParser.parse("service ResourceManager usage", commandInterpreter);
 		assertEquals("service ResourceManager usage", command1.toString());
@@ -179,7 +179,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(7)
-	public void testServiceOnResourceCenter() throws ParseException, IOException {
+	public void testServiceOnResourceCenter() throws ParseException, IOException, ExecutionException {
 		log("testServiceOnResourceCenter()");
 
 		AbstractCommand command1 = CommandParser.parse("service ResourceCenterService usage", commandInterpreter);
@@ -209,7 +209,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(8)
-	public void testActivate() throws ParseException, IOException {
+	public void testActivate() throws ParseException, IOException, ExecutionException {
 		log("testActivate()");
 		AbstractCommand command1 = CommandParser.parse("service TechnologyAdapterService status", commandInterpreter);
 		assertEquals("service TechnologyAdapterService status", command1.toString());
@@ -221,7 +221,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(9)
-	public void testResources() throws ParseException, IOException {
+	public void testResources() throws ParseException, IOException, ExecutionException {
 		log("testResources()");
 		AbstractCommand command1 = CommandParser.parse("resources", commandInterpreter);
 		assertEquals("resources", command1.toString());
@@ -244,7 +244,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(10)
-	public void testOpen() throws ParseException, IOException {
+	public void testOpen() throws ParseException, IOException, ExecutionException {
 		log("testOpen()");
 
 		File rcDir = ((DirectoryResourceCenter) testResourcesRC).getRootDirectory();
@@ -266,7 +266,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(11)
-	public void testLoad() throws ParseException, IOException {
+	public void testLoad() throws ParseException, IOException, ExecutionException {
 		log("testLoad()");
 
 		logger.info("working dir=" + commandInterpreter.getWorkingDirectory());
@@ -274,10 +274,11 @@ public class TestCLICommands extends OpenflexoTestCase {
 			logger.info(" > " + file);
 		}
 
-		AbstractCommand command1 = CommandParser.parse("cd TestSingleInheritance.prj", commandInterpreter);
+		// Pas besoin de faire un cd en plus, c'est deja fait
+		/*AbstractCommand command1 = CommandParser.parse("cd TestSingleInheritance.prj", commandInterpreter);
 		System.out.println("Command: " + command1.toString());
 		assertEquals("cd TestSingleInheritance.prj", command1.toString());
-		command1.execute();
+		command1.execute();*/
 
 		AbstractCommand command2 = CommandParser.parse("resources", commandInterpreter);
 		command2.execute();
@@ -285,11 +286,13 @@ public class TestCLICommands extends OpenflexoTestCase {
 		FlexoResource<?> vmResource = rm
 				.getResource("http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml");
 
-		System.out.println("On a ca comme resources: ");
-
+		/*System.out.println("On a ca comme resources: ");
+		
 		for (FlexoResource<?> resource : rm.getRegisteredResources()) {
 			System.out.println(" > " + resource.getURI());
 		}
+		
+		System.out.println("vmResource=" + vmResource);*/
 
 		assertNotNull(vmResource);
 		assertFalse(vmResource.isLoaded());
@@ -306,7 +309,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(12)
-	public void testMore() throws ParseException, IOException {
+	public void testMore() throws ParseException, IOException, ExecutionException {
 		log("testMore()");
 		AbstractCommand command1 = CommandParser.parse("more -f Vm.fml", commandInterpreter);
 		assertEquals("more -f Vm.fml", command1.toString());
@@ -316,7 +319,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(13)
-	public void testEnter() throws ParseException, IOException {
+	public void testEnter() throws ParseException, IOException, ExecutionException {
 		log("testEnter()");
 		AbstractCommand command1 = CommandParser.parse("enter -f Vm.fml", commandInterpreter);
 		assertEquals("enter -f Vm.fml", command1.toString());
@@ -326,7 +329,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(14)
-	public void testContext() throws ParseException, IOException {
+	public void testContext() throws ParseException, IOException, ExecutionException {
 		log("testContext()");
 		AbstractCommand command1 = CommandParser.parse("context", commandInterpreter);
 		assertEquals("context", command1.toString());
@@ -336,7 +339,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(15)
-	public void testAssignations() throws ParseException, IOException {
+	public void testAssignations() throws ParseException, IOException, ExecutionException {
 		log("testAssignations()");
 		AbstractCommand command1 = CommandParser.parse("a=1", commandInterpreter);
 		assertEquals("a = 1", command1.toString());
@@ -355,7 +358,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(100)
-	public void testHistory() throws ParseException {
+	public void testHistory() throws ParseException, ExecutionException {
 		log("testHistory()");
 		AbstractCommand history = CommandParser.parse("history", commandInterpreter);
 		assertEquals("history", history.toString());
@@ -364,7 +367,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(101)
-	public void testQuit() throws ParseException {
+	public void testQuit() throws ParseException, ExecutionException {
 		log("testQuit()");
 		AbstractCommand history = CommandParser.parse("quit", commandInterpreter);
 		assertEquals("quit", history.toString());

@@ -43,10 +43,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.AServicesDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -59,35 +61,36 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(ServicesDirective.ServicesDirectiveImpl.class)
 @DirectiveDeclaration(
 		keyword = "services",
 		usage = "services",
 		description = "List registered services and their status",
 		syntax = "services")
-public class ServicesDirective extends Directive {
+public interface ServicesDirective extends Directive<AServicesDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ServicesDirective.class.getPackage().getName());
+	public static abstract class ServicesDirectiveImpl extends DirectiveImpl<AServicesDirective> implements ServicesDirective {
 
-	public ServicesDirective(AServicesDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(ServicesDirective.class.getPackage().getName());
 
-	@Override
-	public String toString() {
-		return "services";
-	}
-
-	@Override
-	public FlexoServiceManager execute() {
-		super.execute();
-
-		getOutStream().println("Active services:");
-		for (FlexoService service : getCommandInterpreter().getServiceManager().getRegisteredServices()) {
-			getOutStream().println(service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length())
-					+ service.getStatus());
+		@Override
+		public String toString() {
+			return "services";
 		}
 
-		return getCommandInterpreter().getServiceManager();
+		@Override
+		public FlexoServiceManager execute() throws ExecutionException {
+			super.execute();
+
+			getOutStream().println("Active services:");
+			for (FlexoService service : getCommandInterpreter().getServiceManager().getRegisteredServices()) {
+				getOutStream().println(service.getServiceName()
+						+ StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length()) + service.getStatus());
+			}
+
+			return getCommandInterpreter().getServiceManager();
+		}
 	}
 }

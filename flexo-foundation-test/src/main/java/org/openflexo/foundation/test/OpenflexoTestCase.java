@@ -126,9 +126,13 @@ public abstract class OpenflexoTestCase {
 	protected static File testResourceCenterDirectory;
 	protected static List<File> testResourceCenterDirectoriesToRemove;
 
+	// We should have it unchanged to chain tests from right HOME dir
+	protected static File HOME_DIR;
+
 	static {
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.WARNING, null);
+			HOME_DIR = new File(System.getProperty("user.dir"));
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}

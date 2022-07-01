@@ -20,7 +20,7 @@
 			<Label label="resource_uri" align="right" index="20" name="ResourceURILabel"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" index="21" data="data.resourceURI" name="ResourceURIBS"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
@@ -28,7 +28,7 @@
 			<Label label="resource_center" align="right" index="22"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" name="ResourceCenterLabel"/>
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" index="23" data="data.resourceCenter" name="ResourceCenterBS"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
@@ -36,7 +36,7 @@
 			<Label label="relative_path" align="right" index="24" name="RelativePathLabel"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" index="25" data="data.dynamicRelativePath" name="RelativePathBS"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />

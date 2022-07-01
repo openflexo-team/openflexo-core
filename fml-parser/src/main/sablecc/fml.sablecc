@@ -232,6 +232,7 @@ Tokens
    {command,script} exit = 'exit';
    {command,script} quit = 'quit';
    {command,script} context = 'context';
+   {command,script} assert = 'assert';
  
    // options
    {command,script} minus_r = '-r';
@@ -263,11 +264,11 @@ Tokens
    {normal} kw_in = 'in';
    {normal,binding} kw_instanceof = 'instanceof';
    {normal} kw_listen = 'listen';
-   {normal -> binding} kw_log = 'log';
+   {normal -> binding,command,script} kw_log = 'log';
    {normal,binding} kw_match = 'match';
    {normal} kw_model = 'model';
    {normal} kw_namespace = 'namespace';
-   {normal,binding} kw_new = 'new';
+   {normal,binding,command,script} kw_new = 'new';
    {normal} kw_private = 'private';
    {normal} kw_protected = 'protected';
    {normal} kw_public = 'public';
@@ -283,7 +284,7 @@ Tokens
    {normal -> binding} kw_values = 'values';
    {normal,binding} kw_where = 'where';
    {normal} kw_while = 'while';
-   {normal} kw_with = 'with';
+   {normal,command,script} kw_with = 'with';
 
    // Types
    ty_boolean = 'boolean';
@@ -379,12 +380,14 @@ Productions
      {service}     service [service_name]:identifier [action]:identifier [argument]:directive_argument? |
      {activate_ta} activate [technology_adapter]:identifier |
      {resources}   resources_directive |
-     {open}        open_directive |
-     {load}        load_directive |
+     {open}        command_assign? open_directive |
+     {load}        command_assign? load_directive |
      {more}        more_directive |
-     {enter}       enter_directive |
+     {enter}       command_assign? enter_directive |
      {exit}        exit |
      {quit}        quit;
+
+   command_assign = left_hand_side assign;
 
    directive_argument =
      {expression}       expression |
@@ -446,8 +449,12 @@ Productions
      {double_dot_path} dot_dot slash path ;
 
    fml_command =
-     {context} context |
-     {expr}    expression;
+     {context}    context |
+     {assert}     assert expression |
+    // {validate} validate expression |
+    // {log}      kw_log expression |
+     {fml_action} command_assign? fml_action_exp |
+     {expression} expression;
 
    // --------------------------------------------------------------------------------------
    // Compilation unit
@@ -590,7 +597,8 @@ Productions
 
    variable_declarator =
        {identifier}  lidentifier
-     | {initializer} lidentifier assign expression
+     | {initializer_expression} lidentifier assign expression
+     | {initializer_fml_action} lidentifier assign fml_action_exp
      ;
 
    // --------------------------------------------------------------------------------------
@@ -639,16 +647,17 @@ Productions
      ;
 
    statement =
-       {no_trail}   statement_without_trailing_substatement
+       {no_trail}                statement_without_trailing_substatement
      // if statements
-     | {if_simple} kw_if l_par expression r_par statement
-     | {if_else} kw_if l_par expression r_par statement_no_short_if kw_else statement
+     | {if_simple}               kw_if l_par expression r_par statement
+     | {if_else}                 kw_if l_par expression r_par statement_no_short_if kw_else statement
      // while statement
-     | {while} kw_while l_par expression r_par statement
+     | {while}                   kw_while l_par expression r_par statement
      // for statement
-     | {for_basic}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
-     | {for_basic_expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
-     | {for_enhanced} kw_for l_par type lidentifier colon expression r_par statement
+     | {for_basic}               kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
+     | {for_basic_expression}    kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
+     | {for_enhanced_expression} kw_for l_par type lidentifier colon expression r_par statement
+     | {for_enhanced_fml_action} kw_for l_par type lidentifier colon fml_action_exp r_par statement
      ;
 
    for_init =
@@ -687,6 +696,7 @@ Productions
      | {method_invocation}      method_invocation
      | {new_instance}           new_instance
      | {fml_action_expression}  fml_action_exp
+     | {fml_action_assignment}  [left]:left_hand_side assignment_operator [right]:fml_action_exp
      ;
 
    method_invocation =
@@ -844,7 +854,7 @@ Productions
      | {field}                  field_access
      | {method}                 method_invocation
      | {new_instance}           new_instance
-     | {fml_action_expression}  fml_action_exp
+//     | {fml_action_expression}  fml_action_exp
      ;
 
 /*   primary_no_id =
@@ -864,12 +874,13 @@ Productions
 //       {java_instance_creation}              new_containment_clause? kw_new [type]:reference_type l_par argument_list? r_par precise_fml_parameters_clause?
 //     | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:uidentifier colon_colon [constructor_name]:lidentifier l_par argument_list? r_par precise_fml_parameters_clause?
        {ta_edition_action}                     [ta_id]:cidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
-     | {delete_action}                         kw_delete l_par expression r_par from_clause?
+     | {delete_action}                         kw_delete /*l_par*/ expression /*r_par*/ from_clause?
      | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident from_clause where_clause?
-     | {log_action}                            kw_log l_par expression r_par
+     | {log_action}                            kw_log /*l_par*/ expression /*r_par*/
      | {begin_match_action}                    kw_begin kw_match [concept_name]:uidentifier from_clause where_clause?
      | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? create_clause
      | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause abstract_action_clause
+     | {parenthesed}                           l_par fml_action_exp r_par
      ;
        
    precise_fml_parameters_clause = kw_with fml_parameters;
@@ -935,8 +946,8 @@ Productions
 //     | {unqualified} l_par argument_list? r_par
       ;
 
-   in_clause    = kw_in l_par expression r_par;
-   from_clause  = kw_from l_par expression r_par;
+   in_clause    = kw_in /*l_par*/ expression /*r_par*/;
+   from_clause  = kw_from /*l_par*/ expression /*r_par*/;
    where_clause = kw_where l_par argument_list? r_par;
    qualified_where_clause = kw_where l_par qualified_argument_list? r_par;
 

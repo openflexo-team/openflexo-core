@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.CLIUtils;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.AEnterDirective;
 import org.openflexo.foundation.fml.parser.node.AObjectEnterDirective;
 import org.openflexo.foundation.fml.parser.node.APathEnterDirective;
@@ -59,6 +60,8 @@ import org.openflexo.foundation.fml.parser.node.PEnterDirective;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -70,61 +73,81 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(EnterDirective.EnterDirectiveImpl.class)
 @DirectiveDeclaration(
 		keyword = "enter",
 		usage = "enter <expression> | -r <resource> | -f <path>",
 		description = "Enter in a given object, denoted by a resource or an expression",
 		syntax = "enter <expression> | -r <resource> | -f <path>")
-public class EnterDirective extends Directive {
+public interface EnterDirective extends Directive<AEnterDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EnterDirective.class.getPackage().getName());
+	public static abstract class EnterDirectiveImpl extends DirectiveImpl<AEnterDirective> implements EnterDirective {
 
-	private FlexoResource<?> resource;
-	private String path;
-	private DataBinding<?> expression;
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(EnterDirective.class.getPackage().getName());
 
-	public EnterDirective(AEnterDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+		private FlexoResource<?> resource;
+		private String path;
+		private DataBinding<?> expression;
 
-		PEnterDirective enterDirective = node.getEnterDirective();
+		@Override
+		public void create(AEnterDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 
-		if (enterDirective instanceof AResourceEnterDirective) {
-			resource = retrieveResource(((AResourceEnterDirective) enterDirective).getReferenceByUri());
+			PEnterDirective enterDirective = node.getEnterDirective();
+
+			if (enterDirective instanceof AResourceEnterDirective) {
+				resource = retrieveResource(((AResourceEnterDirective) enterDirective).getReferenceByUri());
+			}
+			else if (enterDirective instanceof APathEnterDirective) {
+				path = retrievePath(((APathEnterDirective) enterDirective).getPath());
+			}
+			else if (enterDirective instanceof AObjectEnterDirective) {
+				PExpression referencedObject = ((AObjectEnterDirective) enterDirective).getExpression();
+				expression = retrieveExpression(referencedObject);
+			}
 		}
-		else if (enterDirective instanceof APathEnterDirective) {
-			path = retrievePath(((APathEnterDirective) enterDirective).getPath());
-		}
-		else if (enterDirective instanceof AObjectEnterDirective) {
-			PExpression referencedObject = ((AObjectEnterDirective) enterDirective).getExpression();
-			expression = retrieveExpression(referencedObject);
-		}
-	}
 
-	@Override
-	public String toString() {
-		if (StringUtils.isNotEmpty(path)) {
-			return "enter -f " + path;
+		@Override
+		public String toString() {
+			if (StringUtils.isNotEmpty(path)) {
+				return "enter -f " + path;
+			}
+			else if (resource != null) {
+				return "enter -r [\"" + resource.getURI() + "\"]";
+			}
+			else if (expression != null) {
+				return "enter " + expression;
+			}
+			return "enter ?";
 		}
-		else if (resource != null) {
-			return "enter -r [\"" + resource.getURI() + "\"]";
-		}
-		else if (expression != null) {
-			return "enter " + expression;
-		}
-		return "enter ?";
-	}
 
-	public FlexoResource<?> getResource() {
-		return resource;
-	}
+		public FlexoResource<?> getResource() {
+			return resource;
+		}
 
-	public Object getAddressedObject() {
-		if (StringUtils.isNotEmpty(path)) {
-			FlexoResource<?> adressedResource = retrieveResourceFromPath(path);
-			if (adressedResource != null) {
+		public Object getAddressedObject() {
+			if (StringUtils.isNotEmpty(path)) {
+				FlexoResource<?> adressedResource = retrieveResourceFromPath(path);
+				if (adressedResource != null) {
+					try {
+						return adressedResource.getResourceData();
+					} catch (FileNotFoundException e) {
+						getErrStream().println("Cannot enter into " + path + " : file not found");
+					} catch (ResourceLoadingCancelledException e) {
+						getErrStream().println("Cannot enter into " + path + " : cancelled loading");
+					} catch (FlexoException e) {
+						getErrStream().println("Cannot enter into " + path + " : unexpected exception");
+						e.printStackTrace();
+					}
+					return null;
+				}
+				getErrStream().println("Cannot enter into " + path + " : not a resource");
+			}
+			else if (resource != null) {
 				try {
-					return adressedResource.getResourceData();
+					return resource.getResourceData();
 				} catch (FileNotFoundException e) {
 					getErrStream().println("Cannot enter into " + path + " : file not found");
 				} catch (ResourceLoadingCancelledException e) {
@@ -135,51 +158,36 @@ public class EnterDirective extends Directive {
 				}
 				return null;
 			}
-			getErrStream().println("Cannot enter into " + path + " : not a resource");
-		}
-		else if (resource != null) {
-			try {
-				return resource.getResourceData();
-			} catch (FileNotFoundException e) {
-				getErrStream().println("Cannot enter into " + path + " : file not found");
-			} catch (ResourceLoadingCancelledException e) {
-				getErrStream().println("Cannot enter into " + path + " : cancelled loading");
-			} catch (FlexoException e) {
-				getErrStream().println("Cannot enter into " + path + " : unexpected exception");
-				e.printStackTrace();
+			else if (expression != null) {
+				try {
+					return expression.getBindingValue(getCommandInterpreter());
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			return null;
+			return "enter ?";
 		}
-		else if (expression != null) {
-			try {
-				return expression.getBindingValue(getCommandInterpreter());
-			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+		@Override
+		public FlexoObject execute() throws ExecutionException {
+			super.execute();
+
+			Object object = getAddressedObject();
+			if (object instanceof FlexoObject) {
+				getOutStream().println("Entering in context " + CLIUtils.denoteObject(object));
+				getCommandInterpreter().enterFocusedObject((FlexoObject) object);
+				return (FlexoObject) object;
 			}
-		}
-		return "enter ?";
-	}
-
-	@Override
-	public FlexoObject execute() {
-		super.execute();
-
-		Object object = getAddressedObject();
-		if (object instanceof FlexoObject) {
-			getOutStream().println("Entering in context " + CLIUtils.denoteObject(object));
-			getCommandInterpreter().enterFocusedObject((FlexoObject) object);
-			return (FlexoObject) object;
-		}
-		else {
-			getErrStream().println("Cannot enter into " + path + " : not a FlexoObject");
-			return null;
+			else {
+				throw new ExecutionException("Cannot enter into " + path + " : not a FlexoObject");
+			}
 		}
 	}
 }

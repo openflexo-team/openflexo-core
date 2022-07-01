@@ -42,12 +42,13 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.parser.node.AExprFmlCommand;
+import org.openflexo.foundation.fml.parser.node.AExpressionFmlCommand;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an expression in FML command-line interpreter
@@ -57,71 +58,66 @@ import org.openflexo.foundation.fml.parser.node.AExprFmlCommand;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(FMLExpression.FMLExpressionImpl.class)
 @FMLCommandDeclaration(keyword = "", usage = "<expression>", description = "Execute expression", syntax = "<expression>")
-public class FMLExpression extends FMLCommand {
+public interface FMLExpression extends FMLCommand<AExpressionFmlCommand> {
 
-	private static final Logger logger = Logger.getLogger(FMLExpression.class.getPackage().getName());
+	public static abstract class FMLExpressionImpl extends FMLCommandImpl<AExpressionFmlCommand> implements FMLExpression {
 
-	private DataBinding<?> expression;
+		private static final Logger logger = Logger.getLogger(FMLExpression.class.getPackage().getName());
 
-	public FMLExpression(AExprFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer, null);
-		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
-		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
+		private DataBinding<?> expression;
 
-		expression = retrieveExpression(node.getExpression());
+		@Override
+		public void create(AExpressionFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 
-	}
+			expression = retrieveExpression(node.getExpression());
 
-	@Override
-	public String toString() {
-		return expression.toString();
-	}
-
-	@Override
-	public boolean isValid() {
-		return expression != null && expression.isValid();
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		if (expression == null) {
-			return "null expression";
 		}
-		if (!expression.isValid()) {
-			return expression.invalidBindingReason();
+
+		@Override
+		public String toString() {
+			return expression.toString();
 		}
-		return null;
-	}
 
-	@Override
-	public Object execute() {
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return expression != null && expression.isValid();
+		}
 
-		super.execute();
-
-		if (expression.isValid()) {
-			try {
-				Object value = expression.getBindingValue(getCommandInterpreter());
-				getOutStream().println("Executed " + expression + " <- " + value);
-				return value;
-			} catch (TypeMismatchException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
-			} catch (NullReferenceException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
-			} catch (ReflectiveOperationException e) {
-				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-				return null;
+		@Override
+		public String invalidCommandReason() {
+			if (expression == null) {
+				return "null expression";
 			}
-		}
-		else {
-			getErrStream().println("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+			if (!expression.isValid()) {
+				return expression.invalidBindingReason();
+			}
 			return null;
 		}
 
-		/*
-		try {
+		@Override
+		public Object execute() throws ExecutionException {
+
+			super.execute();
+
+			if (expression.isValid()) {
+				try {
+					Object value = expression.getBindingValue(getCommandInterpreter());
+					getOutStream().println("Executed " + expression + " <- " + value);
+					return value;
+				} catch (Exception e) {
+					throw new ExecutionException("Cannot execute " + expression, e);
+				}
+			}
+			else {
+				throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+			}
+
+			/*
+			try {
 			if (expression.getExpression() != null && expression.getExpression() instanceof BinaryOperatorExpression
 					&& ((BinaryOperatorExpression) expression.getExpression()).getOperator() == FMLAssignOperator.ASSIGN) {
 				// Special case for an expression declared as EQUALS
@@ -148,7 +144,7 @@ public class FMLExpression extends FMLCommand {
 					}
 					else {
 						// TODO faire un truc la
-		
+			
 						// getOutStream().println("Ca va pas avec " + left + " of " + left.getClass());
 					}
 				}
@@ -165,17 +161,18 @@ public class FMLExpression extends FMLCommand {
 					getErrStream().println("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 				}
 			}
-		} catch (TypeMismatchException e) {
+			} catch (TypeMismatchException e) {
 			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-		} catch (NullReferenceException e) {
+			} catch (NullReferenceException e) {
 			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-		} catch (InvocationTargetException e) {
+			} catch (InvocationTargetException e) {
 			getErrStream().println("Unexpected exception: " + e.getTargetException()
 					+ (StringUtils.isNotEmpty(e.getTargetException().getMessage()) ? " : " + e.getTargetException().getMessage() : ""));
-		} catch (ReflectiveOperationException e) {
+			} catch (ReflectiveOperationException e) {
 			getErrStream().println("Unexpected exception: " + e + (StringUtils.isNotEmpty(e.getMessage()) ? " : " + e.getMessage() : ""));
-		} catch (NotSettableContextException e) {
+			} catch (NotSettableContextException e) {
 			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-		}*/
+			}*/
+		}
 	}
 }

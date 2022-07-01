@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
@@ -209,8 +210,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getOwner() != null) {
-				return getOwner().getFlexoConcept();
+			if (getOwner() instanceof FlexoConceptObject) {
+				return ((FlexoConceptObject) getOwner()).getFlexoConcept();
 			}
 			return null;
 		}
@@ -408,6 +409,19 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 					controlGraph.notifiedScopeChanged();
 				}
 			});
+		}
+
+		@Override
+		public BindingFactory getBindingFactory() {
+			BindingFactory returned = super.getBindingFactory();
+			if (returned == null) {
+				// Maybe owner is not a FlexoConceptObject (for example in FML scripting)
+				// So we give a chance here to retrieve the BindingFactory from owner
+				if (getOwner() != null) {
+					return getOwner().getBindingFactory();
+				}
+			}
+			return returned;
 		}
 
 	}

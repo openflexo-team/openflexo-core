@@ -9,7 +9,7 @@
 		index="6"
 		constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		name="AssignToLabel" />
-	<Custom id="2" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+	<Custom id="2" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		dataClassForComponent="org.openflexo.connie.DataBinding" localize="true"
 		manageDynamicModel="true" data="data.assignation" index="7"
 		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"

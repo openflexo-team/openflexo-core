@@ -136,4 +136,9 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 		return availableServiceOperations;
 	}
 
+	@Override
+	public void addToAvailableServiceOperations(ServiceOperation<?> serviceOperation) {
+		getAvailableServiceOperations().add(serviceOperation);
+	}
+
 }

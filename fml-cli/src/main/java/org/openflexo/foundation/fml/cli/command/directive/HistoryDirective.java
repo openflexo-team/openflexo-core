@@ -41,10 +41,11 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.parser.node.AHistoryDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents #history directive in FML command-line interpreter
@@ -54,24 +55,25 @@ import org.openflexo.foundation.fml.parser.node.AHistoryDirective;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(HistoryDirective.HistoryDirectiveImpl.class)
 @DirectiveDeclaration(keyword = "history", usage = "history", description = "Display commands history", syntax = "history")
-public class HistoryDirective extends Directive {
+public interface HistoryDirective extends Directive<AHistoryDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(HistoryDirective.class.getPackage().getName());
+	public static abstract class HistoryDirectiveImpl extends DirectiveImpl<AHistoryDirective> implements HistoryDirective {
 
-	public HistoryDirective(AHistoryDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(HistoryDirective.class.getPackage().getName());
 
-	@Override
-	public String toString() {
-		return "history";
-	}
+		@Override
+		public String toString() {
+			return "history";
+		}
 
-	@Override
-	public Object execute() {
-		getCommandInterpreter().displayHistory();
-		return null;
+		@Override
+		public Object execute() {
+			getCommandInterpreter().displayHistory();
+			return null;
+		}
 	}
 }

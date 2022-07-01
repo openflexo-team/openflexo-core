@@ -42,7 +42,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -50,6 +49,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -75,8 +75,7 @@ public class TestCLICommands2 extends OpenflexoTestCase {
 	@BeforeClass
 	public static void initialize() throws IOException {
 		instanciateTestServiceManager();
-		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err,
-				new File(System.getProperty("user.dir")));
+		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err, HOME_DIR);
 		rcService = commandInterpreter.getServiceManager().getResourceCenterService();
 		FlexoResourceCenter<?> existingResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
 		logger.info("Copying all files from " + existingResourcesRC);
@@ -86,7 +85,7 @@ public class TestCLICommands2 extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(10)
-	public void testOpen() throws ParseException, IOException {
+	public void testOpen() throws ParseException, IOException, ExecutionException {
 		log("testOpen()");
 
 		assertNull(rcService.getFlexoResourceCenter("http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj"));
@@ -105,7 +104,7 @@ public class TestCLICommands2 extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(11)
-	public void testEnter() throws ParseException, IOException {
+	public void testEnter() throws ParseException, IOException, ExecutionException {
 		log("testEnter()");
 		AbstractCommand command1 = CommandParser.parse(
 				"enter -r [\"http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml\"]",

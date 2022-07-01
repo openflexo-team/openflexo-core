@@ -45,6 +45,7 @@ import java.util.List;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
@@ -129,8 +130,8 @@ public abstract interface EditionAction extends FMLControlGraph {
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getOwner() != null) {
-				return getOwner().getFlexoConcept();
+			if (getOwner() instanceof FlexoConceptObject) {
+				return ((FlexoConceptObject) getOwner()).getFlexoConcept();
 			}
 			return null;
 		}

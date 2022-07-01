@@ -17,7 +17,3 @@ resources;
 resources FML;
 resources * ["http://openflexo.org/test/flexo-test-resources"];
 resources FML ["http://openflexo.org/test/flexo-test-resources"];
-a = 1;
-b = 2;
-context;
-a + b;

@@ -65,6 +65,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.localization.LocalizedDelegate;
@@ -400,6 +401,26 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	public Object getReturnedValue() {
 		return returnedValue;
+	}
+
+	@Override
+	public void logOut(String message, LogLevel logLevel) {
+		if (getEditor() != null && getEditor().getFMLConsole() != null) {
+			getEditor().getFMLConsole().log(message, logLevel, getFlexoConceptInstance(), getFlexoBehaviour());
+		}
+		else {
+			System.out.println(message);
+		}
+	}
+
+	@Override
+	public void logErr(String message, LogLevel logLevel) {
+		if (getEditor() != null && getEditor().getFMLConsole() != null) {
+			getEditor().getFMLConsole().log(message, logLevel, getFlexoConceptInstance(), getFlexoBehaviour());
+		}
+		else {
+			System.err.println(message);
+		}
 	}
 
 	public MatchingSet initiateDefaultMatchingSet(MatchFlexoConceptInstance action) {

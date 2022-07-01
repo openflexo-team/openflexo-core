@@ -42,7 +42,9 @@ package org.openflexo.foundation.fml.rt;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 
 /**
  * This interface is implemented by all classes defining a run-time context for FML execution<br>
@@ -99,12 +101,33 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	public void dereferenceVariable(String variableName);
 
 	/**
-	 * Send supplied logString to debug console
+	 * Return object representing local context for this {@link RunTimeEvaluationContext}, if any
 	 * 
-	 * @param aLogString
+	 * @return
 	 */
-	// public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour);
+	public FlexoObject getFocusedObject();
 
+	/**
+	 * Log supplied message and log level to "conceptual" out stream (might not be System.out, but console or terminal, etc.)
+	 * 
+	 * @param message
+	 * @param logLevel
+	 */
+	public void logOut(String message, LogLevel logLevel);
+
+	/**
+	 * Log supplied message and log level to "conceptual" err stream (might not be System.out, but console or terminal, etc.)
+	 * 
+	 * @param message
+	 * @param logLevel
+	 */
+	public void logErr(String message, LogLevel logLevel);
+
+	/**
+	 * This exception does not reflect an issue while executing FML, but is used to prioritary intercept "return" statement
+	 * 
+	 * @author sylvain
+	 */
 	@SuppressWarnings("serial")
 	public class ReturnException extends Exception {
 

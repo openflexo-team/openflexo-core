@@ -111,6 +111,13 @@ public interface FlexoService {
 	public Collection<ServiceOperation<?>> getAvailableServiceOperations();
 
 	/**
+	 * Make a new {@link ServiceOperation} available
+	 * 
+	 * @param serviceOperation
+	 */
+	public void addToAvailableServiceOperations(ServiceOperation<?> serviceOperation);
+
+	/**
 	 * Receives a new {@link ServiceNotification} broadcasted from the {@link FlexoServiceManager}
 	 * 
 	 * @param caller
@@ -150,9 +157,13 @@ public interface FlexoService {
 
 		public abstract String usage(S service);
 
+		public abstract String getSyntax(S service);
+
 		public abstract String description();
 
 		public String getArgument();
+
+		public String getArgumentOption();
 
 		public List<ServiceOperationOption> getOptions();
 
@@ -204,12 +215,22 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "display this help";
 		}
 
 		@Override
 		public String getArgument() {
+			return null;
+		}
+
+		@Override
+		public String getArgumentOption() {
 			return null;
 		}
 
@@ -250,12 +271,22 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "display status of service";
 		}
 
 		@Override
 		public String getArgument() {
+			return null;
+		}
+
+		@Override
+		public String getArgumentOption() {
 			return null;
 		}
 
@@ -291,12 +322,22 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "start service";
 		}
 
 		@Override
 		public String getArgument() {
+			return null;
+		}
+
+		@Override
+		public String getArgumentOption() {
 			return null;
 		}
 
@@ -338,12 +379,22 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "stop service";
 		}
 
 		@Override
 		public String getArgument() {
+			return null;
+		}
+
+		@Override
+		public String getArgumentOption() {
 			return null;
 		}
 

@@ -130,9 +130,9 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		append(staticContents(SPACE, "match", ""), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
 		append(staticContents(SPACE, "from", ""), getFromFragment());
-		append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
-		append(staticContents(")"), getRParFromFragment());
+		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
+		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		//append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on
@@ -176,7 +176,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		return null;
 	}
 
-	private RawSourceFragment getLParFromFragment() {
+	/*private RawSourceFragment getLParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
@@ -184,9 +184,9 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 			}
 		}
 		return null;
-	}
+	}*/
 
-	private RawSourceFragment getRParFromFragment() {
+	/*private RawSourceFragment getRParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
@@ -194,7 +194,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getFromExpressionFragment() {
 		if (getASTNode() != null) {

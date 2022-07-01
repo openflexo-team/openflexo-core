@@ -41,12 +41,14 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.FMLValidationModel;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an FML command in command-line interpreter
@@ -54,24 +56,37 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
  * @author sylvain
  * 
  */
-@DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class) })
-public abstract class FMLCommand extends AbstractCommand {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(FMLCommand.FMLCommandImpl.class)
+@DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class),
+		@DeclareCommand(FMLAssertExpression.class) })
+public interface FMLCommand<N extends Node> extends AbstractCommand<N> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
+	public FMLValidationModel getValidationModel();
 
-	public FMLCommand(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer, FlexoConceptInstance fci) {
-		super(node, commandSemanticsAnalyzer);
-	}
+	public static abstract class FMLCommandImpl<N extends Node> extends AbstractCommandImpl<N> {
 
-	@Override
-	public boolean isValid() {
-		return true;
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
 
-	@Override
-	public String invalidCommandReason() {
-		return null;
+		public FMLValidationModel getValidationModel() {
+			return getCommandInterpreter().getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
+		}
+
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return true;
+		}
+
+		@Override
+		public boolean isValidInThatContext() {
+			return isSyntaxicallyValid();
+		}
+
+		@Override
+		public String invalidCommandReason() {
+			return null;
+		}
 	}
 
 }

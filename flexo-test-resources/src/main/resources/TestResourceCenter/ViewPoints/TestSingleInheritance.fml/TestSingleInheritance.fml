@@ -35,4 +35,7 @@ model TestSingleInheritance {
 			return (super.doSomething() * 2);
 		}
 	}
+	
+	create() {
+	}
 }

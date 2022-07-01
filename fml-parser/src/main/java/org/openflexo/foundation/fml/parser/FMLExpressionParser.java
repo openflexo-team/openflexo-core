@@ -102,7 +102,7 @@ public class FMLExpressionParser {
 			tree = p.parse();
 
 			// Print the AST
-			// new ASTDebugger(tree);
+			// ASTDebugger.debug(tree);
 
 			return ExpressionFactory.makeDataBinding(tree, bindable, BindingDefinitionType.GET, Object.class, modelFactory, typingSpace,
 					new FMLBindingFactory(modelFactory)).getExpression();

@@ -75,6 +75,9 @@ public class FragmentManager extends DepthFirstAdapter implements FragmentRetrie
 		if (node == null) {
 			return null;
 		}
+		if (getRawSource() == null) {
+			return null;
+		}
 		startPosition = null;
 		endPosition = null;
 		node.apply(this);
@@ -99,6 +102,10 @@ public class FragmentManager extends DepthFirstAdapter implements FragmentRetrie
 	}
 
 	private void handleToken(Token token) {
+
+		if (getRawSource() == null) {
+			return;
+		}
 
 		// System.out.println("Receiving Token " + token.getLine() + ":" + token.getPos() + ":" + token.getText() + " tokenEnd=" + tokenEnd
 		// + " endPosition=" + endPosition);

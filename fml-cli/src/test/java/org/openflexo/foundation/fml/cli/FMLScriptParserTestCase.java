@@ -38,9 +38,12 @@
 
 package org.openflexo.foundation.fml.cli;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -54,7 +57,7 @@ import org.openflexo.rm.Resource;
  */
 public abstract class FMLScriptParserTestCase extends OpenflexoTestCase {
 
-	protected static FMLScript testFMLScript(Resource fileResource, AbstractCommandInterpreter commandInterpreter)
+	protected static FMLScript parseFMLScript(Resource fileResource, AbstractCommandInterpreter commandInterpreter)
 			throws ModelDefinitionException, ParseException, IOException {
 
 		System.out.println("Load " + fileResource);
@@ -62,6 +65,16 @@ public abstract class FMLScriptParserTestCase extends OpenflexoTestCase {
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
 		FMLScriptParser parser = new FMLScriptParser();
 		FMLScript script = parser.parse(fileResource.openInputStream(), fmlModelFactory, commandInterpreter);
+		return script;
+	}
+
+	protected static FMLScript checkFMLScript(String scriptName, FMLScript script)
+			throws ModelDefinitionException, ParseException, IOException {
+
+		for (AbstractCommand command : script.getCommands()) {
+			assertTrue("Script " + scriptName + " > invalid command " + command + " : " + command.invalidCommandReason(),
+					command.isSyntaxicallyValid());
+		}
 		return script;
 	}
 

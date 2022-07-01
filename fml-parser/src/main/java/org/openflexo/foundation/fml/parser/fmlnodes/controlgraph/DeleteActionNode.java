@@ -87,9 +87,9 @@ public class DeleteActionNode extends ControlGraphNode<ADeleteActionFmlActionExp
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("delete"), getDeleteFragment());
-		append(staticContents("("), getLParFragment());
+		// append(staticContents("("), getLParFragment());
 		append(dynamicContents(() -> getModelObject().getObject().toString()), getExpressionFragment());
-		append(staticContents(")"), getRParFragment());
+		// append(staticContents(")"), getRParFragment());
 		append(staticContents(";"), getSemiFragment());
 
 	}
@@ -101,12 +101,12 @@ public class DeleteActionNode extends ControlGraphNode<ADeleteActionFmlActionExp
 		return null;
 	}
 
-	protected RawSourceFragment getLParFragment() {
+	/*protected RawSourceFragment getLParFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getLPar());
 		}
 		return null;
-	}
+	}*/
 
 	protected RawSourceFragment getExpressionFragment() {
 		if (getASTNode() != null) {
@@ -115,11 +115,11 @@ public class DeleteActionNode extends ControlGraphNode<ADeleteActionFmlActionExp
 		return null;
 	}
 
-	protected RawSourceFragment getRParFragment() {
+	/*protected RawSourceFragment getRParFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getRPar());
 		}
 		return null;
-	}
+	}*/
 
 }

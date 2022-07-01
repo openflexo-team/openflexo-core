@@ -262,13 +262,13 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		append(staticContents("match"), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
 		when(() -> hasInClause()).thenAppend(staticContents(SPACE, "in", ""), getInFragment())
-				.thenAppend(staticContents(SPACE, "(", ""), getLParInFragment())
-				.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
-				.thenAppend(staticContents(")"), getRParInFragment());
+				//.thenAppend(staticContents(SPACE, "(", ""), getLParInFragment())
+				.thenAppend(dynamicContents(SPACE, () -> getInAsString()), getInExpressionFragment());
+				//.thenAppend(staticContents(")"), getRParInFragment());
 		append(staticContents(SPACE, "from", ""), getFromFragment());
-		append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
-		append(staticContents(")"), getRParFromFragment());
+		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
+		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		//append(staticContents(")"), getRParFromFragment());
 		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, "where", ""), getWhereFragment())
 				.thenAppend(staticContents(SPACE, "(", ""), getLParWhereFragment())
 				.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereCriteriasFragment())
@@ -378,7 +378,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		return null;
 	}
 
-	private RawSourceFragment getLParFromFragment() {
+	/*private RawSourceFragment getLParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
@@ -387,7 +387,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
@@ -396,7 +396,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getFromExpressionFragment() {
 		if (getASTNode() != null) {
@@ -418,25 +418,25 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		return null;
 	}
 
-	private RawSourceFragment getLParInFragment() {
-		if (getASTNode() != null) {
-			PInClause inClause = getASTNode().getInClause();
-			if (inClause instanceof AInClause) {
-				return getFragment(((AInClause) inClause).getLPar());
+	/*	private RawSourceFragment getLParInFragment() {
+			if (getASTNode() != null) {
+				PInClause inClause = getASTNode().getInClause();
+				if (inClause instanceof AInClause) {
+					return getFragment(((AInClause) inClause).getLPar());
+				}
 			}
+			return null;
 		}
-		return null;
-	}
-
-	private RawSourceFragment getRParInFragment() {
-		if (getASTNode() != null) {
-			PInClause inClause = getASTNode().getInClause();
-			if (inClause instanceof AInClause) {
-				return getFragment(((AInClause) inClause).getRPar());
+	
+		private RawSourceFragment getRParInFragment() {
+			if (getASTNode() != null) {
+				PInClause inClause = getASTNode().getInClause();
+				if (inClause instanceof AInClause) {
+					return getFragment(((AInClause) inClause).getRPar());
+				}
 			}
-		}
-		return null;
-	}
+			return null;
+		}*/
 
 	private RawSourceFragment getInExpressionFragment() {
 		if (getASTNode() != null) {

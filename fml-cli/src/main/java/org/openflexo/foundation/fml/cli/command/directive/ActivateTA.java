@@ -44,8 +44,11 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.AActivateTaDirective;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents activate TA directive in FML command-line interpreter
@@ -57,54 +60,62 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(ActivateTA.ActivateTAImpl.class)
 @DirectiveDeclaration(keyword = "activate", usage = "activate <ta>", description = "Activate technology adapter", syntax = "activate <ta>")
-public class ActivateTA extends Directive {
+public interface ActivateTA extends Directive<AActivateTaDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ActivateTA.class.getPackage().getName());
+	public TechnologyAdapter<?> getTechnologyAdapter();
 
-	private TechnologyAdapter<?> technologyAdapter;
+	public static abstract class ActivateTAImpl extends DirectiveImpl<AActivateTaDirective> implements ActivateTA {
 
-	public ActivateTA(AActivateTaDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(ActivateTA.class.getPackage().getName());
 
-		technologyAdapter = getTechnologyAdapter(getText(node.getTechnologyAdapter()));
-	}
+		private TechnologyAdapter<?> technologyAdapter;
 
-	@Override
-	public String toString() {
-		return "activate " + technologyAdapter.getIdentifier();
-	}
-
-	public TechnologyAdapter<?> getTechnologyAdapter() {
-		return technologyAdapter;
-	}
-
-	@Override
-	public boolean isValid() {
-		return technologyAdapter != null;
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		if (technologyAdapter == null) {
-			return "Technology adapter not found";
+		@Override
+		public void create(AActivateTaDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
+			technologyAdapter = getTechnologyAdapter(getText(node.getTechnologyAdapter()));
 		}
-		return null;
-	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public TechnologyAdapter<?> execute() {
-		super.execute();
-		if (!getTechnologyAdapter().isActivated()) {
-			getCommandInterpreter().getServiceManager().getTechnologyAdapterService()
-					.activateTechnologyAdapter((TechnologyAdapter) getTechnologyAdapter(), true);
-			getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " has been activated");
+		@Override
+		public String toString() {
+			return "activate " + technologyAdapter.getIdentifier();
 		}
-		else {
-			getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated");
+
+		@Override
+		public TechnologyAdapter<?> getTechnologyAdapter() {
+			return technologyAdapter;
 		}
-		return getTechnologyAdapter();
+
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return technologyAdapter != null;
+		}
+
+		@Override
+		public String invalidCommandReason() {
+			if (technologyAdapter == null) {
+				return "Technology adapter not found";
+			}
+			return null;
+		}
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+		public TechnologyAdapter<?> execute() throws ExecutionException {
+			super.execute();
+			if (!getTechnologyAdapter().isActivated()) {
+				getCommandInterpreter().getServiceManager().getTechnologyAdapterService()
+						.activateTechnologyAdapter((TechnologyAdapter) getTechnologyAdapter(), true);
+				getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " has been activated");
+			}
+			else {
+				getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated");
+			}
+			return getTechnologyAdapter();
+		}
 	}
 }

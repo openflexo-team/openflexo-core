@@ -146,7 +146,8 @@ import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerExpressionVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerFmlActionVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
@@ -796,8 +797,11 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
 			return ((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier();
 		}
-		if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-			return ((AInitializerVariableDeclarator) variableDeclarator).getLidentifier();
+		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+			return ((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier();
+		}
+		if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+			return ((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier();
 		}
 		return null;
 	}

@@ -42,10 +42,12 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.ALsDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -56,52 +58,53 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(LsDirective.LsDirectiveImpl.class)
 @DirectiveDeclaration(keyword = "ls", usage = "ls", description = "List working directory contents", syntax = "ls <path>")
-public class LsDirective extends Directive {
+public interface LsDirective extends Directive<ALsDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LsDirective.class.getPackage().getName());
+	public static abstract class LsDirectiveImpl extends DirectiveImpl<ALsDirective> implements LsDirective {
 
-	public LsDirective(ALsDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(LsDirective.class.getPackage().getName());
 
-	@Override
-	public String toString() {
-		return "ls";
-	}
+		@Override
+		public String toString() {
+			return "ls";
+		}
 
-	@Override
-	public File execute() {
-		super.execute();
-		if (getCommandInterpreter().getWorkingDirectory() != null) {
-			if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
-				int maxLength = 0;
-				for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-					String name = getFileName(f);
-					if (name.length() > maxLength) {
-						maxLength = name.length();
+		@Override
+		public File execute() throws ExecutionException {
+			super.execute();
+			if (getCommandInterpreter().getWorkingDirectory() != null) {
+				if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
+					int maxLength = 0;
+					for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
+						String name = getFileName(f);
+						if (name.length() > maxLength) {
+							maxLength = name.length();
+						}
 					}
-				}
-				int cols = 4;
-				int i = 0;
-				for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-					String name = getFileName(f);
-					getOutStream().print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
-					i++;
-					if (i % cols == 0) {
+					int cols = 4;
+					int i = 0;
+					for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
+						String name = getFileName(f);
+						getOutStream().print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
+						i++;
+						if (i % cols == 0) {
+							getOutStream().println();
+						}
+					}
+					if (i % cols != 0) {
 						getOutStream().println();
 					}
 				}
-				if (i % cols != 0) {
-					getOutStream().println();
+				else {
+					throw new ExecutionException("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
 				}
 			}
-			else {
-				getErrStream().println("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
-			}
-		}
 
-		return getCommandInterpreter().getWorkingDirectory();
+			return getCommandInterpreter().getWorkingDirectory();
+		}
 	}
 }

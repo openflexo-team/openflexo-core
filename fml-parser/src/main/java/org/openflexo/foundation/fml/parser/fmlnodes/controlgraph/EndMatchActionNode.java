@@ -209,9 +209,9 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		append(staticContents(SPACE, "match", ""), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
 		append(staticContents(SPACE, "in", ""), getInFragment());
-		append(staticContents(SPACE, "(", ""), getLParInFragment());
-		append(dynamicContents(() -> getInAsString()), getInExpressionFragment());
-		append(staticContents(")"), getRParInFragment());
+		//append(staticContents(SPACE, "(", ""), getLParInFragment());
+		append(dynamicContents(SPACE,() -> getInAsString()), getInExpressionFragment());
+		//append(staticContents(")"), getRParInFragment());
 
 		when(() -> isNormalAction()).thenAppend(staticContents(SPACE, "action", ""), getActionFragment())
 				.thenAppend(staticContents("::"), getColonColonFragment())
@@ -296,7 +296,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		return null;
 	}
 
-	private RawSourceFragment getLParInFragment() {
+	/*private RawSourceFragment getLParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
 			if (inClause instanceof AInClause) {
@@ -305,7 +305,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
@@ -314,7 +314,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getInExpressionFragment() {
 		if (getASTNode() != null) {

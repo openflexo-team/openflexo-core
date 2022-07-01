@@ -41,7 +41,10 @@ package org.openflexo.foundation.fml.cli;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.cli.command.FMLScript;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 
 /**
  * FML typing space, related to a {@link FMLScript}
@@ -86,7 +89,19 @@ public class FMLScriptTypingSpace extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
-		return super.resolveType(typeAsString);
+		Type returned = super.resolveType(typeAsString);
+		if (returned instanceof UnresolvedType) {
+			System.out.println("resolveType : " + returned + " of " + returned.getClass());
+			for (CompilationUnitResource compilationUnitResource : getServiceManager().getVirtualModelLibrary()
+					.getCompilationUnitResources()) {
+				System.out.println("> " + compilationUnitResource.getName() + " URI=" + compilationUnitResource.getURI());
+				if (compilationUnitResource.getName().equals(typeAsString)) {
+					System.out.println("Trouve !");
+					return compilationUnitResource.getCompilationUnit().getVirtualModel().getInstanceType();
+				}
+			}
+		}
+		return returned;
 	}
 
 	@Override

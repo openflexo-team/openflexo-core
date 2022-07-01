@@ -90,9 +90,9 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("log"), getLogFragment());
-		append(staticContents("("), getLParFragment());
+		// append(staticContents("("), getLParFragment());
 		append(dynamicContents(() -> getModelObject().getLogString().toString()), getExpressionFragment());
-		append(staticContents(")"), getRParFragment());
+		// append(staticContents(")"), getRParFragment());
 		append(staticContents(";"), getSemiFragment());
 
 	}
@@ -104,12 +104,12 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		return null;
 	}
 
-	protected RawSourceFragment getLParFragment() {
+	/*protected RawSourceFragment getLParFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getLPar());
 		}
 		return null;
-	}
+	}*/
 
 	protected RawSourceFragment getExpressionFragment() {
 		if (getASTNode() != null) {
@@ -118,11 +118,11 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		return null;
 	}
 
-	protected RawSourceFragment getRParFragment() {
+	/*protected RawSourceFragment getRParFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getRPar());
 		}
 		return null;
-	}
+	}*/
 
 }

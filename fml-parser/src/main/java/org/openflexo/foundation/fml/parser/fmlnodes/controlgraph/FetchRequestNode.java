@@ -170,9 +170,9 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getFetchedType())), getTypeFragment());
 
 		append(staticContents(SPACE, "from", ""), getFromFragment());
-		append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
-		append(staticContents(")"), getRParFromFragment());
+		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
+		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		//append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on
@@ -237,7 +237,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		return null;
 	}
 
-	private RawSourceFragment getLParFromFragment() {
+	/*private RawSourceFragment getLParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
@@ -246,7 +246,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
@@ -255,7 +255,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getFromExpressionFragment() {
 		if (getASTNode() != null) {

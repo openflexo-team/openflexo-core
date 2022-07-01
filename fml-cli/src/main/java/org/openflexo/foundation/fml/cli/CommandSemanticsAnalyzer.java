@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.parser.FragmentManager;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class implements the main semantics analyzer for a simple parsed FML command ({@link AbstractCommand})<br>
@@ -56,15 +57,23 @@ import org.openflexo.p2pp.RawSource;
  */
 public class CommandSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommandSemanticsAnalyzer.class.getPackage().getName());
 
-	private AbstractCommand command;
+	private AbstractCommand<?> command;
 
 	private final AbstractFMLTypingSpace typingSpace;
 	private FMLBindingFactory bindingFactory;
 
-	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree) {
+	// Raw source as when this analyzer was last parsed
+	private RawSource rawSource;
+	private FragmentManager fragmentManager;
+
+	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree, RawSource rawSource)
+			throws ModelDefinitionException {
 		super(commandInterpreter, tree);
+		this.rawSource = rawSource;
+		fragmentManager = new FragmentManager(rawSource);
 		bindingFactory = new FMLBindingFactory(commandInterpreter.getModelFactory());
 		typingSpace = new FMLCommandTypingSpace(this);
 	}
@@ -81,20 +90,20 @@ public class CommandSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
 	@Override
 	public FragmentManager getFragmentManager() {
-		return null;
+		return fragmentManager;
 	}
 
 	@Override
 	public RawSource getRawSource() {
-		return null;
+		return rawSource;
 	}
 
-	public AbstractCommand getCommand() {
+	public AbstractCommand<?> getCommand() {
 		return command;
 	}
 
 	@Override
-	protected void registerCommand(Node n, AbstractCommand command) {
+	protected void registerCommand(Node n, AbstractCommand<?> command) {
 		this.command = command;
 	}
 

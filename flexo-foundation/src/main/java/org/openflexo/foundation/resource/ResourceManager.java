@@ -186,7 +186,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			List<PendingResourceDependency> prdList = pendingResourceDependencies.get(resource.getURI());
 			if (prdList != null && prdList.size() > 0) {
 				for (PendingResourceDependency prd : prdList) {
-					System.out.println("Resolved pending dependency " + prd.dependencyURI);
+					// System.out.println("Resolved pending dependency " + prd.dependencyURI);
 					prd.resource.addToDependencies(resource);
 				}
 				pendingResourceDependencies.remove(resource.getURI());

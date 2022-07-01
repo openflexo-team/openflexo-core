@@ -55,14 +55,14 @@ import org.openflexo.foundation.action.copypaste.CutAction.CutActionType;
 import org.openflexo.foundation.action.copypaste.DefaultPasteHandler;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
+import org.openflexo.foundation.action.copypaste.PasteHandler;
+import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.pamela.factory.Clipboard;
 import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.EditingContextImpl;
 import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.pamela.factory.ProxyMethodHandler;
 import org.openflexo.pamela.model.ModelEntity;
-import org.openflexo.foundation.action.copypaste.PasteHandler;
-import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -382,6 +382,11 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 			availableServiceOperations.add(STOP_SERVICE);
 		}
 		return availableServiceOperations;
+	}
+
+	@Override
+	public void addToAvailableServiceOperations(ServiceOperation<?> serviceOperation) {
+		getAvailableServiceOperations().add(serviceOperation);
 	}
 
 }

@@ -40,13 +40,23 @@
 package org.openflexo.foundation.fml.cli.command;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Initializer;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Parameter;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
  * Represents a command in FML command-line interpreter
@@ -54,60 +64,78 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class FMLScript {
+@ModelEntity
+@ImplementationClass(FMLScript.FMLScriptImpl.class)
+public interface FMLScript extends HasPropertyChangeSupport {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FMLScript.class.getPackage().getName());
+	@PropertyIdentifier(type = Node.class)
+	public static final String NODE_KEY = "node";
+	@PropertyIdentifier(type = ScriptSemanticsAnalyzer.class)
+	public static final String SCRIPT_SEMANTICS_ANALYZER_KEY = "scriptSemanticsAnalyzer";
+	@PropertyIdentifier(type = AbstractCommand.class, cardinality = Cardinality.LIST)
+	public static final String COMMANDS_KEY = "commands";
 
-	private Node node;
-	private ScriptSemanticsAnalyzer scriptSemanticsAnalyzer;
+	@Initializer
+	void create(@Parameter(NODE_KEY) Node node, @Parameter(SCRIPT_SEMANTICS_ANALYZER_KEY) ScriptSemanticsAnalyzer scriptSemanticsAnalyzer);
 
-	private List<AbstractCommand> commands;
+	@Getter(value = NODE_KEY, ignoreType = true)
+	public Node getNode();
 
-	public FMLScript(Node node, ScriptSemanticsAnalyzer scriptSemanticsAnalyzer) {
-		this.node = node;
-		this.scriptSemanticsAnalyzer = scriptSemanticsAnalyzer;
-		commands = new ArrayList<>();
-	}
+	@Getter(value = SCRIPT_SEMANTICS_ANALYZER_KEY, ignoreType = true)
+	public ScriptSemanticsAnalyzer getScriptSemanticsAnalyzer();
 
-	public Node getNode() {
-		return node;
-	}
+	@Getter(value = COMMANDS_KEY, cardinality = Cardinality.LIST)
+	public List<AbstractCommand<?>> getCommands();
 
-	public ScriptSemanticsAnalyzer getScriptSemanticsAnalyzer() {
-		return scriptSemanticsAnalyzer;
-	}
+	@Adder(COMMANDS_KEY)
+	public void addToCommands(AbstractCommand<?> aCommand);
 
-	public AbstractCommandInterpreter getCommandInterpreter() {
-		return getScriptSemanticsAnalyzer().getCommandInterpreter();
-	}
+	@Remover(COMMANDS_KEY)
+	public void removeFromCommands(AbstractCommand<?> aCommand);
 
-	public PrintStream getOutStream() {
-		return getCommandInterpreter().getOutStream();
-	}
+	public void execute() throws ExecutionException;
 
-	public PrintStream getErrStream() {
-		return getCommandInterpreter().getErrStream();
-	}
+	public static abstract class FMLScriptImpl extends FlexoObjectImpl implements FMLScript {
 
-	public List<AbstractCommand> getCommands() {
-		return commands;
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(FMLScript.class.getPackage().getName());
 
-	public void addToCommands(AbstractCommand command) {
-		commands.add(command);
-	}
-
-	/**
-	 * Execute this {@link FMLScript}
-	 * 
-	 */
-	public void execute() {
-		for (AbstractCommand command : getCommands()) {
-			logger.info(">>> Execute " + command);
-			getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);
-			command.execute();
+		public AbstractCommandInterpreter getCommandInterpreter() {
+			return getScriptSemanticsAnalyzer().getCommandInterpreter();
 		}
-	}
 
+		public PrintStream getOutStream() {
+			return getCommandInterpreter().getOutStream();
+		}
+
+		public PrintStream getErrStream() {
+			return getCommandInterpreter().getErrStream();
+		}
+
+		@Override
+		public void addToCommands(AbstractCommand command) {
+			AbstractCommand lastCommand = getCommands().size() > 0 ? getCommands().get(getCommands().size() - 1) : null;
+			performSuperAdder(COMMANDS_KEY, command);
+			if (lastCommand != null) {
+				command.setParentCommand(lastCommand);
+			}
+			command.init();
+		}
+
+		/**
+		 * Execute this {@link FMLScript}
+		 * 
+		 * @throws ExecutionException
+		 * 
+		 */
+		@Override
+		public void execute() throws ExecutionException {
+			for (AbstractCommand command : getCommands()) {
+				logger.info(">>> Execute " + command);
+				getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);
+				command.execute();
+			}
+		}
+
+	}
 }

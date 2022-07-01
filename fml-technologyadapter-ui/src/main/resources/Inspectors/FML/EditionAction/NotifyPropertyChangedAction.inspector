@@ -12,7 +12,7 @@
 			<Label label="object_to_notify" index="2" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" name="ObjectBS" index="3" data="data.object"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />

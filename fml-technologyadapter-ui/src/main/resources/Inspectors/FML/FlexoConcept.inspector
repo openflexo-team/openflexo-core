@@ -91,7 +91,7 @@
 				<IconColumn data="controller.iconForObject(iterator)"
 					title="icon" columnWidth="30" resizable="false" displayTitle="false"
 					name="icon" />
-				<CustomColumn componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				<CustomColumn componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 					customRendering="false" disableTerminateEditOnFocusLost="false"
 					data="iterator.constraint" title="constraint" columnWidth="80"
 					resizable="true" displayTitle="true" name="value">

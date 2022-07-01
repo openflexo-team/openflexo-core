@@ -42,10 +42,12 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.parser.node.APwdDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents #pwd directive in FML command-line interpreter
@@ -55,25 +57,26 @@ import org.openflexo.foundation.fml.parser.node.APwdDirective;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(PwdDirective.PwdDirectiveImpl.class)
 @DirectiveDeclaration(keyword = "pwd", usage = "pwd", description = "Print working directory", syntax = "pwd")
-public class PwdDirective extends Directive {
+public interface PwdDirective extends Directive<APwdDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PwdDirective.class.getPackage().getName());
+	public static abstract class PwdDirectiveImpl extends DirectiveImpl<APwdDirective> implements PwdDirective {
 
-	public PwdDirective(APwdDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(PwdDirective.class.getPackage().getName());
 
-	@Override
-	public String toString() {
-		return "pwd";
-	}
+		@Override
+		public String toString() {
+			return "pwd";
+		}
 
-	@Override
-	public File execute() {
-		super.execute();
-		getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
-		return getCommandInterpreter().getWorkingDirectory();
+		@Override
+		public File execute() throws ExecutionException {
+			super.execute();
+			getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
+			return getCommandInterpreter().getWorkingDirectory();
+		}
 	}
 }

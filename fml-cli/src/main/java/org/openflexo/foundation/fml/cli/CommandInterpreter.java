@@ -35,6 +35,7 @@ import org.jboss.jreadline.util.ANSI;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 
 /**
@@ -171,6 +172,10 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 
 	}
 
+	public DataInputStream getInStream() {
+		return inStream;
+	}
+
 	/**
 	 * Starts the interactive session. When running the user should see the "Ready." prompt. The session ends when the user types the
 	 * <code>byte</code> command.
@@ -202,12 +207,14 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 			}
 
 			try {
-				AbstractCommand command = executeCommand(line.getBuffer());
+				/*AbstractCommand<?> command =*/ executeCommand(line.getBuffer());
 				if (isStopping) {
 					break;
 				}
 			} catch (ParseException e) {
-				System.err.println(e.getMessage());
+				getErrStream().println(e.getMessage());
+			} catch (ExecutionException e) {
+				getErrStream().println(e.getMessage());
 			}
 
 			/*if (line.getBuffer().equalsIgnoreCase("quit") || line.getBuffer().equalsIgnoreCase("exit")
@@ -314,7 +321,7 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 
 	@Override
 	public void displayHistory() {
-		for (AbstractCommand command : getHistory()) {
+		for (AbstractCommand<?> command : getHistory()) {
 			getOutStream().println(command.toString());
 		}
 	}

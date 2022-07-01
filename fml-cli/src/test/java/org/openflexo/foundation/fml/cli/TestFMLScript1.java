@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.cli;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -50,6 +49,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -81,19 +81,28 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 	@Test
 	@TestOrder(1)
 	public void initServiceManager() throws ParseException, ModelDefinitionException, IOException {
+
+		// System.out.println("Prout: " + new File(System.getProperty("user.dir")));
+		// System.out.println("Home: " + HOME_DIR);
+		// System.exit(-1);
+
 		instanciateTestServiceManager();
 
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
 		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err,
-				new File(System.getProperty("user.dir")));
+				HOME_DIR /*new File(System.getProperty("user.dir"))*/);
 
 		rcService = commandInterpreter.getServiceManager().getResourceCenterService();
 		FlexoResourceCenter<?> existingResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
 		logger.info("Copying all files from " + existingResourcesRC);
 		testResourcesRC = makeNewDirectoryResourceCenterFromExistingResourceCenter(serviceManager, existingResourcesRC);
 		logger.info("Now working with " + testResourcesRC);
+
+		System.out.println("Working from " + commandInterpreter.getWorkingDirectory());
+		// System.exit(-1);
+
 	}
 
 	@Test
@@ -105,7 +114,7 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 
 		// System.out.println(FileUtils.fileContents(((FileResourceImpl) fmlFile).getFile()));
 
-		script = testFMLScript(fmlFile, commandInterpreter);
+		script = parseFMLScript(fmlFile, commandInterpreter);
 		// assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 	}
 
@@ -114,7 +123,9 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 	public void checkScript() throws ParseException, ModelDefinitionException, IOException {
 		log("Check script");
 
-		assertEquals(23, script.getCommands().size());
+		checkFMLScript("TestFMLScript1.fmlscript", script);
+
+		assertEquals(19, script.getCommands().size());
 		for (AbstractCommand command : script.getCommands()) {
 			System.out.println("Check " + command + " with " + command.getNode() + " of " + command.getNode().getClass());
 			assertEquals(command.getOriginalCommandAsString(), command.toString());
@@ -124,7 +135,7 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void executeScript() throws ParseException, ModelDefinitionException, IOException {
+	public void executeScript() throws ParseException, ModelDefinitionException, IOException, ExecutionException {
 		log("Execute script");
 
 		script.execute();

@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
+import org.openflexo.p2pp.RawSource;
 
 /**
  * This class provides the parsing service for FML commands. This includes syntactic and semantics analyzer.<br>
@@ -70,9 +71,11 @@ public class CommandParser {
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
 	 */
-	public static AbstractCommand parse(String aCommand, AbstractCommandInterpreter commandInterpreter) throws ParseException {
+	public static AbstractCommand<?> parse(String aCommand, AbstractCommandInterpreter commandInterpreter) throws ParseException {
 		try {
 			// System.out.println("Parsing: " + anExpression);
+
+			RawSource rawSource = new RawSource(new StringReader(aCommand));
 
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(new StringReader(aCommand)), EntryPointKind.Command));
@@ -82,7 +85,7 @@ public class CommandParser {
 
 			// Apply the semantics analyzer.
 			if (commandInterpreter != null) {
-				CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter, tree);
+				CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter, tree, rawSource);
 				tree.apply(t);
 				return t.getCommand();
 			}

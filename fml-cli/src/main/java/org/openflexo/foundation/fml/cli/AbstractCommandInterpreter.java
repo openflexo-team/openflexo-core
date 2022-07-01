@@ -30,13 +30,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.SettableBindingEvaluationContext;
+import org.openflexo.connie.expr.ExpressionEvaluator;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
@@ -45,16 +47,21 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand.CommandTokenType;
+import org.openflexo.foundation.fml.cli.command.CommandTokenType;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
 import org.openflexo.foundation.fml.cli.command.DeclareCommands;
 import org.openflexo.foundation.fml.cli.command.DeclareDirective;
 import org.openflexo.foundation.fml.cli.command.DeclareDirectives;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -65,6 +72,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * FML command-line interpreter<br>
@@ -73,7 +81,9 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * 
  */
 public abstract class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImplementation
-		implements Bindable, SettableBindingEvaluationContext {
+		implements Bindable, RunTimeEvaluationContext {
+
+	private static final Logger logger = Logger.getLogger(AbstractCommandInterpreter.class.getPackage().getName());
 
 	private File workingDirectory;
 	private FlexoServiceManager serviceManager;
@@ -93,6 +103,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	private List<AbstractCommand> history;
 
+	private Map<BindingVariable, Object> values = new HashMap<>();
+
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
 	 * 
@@ -102,6 +114,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			throws IOException {
 
 		this.serviceManager = serviceManager;
+
+		serviceManager.getResourceCenterService().addToAvailableServiceOperations(new CdResourceCenter());
 
 		history = new ArrayList<>();
 
@@ -201,16 +215,16 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		}
 	}
 
-	private List<Class<? extends Directive>> availableDirectives = null;
+	private List<Class<? extends Directive<?>>> availableDirectives = null;
 
-	public List<Class<? extends Directive>> getAvailableDirectives() {
+	public List<Class<? extends Directive<?>>> getAvailableDirectives() {
 		if (availableDirectives == null) {
 			availableDirectives = new ArrayList<>();
 			if (Directive.class.isAnnotationPresent(DeclareDirectives.class)) {
 				DeclareDirectives allDirectives = Directive.class.getAnnotation(DeclareDirectives.class);
 				for (DeclareDirective declareDirective : allDirectives.value()) {
 					if (!availableDirectives.contains(declareDirective.value())) {
-						availableDirectives.add(declareDirective.value());
+						availableDirectives.add((Class) declareDirective.value());
 					}
 				}
 			}
@@ -218,16 +232,16 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		return availableDirectives;
 	}
 
-	private List<Class<? extends FMLCommand>> availableCommands = null;
+	private List<Class<? extends FMLCommand<?>>> availableCommands = null;
 
-	public List<Class<? extends FMLCommand>> getAvailableCommands() {
+	public List<Class<? extends FMLCommand<?>>> getAvailableCommands() {
 		if (availableCommands == null) {
 			availableCommands = new ArrayList<>();
 			if (FMLCommand.class.isAnnotationPresent(DeclareCommands.class)) {
 				DeclareCommands allCommands = FMLCommand.class.getAnnotation(DeclareCommands.class);
 				for (DeclareCommand declareCommand : allCommands.value()) {
 					if (!availableCommands.contains(declareCommand.value())) {
-						availableCommands.add(declareCommand.value());
+						availableCommands.add((Class) declareCommand.value());
 					}
 				}
 			}
@@ -235,11 +249,11 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		return availableCommands;
 	}
 
-	public AbstractCommand executeCommand(String commandString) throws ParseException {
+	public AbstractCommand executeCommand(String commandString) throws ParseException, ExecutionException {
 		AbstractCommand command = makeCommand(commandString);
 		// System.out.println("Typed: " + commandString + " command=" + command);
 		if (command != null) {
-			if (command.isValid()) {
+			if (command.isSyntaxicallyValid()) {
 				command.execute();
 			}
 			else {
@@ -309,17 +323,17 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			return returned;*/
 		}
 
-		if (tokens.size() == 3 && tokens.get(1).equals(":=")) {
+		/*if (tokens.size() == 3 && tokens.get(1).equals(":=")) {
 			System.out.println("Yes une assignation");
 		}
-
+		
 		if (tokens.size() == 3 && tokens.get(1).equals("=")) {
 			System.out.println("Yes une assignation2");
 		}
-
+		
 		if (tokens.size() == 1 && tokens.get(0).contains("=")) {
 			System.out.println("Yes une assignation3");
-		}
+		}*/
 
 		if (tokens.size() == 1) {
 			// completion for a unique token
@@ -364,13 +378,45 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	private List<String> getAvailableCompletion(DirectiveDeclaration directiveDeclaration, String startingBuffer) {
-		String syntax = directiveDeclaration.syntax();
+		if (directiveDeclaration.keyword().equals("service")) {
+			List<String> tokens = tokenize(startingBuffer);
+			if (tokens.size() > 1 && tokens.get(1).equals("TechnologyAdapterService")) {
+				return getAvailableCompletionForService(getServiceManager().getTechnologyAdapterService(), directiveDeclaration,
+						startingBuffer);
+			}
+			if (tokens.size() > 1 && tokens.get(1).equals("ResourceCenterService")) {
+				return getAvailableCompletionForService(getServiceManager().getResourceCenterService(), directiveDeclaration,
+						startingBuffer);
+			}
+		}
+		return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
+	}
+
+	private List<String> getAvailableCompletionForService(FlexoService service, DirectiveDeclaration directiveDeclaration,
+			String startingBuffer) {
+		String operation = null;
+		List<String> tokens = tokenize(startingBuffer);
+		if (tokens.size() > 2) {
+			operation = tokens.get(2);
+		}
+		if (StringUtils.isNotEmpty(operation)) {
+			for (ServiceOperation serviceOperation : service.getAvailableServiceOperations()) {
+				if (serviceOperation.getOperationName().equals(operation)) {
+					String syntax = serviceOperation.getSyntax(service);
+					return getAvailableCompletion(syntax, directiveDeclaration, startingBuffer);
+				}
+			}
+		}
+		return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
+	}
+
+	private List<String> getAvailableCompletion(String syntax, DirectiveDeclaration directiveDeclaration, String startingBuffer) {
+
 		List<String> globalSyntax = tokenize(syntax);
 
-		// System.out.println("OK on cherche toutes les completions pour toutes les syntaxes possibles");
-		// System.out.println("syntax=" + syntax);
-		// System.out.println("expectedSyntax=" + globalSyntax);
-		// System.out.println("expectedSyntax.size=" + globalSyntax.size());
+		// System.out.println("Completion for syntax " + syntax);
+		/*System.out.println("expectedSyntax=" + globalSyntax);
+		System.out.println("expectedSyntax.size=" + globalSyntax.size());*/
 
 		if (globalSyntax.get(0).equals(directiveDeclaration.keyword())) {
 			int i = 1;
@@ -390,11 +436,9 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			if (current.size() > 0) {
 				expectedSyntaxes.add(current);
 			}
-			// System.out.println("Et donc: " + expectedSyntaxes);
 			List<String> returned = new ArrayList<>();
 			for (List<String> expectedSyntax : expectedSyntaxes) {
 				List<String> someCompletions = getAvailableCompletionForSyntax(directiveDeclaration, startingBuffer, expectedSyntax);
-				// System.out.println("A ajouter: " + someCompletions);
 				returned.addAll(someCompletions);
 			}
 			return returned;
@@ -408,7 +452,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	private List<String> getAvailableCompletionForSyntax(DirectiveDeclaration directiveDeclaration, String startingBuffer,
 			List<String> expectedSyntax) {
-		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
+		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration + "expectedSyntax:" + expectedSyntax);
 
 		List<String> tokens = tokenize(startingBuffer);
 		int index = tokens.size() - 1;
@@ -437,6 +481,13 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private List<String> getAvailableCompletionForToken(String currentToken, String expectedTokenSyntax,
 			DirectiveDeclaration directiveDeclaration, String startingBuffer, String previousToken) {
 		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
+
+		// System.out.println("getAvailableCompletionForToken currentToken=" + currentToken + " expectedTokenSyntax=" +
+		// expectedTokenSyntax);
+
+		/*if (expectedTokenSyntax.startsWith("-")) {
+			return Collections.singletonList(expectedTokenSyntax);
+		}*/
 
 		if (expectedTokenSyntax.contains(("|"))) {
 			StringTokenizer st = new StringTokenizer(expectedTokenSyntax, "|");
@@ -482,15 +533,15 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				}
 				return returned;
 			/*case LocalReference:
-				// if (getFocusedObject() == null) {
-				for (File f : getWorkingDirectory().listFiles()) {
-					// System.out.println("On rajoute " + f.getName());
-					if (f.getName().startsWith(currentToken)
-							&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
-						returned.add(f.getName());
-					}
-				}
-				// }
+			// if (getFocusedObject() == null) {
+			for (File f : getWorkingDirectory().listFiles()) {
+			// System.out.println("On rajoute " + f.getName());
+			if (f.getName().startsWith(currentToken)
+					&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+				returned.add(f.getName());
+			}
+			}
+			// }
 			//				else {
 			//					for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
 			//						if (CLIUtils.denoteObject(contained).startsWith(currentToken)) {
@@ -498,7 +549,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			//						}
 			//					}
 			//				}
-				return returned;*/
+			return returned;*/
 			case Path:
 				for (File f : getWorkingDirectory().listFiles()) {
 					// System.out.println("On rajoute " + f.getName());
@@ -580,6 +631,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	@Override
 	public Object getValue(BindingVariable variable) {
+
 		if (variable == focusedBindingVariable) {
 			return getFocusedObject();
 		}
@@ -604,16 +656,39 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 	}
 
-	private Map<BindingVariable, Object> values = new HashMap<>();
+	/**
+	 * Return a {@link Map} containing all values beeing stored in current {@link CommandInterpreter}
+	 * 
+	 * Take care that some values may be associated to some BindingVariable declared outside this scope, but in another command
+	 * 
+	 * @return
+	 */
+	public Map<BindingVariable, Object> getValues() {
+		return values;
+	}
 
 	public void declareVariable(String variableName, Type type, Object value) {
+		BindingVariable variable = declareVariable(variableName, type);
+		setVariableValue(variable, value);
+	}
+
+	public BindingVariable declareVariable(String variableName, Type type) {
 		// System.out.println(variableName + "<-" + value + "[" + TypeUtils.simpleRepresentation(type) + "]");
 		BindingVariable variable = getBindingModel().getBindingVariableNamed(variableName);
 		if (variable == null) {
 			variable = new BindingVariable(variableName, type);
 			getBindingModel().addToBindingVariables(variable);
 		}
-		setValue(value, variable);
+		return variable;
+	}
+
+	public void setVariableValue(BindingVariable variable, Object value) {
+		if (variable != null) {
+			setValue(value, variable);
+		}
+		else {
+			logger.warning("Null variable");
+		}
 	}
 
 	/**
@@ -621,10 +696,12 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	 * 
 	 * @return
 	 */
+	@Override
 	public FlexoObject getFocusedObject() {
 		if (!focusedObjects.isEmpty()) {
 			return focusedObjects.peek();
 		}
+		System.out.println("Je peux aussi retourner le directory " + getWorkingDirectory());
 		return null;
 	}
 
@@ -713,4 +790,62 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	public void willExecute(AbstractCommand command) {
 		history.add(command);
 	}
+
+	@Override
+	public ExpressionEvaluator getEvaluator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FMLRunTimeEngine getFMLRunTimeEngine() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FlexoEditor getEditor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FlexoConceptInstance getFlexoConceptInstance() {
+		if (getFocusedObject() instanceof FlexoConceptInstance) {
+			return (FlexoConceptInstance) getFocusedObject();
+		}
+		return null;
+	}
+
+	@Override
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance) getFlexoConceptInstance();
+		}
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getOwningVirtualModelInstance();
+		}
+		return null;
+	}
+
+	@Override
+	public void declareVariable(String variableName, Object value) {
+		// TODO Harmonize API with RunTimeEvaluationContext (see declareVariable(String,Type))
+	}
+
+	@Override
+	public void dereferenceVariable(String variableName) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void logOut(String message, LogLevel logLevel) {
+		getOutStream().println(message);
+	}
+
+	@Override
+	public void logErr(String message, LogLevel logLevel) {
+		getErrStream().println(message);
+	}
+
 }

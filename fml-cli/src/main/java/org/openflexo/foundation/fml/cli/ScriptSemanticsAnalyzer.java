@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.parser.FragmentManager;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class implements the main semantics analyzer for a parsed FML compilation unit.<br>
@@ -57,6 +58,7 @@ import org.openflexo.p2pp.RawSource;
  */
 public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ScriptSemanticsAnalyzer.class.getPackage().getName());
 
 	private final AbstractFMLTypingSpace typingSpace;
@@ -70,13 +72,14 @@ public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
 	private FMLScript script;
 
-	public ScriptSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree, RawSource rawSource) {
+	public ScriptSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree, RawSource rawSource)
+			throws ModelDefinitionException {
 		super(commandInterpreter, tree);
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);
 		bindingFactory = new FMLBindingFactory(commandInterpreter.getModelFactory());
 		typingSpace = new FMLScriptTypingSpace(this);
-		script = new FMLScript(tree, this);
+		script = scriptModelFactory.newFMLScript(tree, this);
 	}
 
 	@Override
@@ -101,7 +104,7 @@ public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
 	@Override
 	public Start getRootNode() {
-		return (Start) super.getRootNode();
+		return super.getRootNode();
 	}
 
 	public FMLScript getScript() {
@@ -116,9 +119,12 @@ public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 	}*/
 
 	@Override
-	protected void registerCommand(Node n, AbstractCommand command) {
+	protected void registerCommand(Node n, AbstractCommand<?> command) {
 		System.out.println("Register new command in script: " + command);
 		script.addToCommands(command);
+		/*if (command instanceof FMLAssignation) {
+			((FMLAssignation) command).declareVariableWhenRequired();
+		}*/
 	}
 
 }
