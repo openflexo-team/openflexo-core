@@ -163,6 +163,8 @@ public interface FlexoService {
 
 		public String getArgument();
 
+		public String getArgumentOption();
+
 		public List<ServiceOperationOption> getOptions();
 
 		public void execute(S service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options);
@@ -228,6 +230,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getArgumentOption() {
+			return null;
+		}
+
+		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
 		}
@@ -279,6 +286,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getArgumentOption() {
+			return null;
+		}
+
+		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
 		}
@@ -321,6 +333,11 @@ public interface FlexoService {
 
 		@Override
 		public String getArgument() {
+			return null;
+		}
+
+		@Override
+		public String getArgumentOption() {
 			return null;
 		}
 
@@ -373,6 +390,11 @@ public interface FlexoService {
 
 		@Override
 		public String getArgument() {
+			return null;
+		}
+
+		@Override
+		public String getArgumentOption() {
 			return null;
 		}
 

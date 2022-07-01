@@ -145,7 +145,11 @@ public interface LoadResource extends AssignableDirective<ALoadDirective> {
 
 			if (getResultingResource().isLoaded()) {
 				getOutStream().println("Resource " + resource.getURI() + " already loaded");
-				return getResultingResource().getLoadedResourceData();
+				Object returned = getResultingResource().getLoadedResourceData();
+				if (returned instanceof FMLCompilationUnit) {
+					return ((FMLCompilationUnit) returned).getVirtualModel();
+				}
+				return returned;
 			}
 			else {
 				try {

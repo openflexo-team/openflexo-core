@@ -567,6 +567,15 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return new FMLExpressionEvaluator(this);
 		}
 
+		/**
+		 * Implements {@link #getFocusedObject()} of {@link RunTimeEvaluationContext} : local evaluation context is the
+		 * {@link FlexoConceptInstance} itself
+		 */
+		@Override
+		public FlexoObject getFocusedObject() {
+			return this;
+		}
+
 		// TODO: this is not a good idea, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 		private FlexoEditor getFlexoEditor() {
 			if (getResourceCenter() != null && getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
@@ -655,6 +664,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					return getEditor().getFMLRunTimeEngine();
 				}
 				return null;
+			}
+
+			@Override
+			public FlexoObject getFocusedObject() {
+				return getFlexoConceptInstance();
 			}
 
 			@Override

@@ -814,6 +814,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 
 		@Override
+		public String getArgumentOption() {
+			return null;
+		}
+
+		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
 		}

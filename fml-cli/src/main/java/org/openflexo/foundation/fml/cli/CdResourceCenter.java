@@ -55,7 +55,7 @@ public class CdResourceCenter implements ServiceOperation<FlexoResourceCenterSer
 
 	@Override
 	public String usage(FlexoResourceCenterService service) {
-		return "service " + service.getServiceName() + " cd_rc <rc>";
+		return "service " + service.getServiceName() + " cd_rc -r <rc>";
 	}
 
 	@Override
@@ -69,8 +69,13 @@ public class CdResourceCenter implements ServiceOperation<FlexoResourceCenterSer
 	}
 
 	@Override
+	public String getArgumentOption() {
+		return "-r";
+	}
+
+	@Override
 	public String getSyntax(FlexoResourceCenterService service) {
-		return "service " + service.getServiceName() + " " + getOperationName() + " " + getArgument();
+		return "service " + service.getServiceName() + " " + getOperationName() + " -r " + getArgument();
 	}
 
 	@Override

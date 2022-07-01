@@ -323,17 +323,17 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			return returned;*/
 		}
 
-		if (tokens.size() == 3 && tokens.get(1).equals(":=")) {
+		/*if (tokens.size() == 3 && tokens.get(1).equals(":=")) {
 			System.out.println("Yes une assignation");
 		}
-
+		
 		if (tokens.size() == 3 && tokens.get(1).equals("=")) {
 			System.out.println("Yes une assignation2");
 		}
-
+		
 		if (tokens.size() == 1 && tokens.get(0).contains("=")) {
 			System.out.println("Yes une assignation3");
-		}
+		}*/
 
 		if (tokens.size() == 1) {
 			// completion for a unique token
@@ -390,37 +390,6 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			}
 		}
 		return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
-
-		/*if (directiveDeclaration.keyword().equals("service")) {
-			String operation = null;
-			List<String> tokens = tokenize(startingBuffer);
-			// System.out.println("tokens=" + tokens);
-			if (tokens.size() > 2) {
-				operation = tokens.get(2);
-			}
-			if (StringUtils.isNotEmpty(operation)) {
-				for (ServiceOperation serviceOperation : getServiceManager().getResourceCenterService().getAvailableServiceOperations()) {
-					if (serviceOperation.getOperationName().equals(operation)) {
-						String syntax = serviceOperation.getSyntax(getServiceManager().getResourceCenterService());
-						return getAvailableCompletion(syntax, directiveDeclaration, startingBuffer);
-					}
-				}
-				// return null;
-			}
-			return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
-			// else {
-			// List<String> returned = new ArrayList<>();
-			// for (ServiceOperation serviceOperation : getServiceManager().getResourceCenterService().getAvailableServiceOperations()) {
-			// String syntax = serviceOperation.getSyntax(getServiceManager().getResourceCenterService());
-			// // System.out.println("search syntax=" + syntax);
-			// returned.addAll(getAvailableCompletion(syntax, directiveDeclaration, startingBuffer));
-			// }
-			// return returned;
-			// }
-		}
-		else {
-			return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
-		}*/
 	}
 
 	private List<String> getAvailableCompletionForService(FlexoService service, DirectiveDeclaration directiveDeclaration,
@@ -437,7 +406,6 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 					return getAvailableCompletion(syntax, directiveDeclaration, startingBuffer);
 				}
 			}
-			// return null;
 		}
 		return getAvailableCompletion(directiveDeclaration.syntax(), directiveDeclaration, startingBuffer);
 	}
@@ -446,11 +414,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 		List<String> globalSyntax = tokenize(syntax);
 
-		// System.out.println("On cherche pour la syntaxe " + syntax);
-
-		/*System.out.println("OK on cherche toutes les completions pour toutes les syntaxes possibles");
-		System.out.println("syntax=" + syntax);
-		System.out.println("expectedSyntax=" + globalSyntax);
+		// System.out.println("Completion for syntax " + syntax);
+		/*System.out.println("expectedSyntax=" + globalSyntax);
 		System.out.println("expectedSyntax.size=" + globalSyntax.size());*/
 
 		if (globalSyntax.get(0).equals(directiveDeclaration.keyword())) {
@@ -471,11 +436,9 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			if (current.size() > 0) {
 				expectedSyntaxes.add(current);
 			}
-			// System.out.println("Et donc: " + expectedSyntaxes);
 			List<String> returned = new ArrayList<>();
 			for (List<String> expectedSyntax : expectedSyntaxes) {
 				List<String> someCompletions = getAvailableCompletionForSyntax(directiveDeclaration, startingBuffer, expectedSyntax);
-				// System.out.println("A ajouter: " + someCompletions);
 				returned.addAll(someCompletions);
 			}
 			return returned;
@@ -518,6 +481,13 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private List<String> getAvailableCompletionForToken(String currentToken, String expectedTokenSyntax,
 			DirectiveDeclaration directiveDeclaration, String startingBuffer, String previousToken) {
 		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
+
+		// System.out.println("getAvailableCompletionForToken currentToken=" + currentToken + " expectedTokenSyntax=" +
+		// expectedTokenSyntax);
+
+		/*if (expectedTokenSyntax.startsWith("-")) {
+			return Collections.singletonList(expectedTokenSyntax);
+		}*/
 
 		if (expectedTokenSyntax.contains(("|"))) {
 			StringTokenizer st = new StringTokenizer(expectedTokenSyntax, "|");

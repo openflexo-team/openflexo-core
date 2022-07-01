@@ -70,6 +70,7 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
@@ -262,6 +263,10 @@ public interface CreationSchemePathElement extends FMLObject, NewInstancePathEle
 				}
 
 				if (container == null) {
+					if (evaluationContext instanceof RunTimeEvaluationContext) {
+						System.out.println("Je trouve le contexte: " + ((RunTimeEvaluationContext) evaluationContext).getFocusedObject());
+						System.exit(-1);
+					}
 					throw new NullReferenceException("Unable to find executable context for " + this);
 				}
 

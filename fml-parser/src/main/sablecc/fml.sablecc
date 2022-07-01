@@ -268,7 +268,7 @@ Tokens
    {normal,binding} kw_match = 'match';
    {normal} kw_model = 'model';
    {normal} kw_namespace = 'namespace';
-   {normal,binding} kw_new = 'new';
+   {normal,binding,command,script} kw_new = 'new';
    {normal} kw_private = 'private';
    {normal} kw_protected = 'protected';
    {normal} kw_public = 'public';
@@ -284,7 +284,7 @@ Tokens
    {normal -> binding} kw_values = 'values';
    {normal,binding} kw_where = 'where';
    {normal} kw_while = 'while';
-   {normal} kw_with = 'with';
+   {normal,command,script} kw_with = 'with';
 
    // Types
    ty_boolean = 'boolean';
