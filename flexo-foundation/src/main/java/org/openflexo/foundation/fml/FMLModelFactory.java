@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.binding.AbstractCreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
@@ -747,6 +748,18 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
 		returned.setParent(parent);
 		returned.setPropertyName(modelSlotName);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public <CSPE extends AbstractCreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(
+			Class<CSPE> abstractCreationSchemeClass, FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName,
+			List<DataBinding<?>> args, Bindable bindable) {
+		CSPE returned = (CSPE) newInstance(abstractCreationSchemeClass);
+		returned.setType(type);
+		returned.setParent(parent);
+		returned.setMethodName(constructorName);
+		returned.setArguments(args);
 		returned.setBindable(bindable);
 		return returned;
 	}
