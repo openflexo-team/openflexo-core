@@ -41,7 +41,6 @@ package org.openflexo.foundation;
 
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.openflexo.toolbox.StringUtils;
@@ -163,9 +162,7 @@ public interface FlexoService {
 
 		public String getArgument();
 
-		public String getArgumentOption();
-
-		public List<ServiceOperationOption> getOptions();
+		// public List<ServiceOperationOption> getOptions();
 
 		public void execute(S service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options);
 
@@ -229,15 +226,15 @@ public interface FlexoService {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public String getArgumentOption() {
 			return null;
 		}
-
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -285,15 +282,15 @@ public interface FlexoService {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public String getArgumentOption() {
 			return null;
 		}
-
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -336,15 +333,15 @@ public interface FlexoService {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public String getArgumentOption() {
 			return null;
 		}
-
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -393,15 +390,15 @@ public interface FlexoService {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public String getArgumentOption() {
 			return null;
 		}
-
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {

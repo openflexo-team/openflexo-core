@@ -752,15 +752,15 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			return "<path>";
 		}
 
-		@Override
+		/*@Override
 		public String getArgumentOption() {
 			return "-d";
 		}
-
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {

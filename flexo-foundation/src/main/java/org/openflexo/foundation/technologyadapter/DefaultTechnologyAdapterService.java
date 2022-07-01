@@ -790,12 +790,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 		@Override
 		public String getOperationName() {
-			return "activate";
+			return "activate_ta";
 		}
 
 		@Override
 		public String usage(TechnologyAdapterService service) {
-			return "service " + service.getServiceName() + " activate <ta>";
+			return "service " + service.getServiceName() + " activate_ta <ta>";
 		}
 
 		@Override
@@ -813,15 +813,15 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			return "<ta>";
 		}
 
-		@Override
+		/*@Override
 		public String getArgumentOption() {
 			return null;
 		}
-
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(TechnologyAdapterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {

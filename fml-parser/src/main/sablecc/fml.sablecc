@@ -235,6 +235,7 @@ Tokens
    {command,script} assert = 'assert';
  
    // options
+   {command,script} minus_rc = '-rc';
    {command,script} minus_r = '-r';
    {command,script} minus_d = '-d';
    {command,script} minus_f = '-f';
@@ -393,7 +394,8 @@ Productions
      {expression}       expression |
      {directory_path}   minus_d path |
      {file_path}        minus_f path |
-     {reference_by_uri} minus_r reference_by_uri;
+     {resource}         minus_r reference_by_uri |
+     {resource_center}  minus_rc reference_by_uri;
 
    resources_directive =
      {exhaustive} resources |

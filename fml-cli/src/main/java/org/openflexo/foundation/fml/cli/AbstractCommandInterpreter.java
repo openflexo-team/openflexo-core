@@ -485,8 +485,43 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		// System.out.println("getAvailableCompletionForToken currentToken=" + currentToken + " expectedTokenSyntax=" +
 		// expectedTokenSyntax);
 
-		/*if (expectedTokenSyntax.startsWith("-")) {
-			return Collections.singletonList(expectedTokenSyntax);
+		if (expectedTokenSyntax.equals("-f") || expectedTokenSyntax.equals("-d") || expectedTokenSyntax.equals("-r")
+				|| expectedTokenSyntax.equals("-rc")) {
+
+			// if (expectedTokenSyntax.startsWith("-") && expectedTokenSyntax.length() == 2) {
+			// This an option -d -f or -r
+			/*System.out.println("Ok je suis la avec");
+			System.out.println("syntax=" + expectedTokenSyntax);
+			System.out.println("currentToken=" + currentToken);
+			System.out.println("startingBuffer=" + startingBuffer);
+			System.out.println("previousToken=" + previousToken);*/
+
+			if (startingBuffer.endsWith("-r") && expectedTokenSyntax.equals("-rc")) {
+				startingBuffer = startingBuffer + expectedTokenSyntax.substring(2) + " ";
+			}
+			else if (startingBuffer.endsWith("-")) {
+				startingBuffer = startingBuffer + expectedTokenSyntax.substring(1) + " ";
+			}
+			else {
+				startingBuffer = startingBuffer + expectedTokenSyntax + " ";
+			}
+
+			if (expectedTokenSyntax.equals("-d") || expectedTokenSyntax.equals("-f")) {
+				return getAvailableCompletionForTokenTypeAndStartingBuffer("", CommandTokenType.Path, startingBuffer, expectedTokenSyntax);
+			}
+			if (expectedTokenSyntax.equals("-rc")) {
+				return getAvailableCompletionForTokenTypeAndStartingBuffer("", CommandTokenType.RC, startingBuffer, expectedTokenSyntax);
+			}
+			if (expectedTokenSyntax.equals("-r")) {
+				return getAvailableCompletionForTokenTypeAndStartingBuffer("", CommandTokenType.Resource, startingBuffer,
+						expectedTokenSyntax);
+			}
+		}
+
+		/*if (expectedTokenSyntax.equals("-d")) {
+			// System.out.println("Et hop");
+			return getAvailableCompletionForTokenTypeAndStartingBuffer("", CommandTokenType.Path, startingBuffer + "-d ", "-d");
+		
 		}*/
 
 		if (expectedTokenSyntax.contains(("|"))) {
@@ -537,8 +572,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			for (File f : getWorkingDirectory().listFiles()) {
 			// System.out.println("On rajoute " + f.getName());
 			if (f.getName().startsWith(currentToken)
-					&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
-				returned.add(f.getName());
+				&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+			returned.add(f.getName());
 			}
 			}
 			// }

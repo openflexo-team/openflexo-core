@@ -38,11 +38,9 @@
 package org.openflexo.foundation.fml.cli;
 
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Map;
 
 import org.openflexo.foundation.FlexoService.ServiceOperation;
-import org.openflexo.foundation.FlexoService.ServiceOperationOption;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 
@@ -55,7 +53,7 @@ public class CdResourceCenter implements ServiceOperation<FlexoResourceCenterSer
 
 	@Override
 	public String usage(FlexoResourceCenterService service) {
-		return "service " + service.getServiceName() + " cd_rc -r <rc>";
+		return "service " + service.getServiceName() + " cd_rc -rc <rc>";
 	}
 
 	@Override
@@ -68,20 +66,20 @@ public class CdResourceCenter implements ServiceOperation<FlexoResourceCenterSer
 		return "<rc>";
 	}
 
-	@Override
+	/*@Override
 	public String getArgumentOption() {
 		return "-r";
-	}
+	}*/
 
 	@Override
 	public String getSyntax(FlexoResourceCenterService service) {
-		return "service " + service.getServiceName() + " " + getOperationName() + " -r " + getArgument();
+		return "service " + service.getServiceName() + " " + getOperationName() + " -rc " + getArgument();
 	}
 
-	@Override
+	/*@Override
 	public List<ServiceOperationOption> getOptions() {
 		return null;
-	}
+	}*/
 
 	@Override
 	public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
