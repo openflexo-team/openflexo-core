@@ -49,6 +49,7 @@ import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -61,6 +62,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
@@ -90,7 +92,7 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 
 			try {
 
-				FlexoConceptInstance container = null;
+				FlexoObject container = null;
 
 				if (target == null && evaluationContext instanceof FlexoBehaviourAction) {
 					container = ((FlexoBehaviourAction) evaluationContext).getFlexoConceptInstance();
@@ -102,15 +104,22 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 
 				if (container == null) {
 					if (evaluationContext instanceof RunTimeEvaluationContext) {
-						System.out.println("Je trouve le contexte: " + ((RunTimeEvaluationContext) evaluationContext).getFocusedObject());
-						// System.exit(-1);
+						FlexoObject focusedObject = ((RunTimeEvaluationContext) evaluationContext).getFocusedObject();
+						if (focusedObject instanceof RepositoryFolder || focusedObject instanceof FlexoConceptInstance) {
+							container = focusedObject;
+						}
 					}
+				}
+				System.out.println("container=" + container);
+
+				if (container == null) {
 					throw new NullReferenceException("Unable to find executable context for " + this);
 				}
 
 				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
 
 					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
+					System.out.println("vmiName=" + vmiName);
 
 					/*System.out.println("getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
 					System.out.println("valid=" + getVirtualModelInstanceName().isValid());
@@ -120,11 +129,19 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 
 					VirtualModel instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
 
-					// TODO: manage container
-					logger.warning("What about the container ??? " + container);
-
-					CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
-							.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+					CreateBasicVirtualModelInstance createVMIAction;
+					if (evaluationContext instanceof FlexoBehaviourAction) {
+						createVMIAction = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+					}
+					else if (evaluationContext instanceof RunTimeEvaluationContext) {
+						createVMIAction = CreateBasicVirtualModelInstance.actionType.makeNewAction(container, null,
+								((RunTimeEvaluationContext) evaluationContext).getEditor());
+					}
+					else {
+						logger.warning("Invalid evaluation context " + evaluationContext);
+						return null;
+					}
 					createVMIAction.setSkipChoosePopup(true);
 					createVMIAction.setNewVirtualModelInstanceName(vmiName);
 					createVMIAction.setVirtualModel(instantiatedVirtualModel);
@@ -142,14 +159,15 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 					// System.out.println("returned=" + returned);
 					return returned;
 				}
-				else {
-					FlexoConceptInstance newFCI = container.getVirtualModelInstance()
-							.makeNewFlexoConceptInstance(getCreationScheme().getFlexoConcept(), container);
+				else if (container instanceof FlexoConceptInstance) {
+					FlexoConceptInstance containerFCI = (FlexoConceptInstance) container;
+					FlexoConceptInstance newFCI = containerFCI.getVirtualModelInstance()
+							.makeNewFlexoConceptInstance(getCreationScheme().getFlexoConcept(), containerFCI);
 					if (getCreationScheme().getFlexoConcept().getContainerFlexoConcept() != null) {
-						container.addToEmbeddedFlexoConceptInstances(newFCI);
+						containerFCI.addToEmbeddedFlexoConceptInstances(newFCI);
 					}
 
-					if (performExecuteCreationScheme(newFCI, container.getVirtualModelInstance(), evaluationContext)) {
+					if (performExecuteCreationScheme(newFCI, containerFCI.getVirtualModelInstance(), evaluationContext)) {
 						if (logger.isLoggable(Level.FINE)) {
 							logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
 						}
@@ -158,6 +176,9 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 					else {
 						logger.warning("Failing execution of creationScheme: " + getCreationScheme());
 					}
+				}
+				else {
+					logger.warning("Do not know what to do with: " + container);
 				}
 
 			} catch (IllegalArgumentException e) {
