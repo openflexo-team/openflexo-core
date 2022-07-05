@@ -82,9 +82,6 @@ public class FlexoActionButton<A extends FlexoAction<A, T1, T2>, T1 extends Flex
 			}
 		}
 		addActionListener(action);
-		if (controller.getApplicationContext().getDocResourceManager() != null) {
-			controller.getApplicationContext().getDocResourceManager().setHelpItem(this, action.getActionType().getUnlocalizedName());
-		}
 	}
 
 	private FlexoEditor getEditor() {

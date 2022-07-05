@@ -317,8 +317,6 @@ public class Flexo {
 		logger.info("Starting on " + ToolBox.getPLATFORM() + "... JVM version is " + System.getProperty("java.version"));
 		logger.info("Working directory is " + new File(".").getAbsolutePath());
 		logger.info("Heap memory is about: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024) + "Mb");
-		applicationContext.getModuleLoader()
-				.setAllowsDocSubmission(isDev || applicationContext.getAdvancedPrefs().getAllowsDocSubmission());
 		logger.info("Launching FLEXO Application Suite version " + FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + "...");
 		if (!isDev) {
 			registerShutdownHook();

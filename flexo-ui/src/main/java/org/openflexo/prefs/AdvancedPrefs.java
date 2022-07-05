@@ -102,18 +102,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	public static final String SHOW_ALL_TABS = "show_all_tabs";
 	public static final String PREFERENCE_OVERRIDE_FROM_FLEXO_PROPERTIES_DONE = "preference_override_from_flexo_properties_done";
 
-	public static final String ALLOWSDOCSUBMISSION = "allowsDocSubmission";
-
-	/*@Override
-	public String getName() {
-		return "advanced";
-	}
-	
-	@Override
-	public File getInspectorFile() {
-		return new FileResource("Config/Preferences/AdvancedPrefs.inspector");
-	}*/
-
 	@Getter(LAST_VISITED_DIRECTORY_KEY)
 	@XMLAttribute
 	public File getLastVisitedDirectory();
@@ -273,13 +261,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 
 	@Setter(PREFERENCE_OVERRIDE_FROM_FLEXO_PROPERTIES_DONE)
 	public void setPreferenceOverrideFromFlexoPropertiesDone(boolean preferenceOverrideFromFlexoPropertiesDone);
-
-	@Getter(value = ALLOWSDOCSUBMISSION, defaultValue = "false")
-	@XMLAttribute
-	public boolean getAllowsDocSubmission();
-
-	@Setter(ALLOWSDOCSUBMISSION)
-	public void setAllowsDocSubmission(boolean b);
 
 	public abstract class AdvancedPrefsImpl extends PreferencesContainerImpl implements AdvancedPrefs {
 

@@ -43,7 +43,6 @@ import java.io.File;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.br.BugReportService;
-import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
@@ -155,12 +154,6 @@ public class TestApplicationContext extends ApplicationContext {
 
 	@Override
 	public BugReportService createBugReportService() {
-		// not necessary
-		return null;
-	}
-
-	@Override
-	protected DocResourceManager createDocResourceManager() {
 		// not necessary
 		return null;
 	}

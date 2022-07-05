@@ -46,11 +46,8 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.drm.DocItem;
-import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.localization.Language;
 import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
@@ -212,19 +209,6 @@ public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSu
 	}
 
 	public String getHTMLDescription() {
-		DocResourceManager drm = getApplicationContext().getDocResourceManager();
-		if (drm != null) {
-			Language language = drm.getLanguage(getApplicationContext().getGeneralPreferences().getLanguage());
-			DocItem docItem = getApplicationContext().getDocResourceManager().getDocItem(getHelpTopic());
-			if (docItem != null) {
-				if (docItem.getLastApprovedActionForLanguage(language) != null) {
-					String returned = "<html>" + docItem.getLastApprovedActionForLanguage(language).getVersion().getFullHTMLDescription()
-							+ "</html>";
-					return returned;
-				}
-			}
-		}
-
 		return getLocalizedDescription();
 
 		/*return "<html>No description available for <b>" + getLocalizedName() + "</b>" + "<br>"
@@ -260,11 +244,6 @@ public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSu
 
 		Progress.progress("init_module");
 		loadedModuleInstance.initModule();
-		if (getApplicationContext().getDocResourceManager() != null) {
-			Progress.progress("init_help_entry");
-			getApplicationContext().getDocResourceManager().ensureHelpEntryForModuleHaveBeenCreated(loadedModuleInstance);
-		}
-
 		getPropertyChangeSupport().firePropertyChange("loaded", false, true);
 
 		return loadedModuleInstance;

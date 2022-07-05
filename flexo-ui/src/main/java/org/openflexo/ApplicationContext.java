@@ -47,7 +47,6 @@ import java.util.Map;
 
 import org.openflexo.br.ActivateBugReportServiceTask;
 import org.openflexo.br.BugReportService;
-import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoService;
@@ -219,9 +218,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 	
 	*/
-	public DocResourceManager getDocResourceManager() {
-		return getService(DocResourceManager.class);
-	}
 
 	public ProjectLoader getProjectLoader() {
 		return getService(ProjectLoader.class);
@@ -266,8 +262,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	protected abstract PreferencesService createPreferencesService();
 
 	public abstract BugReportService createBugReportService();
-
-	protected abstract DocResourceManager createDocResourceManager();
 
 	protected abstract FlexoServerInstanceManager createFlexoServerInstanceManager();
 

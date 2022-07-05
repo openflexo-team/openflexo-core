@@ -42,7 +42,6 @@ package org.openflexo.view.menu;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
-import org.openflexo.help.FlexoHelp;
 import org.openflexo.module.Module;
 import org.openflexo.view.controller.FlexoController;
 
@@ -62,7 +61,6 @@ public abstract class FlexoMenuBar extends JMenuBar {
 	private EditMenu editMenu = null;
 	protected WindowMenu windowMenu = null;
 	private ToolsMenu toolsMenu = null;
-	private HelpMenu helpMenu = null;
 
 	public FlexoMenuBar(FlexoController controller, Module<?> module) {
 		super();
@@ -71,10 +69,6 @@ public abstract class FlexoMenuBar extends JMenuBar {
 		add(getEditMenu(controller));
 		add(getToolsMenu(controller));
 		add(getWindowMenu(controller, module));
-		if (FlexoHelp.isAvailable()) {
-			add(getHelpMenu(controller));
-		}
-
 	}
 
 	public void dispose() {
@@ -160,19 +154,6 @@ public abstract class FlexoMenuBar extends JMenuBar {
 			toolsMenu = new ToolsMenu(controller);
 		}
 		return toolsMenu;
-	}
-
-	/**
-	 * Build if required and return default 'Help' menu. This method must be overriden if specific items for related module should be added.
-	 * 
-	 * @param controller
-	 * @return a HelpMenu instance
-	 */
-	public HelpMenu getHelpMenu(FlexoController controller) {
-		if (helpMenu == null) {
-			helpMenu = new HelpMenu(controller);
-		}
-		return helpMenu;
 	}
 
 	/*@Override

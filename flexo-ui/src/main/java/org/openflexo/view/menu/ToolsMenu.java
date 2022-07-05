@@ -49,18 +49,15 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileFilter;
 
 import org.openflexo.Flexo;
 import org.openflexo.FlexoCst;
 import org.openflexo.br.SendBugReportServiceTask;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.UndoManagerDialog;
-import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
@@ -114,8 +111,6 @@ public class ToolsMenu extends FlexoMenu {
 
 	public JMenuItem timeTraveler;
 
-	public SaveDocSubmissionItem saveDocSubmissions;
-
 	public JMenuItem market;
 
 	public ToolsMenu(FlexoController controller) {
@@ -135,11 +130,6 @@ public class ToolsMenu extends FlexoMenu {
 		add(undoManagerItem = new UndoManagerItem());
 		addSeparator();
 		add(submitBug = new SubmitBugItem());
-		if (getModuleLoader().allowsDocSubmission()) {
-			addSeparator();
-			add(saveDocSubmissions = new SaveDocSubmissionItem());
-		}
-		addSeparator();
 		add(repairProject = new ValidateProjectItem());
 		add(timeTraveler = new TimeTraveler());
 	}
@@ -635,65 +625,6 @@ public class ToolsMenu extends FlexoMenu {
 				SendBugReportServiceTask sendBugReport = new SendBugReportServiceTask(null, getController().getModule(),
 						getController().getProject(), getController().getApplicationContext());
 				getController().getApplicationContext().getTaskManager().scheduleExecution(sendBugReport);
-			}
-		}
-
-	}
-
-	public class SaveDocSubmissionItem extends FlexoMenuItem {
-
-		public SaveDocSubmissionItem() {
-			super(new SaveDocSubmissionAction(), "save_doc_submission", null, getController(), true);
-		}
-
-	}
-
-	public class SaveDocSubmissionAction extends AbstractAction {
-		public SaveDocSubmissionAction() {
-			super();
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			JFileChooser chooser = new JFileChooser();
-			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			chooser.setDialogTitle(FlexoLocalization.getMainLocalizer().localizedForKey("please_select_a_file"));
-			chooser.setFileFilter(new FileFilter() {
-				@Override
-				public boolean accept(File f) {
-					return f.getName().endsWith(".dsr");
-				}
-
-				@Override
-				public String getDescription() {
-					return FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_files");
-				}
-
-			});
-			if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
-				try {
-					File savedFile;
-					if (!chooser.getSelectedFile().getName().endsWith(".dsr")) {
-						savedFile = new File(chooser.getSelectedFile().getParentFile(), chooser.getSelectedFile().getName() + ".dsr");
-					}
-					else {
-						savedFile = chooser.getSelectedFile();
-					}
-					DocResourceManager drm = getController().getApplicationContext().getDocResourceManager();
-					if (drm != null) {
-						drm.getSessionSubmissions().save(savedFile);
-						drm.getSessionSubmissions().clear();
-						FlexoController
-								.notify(FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_successfully_saved"));
-					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-					return;
-				}
-			}
-			else {
-				// cancelled, return.
-				return;
 			}
 		}
 

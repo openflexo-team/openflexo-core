@@ -2,7 +2,7 @@ dependencies {
   // openflexo dep
   api project(':flexo-foundation')
   implementation project(':flexo-foundation-rm')
-  api project(':flexodocresourcemanager')
+  //api project(':flexodocresourcemanager')
   implementation project(':fml-cli')
   implementation connie()
   implementation dianaApi()

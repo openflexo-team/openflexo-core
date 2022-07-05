@@ -56,7 +56,6 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.view.controller.action.AddRepositoryFolderInitializer;
 import org.openflexo.view.controller.action.CreateProjectInitializer;
 import org.openflexo.view.controller.action.DeleteRepositoryFolderInitializer;
-import org.openflexo.view.controller.action.HelpActionizer;
 import org.openflexo.view.controller.action.InspectActionizer;
 import org.openflexo.view.controller.action.LoadAllImportedProjectInitializer;
 import org.openflexo.view.controller.action.LoadResourceActionInitializer;
@@ -201,7 +200,6 @@ public class ControllerActionInitializer implements EditorProvider {
 		new LoadResourceActionInitializer(this);
 		new ImportProjectInitializer(this);
 		new RemoveImportedProjectInitializer(this);
-		new HelpActionizer(this);
 
 		// Registering copy/cut/paste/selectAll actions
 		initClipboardActions();
