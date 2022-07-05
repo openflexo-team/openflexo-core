@@ -40,6 +40,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -93,6 +94,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private FlexoServiceManager serviceManager;
 
 	private Stack<FlexoObject> focusedObjects;
+	private Stack<FlexoEditor> openedProjects;
 
 	@SuppressWarnings("unused")
 	private PrintStream errStream;
@@ -133,6 +135,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		}
 
 		focusedObjects = new Stack<>();
+		openedProjects = new Stack<>();
 		containedBindingVariables = new ArrayList<>();
 
 		if (out instanceof PrintStream) {
@@ -796,7 +799,15 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			FlexoObject oldValue = focusedObjects.pop();
 			updateFocusedBindingVariable();
 			getPropertyChangeSupport().firePropertyChange("focusedObject", oldValue, getFocusedObject());
+			if (oldValue instanceof FlexoProject) {
+				openedProjects.pop();
+			}
 		}
+	}
+
+	public void enterProject(FlexoProject<?> project, FlexoEditor editor) {
+		enterFocusedObject(project);
+		openedProjects.push(editor);
 	}
 
 	public Stack<FlexoObject> getFocusedObjects() {
@@ -882,8 +893,10 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	@Override
 	public FlexoEditor getEditor() {
-		// TODO Auto-generated method stub
-		return null;
+		if (!openedProjects.isEmpty()) {
+			return openedProjects.peek();
+		}
+		return getServiceManager().getDefaultEditor();
 	}
 
 	@Override

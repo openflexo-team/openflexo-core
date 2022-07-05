@@ -182,6 +182,7 @@ public interface OpenProject extends Directive<AOpenDirective> {
 							.loadProject(getProjectDirectory());
 					FlexoProject<?> project = editor.getProject();
 					getCommandInterpreter().setWorkingDirectory(getProjectDirectory());
+					getCommandInterpreter().enterProject(project, editor);
 					getOutStream().println("Project " + project.getName() + " successfully opened.");
 					return project;
 				} catch (ProjectInitializerException e) {
