@@ -83,12 +83,12 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	public void loadAvailableProjectNatureFactories() {
 		if (loadedProjectNatureFactories == null) {
 			loadedProjectNatureFactories = new Hashtable<>();
-			logger.info("Loading available project natures...");
+			logger.fine("Loading available project natures...");
 			ServiceLoader<ProjectNatureFactory> loader = ServiceLoader.load(ProjectNatureFactory.class);
 			for (ProjectNatureFactory<?> projectNatureFactory : loader) {
 				registerProjectNatureFactory(projectNatureFactory);
 			}
-			logger.info("Loading available project natures. Done.");
+			logger.fine("Loading available project natures. Done.");
 		}
 
 	}

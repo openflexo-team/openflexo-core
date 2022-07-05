@@ -767,7 +767,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		public void createLocalizedDictionaryWhenNonExistant() {
 			if (localized == null) {
-				logger.info("createLocalizedDictionary");
+				logger.fine("createLocalizedDictionary for " + this);
 				localized = instantiateOrLoadLocales();
 			}
 		}

@@ -269,7 +269,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 */
 	public final <I> void lookupProjectsInResourceCenter(FlexoResourceCenter<I> resourceCenter) {
 
-		logger.info("--------> lookupProjectsInResourceCenter for " + resourceCenter);
+		logger.fine("--------> lookupProjectsInResourceCenter for " + resourceCenter);
 
 		Iterator<I> it;
 
@@ -281,7 +281,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			if (!isIgnorable(resourceCenter, serializationArtefact)) {
 				FlexoResource<?> r = tryToLookupResource(resourceCenter, serializationArtefact);
 				if (r != null) {
-					logger.info(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
+					logger.fine(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 				}
 			}
 			if (resourceCenter.isDirectory(serializationArtefact)) {
