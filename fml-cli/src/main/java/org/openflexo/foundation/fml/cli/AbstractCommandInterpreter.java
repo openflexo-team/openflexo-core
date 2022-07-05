@@ -63,14 +63,18 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FileSystemBasedResourceCenterImpl;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
@@ -116,6 +120,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		this.serviceManager = serviceManager;
 
 		serviceManager.getResourceCenterService().addToAvailableServiceOperations(new CdResourceCenter());
+		serviceManager.getResourceCenterService().addToAvailableServiceOperations(new AddTempResourceCenter());
 
 		history = new ArrayList<>();
 
@@ -194,6 +199,9 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				return ((DirectoryBasedIODelegate) ((ResourceData<?>) object).getResource().getIODelegate()).getDirectory();
 			}
 		}
+		if (object instanceof RepositoryFolder && ((RepositoryFolder) object).getSerializationArtefact() instanceof File) {
+			return (File) ((RepositoryFolder) object).getSerializationArtefact();
+		}
 		return null;
 	}
 
@@ -205,13 +213,13 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		return workingDirectory;
 	}
 
-	public void setWorkingDirectory(File workingDirectory) {
+	public final void setWorkingDirectory(File workingDirectory) {
 		if ((workingDirectory == null && this.workingDirectory != null)
 				|| (workingDirectory != null && !workingDirectory.equals(this.workingDirectory))) {
 			File oldValue = this.workingDirectory;
 			this.workingDirectory = workingDirectory;
 			getPropertyChangeSupport().firePropertyChange("workingDirectory", oldValue, workingDirectory);
-			System.setProperty("user.dir", this.workingDirectory.getAbsolutePath());
+			// System.setProperty("user.dir", this.workingDirectory.getAbsolutePath());
 		}
 	}
 
@@ -411,6 +419,15 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	private List<String> getAvailableCompletion(String syntax, DirectiveDeclaration directiveDeclaration, String startingBuffer) {
+
+		/*if (syntax.equals("enter <expression> | -r <resource> | -f <path>")) {
+			// System.out.println("On tente un truc");
+			List<String> returned = new ArrayList<>();
+			returned.addAll(getAvailableCompletion("enter <expression>", directiveDeclaration, startingBuffer));
+			returned.addAll(getAvailableCompletion("enter -r <resource>", directiveDeclaration, startingBuffer));
+			returned.addAll(getAvailableCompletion("enter -f <path>", directiveDeclaration, startingBuffer));
+			return returned;
+		}*/
 
 		List<String> globalSyntax = tokenize(syntax);
 
@@ -736,7 +753,28 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		if (!focusedObjects.isEmpty()) {
 			return focusedObjects.peek();
 		}
-		System.out.println("Je peux aussi retourner le directory " + getWorkingDirectory());
+		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+			if (rc instanceof FileSystemBasedResourceCenter) {
+				FileSystemBasedResourceCenterImpl resourceCenter = (FileSystemBasedResourceCenterImpl) rc;
+				if (FileUtils.isFileContainedIn(getWorkingDirectory(), resourceCenter.getRootDirectory())) {
+					// System.out.println("Tiens on est dans le RC " + rc);
+					try {
+						if (resourceCenter.getRootDirectory().equals(getWorkingDirectory())) {
+							//System.out.println("Hop on retourne " + resourceCenter.getRootFolder());
+							return resourceCenter.getRootFolder();
+						}
+						// System.out.println("Hop: " + resourceCenter.getPathTo(getWorkingDirectory()));
+						// System.out.println("Tiens je retourne " + resourceCenter.getRepositoryFolder(getWorkingDirectory(), false));
+						return resourceCenter.getRepositoryFolder(getWorkingDirectory(), false);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		// System.out.println("Je peux aussi retourner le directory " + getWorkingDirectory());
 		return null;
 	}
 
@@ -759,6 +797,10 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			updateFocusedBindingVariable();
 			getPropertyChangeSupport().firePropertyChange("focusedObject", oldValue, getFocusedObject());
 		}
+	}
+
+	public Stack<FlexoObject> getFocusedObjects() {
+		return focusedObjects;
 	}
 
 	private Type getTypeOfFocusedObject() {

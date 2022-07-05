@@ -93,6 +93,8 @@ import org.openflexo.foundation.fml.parser.node.APlainSimplePath;
 import org.openflexo.foundation.fml.parser.node.APlainSimplePathTerminal;
 import org.openflexo.foundation.fml.parser.node.APrefixedSimplePath;
 import org.openflexo.foundation.fml.parser.node.APrimaryUriExpression;
+import org.openflexo.foundation.fml.parser.node.AResourceCenterDirectiveArgument;
+import org.openflexo.foundation.fml.parser.node.AResourceDirectiveArgument;
 import org.openflexo.foundation.fml.parser.node.AResourceReferenceByUri;
 import org.openflexo.foundation.fml.parser.node.AResourcesSimplePathTerminal;
 import org.openflexo.foundation.fml.parser.node.ARootPathPath;
@@ -214,6 +216,18 @@ public interface Directive<N extends Node> extends AbstractCommand<N> {
 				if (tokenType == CommandTokenType.Path) {
 					String pathAsString = retrievePath(((AFilePathDirectiveArgument) value).getPath());
 					return new File(pathAsString);
+				}
+			}
+			else if (value instanceof AResourceCenterDirectiveArgument) {
+				if (tokenType == CommandTokenType.RC) {
+					FlexoResourceCenter<?> rc = retrieveResourceCenter(((AResourceCenterDirectiveArgument) value).getReferenceByUri());
+					return rc;
+				}
+			}
+			else if (value instanceof AResourceDirectiveArgument) {
+				if (tokenType == CommandTokenType.RC) {
+					FlexoResource<?> res = retrieveResource(((AResourceDirectiveArgument) value).getReferenceByUri());
+					return res;
 				}
 			}
 			getErrStream().println("Unexpected " + value + " in evaluateArgument() for tokenType=" + tokenType);

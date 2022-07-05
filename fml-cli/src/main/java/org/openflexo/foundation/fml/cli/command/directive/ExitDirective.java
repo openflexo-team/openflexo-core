@@ -80,14 +80,14 @@ public interface ExitDirective extends Directive<AExitDirective> {
 		@Override
 		public FlexoObject execute() throws ExecutionException {
 			super.execute();
-			FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
-			if (focusedObject == null) {
+			// FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
+			if (getCommandInterpreter().getFocusedObjects().isEmpty()) {
 				getCommandInterpreter().stop();
 			}
 			else {
 				getCommandInterpreter().exitFocusedObject();
 			}
-			return focusedObject;
+			return getCommandInterpreter().getFocusedObject();
 		}
 	}
 }

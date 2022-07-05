@@ -18,6 +18,7 @@
 
 package org.openflexo.foundation.fml.cli;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 
 /**
@@ -46,7 +48,10 @@ public class CLIUtils {
 				return ((DirectoryBasedIODelegate) ((ResourceData<?>) object).getResource().getIODelegate()).getDirectory().getName();
 			}
 		}
-		if (object instanceof VirtualModel) {
+		if (object instanceof RepositoryFolder && ((RepositoryFolder) object).getSerializationArtefact() instanceof File) {
+			return ((File) ((RepositoryFolder) object).getSerializationArtefact()).getName();
+		}
+		else if (object instanceof VirtualModel) {
 			return ((VirtualModel) object).getName() + ".fml";
 		}
 		else if (object instanceof FlexoConcept) {

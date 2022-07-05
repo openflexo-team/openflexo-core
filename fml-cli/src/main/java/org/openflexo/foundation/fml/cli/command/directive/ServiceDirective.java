@@ -197,6 +197,7 @@ public interface ServiceDirective<S extends FlexoService> extends Directive<ASer
 			super.execute();
 
 			if (isSyntaxicallyValid()) {
+				optionValues.put("commandInterpreter", getCommandInterpreter());
 				serviceOperation.execute(service, getOutStream(), getErrStream(), argumentValue, optionValues);
 				return service;
 			}
