@@ -254,6 +254,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		return VirtualModel.class;
 	}
 
+	// FIXED Bug with Telindus team
+	private List<VirtualModelResource> pendingContainedVirtualModels = new ArrayList<>();
+
 	/**
 	 * Load the &quot;real&quot; load resource data of this resource.
 	 * 
@@ -266,7 +269,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 */
 	@Override
 	public VirtualModel loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	InconsistentDataException, InvalidModelDefinitionException {
 
 		logger.info("*************** Loading " + this + " from: " + getIODelegate().getSerializationArtefact());
 
@@ -283,8 +286,16 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		startDeserializing();
 		if (getContainer() != null) {
 			VirtualModel virtualModel = getContainer().getVirtualModel();
-			if (virtualModel != null)
+			if (virtualModel != null) {
 				virtualModel.addToVirtualModels(returned);
+			}
+			else {
+				// FIXED Bug with Telindus team
+				// This may happen when a VirtualModelResource has a dependancy to a contained VirtualModelResource
+				// In this case, loading container resource leads to load a contained resource and when the contained
+				// resource comes here, the parent VirtualModel is not available yet
+				((VirtualModelResourceImpl)getContainer()).pendingContainedVirtualModels.add(this);
+			}
 		}
 		returned.clearIsModified();
 		// And, we notify a deserialization stop
@@ -338,6 +349,13 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		super.notifyResourceLoaded();
 		getPropertyChangeSupport().firePropertyChange("virtualModel", null, getLoadedResourceData());
 		getPropertyChangeSupport().firePropertyChange("loadedVirtualModel", null, getLoadedResourceData());
+		// FIXED Bug with Telindus team
+		if (pendingContainedVirtualModels.size() > 0) {
+			for (VirtualModelResource vmResource : pendingContainedVirtualModels) {
+				getLoadedResourceData().addToVirtualModels(vmResource.getLoadedResourceData());
+			}
+			pendingContainedVirtualModels.clear();
+		}
 	}
 
 	@Override
