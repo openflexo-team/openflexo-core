@@ -79,9 +79,14 @@ public abstract class FlexoOntologyTechnologyContextManager<TA extends Technolog
 			return individualsOfClass.get(anOntologyClass);
 		}
 		else {
-			IndividualOfClass<TA, ?, ?> returned = makeIndividualOfClass(anOntologyClass); // new IndividualOfClass<>(anOntologyClass);
-			individualsOfClass.put(anOntologyClass, returned);
-			return returned;
+			try {
+				IndividualOfClass<TA, ?, ?> returned = makeIndividualOfClass(anOntologyClass); // new IndividualOfClass<>(anOntologyClass);
+				individualsOfClass.put(anOntologyClass, returned);
+				return returned;
+			} catch (ClassCastException e) {
+				logger.warning(e.getMessage());
+				return null;
+			}
 		}
 	}
 

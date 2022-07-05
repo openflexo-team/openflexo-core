@@ -1662,7 +1662,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return variables.get(variable.getVariableName());
 			}
 
-			logger.warning("Cannot find BindingVariable " + variable);
+			logger.warning("Cannot find BindingVariable " + variable + " for " + this);
 			return null;
 		}
 

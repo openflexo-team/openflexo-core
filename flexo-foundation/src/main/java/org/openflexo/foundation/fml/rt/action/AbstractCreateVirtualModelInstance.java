@@ -156,7 +156,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 		if (newVirtualModelInstance.isSynchronizable()) {
 			// System.out.println("Go for it");
-			newVirtualModelInstance.synchronize(null);
+			newVirtualModelInstance.synchronize(getEditor());
 		}
 
 		// System.out.println("Saving file again...");
