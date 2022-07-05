@@ -1116,10 +1116,11 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		 */
 		@Override
 		public List<String> getPathTo(File aFile) throws IOException {
-			if (FileUtils.directoryContainsFile(getRootFolder().getSerializationArtefact(), aFile, true)) {
+			File rootFolder = getRootFolder().getSerializationArtefact().getCanonicalFile();
+			if (FileUtils.directoryContainsFile(rootFolder, aFile, true)) {
 				List<String> pathTo = new ArrayList<>();
 				File f = aFile.getParentFile().getCanonicalFile();
-				while (f != null && !f.equals(getRootFolder().getSerializationArtefact().getCanonicalFile())) {
+				while (f != null && !f.equals(rootFolder)) {
 					pathTo.add(0, f.getName());
 					f = f.getParentFile();
 				}

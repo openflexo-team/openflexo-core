@@ -757,15 +757,15 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			if (rc instanceof FileSystemBasedResourceCenter) {
 				FileSystemBasedResourceCenterImpl resourceCenter = (FileSystemBasedResourceCenterImpl) rc;
 				if (FileUtils.isFileContainedIn(getWorkingDirectory(), resourceCenter.getRootDirectory())) {
-					// System.out.println("Tiens on est dans le RC " + rc);
+					// In this case, the working directory is inside a declared ResourceCenter
+					// focused object is the repository folder matching working directory
 					try {
 						if (resourceCenter.getRootDirectory().equals(getWorkingDirectory())) {
-							//System.out.println("Hop on retourne " + resourceCenter.getRootFolder());
 							return resourceCenter.getRootFolder();
 						}
-						// System.out.println("Hop: " + resourceCenter.getPathTo(getWorkingDirectory()));
-						// System.out.println("Tiens je retourne " + resourceCenter.getRepositoryFolder(getWorkingDirectory(), false));
-						return resourceCenter.getRepositoryFolder(getWorkingDirectory(), false);
+						RepositoryFolder<FlexoResource<?>, File> returnedRepositoryFolder = resourceCenter
+								.getRepositoryFolder(getWorkingDirectory(), true);
+						return returnedRepositoryFolder;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
