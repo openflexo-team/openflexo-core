@@ -103,7 +103,7 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 				if (container == null) {
 					if (evaluationContext instanceof RunTimeEvaluationContext) {
 						System.out.println("Je trouve le contexte: " + ((RunTimeEvaluationContext) evaluationContext).getFocusedObject());
-						System.exit(-1);
+						// System.exit(-1);
 					}
 					throw new NullReferenceException("Unable to find executable context for " + this);
 				}
