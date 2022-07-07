@@ -42,11 +42,14 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.BinaryOperatorExpression;
+import org.openflexo.connie.java.expr.JavaExpressionEvaluator;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -122,6 +125,15 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 					if (value) {
 						return true;
 					}
+					if (expression.getExpression() instanceof BinaryOperatorExpression) {
+						// In this case, we try to get a more explicit message
+						BinaryOperatorExpression binOp = (BinaryOperatorExpression) expression.getExpression();
+						Object leftV = binOp.getLeftArgument().transform(new JavaExpressionEvaluator(getCommandInterpreter()));
+						Object rightV = binOp.getRightArgument().transform(new JavaExpressionEvaluator(getCommandInterpreter()));
+						throw new ExecutionException("Assert failed: " + leftV + " "
+								+ FMLPrettyPrinter.getInstance().getGrammar().getSymbol(binOp.getOperator()) + " " + rightV);
+					}
+
 					throw new ExecutionException("Assert failed: " + expression);
 				} catch (Exception e) {
 					throw new ExecutionException("Cannot execute " + expression, e);
