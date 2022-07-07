@@ -201,28 +201,36 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 				BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
 
+			CreationSchemeAction creationSchemeAction = null;
+
 			if (evaluationContext instanceof FlexoBehaviourAction) {
-				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
+				creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
-
-				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
-					DataBinding<?> param = getArgumentValue(p);
-					Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
-					System.out.println("For parameter " + param + " value is " + paramValue);
-					if (paramValue != null) {
-						creationSchemeAction.setParameterValue(p, paramValue);
-					}
-				}
-
-				creationSchemeAction.doAction();
-
-				return creationSchemeAction.hasActionExecutionSucceeded();
-
 			}
-			logger.warning("Unexpected: " + evaluationContext);
-			Thread.dumpStack();
-			return false;
+			else if (evaluationContext instanceof RunTimeEvaluationContext) {
+				creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
+						((RunTimeEvaluationContext) evaluationContext).getEditor());
+			}
+			else {
+				logger.warning("Unexpected: " + evaluationContext);
+				Thread.dumpStack();
+			}
+
+			creationSchemeAction.initWithFlexoConceptInstance(newInstance);
+
+			for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
+				DataBinding<?> param = getArgumentValue(p);
+				Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
+				System.out.println("For parameter " + param + " value is " + paramValue);
+				if (paramValue != null) {
+					creationSchemeAction.setParameterValue(p, paramValue);
+				}
+			}
+
+			creationSchemeAction.doAction();
+
+			return creationSchemeAction.hasActionExecutionSucceeded();
+
 		}
 
 	}
