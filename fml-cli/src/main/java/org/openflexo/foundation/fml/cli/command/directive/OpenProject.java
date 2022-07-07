@@ -48,7 +48,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AOpenDirective;
 import org.openflexo.foundation.fml.parser.node.APathOpenDirective;
 import org.openflexo.foundation.fml.parser.node.AResourceOpenDirective;
@@ -160,7 +160,7 @@ public interface OpenProject extends Directive<AOpenDirective> {
 		}
 
 		@Override
-		public FlexoProject<?> execute() throws ExecutionException {
+		public FlexoProject<?> execute() throws FMLCommandExecutionException {
 
 			super.execute();
 
@@ -186,9 +186,9 @@ public interface OpenProject extends Directive<AOpenDirective> {
 					getOutStream().println("Project " + project.getName() + " successfully opened.");
 					return project;
 				} catch (ProjectInitializerException e) {
-					throw new ExecutionException("Project initializing exception", e);
+					throw new FMLCommandExecutionException("Project initializing exception", e);
 				} catch (ProjectLoadingCancelledException e) {
-					throw new ExecutionException(e);
+					throw new FMLCommandExecutionException(e);
 				}
 			}
 

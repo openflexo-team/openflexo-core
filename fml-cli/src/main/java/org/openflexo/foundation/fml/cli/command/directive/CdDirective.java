@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -124,14 +124,14 @@ public interface CdDirective extends Directive<ACdDirective> {
 		}
 
 		@Override
-		public File execute() throws ExecutionException {
+		public File execute() throws FMLCommandExecutionException {
 			super.execute();
 			if (isValidInThatContext()) {
 				File newDirectory = getNewDirectory();
 				getCommandInterpreter().setWorkingDirectory(newDirectory);
 				return newDirectory;
 			}
-			throw new ExecutionException(invalidCommandReason());
+			throw new FMLCommandExecutionException(invalidCommandReason());
 		}
 	}
 }

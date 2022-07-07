@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AQuitDirective;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -72,7 +72,7 @@ public interface QuitDirective extends Directive<AQuitDirective> {
 		}
 
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
 			getCommandInterpreter().stop();
 			return null;

@@ -49,7 +49,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
@@ -171,7 +171,7 @@ public class TestFMLScript2 extends FMLScriptParserTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void executeScript() throws ParseException, ModelDefinitionException, IOException, ExecutionException {
+	public void executeScript() throws ParseException, ModelDefinitionException, IOException, FMLCommandExecutionException {
 		log("Execute script");
 
 		script.execute();

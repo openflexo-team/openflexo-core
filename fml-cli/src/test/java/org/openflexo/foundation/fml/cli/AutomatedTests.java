@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -86,7 +86,7 @@ public class AutomatedTests extends FMLScriptParserTestCase {
 	}
 
 	@Test
-	public void checkScript() throws ModelDefinitionException, ParseException, IOException, ExecutionException {
+	public void checkScript() throws ModelDefinitionException, ParseException, IOException, FMLCommandExecutionException {
 		System.out.println("Parse script " + fmlResource.getRelativePath());
 		script = parseFMLScript(fmlResource, commandInterpreter);
 		checkFMLScript(fmlResource.getRelativePath(), script);

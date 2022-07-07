@@ -132,7 +132,7 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 	@Setter(PARENT_COMMAND_KEY)
 	public void setParentCommand(AbstractCommand<?> aCommand);
 
-	public Object execute() throws ExecutionException;
+	public Object execute() throws FMLCommandExecutionException;
 
 	public AbstractCommandInterpreter getCommandInterpreter();
 
@@ -193,12 +193,12 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 		 * @return (eventual) returned value after execution
 		 */
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 			if (!wasInitialized) {
 				init();
 			}
 			if (!isValidInThatContext()) {
-				throw new ExecutionException(invalidCommandReason());
+				throw new FMLCommandExecutionException(invalidCommandReason());
 			}
 			getCommandInterpreter().willExecute(this);
 			return null;

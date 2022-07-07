@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.cli.command.DeclareDirective;
 import org.openflexo.foundation.fml.cli.command.DeclareDirectives;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
@@ -260,7 +260,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		return availableCommands;
 	}
 
-	public AbstractCommand executeCommand(String commandString) throws ParseException, ExecutionException {
+	public AbstractCommand executeCommand(String commandString) throws ParseException, FMLCommandExecutionException {
 		AbstractCommand command = makeCommand(commandString);
 		// System.out.println("Typed: " + commandString + " command=" + command);
 		if (command != null) {

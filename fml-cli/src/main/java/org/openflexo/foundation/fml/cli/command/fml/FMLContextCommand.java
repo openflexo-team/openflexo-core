@@ -45,7 +45,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.CLIUtils;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
@@ -81,7 +81,7 @@ public interface FMLContextCommand extends FMLCommand<AContextFmlCommand> {
 		}
 
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
 

@@ -38,7 +38,7 @@ import javax.swing.text.StyleConstants;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.ParseException;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.icon.IconLibrary;
@@ -516,7 +516,7 @@ public class FMLTerminal extends JFrame {
 			}
 		} catch (ParseException e) {
 			commandInterpreter.getErrStream().println("Syntax error : " + e.getMessage());
-		} catch (ExecutionException e) {
+		} catch (FMLCommandExecutionException e) {
 			commandInterpreter.getErrStream().println("Execution error : " + e.getMessage());
 		}
 		if (StringUtils.isNotEmpty(commandWithoutLineSeparator.trim())) {

@@ -48,7 +48,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.ALoadDirective;
 import org.openflexo.foundation.fml.parser.node.APathLoadDirective;
 import org.openflexo.foundation.fml.parser.node.AResourceLoadDirective;
@@ -136,11 +136,11 @@ public interface LoadResource extends AssignableDirective<ALoadDirective> {
 		}
 
 		@Override
-		public Object performExecute() throws ExecutionException {
+		public Object performExecute() throws FMLCommandExecutionException {
 
 			logger.info("Load resource " + getResultingResource() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
 			if (getResultingResource() == null) {
-				throw new ExecutionException("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
+				throw new FMLCommandExecutionException("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
 			}
 
 			if (getResultingResource().isLoaded()) {
@@ -160,11 +160,11 @@ public interface LoadResource extends AssignableDirective<ALoadDirective> {
 					}
 					return returned;
 				} catch (FileNotFoundException e) {
-					throw new ExecutionException("Cannot find resource", e);
+					throw new FMLCommandExecutionException("Cannot find resource", e);
 				} catch (ResourceLoadingCancelledException e) {
-					throw new ExecutionException(e);
+					throw new FMLCommandExecutionException(e);
 				} catch (FlexoException e) {
-					throw new ExecutionException("Cannot load resource", e);
+					throw new FMLCommandExecutionException("Cannot load resource", e);
 				}
 			}
 		}

@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AActivateTaDirective;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -105,7 +105,7 @@ public interface ActivateTA extends Directive<AActivateTaDirective> {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
-		public TechnologyAdapter<?> execute() throws ExecutionException {
+		public TechnologyAdapter<?> execute() throws FMLCommandExecutionException {
 			super.execute();
 			if (!getTechnologyAdapter().isActivated()) {
 				getCommandInterpreter().getServiceManager().getTechnologyAdapterService()

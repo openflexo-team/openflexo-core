@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.CLIUtils;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AEnterDirective;
 import org.openflexo.foundation.fml.parser.node.AObjectEnterDirective;
 import org.openflexo.foundation.fml.parser.node.APathEnterDirective;
@@ -176,7 +176,7 @@ public interface EnterDirective extends Directive<AEnterDirective> {
 		}
 
 		@Override
-		public FlexoObject execute() throws ExecutionException {
+		public FlexoObject execute() throws FMLCommandExecutionException {
 			super.execute();
 
 			Object object = getAddressedObject();
@@ -186,7 +186,7 @@ public interface EnterDirective extends Directive<AEnterDirective> {
 				return (FlexoObject) object;
 			}
 			else {
-				throw new ExecutionException("Cannot enter into " + path + " : not a FlexoObject");
+				throw new FMLCommandExecutionException("Cannot enter into " + path + " : not a FlexoObject");
 			}
 		}
 	}

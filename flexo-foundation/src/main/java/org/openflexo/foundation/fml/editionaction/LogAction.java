@@ -46,6 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -128,7 +129,7 @@ public interface LogAction extends EditionAction {
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			String logString = null;
 			try {
 				logString = getLogString().getBindingValue(evaluationContext);
@@ -137,7 +138,7 @@ public interface LogAction extends EditionAction {
 			} catch (NullReferenceException e1) {
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
-				e1.printStackTrace();
+				throw new FMLExecutionException(e1.getCause());
 			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}

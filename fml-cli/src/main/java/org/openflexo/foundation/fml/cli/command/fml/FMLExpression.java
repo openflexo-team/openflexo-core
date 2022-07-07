@@ -42,10 +42,12 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AExpressionFmlCommand;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -99,7 +101,7 @@ public interface FMLExpression extends FMLCommand<AExpressionFmlCommand> {
 		}
 
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
 
@@ -108,12 +110,16 @@ public interface FMLExpression extends FMLCommand<AExpressionFmlCommand> {
 					Object value = expression.getBindingValue(getCommandInterpreter());
 					getOutStream().println("Executed " + expression + " <- " + value);
 					return value;
-				} catch (Exception e) {
-					throw new ExecutionException("Cannot execute " + expression, e);
+				} catch (TypeMismatchException e) {
+					throw new FMLCommandExecutionException("TypeMismatchException for " + expression, e);
+				} catch (NullReferenceException e) {
+					throw new FMLCommandExecutionException("NullReference for " + expression, e);
+				} catch (ReflectiveOperationException e) {
+					throw new FMLCommandExecutionException("Cannot execute " + expression, e.getCause());
 				}
 			}
 			else {
-				throw new ExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+				throw new FMLCommandExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 			}
 
 			/*

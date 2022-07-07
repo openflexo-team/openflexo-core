@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.ALsDirective;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -74,7 +74,7 @@ public interface LsDirective extends Directive<ALsDirective> {
 		}
 
 		@Override
-		public File execute() throws ExecutionException {
+		public File execute() throws FMLCommandExecutionException {
 			super.execute();
 			if (getCommandInterpreter().getWorkingDirectory() != null) {
 				if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
@@ -100,7 +100,7 @@ public interface LsDirective extends Directive<ALsDirective> {
 					}
 				}
 				else {
-					throw new ExecutionException("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
+					throw new FMLCommandExecutionException("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
 				}
 			}
 

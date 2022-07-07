@@ -1,0 +1,4 @@
+context;
+s = "Hello world !";
+context;
+assert s.substring(2,4) == "ll";

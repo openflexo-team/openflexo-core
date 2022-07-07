@@ -51,7 +51,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.ACommandAssign;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PCommandAssign;
@@ -137,10 +137,10 @@ public interface AssignableDirective<N extends Node> extends Directive<N> {
 
 		public abstract Type getAssignableType();
 
-		protected abstract Object performExecute() throws ExecutionException;
+		protected abstract Object performExecute() throws FMLCommandExecutionException;
 
 		@Override
-		public final Object execute() throws ExecutionException {
+		public final Object execute() throws FMLCommandExecutionException {
 			super.execute();
 
 			Object assignedValue = performExecute();
@@ -151,13 +151,13 @@ public interface AssignableDirective<N extends Node> extends Directive<N> {
 						assignation.setBindingValue(assignedValue, getCommandInterpreter());
 						getOutStream().println("Assigned " + assignedValue + " to " + assignation);
 					} catch (TypeMismatchException e) {
-						throw new ExecutionException("Cannot execute " + assignation, e);
+						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
 					} catch (NullReferenceException e) {
-						throw new ExecutionException("Cannot execute " + assignation, e);
+						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
 					} catch (ReflectiveOperationException e) {
-						throw new ExecutionException("Cannot execute " + assignation, e);
+						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
 					} catch (NotSettableContextException e) {
-						throw new ExecutionException("Cannot execute " + assignation, e);
+						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
 					}
 				}
 				else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {

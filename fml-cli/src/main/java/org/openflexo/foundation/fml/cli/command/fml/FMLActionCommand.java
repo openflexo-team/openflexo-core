@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -128,7 +128,7 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 		}
 
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
 
@@ -136,10 +136,10 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 				return editionAction.execute(getCommandInterpreter());
 			} catch (ReturnException e) {
 				e.printStackTrace();
-				throw new ExecutionException(e);
+				throw new FMLCommandExecutionException(e);
 			} catch (FlexoException e) {
 				e.printStackTrace();
-				throw new ExecutionException(e);
+				throw new FMLCommandExecutionException(e);
 			}
 
 		}

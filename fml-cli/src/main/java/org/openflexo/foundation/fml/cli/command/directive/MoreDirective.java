@@ -50,7 +50,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AMoreDirective;
 import org.openflexo.foundation.fml.parser.node.AObjectMoreDirective;
 import org.openflexo.foundation.fml.parser.node.APathMoreDirective;
@@ -198,7 +198,7 @@ public interface MoreDirective extends Directive<AMoreDirective> {
 		}
 
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
 
 			Object object = getAddressedObject();
@@ -207,7 +207,7 @@ public interface MoreDirective extends Directive<AMoreDirective> {
 				return getAddressedObject();
 			}
 			else {
-				throw new ExecutionException("No textual renderer for such data.");
+				throw new FMLCommandExecutionException("No textual renderer for such data.");
 			}
 		}
 

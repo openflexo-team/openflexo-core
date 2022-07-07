@@ -38,9 +38,7 @@
 
 package org.openflexo.foundation.fml.cli;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -50,6 +48,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssertException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -63,9 +63,9 @@ import org.openflexo.test.TestOrder;
  *
  */
 @RunWith(OrderedRunner.class)
-public class TestCLICommands2 extends OpenflexoTestCase {
+public class TestCLICommandsExceptionManagement extends OpenflexoTestCase {
 
-	private static final Logger logger = Logger.getLogger(TestCLICommands2.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(TestCLICommandsExceptionManagement.class.getPackage().getName());
 
 	private static CommandInterpreter commandInterpreter;
 
@@ -83,35 +83,97 @@ public class TestCLICommands2 extends OpenflexoTestCase {
 		logger.info("Now working with " + testResourcesRC);
 	}
 
+	/**
+	 * Execute 's = "Hello world !"'
+	 */
 	@Test
 	@TestOrder(10)
-	public void testOpen() throws ParseException, IOException, FMLCommandExecutionException {
-		log("testOpen()");
+	public void assignString() throws ParseException, FMLCommandExecutionException {
+		log("assignString()");
 
-		assertNull(rcService.getFlexoResourceCenter("http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj"));
+		AbstractCommand assignS = CommandParser.parse("s = \"Hello world !\"", commandInterpreter);
+		assignS.execute();
 
-		AbstractCommand command3 = CommandParser.parse(
-				"open -r [\"http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj\"]", commandInterpreter);
-		assertEquals("open -r [\"http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj\"]", command3.toString());
-		command3.execute();
-		assertNotNull(rcService.getFlexoResourceCenter("http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj"));
-
-		AbstractCommand command4 = CommandParser.parse("service ResourceCenterService status", commandInterpreter);
-		assertEquals("service ResourceCenterService status", command4.toString());
-		command4.execute();
+		AbstractCommand context = CommandParser.parse("context", commandInterpreter);
+		context.execute();
 
 	}
 
+	/**
+	 * Execute 'assert s.substring(2,4) == "ll"'
+	 */
 	@Test
 	@TestOrder(11)
-	public void testEnter() throws ParseException, IOException, FMLCommandExecutionException {
-		log("testEnter()");
-		AbstractCommand command1 = CommandParser.parse(
-				"enter -r [\"http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml\"]",
-				commandInterpreter);
-		assertEquals("enter -r [\"http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml\"]",
-				command1.toString());
-		command1.execute();
+	public void assertSuccess() throws ParseException, FMLCommandExecutionException {
+		log("assertSuccess()");
+
+		AbstractCommand assertCommand = CommandParser.parse("assert s.substring(2,4) == \"ll\"", commandInterpreter);
+		assertCommand.execute();
+
+	}
+
+	/**
+	 * Execute 'assert s.substring(2,4) == "lll"'
+	 */
+	@Test
+	@TestOrder(12)
+	public void assertFails() throws ParseException, FMLCommandExecutionException {
+		log("assertFails()");
+
+		AbstractCommand assertCommand = CommandParser.parse("assert s.substring(2,4) == \"lll\"", commandInterpreter);
+		try {
+			assertCommand.execute();
+		} catch (FMLAssertException e) {
+			return;
+		}
+
+		fail("This assertion must fail");
+
+	}
+
+	/**
+	 * Execute 's.substring(1,42)'
+	 */
+	@Test
+	@TestOrder(13)
+	public void assertExceptionIsThrownInExpression() throws ParseException, FMLCommandExecutionException {
+		log("assertExceptionIsThrownInExpression()");
+
+		AbstractCommand assertCommand = CommandParser.parse("s.substring(1,42)", commandInterpreter);
+		try {
+			assertCommand.execute();
+		} catch (FMLCommandExecutionException e) {
+			if (e.getCause() instanceof StringIndexOutOfBoundsException) {
+				// That's right
+				return;
+			}
+		}
+
+		fail("This command must throw a StringIndexOfBoundsException");
+
+	}
+
+	/**
+	 * Execute 'log s.substring(1,42)'
+	 */
+	@Test
+	@TestOrder(14)
+	public void assertExceptionIsThrownInLog() throws ParseException, FMLCommandExecutionException {
+		log("assertExceptionIsThrownInLog()");
+
+		AbstractCommand assertCommand = CommandParser.parse("log s.substring(1,42)", commandInterpreter);
+		try {
+			assertCommand.execute();
+		} catch (FMLCommandExecutionException e) {
+			if (e.getCause() instanceof FMLExecutionException) {
+				if (((FMLExecutionException) e.getCause()).getCause() instanceof StringIndexOutOfBoundsException) {
+					// That's right
+					return;
+				}
+			}
+		}
+
+		fail("This command must throw a StringIndexOfBoundsException embedded in a FMLExecutionException");
 
 	}
 

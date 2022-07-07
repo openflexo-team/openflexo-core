@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.ARcResourcesDirective;
 import org.openflexo.foundation.fml.parser.node.AResourcesDirective;
 import org.openflexo.foundation.fml.parser.node.ATaRcResourcesDirective;
@@ -153,7 +153,7 @@ public interface ResourcesDirective extends Directive<AResourcesDirective> {
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
 

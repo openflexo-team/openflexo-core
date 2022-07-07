@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AExitDirective;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -78,7 +78,7 @@ public interface ExitDirective extends Directive<AExitDirective> {
 		}
 
 		@Override
-		public FlexoObject execute() throws ExecutionException {
+		public FlexoObject execute() throws FMLCommandExecutionException {
 			super.execute();
 			// FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
 			if (getCommandInterpreter().getFocusedObjects().isEmpty()) {

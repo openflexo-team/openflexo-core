@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AServicesDirective;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -81,7 +81,7 @@ public interface ServicesDirective extends Directive<AServicesDirective> {
 		}
 
 		@Override
-		public FlexoServiceManager execute() throws ExecutionException {
+		public FlexoServiceManager execute() throws FMLCommandExecutionException {
 			super.execute();
 
 			getOutStream().println("Active services:");

@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.APwdDirective;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -73,7 +73,7 @@ public interface PwdDirective extends Directive<APwdDirective> {
 		}
 
 		@Override
-		public File execute() throws ExecutionException {
+		public File execute() throws FMLCommandExecutionException {
 			super.execute();
 			getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
 			return getCommandInterpreter().getWorkingDirectory();

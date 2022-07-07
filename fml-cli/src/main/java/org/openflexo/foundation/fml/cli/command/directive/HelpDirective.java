@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.ExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.parser.node.AHelpDirective;
@@ -76,7 +76,7 @@ public interface HelpDirective extends Directive<AHelpDirective> {
 		}
 
 		@Override
-		public Object execute() throws ExecutionException {
+		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
 			for (Class<? extends Directive<?>> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
 				String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();

@@ -93,7 +93,7 @@ public interface FMLScript extends HasPropertyChangeSupport {
 	@Remover(COMMANDS_KEY)
 	public void removeFromCommands(AbstractCommand<?> aCommand);
 
-	public void execute() throws ExecutionException;
+	public void execute() throws FMLCommandExecutionException;
 
 	public static abstract class FMLScriptImpl extends FlexoObjectImpl implements FMLScript {
 
@@ -125,11 +125,11 @@ public interface FMLScript extends HasPropertyChangeSupport {
 		/**
 		 * Execute this {@link FMLScript}
 		 * 
-		 * @throws ExecutionException
+		 * @throws FMLCommandExecutionException
 		 * 
 		 */
 		@Override
-		public void execute() throws ExecutionException {
+		public void execute() throws FMLCommandExecutionException {
 			for (AbstractCommand command : getCommands()) {
 				logger.info(">>> Execute " + command);
 				getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);

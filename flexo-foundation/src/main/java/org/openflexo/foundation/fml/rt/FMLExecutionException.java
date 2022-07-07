@@ -50,7 +50,7 @@ import org.openflexo.foundation.FlexoException;
 @SuppressWarnings("serial")
 public class FMLExecutionException extends FlexoException {
 
-	public FMLExecutionException(Exception exception) {
+	public FMLExecutionException(Throwable exception) {
 		super(exception);
 	}
 
@@ -58,7 +58,7 @@ public class FMLExecutionException extends FlexoException {
 		super(message);
 	}
 
-	public FMLExecutionException(String message, Exception e) {
+	public FMLExecutionException(String message, Throwable e) {
 		super(message, e);
 	}
 
