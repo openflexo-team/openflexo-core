@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.parser.node.AFmlActionFmlCommand;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.validation.ValidationError;

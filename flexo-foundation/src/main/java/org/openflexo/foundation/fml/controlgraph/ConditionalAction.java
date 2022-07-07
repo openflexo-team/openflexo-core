@@ -50,10 +50,10 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UndefinedType;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -227,7 +227,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			if (evaluateCondition(evaluationContext))
 				return getThenControlGraph().execute(evaluationContext);
 			if (getElseControlGraph() != null)

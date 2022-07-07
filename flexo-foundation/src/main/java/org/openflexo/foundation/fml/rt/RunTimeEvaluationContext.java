@@ -123,23 +123,4 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	 */
 	public void logErr(String message, LogLevel logLevel);
 
-	/**
-	 * This exception does not reflect an issue while executing FML, but is used to prioritary intercept "return" statement
-	 * 
-	 * @author sylvain
-	 */
-	@SuppressWarnings("serial")
-	public class ReturnException extends Exception {
-
-		private final Object returnedValue;
-
-		public ReturnException(Object returnedValue) {
-			this.returnedValue = returnedValue;
-		}
-
-		public Object getReturnedValue() {
-			return returnedValue;
-		}
-	}
-
 }

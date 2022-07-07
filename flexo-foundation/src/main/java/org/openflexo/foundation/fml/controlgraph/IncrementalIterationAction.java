@@ -48,9 +48,9 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -224,7 +224,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 
 			Number startValue = evaluateStartValue(evaluationContext);
 			Number exclusiveEndValue = evaluateExclusiveEndValue(evaluationContext);

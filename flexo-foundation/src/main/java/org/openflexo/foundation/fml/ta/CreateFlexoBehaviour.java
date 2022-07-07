@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.CreateActionSche
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -212,7 +213,7 @@ public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
 		}
 
 		@Override
-		public B execute(RunTimeEvaluationContext evaluationContext) throws ActionExecutionCancelledException {
+		public B execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -258,7 +259,7 @@ public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
 				action.doAction();
 
 				if (action.hasBeenCancelled()) {
-					throw new ActionExecutionCancelledException();
+					throw new FMLExecutionException(new ActionExecutionCancelledException());
 				}
 
 				return (B) action.getNewFlexoBehaviour();

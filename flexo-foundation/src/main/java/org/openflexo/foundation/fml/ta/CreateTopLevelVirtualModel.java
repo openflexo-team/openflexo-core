@@ -45,11 +45,13 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.AbstractCreateResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.Getter;
@@ -151,7 +153,7 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 		}
 
 		@Override
-		public FMLCompilationUnit execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public FMLCompilationUnit execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 
@@ -159,7 +161,7 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 			try {
 				newVirtualModelResource = createResource(fmlTA, CompilationUnitResourceFactory.class, evaluationContext,
 						CompilationUnitResourceFactory.FML_SUFFIX, true);
-				System.out.println("Return new virtualModel resource: " + newVirtualModelResource);
+				// System.out.println("Return new virtualModel resource: " + newVirtualModelResource);
 
 				newVirtualModelResource.setIsModified();
 
@@ -170,10 +172,14 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 							.addToParentFlexoConcepts(getParentVirtualModelType().getResourceData().getVirtualModel());
 				}
 
-				System.out.println("Return " + compilationUnit);
+				// System.out.println("Return " + compilationUnit);
 				return compilationUnit;
 			} catch (ModelDefinitionException | FileNotFoundException | ResourceLoadingCancelledException e) {
-				throw new FlexoException(e);
+				throw new FMLExecutionException(e);
+			} catch (InconsistentFlexoConceptHierarchyException e) {
+				throw new FMLExecutionException(e);
+			} catch (FlexoException e) {
+				throw new FMLExecutionException(e);
 			}
 		}
 	}

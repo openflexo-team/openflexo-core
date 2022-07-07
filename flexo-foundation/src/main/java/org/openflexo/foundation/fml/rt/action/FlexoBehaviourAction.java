@@ -47,7 +47,6 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -57,10 +56,11 @@ import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
-import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -359,33 +359,18 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	/**
 	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
 	 */
-	protected void executeControlGraph() throws OperationCancelledException, FlexoException {
+	protected void executeControlGraph() throws OperationCancelledException, FMLExecutionException {
 
 		if (getApplicableFlexoBehaviour() != null && getApplicableFlexoBehaviour().getControlGraph() != null) {
 			try {
 				getApplicableFlexoBehaviour().getControlGraph().execute(this);
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
-			} catch (OperationCancelledException e) {
-				compensateCancelledExecution();
-				// TODO: let the UndoManager do the compensation job: too buggy yet
-				// throw e;
-				return;
-			} catch (ActionExecutionCancelledException e) {
-				compensateCancelledExecution();
-				// TODO: let the UndoManager do the compensation job: too buggy yet
-				// throw e;
-				return;
-			} catch (FlexoException e) {
+			} catch (FMLExecutionException e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
 				System.err.println(getApplicableFlexoBehaviour().getFMLPrettyPrint());
 				e.printStackTrace();
 				throw e;
-			} catch (Exception e) {
-				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getApplicableFlexoBehaviour().getFMLPrettyPrint());
-				e.printStackTrace();
-				throw new FlexoException(e);
 			}
 			if (defaultMatchingSet != null) {
 				finalizeDefaultMatchingSet();

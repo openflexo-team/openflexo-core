@@ -45,10 +45,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -99,7 +99,7 @@ public interface IterationAction extends AbstractIterationAction {
 			return Object.class;
 		}
 
-		public List<?> evaluateIteration(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public List<?> evaluateIteration(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			try {
 				return getIterationAction().execute(evaluationContext);
 			} catch (ReturnException e) {
@@ -108,7 +108,7 @@ public interface IterationAction extends AbstractIterationAction {
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 
 			// System.out.println("Execute iteration");
 			// System.out.println("InferedBM=" + getInferedBindingModel());

@@ -42,10 +42,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -122,7 +122,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		}*/
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			T value = getAssignationValue(evaluationContext);
 			evaluationContext.declareVariable(getVariableName(), value);
 			return value;

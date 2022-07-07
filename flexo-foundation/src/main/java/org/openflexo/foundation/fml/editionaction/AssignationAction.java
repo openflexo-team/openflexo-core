@@ -43,8 +43,8 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -121,14 +121,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			T value = getAssignationValue(evaluationContext);
 			try {
 				getAssignation().setBindingValue(value, evaluationContext);
 			} catch (Exception e) {
 				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
 				e.printStackTrace();
-				throw new FlexoException(e);
+				throw new FMLExecutionException(e);
 			}
 			return value;
 		}

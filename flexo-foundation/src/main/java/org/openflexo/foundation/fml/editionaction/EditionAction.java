@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.GetProperty;
@@ -57,8 +56,9 @@ import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -107,7 +107,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 	 * @return
 	 */
 	@Override
-	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
 	@Override
 	public BindingModel getBindingModel();
@@ -126,7 +126,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 		 * @return
 		 */
 		@Override
-		public abstract Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+		public abstract Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
 		@Override
 		public FlexoConcept getFlexoConcept() {

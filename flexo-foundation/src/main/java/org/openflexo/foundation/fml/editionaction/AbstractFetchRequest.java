@@ -45,9 +45,9 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -199,7 +199,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 		}
 
 		@Override
-		public final AT execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+		public final AT execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			List<T> computedValues = performExecute(evaluationContext);
 			if (this instanceof UniqueFetchRequest) {
 				if (computedValues.size() > 1) {
@@ -216,7 +216,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 				return (AT) computedValues;
 			}
 			logger.warning("Unexpected AbstractFetchRequest " + this);
-			throw new FlexoException("Unexpected AbstractFetchRequest " + this);
+			throw new FMLExecutionException("Unexpected AbstractFetchRequest " + this);
 
 		}
 

@@ -51,11 +51,11 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.WildcardTypeImpl;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -160,7 +160,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		}
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			logger.fine("performing AddToListAction");
 
 			DataBinding<? extends List<T>> list = getList();
@@ -216,7 +216,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 			super.notifiedBindingChanged(dataBinding);
 		}*/
 
-		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (getAssignableAction() != null) {
 				try {
 					return getAssignableAction().execute(evaluationContext);

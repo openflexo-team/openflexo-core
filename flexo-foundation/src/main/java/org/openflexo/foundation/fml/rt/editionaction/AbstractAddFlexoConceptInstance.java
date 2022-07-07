@@ -51,7 +51,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -61,6 +60,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
@@ -603,7 +603,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		}
 
 		@Override
-		public FCI execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public FCI execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("--------------> Perform performAddFlexoConceptInstance " + evaluationContext);
 			}
@@ -683,7 +683,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		}
 
 		protected CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
-				throws FlexoException {
+				throws FMLExecutionException {
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
 			if (instantiatedFlexoConcept != null) {
 				for (CreationScheme creationScheme : instantiatedFlexoConcept.getAccessibleCreationSchemes()) {
@@ -728,15 +728,15 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return false;
 		}
 
-		protected abstract FCI makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException;
+		protected abstract FCI makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
-		protected FlexoConcept retrieveFlexoConcept(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		protected FlexoConcept retrieveFlexoConcept(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (getDynamicInstantiation() && getDynamicFlexoConceptType().isValid()) {
 				try {
 					return getDynamicFlexoConceptType().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
 					e.printStackTrace();
-					throw new FlexoException(e);
+					throw new FMLExecutionException(e);
 				}
 			}
 			return getFlexoConceptType();

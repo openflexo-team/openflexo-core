@@ -45,7 +45,6 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -53,8 +52,9 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -147,7 +147,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	 * @param evaluationContext
 	 * @return
 	 */
-	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
 	/**
 	 * This method allows to retrieve a flattened list of all chained control graphs

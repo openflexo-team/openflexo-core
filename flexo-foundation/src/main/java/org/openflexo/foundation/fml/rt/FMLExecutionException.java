@@ -1,6 +1,7 @@
 /**
  * 
- * Copyright (c) 2015, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,49 +37,29 @@
  * 
  */
 
-package org.openflexo.foundation.fml.editionaction;
+package org.openflexo.foundation.fml.rt;
 
-import java.lang.reflect.Type;
-
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
-import org.openflexo.foundation.fml.rt.ReturnException;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.pamela.annotations.ImplementationClass;
-import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.foundation.FlexoException;
 
 /**
- * Return statement<br>
- * Note that the root control graph in which this action is embedded should be typed with a compatible type
+ * This is an exception which may be thrown during FML execution
  * 
+ * @author sguerin
  * 
- * @author sylvain
- *
- * @param <T>
  */
-@ModelEntity
-@ImplementationClass(ReturnStatement.ReturnActionImpl.class)
-@XMLElement
-public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
+@SuppressWarnings("serial")
+public class FMLExecutionException extends FlexoException {
 
-	public static abstract class ReturnActionImpl<T> extends AbstractAssignationActionImpl<T> implements ReturnStatement<T> {
-		@Override
-		public Type getInferedType() {
-			return getAssignableType();
-		}
-
-		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
-			T value = getAssignationValue(evaluationContext);
-			throw new ReturnException(value);
-		}
-
-		@Override
-		public String getStringRepresentation() {
-			if (getAssignableAction() != null) {
-				return getHeaderContext() + "return " + getAssignableAction().getStringRepresentation();
-			}
-			return getHeaderContext() + "return" + " = ???";
-		}
+	public FMLExecutionException(Exception exception) {
+		super(exception);
 	}
+
+	public FMLExecutionException(String message) {
+		super(message);
+	}
+
+	public FMLExecutionException(String message, Exception e) {
+		super(message, e);
+	}
+
 }

@@ -42,13 +42,14 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -56,7 +57,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 
 /**
  * Abstract {@link AssignableAction} which is composed with an other {@link AssignableAction} (right hand side)
@@ -84,11 +84,11 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 	// public DataBinding<? super T> getAssignation();
 
-	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T>implements AbstractAssignationAction<T> {
+	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T> implements AbstractAssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AbstractAssignationAction.class.getPackage().getName());
 
-		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (getAssignableAction() != null) {
 				try {
 					return getAssignableAction().execute(evaluationContext);

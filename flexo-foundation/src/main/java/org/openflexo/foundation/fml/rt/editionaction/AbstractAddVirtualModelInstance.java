@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -204,7 +205,7 @@ public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstanc
 			}
 		}
 
-		protected VirtualModel retrieveVirtualModel(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		protected VirtualModel retrieveVirtualModel(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			FlexoConcept retrievedFlexoConcept = retrieveFlexoConcept(evaluationContext);
 			if (retrievedFlexoConcept instanceof VirtualModel) {
 				return (VirtualModel) retrievedFlexoConcept;
