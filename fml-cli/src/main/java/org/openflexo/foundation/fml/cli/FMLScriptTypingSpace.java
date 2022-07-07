@@ -41,7 +41,9 @@ package org.openflexo.foundation.fml.cli;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 
 /**
@@ -87,12 +89,23 @@ public class FMLScriptTypingSpace extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
-		return super.resolveType(typeAsString);
+		Type returned = super.resolveType(typeAsString);
+		if (returned instanceof UnresolvedType) {
+			try {
+				FlexoConcept foundConcept = getServiceManager().getVirtualModelLibrary().getFirstConceptWithSimpleName(typeAsString);
+				if (foundConcept != null) {
+					return foundConcept.getInstanceType();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return returned;
 	}
 
 	@Override
 	public String toString() {
-		return "CLIFMLTypingSpace";
+		return "FMLScriptTypingSpace";
 	}
 
 }
