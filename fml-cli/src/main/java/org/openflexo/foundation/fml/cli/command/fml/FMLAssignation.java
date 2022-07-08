@@ -49,9 +49,9 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -97,7 +97,7 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 		public void init() {
 			super.init();
 			if (assignation.isNewVariableDeclaration()) {
-				if (getParentCommand() != null) {
+				if (getScript() != null) {
 					bindingModel = new BindingModel(getBindingModel());
 					localDeclarationVariable = new BindingVariable(getAssignationVariable(), expression.getAnalyzedType());
 					bindingModel.addToBindingVariables(localDeclarationVariable);

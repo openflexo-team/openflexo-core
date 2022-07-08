@@ -84,7 +84,7 @@ public interface FMLScript extends HasPropertyChangeSupport {
 	@Getter(value = SCRIPT_SEMANTICS_ANALYZER_KEY, ignoreType = true)
 	public ScriptSemanticsAnalyzer getScriptSemanticsAnalyzer();
 
-	@Getter(value = COMMANDS_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = COMMANDS_KEY, cardinality = Cardinality.LIST, inverse = AbstractCommand.SCRIPT_KEY)
 	public List<AbstractCommand<?>> getCommands();
 
 	@Adder(COMMANDS_KEY)

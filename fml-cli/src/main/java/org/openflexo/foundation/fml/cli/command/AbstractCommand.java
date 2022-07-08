@@ -113,6 +113,8 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 	public static final String COMMAND_SEMANTICS_ANALYZER_KEY = "commandSemanticsAnalyzer";
 	@PropertyIdentifier(type = AbstractCommand.class)
 	public static final String PARENT_COMMAND_KEY = "parentCommand";
+	@PropertyIdentifier(type = FMLScript.class)
+	public static final String SCRIPT_KEY = "script";
 
 	@Initializer
 	void create(@Parameter(NODE_KEY) N node,
@@ -131,6 +133,12 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 
 	@Setter(PARENT_COMMAND_KEY)
 	public void setParentCommand(AbstractCommand<?> aCommand);
+
+	@Getter(SCRIPT_KEY)
+	public FMLScript getScript();
+
+	@Setter(SCRIPT_KEY)
+	public void setScript(FMLScript aScript);
 
 	public Object execute() throws FMLCommandExecutionException;
 

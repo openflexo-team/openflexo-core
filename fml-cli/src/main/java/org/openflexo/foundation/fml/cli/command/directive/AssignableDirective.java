@@ -99,7 +99,7 @@ public interface AssignableDirective<N extends Node> extends Directive<N> {
 				System.out.println("On declare l'assignation de type : " + getAssignableType());
 				assignation.setDeclaredType(getAssignableType());
 				if (assignation.isNewVariableDeclaration()) {
-					if (getParentCommand() != null) {
+					if (getScript() != null) {
 						bindingModel = new BindingModel(getBindingModel());
 						localDeclarationVariable = new BindingVariable(getAssignationVariable(), getAssignableType());
 						bindingModel.addToBindingVariables(localDeclarationVariable);
