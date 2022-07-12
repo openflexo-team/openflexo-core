@@ -131,6 +131,7 @@ import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
 import org.openflexo.foundation.fml.ta.CreateFlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.ta.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.ta.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.ta.FMLDataBindingRole;
 import org.openflexo.foundation.fml.ta.FlexoBehaviourRole;
 import org.openflexo.foundation.fml.ta.FlexoConceptInstanceRoleRole;
 import org.openflexo.foundation.fml.ta.FlexoConceptRole;
@@ -394,6 +395,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (FlexoBehaviourRole.class.isAssignableFrom(flexoRoleClass)) {
 			return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
 		}
+		if (FMLDataBindingRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLIconLibrary.DATA_BINDING_ICON;
+		}
 		return null;
 	}
 
@@ -516,7 +520,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			else if (widgetContext.getType().equals(FlexoConcept.class)) {
 				return makeFlexoConceptSelector(widgetContext, fibModelFactory, variableName);
 			}
-
+			else if (widgetContext.getType().equals(DataBinding.class)) {
+				return makeDataBindingSelector(widgetContext, fibModelFactory, variableName);
+			}
 		}
 		return super.makeWidget(widgetContext, action, fibModelFactory, variableName, expand);
 	}
@@ -678,6 +684,54 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.expectedType"),
 				new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
+
+		return fciSelector;
+
+	}
+
+	private static FIBWidget makeDataBindingSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,
+			String variableName) {
+
+		FIBCustom fciSelector = fibModelFactory.newFIBCustom();
+		fciSelector.setBindingFactory(widgetContext.getBindingFactory());
+		Class<?> fciSelectorClass;
+		try {
+			fciSelectorClass = Class.forName("org.openflexo.gina.swing.utils.BindingSelector");
+			fciSelector.setComponentClass(fciSelectorClass);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		//fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.bindable"),
+		//		new DataBinding<>("controller.editor.project"), true));
+
+		String containerBinding = getContainerBinding(widgetContext, variableName);
+		DataBinding<?> container = widgetContext.getContainer();
+		System.out.println("widgetContext : "+widgetContext);
+		System.out.println("containerBinding : "+containerBinding);
+		System.out.println("container : "+container);
+		if (container != null && container.isSet() && container.isValid()) {
+			Type containerType = container.getAnalyzedType();
+			System.out.println("containerType : "+containerType);
+			fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
+					new DataBinding<>("component.bindable"), new DataBinding<>(containerBinding), true));
+			if (containerType instanceof VirtualModelInstanceType) {
+				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
+						new DataBinding<>("component.virtualModel"), new DataBinding<>(containerBinding), true));
+			}
+			else if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
+				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
+						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
+			}
+		}
+		/*else {
+
+			// No container defined, set service manager
+			fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.serviceManager"),
+					new DataBinding<>("controller.flexoController.applicationContext"), true));
+		}*/
+
+		//fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.expectedType"),
+		//		new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
 
 		return fciSelector;
 

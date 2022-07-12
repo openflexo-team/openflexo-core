@@ -56,12 +56,12 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A {@link ModelSlot} allowing to reflexively access an {@link VirtualModel}<br>
+ * A {@link ModelSlot} allowing to reflexively access an FML language<br>
  * 
  * @author sylvain
  *
  */
-@DeclareFlexoRoles({ FlexoConceptRole.class, FlexoPropertyRole.class, PrimitiveRoleRole.class, FlexoConceptInstanceRoleRole.class,
+@DeclareFlexoRoles({ FMLDataBindingRole.class, FlexoConceptRole.class, FlexoPropertyRole.class, PrimitiveRoleRole.class, FlexoConceptInstanceRoleRole.class,
 		FlexoBehaviourRole.class, ActionSchemeRole.class })
 @DeclareEditionActions({ CreateFlexoConcept.class, CreateTopLevelVirtualModel.class, CreateContainedVirtualModel.class,
 		CreatePrimitiveRole.class, CreateFlexoConceptInstanceRole.class, CreateFlexoBehaviour.class })
