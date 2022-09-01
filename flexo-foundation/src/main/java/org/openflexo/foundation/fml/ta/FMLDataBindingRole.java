@@ -45,6 +45,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -123,8 +124,12 @@ public interface FMLDataBindingRole extends FlexoRole<DataBinding> {
 
 		@Override
 		public ActorReference<DataBinding> makeActorReference(DataBinding object, FlexoConceptInstance fci) {
-			// TODO
-			return null;
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			FMLDataBindingActorReference returned = factory.newInstance(FMLDataBindingActorReference.class);
+			returned.setFlexoRole(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setModellingElement(object);
+			return returned;
 		}
 
 		@Override
