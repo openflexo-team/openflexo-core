@@ -457,7 +457,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public String toString() {
-			return "FMLCompilationUnit";
+			return "FMLCompilationUnit[" + getVirtualModel() + "]";
 		}
 
 		@Override
