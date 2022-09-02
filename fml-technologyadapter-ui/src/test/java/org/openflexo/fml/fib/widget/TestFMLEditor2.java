@@ -193,6 +193,9 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 
 		System.out.println("ms.getAccessedVirtualModel().getResource()=" + ms.getAccessedVirtualModel().getResource());
 		assertSame(cu.getVirtualModel(), ms.getAccessedVirtualModel());
+
+		assertSame(cu, ms.getDeclaringCompilationUnit());
+
 	}
 
 }
