@@ -52,6 +52,8 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -288,8 +290,12 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	public LocalizedDelegate getLocalizedDictionary();
 
+	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 *
+	 * Look in contained VirtualModel and contained FlexoConcept, and examine dependencies (imports)<br>
+	 * TODO: presents algorithm (semantics of first found concept, think of inheritance and embedding)
 	 * 
 	 * @param flexoConceptNameOrURI
 	 * @return
@@ -541,8 +547,53 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI) {
 			if (getVirtualModel() != null) {
-				return getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
+				if (getVirtualModel().getName().equals(flexoConceptNameOrURI)) {
+					return getVirtualModel();
+				}
+				if (getVirtualModel().getURI().equals(flexoConceptNameOrURI)) {
+					return getVirtualModel();
+				}
+
+				FlexoConcept returned = getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
+				if (returned != null) {
+					return returned;
+				}
 			}
+
+			for (ElementImportDeclaration importDeclaration : getElementImports()) {
+				try {
+					String resourceURI = null;
+					Object resourceRef = importDeclaration.getResourceReference().getBindingValue(this);
+					if (resourceRef instanceof String) {
+						resourceURI = (String) resourceRef;
+					}
+					else if (resourceRef instanceof ResourceData) {
+						resourceURI = ((ResourceData) resourceRef).getResource().getURI();
+					}
+					else {
+						logger.warning("Unexpected resourceRef: " + resourceRef + " for " + importDeclaration);
+						continue;
+					}
+					FlexoResource resource = getServiceManager().getResourceManager().getResource(resourceURI);
+					if (resource instanceof CompilationUnitResource && resource.isLoaded()) {
+						FMLCompilationUnit importedCompilationUnit = ((CompilationUnitResource) resource).getCompilationUnit();
+						FlexoConcept returned = importedCompilationUnit.getFlexoConcept(flexoConceptNameOrURI);
+						if (returned != null) {
+							return returned;
+						}
+					}
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 			return null;
 		}
 
