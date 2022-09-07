@@ -41,12 +41,13 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoServiceManager;
 
 /**
  * FML typing space, related to a {@link FMLCompilationUnit}
  * 
- * Support import of VirtualModels
+ * Support FMLCompilationUnit context and imports semantics
  * 
  * @author sylvain
  *
@@ -98,7 +99,19 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
-		return super.resolveType(typeAsString);
+		Type returned = super.resolveType(typeAsString);
+		if (returned instanceof UnresolvedType) {
+			if (compilationUnit != null) {
+				// Try to look up a FlexoConcept
+				FlexoConcept lookedUpConcept = compilationUnit.getFlexoConcept(typeAsString);
+				if (lookedUpConcept != null) {
+					// Yes ! a concept was found
+					return lookedUpConcept.getInstanceType();
+				}
+			}
+		}
+		return returned;
+
 	}
 
 	@Override
