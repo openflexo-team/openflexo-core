@@ -43,7 +43,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -57,6 +61,7 @@ import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -96,6 +101,10 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 
 	private static CompilationUnitResource fmlResource;
 
+	private static FMLCompilationUnit compilationUnit;
+	private static VirtualModel virtualModel;
+	private static FlexoConceptBehaviouralFacet behaviouralFacet;
+
 	@Test
 	@TestOrder(3)
 	@Category(UITest.class)
@@ -103,11 +112,18 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
-		assertNotNull(viewPoint);
+		VirtualModel vm = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
+		assertNotNull(vm);
 
-		fmlResource = viewPoint.getResource();
+		fmlResource = vm.getResource();
 		assertNotNull(fmlResource);
+
+		compilationUnit = fmlResource.getCompilationUnit();
+		virtualModel = compilationUnit.getVirtualModel();
+		behaviouralFacet = virtualModel.getBehaviouralFacet();
+
+		System.out.println("############# Initial VirtualModel: " + virtualModel);
+		System.out.println("############# Initial behaviouralFacet: " + behaviouralFacet);
 
 	}
 
@@ -190,12 +206,50 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 		System.out.println("cu.getVirtualModel()=" + cu.getVirtualModel());
 		System.out.println("cu.getVirtualModel().getResource()=" + cu.getVirtualModel().getResource());
 		System.out.println("ms.getAccessedVirtualModel()=" + ms.getAccessedVirtualModel());
-
 		System.out.println("ms.getAccessedVirtualModel().getResource()=" + ms.getAccessedVirtualModel().getResource());
-		assertSame(cu.getVirtualModel(), ms.getAccessedVirtualModel());
 
+		assertSame(cu.getVirtualModel(), ms.getAccessedVirtualModel());
 		assertSame(cu, ms.getDeclaringCompilationUnit());
 
+		assertSame(cu, compilationUnit);
+		assertSame(cu.getVirtualModel(), virtualModel);
+
+		ms.getPropertyChangeSupport().addPropertyChangeListener(new TestChangeListener());
 	}
 
+	private static class TestChangeListener implements PropertyChangeListener {
+		List<PropertyChangeEvent> events = new ArrayList<>();
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals("serializing")) {
+				return;
+			}
+			events.add(evt);
+		}
+	}
+
+	@Test
+	@TestOrder(7)
+	@Category(UITest.class)
+	public void testUpdateFromTextEditionTimeOut() {
+
+		log("testUpdateFromTextEditionTimeOut");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		FMLCompilationUnit cu2 = fmlEditor.getFMLResource().getCompilationUnit();
+		assertSame(compilationUnit, cu2);
+		assertSame(virtualModel, cu2.getVirtualModel());
+		assertSame(behaviouralFacet, cu2.getVirtualModel().getBehaviouralFacet());
+
+		FMLRTVirtualModelInstanceModelSlot ms2 = (FMLRTVirtualModelInstanceModelSlot) cu2.getVirtualModel()
+				.getAccessibleProperty("myModel");
+		assertSame(cu2.getVirtualModel(), ms2.getAccessedVirtualModel());
+	}
 }
