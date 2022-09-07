@@ -256,8 +256,12 @@ public interface VirtualModel extends FlexoConcept {
 	@Reindexer(FLEXO_CONCEPTS_KEY)
 	public void moveFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
+	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 *
+	 * Look in contained VirtualModel and contained FlexoConcept, and examine dependencies (imports)<br>
+	 * TODO: presents algorithm (semantics of first found concept, think of inheritance and embedding)
 	 * 
 	 * @param flexoConceptNameOrURI
 	 * @return
