@@ -287,7 +287,7 @@
 				label="&quot;Behavioural&quot;" isEditable="false"
 				name="flexoConceptBehaviouralFacet">
 				<Children id="74"
-					data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours"
+					data="flexoConceptBehaviouralFacet.behaviours"
 					name="flexoBehaviours" />
 				<BrowserAddAction id="75"
 					method="controller.createAdvancedScheme(selected.flexoConcept)"
