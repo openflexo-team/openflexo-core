@@ -1,7 +1,7 @@
 help;
 pwd;
 cd ..;
-cd flexo-test-resources/src/main/resources/TestResourceCenter/ViewPoints;
+cd flexo-test-resources/src/main/resources/TestResourceCenter/FML;
 pwd;
 ls;
 services;

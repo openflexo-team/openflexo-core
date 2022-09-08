@@ -1,4 +1,4 @@
-@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMc.fml")
+@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/TestReference.fml/VMc.fml")
 @Version("0.1")
 @Author("sylvain")
 public model VMc {

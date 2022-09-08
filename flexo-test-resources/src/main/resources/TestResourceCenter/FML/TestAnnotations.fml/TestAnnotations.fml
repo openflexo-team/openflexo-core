@@ -15,7 +15,7 @@
 	@SomeAnnotations("value2")
 	@SomeAnnotations("value3")
 )
-@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestAnnotations.fml")
+@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/TestAnnotations.fml")
 @Version("0.1")
 model TestAnnotations {
 	

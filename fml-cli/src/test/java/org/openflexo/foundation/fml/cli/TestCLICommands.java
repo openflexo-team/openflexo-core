@@ -127,12 +127,11 @@ public class TestCLICommands extends OpenflexoTestCase {
 		cd1.execute();
 		assertEquals("cd ..", cd1.toString());
 		assertEquals(commandInterpreter.getWorkingDirectory(), workingDirectory.getParentFile());
-		AbstractCommand cd2 = CommandParser.parse("cd flexo-test-resources/src/main/resources/TestResourceCenter/ViewPoints",
-				commandInterpreter);
-		assertEquals("cd flexo-test-resources/src/main/resources/TestResourceCenter/ViewPoints", cd2.toString());
+		AbstractCommand cd2 = CommandParser.parse("cd flexo-test-resources/src/main/resources/TestResourceCenter/FML", commandInterpreter);
+		assertEquals("cd flexo-test-resources/src/main/resources/TestResourceCenter/FML", cd2.toString());
 		cd2.execute();
 		workingDirectory = commandInterpreter.getWorkingDirectory();
-		assertEquals("ViewPoints", workingDirectory.getName());
+		assertEquals("FML", workingDirectory.getName());
 		AbstractCommand pwd = CommandParser.parse("pwd", commandInterpreter);
 		pwd.execute();
 	}

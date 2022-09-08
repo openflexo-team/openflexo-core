@@ -83,7 +83,7 @@ public class TestCLIParser extends OpenflexoTestCase {
 
 		assertParsable("cd resources-resources");
 		assertParsable("cd flexo-test-resources");
-		assertParsable("cd flexo-test-resources/src/main/resources/TestResourceCenter/ViewPoints");
+		assertParsable("cd flexo-test-resources/src/main/resources/TestResourceCenter/FML");
 		assertParsable("cd /var/folders/r6/s7gmms4n437gbyr5vpdhb4d80000gn/T/TestResourceCenter4401486062616967125");
 		assertParsable("cd GIT2-1");
 		assertParsable("cd GIT2.1");
