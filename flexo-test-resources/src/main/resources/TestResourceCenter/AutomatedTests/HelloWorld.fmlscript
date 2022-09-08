@@ -2,3 +2,4 @@ service ResourceCenterService status;
 a = "Hello";
 b = " world !";
 assert a+b=="Hello world !";
+assert a+b!="Tutu";
