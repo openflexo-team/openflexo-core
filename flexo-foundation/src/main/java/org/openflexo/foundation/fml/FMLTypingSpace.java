@@ -103,7 +103,7 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 		if (returned instanceof UnresolvedType) {
 			if (compilationUnit != null) {
 				// Try to look up a FlexoConcept
-				FlexoConcept lookedUpConcept = compilationUnit.getFlexoConcept(typeAsString);
+				FlexoConcept lookedUpConcept = compilationUnit.lookupFlexoConceptWithName(typeAsString);
 				if (lookedUpConcept != null) {
 					// Yes ! a concept was found
 					return lookedUpConcept.getInstanceType();
