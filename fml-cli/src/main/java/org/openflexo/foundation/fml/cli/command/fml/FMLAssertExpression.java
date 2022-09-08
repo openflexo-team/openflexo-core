@@ -82,7 +82,7 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 			// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
 			// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 
-			System.out.println("----------------> On traite ASSERT " + node.getExpression());
+			// System.out.println("----------------> On traite ASSERT " + node.getExpression());
 
 			expression = retrieveExpression(node.getExpression());
 
@@ -125,7 +125,7 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 					if (value) {
 						return true;
 					}
-					throw new FMLAssertException(expression, getCommandInterpreter());
+					throw new FMLAssertException(getLine(), expression, getCommandInterpreter());
 				} catch (TypeMismatchException e) {
 					throw new FMLCommandExecutionException(e);
 				} catch (NullReferenceException e) {
