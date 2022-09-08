@@ -1,4 +1,4 @@
-@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml/TestVirtualModel.fml")
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml/TestVirtualModel.fml")
 @Version("0.1")
 model TestVirtualModel {
 

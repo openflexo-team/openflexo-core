@@ -2,7 +2,7 @@ use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
 import java.lang.String;
 
-@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/MyVM1.fml")
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelB.fml/MyVM1.fml")
 @Version("0.1")
 @Description("In this virtual model we test embedding features")
 model MyVM1 {

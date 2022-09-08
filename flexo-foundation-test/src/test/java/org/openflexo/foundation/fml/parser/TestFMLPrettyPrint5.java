@@ -65,7 +65,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 
-	private static VirtualModel viewPoint;
+	private static VirtualModel rootVM;
 	private static VirtualModel vm1;
 	private static FlexoConcept conceptA;
 	private static FlexoConcept conceptB;
@@ -86,14 +86,14 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		instanciateTestServiceManager();
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml");
-		assertNotNull(viewPoint);
-		assertNotNull(vm1 = viewPoint.getVirtualModelNamed("MyVM1"));
+		rootVM = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestVirtualModelB.fml");
+		assertNotNull(rootVM);
+		assertNotNull(vm1 = rootVM.getVirtualModelNamed("MyVM1"));
 		assertNotNull(conceptA = vm1.getFlexoConcept("ConceptA"));
 		assertNotNull(conceptB = vm1.getFlexoConcept("ConceptB"));
 		assertNotNull(conceptC = vm1.getFlexoConcept("ConceptC"));
 
-		assertVirtualModelIsValid(viewPoint);
+		assertVirtualModelIsValid(rootVM);
 		assertVirtualModelIsValid(vm1);
 
 		ActionScheme actionScheme = vm1.getActionSchemes().get(0);
