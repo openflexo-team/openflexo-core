@@ -44,8 +44,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -97,6 +99,7 @@ import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.swing.ImageUtils;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
@@ -664,6 +667,23 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	public List<FlexoConcept> getAllParentFlexoConcepts();
+
+	/**
+	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FlexoConcept}<br>
+	 * 
+	 * Lookup algorithm follows:
+	 * <ul>
+	 * <li>If name matches declared {@link FlexoConcept} return this {@link FlexoConcept}</li>
+	 * <li>If name matches any container {@link VirtualModel} or {@link FlexoConcept} (recursively from current to container), return
+	 * related {@link FlexoConcept}</li>
+	 * <li>If name matches any parent {@link FlexoConcept} (inheritance semantics), return related {@link VirtualModel}</li>
+	 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}</li>
+	 * </ul>
+	 * 
+	 * @param conceptName
+	 * @return
+	 */
+	public FlexoConcept lookupFlexoConceptWithName(String conceptName);
 
 	@PropertyIdentifier(type = Resource.class)
 	public static final String BIG_ICON_RESOURCE_KEY = "bigIconResource";
@@ -1934,6 +1954,64 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			for (FlexoBehaviour behaviour : getFlexoBehaviours()) {
 				behaviour.notifiedScopeChanged();
 			}
+		}
+
+		/**
+		 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FlexoConcept}<br>
+		 * 
+		 * Lookup algorithm follows:
+		 * <ul>
+		 * <li>If name matches declared {@link FlexoConcept} return this {@link FlexoConcept}</li>
+		 * <li>If name matches any container {@link VirtualModel} or {@link FlexoConcept} (recursively from current to container), return
+		 * related {@link FlexoConcept}</li>
+		 * <li>If name matches any parent {@link FlexoConcept} (inheritance semantics), return related {@link VirtualModel}</li>
+		 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}/li>
+		 * </ul>
+		 * 
+		 * @param conceptName
+		 * @return
+		 */
+		@Override
+		public final FlexoConcept lookupFlexoConceptWithName(String conceptName) {
+			return lookupFlexoConceptWithName(conceptName, new HashSet<>());
+		}
+
+		protected FlexoConcept lookupFlexoConceptWithName(String conceptName, Set<FlexoConcept> visited) {
+			if (visited.contains(this)) {
+				return null;
+			}
+			visited.add(this);
+			if (StringUtils.isEmpty(conceptName)) {
+				return null;
+			}
+			if (getName().equals(conceptName)) {
+				return this;
+			}
+			if (getOwner() != null) {
+				FlexoConcept returned = ((FlexoConceptImpl) getOwner()).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			if (getContainerFlexoConcept() != null) {
+				FlexoConcept returned = ((FlexoConceptImpl) getContainerFlexoConcept()).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				FlexoConcept returned = ((FlexoConceptImpl) parentConcept).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (FlexoConcept embeddedConcept : getEmbeddedFlexoConcepts()) {
+				FlexoConcept returned = ((FlexoConceptImpl) embeddedConcept).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			return null;
 		}
 
 		private List<Validable> embeddedValidable = null;

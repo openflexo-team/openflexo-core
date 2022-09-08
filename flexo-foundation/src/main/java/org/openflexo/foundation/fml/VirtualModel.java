@@ -414,9 +414,29 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
 	public CompilationUnitResource getCompilationUnitResource();
+
+	/**
+	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link VirtualModel}<br>
+	 * 
+	 * Lookup algorithm follows:
+	 * <ul>
+	 * <li>If name matches declared {@link VirtualModel} return this {@link VirtualModel}</li>
+	 * <li>If name matches any container {@link VirtualModel} (recursively from current to container), return related
+	 * {@link VirtualModel}</li>
+	 * <li>If name matches any parent {@link VirtualModel} (inheritance semantics), return related {@link VirtualModel}</li>
+	 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}</li>
+	 * <li>Lookup up also in contained and loaded {@link VirtualModel}</li>
+	 * </ul>
+	 * 
+	 * @param conceptName
+	 * @return
+	 */
+	@Override
+	public FlexoConcept lookupFlexoConceptWithName(String conceptName);
 
 	/**
 	 * Default implementation for {@link VirtualModel} API
@@ -750,6 +770,36 @@ public interface VirtualModel extends FlexoConcept {
 				innerConceptsFacet.notifiedConceptsChanged();
 		}
 
+		@Override
+		protected FlexoConcept lookupFlexoConceptWithName(String conceptName, Set<FlexoConcept> visited) {
+			if (visited.contains(this)) {
+				return null;
+			}
+			FlexoConcept returned = super.lookupFlexoConceptWithName(conceptName, visited);
+			if (returned != null) {
+				return returned;
+			}
+			if (getContainerVirtualModel() != null) {
+				returned = ((FlexoConceptImpl) getContainerVirtualModel()).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (VirtualModel virtualModel : getVirtualModels()) {
+				returned = ((FlexoConceptImpl) virtualModel).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (FlexoConcept concept : getFlexoConcepts()) {
+				returned = ((FlexoConceptImpl) concept).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			return returned;
+		}
+
 		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
@@ -757,6 +807,7 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@Deprecated
 		public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI) {
 			if (StringUtils.isEmpty(flexoConceptNameOrURI)) {
 				return null;
@@ -1179,6 +1230,7 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@Deprecated
 		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
 			if (getCompilationUnit() != null) {
 				return getCompilationUnit().getVirtualModelNamed(virtualModelNameOrURI);

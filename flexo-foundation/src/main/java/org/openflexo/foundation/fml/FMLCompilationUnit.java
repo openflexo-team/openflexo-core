@@ -300,7 +300,31 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @param flexoConceptNameOrURI
 	 * @return
 	 */
+	@Deprecated
 	public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI);
+
+	/**
+	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FMLCompilationUnit}<br>
+	 * 
+	 * Lookup algorithm follows:
+	 * <ul>
+	 * <li>First lookup in contained {@link VirtualModel}</li>
+	 * <li>When not found, apply the same algorithm for each FMLCompilationUnit import of this {@link FMLCompilationUnit} (in the order they
+	 * are declared : the first found is returned)</li>
+	 * </ul>
+	 * 
+	 * @param conceptName
+	 * @return
+	 */
+	public FlexoConcept lookupFlexoConceptWithName(String conceptName);
+
+	/**
+	 * Search and return {@link FlexoConcept} with supplied URI
+	 * 
+	 * @param conceptURI
+	 * @return
+	 */
+	public FlexoConcept lookupFlexoConceptWithURI(String conceptURI);
 
 	/**
 	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModel}
@@ -315,6 +339,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 */
 	void loadContainedVirtualModelsWhenUnloaded();
 
+	@Deprecated
 	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
 	public FMLObject getObject(String objectURI);
@@ -529,22 +554,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 		}
 
-		/*@Override
-		public FlexoVersion getModelVersion() {
-			if (getResource() != null) {
-				return getResource().getModelVersion();
-			}
-			return null;
-		}
-		
 		@Override
-		public void setModelVersion(FlexoVersion aVersion) {
-			if (getResource() != null) {
-				getResource().setModelVersion(aVersion);
-			}
-		}*/
-
-		@Override
+		@Deprecated
 		public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI) {
 			if (getVirtualModel() != null) {
 				if (getVirtualModel().getName().equals(flexoConceptNameOrURI)) {
@@ -594,6 +605,58 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				}
 			}
 
+			return null;
+		}
+
+		@Override
+		public FlexoConcept lookupFlexoConceptWithName(String conceptName) {
+
+			System.out.println("On cherche " + conceptName + " dans " + this);
+
+			FlexoConcept returned = getVirtualModel().lookupFlexoConceptWithName(conceptName);
+			if (returned != null) {
+				return returned;
+			}
+
+			System.out.println("On ne trouve pas dans le VM " + getVirtualModel());
+
+			for (ElementImportDeclaration importDeclaration : getElementImports()) {
+
+				System.out.println(" > Import " + importDeclaration);
+				try {
+					String resourceURI = null;
+					Object resourceRef = importDeclaration.getResourceReference().getBindingValue(this);
+					System.out.println("resourceRef=" + resourceRef);
+					if (resourceRef instanceof String) {
+						resourceURI = (String) resourceRef;
+					}
+					else if (resourceRef instanceof ResourceData) {
+						resourceURI = ((ResourceData) resourceRef).getResource().getURI();
+					}
+					else {
+						logger.warning("Unexpected resourceRef: " + resourceRef + " for " + importDeclaration);
+						continue;
+					}
+					FlexoResource resource = getServiceManager().getResourceManager().getResource(resourceURI);
+					System.out.println("resource: " + resource + " loaded: " + resource.isLoaded());
+					if (resource instanceof CompilationUnitResource && resource.isLoaded()) {
+						FMLCompilationUnit importedCompilationUnit = ((CompilationUnitResource) resource).getCompilationUnit();
+						returned = importedCompilationUnit.lookupFlexoConceptWithName(conceptName);
+						if (returned != null) {
+							return returned;
+						}
+					}
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			return null;
 		}
 
@@ -696,6 +759,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		 * @return
 		 */
 		@Override
+		@Deprecated
 		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
 
 			if (getResource() != null) {
