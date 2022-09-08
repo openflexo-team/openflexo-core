@@ -82,7 +82,7 @@ public class TestUpdateWith extends OpenflexoTestCase {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
+		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml");
 		assertNotNull(viewPoint);
 
 		fmlResource = viewPoint.getResource();
@@ -100,8 +100,8 @@ public class TestUpdateWith extends OpenflexoTestCase {
 		log("updateCompilationUnit");
 
 		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
-				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml\")\n" + "@Version(\"0.1\")\n"
-				+ "model TestViewPointA {\n" + "	TestViewPointA myModel with ModelInstance();\n" + "}\n";
+				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml\")\n" + "@Version(\"0.1\")\n"
+				+ "model TestVirtualModelA {\n" + "	TestVirtualModelA myModel with ModelInstance();\n" + "}\n";
 		System.out.println(fml);
 
 		FMLCompilationUnit compilationUnit2 = fmlParser.parse(fml, fmlResource.getFactory(), (modelSlotClasses) -> {

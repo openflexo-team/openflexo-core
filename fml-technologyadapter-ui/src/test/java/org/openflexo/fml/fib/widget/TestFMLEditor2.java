@@ -112,7 +112,7 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		VirtualModel vm = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
+		VirtualModel vm = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml");
 		assertNotNull(vm);
 
 		fmlResource = vm.getResource();
@@ -188,8 +188,8 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 		log("testAddFLMRTVirtualModelInstanceModelSlotFromText");
 
 		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
-				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml\")\n" + "@Version(\"0.1\")\n"
-				+ "model TestViewPointA {\n" + "	TestViewPointA myModel with ModelInstance();\n" + "}\n";
+				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml\")\n" + "@Version(\"0.1\")\n"
+				+ "model TestVirtualModelA {\n" + "	TestVirtualModelA myModel with ModelInstance();\n" + "}\n";
 
 		fmlEditor.getTextArea().setText(fml);
 		fmlEditor.parseImmediately();
