@@ -115,6 +115,8 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 	public static final String PARENT_COMMAND_KEY = "parentCommand";
 	@PropertyIdentifier(type = FMLScript.class)
 	public static final String SCRIPT_KEY = "script";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String LINE_KEY = "line";
 
 	@Initializer
 	void create(@Parameter(NODE_KEY) N node,
@@ -139,6 +141,12 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 
 	@Setter(SCRIPT_KEY)
 	public void setScript(FMLScript aScript);
+
+	@Getter(value = LINE_KEY, defaultValue = "-1")
+	public int getLine();
+
+	@Setter(LINE_KEY)
+	public void setLine(int line);
 
 	public Object execute() throws FMLCommandExecutionException;
 

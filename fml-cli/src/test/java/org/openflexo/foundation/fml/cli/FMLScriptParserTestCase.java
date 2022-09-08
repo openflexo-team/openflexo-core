@@ -72,8 +72,8 @@ public abstract class FMLScriptParserTestCase extends OpenflexoTestCase {
 			throws ModelDefinitionException, ParseException, IOException {
 
 		for (AbstractCommand command : script.getCommands()) {
-			assertTrue("Script " + scriptName + " > invalid command " + command + " : " + command.invalidCommandReason(),
-					command.isSyntaxicallyValid());
+			assertTrue("Script " + scriptName + ", line " + command.getLine() + " > invalid command " + command + " : "
+					+ command.invalidCommandReason(), command.isSyntaxicallyValid());
 		}
 		return script;
 	}

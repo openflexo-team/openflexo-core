@@ -131,7 +131,7 @@ public interface FMLScript extends HasPropertyChangeSupport {
 		@Override
 		public void execute() throws FMLCommandExecutionException {
 			for (AbstractCommand command : getCommands()) {
-				logger.info(">>> Execute " + command);
+				logger.info(">>> Line " + command.getLine() + " execute " + command);
 				getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);
 				command.execute();
 			}

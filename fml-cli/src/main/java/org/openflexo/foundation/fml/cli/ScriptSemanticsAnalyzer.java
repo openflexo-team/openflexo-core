@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.fml.parser.FragmentManager;
+import org.openflexo.foundation.fml.parser.node.ACommandInScript;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
@@ -111,16 +112,18 @@ public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 		return script;
 	}
 
-	/*@Override
-	public void outACommandInScript(ACommandInScript node) {
-		// TODO Auto-generated method stub
+	private int currentLine = -1;
+
+	@Override
+	public void inACommandInScript(ACommandInScript node) {
 		super.outACommandInScript(node);
-		System.out.println(">>>> Found command: " + node.getCommand());
-	}*/
+		currentLine = node.getSemi().getLine();
+	}
 
 	@Override
 	protected void registerCommand(Node n, AbstractCommand<?> command) {
-		System.out.println("Register new command in script: " + command);
+		command.setLine(currentLine);
+		System.out.println("Line " + command.getLine() + ": register new command in script: " + command);
 		script.addToCommands(command);
 		/*if (command instanceof FMLAssignation) {
 			((FMLAssignation) command).declareVariableWhenRequired();
