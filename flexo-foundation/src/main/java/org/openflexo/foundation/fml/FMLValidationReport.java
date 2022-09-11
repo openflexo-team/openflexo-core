@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
-import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.pamela.validation.InformationIssue;

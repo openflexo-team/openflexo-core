@@ -44,8 +44,8 @@ import java.util.logging.Logger;
 import org.fife.ui.rsyntaxtextarea.parser.DefaultParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
-import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.pamela.validation.ValidationError;
 

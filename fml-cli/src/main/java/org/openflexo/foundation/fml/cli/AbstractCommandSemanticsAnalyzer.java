@@ -44,7 +44,7 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScriptModelFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
