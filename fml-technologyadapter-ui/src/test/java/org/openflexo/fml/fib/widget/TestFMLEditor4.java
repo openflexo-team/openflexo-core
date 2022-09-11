@@ -39,7 +39,6 @@
 package org.openflexo.fml.fib.widget;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -53,20 +52,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
-import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
@@ -88,7 +81,7 @@ import org.openflexo.test.UITest;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestFMLEditor3 extends OpenflexoFIBTestCase {
+public class TestFMLEditor4 extends OpenflexoFIBTestCase {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
 
@@ -164,7 +157,7 @@ public class TestFMLEditor3 extends OpenflexoFIBTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new SwingGraphicalContextDelegate(TestFMLEditor3.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestFMLEditor4.class.getSimpleName());
 	}
 
 	@AfterClass
@@ -186,56 +179,9 @@ public class TestFMLEditor3 extends OpenflexoFIBTestCase {
 	@Test
 	@TestOrder(6)
 	@Category(UITest.class)
-	public void testAddBehaviourFromText() {
+	public void performSomeAssignations() {
 
-		log("testAddBehaviourFromText");
-
-		// @formatter:off
-		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
-				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml\")\n" 
-				+ "@Version(\"0.1\")\n"
-				+ "model TestVirtualModelA {\n" 
-				+ "  create() {\n" 
-				+ "    a=0;\n"
-				+ "  }\n"
-				+ "}\n";
-		// @formatter:on
-
-		fmlEditor.getTextArea().setText(fml);
-		fmlEditor.parseImmediately();
-
-		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
-		assertNotNull(cu);
-		assertEquals(0, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
-
-		assertSame(cu, compilationUnit);
-		assertSame(cu.getVirtualModel(), virtualModel);
-
-		CreationScheme defaultCreationScheme = cu.getVirtualModel().getCreationSchemes().get(0);
-		assertNotNull(defaultCreationScheme);
-		assertTrue(defaultCreationScheme.getControlGraph() instanceof AssignationAction);
-		AssignationAction assignA = (AssignationAction) defaultCreationScheme.getControlGraph();
-
-		DataBinding assignation = assignA.getAssignation();
-		AssignableAction assignableAction = assignA.getAssignableAction();
-
-		System.out.println("assignation=" + assignation);
-		System.out.println("valid: " + assignation.isValid());
-		System.out.println("reason: " + assignation.invalidBindingReason());
-		assertFalse(assignation.isValid());
-
-		ValidationReport validation = validate(cu);
-		assertEquals(1, validation.getErrorsCount());
-
-	}
-
-	@Test
-	@TestOrder(7)
-	@Category(UITest.class)
-	public void testAddPrimitiveRoleFromText() {
-
-		log("testAddPrimitiveRoleFromText");
+		log("performSomeAssignations");
 
 		// @formatter:off
 		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
@@ -243,8 +189,16 @@ public class TestFMLEditor3 extends OpenflexoFIBTestCase {
 				+ "@Version(\"0.1\")\n"
 				+ "model TestVirtualModelA {\n" 
 				+ "  int a;\n" 
+				+ "  String b;\n" 
+				+ "  Number c;\n" 
+				+ "  Double d;\n" 
+				+ "  int e;\n" 
 				+ "  create() {\n" 
-				+ "    a=0;\n"
+				+ "    a=\"foo\";\n"
+				+ "    b=2;\n"
+				+ "    c=5.8;\n"
+				+ "    d=1;\n"
+				+ "    e=3.7;\n"
 				+ "  }\n"
 				+ "}\n";
 		// @formatter:on
@@ -254,31 +208,56 @@ public class TestFMLEditor3 extends OpenflexoFIBTestCase {
 
 		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
 		assertNotNull(cu);
-		assertEquals(1, cu.getVirtualModel().getFlexoProperties().size());
+		assertEquals(5, cu.getVirtualModel().getFlexoProperties().size());
 		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
 
 		assertSame(cu, compilationUnit);
 		assertSame(cu.getVirtualModel(), virtualModel);
 
-		PrimitiveRole a = (PrimitiveRole) cu.getVirtualModel().getAccessibleProperty("a");
-		assertNotNull(a);
-		assertEquals(PrimitiveType.Integer, a.getPrimitiveType());
+		ValidationReport validation = validate(cu);
+		assertEquals(3, validation.getErrorsCount());
+	}
 
-		CreationScheme defaultCreationScheme = cu.getVirtualModel().getCreationSchemes().get(0);
-		assertNotNull(defaultCreationScheme);
-		assertTrue(defaultCreationScheme.getControlGraph() instanceof AssignationAction);
-		AssignationAction assignA = (AssignationAction) defaultCreationScheme.getControlGraph();
+	@Test
+	@TestOrder(7)
+	@Category(UITest.class)
+	public void fixAssignIssues() {
 
-		DataBinding assignation = assignA.getAssignation();
-		AssignableAction assignableAction = assignA.getAssignableAction();
+		log("fixAssignIssues");
 
-		System.out.println("assignation=" + assignation);
-		System.out.println("valid: " + assignation.isValid());
-		System.out.println("reason: " + assignation.invalidBindingReason());
-		assertTrue(assignation.isValid());
+		// @formatter:off
+		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
+				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml\")\n" 
+				+ "@Version(\"0.1\")\n"
+				+ "model TestVirtualModelA {\n" 
+				+ "  int a;\n" 
+				+ "  String b;\n" 
+				+ "  Number c;\n" 
+				+ "  Double d;\n" 
+				+ "  int e;\n" 
+				+ "  create() {\n" 
+				+ "    a=2;\n"
+				+ "    b=\"foo\"+2;\n"
+				+ "    c=5.8;\n"
+				+ "    d=1;\n"
+				+ "    e=(int)3.7;\n"
+				+ "  }\n"
+				+ "}\n";
+		// @formatter:on
 
-		System.out.println("BM: " + assignation.getOwner().getBindingModel());
-		assertObjectIsValid(cu);
+		fmlEditor.getTextArea().setText(fml);
+		fmlEditor.parseImmediately();
+
+		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
+		assertNotNull(cu);
+		assertEquals(5, cu.getVirtualModel().getFlexoProperties().size());
+		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
+
+		assertSame(cu, compilationUnit);
+		assertSame(cu.getVirtualModel(), virtualModel);
+
+		ValidationReport validation = validate(cu);
+		assertEquals(0, validation.getErrorsCount());
 	}
 
 }
