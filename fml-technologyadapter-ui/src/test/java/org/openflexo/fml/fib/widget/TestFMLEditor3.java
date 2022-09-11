@@ -39,15 +39,12 @@
 package org.openflexo.fml.fib.widget;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,22 +53,26 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.gina.utils.InspectorGroup;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -85,7 +86,7 @@ import org.openflexo.test.UITest;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestFMLEditor2 extends OpenflexoFIBTestCase {
+public class TestFMLEditor3 extends OpenflexoFIBTestCase {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
 
@@ -161,7 +162,7 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new SwingGraphicalContextDelegate(TestFMLEditor2.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestFMLEditor3.class.getSimpleName());
 	}
 
 	@AfterClass
@@ -183,16 +184,66 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 	@Test
 	@TestOrder(6)
 	@Category(UITest.class)
-	public void testAddFLMRTVirtualModelInstanceModelSlotFromText() {
+	public void testAddBehaviourFromText() {
 
-		log("testAddFLMRTVirtualModelInstanceModelSlotFromText");
+		log("testAddBehaviourFromText");
 
 		// @formatter:off
 		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
 				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml\")\n" 
 				+ "@Version(\"0.1\")\n"
 				+ "model TestVirtualModelA {\n" 
-				+ "	TestVirtualModelA myModel with ModelInstance();\n" 
+				+ "  create() {\n" 
+				+ "    a=0;\n"
+				+ "  }\n"
+				+ "}\n";
+		// @formatter:on
+
+		fmlEditor.getTextArea().setText(fml);
+		fmlEditor.parseImmediately();
+
+		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
+		assertNotNull(cu);
+		assertEquals(0, cu.getVirtualModel().getFlexoProperties().size());
+		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
+
+		assertSame(cu, compilationUnit);
+		assertSame(cu.getVirtualModel(), virtualModel);
+
+		CreationScheme defaultCreationScheme = cu.getVirtualModel().getCreationSchemes().get(0);
+		assertNotNull(defaultCreationScheme);
+		assertTrue(defaultCreationScheme.getControlGraph() instanceof AssignationAction);
+		AssignationAction assignA = (AssignationAction) defaultCreationScheme.getControlGraph();
+
+		DataBinding assignation = assignA.getAssignation();
+		AssignableAction assignableAction = assignA.getAssignableAction();
+
+		System.out.println("assignation=" + assignation);
+		System.out.println("valid: " + assignation.isValid());
+		System.out.println("reason: " + assignation.invalidBindingReason());
+		assertFalse(assignation.isValid());
+
+		ValidationReport validation = validate(cu);
+		assertEquals(1, validation.getErrorsCount());
+
+	}
+
+	/*@Test
+	@TestOrder(7)
+	@Category(UITest.class)
+	public void testAddPrimitiveRoleFromText() {
+
+		log("testAddBehaviourFromText");
+
+		// @formatter:off
+		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
+				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml\")\n" 
+				+ "@Version(\"0.1\")\n"
+				+ "model TestVirtualModelA {\n" 
+				+ "  int a;\n" 
+				+ "  create() {\n" 
+				+ "    a=0;\n"
+				+ "  }\n"
 				+ "}\n";
 		// @formatter:on
 
@@ -202,59 +253,29 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
 		assertNotNull(cu);
 		assertEquals(1, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(0, cu.getVirtualModel().getFlexoBehaviours().size());
-
-		FMLRTVirtualModelInstanceModelSlot ms = (FMLRTVirtualModelInstanceModelSlot) cu.getVirtualModel().getAccessibleProperty("myModel");
-
-		System.out.println(cu.getFMLPrettyPrint());
-
-		System.out.println("cu.getVirtualModel()=" + cu.getVirtualModel());
-		System.out.println("cu.getVirtualModel().getResource()=" + cu.getVirtualModel().getResource());
-		System.out.println("ms.getAccessedVirtualModel()=" + ms.getAccessedVirtualModel());
-		System.out.println("ms.getAccessedVirtualModel().getResource()=" + ms.getAccessedVirtualModel().getResource());
-
-		assertSame(cu.getVirtualModel(), ms.getAccessedVirtualModel());
-		assertSame(cu, ms.getDeclaringCompilationUnit());
+		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
 
 		assertSame(cu, compilationUnit);
 		assertSame(cu.getVirtualModel(), virtualModel);
 
-		ms.getPropertyChangeSupport().addPropertyChangeListener(new TestChangeListener());
-	}
+		PrimitiveRole a = (PrimitiveRole) cu.getVirtualModel().getAccessibleProperty("a");
+		assertNotNull(a);
+		assertEquals(PrimitiveType.Integer, a.getPrimitiveType());
 
-	private static class TestChangeListener implements PropertyChangeListener {
-		List<PropertyChangeEvent> events = new ArrayList<>();
+		CreationScheme defaultCreationScheme = cu.getVirtualModel().getCreationSchemes().get(0);
+		assertNotNull(defaultCreationScheme);
+		assertTrue(defaultCreationScheme.getControlGraph() instanceof AssignationAction);
+		AssignationAction assignA = (AssignationAction) defaultCreationScheme.getControlGraph();
 
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals("serializing")) {
-				return;
-			}
-			events.add(evt);
-		}
-	}
+		DataBinding assignation = assignA.getAssignation();
+		AssignableAction assignableAction = assignA.getAssignableAction();
 
-	@Test
-	@TestOrder(7)
-	@Category(UITest.class)
-	public void testUpdateFromTextEditionTimeOut() {
+		System.out.println("assignation=" + assignation);
+		System.out.println("valid: " + assignation.isValid());
+		System.out.println("reason: " + assignation.invalidBindingReason());
 
-		log("testUpdateFromTextEditionTimeOut");
+		System.out.println("BM: " + assignation.getOwner().getBindingModel());
+		// assertObjectIsValid(cu);
+	}*/
 
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		FMLCompilationUnit cu2 = fmlEditor.getFMLResource().getCompilationUnit();
-		assertSame(compilationUnit, cu2);
-		assertSame(virtualModel, cu2.getVirtualModel());
-		assertSame(behaviouralFacet, cu2.getVirtualModel().getBehaviouralFacet());
-
-		FMLRTVirtualModelInstanceModelSlot ms2 = (FMLRTVirtualModelInstanceModelSlot) cu2.getVirtualModel()
-				.getAccessibleProperty("myModel");
-		assertSame(cu2.getVirtualModel(), ms2.getAccessedVirtualModel());
-	}
 }
