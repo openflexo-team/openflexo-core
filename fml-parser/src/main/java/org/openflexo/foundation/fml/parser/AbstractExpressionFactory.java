@@ -177,9 +177,9 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+	public void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
 		if (getParentAnalyzer() != null) {
-			getParentAnalyzer().throwIssue(errorMessage, fragment, startPosition);
+			getParentAnalyzer().throwIssue(modelObject, errorMessage, fragment, startPosition);
 		}
 	}
 
@@ -200,7 +200,7 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	private void registerExpressionNode(Node n, Expression e) {
-		//System.out.println("REGISTER in " + this + " / " + e + "(" + e.getClass() + ")" + " for node " + n + " as " + n.getClass());
+		// System.out.println("REGISTER in " + this + " / " + e + "(" + e.getClass() + ")" + " for node " + n + " as " + n.getClass());
 
 		/*if (e instanceof FMLBinaryOperatorExpression) {
 			System.out.println("1er arg : " + ((FMLBinaryOperatorExpression) e).getLeftArgument() + " of "

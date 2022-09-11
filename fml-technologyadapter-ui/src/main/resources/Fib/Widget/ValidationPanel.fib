@@ -62,6 +62,10 @@
 					data="data.validationModel.localizedIssueMessage(iterator)"
 					resizable="true" title="errors/warnings" displayTitle="true"
 					columnWidth="250" showIcon="false" name="label" />
+				<NumberColumn id="1000"
+					data="data.getLineNumber(iterator)"
+					resizable="false" title="line" displayTitle="true"
+					columnWidth="50" showIcon="false" name="line" />			    
 			</Table>
 		</Panel>
 	<LocalizedDictionary id="96">

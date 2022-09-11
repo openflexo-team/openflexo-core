@@ -339,7 +339,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 
 	protected void modelHasChanged(boolean requiresNewPrettyPrint) {
 		modelWillChange = false;
-		validationPanel.setDataObject(getValidationReport());
+		if (validationPanel != null) {
+			validationPanel.setDataObject(getValidationReport());
+		}
 		if (requiresNewPrettyPrint) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override

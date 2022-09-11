@@ -239,10 +239,10 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+	public void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
 		logger.warning("-------->>>>> Compilation issue: " + errorMessage + " "
 				+ (fragment != null ? fragment.getStartPosition() : startPosition));
-		getCompilationUnitNode().throwIssue(errorMessage, fragment);
+		getCompilationUnitNode().throwIssue(modelObject, errorMessage, fragment);
 	}
 
 	@Override

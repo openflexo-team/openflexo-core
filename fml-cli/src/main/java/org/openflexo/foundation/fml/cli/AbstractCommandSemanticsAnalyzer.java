@@ -129,7 +129,7 @@ public abstract class AbstractCommandSemanticsAnalyzer extends FMLSemanticsAnaly
 	}
 
 	@Override
-	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+	public void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
 		getErrStream().println(errorMessage + " at " + startPosition);
 	}
 

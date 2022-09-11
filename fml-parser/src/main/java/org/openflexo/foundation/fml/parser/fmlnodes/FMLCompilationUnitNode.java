@@ -40,23 +40,28 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
+import org.openflexo.pamela.validation.Validable;
 
 /**
  * @author sylvain
  * 
  */
 public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit, FMLCompilationUnitSemanticsAnalyzer> {
+
+	private static final Logger logger = Logger.getLogger(FMLCompilationUnitNode.class.getPackage().getName());
 
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;
@@ -119,10 +124,26 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 		return semanticAnalysisIssues;
 	}
 
-	@Override
+	/*@Override
 	public void throwIssue(String errorMessage, RawSourceFragment fragment) {
 		SemanticAnalysisIssue issue = new SemanticAnalysisIssue(errorMessage, fragment);
 		semanticAnalysisIssues.add(issue);
+	}*/
+
+	public void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment) {
+		if (modelObject instanceof DataBinding) {
+			// In this case, DataBinding is not the Validable, try the owner (a Bindable)
+			modelObject = ((DataBinding) modelObject).getOwner();
+		}
+		if (modelObject instanceof Validable) {
+			SemanticAnalysisIssue issue = new SemanticAnalysisIssue((Validable) modelObject, errorMessage, fragment);
+			semanticAnalysisIssues.add(issue);
+		}
+		else {
+			logger.warning("Semantics issue found in non validable object: " + modelObject.getClass() + ": " + errorMessage);
+			SemanticAnalysisIssue issue = new SemanticAnalysisIssue(null, errorMessage, fragment);
+			semanticAnalysisIssues.add(issue);
+		}
 	}
 
 }

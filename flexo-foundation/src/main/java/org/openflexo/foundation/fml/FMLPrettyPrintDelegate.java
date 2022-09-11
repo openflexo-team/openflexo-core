@@ -43,6 +43,9 @@ import java.util.List;
 import org.openflexo.p2pp.PrettyPrintDelegate;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * A delegate providing pretty-print to an FMLObject.<br>
@@ -76,15 +79,15 @@ public interface FMLPrettyPrintDelegate<T> extends PrettyPrintDelegate<T> {
 		NAME, URI, HEADER
 	}
 
-	public static class SemanticAnalysisIssue {
+	public static class SemanticAnalysisIssue<R extends ValidationRule<R, V>, V extends Validable> extends ValidationError<R, V> {
 		private String message;
 		private int line = -1;
 		private int offset = -1;
 		private int length = -1;
 
-		public SemanticAnalysisIssue(String errorMessage, RawSourceFragment fragment) {
-			super();
-			this.message = errorMessage;
+		public SemanticAnalysisIssue(V modelObject, String errorMessage, RawSourceFragment fragment) {
+			super(null, modelObject, errorMessage);
+			this.message = "" + modelObject + " : " + errorMessage;
 			if (fragment != null) {
 				this.line = fragment.getStartPosition().getLine();
 				this.offset = fragment.getStartPosition().getOffset();
@@ -92,6 +95,7 @@ public interface FMLPrettyPrintDelegate<T> extends PrettyPrintDelegate<T> {
 			}
 		}
 
+		@Override
 		public String getMessage() {
 			return message;
 		}

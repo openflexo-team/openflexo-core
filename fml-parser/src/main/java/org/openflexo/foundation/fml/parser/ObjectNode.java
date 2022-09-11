@@ -903,8 +903,8 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		throwIssue(errorMessage, null);
 	}
 
-	protected void throwIssue(String errorMessage, RawSourceFragment fragment) {
-		getSemanticsAnalyzer().throwIssue(errorMessage, fragment, getStartPosition());
+	protected final void throwIssue(String errorMessage, RawSourceFragment fragment) {
+		getSemanticsAnalyzer().throwIssue(getModelObject(), errorMessage, fragment, getStartPosition());
 	}
 
 	@Override

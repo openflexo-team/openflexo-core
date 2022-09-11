@@ -172,7 +172,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	 * @param fragment
 	 * @param startPosition
 	 */
-	public abstract void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition);
+	public abstract void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition);
 
 	/**
 	 * Return a list of all semantics analyzing issues found in the context of this {@link FMLSemanticsAnalyzer}

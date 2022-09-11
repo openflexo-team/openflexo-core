@@ -39,10 +39,13 @@
 package org.openflexo.foundation.fml;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.pamela.validation.InformationIssue;
@@ -132,6 +135,7 @@ public class FMLValidationReport extends ValidationReport {
 	@Override
 	public void revalidate() throws InterruptedException {
 
+		lineNumbers.clear();
 		for (ValidationIssue issue : getAllIssues()) {
 			if (issue.getCause() instanceof BindingIsRequiredAndMustBeValid) {
 				reanalyzeBinding(issue);
@@ -141,9 +145,21 @@ public class FMLValidationReport extends ValidationReport {
 		super.revalidate();
 	}
 
-	public ValidationError appendValidationError(String message) {
+	public void appendSemanticAnalysisIssue(SemanticAnalysisIssue<?, ?> semanticsIssue) {
+		ValidationNode<?> validationNode = getValidationNode(semanticsIssue.getValidable());
+		if (validationNode != null) {
+			validationNode.addToValidationIssues((SemanticAnalysisIssue) semanticsIssue);
+		}
+		else {
+			getRootNode().addToValidationIssues((SemanticAnalysisIssue) semanticsIssue);
+		}
+		notifyChange();
+	}
+
+	public ValidationError appendParseError(String message, int line) {
 		ValidationError error = new ValidationError<>(null, null, message);
 		getRootNode().addToValidationIssues(error);
+		setLineNumber(error, line);
 		notifyChange();
 		return error;
 	}
@@ -151,5 +167,22 @@ public class FMLValidationReport extends ValidationReport {
 	public void removeValidationError(ValidationError error) {
 		getRootNode().removeFromValidationIssues(error);
 		notifyChange();
+	}
+
+	private Map<ValidationIssue<?, ?>, Integer> lineNumbers = new HashMap<>();
+
+	public int getLineNumber(ValidationIssue<?, ?> issue) {
+		if (issue instanceof SemanticAnalysisIssue) {
+			return ((SemanticAnalysisIssue) issue).getLine();
+		}
+		Integer returned = lineNumbers.get(issue);
+		if (returned != null) {
+			return returned;
+		}
+		return -1;
+	}
+
+	public void setLineNumber(ValidationIssue<?, ?> issue, Integer line) {
+		lineNumbers.put(issue, line);
 	}
 }

@@ -170,8 +170,8 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
-		getCompilationUnitAnalyzer().throwIssue(errorMessage, fragment, startPosition);
+	public void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		getCompilationUnitAnalyzer().throwIssue(modelObject, errorMessage, fragment, startPosition);
 	}
 
 	@Override
