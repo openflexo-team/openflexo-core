@@ -58,7 +58,7 @@ public class SemanticAnalysisIssue<R extends ValidationRule<R, V>, V extends Val
 
 	public SemanticAnalysisIssue(V modelObject, String errorMessage, RawSourceFragment fragment) {
 		super(null, modelObject, errorMessage);
-		this.message = "" + modelObject + " : " + errorMessage;
+		this.message = errorMessage;
 		if (fragment != null) {
 			this.line = fragment.getStartPosition().getLine();
 			this.offset = fragment.getStartPosition().getOffset();
