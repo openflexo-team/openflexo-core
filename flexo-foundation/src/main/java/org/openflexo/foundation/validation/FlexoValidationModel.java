@@ -93,7 +93,8 @@ public class FlexoValidationModel extends ValidationModel {
 			try {
 				if (context instanceof ValidationIssue) {
 					ValidationIssue<?, ?> issue = (ValidationIssue<?, ?>) context;
-					Type t = new ParameterizedTypeImpl(context.getClass(), issue.getCause().getClass(), issue.getValidable().getClass());
+					Type t = new ParameterizedTypeImpl(context.getClass(), issue.getCause() != null ? issue.getCause().getClass() : null,
+							issue.getValidable().getClass());
 					return (String) JavaBindingEvaluator.evaluateBinding(asBindingExpression, context, t);
 				}
 				return (String) JavaBindingEvaluator.evaluateBinding(asBindingExpression, context);
