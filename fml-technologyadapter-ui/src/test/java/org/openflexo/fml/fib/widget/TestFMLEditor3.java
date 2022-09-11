@@ -54,6 +54,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
@@ -61,6 +62,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
+import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -228,7 +230,7 @@ public class TestFMLEditor3 extends OpenflexoFIBTestCase {
 
 	}
 
-	/*@Test
+	@Test
 	@TestOrder(7)
 	@Category(UITest.class)
 	public void testAddPrimitiveRoleFromText() {
@@ -273,9 +275,10 @@ public class TestFMLEditor3 extends OpenflexoFIBTestCase {
 		System.out.println("assignation=" + assignation);
 		System.out.println("valid: " + assignation.isValid());
 		System.out.println("reason: " + assignation.invalidBindingReason());
+		assertTrue(assignation.isValid());
 
 		System.out.println("BM: " + assignation.getOwner().getBindingModel());
-		// assertObjectIsValid(cu);
-	}*/
+		assertObjectIsValid(cu);
+	}
 
 }
