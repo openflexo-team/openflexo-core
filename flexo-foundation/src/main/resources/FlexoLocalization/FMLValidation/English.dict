@@ -23,6 +23,7 @@
 'virtual_model_instance'_binding_is_recommanded_and_should_be_valid='virtual model instance' binding is recommanded and should be valid
 'virtual_model_instance'_binding_is_recommanded_and_should_be_valid_description='virtual model instance' binding is recommanded and should be valid description
 ($reason)=($reason)
+AssignationAction$AssignationActionImpl_$$_jvsta6_6f[ID\=-1]@399a73cb\ \:\ Invalid\ binding\ value\:\ er\ reason\:\ BindingVariable\ er\ does\ not\ exist=AssignationAction$AssignationActionImpl $$ jvsta6 6f[ID\=-1]@399a73cb \: Invalid binding value\: er reason\: BindingVariable er does not exist
 CreateResource_need_a_rc=CreateResource need a rc
 CreateResource_need_a_rc_description=CreateResource need a rc description
 CreateResource_should_not_have_null_RC=CreateResource should not have null RC
@@ -117,6 +118,7 @@ parameter_s_value_is_not_defined\:\ range=Parameter s value is not defined\: ran
 parameter_s_value_is_not_valid\:\ aMachinery=Parameter s value is not valid\: aMachinery
 parameter_s_value_is_not_valid\:\ anElement=Parameter s value is not valid\: anElement
 parameter_s_value_is_not_valid\:\ diagramName=Parameter s value is not valid\: diagramName
+parse_exception_($parseExceptionMessage)=Parse exception ($parseExceptionMessage)
 property_($validable.propertyName)_shadows_an_other_property=Property ($validable.propertyName) shadows an other property
 property_(object.propertyName)_shadows_an_other_property=Property (object.propertyName) shadows an other property
 property_(validable.propertyName)_shadows_an_other_property=Property (validable.propertyName) shadows an other property

@@ -83,6 +83,10 @@ public class FMLValidationReport extends ValidationReport {
 		this.compilationUnit = compilationUnit;
 	}
 
+	public FMLCompilationUnit getCompilationUnit() {
+		return compilationUnit;
+	}
+
 	public boolean hasErrors(FMLObject object) {
 		Collection<ValidationError<?, ? super FMLObject>> errors = getErrors(object);
 		if (errors.size() == 0 && object instanceof AbstractAssignationAction) {
@@ -155,15 +159,21 @@ public class FMLValidationReport extends ValidationReport {
 		notifyChange();
 	}
 
-	public ValidationError appendParseError(String message, int line) {
-		ValidationError error = new ValidationError<>(null, null, message);
-		getRootNode().addToValidationIssues(error);
-		setLineNumber(error, line);
+	public void appendParseError(ParseError parseError, int line) {
+		getRootNode().addToValidationIssues(parseError);
+		setLineNumber(parseError, line);
 		notifyChange();
-		return error;
 	}
 
 	public void removeValidationError(ValidationError error) {
+		if (error instanceof SemanticAnalysisIssue) {
+			ValidationNode<?> validationNode = getValidationNode(((SemanticAnalysisIssue) error).getValidable());
+			if (validationNode != null) {
+				validationNode.removeFromValidationIssues(error);
+				notifyChange();
+				return;
+			}
+		}
 		getRootNode().removeFromValidationIssues(error);
 		notifyChange();
 	}
