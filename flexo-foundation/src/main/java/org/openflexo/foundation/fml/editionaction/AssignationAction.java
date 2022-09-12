@@ -170,6 +170,11 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 			Type expected = assignation.getAssignation().getAnalyzedType();
 			Type analyzed = assignation.getAssignableType();
+
+			//System.out.println("On verifie l'assignation " + assignation.getFMLPrettyPrint());
+			//System.out.println("Expected: " + expected);
+			//System.out.println("Analyzed: " + analyzed);
+
 			if (!TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
 				return new NotCompatibleTypesIssue(this, assignation, expected, analyzed);
 			}
