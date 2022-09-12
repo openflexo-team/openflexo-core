@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
+import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -217,6 +218,8 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
 
+	public static final ImageIconResource JAVA_ROLE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/JavaRoleIcon.png"));
 	public static final ImageIconResource STRING_PRIMITIVE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/StringPrimitiveIcon.gif"));
 	public static final ImageIconResource MULTI_STRING_PRIMITIVE_ICON = new ImageIconResource(
@@ -317,6 +320,9 @@ public class FMLIconLibrary extends IconLibrary {
 						MODEL_SLOT_ICON_MARKER);
 			}
 			return MODEL_SLOT_ICON;
+		}
+		else if (object instanceof JavaRole) {
+			return FMLIconLibrary.JAVA_ROLE_ICON;
 		}
 		else if (object instanceof PrimitiveRole) {
 			if (((PrimitiveRole) object).getPrimitiveType() != null) {
