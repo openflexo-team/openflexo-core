@@ -109,6 +109,7 @@ public class FMLEditorParser extends AbstractParser {
 			return result;
 		}*/
 
+		// We keep this log unless debug of 2.1.x is performed, because a parsing is really impacting and should be tracked
 		System.out.println("---------> Parsing FML document......");
 
 		result.clearNotices();
@@ -120,9 +121,9 @@ public class FMLEditorParser extends AbstractParser {
 			// Prevent editor from concurrent modification
 			editor.modelWillChange();
 
-			//System.out.println("Bon ok on reparse [");
-			//System.out.println(editor.getTextArea().getText());
-			//System.out.println("]");
+			// System.out.println("Bon ok on reparse [");
+			// System.out.println(editor.getTextArea().getText());
+			// System.out.println("]");
 
 			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(), (modelSlotClasses) -> {
 				// System.out.println("Parsing: " + editor.getTextArea().getText());
