@@ -192,22 +192,38 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 		@Override
 		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> applyValidation(
-				DeclarationAction<?> anExpressionProperty) {
-			if (anExpressionProperty.getDeclaredType() != null && anExpressionProperty.getAnalyzedType() != null) {
-				if (!TypeUtils.isTypeAssignableFrom(anExpressionProperty.getDeclaredType(), anExpressionProperty.getAnalyzedType())
-						&& !TypeUtils.isTypeAssignableFrom(anExpressionProperty.getAnalyzedType(),
-								anExpressionProperty.getDeclaredType())) {
+				DeclarationAction<?> declaration) {
 
-					/*System.out.println("On a un probleme ici dans " + anExpressionProperty.getFMLPrettyPrint());
-					System.out.println("DeclaredType: " + anExpressionProperty.getDeclaredType() + " of "
-							+ anExpressionProperty.getDeclaredType().getClass());
-					System.out.println("AnalyzedType: " + anExpressionProperty.getAnalyzedType() + " of "
-							+ anExpressionProperty.getAnalyzedType().getClass());*/
-
-					return new ValidationError<>(this, anExpressionProperty, "types_are_not_compatibles");
-				}
+			Type expected = declaration.getDeclaredType();
+			Type analyzed = declaration.getAssignableType();
+			if (!TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+				return new NotCompatibleTypesIssue(this, declaration, expected, analyzed);
 			}
+
 			return null;
+		}
+
+		public static class NotCompatibleTypesIssue
+				extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> {
+
+			private Type expectedType;
+			private Type analyzedType;
+
+			public NotCompatibleTypesIssue(DeclaredTypeShouldBeCompatibleWithAnalyzedType rule, DeclarationAction<?> anObject,
+					Type expected, Type analyzed) {
+				super(rule, anObject, "types_are_not_compatible_in_declaration_:_($expectedType)_is_not_assignable_from_($analyzedType)");
+				this.analyzedType = analyzed;
+				this.expectedType = expected;
+			}
+
+			public String getExpectedType() {
+				return TypeUtils.simpleRepresentation(expectedType);
+			}
+
+			public String getAnalyzedType() {
+				return TypeUtils.simpleRepresentation(analyzedType);
+			}
+
 		}
 
 	}
