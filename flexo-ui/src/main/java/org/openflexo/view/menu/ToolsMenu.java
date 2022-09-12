@@ -61,6 +61,7 @@ import org.openflexo.components.UndoManagerDialog;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
+import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.swing.utils.localization.LocalizedEditor;
 import org.openflexo.gina.swing.utils.logging.FlexoLoggingViewer;
@@ -372,6 +373,7 @@ public class ToolsMenu extends FlexoMenu {
 
 		@SuppressWarnings("unused")
 		private LocalizedEditorItem flexoLocalesItem;
+		private LocalizedEditorItem validationLocalesItem;
 
 		public LocalizedEditorMenu(FlexoController controller) {
 			super("localization_editor", controller);
@@ -397,6 +399,10 @@ public class ToolsMenu extends FlexoMenu {
 				item.setIcon(m.getSmallIcon());
 				add(item);
 			}
+
+			addSeparator();
+
+			add(validationLocalesItem = new LocalizedEditorItem("validation_locales", FMLValidationModel.VALIDATION_LOCALIZATION));
 
 			/*for (Module<?> m : controller.getModuleLoader().getKnownModules()) {
 				JMenuItem item = new TechnologyLocalizedItem(technologyAdapter)
