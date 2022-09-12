@@ -40,11 +40,15 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.JavaRole;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 
 /**
  * @author sylvain
@@ -70,6 +74,8 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		when(() -> getModelObject().getDefaultValue().isSet()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultValueFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 
@@ -83,6 +89,14 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
 		returned.setType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
+
+		PExpression initializerExpression = getInitializerExpression(astNode.getVariableDeclarator());
+		if (initializerExpression != null) {
+			DataBinding defaultValueExpression = ExpressionFactory.makeDataBinding(initializerExpression, returned,
+					BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
+			returned.setDefaultValue(defaultValueExpression);
+		}
+
 		return returned;
 	}
 

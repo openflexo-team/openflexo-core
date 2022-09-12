@@ -104,6 +104,40 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 		return null;
 	}
 
+	protected RawSourceFragment getAssignFragment() {
+		if (getASTNode() != null) {
+			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
+			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+				return null;
+			}
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getAssign());
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getAssign());
+			}
+
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getDefaultValueFragment() {
+		if (getASTNode() != null) {
+			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
+			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+				return null;
+			}
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getExpression());
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getFmlActionExp());
+			}
+
+		}
+		return null;
+	}
+
 	protected RawSourceFragment getSemiFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getSemi());

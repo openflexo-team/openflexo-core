@@ -173,6 +173,7 @@ import org.openflexo.foundation.fml.parser.node.PCardinality;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PCompositeTident;
 import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PFmlParameters;
 import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.PLiteral;
@@ -803,6 +804,32 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		}
 		if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
 			return ((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier();
+		}
+		return null;
+	}
+
+	protected PExpression getInitializerExpression(PVariableDeclarator variableDeclarator) {
+		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+			return null;
+		}
+		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+			return ((AInitializerExpressionVariableDeclarator) variableDeclarator).getExpression();
+		}
+		if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+			return null;
+		}
+		return null;
+	}
+
+	protected PFmlActionExp getInitializerFMLAction(PVariableDeclarator variableDeclarator) {
+		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+			return null;
+		}
+		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+			return null;
+		}
+		if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+			return ((AInitializerFmlActionVariableDeclarator) variableDeclarator).getFmlActionExp();
 		}
 		return null;
 	}
