@@ -130,6 +130,7 @@ sets_virtual_model_instance_to_'organigrammebdd'=Sets virtual model instance to 
 sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)=Sets virtual model instance to 'virtualModelInstance' (local virtual model instance)
 types_are_not_compatible_in_assignation_\:_($expectedType)_is_not_assignable_from_($analyzedType)=Types are not compatible in assignation \: ($expectedType) is not assignable from ($analyzedType)
 types_are_not_compatibles=Types are not compatibles
+unresolved_type_($validable.type)=Unresolved type ($validable.type)
 validating=Validating
 virtual_model_has_no_uri=Virtual model has no uri
 virtual_model_is_required=Virtual model is required
