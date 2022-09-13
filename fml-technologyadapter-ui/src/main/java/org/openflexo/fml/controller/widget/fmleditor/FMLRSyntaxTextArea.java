@@ -33,7 +33,7 @@ public class FMLRSyntaxTextArea extends RSyntaxTextArea implements DocumentListe
 			@Override
 			public void focusLost(FocusEvent e) {
 				// System.out.println("FMLRSyntaxTextArea looses focus");
-				unregisterParser();
+				// unregisterParser();
 			}
 		});
 	}
@@ -61,17 +61,13 @@ public class FMLRSyntaxTextArea extends RSyntaxTextArea implements DocumentListe
 	}
 
 	private void registerParser() {
-		if (getParserCount() == 0) {
-			addParser(parser);
-			// System.out.println("******************** PARSER ON " + getParserCount() + " parser=" + parser);
-		}
+		addParser(parser);
+		// System.out.println("******************** PARSER ON " + getParserCount());
 	}
 
 	private void unregisterParser() {
-		if (getParserCount() > 0) {
-			// System.out.println("******************** PARSER OFF " + getParserCount());
-			clearParsers();
-		}
+		// System.out.println("******************** PARSER OFF " + getParserCount());
+		removeParser(parser);
 	}
 
 	private boolean documentModified = false;
