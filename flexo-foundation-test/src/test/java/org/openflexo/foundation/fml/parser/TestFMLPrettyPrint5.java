@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,78 +38,175 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.ActionScheme;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.p2pp.P2PPNode;
-import org.openflexo.p2pp.RawSource;
+import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * Test FlexoConceptInstance embedding features
+ * Parse a FML file, perform some edits and checks that pretty-print is correct
  * 
  * @author sylvain
- * 
+ *
  */
 @RunWith(OrderedRunner.class)
 public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 
-	private static VirtualModel rootVM;
-	private static VirtualModel vm1;
-	private static FlexoConcept conceptA;
-	private static FlexoConcept conceptB;
-	private static FlexoConcept conceptC;
+	private static FMLCompilationUnit compilationUnit;
+	private static VirtualModel virtualModel;
 
-	private P2PPNode<?, ?> rootNode;
+	static FlexoEditor editor;
 
-	/**
-	 * Retrieve the ViewPoint
-	 * 
-	 * @throws FlexoException
-	 * @throws ResourceLoadingCancelledException
-	 * @throws FileNotFoundException
-	 */
 	@Test
 	@TestOrder(1)
-	public void testLoadViewPoint() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void initServiceManager() throws ParseException, ModelDefinitionException, IOException {
 		instanciateTestServiceManager();
-		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
-		assertNotNull(vpLib);
-		rootVM = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestVirtualModelB.fml");
-		assertNotNull(rootVM);
-		assertNotNull(vm1 = rootVM.getVirtualModelNamed("MyVM1"));
-		assertNotNull(conceptA = vm1.getFlexoConcept("ConceptA"));
-		assertNotNull(conceptB = vm1.getFlexoConcept("ConceptB"));
-		assertNotNull(conceptC = vm1.getFlexoConcept("ConceptC"));
 
-		assertVirtualModelIsValid(rootVM);
-		assertVirtualModelIsValid(vm1);
-
-		ActionScheme actionScheme = vm1.getActionSchemes().get(0);
-
-		// assertNotNull(rootNode = (FMLCompilationUnitNode) vm1.getCompilationUnit().getPrettyPrintDelegate());
-		assertNotNull(rootNode = (FlexoBehaviourNode) actionScheme.getPrettyPrintDelegate());
-
-		RawSource rawSource = rootNode.getRawSource();
-		System.out.println(rawSource.debug());
-
-		debug(rootNode, 0);
-
-		System.out.println("-----------------------------> ");
-
-		System.out.println("FML=" + actionScheme.getFMLPrettyPrint());
+		editor = new DefaultFlexoEditor(null, serviceManager);
+		assertNotNull(editor);
 
 	}
 
+	private static FMLCompilationUnitNode rootNode;
+	private static UseDeclarationNode useDeclNode;
+	private static ElementImportNode elementImportNode;
+	private static VirtualModelNode vmNode;
+
+	@Test
+	@TestOrder(2)
+	public void loadInitialVersion() throws ParseException, ModelDefinitionException, IOException {
+		instanciateTestServiceManager();
+
+		log("Initial version");
+
+		final Resource fmlFile = ResourceLocator.locateResource("TestFMLPrettyPrint5/InitialModel.fml");
+		compilationUnit = parseFile(fmlFile);
+		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
+		assertEquals("TestViewPointA", virtualModel.getName());
+
+		/*assertEquals(1, compilationUnit.getUseDeclarations().size());
+		assertNotNull(useDeclaration = compilationUnit.getUseDeclarations().get(0));
+		
+		assertEquals(1, compilationUnit.getElementImports().size());
+		assertNotNull(importDeclaration = compilationUnit.getElementImports().get(0));
+		
+		assertEquals(1, virtualModel.getFlexoProperties().size());
+		assertNotNull(myModelModelSlot = (FMLRTModelSlot<?, ?>) virtualModel.getFlexoProperties().get(0));
+		
+		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
+		assertNotNull(vmNode = (VirtualModelNode) rootNode.getObjectNode(virtualModel));
+		assertNotNull(useDeclNode = (UseDeclarationNode) rootNode.getObjectNode(useDeclaration));
+		assertNotNull(elementImportNode = (ElementImportNode) rootNode.getObjectNode(importDeclaration));
+		assertNotNull(modelSlotNode = (ModelSlotPropertyNode) rootNode.getObjectNode(myModelModelSlot));
+		assertEquals(2, modelSlotNode.getChildren().size());
+		modelSlotP1Node = (FMLSimplePropertyValueNode) modelSlotNode.getChildren().get(0);
+		modelSlotP2Node = (FMLSimplePropertyValueNode) modelSlotNode.getChildren().get(1);*/
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+
+		/*testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step1Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step1PrettyPrint.fml");
+		
+		RawSource rawSource = rootNode.getRawSource();
+		System.out.println(rawSource.debug());
+		debug(rootNode, 0);
+		
+		assertEquals("(1:0)-(13:1)", rootNode.getLastParsedFragment().toString());
+		assertEquals(null, rootNode.getPrelude());
+		assertEquals(null, rootNode.getPostlude());
+		
+		assertEquals("(1:0)-(1:80)", useDeclNode.getLastParsedFragment().toString());
+		assertEquals(null, useDeclNode.getPrelude());
+		assertEquals("(1:80)-(3:0)", useDeclNode.getPostlude().toString());
+		
+		assertEquals("(3:0)-(3:73)", elementImportNode.getLastParsedFragment().toString());
+		assertEquals(null, elementImportNode.getPrelude());
+		assertEquals("(3:73)-(5:0)", elementImportNode.getPostlude().toString());
+		
+		assertEquals("(5:0)-(13:1)", vmNode.getLastParsedFragment().toString());
+		assertEquals(null, vmNode.getPrelude());
+		assertEquals(null, vmNode.getPostlude());
+		
+		assertEquals("(8:1)-(8:67)", modelSlotNode.getLastParsedFragment().toString());
+		assertEquals("(8:0)-(8:1)", modelSlotNode.getPrelude().toString());
+		assertEquals("(8:67)-(9:0)", modelSlotNode.getPostlude().toString());
+		
+		assertEquals("(8:33)-(8:48)", modelSlotP1Node.getLastParsedFragment().toString());
+		assertEquals(null, modelSlotP1Node.getPrelude());
+		assertEquals("(8:48)-(8:49)", modelSlotP1Node.getPostlude().toString());
+		
+		assertEquals("(8:49)-(8:65)", modelSlotP2Node.getLastParsedFragment().toString());
+		assertEquals(null, modelSlotP2Node.getPrelude());
+		assertEquals(null, modelSlotP2Node.getPostlude());
+		*/
+	}
+
+	/*@Test
+	@TestOrder(3)
+	public void editStringProperty() throws ParseException, IOException {
+	
+		String fml = compilationUnit.getFMLPrettyPrint();
+		fml = fml.substring(0, fml.length() - 2);
+		fml = fml + "\nString foo;";
+		fml = fml + "\n" + "}" + "\n";
+	
+		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
+	
+		FMLCompilationUnit returned = parser.parse(fml, compilationUnit.getFMLModelFactory(), (modelSlotClasses) -> {
+			return null;
+		}, false);
+	
+		// This is the update process
+		compilationUnit.updateWith(returned);
+	
+		compilationUnit.manageImports();
+	
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+	
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+	
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step2Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step2PrettyPrint.fml");
+	
+	}
+	
+	@Test
+	@TestOrder(4)
+	public void addDateProperty() {
+	
+		log("Add Date property");
+	
+		CreatePrimitiveRole createStringProperty = CreatePrimitiveRole.actionType.makeNewAction(virtualModel, null, editor);
+		createStringProperty.setRoleName("newDate");
+		createStringProperty.setPrimitiveType(PrimitiveType.Date);
+		createStringProperty.doAction();
+	
+		debug(rootNode, 0);
+	
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+	
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+	
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step3Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step3PrettyPrint.fml");
+	
+	}*/
 }
