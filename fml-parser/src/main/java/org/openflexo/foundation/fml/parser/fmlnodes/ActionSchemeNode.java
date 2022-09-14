@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
@@ -78,6 +79,9 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 		ActionScheme returned = getFactory().newActionScheme();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setAbstract(astNode.getKwAbstract() != null);
+		if (astNode.getType() != null) {
+			returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
+		}
 
 		// handleParameters(astNode);
 
@@ -111,6 +115,7 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 		//		FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		when(() -> isAbstract()).thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
+		when(() -> hasDeclaredType()).thenAppend(dynamicContents(() -> serializeType(getModelObject().getDeclaredType()),SPACE), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
@@ -137,6 +142,13 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 					Indentation.DoNotIndent);
 			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
 		}*/
+	}
+
+	public boolean hasDeclaredType() {
+		if (getASTNode() != null) {
+			return getASTNode().getType() != null;
+		}
+		return getModelObject().getDeclaredType() != null;
 	}
 
 	// TODO: maybe abstract should be implemented at FlexoBehaviour level ???
