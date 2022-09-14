@@ -162,7 +162,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 				FMLPropertyValue.class))
 		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 
-		when(() -> isAbstract())
+		when(() -> hasNoImplementation())
 			.thenAppend(staticContents(";"), getSemiFragment())
 			.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
 			.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))

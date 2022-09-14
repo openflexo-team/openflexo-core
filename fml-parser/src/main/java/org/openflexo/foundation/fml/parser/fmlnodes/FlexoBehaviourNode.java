@@ -177,7 +177,7 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		BehaviourParameterNode paramNode = new BehaviourParameterNode(parameter, getanalyzer());
 	}*/
 
-	protected boolean isAbstract() {
+	protected boolean hasNoImplementation() {
 		if (getASTNode() != null) {
 			return (getFlexoBehaviourBody(getASTNode()) instanceof AEmptyFlexoBehaviourBody);
 		}

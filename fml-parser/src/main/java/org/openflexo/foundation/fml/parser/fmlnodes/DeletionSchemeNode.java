@@ -105,7 +105,8 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getSemanticsAnalyzer());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
+					getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);
@@ -130,11 +131,11 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 		when(() -> !isAnonymous())
 				.thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
-		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
-		when(() -> isAbstract())
+		when(() -> hasNoImplementation())
 				.thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))

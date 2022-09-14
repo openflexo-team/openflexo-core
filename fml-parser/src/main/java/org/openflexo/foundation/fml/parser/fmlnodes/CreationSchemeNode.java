@@ -135,7 +135,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 		append(childrenContents("", "", () -> getModelObject().getParameters(), "," + SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
-		when(() -> isAbstract()).thenAppend(staticContents(";"), getSemiFragment())
+		when(() -> hasNoImplementation()).thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE, "{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
 				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());

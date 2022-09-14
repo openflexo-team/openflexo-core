@@ -611,7 +611,7 @@ Productions
      | {named_constructor} [annotations]:annotation* visibility? kw_create colon_colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
      | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par flexo_behaviour_body
      | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {method} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {method} [annotations]:annotation* visibility? kw_abstract? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
      | {listener} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:lidentifier r_par flexo_behaviour_body
      | {fml} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
      | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [ta_id]:cidentifier colon_colon [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
