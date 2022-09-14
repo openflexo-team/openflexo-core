@@ -132,10 +132,13 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	}
 
 	public boolean isAbstract() {
+		if (getModelObject() != null) {
+			return getModelObject().isAbstract();
+		}
 		if (getASTNode() != null) {
 			return getASTNode().getKwAbstract() != null;
 		}
-		return getModelObject().isAbstract();
+		return false;
 	}
 
 	@Override
