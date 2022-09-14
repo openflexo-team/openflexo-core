@@ -1630,7 +1630,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public String toString() {
-			return "FlexoConcept:" + getName();
+			return "FlexoConcept:" + getName() + "[" + Integer.toHexString(hashCode()) + "]";
 		}
 
 		@Override
@@ -2125,6 +2125,19 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 		}
 
+		/*@Override
+		public void setAbstract(boolean isAbstract) {
+			System.out.println("Hop, le concept " + getName() + " abstract=" + isAbstract);
+			performSuperSetter(IS_ABSTRACT_KEY, isAbstract);
+			System.out.println("FML: " + getFMLPrettyPrint());
+		}
+		
+		@Override
+		public void setVisibility(Visibility visibility) {
+			System.out.println("Hop, le concept " + getName() + " visibility=" + visibility);
+			performSuperSetter(VISIBILITY_KEY, visibility);
+			System.out.println("FML: " + getFMLPrettyPrint());
+		}*/
 	}
 
 	@DefineValidationRule
