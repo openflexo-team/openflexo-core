@@ -68,7 +68,8 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 		super(astNode, analyzer);
 	}
 
-	public FMLInstancesListPropertyValueNode(FMLInstancesListPropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public FMLInstancesListPropertyValueNode(FMLInstancesListPropertyValue<M, T> propertyValue,
+			FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(propertyValue, analyzer);
 	}
 
@@ -92,8 +93,8 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getLabel(), SPACE), getArgNameFragment());
-		append(staticContents("", "=", SPACE), getAssignFragment());
+		append(dynamicContents(() -> getModelObject().getProperty().getLabel()), getArgNameFragment());
+		append(staticContents("="), getAssignFragment());
 		append(staticContents("{"), getLBrcFragment());
 		append(childrenContents("", "", () -> getModelObject().getInstances(), "," + SPACE, "", Indentation.DoNotIndent,
 				WrappedFMLObject.class));

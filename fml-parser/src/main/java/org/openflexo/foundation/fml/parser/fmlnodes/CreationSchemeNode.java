@@ -106,7 +106,8 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getSemanticsAnalyzer());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
+					getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);
@@ -130,7 +131,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 		append(staticContents("create"), getCreateFragment());
 		when(() -> !isAnonymous()).thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
-		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), "," + SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
