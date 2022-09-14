@@ -96,6 +96,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		// @formatter:off
 		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		when(() -> isAbstract()).thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
 		append(staticContents("", "concept", SPACE), getConceptFragment());
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 
@@ -130,10 +131,24 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());*/
 	}
 
+	public boolean isAbstract() {
+		if (getASTNode() != null) {
+			return getASTNode().getKwAbstract() != null;
+		}
+		return getModelObject().isAbstract();
+	}
+
 	@Override
 	protected RawSourceFragment getVisibilityFragment() {
 		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getAbstractFragment() {
+		if (getASTNode() != null && getASTNode().getKwAbstract() != null) {
+			return getFragment(getASTNode().getKwAbstract());
 		}
 		return null;
 	}
