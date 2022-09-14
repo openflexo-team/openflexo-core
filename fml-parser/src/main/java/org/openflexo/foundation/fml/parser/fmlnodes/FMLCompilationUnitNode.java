@@ -141,7 +141,7 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 			semanticAnalysisIssues.add(issue);
 		}
 		else {
-			logger.warning("Semantics issue found in non validable object: " + modelObject.getClass() + ": " + errorMessage);
+			logger.warning("Semantics issue found in non validable object: " + modelObject + ": " + errorMessage);
 			SemanticAnalysisIssue issue = new SemanticAnalysisIssue(null, errorMessage, fragment);
 			semanticAnalysisIssues.add(issue);
 		}
