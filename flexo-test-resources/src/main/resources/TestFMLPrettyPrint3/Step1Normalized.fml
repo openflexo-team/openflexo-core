@@ -1,6 +1,6 @@
 model MyModel {
 
-	create () {
+	create() {
 		int j;
 		i = 1;
 		i = j;
