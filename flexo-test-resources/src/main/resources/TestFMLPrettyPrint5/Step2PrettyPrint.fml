@@ -6,7 +6,7 @@ import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"] as MyVM;
 @Version("0.1")
 model TestViewPointA {
 	
-	concept ConceptA {
+	abstract concept ConceptA {
 	
 	}
 	

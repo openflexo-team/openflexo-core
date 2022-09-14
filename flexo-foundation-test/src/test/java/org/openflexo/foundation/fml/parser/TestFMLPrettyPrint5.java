@@ -48,11 +48,13 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
+import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.p2pp.RawSource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -70,6 +72,11 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 
 	private static FMLCompilationUnit compilationUnit;
 	private static VirtualModel virtualModel;
+	private static FlexoConcept conceptA;
+	private static FlexoConcept conceptB;
+	private static FlexoConcept conceptC;
+	private static FlexoConcept conceptD;
+	private static FlexoConcept conceptE;
 
 	static FlexoEditor editor;
 
@@ -83,10 +90,12 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 
 	}
 
-	private static FMLCompilationUnitNode rootNode;
-	private static UseDeclarationNode useDeclNode;
-	private static ElementImportNode elementImportNode;
 	private static VirtualModelNode vmNode;
+	private static FlexoConceptNode conceptANode;
+	private static FlexoConceptNode conceptBNode;
+	private static FlexoConceptNode conceptCNode;
+	private static FlexoConceptNode conceptDNode;
+	private static FlexoConceptNode conceptENode;
 
 	@Test
 	@TestOrder(2)
@@ -100,40 +109,35 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("TestViewPointA", virtualModel.getName());
 
-		/*assertEquals(1, compilationUnit.getUseDeclarations().size());
-		assertNotNull(useDeclaration = compilationUnit.getUseDeclarations().get(0));
-		
-		assertEquals(1, compilationUnit.getElementImports().size());
-		assertNotNull(importDeclaration = compilationUnit.getElementImports().get(0));
-		
-		assertEquals(1, virtualModel.getFlexoProperties().size());
-		assertNotNull(myModelModelSlot = (FMLRTModelSlot<?, ?>) virtualModel.getFlexoProperties().get(0));
-		
+		assertEquals(5, virtualModel.getFlexoConcepts().size());
+		assertNotNull(conceptA = virtualModel.getFlexoConcept("ConceptA"));
+		assertNotNull(conceptB = virtualModel.getFlexoConcept("ConceptB"));
+		assertNotNull(conceptC = virtualModel.getFlexoConcept("ConceptC"));
+
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 		assertNotNull(vmNode = (VirtualModelNode) rootNode.getObjectNode(virtualModel));
-		assertNotNull(useDeclNode = (UseDeclarationNode) rootNode.getObjectNode(useDeclaration));
-		assertNotNull(elementImportNode = (ElementImportNode) rootNode.getObjectNode(importDeclaration));
-		assertNotNull(modelSlotNode = (ModelSlotPropertyNode) rootNode.getObjectNode(myModelModelSlot));
-		assertEquals(2, modelSlotNode.getChildren().size());
-		modelSlotP1Node = (FMLSimplePropertyValueNode) modelSlotNode.getChildren().get(0);
-		modelSlotP2Node = (FMLSimplePropertyValueNode) modelSlotNode.getChildren().get(1);*/
+		assertNotNull(conceptANode = (FlexoConceptNode) rootNode.getObjectNode(conceptA));
+		assertNotNull(conceptBNode = (FlexoConceptNode) rootNode.getObjectNode(conceptB));
+		assertNotNull(conceptCNode = (FlexoConceptNode) rootNode.getObjectNode(conceptC));
 
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
 
 		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
 
-		/*testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step1Normalized.fml");
-		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step1PrettyPrint.fml");
-		
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step1Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step1PrettyPrint.fml");
+
 		RawSource rawSource = rootNode.getRawSource();
 		System.out.println(rawSource.debug());
 		debug(rootNode, 0);
-		
-		assertEquals("(1:0)-(13:1)", rootNode.getLastParsedFragment().toString());
+
+		assertEquals("(1:0)-(32:1)", rootNode.getLastParsedFragment().toString());
 		assertEquals(null, rootNode.getPrelude());
 		assertEquals(null, rootNode.getPostlude());
-		
-		assertEquals("(1:0)-(1:80)", useDeclNode.getLastParsedFragment().toString());
+
+		conceptANode = checkNodeForObject("(9:1)-(11:2)", "(8:1)-(9:0)", "(11:2)-(12:0)", conceptA);
+
+		/*assertEquals("(1:0)-(1:80)", useDeclNode.getLastParsedFragment().toString());
 		assertEquals(null, useDeclNode.getPrelude());
 		assertEquals("(1:80)-(3:0)", useDeclNode.getPostlude().toString());
 		
@@ -159,54 +163,36 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		*/
 	}
 
-	/*@Test
+	@Test
 	@TestOrder(3)
-	public void editStringProperty() throws ParseException, IOException {
-	
-		String fml = compilationUnit.getFMLPrettyPrint();
-		fml = fml.substring(0, fml.length() - 2);
-		fml = fml + "\nString foo;";
-		fml = fml + "\n" + "}" + "\n";
-	
-		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
-	
-		FMLCompilationUnit returned = parser.parse(fml, compilationUnit.getFMLModelFactory(), (modelSlotClasses) -> {
-			return null;
-		}, false);
-	
-		// This is the update process
-		compilationUnit.updateWith(returned);
-	
-		compilationUnit.manageImports();
-	
+	public void changeAbstractConceptA() throws ParseException, IOException {
+
+		log("changeAbstractConceptA()");
+
+		conceptA.setAbstract(true);
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-	
 		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
-	
-		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step2Normalized.fml");
-		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step2PrettyPrint.fml");
-	
+
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step2Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step2PrettyPrint.fml");
+
+		conceptA.setAbstract(false);
+
 	}
-	
+
 	@Test
 	@TestOrder(4)
-	public void addDateProperty() {
-	
-		log("Add Date property");
-	
-		CreatePrimitiveRole createStringProperty = CreatePrimitiveRole.actionType.makeNewAction(virtualModel, null, editor);
-		createStringProperty.setRoleName("newDate");
-		createStringProperty.setPrimitiveType(PrimitiveType.Date);
-		createStringProperty.doAction();
-	
-		debug(rootNode, 0);
-	
+	public void changeConceptAVisibility() throws ParseException, IOException {
+
+		log("changeConceptAVisibility()");
+
+		conceptA.setVisibility(Visibility.Public);
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-	
 		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
-	
-		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step3Normalized.fml");
-		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step3PrettyPrint.fml");
-	
-	}*/
+
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step3Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step3PrettyPrint.fml");
+
+	}
+
 }
