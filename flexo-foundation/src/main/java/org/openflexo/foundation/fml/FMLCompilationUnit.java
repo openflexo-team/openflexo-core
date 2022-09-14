@@ -609,24 +609,26 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		@Override
-		public FlexoConcept lookupFlexoConceptWithName(String conceptName) {
+		public FlexoConcept lookupFlexoConceptWithURI(String conceptURI) {
+			// TODO rewrite this
+			return getFlexoConcept(conceptURI);
+		}
 
-			System.out.println("On cherche " + conceptName + " dans " + this);
+		@Override
+		public FlexoConcept lookupFlexoConceptWithName(String conceptName) {
 
 			FlexoConcept returned = getVirtualModel().lookupFlexoConceptWithName(conceptName);
 			if (returned != null) {
 				return returned;
 			}
 
-			System.out.println("On ne trouve pas dans le VM " + getVirtualModel());
-
 			for (ElementImportDeclaration importDeclaration : getElementImports()) {
 
-				System.out.println(" > Import " + importDeclaration);
+				//System.out.println(" > Import " + importDeclaration);
 				try {
 					String resourceURI = null;
 					Object resourceRef = importDeclaration.getResourceReference().getBindingValue(this);
-					System.out.println("resourceRef=" + resourceRef);
+					//System.out.println("resourceRef=" + resourceRef);
 					if (resourceRef instanceof String) {
 						resourceURI = (String) resourceRef;
 					}
@@ -638,7 +640,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 						continue;
 					}
 					FlexoResource resource = getServiceManager().getResourceManager().getResource(resourceURI);
-					System.out.println("resource: " + resource + " loaded: " + resource.isLoaded());
+					//System.out.println("resource: " + resource + " loaded: " + resource.isLoaded());
 					if (resource instanceof CompilationUnitResource && resource.isLoaded()) {
 						FMLCompilationUnit importedCompilationUnit = ((CompilationUnitResource) resource).getCompilationUnit();
 						returned = importedCompilationUnit.lookupFlexoConceptWithName(conceptName);
