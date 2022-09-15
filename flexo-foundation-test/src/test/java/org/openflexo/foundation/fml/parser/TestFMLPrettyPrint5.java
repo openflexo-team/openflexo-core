@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -77,6 +78,10 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 	private static FlexoConcept conceptC;
 	private static FlexoConcept conceptD;
 	private static FlexoConcept conceptE;
+
+	private static ActionScheme behaviour1;
+	private static ActionScheme behaviour2;
+	private static ActionScheme behaviour3;
 
 	static FlexoEditor editor;
 
@@ -115,6 +120,10 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		assertNotNull(conceptC = virtualModel.getFlexoConcept("ConceptC"));
 		assertNotNull(conceptD = virtualModel.getFlexoConcept("ConceptD"));
 		assertNotNull(conceptE = virtualModel.getFlexoConcept("ConceptE"));
+
+		assertNotNull(behaviour1 = (ActionScheme) conceptE.getFlexoBehaviour("firstBehaviour"));
+		assertNotNull(behaviour2 = (ActionScheme) conceptE.getFlexoBehaviour("secondBehaviour", String.class));
+		assertNotNull(behaviour3 = (ActionScheme) conceptE.getFlexoBehaviour("thirdBehaviour"));
 
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 		assertNotNull(vmNode = (VirtualModelNode) rootNode.getObjectNode(virtualModel));
@@ -228,24 +237,42 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 
 	}
 
-	/*@Test
+	@Test
 	@TestOrder(7)
 	public void changeSomeConceptVisibilityAndAbstract() throws ParseException, IOException {
-	
+
 		log("changeSomeConceptVisibilityAndAbstract()");
-	
+
 		conceptA.setVisibility(Visibility.Private);
-		conceptC.setAbstract(false);
-		conceptC.setVisibility(Visibility.Public);
 		conceptD.setAbstract(false);
 		conceptD.setVisibility(Visibility.Protected);
 		conceptE.setVisibility(Visibility.Default);
+
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step6Normalized.fml");
+
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-		// System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
-		System.exit(-1);
-		// testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step4Normalized.fml");
-		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step4PrettyPrint.fml");
-	
-	}*/
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step6PrettyPrint.fml");
+
+	}
+
+	@Test
+	@TestOrder(8)
+	public void changeSomeMethodsVisibility() throws ParseException, IOException {
+
+		log("changeSomeConceptVisibilityAndAbstract()");
+
+		behaviour1.setVisibility(Visibility.Default);
+		behaviour2.setVisibility(Visibility.Public);
+		behaviour3.setVisibility(Visibility.Public);
+
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step7Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step7PrettyPrint.fml");
+		// TODO: issue with double space
+
+	}
 
 }

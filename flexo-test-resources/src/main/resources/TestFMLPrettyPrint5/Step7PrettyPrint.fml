@@ -22,11 +22,11 @@ model TestViewPointA {
 	
 	concept ConceptE {
 	
-		protected firstBehaviour() {
+		firstBehaviour() {
 		}
 		
-		abstract void secondBehaviour(String a);
+		public abstract void secondBehaviour(String a);
 		
-		String thirdBehaviour();
+		public String thirdBehaviour();
 	}
 }
