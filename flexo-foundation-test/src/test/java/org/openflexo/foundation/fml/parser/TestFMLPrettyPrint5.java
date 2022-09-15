@@ -40,6 +40,8 @@ package org.openflexo.foundation.fml.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -52,6 +54,8 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.Visibility;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
+import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
@@ -101,6 +105,9 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 	private static FlexoConceptNode conceptCNode;
 	private static FlexoConceptNode conceptDNode;
 	private static FlexoConceptNode conceptENode;
+	private static ActionSchemeNode behaviour1Node;
+	private static ActionSchemeNode behaviour2Node;
+	private static ActionSchemeNode behaviour3Node;
 
 	@Test
 	@TestOrder(2)
@@ -121,21 +128,29 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		assertNotNull(conceptD = virtualModel.getFlexoConcept("ConceptD"));
 		assertNotNull(conceptE = virtualModel.getFlexoConcept("ConceptE"));
 
-		assertNotNull(behaviour1 = (ActionScheme) conceptE.getFlexoBehaviour("firstBehaviour"));
-		assertNotNull(behaviour2 = (ActionScheme) conceptE.getFlexoBehaviour("secondBehaviour", String.class));
-		assertNotNull(behaviour3 = (ActionScheme) conceptE.getFlexoBehaviour("thirdBehaviour"));
-
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 		assertNotNull(vmNode = (VirtualModelNode) rootNode.getObjectNode(virtualModel));
 		assertNotNull(conceptANode = (FlexoConceptNode) rootNode.getObjectNode(conceptA));
 		assertNotNull(conceptBNode = (FlexoConceptNode) rootNode.getObjectNode(conceptB));
 		assertNotNull(conceptCNode = (FlexoConceptNode) rootNode.getObjectNode(conceptC));
 
+		assertNotNull(behaviour1 = (ActionScheme) conceptE.getFlexoBehaviour("firstBehaviour"));
+		assertNotNull(behaviour2 = (ActionScheme) conceptE.getFlexoBehaviour("secondBehaviour", String.class));
+		assertNotNull(behaviour3 = (ActionScheme) conceptE.getFlexoBehaviour("thirdBehaviour"));
+
+		assertTrue(behaviour1.getControlGraph() instanceof EmptyControlGraph);
+		assertNull(behaviour2.getControlGraph());
+		assertNull(behaviour3.getControlGraph());
+
+		assertNotNull(behaviour1Node = (ActionSchemeNode) rootNode.getObjectNode(behaviour1));
+		assertNotNull(behaviour2Node = (ActionSchemeNode) rootNode.getObjectNode(behaviour2));
+		assertNotNull(behaviour3Node = (ActionSchemeNode) rootNode.getObjectNode(behaviour3));
+
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-
 		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
-
 		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step1Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
 		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step1PrettyPrint.fml");
 
 		RawSource rawSource = rootNode.getRawSource();
@@ -271,7 +286,45 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
 		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step7PrettyPrint.fml");
-		// TODO: issue with double space
+
+	}
+
+	@Test
+	@TestOrder(9)
+	public void changeFirstBehaviourImplementation() throws ParseException, IOException {
+
+		log("changeFirstBehaviourImplementation()");
+
+		behaviour1.setAbstract(true);
+		behaviour1.setControlGraph(null);
+
+		// behaviour2.setVisibility(Visibility.Public);
+		// behaviour3.setVisibility(Visibility.Public);
+
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step8Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step8PrettyPrint.fml");
+
+	}
+
+	@Test
+	@TestOrder(10)
+	public void changeOthersBehaviourImplementation() throws ParseException, IOException {
+
+		log("changeFirstBehaviourImplementation()");
+
+		behaviour2.setAbstract(false);
+		behaviour2.setControlGraph(behaviour2.getFMLModelFactory().newEmptyControlGraph());
+
+		behaviour3.setAbstract(true);
+
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step9Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step9PrettyPrint.fml");
 
 	}
 
