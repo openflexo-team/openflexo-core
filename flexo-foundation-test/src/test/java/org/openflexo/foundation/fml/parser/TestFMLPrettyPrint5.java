@@ -113,6 +113,8 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		assertNotNull(conceptA = virtualModel.getFlexoConcept("ConceptA"));
 		assertNotNull(conceptB = virtualModel.getFlexoConcept("ConceptB"));
 		assertNotNull(conceptC = virtualModel.getFlexoConcept("ConceptC"));
+		assertNotNull(conceptD = virtualModel.getFlexoConcept("ConceptD"));
+		assertNotNull(conceptE = virtualModel.getFlexoConcept("ConceptE"));
 
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 		assertNotNull(vmNode = (VirtualModelNode) rootNode.getObjectNode(virtualModel));
@@ -194,5 +196,56 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step3PrettyPrint.fml");
 
 	}
+
+	@Test
+	@TestOrder(5)
+	public void changeConceptBVisibility() throws ParseException, IOException {
+
+		log("changeConceptBVisibility()");
+
+		conceptB.setVisibility(Visibility.Default);
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step4Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step4PrettyPrint.fml");
+
+	}
+
+	@Test
+	@TestOrder(6)
+	public void changeBothConceptCAbstractAndVisibility() throws ParseException, IOException {
+
+		log("changeBothConceptCAbstractAndVisibility()");
+
+		conceptC.setAbstract(false);
+		conceptC.setVisibility(Visibility.Public);
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step5Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step5PrettyPrint.fml");
+
+	}
+
+	/*@Test
+	@TestOrder(7)
+	public void changeSomeConceptVisibilityAndAbstract() throws ParseException, IOException {
+	
+		log("changeSomeConceptVisibilityAndAbstract()");
+	
+		conceptA.setVisibility(Visibility.Private);
+		conceptC.setAbstract(false);
+		conceptC.setVisibility(Visibility.Public);
+		conceptD.setAbstract(false);
+		conceptD.setVisibility(Visibility.Protected);
+		conceptE.setVisibility(Visibility.Default);
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		// System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		System.exit(-1);
+		// testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint5/Step4Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint5/Step4PrettyPrint.fml");
+	
+	}*/
 
 }
