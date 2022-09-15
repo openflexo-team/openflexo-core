@@ -42,8 +42,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.md.FMLMetaData;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -66,7 +66,8 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
+public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour>
+		extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
@@ -178,12 +179,16 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	}*/
 
 	protected boolean hasNoImplementation() {
+		if (getModelObject() != null) {
+			return getModelObject().getControlGraph() == null;
+		}
 		if (getASTNode() != null) {
 			return (getFlexoBehaviourBody(getASTNode()) instanceof AEmptyFlexoBehaviourBody);
 		}
-		else {
+		/*else {
 			return getModelObject().isAbstract();
-		}
+		}*/
+		return true;
 	}
 
 	/**

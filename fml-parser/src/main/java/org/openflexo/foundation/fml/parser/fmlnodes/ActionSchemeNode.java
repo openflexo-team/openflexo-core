@@ -153,6 +153,9 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 
 	// TODO: maybe abstract should be implemented at FlexoBehaviour level ???
 	public boolean isAbstract() {
+		if (getModelObject() != null) {
+			return getModelObject().isAbstract();
+		}
 		if (getASTNode() != null) {
 			return getASTNode().getKwAbstract() != null;
 		}
