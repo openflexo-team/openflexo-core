@@ -281,7 +281,10 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		append(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getCreateArgumentsFragment());
 		append(staticContents(")"), getCreateRParFragment());
 		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
+		// final to true is here a little hack to prevent semi to be removed at pretty-print
+		// This is due to a wrong management of semi
+		// TODO: refactor 'semi' management
+		when(() -> requiresSemi(),true).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on
 	}
 
