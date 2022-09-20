@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.NavigationScheme;
@@ -507,6 +508,9 @@ public class FMLIconLibrary extends IconLibrary {
 		}
 		else if (object instanceof ExpressionProperty) {
 			return EXPRESSION_PROPERTY_ICON;
+		}
+		else if (object instanceof GetProperty) {
+			return GET_SET_PROPERTY_ICON;
 		}
 		else if (object instanceof GetSetProperty) {
 			return GET_SET_PROPERTY_ICON;

@@ -94,24 +94,39 @@
 					method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
 			</BrowserElement>
-			<BrowserElement id="20"
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.GetProperty"
+				icon="controller.iconForObject(flexoProperty)"
+				label="flexoProperty.name" editableLabel="flexoProperty.name"
+				isEditable="false" name="flexoProperty">
+				<Children
+					data="flexoProperty.getControlGraph.flattenedSequence"
+					name="getChildren" />
+				<BrowserAddAction
+					method="controller.createEditionActionInGetControlGraph(selected)"
+					name="add_action_in_GET_control_graph" />
+				<BrowserRemoveAction
+					method="controller.deleteFlexoConceptObject(selected)"
+					name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.GetSetProperty"
 				icon="controller.iconForObject(flexoProperty)"
 				label="flexoProperty.name" editableLabel="flexoProperty.name"
 				isEditable="false" name="flexoProperty">
-				<Children id="21"
+				<Children
 					data="flexoProperty.getControlGraph.flattenedSequence"
 					name="getChildren" />
-				<Children id="22"
+				<Children
 					data="flexoProperty.setControlGraph.flattenedSequence"
 					name="setChildren" />
-				<BrowserAddAction id="23"
+				<BrowserAddAction
 					method="controller.createEditionActionInGetControlGraph(selected)"
 					name="add_action_in_GET_control_graph" />
-				<BrowserAddAction id="24"
+				<BrowserAddAction
 					method="controller.createEditionActionInSetControlGraph(selected)"
 					name="add_action_in_SET_control_graph" />
-				<BrowserRemoveAction id="25"
+				<BrowserRemoveAction
 					method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
 			</BrowserElement>
