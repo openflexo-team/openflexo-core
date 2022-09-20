@@ -668,13 +668,13 @@ Productions
      ;
 
    statement_without_trailing_substatement =
-       {block}                l_brc [block_statements]:block_statement* r_brc
-     | {empty_statement}      semi
-     | {expression_statement} statement_expression semi
-     | {do_statement}         kw_do statement kw_while l_par expression r_par semi
-     // return statement
-     | {return_empty}      kw_return semi
-     | {return} kw_return expression semi
+       {block}                        l_brc [block_statements]:block_statement* r_brc
+     | {empty_statement}              semi
+     | {expression_statement}         statement_expression semi
+     | {do_statement}                 kw_do statement kw_while l_par expression r_par semi
+     | {return_empty}                 kw_return semi
+     | {return}                       kw_return expression semi
+     | {return_fml_action_expression} kw_return fml_action_exp semi
      ;
 
    statement_no_short_if =
