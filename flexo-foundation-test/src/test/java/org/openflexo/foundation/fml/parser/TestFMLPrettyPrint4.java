@@ -183,8 +183,6 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 	@TestOrder(3)
 	public void editStringProperty() throws ParseException, IOException {
 
-		System.exit(-1);
-
 		String fml = compilationUnit.getFMLPrettyPrint();
 		fml = fml.substring(0, fml.length() - 2);
 		fml = fml + "\nString foo;";
