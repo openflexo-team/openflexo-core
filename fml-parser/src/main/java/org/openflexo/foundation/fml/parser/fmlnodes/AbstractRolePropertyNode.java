@@ -45,8 +45,14 @@ import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.PCardinality;
 import org.openflexo.foundation.fml.parser.node.PFmlParameters;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.PType;
+import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.PVisibility;
+import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -89,12 +95,22 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 		return false;
 	}
 
-	protected RawSourceFragment getVisibilityFragment() {
+	protected PVisibility getPVisibility() {
 		if (getASTNode() instanceof AFmlInnerConceptDecl) {
-			return getFragment(((AFmlInnerConceptDecl) getASTNode()).getVisibility());
+			return ((AFmlInnerConceptDecl) getASTNode()).getVisibility();
 		}
 		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			return getFragment(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getVisibility());
+			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getVisibility();
+		}
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			return ((AJavaInnerConceptDecl) getASTNode()).getVisibility();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getVisibilityFragment() {
+		if (getPVisibility() != null) {
+			return getFragment(getPVisibility());
 		}
 		return null;
 	}
@@ -106,25 +122,62 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			return getFragment(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getType());
 		}
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			return getFragment(((AJavaInnerConceptDecl) getASTNode()).getType());
+		}
+		return null;
+	}
+
+	protected PCardinality getPCardinality() {
+		if (getASTNode() instanceof AFmlInnerConceptDecl) {
+			return ((AFmlInnerConceptDecl) getASTNode()).getCardinality();
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
+			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getCardinality();
+		}
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			return ((AJavaInnerConceptDecl) getASTNode()).getCardinality();
+		}
 		return null;
 	}
 
 	protected RawSourceFragment getCardinalityFragment() {
+		if (getPCardinality() != null) {
+			return getFragment(getPCardinality());
+		}
+		return null;
+	}
+
+	protected PType getPType() {
 		if (getASTNode() instanceof AFmlInnerConceptDecl) {
-			return getFragment(((AFmlInnerConceptDecl) getASTNode()).getCardinality());
+			return ((AFmlInnerConceptDecl) getASTNode()).getType();
 		}
 		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			return getFragment(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getCardinality());
+			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getType();
+		}
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			return ((AJavaInnerConceptDecl) getASTNode()).getType();
+		}
+		return null;
+	}
+
+	protected TLidentifier getLidentifierName() {
+		if (getASTNode() instanceof AFmlInnerConceptDecl) {
+			return ((AFmlInnerConceptDecl) getASTNode()).getLidentifier();
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
+			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getLidentifier();
+		}
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			PVariableDeclarator variableDeclarator = ((AJavaInnerConceptDecl) getASTNode()).getVariableDeclarator();
+			return getName(variableDeclarator);
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getNameFragment() {
-		if (getASTNode() instanceof AFmlInnerConceptDecl) {
-			return getFragment(((AFmlInnerConceptDecl) getASTNode()).getLidentifier());
-		}
-		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			return getFragment(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getLidentifier());
+		if (getLidentifierName() != null) {
+			return getFragment(getLidentifierName());
 		}
 		return null;
 	}
@@ -169,6 +222,9 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 		}
 		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			return getFragment(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getSemi());
+		}
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			return getFragment(((AJavaInnerConceptDecl) getASTNode()).getSemi());
 		}
 		return null;
 	}

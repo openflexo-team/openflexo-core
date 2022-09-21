@@ -43,13 +43,16 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
@@ -79,6 +82,8 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 	@Override
 	public MS buildModelObjectFromAST(PInnerConceptDecl astNode) {
 
+		Type type = TypeFactory.makeType(getPType(), getSemanticsAnalyzer().getTypingSpace());
+
 		Class<? extends FlexoRole<?>> roleClass = null;
 		if (astNode instanceof AFmlInnerConceptDecl) {
 			roleClass = getFMLFactory().getRoleClass(((AFmlInnerConceptDecl) astNode).getRole());
@@ -87,9 +92,33 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 			roleClass = getFMLFactory().getRoleClass(((AFmlFullyQualifiedInnerConceptDecl) astNode).getTaId(),
 					((AFmlFullyQualifiedInnerConceptDecl) astNode).getRole());
 		}
+		if (astNode instanceof AJavaInnerConceptDecl && type instanceof VirtualModelInstanceType) {
+			// In this case this is a FMLRTVirtualModelInstanceModelSlot
+			roleClass = FMLRTVirtualModelInstanceModelSlot.class;
+		}
+		if (roleClass == null) {
+			throwIssue("Cannot find roleClass", getFragment(astNode));
+			return null;
+		}
 		MS returned = (MS) getFactory().newInstance(roleClass);
 
-		if (astNode instanceof AFmlInnerConceptDecl) {
+		returned.setVisibility(getVisibility(getPVisibility()));
+		try {
+			returned.setName(getLidentifierName().getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + (getLidentifierName().getText()));
+		}
+		returned.setCardinality(getCardinality(getPCardinality()));
+		returned.setType(type);
+
+		System.out.println("Prout pour le MS " + returned);
+		System.out.println("type = " + returned.getType() + " of " + returned.getType().getClass());
+		System.out.println("Et donc: " + serializeType(returned.getType()));
+		if (type instanceof FlexoConceptInstanceType) {
+			System.out.println("Zobi: " + ((FlexoConceptInstanceType) type).getSerializationRepresentation());
+		}
+
+		/*if (astNode instanceof AFmlInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlInnerConceptDecl) astNode).getVisibility()));
 			try {
 				returned.setName(((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
@@ -97,15 +126,15 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
-
+		
 			if (returned instanceof FMLRTModelSlot) {
 				Type type = TypeFactory.makeVirtualModelInstanceType(((AFmlInnerConceptDecl) astNode).getType(),
 						getSemanticsAnalyzer().getTypingSpace());
 				returned.setType(type);
 			}
-
+		
 			// decodeFMLProperties(getFMLParameters(), returned);
-
+		
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
@@ -119,10 +148,10 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 					getSemanticsAnalyzer().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
-
+		
 			// decodeFMLProperties(getFMLParameters(), returned);
-
-		}
+		
+		}*/
 		return returned;
 	}
 

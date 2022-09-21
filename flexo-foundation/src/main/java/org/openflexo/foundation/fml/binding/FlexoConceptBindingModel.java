@@ -287,7 +287,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 			}
 			else if (propertyVariablesMap.get(r) == null
 					&& (getBaseBindingModel() == null || getBaseBindingModel().bindingVariableNamed(r.getName()) == null)) {
-				FlexoPropertyBindingVariable bv;
+				FlexoPropertyBindingVariable bv = null;
 				if (r instanceof FlexoConceptInstanceRole) {
 					bv = new FlexoConceptInstanceRoleBindingVariable((FlexoConceptInstanceRole) r);
 				}
@@ -297,11 +297,13 @@ public class FlexoConceptBindingModel extends BindingModel {
 				else if (r instanceof FlexoRole) {
 					bv = new FlexoRoleBindingVariable((FlexoRole<?>) r);
 				}
-				else {
+				else if (r != null) {
 					bv = new FlexoPropertyBindingVariable(r);
 				}
-				addToBindingVariables(bv);
-				propertyVariablesMap.put(r, bv);
+				if (bv != null) {
+					addToBindingVariables(bv);
+					propertyVariablesMap.put(r, bv);
+				}
 			}
 		}
 
