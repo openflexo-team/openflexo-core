@@ -76,7 +76,7 @@ import com.google.common.base.Throwables;
  * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
  * 
  * @param <RD>
- *            the type of the resource data reference by this resource
+ *            the type of the resource data referenced by this resource
  * @author Sylvain
  * 
  */

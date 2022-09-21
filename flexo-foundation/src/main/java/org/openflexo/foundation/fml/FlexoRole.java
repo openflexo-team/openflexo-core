@@ -70,6 +70,7 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.validation.FixProposal;
@@ -257,6 +258,14 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	@Setter(TYPE_KEY)
 	public void setType(Type type);
 
+	/**
+	 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(TYPE_KEY)
+	public void updateType(Type type);
+
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
@@ -404,6 +413,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -439,6 +450,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -548,6 +561,24 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				}
 			}
 			return null;
+		}
+
+		/**
+		 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void updateType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
+				setType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setType(type);
+			}
 		}
 
 	}

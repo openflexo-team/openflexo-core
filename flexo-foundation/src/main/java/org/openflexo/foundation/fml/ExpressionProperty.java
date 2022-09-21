@@ -42,6 +42,7 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -131,9 +132,14 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		@Override
 		public void setExpression(DataBinding<? super T> expression) {
 			if (expression != null) {
-				this.expression = new DataBinding<Object>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
+				this.expression = expression;
+				// this.expression = new DataBinding<Object>(expression.toString(), this, Object.class,
+				// DataBinding.BindingDefinitionType.GET);
+				this.expression.setOwner(this);
 				this.expression.setBindingName("expression");
 				this.expression.setMandatory(true);
+				this.expression.setDeclaredType(Object.class);
+				this.expression.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			notifiedBindingChanged(expression);
 		}
@@ -219,7 +225,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 				ExpressionProperty<?> anExpressionProperty) {
 
 			// We must be sure
-			anExpressionProperty.getExpression().forceRevalidate();
+			anExpressionProperty.getExpression().revalidate();
 
 			if (anExpressionProperty.getDeclaredType() != null && anExpressionProperty.getAnalyzedType() != null) {
 				if (!TypeUtils.isTypeAssignableFrom(anExpressionProperty.getDeclaredType(), anExpressionProperty.getAnalyzedType())

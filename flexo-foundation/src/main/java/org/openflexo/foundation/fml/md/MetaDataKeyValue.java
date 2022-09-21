@@ -129,13 +129,12 @@ public interface MetaDataKeyValue<T> extends FMLObject, FMLPrettyPrintable {
 				try {
 					return getValueExpression().getBindingValue(getReflectedBindingEvaluationContext());
 				} catch (TypeMismatchException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}

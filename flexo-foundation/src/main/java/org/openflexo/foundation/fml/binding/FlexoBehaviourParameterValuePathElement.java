@@ -44,24 +44,27 @@ import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction.ParameterValues;
 
-public class FlexoBehaviourParameterValuePathElement extends SimplePathElement implements PropertyChangeListener {
+@Deprecated
+// Should be refactored
+public class FlexoBehaviourParameterValuePathElement extends SimplePathElementImpl implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterValuePathElement.class.getPackage().getName());
 
 	private final FlexoBehaviourParameter parameter;
 	private Type lastKnownType = null;
 
-	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter) {
-		super(parent, parameter.getName(), parameter.getType());
+	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter, Bindable bindable) {
+		super(parent, parameter.getName(), parameter.getType(), bindable);
 		this.parameter = parameter;
 		lastKnownType = parameter.getType();
 	}
@@ -95,7 +98,7 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getParameter()) {
 			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
-				System.out.println("Notify paramter name changing for " + getParameter() + " new=" + getParameter().getName());
+				System.out.println("Notify parameter name changing for " + getParameter() + " new=" + getParameter().getName());
 				if (getParameter() != null && getParameter().getBindingModel() != null
 						&& getParameter().getBindingModel().getPropertyChangeSupport() != null) {
 					getParameter().getBindingModel().getPropertyChangeSupport()
@@ -157,8 +160,19 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "FlexoBehaviourParameterValuePathElement:" + getLabel();
+	}*/
+
+	@Override
+	public boolean isResolved() {
+		return true;
 	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
+	}
+
 }

@@ -49,7 +49,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
 		}
-		serviceManager = new DefaultFlexoServiceManager(null, true) {
+		serviceManager = new DefaultFlexoServiceManager(null, false, true) {
 
 			@Override
 			protected LocalizationService createLocalizationService(String relativePath) {
@@ -71,7 +71,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 			}
 
 			@Override
-			protected FlexoResourceCenterService createResourceCenterService() {
+			protected FlexoResourceCenterService createResourceCenterService(boolean enableDirectoryWatching) {
 				try {
 					File tempFile = File.createTempFile("Temp", "");
 					testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
@@ -107,7 +107,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 					 * testResourceCenterDirectory); }
 					 */
 
-					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(true); //
+					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(enableDirectoryWatching, true); //
 					// rcService.addToResourceCenters(resourceCenter = new
 					// DirectoryResourceCenter(
 					// testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI,
@@ -149,8 +149,8 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class), true);
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter((TechnologyAdapter)
-					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
+			serviceManager.activateTechnologyAdapter(
+					(TechnologyAdapter) serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
 		}
 
 		if (previousResourceCenterDirectoryToRemove != null) {

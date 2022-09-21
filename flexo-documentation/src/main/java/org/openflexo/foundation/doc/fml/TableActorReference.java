@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.doc.fml;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -48,6 +47,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocTableCell;
@@ -55,12 +55,14 @@ import org.openflexo.foundation.doc.FlexoDocTableRow;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.fml.FlexoTableRole.FlexoTableRoleImpl;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
@@ -68,7 +70,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -283,7 +284,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 
@@ -345,6 +346,11 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 								}
 								return getFlexoConceptInstance().getValue(variable);
 							}
+
+							@Override
+							public ExpressionEvaluator getEvaluator() {
+								return new FMLExpressionEvaluator(this);
+							}
 						});
 						FlexoDocTableCell<?, ?> cell = getModellingElement().getCell(i + lookup.startIterationRowIndex,
 								ctb.getColumnIndex());
@@ -354,7 +360,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 						e.printStackTrace();
 					} catch (NullReferenceException e) {
 						e.printStackTrace();
-					} catch (InvocationTargetException e) {
+					} catch (ReflectiveOperationException e) {
 						e.printStackTrace();
 					}
 				}
@@ -419,7 +425,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 
@@ -458,13 +464,18 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 									}
 									return getFlexoConceptInstance().getValue(variable);
 								}
+
+								@Override
+								public ExpressionEvaluator getEvaluator() {
+									return new FMLExpressionEvaluator(this);
+								}
 							});
 
 						} catch (TypeMismatchException e) {
 							e.printStackTrace();
 						} catch (NullReferenceException e) {
 							e.printStackTrace();
-						} catch (InvocationTargetException e) {
+						} catch (ReflectiveOperationException e) {
 							e.printStackTrace();
 						} catch (NotSettableContextException e) {
 							e.printStackTrace();

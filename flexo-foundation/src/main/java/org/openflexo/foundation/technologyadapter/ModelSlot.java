@@ -46,6 +46,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -218,8 +219,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
-		private boolean isRequired;
-		private boolean isReadOnly;
+		private boolean isRequired = false;
+		private boolean isReadOnly = false;
 		private TechnologyAdapter<?> technologyAdapter;
 
 		/*private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
@@ -589,6 +590,15 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			}
 			super.finalizeDeserialization();
 		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (compilationUnit != null && compilationUnit.getResource() != null) {
+				compilationUnit.ensureUse((Class<? extends ModelSlot<?>>) (Class) getImplementedInterface());
+			}
+		}
+
 	}
 
 }

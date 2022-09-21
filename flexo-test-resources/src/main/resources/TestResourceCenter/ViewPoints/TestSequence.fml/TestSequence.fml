@@ -1,4 +1,0 @@
-@URI("http://openflexo.org/test/TestResourceCenter/TestSequence.fml")
-@Version("0.1")
-model TestSequence { 
-}

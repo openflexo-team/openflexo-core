@@ -39,18 +39,22 @@
 
 package org.openflexo.foundation.fml.cli.command.fml;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AAssignationFmlCommand;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an assignation in FML command-line interpreter
@@ -60,61 +64,147 @@ import org.openflexo.foundation.fml.cli.parser.node.AAssignationFmlCommand;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(FMLAssignation.FMLAssignationImpl.class)
 @FMLCommandDeclaration(
 		keyword = "",
-		usage = "variable:=<expression>",
+		usage = "variable=<expression>",
 		description = "Assign an expression to a variable",
-		syntax = "variable:=<expression>")
-public class FMLAssignation extends FMLCommand {
+		syntax = "variable=<expression>")
+public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 
-	private static final Logger logger = Logger.getLogger(FMLAssignation.class.getPackage().getName());
+	public static abstract class FMLAssignationImpl extends FMLCommandImpl<AAssignmentExpression> {
 
-	private String variableName;
-	private DataBinding<Object> assignation;
+		private static final Logger logger = Logger.getLogger(FMLAssignation.class.getPackage().getName());
 
-	public FMLAssignation(AAssignationFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer, null);
-		variableName = node.getIdentifier().getText();
-		Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpr());
-		assignation = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
-	}
+		private DataBinding<?> assignation;
+		private DataBinding<?> expression;
 
-	public String getVariableName() {
-		return variableName;
-	}
+		// This is the local BindingModel augmented with new variable declaration if required
+		private BindingModel bindingModel;
+		private BindingVariable localDeclarationVariable;
 
-	public DataBinding<Object> getAssignation() {
-		return assignation;
-	}
+		@Override
+		public void create(AAssignmentExpression node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 
-	@Override
-	public boolean isValid() {
-		return true;
-	}
+			assignation = retrieveAssignation(node.getLeft());
+			expression = retrieveExpression(node.getRight());
 
-	@Override
-	public String invalidCommandReason() {
-		return null;
-	}
+		}
 
-	@Override
-	public void execute() {
-		// getOutStream().println("on assigne a " + variableName);
-		if (assignation.isValid()) {
-			try {
-				Object value = assignation.getBindingValue(getCommandInterpreter());
-				getOutStream().println("SET " + variableName + " = " + value);
-				getCommandInterpreter().declareVariable(variableName, assignation.getAnalyzedType(), value);
-			} catch (TypeMismatchException e) {
-				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
-			} catch (NullReferenceException e) {
-				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
-			} catch (InvocationTargetException e) {
-				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
+		@Override
+		public void init() {
+			super.init();
+			if (assignation.isNewVariableDeclaration()) {
+				if (getScript() != null) {
+					bindingModel = new BindingModel(getBindingModel());
+					localDeclarationVariable = new BindingVariable(getAssignationVariable(), expression.getAnalyzedType());
+					bindingModel.addToBindingVariables(localDeclarationVariable);
+				}
+				// Too early !!!
+				/*else {
+					localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(),
+							expression.getAnalyzedType());
+				}*/
 			}
 		}
-		else {
-			getErrStream().println("Cannot execute " + assignation + " : " + assignation.invalidBindingReason());
+
+		@Override
+		public BindingModel getInferedBindingModel() {
+			if (bindingModel != null) {
+				return bindingModel;
+			}
+			return super.getInferedBindingModel();
+		}
+
+		@Override
+		public String toString() {
+			return assignation + " = " + expression;
+		}
+
+		public DataBinding<?> getAssignation() {
+			return assignation;
+		}
+
+		@Override
+		public boolean isSyntaxicallyValid() {
+			/*System.out.println("assignation=" + assignation);
+			System.out.println("valid=" + assignation.isValid());
+			System.out.println("isNewVariableDeclaration=" + assignation.isNewVariableDeclaration());
+			 */
+			return assignation != null && (assignation.isValid() || assignation.isNewVariableDeclaration()) && expression != null
+					&& expression.isValid();
+		}
+
+		@Override
+		public String invalidCommandReason() {
+			if (assignation == null) {
+				return "null assignation";
+			}
+			if (expression == null) {
+				return "null expression";
+			}
+			if (!assignation.isValid() && !assignation.isNewVariableDeclaration()) {
+				return assignation.invalidBindingReason();
+			}
+			if (!expression.isValid()) {
+				return expression.invalidBindingReason();
+			}
+			return null;
+		}
+
+		@Override
+		public Object execute() throws FMLCommandExecutionException {
+			super.execute();
+
+			Object assignedValue = null;
+
+			if (expression.isValid()) {
+				try {
+					assignedValue = expression.getBindingValue(getCommandInterpreter());
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new FMLCommandExecutionException("Cannot execute " + expression, e);
+				}
+			}
+			else {
+				throw new FMLCommandExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+			}
+
+			if (assignation.isValid()) {
+				try {
+					assignation.setBindingValue(assignedValue, getCommandInterpreter());
+					getOutStream().println("Assigned " + assignedValue + " to " + assignation);
+				} catch (TypeMismatchException e) {
+					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+				} catch (NullReferenceException e) {
+					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+				} catch (ReflectiveOperationException e) {
+					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+				} catch (NotSettableContextException e) {
+					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+				}
+			}
+			else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {
+				if (localDeclarationVariable == null) {
+					localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(),
+							expression.getAnalyzedType());
+				}
+				getCommandInterpreter().setVariableValue(localDeclarationVariable, assignedValue);
+				getOutStream().println("Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue);
+			}
+
+			return assignedValue;
+
+		}
+
+		public String getAssignationVariable() {
+			if (assignation.isSimpleVariable()) {
+				BindingValue bindingPath = (BindingValue) assignation.getExpression();
+				return bindingPath.getBindingVariable().getVariableName();
+			}
+			return null;
 		}
 	}
 }

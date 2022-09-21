@@ -44,8 +44,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.UndefinedType;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -119,7 +120,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 			if (getExpression() != null && !getExpression().isValid()) {
 				isAnalyzingType = true;
-				getExpression().forceRevalidate();
+				getExpression().revalidate();
 				isAnalyzingType = false;
 				if (getExpression().isValid()) {
 					return getExpression().getAnalyzedType();
@@ -221,36 +222,36 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		private boolean forceRevalidated = false;
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			// Quick and dirty hack because found invalid binding
-			// TODO: please investigate
+			// TODO: i think this is no more required
 			if (!getExpression().isValid() && !forceRevalidated) {
 				forceRevalidated = true;
-				getExpression().forceRevalidate();
+				getExpression().revalidate();
 			}
 
 			try {
 				return getExpression().getBindingValue(evaluationContext);
 			} catch (InvocationTargetException e) {
-				if (e.getTargetException() instanceof FlexoException) {
-					throw (FlexoException) e.getTargetException();
+				if (e.getTargetException() instanceof FMLExecutionException) {
+					throw (FMLExecutionException) e.getTargetException();
 				}
-				throw new FlexoException(e);
+				throw new FMLExecutionException(e);
 			} catch (NullReferenceException e) {
-				System.out.println("Unexpected NullReferenceException while executing " + getExpression());
-				return null;
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new FlexoException(e);
+				throw new FMLExecutionException(e);
+			} catch (TypeMismatchException e) {
+				throw new FMLExecutionException(e);
+			} catch (ReflectiveOperationException e) {
+				throw new FMLExecutionException(e);
 			}
 		}
 
-		@Override
+		/*@Override
 		public String toString() {
 			// A virer bien sur !!!
 			return "Coucou l'expression avec " + getExpression() + " valid=" + getExpression().isValid();
-		}
+		}*/
 
 	}
 

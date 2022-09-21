@@ -1,23 +1,23 @@
 package org.openflexo.foundation.fml.parser;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddClassInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BeginMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeleteActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
@@ -33,19 +33,20 @@ import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ABlockStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.ADeleteActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
-import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
-import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
+import org.openflexo.foundation.fml.parser.node.AForEnhancedExpressionStatement;
+import org.openflexo.foundation.fml.parser.node.AForEnhancedFmlActionStatement;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
-import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
+import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANoTrailStatement;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
@@ -57,12 +58,18 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PBlockStatement;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PStatement;
 import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.StringUtils;
 
 /**
  * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate {@link FMLControlGraph} from AST
+ * 
+ * Such a factory works with a parent {@link FMLCompilationUnitSemanticsAnalyzer}
  * 
  * @author sylvain
  *
@@ -74,26 +81,30 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	public boolean debug = false;
 
-	private MainSemanticsAnalyzer mainAnalyzer;
+	private FMLCompilationUnitSemanticsAnalyzer compilationUnitAnalyzer;
 	private ControlGraphNode<?, ?> rootControlGraphNode = null;
 
-	public static ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody cgNode, MainSemanticsAnalyzer analyzer) {
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
-	public static ControlGraphNode<?, ?> makeControlGraphNode(PStatement cgNode, MainSemanticsAnalyzer analyzer) {
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PStatement cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
-	public static ControlGraphNode<?, ?> makeControlGraphNode(PStatementNoShortIf cgNode, MainSemanticsAnalyzer analyzer) {
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PStatementNoShortIf cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
-	public static ControlGraphNode<?, ?> makeControlGraphNode(PExpression cgNode, MainSemanticsAnalyzer analyzer) {
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PExpression cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
-	private static ControlGraphNode<?, ?> _makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PFmlActionExp cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
+	private static ControlGraphNode<?, ?> _makeControlGraphNode(Node cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 
 		// Dont rebuild a new ControlGraphNode when already existing
 		ControlGraphNode<?, ?> alreadyExistingNode = (ControlGraphNode<?, ?>) analyzer.getFMLNode(cgNode);
@@ -118,18 +129,54 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		return f.rootControlGraphNode;
 	}
 
-	private ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
-		super(analyzer.getFactory(), cgNode);
-		this.mainAnalyzer = analyzer;
+	private ControlGraphFactory(Node cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(analyzer.getModelFactory(), cgNode);
+		this.compilationUnitAnalyzer = analyzer;
 	}
 
 	@Override
-	public MainSemanticsAnalyzer getMainAnalyzer() {
-		return mainAnalyzer;
+	public FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer() {
+		return compilationUnitAnalyzer;
 	}
 
-	public TypeFactory getTypeFactory() {
-		return getMainAnalyzer().getTypeFactory();
+	@Override
+	public FMLCompilationUnit getCompilationUnit() {
+		return getCompilationUnitAnalyzer().getCompilationUnit();
+	}
+
+	@Override
+	public AbstractFMLTypingSpace getTypingSpace() {
+		return getCompilationUnitAnalyzer().getTypingSpace();
+	}
+
+	@Override
+	public FMLBindingFactory getFMLBindingFactory() {
+		return getCompilationUnitAnalyzer().getFMLBindingFactory();
+	}
+
+	@Override
+	public FragmentManager getFragmentManager() {
+		return getCompilationUnitAnalyzer().getFragmentManager();
+	}
+
+	@Override
+	public RawSource getRawSource() {
+		return getCompilationUnitAnalyzer().getRawSource();
+	}
+
+	@Override
+	public <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+		return getCompilationUnitAnalyzer().retrieveFMLNode(astNode, function);
+	}
+
+	@Override
+	public void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		getCompilationUnitAnalyzer().throwIssue(modelObject, errorMessage, fragment, startPosition);
+	}
+
+	@Override
+	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
+		return getCompilationUnitAnalyzer().getSemanticAnalysisIssues();
 	}
 
 	public ControlGraphNode<?, ?> getRootControlGraphNode() {
@@ -254,7 +301,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 						builtSequenceNode.getModelObject().setControlGraph2(n.getModelObject());
 					}
 					else {
-						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, getMainAnalyzer());
+						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, getCompilationUnitAnalyzer());
 
 						newSequenceNode.addToChildren(n);
 						newSequenceNode.getModelObject().setControlGraph1(n.getModelObject());
@@ -286,7 +333,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inABlock(ABlock node) {
 		super.inABlock(node);
 		// System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
-		FMLObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
+		ObjectNode<?, ?, ?> alreadyExisting = getCompilationUnitAnalyzer().getFMLNode(node);
 		// Don't handle again, this is already registered
 		if (alreadyExisting == null) {
 			// This block was not handled yet, initialize its computing
@@ -295,7 +342,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 				blocks.push(bsInfo);
 			}
 			if (node.getBlockStatements().size() == 0) {
-				push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
+				push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getCompilationUnitAnalyzer())));
 			}
 		}
 	}
@@ -318,7 +365,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inABlockStatementWithoutTrailingSubstatement(ABlockStatementWithoutTrailingSubstatement node) {
 		super.inABlockStatementWithoutTrailingSubstatement(node);
 		// System.out.println("2 -Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
-		FMLObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
+		ObjectNode<?, ?, ?> alreadyExisting = getCompilationUnitAnalyzer().getFMLNode(node);
 		// Don't handle again, this is already registered
 		if (alreadyExisting == null) {
 			// This block was not handled yet, initialize its computing
@@ -327,7 +374,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 				blocks.push(bsInfo);
 			}
 			if (node.getBlockStatements().size() == 0) {
-				push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
+				push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getCompilationUnitAnalyzer())));
 			}
 		}
 
@@ -348,7 +395,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
+	protected void push(ObjectNode<?, ?, ?> fmlNode) {
 		// System.out.println("PUSH avec " + fmlNode);
 		if (fmlNode instanceof ControlGraphNode) {
 
@@ -380,8 +427,8 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	protected <N extends FMLObjectNode<?, ?, ?>> N pop() {
-		FMLObjectNode<?, ?, ?> peek = peek();
+	protected <N extends ObjectNode<?, ?, ?>> N pop() {
+		ObjectNode<?, ?, ?> peek = peek();
 		if (peek != null && !(peek instanceof ControlGraphNode)) {
 			return super.pop();
 		}
@@ -403,7 +450,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAVariableDeclarationBlockStatement(AVariableDeclarationBlockStatement node) {
 		super.inAVariableDeclarationBlockStatement(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new DeclarationActionNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new DeclarationActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -432,7 +479,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAIfSimpleStatement(AIfSimpleStatement node) {
 		super.inAIfSimpleStatement(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ConditionalNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ConditionalNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -444,7 +491,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAIfElseStatement(AIfElseStatement node) {
 		super.inAIfElseStatement(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ConditionalNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ConditionalNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -483,14 +530,26 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void inAForEnhancedStatement(AForEnhancedStatement node) {
-		super.inAForEnhancedStatement(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new IterationActionNode(n, getMainAnalyzer())));
+	public void inAForEnhancedExpressionStatement(AForEnhancedExpressionStatement node) {
+		super.inAForEnhancedExpressionStatement(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new IterationActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
-	public void outAForEnhancedStatement(AForEnhancedStatement node) {
-		super.outAForEnhancedStatement(node);
+	public void outAForEnhancedExpressionStatement(AForEnhancedExpressionStatement node) {
+		super.outAForEnhancedExpressionStatement(node);
+		pop();
+	}
+
+	@Override
+	public void inAForEnhancedFmlActionStatement(AForEnhancedFmlActionStatement node) {
+		super.inAForEnhancedFmlActionStatement(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new IterationActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAForEnhancedFmlActionStatement(AForEnhancedFmlActionStatement node) {
+		super.outAForEnhancedFmlActionStatement(node);
 		pop();
 	}
 
@@ -521,7 +580,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAReturnStatementWithoutTrailingSubstatement(AReturnStatementWithoutTrailingSubstatement node) {
 		super.inAReturnStatementWithoutTrailingSubstatement(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ReturnStatementNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ReturnStatementNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -533,7 +592,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAReturnEmptyStatementWithoutTrailingSubstatement(AReturnEmptyStatementWithoutTrailingSubstatement node) {
 		super.inAReturnEmptyStatementWithoutTrailingSubstatement(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyReturnStatementNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new EmptyReturnStatementNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -554,6 +613,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	 *        {post_increment}         post_increment_expression |
 	 *        {post_decrement}         post_decrement_expression |
 	 *        {method_invocation}      method_invocation |
+	 *        {new_instance}           new_instance |
 	 *        {fml_action_expression}  fml_action_expression;
 	 * </pre>
 	 */
@@ -562,19 +622,35 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		// TODO Auto-generated method stub
 		super.inAAssignmentStatementExpression(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new AssignationActionNode(n, getMainAnalyzer())));
+		// if (node.getAssignmentOperator() instanceof AAssignAssignmentOperator) {
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new AssignationActionNode(n, getCompilationUnitAnalyzer())));
+		// }
 	}
 
 	@Override
 	public void outAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		super.outAAssignmentStatementExpression(node);
+		// if (node.getAssignmentOperator() instanceof AAssignAssignmentOperator) {
+		pop();
+		// }
+	}
+
+	@Override
+	public void inANewInstanceStatementExpression(ANewInstanceStatementExpression node) {
+		super.inANewInstanceStatementExpression(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outANewInstanceStatementExpression(ANewInstanceStatementExpression node) {
+		super.outANewInstanceStatementExpression(node);
 		pop();
 	}
 
 	@Override
 	public void inAMethodInvocationStatementExpression(AMethodInvocationStatementExpression node) {
 		super.inAMethodInvocationStatementExpression(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -586,7 +662,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inATaEditionActionFmlActionExp(ATaEditionActionFmlActionExp node) {
 		super.inATaEditionActionFmlActionExp(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLEditionActionNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLEditionActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -596,9 +672,21 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
+	public void inADeleteActionFmlActionExp(ADeleteActionFmlActionExp node) {
+		super.inADeleteActionFmlActionExp(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new DeleteActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outADeleteActionFmlActionExp(ADeleteActionFmlActionExp node) {
+		super.outADeleteActionFmlActionExp(node);
+		pop();
+	}
+
+	@Override
 	public void inALogActionFmlActionExp(ALogActionFmlActionExp node) {
 		super.inALogActionFmlActionExp(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new LogActionNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new LogActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -610,7 +698,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inASelectActionFmlActionExp(ASelectActionFmlActionExp node) {
 		super.inASelectActionFmlActionExp(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new FetchRequestNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FetchRequestNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -620,54 +708,9 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
-		super.inAFmlInstanceCreationFmlActionExp(node);
-
-		Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText(), getFragment(node.getConceptName()));
-
-		if (type instanceof VirtualModelInstanceType) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
-		}
-		else /*if (type instanceof FlexoConceptInstanceType)*/ {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
-		}
-	}
-
-	@Override
-	public void outAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
-		super.outAFmlInstanceCreationFmlActionExp(node);
-		pop();
-	}
-
-	@Override
-	public void inAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
-		super.inAJavaInstanceCreationFmlActionExp(node);
-
-		Type type = getTypeFactory().makeType(node.getCompositeIdent());
-
-		// System.out.println("Found type " + type + " of " + type.getClass());
-
-		if (type instanceof VirtualModelInstanceType) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
-		}
-		else if (type instanceof FlexoConceptInstanceType) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
-		}
-		else {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddClassInstanceNode(n, getMainAnalyzer())));
-		}
-	}
-
-	@Override
-	public void outAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
-		super.outAJavaInstanceCreationFmlActionExp(node);
-		pop();
-	}
-
-	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
 		super.inABeginMatchActionFmlActionExp(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new BeginMatchActionNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new BeginMatchActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -679,7 +722,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
 		super.inAMatchActionFmlActionExp(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new MatchActionNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new MatchActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -691,7 +734,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAEndMatchActionFmlActionExp(AEndMatchActionFmlActionExp node) {
 		super.inAEndMatchActionFmlActionExp(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new EndMatchActionNode(n, getMainAnalyzer())));
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new EndMatchActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override

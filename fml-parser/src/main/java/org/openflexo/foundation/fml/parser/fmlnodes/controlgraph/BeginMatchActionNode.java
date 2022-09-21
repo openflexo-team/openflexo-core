@@ -38,12 +38,15 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.PExpression;
@@ -67,8 +70,8 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BeginMatchActionNode.class.getPackage().getName());
 
-	public BeginMatchActionNode(ABeginMatchActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BeginMatchActionNode(ABeginMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -76,8 +79,8 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 
 	}
 
-	public BeginMatchActionNode(InitiateMatching action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public BeginMatchActionNode(InitiateMatching action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -87,14 +90,23 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 
 		System.out.println("---------> On cherche: " + astNode.getConceptName().getText());
 
-		FlexoConceptInstanceType matchedType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(),
-				getFragment(astNode.getConceptName()));
-		returned.setMatchedType(matchedType);
+		// FlexoConceptInstanceType matchedType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(),
+		// getFragment(astNode.getConceptName()));
+
+		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
+		if (type instanceof FlexoConceptInstanceType) {
+			returned.setMatchedType((FlexoConceptInstanceType) type);
+		}
+		else {
+			throwIssue("Unexpected matched type " + getText(astNode.getConceptName()), getConceptNameFragment());
+		}
+
+		// returned.setMatchedType(matchedType);
 
 		if (astNode.getFromClause() instanceof AFromClause) {
 			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
-					returned);
+			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
+					BindingDefinitionType.GET, FlexoConceptInstance.class, getSemanticsAnalyzer(), this);
 			returned.setContainer(container);
 		}
 
@@ -112,18 +124,21 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("begin"), getBeginFragment());
-		append(staticContents(SPACE,"match",""), getMatchFragment());
+		append(staticContents(SPACE, "match", ""), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
-		append(staticContents(SPACE, "from",""), getFromFragment());
-		append(staticContents(SPACE, "(",""), getLParFromFragment());
-		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
-		append(staticContents(")"), getRParFromFragment());
+		append(staticContents(SPACE, "from", ""), getFromFragment());
+		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
+		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		//append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// final to true is here a little hack to prevent semi to be removed at pretty-print
+		// This is due to a wrong management of semi
+		// TODO: refactor 'semi' management
+		when(() -> requiresSemi(),true).thenAppend(staticContents(";"), getSemiFragment());
+		// @formatter:on
 	}
 
 	private String getFromAsString() {
@@ -164,7 +179,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		return null;
 	}
 
-	private RawSourceFragment getLParFromFragment() {
+	/*private RawSourceFragment getLParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
@@ -172,9 +187,9 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 			}
 		}
 		return null;
-	}
+	}*/
 
-	private RawSourceFragment getRParFromFragment() {
+	/*private RawSourceFragment getRParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
@@ -182,7 +197,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getFromExpressionFragment() {
 		if (getASTNode() != null) {

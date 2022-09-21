@@ -43,9 +43,10 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -54,20 +55,23 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
- * A path element which represents a {@link FlexoConceptInstance} accessible at run-time<br>
+ * A path element which represents a {@link FlexoConceptInstance} accessible at run-time when a behaviour is called<br>
  * The {@link FlexoConceptInstance} is typed as {@link FlexoConceptInstanceType}
  * 
  * @author sylvain
  * 
  */
-public class FlexoConceptInstancePathElement extends SimplePathElement implements PropertyChangeListener {
+@Deprecated
+// Should be refactored
+public class FlexoConceptInstancePathElement extends SimplePathElementImpl implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptInstancePathElement.class.getPackage().getName());
 
 	private final FlexoConcept flexoConcept;
 
-	public FlexoConceptInstancePathElement(IBindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
-		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+	public FlexoConceptInstancePathElement(IBindingPathElement parent, String pathElementName, FlexoConcept flexoConcept,
+			Bindable bindable) {
+		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept), bindable);
 		this.flexoConcept = flexoConcept;
 	}
 
@@ -138,6 +142,16 @@ public class FlexoConceptInstancePathElement extends SimplePathElement implement
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

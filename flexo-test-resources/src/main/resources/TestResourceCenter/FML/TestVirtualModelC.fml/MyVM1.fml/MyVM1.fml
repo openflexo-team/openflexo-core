@@ -1,0 +1,59 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelB.fml/MyVM1.fml")
+@Version("0.1")
+@Description("In this virtual model we test embedding features")
+model MyVM1 {
+
+	create() {
+	}
+
+	generateSomeInstances (required String instanceName) {
+		ConceptA instanceA = new ConceptA(parameters.instanceName,8);
+		ConceptB instanceB1 = instanceA.new ConceptB("b1",1.1);
+		ConceptB instanceB2 = instanceA.new ConceptB("b2",1.2);
+		ConceptC instanceC1 = instanceB1.new ConceptC("c1",true);
+		ConceptC instanceC2 = instanceB2.new ConceptC("c2",false);
+	}
+
+	concept ConceptA {
+		String a1;
+		int a2;
+
+		create(required String anA1, required int anA2=7) {
+			a1 = parameters.anA1;
+			a2 = parameters.anA2;
+		}
+		
+		delete () {
+		}
+		
+		concept ConceptB {
+			String b1;
+			float b2;
+
+			create(required String aB1, required float aB2=3.141592654) {
+				b1 = parameters.aB1;
+				b2 = parameters.aB2;
+			}
+			
+			delete() {
+			}
+			
+			concept ConceptC {
+				String c1;
+				boolean c2;
+				
+				create(required String aC1, required boolean aC2=false) {
+					c1 = parameters.aC1;
+					c2 = parameters.aC2;
+				}
+				
+				delete() {
+				}
+			}
+		}
+	}
+}

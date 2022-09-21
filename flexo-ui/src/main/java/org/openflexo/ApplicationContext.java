@@ -47,7 +47,6 @@ import java.util.Map;
 
 import org.openflexo.br.ActivateBugReportServiceTask;
 import org.openflexo.br.BugReportService;
-import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoService;
@@ -109,8 +108,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	 * @param devMode
 	 *            true when 'developer' mode set to true (enable more services)
 	 */
-	public ApplicationContext(String localizationRelativePath, boolean devMode) {
-		super(localizationRelativePath, devMode);
+	public ApplicationContext(String localizationRelativePath, boolean enableDirectoryWatching, boolean devMode) {
+		super(localizationRelativePath, enableDirectoryWatching, devMode);
 
 		applicationData = new ApplicationData(this);
 
@@ -219,9 +218,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 	
 	*/
-	public DocResourceManager getDocResourceManager() {
-		return getService(DocResourceManager.class);
-	}
 
 	public ProjectLoader getProjectLoader() {
 		return getService(ProjectLoader.class);
@@ -267,8 +263,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 	public abstract BugReportService createBugReportService();
 
-	protected abstract DocResourceManager createDocResourceManager();
-
 	protected abstract FlexoServerInstanceManager createFlexoServerInstanceManager();
 
 	protected abstract ResourceConsistencyService createResourceConsistencyService();
@@ -278,8 +272,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 
 	@Override
-	protected FlexoResourceCenterService createResourceCenterService() {
-		FlexoResourceCenterService returned = DefaultResourceCenterService.getNewInstance(Flexo.isDev);
+	protected FlexoResourceCenterService createResourceCenterService(boolean enableDirectoryWatching) {
+		FlexoResourceCenterService returned = DefaultResourceCenterService.getNewInstance(enableDirectoryWatching, Flexo.isDev);
 		return returned;
 	}
 

@@ -50,10 +50,11 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -82,6 +83,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ExecuteFlexoBehaviour.ExecuteFlexoBehaviourImpl.class)
 @XMLElement
+@FML("ExecuteFlexoBehaviour")
 public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<?, ?>, FlexoConceptInstance, T> {
 
 	// <FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
@@ -152,12 +154,14 @@ public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefini
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Perform perform ExecuteFlexoBehaviour " + evaluationContext);
 			}
@@ -202,7 +206,7 @@ public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefini
 				return (T) actionSchemeAction.getReturnedValue();
 			}
 			if (actionSchemeAction.getThrownException() != null) {
-				throw new FlexoException(new InvocationTargetException(actionSchemeAction.getThrownException()));
+				throw new FMLExecutionException(new InvocationTargetException(actionSchemeAction.getThrownException()));
 			}
 
 			return null;

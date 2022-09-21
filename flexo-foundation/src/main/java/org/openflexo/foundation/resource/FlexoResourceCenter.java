@@ -50,8 +50,8 @@ import javax.annotation.Nullable;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -64,6 +64,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.xml.XMLRootElementInfo;
 
@@ -342,6 +343,13 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	I getBaseArtefact();
 
 	/**
+	 * Return base serialization artefact (top-level container) as a Resource
+	 * 
+	 * @return
+	 */
+	Resource getBaseArtefactAsResource();
+
+	/**
 	 * Return class of serialization artefact managed by this {@link FlexoResourceCenter}
 	 * 
 	 * @return
@@ -571,4 +579,6 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	public boolean containsArtefact(I serializationArtefact);
 
 	public String relativePath(I serializationArtefact);
+
+	public String getDisplayableStatus();
 }

@@ -164,7 +164,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asVM, serviceManager.getVirtualModelLibrary().getFMLObject(asVM.getURI(), false));
 		assertSame(asVM, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asVM.getURI(), false));
 
-		FlexoConcept A1 = makeConcept("A1", topLevelVM);
+		FlexoConcept A1 = makeConcept("ConceptA1", topLevelVM);
 		System.out.println("A1.getURI()=" + A1.getURI());
 		assertSame(A1, serviceManager.getVirtualModelLibrary().getFMLObject(A1.getURI(), false));
 		assertSame(A1, serviceManager.getVirtualModelLibrary().getFlexoConcept(A1.getURI(), false));
@@ -179,7 +179,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asA1, serviceManager.getVirtualModelLibrary().getFMLObject(asA1.getURI(), false));
 		assertSame(asA1, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asA1.getURI(), false));
 
-		FlexoConcept B1 = makeEmbeddedConcept("B1", A1);
+		FlexoConcept B1 = makeEmbeddedConcept("ConceptB1", A1);
 		System.out.println("B1.getURI()=" + B1.getURI());
 		assertSame(B1, serviceManager.getVirtualModelLibrary().getFMLObject(B1.getURI(), false));
 		assertSame(B1, serviceManager.getVirtualModelLibrary().getFlexoConcept(B1.getURI(), false));
@@ -194,6 +194,8 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asB1, serviceManager.getVirtualModelLibrary().getFMLObject(asB1.getURI(), false));
 		assertSame(asB1, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asB1.getURI(), false));
 
+		System.out.println(topLevelVM.getCompilationUnit().getFMLPrettyPrint());
+		topLevelVMResource.save();
 	}
 
 	/**
@@ -224,7 +226,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asVM1, serviceManager.getVirtualModelLibrary().getFMLObject(asVM1.getURI(), false));
 		assertSame(asVM1, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asVM1.getURI(), false));
 
-		FlexoConcept A2 = makeConcept("A2", vmLevel1);
+		FlexoConcept A2 = makeConcept("ConceptA2", vmLevel1);
 		System.out.println("A2.getURI()=" + A2.getURI());
 		assertSame(A2, serviceManager.getVirtualModelLibrary().getFMLObject(A2.getURI(), false));
 		assertSame(A2, serviceManager.getVirtualModelLibrary().getFlexoConcept(A2.getURI(), false));
@@ -239,7 +241,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asA2, serviceManager.getVirtualModelLibrary().getFMLObject(asA2.getURI(), false));
 		assertSame(asA2, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asA2.getURI(), false));
 
-		FlexoConcept B2 = makeEmbeddedConcept("B2", A2);
+		FlexoConcept B2 = makeEmbeddedConcept("ConceptB2", A2);
 		System.out.println("B2.getURI()=" + B2.getURI());
 		assertSame(B2, serviceManager.getVirtualModelLibrary().getFMLObject(B2.getURI(), false));
 		assertSame(B2, serviceManager.getVirtualModelLibrary().getFlexoConcept(B2.getURI(), false));
@@ -254,6 +256,8 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asB2, serviceManager.getVirtualModelLibrary().getFMLObject(asB2.getURI(), false));
 		assertSame(asB2, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asB2.getURI(), false));
 
+		System.out.println(vmLevel1.getCompilationUnit().getFMLPrettyPrint());
+		vmLevel1Resource.save();
 	}
 
 	/**
@@ -284,7 +288,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asVM2, serviceManager.getVirtualModelLibrary().getFMLObject(asVM2.getURI(), false));
 		assertSame(asVM2, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asVM2.getURI(), false));
 
-		FlexoConcept A3 = makeConcept("A3", vmLevel2);
+		FlexoConcept A3 = makeConcept("ConceptA3", vmLevel2);
 		System.out.println("A3.getURI()=" + A3.getURI());
 		assertSame(A3, serviceManager.getVirtualModelLibrary().getFMLObject(A3.getURI(), false));
 		assertSame(A3, serviceManager.getVirtualModelLibrary().getFlexoConcept(A3.getURI(), false));
@@ -299,7 +303,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(asA3, serviceManager.getVirtualModelLibrary().getFMLObject(asA3.getURI(), false));
 		assertSame(asA3, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asA3.getURI(), false));
 
-		FlexoConcept B3 = makeEmbeddedConcept("B3", A3);
+		FlexoConcept B3 = makeEmbeddedConcept("ConceptB3", A3);
 		System.out.println("B3.getURI()=" + B3.getURI());
 		assertSame(B3, serviceManager.getVirtualModelLibrary().getFMLObject(B3.getURI(), false));
 		assertSame(B3, serviceManager.getVirtualModelLibrary().getFlexoConcept(B3.getURI(), false));
@@ -313,6 +317,9 @@ public class TestURIManagement extends OpenflexoTestCase {
 		System.out.println("asB3.getURI()=" + asB3.getURI());
 		assertSame(asB3, serviceManager.getVirtualModelLibrary().getFMLObject(asB3.getURI(), false));
 		assertSame(asB3, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asB3.getURI(), false));
+
+		System.out.println(vmLevel2.getCompilationUnit().getFMLPrettyPrint());
+		vmLevel2Resource.save();
 
 	}
 
@@ -345,6 +352,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 
 		assertNull(serviceManager.getVirtualModelLibrary().getFMLObject(topLevelVM.getURI(), false));
 		assertNotNull(serviceManager.getVirtualModelLibrary().getFMLObject(topLevelVM.getURI(), true));
+
 		assertTrue(retrievedVPResource.isLoaded());
 
 	}

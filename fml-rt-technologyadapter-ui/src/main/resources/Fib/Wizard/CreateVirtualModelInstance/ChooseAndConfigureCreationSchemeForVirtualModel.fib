@@ -13,7 +13,7 @@
 		constraints="border(location=north)" borderBottom="2" borderTitle=""
 		titleFont="Lucida Grande,0,11" borderTop="2" trackViewPortHeight="true">
 		<Label manageDynamicModel="false" useScrollBar="false"
-			data="data.creationScheme.label" controllerClassName="org.openflexo.gina.controller.FIBController"
+			data="data.creationScheme.name" controllerClassName="org.openflexo.gina.controller.FIBController"
 			localize="true" font="SansSerif,1,12" align="center" constraints="border(location=north)"
 			label="label1" readOnly="false" />
 		<Label manageDynamicModel="false" useScrollBar="false"

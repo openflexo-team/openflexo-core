@@ -44,7 +44,7 @@ import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
@@ -68,12 +68,12 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreationSchemeNode.class.getPackage().getName());
 
-	public CreationSchemeNode(PBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public CreationSchemeNode(PBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public CreationSchemeNode(CreationScheme creationScheme, MainSemanticsAnalyzer analyser) {
-		super(creationScheme, analyser);
+	public CreationSchemeNode(CreationScheme creationScheme, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(creationScheme, analyzer);
 	}
 
 	private boolean isAnonymous() {
@@ -106,7 +106,8 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
+					getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);
@@ -123,21 +124,19 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
-		//append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
-		//		FMLMetaData.class));
+		// @formatter:off
+		// append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
+		// FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("create"), getCreateFragment());
-		when(() -> !isAnonymous())
-				.thenAppend(staticContents("::"), getColonColonFragment())
+		when(() -> !isAnonymous()).thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
-		append(staticContents(SPACE, "(", ""), getLParFragment());
-		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
+		append(staticContents("("), getLParFragment());
+		append(childrenContents("", "", () -> getModelObject().getParameters(), "," + SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
-		when(() -> isAbstract())
-				.thenAppend(staticContents(";"), getSemiFragment())
-				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+		when(() -> hasNoImplementation()).thenAppend(staticContents(";"), getSemiFragment())
+				.elseAppend(staticContents(SPACE, "{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
 				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 		// @formatter:on

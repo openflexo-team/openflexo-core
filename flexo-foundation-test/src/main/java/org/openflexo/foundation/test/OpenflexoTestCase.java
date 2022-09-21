@@ -55,16 +55,17 @@ import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.openflexo.connie.binding.javareflect.KeyValueLibrary;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.CompilationUnitRepository;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.CompilationUnitRepository;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -80,7 +81,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.kvc.KeyValueLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -91,6 +91,7 @@ import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.FileUtils.CopyStrategy;
 
 import junit.framework.AssertionFailedError;
 
@@ -125,9 +126,13 @@ public abstract class OpenflexoTestCase {
 	protected static File testResourceCenterDirectory;
 	protected static List<File> testResourceCenterDirectoriesToRemove;
 
+	// We should have it unchanged to chain tests from right HOME dir
+	protected static File HOME_DIR;
+
 	static {
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.WARNING, null);
+			HOME_DIR = new File(System.getProperty("user.dir"));
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
@@ -232,7 +237,7 @@ public abstract class OpenflexoTestCase {
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
 		}
-		serviceManager = new DefaultFlexoServiceManager(null, true) {
+		serviceManager = new DefaultFlexoServiceManager(null, false, true) {
 
 			@Override
 			protected LocalizationService createLocalizationService(String relativePath) {
@@ -293,7 +298,7 @@ public abstract class OpenflexoTestCase {
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
 			rcList.add(entry);
-			return DefaultResourceCenterService.getNewInstance(rcList, true);
+			return DefaultResourceCenterService.getNewInstance(rcList, false, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
@@ -328,6 +333,36 @@ public abstract class OpenflexoTestCase {
 		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();
 		resourceCenter = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(testResourceCenterDirectory, rcService);
 		resourceCenter.setDefaultBaseURI(RESOURCE_CENTER_URI);
+		rcService.addToResourceCenters(resourceCenter);
+		return resourceCenter;
+	}
+
+	/**
+	 * Create a new empty {@link DirectoryResourceCenter} for supplied {@link FlexoServiceManager} while copying the contents of supplied
+	 * {@link FlexoResourceCenter}
+	 * 
+	 * Gives the same URI, remove supplied {@link FlexoResourceCenter} from the list of registered resource centers
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public static DirectoryResourceCenter makeNewDirectoryResourceCenterFromExistingResourceCenter(FlexoServiceManager serviceManager,
+			FlexoResourceCenter<?> existingResourcesRC) throws IOException {
+		File tempFile = File.createTempFile("Temp", "");
+		testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
+		tempFile.delete();
+		testResourceCenterDirectory.mkdirs();
+
+		logger.info("Copying " + existingResourcesRC.getBaseArtefactAsResource() + " to " + testResourceCenterDirectory);
+		logger.info("Resource: " + existingResourcesRC.getBaseArtefactAsResource().getClass());
+
+		FileUtils.copyResourceToDir(existingResourcesRC.getBaseArtefactAsResource(), testResourceCenterDirectory, CopyStrategy.REPLACE);
+
+		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();
+		DirectoryResourceCenter resourceCenter = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(testResourceCenterDirectory,
+				rcService);
+		resourceCenter.setDefaultBaseURI(existingResourcesRC.getDefaultBaseURI());
+		rcService.removeFromResourceCenters(existingResourcesRC);
 		rcService.addToResourceCenters(resourceCenter);
 		return resourceCenter;
 	}

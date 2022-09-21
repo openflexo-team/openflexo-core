@@ -54,7 +54,6 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.action.SubmitDocumentationAction;
 import org.openflexo.components.SaveProjectsDialog;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoService;
@@ -84,8 +83,6 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	public static final String MODULE_LOADED = "moduleLoaded";
 	public static final String MODULE_UNLOADED = "moduleUnloaded";
 	public static final String MODULE_ACTIVATED = "moduleActivated";
-
-	private boolean allowsDocSubmission;
 
 	private FlexoModule<?> activeModule = null;
 
@@ -172,15 +169,6 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	public String getDeletedProperty() {
 
 		return null;
-	}
-
-	public boolean allowsDocSubmission() {
-		return allowsDocSubmission;
-	}
-
-	public void setAllowsDocSubmission(boolean allowsDocSubmission) {
-		this.allowsDocSubmission = allowsDocSubmission;
-		SubmitDocumentationAction.actionType.setAllowsDocSubmission(allowsDocSubmission);
 	}
 
 	public FlexoEditor getLastActiveEditor() {

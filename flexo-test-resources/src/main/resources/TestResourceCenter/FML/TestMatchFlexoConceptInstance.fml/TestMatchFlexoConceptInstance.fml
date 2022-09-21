@@ -1,0 +1,18 @@
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml"] as MatchingVM2;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM2.fml"] as MyVM2;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml"] as MatchingVM;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM.fml"] as MyVM;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml")
+@Version("0.1")
+model TestMatchFlexoConceptInstance {
+
+	create::_create () {
+		log("on cree le model");
+		MyVM aModel = new MyVM() with (virtualModelInstanceName = "model");
+		log("On a cree le modele");
+		MatchingVM matchingModel = new MatchingVM(aModel) with (virtualModelInstanceName = "matchingModel");
+		MyVM2 model2 = new MyVM2() with (virtualModelInstanceName = "model2");
+		MatchingVM2 matchingModel2 = new MatchingVM2(model2) with (virtualModelInstanceName = "matchingModel2");
+	}
+}

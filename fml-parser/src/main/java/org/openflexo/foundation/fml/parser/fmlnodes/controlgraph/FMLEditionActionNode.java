@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AInClause;
@@ -67,14 +67,14 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;
 
-	public FMLEditionActionNode(ATaEditionActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLEditionActionNode(ATaEditionActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();
 	}
 
-	public FMLEditionActionNode(EA editionAction, MainSemanticsAnalyzer analyser) {
-		super(editionAction, analyser);
+	public FMLEditionActionNode(EA editionAction, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(editionAction, analyzer);
 	}
 
 	@Override
@@ -129,18 +129,21 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 
 		when(() -> hasInClause())
 		.thenAppend(staticContents(SPACE, "in",""), getInFragment())
-		.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
-		.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
-		.thenAppend(staticContents(")"), getRParInFragment());
+		//.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
+		.thenAppend(dynamicContents(SPACE, () -> getInAsString()), getInExpressionFragment());
+		//.thenAppend(staticContents(")"), getRParInFragment());
 
 		when(() -> hasFromClause())
 		.thenAppend(staticContents(SPACE, "from",""), getFromFragment())
-		.thenAppend(staticContents(SPACE, "(",""), getLParFromFragment())
-		.thenAppend(dynamicContents(() -> getFromAsString()), getFromExpressionFragment())
-		.thenAppend(staticContents(")"), getRParFromFragment());
+		//.thenAppend(staticContents(SPACE, "(",""), getLParFromFragment())
+		.thenAppend(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		//.thenAppend(staticContents(")"), getRParFromFragment());
 
 		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
+		// final to true is here a little hack to prevent semi to be removed at pretty-print
+		// This is due to a wrong management of semi
+		// TODO: refactor 'semi' management
+		when(() -> requiresSemi(),true).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 	}
 
@@ -241,7 +244,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		return null;
 	}
 
-	private RawSourceFragment getLParInFragment() {
+	/*private RawSourceFragment getLParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
 			if (inClause instanceof AInClause) {
@@ -250,7 +253,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
@@ -259,7 +262,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getInExpressionFragment() {
 		if (getASTNode() != null) {
@@ -281,7 +284,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		return null;
 	}
 
-	private RawSourceFragment getLParFromFragment() {
+	/*private RawSourceFragment getLParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause inClause = getASTNode().getFromClause();
 			if (inClause instanceof AFromClause) {
@@ -290,7 +293,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause inClause = getASTNode().getFromClause();
@@ -299,7 +302,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getFromExpressionFragment() {
 		if (getASTNode() != null) {

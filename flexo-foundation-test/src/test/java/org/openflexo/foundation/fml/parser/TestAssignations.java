@@ -55,10 +55,8 @@ import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -154,7 +152,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("(1 + 2)", expAction.getExpression().toString());
+		assertEquals("1 + 2", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
@@ -190,7 +188,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("(j = 1)", expAction.getExpression().toString());
+		assertEquals("j = 1", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
@@ -229,7 +227,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("((j > 0) ? 1 : 2)", expAction.getExpression().toString());
+		assertEquals("(j > 0 ? 1 : 2)", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
@@ -385,7 +383,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("(((this.isa.another.binding(1,2) * 8) / 4) - (2 * foo(2)))", expAction.getExpression().toString());
+		assertEquals("this.isa.another.binding(1,2) * 8 / 4 - 2 * foo(2)", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
@@ -422,11 +420,11 @@ public class TestAssignations extends FMLParserTestCase {
 		assertTrue(actionScheme.getControlGraph() instanceof AssignationAction);
 		AssignationAction assignationAction = (AssignationAction) actionScheme.getControlGraph();
 		assertEquals("aConcept", assignationAction.getAssignation().toString());
-		assertTrue(assignationAction.getAssignableAction() instanceof AddFlexoConceptInstance);
-		AddFlexoConceptInstance<?> addAction = (AddFlexoConceptInstance) assignationAction.getAssignableAction();
+		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
+		ExpressionAction expressionAction = (ExpressionAction) assignationAction.getAssignableAction();
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
-		AddFlexoConceptInstanceNode addActionNode = (AddFlexoConceptInstanceNode) (P2PPNode) rootNode.getObjectNode(addAction);
+		ExpressionActionNode expressionActionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expressionAction);
 
 		assertEquals("(43:1)-(45:2)", behaviourNode.getLastParsedFragment().toString());
 		assertEquals("(42:1)-(43:0)", behaviourNode.getPrelude().toString());
@@ -436,9 +434,9 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(44:13)-(44:28)", addActionNode.getLastParsedFragment().toString());
-		assertEquals(null, addActionNode.getPrelude());
-		assertEquals(null, addActionNode.getPostlude());
+		assertEquals("(44:13)-(44:28)", expressionActionNode.getLastParsedFragment().toString());
+		assertEquals(null, expressionActionNode.getPrelude());
+		assertEquals(null, expressionActionNode.getPostlude());
 
 	}
 

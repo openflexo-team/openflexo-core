@@ -42,7 +42,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.binding.javareflect.JavaPropertyPathElement;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParametersValuesType;
 
 public class FlexoBehaviourParametersBindingVariable extends BindingVariable {
 	static final Logger logger = Logger.getLogger(FlexoBehaviourParametersBindingVariable.class.getPackage().getName());
@@ -69,6 +72,20 @@ public class FlexoBehaviourParametersBindingVariable extends BindingVariable {
 	@Override
 	public String getTooltipText(Type resultingType) {
 		return "Parameters" + (flexoBehaviour != null ? " for behaviour " + flexoBehaviour.getName() : "");
+	}
+
+	@Deprecated
+	// Caused by parameters management: change this !!!
+	@Override
+	public void hasBeenResolved(BindingValue bindingValue) {
+		if (bindingValue.getBindingPathElementAtIndex(0) instanceof JavaPropertyPathElement
+				&& getType() instanceof FlexoBehaviourParametersValuesType) {
+			FlexoBehaviour b = ((FlexoBehaviourParametersValuesType) getType()).getFlexoBehaviour();
+			FlexoBehaviourParameterValuePathElement newPathElement = new FlexoBehaviourParameterValuePathElement(this,
+					b.getParameter(((JavaPropertyPathElement) bindingValue.getBindingPathElementAtIndex(0)).getLabel()),
+					bindingValue.getOwner());
+			bindingValue.replaceBindingPathElementAtIndex(newPathElement, 0);
+		}
 	}
 
 }

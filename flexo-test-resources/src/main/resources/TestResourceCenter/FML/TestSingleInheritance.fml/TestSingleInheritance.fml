@@ -1,0 +1,41 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestSingleInheritance.fml")
+@Version("0.1")
+@Author("sylvain")
+model TestSingleInheritance {
+
+	@Author("sylvain")
+	concept ConceptA {
+		String foo;
+		create::init () {
+			log("Creating ConceptA instance here");
+			// Is that the "good" file ?
+			foo = "ConceptA";
+		}
+		delete::_delete () {
+		}
+		doSomething () {
+			log("Do something in ConceptA");
+			return 42;
+		}
+	}
+
+	@Author("sylvain")
+	concept ConceptB extends ConceptA {
+		create::init () {
+			super.init();
+			log("Creating ConceptB instance");
+			foo = (foo + "ConceptB");
+		}
+		delete::_delete () {
+		}
+		doSomething () {
+			log("Do something in ConceptB");
+			return (super.doSomething() * 2);
+		}
+	}
+	
+	create() {
+	}
+}

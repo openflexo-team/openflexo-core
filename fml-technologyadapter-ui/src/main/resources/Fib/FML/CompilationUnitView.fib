@@ -28,11 +28,11 @@
 			textNonSelectionColor="0,0,0" root="data" deepExploration="true"
 			selectionMode="DiscontiguousTreeSelection" rowHeight="18"
 			localize="true" manageDynamicModel="true"
-			rightClickAction="controller.rightClick(FlexoConceptBrowser.selected,event)"
-			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
-			clickAction="controller.singleClick(FlexoConceptBrowser.selected)"
+			rightClickAction="controller.rightClick(flexoConceptBrowser.selected,event)"
+			doubleClickAction="controller.doubleClick(flexoConceptBrowser.selected)"
+			clickAction="controller.singleClick(flexoConceptBrowser.selected)"
 			constraints="split(index=0;location=north;splitIdentifier=left)"
-			index="0" name="FlexoConceptBrowser">
+			index="0" name="flexoConceptBrowser">
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.FMLCompilationUnit"
 				icon="controller.iconForObject(compilationUnit)"
@@ -91,24 +91,39 @@
 					method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
 			</BrowserElement>
-			<BrowserElement id="20"
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.GetProperty"
+				icon="controller.iconForObject(flexoProperty)"
+				label="flexoProperty.name" editableLabel="flexoProperty.name"
+				isEditable="false" name="flexoProperty">
+				<Children
+					data="flexoProperty.getControlGraph.flattenedSequence"
+					name="getChildren" />
+				<BrowserAddAction
+					method="controller.createEditionActionInGetControlGraph(selected)"
+					name="add_action_in_GET_control_graph" />
+				<BrowserRemoveAction
+					method="controller.deleteFlexoConceptObject(selected)"
+					name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.GetSetProperty"
 				icon="controller.iconForObject(flexoProperty)"
 				label="flexoProperty.name" editableLabel="flexoProperty.name"
 				isEditable="false" name="flexoProperty">
-				<Children id="21"
+				<Children
 					data="flexoProperty.getControlGraph.flattenedSequence"
 					name="getChildren" />
-				<Children id="22"
+				<Children
 					data="flexoProperty.setControlGraph.flattenedSequence"
 					name="setChildren" />
-				<BrowserAddAction id="23"
+				<BrowserAddAction
 					method="controller.createEditionActionInGetControlGraph(selected)"
 					name="add_action_in_GET_control_graph" />
-				<BrowserAddAction id="24"
+				<BrowserAddAction
 					method="controller.createEditionActionInSetControlGraph(selected)"
 					name="add_action_in_SET_control_graph" />
-				<BrowserRemoveAction id="25"
+				<BrowserRemoveAction
 					method="controller.deleteFlexoConceptObject(selected)"
 					name="remove_flexo_concept" />
 			</BrowserElement>
@@ -284,7 +299,7 @@
 				label="&quot;Behavioural&quot;" isEditable="false"
 				name="flexoConceptBehaviouralFacet">
 				<Children id="74"
-					data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours"
+					data="flexoConceptBehaviouralFacet.behaviours"
 					name="flexoBehaviours" />
 				<BrowserAddAction id="75"
 					method="controller.createAdvancedScheme(selected.flexoConcept)"
@@ -329,9 +344,9 @@
 			constraints="split(index=0;location=north;splitIdentifier=topRight)"
 			index="0" name="FIBPanel">
 			<FIBReferencedComponent id="85"
-				dynamicComponent="controller.inspectorForObject(FlexoConceptBrowser.selected)"
+				dynamicComponent="controller.inspectorForObject(flexoConceptBrowser.selected)"
 				localize="true" manageDynamicModel="true"
-				data="FlexoConceptBrowser.selected"
+				data="flexoConceptBrowser.selected"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 				opaque="false" index="15" name="InspectedWidget">
 				<ReferenceAssignment id="86"
@@ -350,11 +365,11 @@
 				borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
 				titleFont="SansSerif,0,12" layout="gridbag" borderRight="0"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
-				name="ValidationPanel">
+				name="validationPanel">
 				<FIBVariable
 					type="org.openflexo.pamela.validation.Validable"
 					name="focusedValidable"
-					value="FlexoConceptBrowser.selected != null ? FlexoConceptBrowser.selected : data" />
+					value="flexoConceptBrowser.selected != null ? flexoConceptBrowser.selected : data" />
 				<Label id="89" label="" align="left"
 					data="((((&quot;&quot; + controller.getValidationReport(data).errorIssuesRegarding(focusedValidable).size) + &quot; errors, &quot;) + controller.getValidationReport(data).warningIssuesRegarding(focusedValidable).size) + &quot; warnings&quot;)"
 					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
@@ -386,11 +401,11 @@
 				backgroundSecondarySelectionColor="178,215,255" showFooter="false"
 				lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
 				rowHeight="18" manageDynamicModel="true"
-				doubleClickAction="controller.fixIssue(IssuesTable.selected)"
-				data="controller.getValidationReport(data).issuesRegarding(ValidationPanel.focusedValidable)"
-				clickAction="controller.showIssue(IssuesTable.selected)"
+				doubleClickAction="controller.fixIssue(issuesTable.selected)"
+				data="controller.getValidationReport(data).issuesRegarding(validationPanel.focusedValidable)"
+				clickAction="controller.showIssue(issuesTable.selected)"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right)"
-				visible="controller.showErrorsWarnings" name="IssuesTable">
+				visible="controller.showErrorsWarnings" name="issuesTable">
 				<IconColumn id="94"
 					data="controller.iconForObject(iterator)" resizable="false"
 					title="icon" displayTitle="false" columnWidth="20" showIcon="false"

@@ -49,8 +49,10 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -65,6 +67,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CreateFlexoConcept.CreateFlexoConceptImpl.class)
 @XMLElement(xmlTag = "CreateFlexoConcept")
+@FML("CreateFlexoConcept")
 public interface CreateFlexoConcept extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, FlexoConcept> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -128,6 +131,8 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -140,6 +145,8 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;
@@ -227,8 +234,7 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 		}
 
 		@Override
-		public FlexoConcept execute(RunTimeEvaluationContext evaluationContext)
-				throws ActionExecutionCancelledException, InconsistentFlexoConceptHierarchyException {
+		public FlexoConcept execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -244,11 +250,15 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 				action.doAction();
 
 				if (action.hasBeenCancelled()) {
-					throw new ActionExecutionCancelledException();
+					throw new FMLExecutionException(new ActionExecutionCancelledException());
 				}
 
 				if (getParentFlexoConceptType() != null) {
-					action.getNewFlexoConcept().addToParentFlexoConcepts(getParentFlexoConceptType());
+					try {
+						action.getNewFlexoConcept().addToParentFlexoConcepts(getParentFlexoConceptType());
+					} catch (InconsistentFlexoConceptHierarchyException e) {
+						throw new FMLExecutionException(e);
+					}
 				}
 
 				return action.getNewFlexoConcept();

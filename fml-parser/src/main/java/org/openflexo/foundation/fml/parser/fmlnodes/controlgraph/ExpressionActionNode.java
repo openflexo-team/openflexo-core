@@ -41,9 +41,10 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -56,12 +57,12 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExpressionActionNode.class.getPackage().getName());
 
-	public ExpressionActionNode(Node astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ExpressionActionNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ExpressionActionNode(ExpressionAction<?> action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public ExpressionActionNode(ExpressionAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@Override
@@ -69,7 +70,8 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 		ExpressionAction<?> returned = getFactory().newExpressionAction();
 		// System.out.println(">>>>>> Expression " + astNode);
 
-		DataBinding expression = ExpressionFactory.makeExpression(astNode, getAnalyser(), returned);
+		DataBinding expression = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class,
+				getSemanticsAnalyzer(), this);
 		returned.setExpression(expression);
 		return returned;
 	}
@@ -81,7 +83,10 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
 
 		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
+		// final to true is here a little hack to prevent semi to be removed at pretty-print
+		// This is due to a wrong management of semi
+		// TODO: refactor 'semi' management
+		when(() -> requiresSemi(), true).thenAppend(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getExpressionFragment() {

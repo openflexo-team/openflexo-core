@@ -121,6 +121,8 @@ public interface NavigationScheme extends AbstractActionScheme {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;

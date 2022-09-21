@@ -40,10 +40,16 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 
 /**
  * @author sylvain
@@ -54,12 +60,12 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PrimitiveRoleNode.class.getPackage().getName());
 
-	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public PrimitiveRoleNode(PrimitiveRole<?> property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public PrimitiveRoleNode(PrimitiveRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -70,6 +76,8 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
+		when(() -> getModelObject().getDefaultValue().isSet()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultValueFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 
@@ -82,8 +90,17 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(astNode.getType()));
+		returned.setPrimitiveType(
+				PrimitiveType.toPrimitiveType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace())));
 		returned.setCardinality(getCardinality(astNode.getCardinality()));
+
+		PExpression initializerExpression = getInitializerExpression(astNode.getVariableDeclarator());
+		if (initializerExpression != null) {
+			DataBinding defaultValueExpression = ExpressionFactory.makeDataBinding(initializerExpression, returned,
+					BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
+			returned.setDefaultValue(defaultValueExpression);
+		}
+
 		return returned;
 	}
 

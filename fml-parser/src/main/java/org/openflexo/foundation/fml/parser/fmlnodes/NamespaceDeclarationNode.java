@@ -39,8 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.NamespaceDeclaration;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -53,21 +53,21 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, NamespaceDeclaration, MainSemanticsAnalyzer> {
+public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, NamespaceDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public NamespaceDeclarationNode(ANamespaceDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public NamespaceDeclarationNode(ANamespaceDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public NamespaceDeclarationNode(NamespaceDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public NamespaceDeclarationNode(NamespaceDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override
 	public NamespaceDeclaration buildModelObjectFromAST(ANamespaceDecl astNode) {
 		NamespaceDeclaration returned = getFactory().newNamespaceDeclaration();
 		returned.setValue(astNode.getStringLiteral().getText().substring(1, astNode.getStringLiteral().getText().length() - 1));
-		returned.setAbbrev(astNode.getNsId().getText());
+		returned.setAbbrev(getText(astNode.getNsId()));
 		return returned;
 	}
 

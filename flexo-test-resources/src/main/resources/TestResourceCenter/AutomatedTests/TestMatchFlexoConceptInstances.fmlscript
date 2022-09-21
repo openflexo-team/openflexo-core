@@ -1,0 +1,26 @@
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml"];
+context;
+assert virtualModel != null;
+/*log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+//validate virtualModel;
+conceptA = virtualModel.getFlexoConcept("ConceptA");
+assert conceptA != null;
+conceptB = virtualModel.getFlexoConcept("ConceptB");
+assert conceptB != null;
+context;
+assert conceptA.isSuperConceptOf(conceptB);
+resources;
+service ResourceCenterService add_temp_rc;
+myVMI = new TestSingleInheritance() with (virtualModelInstanceName="test1");
+context;
+assert myVMI != null;
+a = myVMI.new ConceptA();
+log a.foo;
+assert a.foo=="ConceptA";
+assert a.doSomething()==42;
+b = myVMI.new ConceptB();
+assert b.foo=="ConceptAConceptB";
+assert b.doSomething()==84;
+context;*/
+

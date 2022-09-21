@@ -1,6 +1,6 @@
 package org.openflexo.foundation.fml.parser;
 
-public class ParseException extends Exception {
+public class ParseException extends org.openflexo.connie.ParseException {
 
 	private int line;
 	private int position;

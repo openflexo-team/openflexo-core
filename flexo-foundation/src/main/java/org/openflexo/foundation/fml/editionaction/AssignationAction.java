@@ -38,12 +38,15 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -53,10 +56,14 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
 @XMLElement
+// TODO: manage assignment operator
 public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -92,10 +99,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public void setAssignation(DataBinding<? super T> assignation) {
 			if (assignation != null) {
-				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
-						DataBinding.BindingDefinitionType.GET_SET);
-				assignation.setBindingName("assignation");
-				assignation.setMandatory(true);
+				this.assignation = assignation;
+				// this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
+				// DataBinding.BindingDefinitionType.GET_SET);
+				this.assignation.setOwner(this);
+				this.assignation.setBindingName("assignation");
+				this.assignation.setMandatory(true);
+				this.assignation.setDeclaredType(Object.class);
+				this.assignation.setBindingDefinitionType(BindingDefinitionType.GET_SET);
 			}
 			notifiedBindingChanged(this.assignation);
 		}
@@ -115,14 +126,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			T value = getAssignationValue(evaluationContext);
 			try {
 				getAssignation().setBindingValue(value, evaluationContext);
 			} catch (Exception e) {
 				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
 				e.printStackTrace();
-				throw new FlexoException(e);
+				throw new FMLExecutionException(e);
 			}
 			return value;
 		}
@@ -144,6 +155,52 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public DataBinding<Object> getBinding(AssignationAction object) {
 			return object.getAssignation();
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class AssignedTypeMustBeCompatible extends ValidationRule<AssignedTypeMustBeCompatible, AssignationAction<?>> {
+		public AssignedTypeMustBeCompatible() {
+			super(AssignationAction.class, "assigned_type_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<AssignedTypeMustBeCompatible, AssignationAction<?>> applyValidation(AssignationAction<?> assignation) {
+
+			Type expected = assignation.getAssignation().getAnalyzedType();
+			Type analyzed = assignation.getAssignableType();
+
+			//System.out.println("On verifie l'assignation " + assignation.getFMLPrettyPrint());
+			//System.out.println("Expected: " + expected);
+			//System.out.println("Analyzed: " + analyzed);
+
+			if (!TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+				return new NotCompatibleTypesIssue(this, assignation, expected, analyzed);
+			}
+
+			return null;
+		}
+
+		public static class NotCompatibleTypesIssue extends ValidationError<AssignedTypeMustBeCompatible, AssignationAction<?>> {
+
+			private Type expectedType;
+			private Type analyzedType;
+
+			public NotCompatibleTypesIssue(AssignedTypeMustBeCompatible rule, AssignationAction<?> anObject, Type expected, Type analyzed) {
+				super(rule, anObject, "types_are_not_compatible_in_assignation_:_($expectedType)_is_not_assignable_from_($analyzedType)");
+				this.analyzedType = analyzed;
+				this.expectedType = expected;
+			}
+
+			public String getExpectedType() {
+				return TypeUtils.simpleRepresentation(expectedType);
+			}
+
+			public String getAnalyzedType() {
+				return TypeUtils.simpleRepresentation(analyzedType);
+			}
+
 		}
 
 	}

@@ -1,0 +1,9 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelA3.fml")
+@Version("0.1")
+@Description("A VirtualModel designed for test purposes")
+model TestVirtualModelA3 extends TestVirtualModelA {
+}

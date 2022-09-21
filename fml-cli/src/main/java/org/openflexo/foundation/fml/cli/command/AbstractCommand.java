@@ -40,11 +40,56 @@
 package org.openflexo.foundation.fml.cli.command;
 
 import java.io.PrintStream;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.parser.node.Node;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
+import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
+import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
+import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
+import org.openflexo.foundation.fml.cli.command.directive.MoreDirective;
+import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
+import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
+import org.openflexo.foundation.fml.cli.command.fml.FMLActionCommand;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
+import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
+import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.Initializer;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Parameter;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * Represents a command in FML command-line interpreter
@@ -52,50 +97,78 @@ import org.openflexo.foundation.fml.cli.parser.node.Node;
  * @author sylvain
  * 
  */
-public abstract class AbstractCommand {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(AbstractCommand.AbstractCommandImpl.class)
+@Imports({ @Import(FlexoEvent.class), @Import(value = HelpDirective.class), @Import(HistoryDirective.class), @Import(CdDirective.class),
+		@Import(PwdDirective.class), @Import(LsDirective.class), @Import(QuitDirective.class), @Import(ServicesDirective.class),
+		@Import(ServiceDirective.class), @Import(ActivateTA.class), @Import(ResourcesDirective.class), @Import(OpenProject.class),
+		@Import(LoadResource.class), @Import(MoreDirective.class), @Import(EnterDirective.class), @Import(ExitDirective.class),
+		@Import(FMLContextCommand.class), @Import(FMLExpression.class), @Import(FMLAssignation.class), @Import(FMLAssertExpression.class),
+		@Import(FMLActionCommand.class) })
+public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGraphOwner {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AbstractCommand.class.getPackage().getName());
+	@PropertyIdentifier(type = Node.class)
+	public static final String NODE_KEY = "node";
+	@PropertyIdentifier(type = AbstractCommandSemanticsAnalyzer.class)
+	public static final String COMMAND_SEMANTICS_ANALYZER_KEY = "commandSemanticsAnalyzer";
+	@PropertyIdentifier(type = AbstractCommand.class)
+	public static final String PARENT_COMMAND_KEY = "parentCommand";
+	@PropertyIdentifier(type = FMLScript.class)
+	public static final String SCRIPT_KEY = "script";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String LINE_KEY = "line";
 
-	private Node node;
-	private CommandSemanticsAnalyzer commandSemanticsAnalyzer;
+	@Initializer
+	void create(@Parameter(NODE_KEY) N node,
+			@Parameter(COMMAND_SEMANTICS_ANALYZER_KEY) AbstractCommandSemanticsAnalyzer scriptSemanticsAnalyzer);
 
-	public AbstractCommand(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		this.node = node;
-		this.commandSemanticsAnalyzer = commandSemanticsAnalyzer;
-	}
+	public void init();
 
-	public Node getNode() {
-		return node;
-	}
+	@Getter(value = NODE_KEY, ignoreType = true)
+	public N getNode();
 
-	public CommandSemanticsAnalyzer getCommandSemanticsAnalyzer() {
-		return commandSemanticsAnalyzer;
-	}
+	@Getter(value = COMMAND_SEMANTICS_ANALYZER_KEY, ignoreType = true)
+	public AbstractCommandSemanticsAnalyzer getCommandSemanticsAnalyzer();
 
-	public AbstractCommandInterpreter getCommandInterpreter() {
-		return getCommandSemanticsAnalyzer().getCommandInterpreter();
-	}
+	@Getter(PARENT_COMMAND_KEY)
+	public AbstractCommand<?> getParentCommand();
 
-	public PrintStream getOutStream() {
-		return getCommandInterpreter().getOutStream();
-	}
+	@Setter(PARENT_COMMAND_KEY)
+	public void setParentCommand(AbstractCommand<?> aCommand);
 
-	public PrintStream getErrStream() {
-		return getCommandInterpreter().getErrStream();
-	}
+	@Getter(SCRIPT_KEY)
+	public FMLScript getScript();
+
+	@Setter(SCRIPT_KEY)
+	public void setScript(FMLScript aScript);
+
+	@Getter(value = LINE_KEY, defaultValue = "-1")
+	public int getLine();
+
+	@Setter(LINE_KEY)
+	public void setLine(int line);
+
+	public Object execute() throws FMLCommandExecutionException;
+
+	public AbstractCommandInterpreter getCommandInterpreter();
+
+	public BindingModel getInferedBindingModel();
+
+	public String getOriginalCommandAsString();
 
 	/**
-	 * Execute this {@link AbstractCommand}
-	 */
-	public abstract void execute();
-
-	/**
-	 * Return boolean indicating if this {@link AbstractCommand} is valid relatively to semantics analysis
+	 * Return boolean indicating if this {@link AbstractCommand} is syntaxically valid
 	 * 
 	 * @return
 	 */
-	public abstract boolean isValid();
+	public abstract boolean isSyntaxicallyValid();
+
+	/**
+	 * Return boolean indicating if this {@link AbstractCommand} is valid in that run-time context
+	 * 
+	 * @return
+	 */
+	public abstract boolean isValidInThatContext();
 
 	/**
 	 * Return String indicating why this {@link AbstractCommand} is not valid relatively to semantics analysis<br>
@@ -105,66 +178,134 @@ public abstract class AbstractCommand {
 	 */
 	public abstract String invalidCommandReason();
 
-	public enum CommandTokenType {
-		Expression {
-			@Override
-			public String syntaxKeyword() {
-				return "<expression>";
-			}
-		},
-		LocalReference {
-			@Override
-			public String syntaxKeyword() {
-				return "<reference>";
-			}
-		},
-		Path {
-			@Override
-			public String syntaxKeyword() {
-				return "<path>";
-			}
-		},
-		TA {
-			@Override
-			public String syntaxKeyword() {
-				return "<ta>";
-			}
-		},
-		RC {
-			@Override
-			public String syntaxKeyword() {
-				return "<rc>";
-			}
-		},
-		Resource {
-			@Override
-			public String syntaxKeyword() {
-				return "<resource>";
-			}
-		},
-		Service {
-			@Override
-			public String syntaxKeyword() {
-				return "<service>";
-			}
-		},
-		Operation {
-			@Override
-			public String syntaxKeyword() {
-				return "<operation>";
-			}
-		};
+	public static abstract class AbstractCommandImpl<N extends Node> extends FlexoObjectImpl implements AbstractCommand<N> {
 
-		public abstract String syntaxKeyword();
+		@SuppressWarnings("unused")
+		static final Logger logger = Logger.getLogger(AbstractCommand.class.getPackage().getName());
 
-		public static CommandTokenType getType(String syntaxKeyword) {
-			for (CommandTokenType commandTokenType : values()) {
-				if (commandTokenType.syntaxKeyword().equals(syntaxKeyword)) {
-					return commandTokenType;
-				}
+		private boolean wasInitialized = false;
+
+		@Override
+		public void init() {
+			wasInitialized = true;
+		}
+
+		@Override
+		public AbstractCommandInterpreter getCommandInterpreter() {
+			return getCommandSemanticsAnalyzer().getCommandInterpreter();
+		}
+
+		public PrintStream getOutStream() {
+			return getCommandInterpreter().getOutStream();
+		}
+
+		public PrintStream getErrStream() {
+			return getCommandInterpreter().getErrStream();
+		}
+
+		/**
+		 * Execute this {@link AbstractCommand}
+		 * 
+		 * @return (eventual) returned value after execution
+		 */
+		@Override
+		public Object execute() throws FMLCommandExecutionException {
+			if (!wasInitialized) {
+				init();
 			}
-			logger.warning("Unexpected CommandTokenType: " + syntaxKeyword);
+			if (!isValidInThatContext()) {
+				throw new FMLCommandExecutionException(invalidCommandReason());
+			}
+			getCommandInterpreter().willExecute(this);
 			return null;
 		}
+
+		@Override
+		public String getOriginalCommandAsString() {
+			if (getCommandSemanticsAnalyzer() instanceof ScriptSemanticsAnalyzer) {
+				return getCommandSemanticsAnalyzer().getText(getNode());
+			}
+			return getNode().toString();
+		}
+
+		protected DataBinding<?> retrieveAssignation(Node expression) {
+			return retrieveExpression(expression, Object.class, BindingDefinitionType.GET_SET);
+		}
+
+		protected DataBinding<?> retrieveExpression(Node expression) {
+			return retrieveExpression(expression, Object.class, BindingDefinitionType.GET);
+		}
+
+		protected DataBinding<?> retrieveExpression(Node expression, Type type, BindingDefinitionType bdType) {
+
+			DataBinding<Object> returned = ExpressionFactory.makeDataBinding(expression, this, bdType, type,
+					getCommandSemanticsAnalyzer().getModelFactory(), getCommandSemanticsAnalyzer().getTypingSpace(),
+					getCommandSemanticsAnalyzer().getFMLBindingFactory());
+
+			// System.out.println(
+			// "Build new binding: " + returned + " valid: " + returned.isValid() + " reason: " + returned.invalidBindingReason());
+
+			return returned;
+		}
+
+		protected EditionAction retrieveEditionAction(PFmlActionExp fmlAction) {
+
+			FMLCompilationUnitSemanticsAnalyzer analyzer = new FMLCompilationUnitSemanticsAnalyzer(
+					getCommandSemanticsAnalyzer().getModelFactory(), getCommandSemanticsAnalyzer().getServiceManager(), fmlAction,
+					getCommandSemanticsAnalyzer().getRawSource());
+
+			ControlGraphNode<?, ?> controlGraphNode = ControlGraphFactory.makeControlGraphNode(fmlAction, analyzer);
+
+			if (controlGraphNode != null && controlGraphNode.getModelObject() instanceof EditionAction) {
+				return (EditionAction) controlGraphNode.getModelObject();
+			}
+			return null;
+
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			if (getParentCommand() != null) {
+				return getParentCommand().getInferedBindingModel();
+			}
+			return getCommandInterpreter().getBindingModel();
+		}
+
+		@Override
+		public BindingModel getInferedBindingModel() {
+			return getBindingModel();
+		}
+
+		@Override
+		public BindingFactory getBindingFactory() {
+			return getCommandInterpreter().getBindingFactory();
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		}
+
+		@Override
+		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+		}
+
+		@Override
+		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
+			return getBindingModel();
+		}
+
+		@Override
+		public void reduce() {
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			return null;
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+		}
+
 	}
 }

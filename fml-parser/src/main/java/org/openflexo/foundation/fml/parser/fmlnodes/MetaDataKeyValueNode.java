@@ -39,11 +39,12 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnnotationKeyValuePair;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -51,14 +52,14 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair, MetaDataKeyValue<?>, MainSemanticsAnalyzer> {
+public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair, MetaDataKeyValue<?>, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public MetaDataKeyValueNode(AAnnotationKeyValuePair astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public MetaDataKeyValueNode(AAnnotationKeyValuePair astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public MetaDataKeyValueNode(MetaDataKeyValue<?> metaData, MainSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public MetaDataKeyValueNode(MetaDataKeyValue<?> metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override
@@ -78,7 +79,8 @@ public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair,
 
 		MetaDataKeyValue<?> returned = getFactory().newMetaDataKeyValue(key);
 
-		DataBinding<?> valueExpression = ExpressionFactory.makeExpression(astNode.getConditionalExp(), getAnalyser(), returned);
+		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(astNode.getConditionalExp(), returned, BindingDefinitionType.GET,
+				Object.class, getSemanticsAnalyzer(), this);
 
 		if (valueExpression.getExpression() instanceof Constant) {
 			returned.setSerializationRepresentation(getText(astNode.getConditionalExp()));

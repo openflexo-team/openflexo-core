@@ -1,0 +1,10 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestSequence.fml")
+@Version("0.1")
+model TestSequence { 
+
+	testBehaviour () {
+		Long variable1 = 1;
+		Long variable2 = 2;
+		Long variable3 = 3;
+	}
+}

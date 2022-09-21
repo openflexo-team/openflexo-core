@@ -40,7 +40,7 @@ package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 
 /**
  * A {@link FMLNotice} wrapping a {@link SemanticAnalysisIssue}

@@ -84,9 +84,14 @@ public class FlexoConceptBindingModel extends BindingModel {
 	protected SuperBindingVariable superBindingVariable;
 	private final Map<FlexoConcept, SuperBindingVariable> superVariablesMap;
 
-	public static final String THIS_PROPERTY = "this";
-	public static final String SUPER_PROPERTY = "super";
-	public static final String CONTAINER_PROPERTY = "container";
+	public static final String THIS_PROPERTY_NAME = "this";
+	public static final String SUPER_PROPERTY_NAME = "super";
+	public static final String CONTAINER_PROPERTY_NAME = "container";
+	public static final String RENDERER_PROPERTY_NAME = "render";
+
+	public static final FMLNativeProperty CONTAINER_PROPERTY = new FMLNativeProperty(CONTAINER_PROPERTY_NAME,
+			FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE);
+	public static final FMLNativeProperty RENDERER_PROPERTY = new FMLNativeProperty(RENDERER_PROPERTY_NAME, String.class);
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a FlexoConcept<br>
@@ -116,7 +121,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
-		thisBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
+		thisBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY_NAME, flexoConcept);
 		addToBindingVariables(thisBindingVariable);
 
 		updateSuperBindingVariables();
@@ -187,7 +192,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 	protected void updateContainerBindingVariable() {
 		if (flexoConcept.getContainerFlexoConcept() != null) {
 			if (containerBindingVariable == null) {
-				containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY,
+				containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY_NAME,
 						flexoConcept.getContainerFlexoConcept().getInstanceType());
 				addToBindingVariables(containerBindingVariable);
 			}
@@ -196,7 +201,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 		else {
 			if (flexoConcept.getOwner() != null) {
 				if (containerBindingVariable == null) {
-					containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getOwner().getInstanceType());
+					containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY_NAME, flexoConcept.getOwner().getInstanceType());
 					addToBindingVariables(containerBindingVariable);
 				}
 				containerBindingVariable.setType(flexoConcept.getOwner().getInstanceType());
@@ -282,7 +287,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 			}
 			else if (propertyVariablesMap.get(r) == null
 					&& (getBaseBindingModel() == null || getBaseBindingModel().bindingVariableNamed(r.getName()) == null)) {
-				FlexoPropertyBindingVariable bv;
+				FlexoPropertyBindingVariable bv = null;
 				if (r instanceof FlexoConceptInstanceRole) {
 					bv = new FlexoConceptInstanceRoleBindingVariable((FlexoConceptInstanceRole) r);
 				}
@@ -292,11 +297,13 @@ public class FlexoConceptBindingModel extends BindingModel {
 				else if (r instanceof FlexoRole) {
 					bv = new FlexoRoleBindingVariable((FlexoRole<?>) r);
 				}
-				else {
+				else if (r != null) {
 					bv = new FlexoPropertyBindingVariable(r);
 				}
-				addToBindingVariables(bv);
-				propertyVariablesMap.put(r, bv);
+				if (bv != null) {
+					addToBindingVariables(bv);
+					propertyVariablesMap.put(r, bv);
+				}
 			}
 		}
 

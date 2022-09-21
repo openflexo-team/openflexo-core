@@ -103,8 +103,8 @@ public class TestFMLAnnotations extends OpenflexoTestCase {
 			System.out.println("> " + compilationUnitResource.getURI());
 		}*/
 
-		CompilationUnitResource cuResource = vpLib.getCompilationUnitResource(
-				"http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestAnnotations.fml");
+		CompilationUnitResource cuResource = vpLib
+				.getCompilationUnitResource("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/TestAnnotations.fml");
 		((CompilationUnitResourceImpl) cuResource).setPersistencyStrategy(PersistencyStrategy.FML);
 
 		assertNotNull(cuResource);

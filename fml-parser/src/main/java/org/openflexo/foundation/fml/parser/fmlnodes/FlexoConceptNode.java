@@ -43,7 +43,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.md.FMLMetaData;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -55,21 +55,21 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, FlexoConcept> {
 
-	public FlexoConceptNode(AConceptDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoConceptNode(AConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoConceptNode(FlexoConcept concept, MainSemanticsAnalyzer analyser) {
-		super(concept, analyser);
+	public FlexoConceptNode(FlexoConcept concept, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(concept, analyzer);
 	}
 
 	@Override
 	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		try {
-			returned.setName(astNode.getIdentifier().getText());
+			returned.setName(astNode.getUidentifier().getText());
 		} catch (InvalidNameException e) {
-			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
+			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
 		}
 		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -93,27 +93,26 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
-		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
-				FMLMetaData.class));
+		// @formatter:off
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(staticContents("","concept",SPACE), getConceptFragment());
-		append(dynamicContents(() -> getModelObject().getName()),getNameFragment());
+		when(() -> isAbstract()).thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
+		append(staticContents("", "concept", SPACE), getConceptFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 
-		when(() -> getModelObject().getParentFlexoConcepts().size()>0)
-		.thenAppend(staticContents(SPACE,"extends",SPACE), getExtendsFragment())
-		.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()),getSuperTypeListFragment())
-		.elseAppend(staticContents(""), getSuperClauseFragment());
+		when(() -> getModelObject().getParentFlexoConcepts().size() > 0)
+				.thenAppend(staticContents(SPACE, "extends", SPACE), getExtendsFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment())
+				.elseAppend(staticContents(""), getSuperClauseFragment());
 
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
-		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent,
-				FlexoProperty.class));
+		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getEmbeddedFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class));
 		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
-	
+
 		// @formatter:on
 
 		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
@@ -132,10 +131,27 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());*/
 	}
 
+	public boolean isAbstract() {
+		if (getModelObject() != null) {
+			return getModelObject().isAbstract();
+		}
+		if (getASTNode() != null) {
+			return getASTNode().getKwAbstract() != null;
+		}
+		return false;
+	}
+
 	@Override
 	protected RawSourceFragment getVisibilityFragment() {
 		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getAbstractFragment() {
+		if (getASTNode() != null && getASTNode().getKwAbstract() != null) {
+			return getFragment(getASTNode().getKwAbstract());
 		}
 		return null;
 	}
@@ -150,7 +166,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	@Override
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getUidentifier());
 		}
 		return null;
 	}

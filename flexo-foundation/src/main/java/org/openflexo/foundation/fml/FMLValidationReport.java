@@ -39,6 +39,8 @@
 package org.openflexo.foundation.fml;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -79,6 +81,10 @@ public class FMLValidationReport extends ValidationReport {
 	public FMLValidationReport(ValidationModel validationModel, FMLCompilationUnit compilationUnit) {
 		super(validationModel, compilationUnit);
 		this.compilationUnit = compilationUnit;
+	}
+
+	public FMLCompilationUnit getCompilationUnit() {
+		return compilationUnit;
 	}
 
 	public boolean hasErrors(FMLObject object) {
@@ -126,12 +132,13 @@ public class FMLValidationReport extends ValidationReport {
 
 	private static <C extends FMLObject> void reanalyzeBinding(ValidationIssue<? extends BindingIsRequiredAndMustBeValid<C>, C> issue) {
 		DataBinding<?> db = issue.getCause().getBinding(issue.getValidable());
-		db.markedAsToBeReanalized();
+		db.revalidate();
 	}
 
 	@Override
 	public void revalidate() throws InterruptedException {
 
+		lineNumbers.clear();
 		for (ValidationIssue issue : getAllIssues()) {
 			if (issue.getCause() instanceof BindingIsRequiredAndMustBeValid) {
 				reanalyzeBinding(issue);
@@ -141,15 +148,50 @@ public class FMLValidationReport extends ValidationReport {
 		super.revalidate();
 	}
 
-	public ValidationError appendValidationError(String message) {
-		ValidationError error = new ValidationError<>(null, null, message);
-		getRootNode().addToValidationIssues(error);
+	public void appendSemanticAnalysisIssue(SemanticAnalysisIssue<?, ?> semanticsIssue) {
+		ValidationNode<?> validationNode = getValidationNode(semanticsIssue.getValidable());
+		if (validationNode != null) {
+			validationNode.addToValidationIssues((SemanticAnalysisIssue) semanticsIssue);
+		}
+		else {
+			getRootNode().addToValidationIssues((SemanticAnalysisIssue) semanticsIssue);
+		}
 		notifyChange();
-		return error;
+	}
+
+	public void appendParseError(ParseError parseError, int line) {
+		getRootNode().addToValidationIssues(parseError);
+		setLineNumber(parseError, line);
+		notifyChange();
 	}
 
 	public void removeValidationError(ValidationError error) {
+		if (error instanceof SemanticAnalysisIssue) {
+			ValidationNode<?> validationNode = getValidationNode(((SemanticAnalysisIssue) error).getValidable());
+			if (validationNode != null) {
+				validationNode.removeFromValidationIssues(error);
+				notifyChange();
+				return;
+			}
+		}
 		getRootNode().removeFromValidationIssues(error);
 		notifyChange();
+	}
+
+	private Map<ValidationIssue<?, ?>, Integer> lineNumbers = new HashMap<>();
+
+	public int getLineNumber(ValidationIssue<?, ?> issue) {
+		if (issue instanceof SemanticAnalysisIssue) {
+			return ((SemanticAnalysisIssue) issue).getLine();
+		}
+		Integer returned = lineNumbers.get(issue);
+		if (returned != null) {
+			return returned;
+		}
+		return -1;
+	}
+
+	public void setLineNumber(ValidationIssue<?, ?> issue, Integer line) {
+		lineNumbers.put(issue, line);
 	}
 }

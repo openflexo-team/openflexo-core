@@ -41,22 +41,24 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParametersValuesType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
-public class FlexoBehaviourParametersValuesPathElement extends SimplePathElement {
+@Deprecated
+public class FlexoBehaviourParametersValuesPathElement extends SimplePathElementImpl {
 	static final Logger logger = Logger.getLogger(FlexoBehaviourParametersValuesPathElement.class.getPackage().getName());
 
 	private FlexoBehaviour flexoBehaviour;
 
-	public FlexoBehaviourParametersValuesPathElement(IBindingPathElement parent, FlexoBehaviour aFlexoBehaviour) {
-		super(parent, "parameters", FlexoBehaviourParametersValuesType.getFlexoBehaviourParametersValuesType(aFlexoBehaviour));
+	public FlexoBehaviourParametersValuesPathElement(IBindingPathElement parent, FlexoBehaviour aFlexoBehaviour, Bindable bindable) {
+		super(parent, "parameters", FlexoBehaviourParametersValuesType.getFlexoBehaviourParametersValuesType(aFlexoBehaviour), bindable);
 		this.flexoBehaviour = aFlexoBehaviour;
 	}
 
@@ -92,6 +94,16 @@ public class FlexoBehaviourParametersValuesPathElement extends SimplePathElement
 	@Override
 	public boolean isNotificationSafe() {
 		return false;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

@@ -52,9 +52,9 @@ import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.FMLValidationReport;
-import org.openflexo.foundation.fml.parser.FMLParser;
+import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -70,16 +70,16 @@ public class FMLEditorParser extends AbstractParser {
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
 	private final FMLEditor editor;
-	private final FMLParser fmlParser;
+	private final FMLCompilationUnitParser fmlParser;
 	private FMLParseResult result;
 
 	public FMLEditorParser(FMLEditor editor) {
 		this.editor = editor;
-		fmlParser = new FMLParser();
+		fmlParser = new FMLCompilationUnitParser();
 		result = new FMLParseResult(this);
 	}
 
-	public FMLParser getFMLParser() {
+	public FMLCompilationUnitParser getFMLParser() {
 		return fmlParser;
 	}
 
@@ -109,6 +109,7 @@ public class FMLEditorParser extends AbstractParser {
 			return result;
 		}*/
 
+		// We keep this log unless debug of 2.1.x is performed, because a parsing is really impacting and should be tracked
 		System.out.println("---------> Parsing FML document......");
 
 		result.clearNotices();
@@ -120,11 +121,16 @@ public class FMLEditorParser extends AbstractParser {
 			// Prevent editor from concurrent modification
 			editor.modelWillChange();
 
+			// System.out.println("Bon ok on reparse [");
+			// System.out.println(editor.getTextArea().getText());
+			// System.out.println("]");
+
 			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(), (modelSlotClasses) -> {
 				// System.out.println("Parsing: " + editor.getTextArea().getText());
 				// System.out.println("Uses model slot classes : " + modelSlotClasses);
 				return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
-			});
+			}, true); // Finalize deserialization now
+
 			// System.out.println("Parsing succeeded");
 
 			for (ElementImportDeclaration elementImportDeclaration : returned.getElementImports()) {

@@ -39,10 +39,14 @@
 package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -53,6 +57,10 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.binding.AbstractCreationSchemePathElement;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -246,8 +254,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		classes.add(FMLCompilationUnit.class);
 		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
 		retrieveTechnologySpecificClassesForModelSlot(FMLRTVirtualModelInstanceModelSlot.class, classes);
-		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
-			retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
+		if (usedModelSlots != null) {
+			for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
+				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
+			}
 		}
 
 		return classes;
@@ -611,9 +621,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <T> AssignationAction<T> newAssignationAction(DataBinding<T> expression) {
+	public <T> AssignationAction<T> newAssignationAction(String expressionAsString) {
 		AssignationAction<T> returned = newAssignationAction();
-		returned.setAssignableAction(newExpressionAction(expression));
+		returned.setAssignableAction(newExpressionAction(expressionAsString));
 		return returned;
 	}
 
@@ -628,10 +638,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <T> DeclarationAction<T> newDeclarationAction(String variableName, DataBinding<T> expression) {
+	public <T> DeclarationAction<T> newDeclarationAction(String variableName, String expressionAsString) {
 		DeclarationAction<T> returned = newDeclarationAction();
 		returned.setVariableName(variableName);
-		returned.setAssignableAction(newExpressionAction(expression));
+		returned.setAssignableAction(newExpressionAction(expressionAsString));
 		return returned;
 	}
 
@@ -663,6 +673,13 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public <T> ExpressionAction<T> newExpressionAction() {
 		return newInstance(ExpressionAction.class);
+	}
+
+	public <T> ExpressionAction<T> newExpressionAction(String expressionAsString) {
+		ExpressionAction<T> returned = newExpressionAction();
+		DataBinding<T> expression = new DataBinding<>(expressionAsString, null);
+		returned.setExpression(expression);
+		return returned;
 	}
 
 	public <T> ExpressionAction<T> newExpressionAction(DataBinding<T> expression) {
@@ -697,6 +714,76 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public SelectFlexoConceptInstance newSelectFlexoConceptInstanceAction() {
 		return newInstance(SelectFlexoConceptInstance.class);
+	}
+
+	public <P extends FlexoProperty<?>> FlexoPropertyPathElement<P> newFlexoPropertyPathElement(IBindingPathElement parent, P property,
+			Bindable bindable) {
+		FlexoPropertyPathElement<P> returned = newInstance(FlexoPropertyPathElement.class);
+		returned.setParent(parent);
+		returned.setProperty(property);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public <P extends FlexoProperty<?>> FlexoPropertyPathElement<P> newFlexoPropertyPathElement(IBindingPathElement parent,
+			String propertyName, Bindable bindable) {
+		FlexoPropertyPathElement<P> returned = newInstance(FlexoPropertyPathElement.class);
+		returned.setParent(parent);
+		returned.setPropertyName(propertyName);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot,
+			Bindable bindable) {
+		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
+		returned.setParent(parent);
+		returned.setProperty(modelSlot);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName,
+			Bindable bindable) {
+		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
+		returned.setParent(parent);
+		returned.setPropertyName(modelSlotName);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public <CSPE extends AbstractCreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(
+			Class<CSPE> abstractCreationSchemeClass, FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName,
+			List<DataBinding<?>> args, Bindable bindable) {
+		CSPE returned = (CSPE) newInstance(abstractCreationSchemeClass);
+		returned.setType(type);
+		returned.setParent(parent);
+		returned.setMethodName(constructorName);
+		returned.setArguments(args);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
+			String constructorName, List<DataBinding<?>> args, Bindable bindable) {
+		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
+		returned.setType(type);
+		returned.setParent(parent);
+		returned.setMethodName(constructorName);
+		returned.setArguments(args);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
+			CreationScheme creationScheme, List<DataBinding<?>> args, Bindable bindable) {
+		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
+		returned.setType(type);
+		returned.setParent(parent);
+		returned.setFunction(creationScheme);
+		returned.setArguments(args);
+		returned.setBindable(bindable);
+		return returned;
 	}
 
 	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue() {
@@ -734,13 +821,20 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject() {
-		return newInstance(WrappedFMLObject.class);
-	}
-
-	public <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject(O object) {
+	private <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject(O object) {
 		WrappedFMLObject<O> returned = newInstance(WrappedFMLObject.class);
 		returned.setObject(object);
+		return returned;
+	}
+
+	private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
+
+	public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object) {
+		WrappedFMLObject<O> returned = (WrappedFMLObject<O>) wrappedObjects.get(object);
+		if (returned == null) {
+			returned = newWrappedFMLObject(object);
+			wrappedObjects.put(object, returned);
+		}
 		return returned;
 	}
 

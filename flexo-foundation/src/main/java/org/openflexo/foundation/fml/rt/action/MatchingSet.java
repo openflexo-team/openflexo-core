@@ -152,6 +152,8 @@ public class MatchingSet {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
 		}
 
 		unmatchedInstances = new ArrayList<>(allInstances);
@@ -207,6 +209,8 @@ public class MatchingSet {
 		} catch (NullReferenceException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
 

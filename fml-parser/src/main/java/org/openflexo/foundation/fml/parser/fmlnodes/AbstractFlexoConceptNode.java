@@ -38,19 +38,21 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AManySuperTypeList;
 import org.openflexo.foundation.fml.parser.node.AOneSuperTypeList;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PCompositeTident;
 import org.openflexo.foundation.fml.parser.node.PSuperClause;
 import org.openflexo.foundation.fml.parser.node.PSuperTypeList;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -60,14 +62,15 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * 
  * @author sylvain
  */
-public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoConcept> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
+public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoConcept>
+		extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public AbstractFlexoConceptNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractFlexoConceptNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractFlexoConceptNode(T concept, MainSemanticsAnalyzer analyser) {
-		super(concept, analyser);
+	public AbstractFlexoConceptNode(T concept, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(concept, analyzer);
 	}
 
 	protected void buildParentConcepts(FlexoConcept returned, PSuperClause superClause) {
@@ -82,9 +85,14 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
 		if (parentTypes != null) {
+			System.out.println("Hop pour " + parentTypes + " in " + getASTNode());
 			for (FlexoConceptInstanceType parentType : parentTypes) {
+				System.out.println(" > " + parentType);
+				System.out.println(" > " + parentType.getFlexoConcept());
 				if (parentType != null && parentType.getFlexoConcept() != null) {
 					try {
+						System.out.println(" >> " + getModelObject());
+						// System.exit(-1);
 						getModelObject().addToParentFlexoConcepts(parentType.getFlexoConcept());
 					} catch (InconsistentFlexoConceptHierarchyException e) {
 						throwIssue("Inconsistent concept hierarchy", getSuperTypeListFragment());
@@ -99,25 +107,26 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
-		for (PCompositeIdent pCompositeIdent : extractIdentifiers(superTypeList)) {
-			FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeIdent),
-					getFragment(pCompositeIdent));
-			if (parentType != null) {
-				parentTypes.add(parentType);
+		for (PCompositeTident pCompositeTident : extractIdentifiers(superTypeList)) {
+			Type parentType = TypeFactory.makeType(pCompositeTident, getSemanticsAnalyzer().getTypingSpace());
+			// FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeTident),
+			// getFragment(pCompositeTident));
+			if (parentType instanceof FlexoConceptInstanceType) {
+				parentTypes.add((FlexoConceptInstanceType) parentType);
 			}
 			else {
-				throwIssue("Undefined parent concept " + getText(pCompositeIdent), getSuperTypeListFragment());
+				throwIssue("Unexpected parent concept " + getText(pCompositeTident), getSuperTypeListFragment());
 			}
 		}
 	}
 
-	private List<PCompositeIdent> extractIdentifiers(PSuperTypeList superTypeList) {
-		List<PCompositeIdent> returned = new ArrayList<>();
+	private List<PCompositeTident> extractIdentifiers(PSuperTypeList superTypeList) {
+		List<PCompositeTident> returned = new ArrayList<>();
 		appendIdentifiers(superTypeList, returned);
 		return returned;
 	}
 
-	private void appendIdentifiers(PSuperTypeList superTypeList, List<PCompositeIdent> l) {
+	private void appendIdentifiers(PSuperTypeList superTypeList, List<PCompositeTident> l) {
 		if (superTypeList instanceof AOneSuperTypeList) {
 			l.add(((AOneSuperTypeList) superTypeList).getIdentifier());
 		}

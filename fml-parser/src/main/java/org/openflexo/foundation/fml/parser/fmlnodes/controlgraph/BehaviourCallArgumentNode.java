@@ -40,36 +40,34 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.PExpression;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
 
 /**
  * @author sylvain
  * 
  */
-public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, BehaviourCallArgument, MainSemanticsAnalyzer> {
+public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, BehaviourCallArgument, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BehaviourCallArgumentNode.class.getPackage().getName());
 
-	public BehaviourCallArgumentNode(PExpression astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BehaviourCallArgumentNode(PExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public BehaviourCallArgumentNode(BehaviourCallArgument modelObject, MainSemanticsAnalyzer analyser) {
-		super(modelObject, analyser);
+	public BehaviourCallArgumentNode(BehaviourCallArgument modelObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(modelObject, analyzer);
 	}
 
 	@Override
 	public BehaviourCallArgumentNode deserialize() {
-		if (getParent() instanceof AddFlexoConceptInstanceNode) {
+		/*if (getParent() instanceof AddFlexoConceptInstanceNode) {
 			AddFlexoConceptInstance<?> action = ((AddFlexoConceptInstanceNode) getParent()).getModelObject();
 			int currentIndex = action.getParameters().size();
 			if (action.getCreationScheme() != null) {
@@ -88,7 +86,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 			}
 			((AddVirtualModelInstanceNode) getParent()).getModelObject()
 					.addToParameters((AddFlexoConceptInstanceParameter) getModelObject());
-		}
+		}*/
 		return this;
 	}
 
@@ -98,7 +96,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 		BehaviourCallArgument returned = getFactory().newAddFlexoConceptInstanceParameter(null);
 
 		// TODO: faire plutot ca
-		/*ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode, getAnalyser());
+		/*ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode, getanalyzer());
 		
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof ExpressionAction) {
@@ -112,7 +110,9 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 			}
 		}*/
 
-		returned.setValue(ExpressionFactory.makeExpression(astNode, getAnalyser(), returned));
+		DataBinding<?> value = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(),
+				this);
+		returned.setValue(value);
 
 		return returned;
 	}

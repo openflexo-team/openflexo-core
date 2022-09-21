@@ -43,9 +43,11 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerExpressionVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerFmlActionVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -59,12 +61,12 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	private static final Logger logger = Logger.getLogger(DeclarationActionNode.class.getPackage().getName());
 
-	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public DeclarationActionNode(DeclarationAction<?> action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public DeclarationActionNode(DeclarationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -74,12 +76,12 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		// System.out.println(">>>>>> Declaration " + astNode);
 
 		returned.setVariableName(getName(astNode.getVariableDeclarator()).getText());
-		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 
-		if (astNode.getVariableDeclarator() instanceof AInitializerVariableDeclarator) {
+		if (astNode.getVariableDeclarator() instanceof AInitializerExpressionVariableDeclarator) {
 
 			ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(
-					((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getExpression(), getAnalyser());
+					((AInitializerExpressionVariableDeclarator) astNode.getVariableDeclarator()).getExpression(), getSemanticsAnalyzer());
 
 			if (assignableActionNode != null) {
 				if (assignableActionNode.getModelObject() instanceof AssignableAction) {
@@ -94,6 +96,27 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 		}
 
+		if (astNode.getVariableDeclarator() instanceof AInitializerFmlActionVariableDeclarator) {
+
+			ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(
+					((AInitializerFmlActionVariableDeclarator) astNode.getVariableDeclarator()).getFmlActionExp(), getSemanticsAnalyzer());
+
+			if (assignableActionNode != null) {
+				System.out.println("On obtient " + assignableActionNode);
+				// System.exit(-1);
+				if (assignableActionNode.getModelObject() instanceof AssignableAction) {
+					returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
+					addToChildren(assignableActionNode);
+				}
+				else {
+					System.err.println("Unexpected " + assignableActionNode.getModelObject());
+					Thread.dumpStack();
+				}
+			}
+
+			logger.warning("DeclarationAction with EditionAction not implemented yet");
+		}
+
 		return returned;
 	}
 
@@ -102,14 +125,13 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getVariableName()), getNameFragment());
-		when(() -> hasInitializer())
-			.thenAppend(staticContents(SPACE,"=",SPACE), getAssignOperatorFragment())
-			.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
+		when(() -> hasInitializer()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignOperatorFragment())
+		.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
 		append(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 
 	}
 
@@ -124,10 +146,13 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier());
 			}
-			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier());
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier());
 			}
 		}
 		return null;
@@ -142,23 +167,31 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
 				return false;
 			}
-			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return true;
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private RawSourceFragment getAssignmentFragment() {
-		if (hasInitializer()) {
-			return getFragment(((AInitializerVariableDeclarator) getASTNode().getVariableDeclarator()).getExpression());
-		}
-		return null;
-	}
+	/*	private RawSourceFragment getAssignmentFragment() {
+			if (hasInitializer()) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getExpression());
+			}
+			return null;
+		}*/
 
 	private RawSourceFragment getAssignOperatorFragment() {
 		if (hasInitializer() && getASTNode() != null) {
-			return getFragment(((AInitializerVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
+			if (getASTNode().getVariableDeclarator() instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
+			}
+			if (getASTNode().getVariableDeclarator() instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
+			}
 		}
 		return null;
 	}

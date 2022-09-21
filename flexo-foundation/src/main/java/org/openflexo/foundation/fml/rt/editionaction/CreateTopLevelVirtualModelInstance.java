@@ -39,17 +39,16 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -57,6 +56,7 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -81,6 +81,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(CreateTopLevelVirtualModelInstance.CreateTopLevelVirtualModelInstanceImpl.class)
 @XMLElement
+@FML("CreateTopLevelVirtualModelInstance")
 public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirtualModelInstance {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -123,7 +124,7 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirt
 			if (dataBinding != null && dataBinding.isSet() && dataBinding.isValid()) {
 				try {
 					return dataBinding.getBindingValue(evaluationContext);
-				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e) {
+				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
 					logger.log(Level.WARNING,
 							"Can't evaluate data binding " + dataBinding.getBindingName() + " (" + dataBinding.getExpression() + ")");
 				}
@@ -239,7 +240,8 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirt
 		}
 
 		@Override
-		protected FMLRTVirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		protected FMLRTVirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
 
 			FMLRTTechnologyAdapter technologyAdapter = getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
@@ -256,7 +258,7 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirt
 
 				FMLRTVirtualModelInstanceResource returned = null;
 				returned = factory.makeTopLevelFMLRTVirtualModelInstanceResource(resourceName, resourceURI,
-						(CompilationUnitResource) instantiatedVirtualModel.getResource(), folder, true);
+						instantiatedVirtualModel.getResource(), folder, true);
 				if (returned != null) {
 					returned.getLoadedResourceData().setTitle(resourceTitle);
 				}
@@ -264,19 +266,17 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirt
 				return returned.getLoadedResourceData();
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new FMLExecutionException(e);
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new FMLExecutionException(e);
+			} catch (SaveResourceException e) {
+				throw new FMLExecutionException(e);
 			}
-
-			return null;
 
 		}
 
 		@Override
-		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			loadMetaModelWhenRequired();
 

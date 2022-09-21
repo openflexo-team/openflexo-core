@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AFmlBehaviourDecl;
@@ -74,12 +74,12 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLBehaviourNode.class.getPackage().getName());
 
-	public FMLBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FMLBehaviourNode(B behaviour, MainSemanticsAnalyzer analyser) {
-		super(behaviour, analyser);
+	public FMLBehaviourNode(B behaviour, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(behaviour, analyzer);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 					((AFmlFullyQualifiedBehaviourDecl) astNode).getBehaviour());
 		}
 
-		System.out.println("behaviourClass=" + behaviourClass);
+		// System.out.println("behaviourClass=" + behaviourClass);
 
 		B returned = getFactory().newInstance(behaviourClass);
 		if (astNode instanceof AFmlBehaviourDecl) {
@@ -116,7 +116,8 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
+					getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);
@@ -161,7 +162,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 				FMLPropertyValue.class))
 		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 
-		when(() -> isAbstract())
+		when(() -> hasNoImplementation())
 			.thenAppend(staticContents(";"), getSemiFragment())
 			.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
 			.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))

@@ -25,13 +25,13 @@
 			mandatory="true" />
 	</Custom>
 	<Label id="23" label="cardinality" align="left" localize="true"
-		visible="(((((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)) | (data.propertyType = &quot;PRIMITIVE&quot;)) | (data.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+		visible="(((((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)) || (data.propertyType == &quot;PRIMITIVE&quot;)) || (data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label9" />
 	<DropDown id="24" autoSelectFirstRow="true"
 		iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
 		showText="true" showIcon="false" data="data.cardinality"
-		visible="(((((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)) | (data.propertyType = &quot;PRIMITIVE&quot;)) | (data.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+		visible="(((((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)) || (data.propertyType == &quot;PRIMITIVE&quot;)) || (data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 		name="dropdown" />
 	<Label id="25" label="kind_of_property" align="left" localize="true"
@@ -44,7 +44,7 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 		name="dropdown" />
 	<Label id="27" label="technology" align="left" localize="true"
-		visible="(((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)))"
+		visible="(((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)))"
 		index="3"
 		constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		name="TechnologyAdapterLabel" />
@@ -55,12 +55,12 @@
 		showIcon="true" localize="true" manageDynamicModel="true"
 		icon="controller.getTechnologyAdapterController(object).technologyIcon"
 		format="object.name" data="data.technologyAdapter"
-		visible="(((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)))"
+		visible="(((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)))"
 		index="4"
 		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		name="TechnologyAdapterDD" />
+		name="technologyAdapterDD" />
 	<Label id="29" label="model_slot_type" align="left" localize="true"
-		visible="(((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)))"
+		visible="(((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label6" />
 	<DropDown id="30" autoSelectFirstRow="true"
@@ -68,18 +68,18 @@
 		showText="true" list="data.availableModelSlotTypes" showIcon="true"
 		icon="controller.getTechnologyAdapterController(data.technologyAdapter).getIconForModelSlot(object)"
 		format="object.simpleName" data="data.modelSlotClass"
-		visible="(((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)))"
+		visible="(((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 		name="dropdown" />
 	<Label id="31" label="virtual_model" align="left" localize="true"
-		visible="(((data.propertyType = &quot;MODEL_SLOT&quot;)) &amp; data.isVirtualModelModelSlot)"
+		visible="(((data.propertyType == &quot;MODEL_SLOT&quot;)) &amp;&amp;data.isVirtualModelModelSlot)"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label10" />
 	<Custom id="32"
 		componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
 		dataClassForComponent="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 		localize="true" manageDynamicModel="true" data="data.virtualModelResource"
-		visible="(((data.propertyType = &quot;MODEL_SLOT&quot;)) &amp; data.isVirtualModelModelSlot)"
+		visible="(((data.propertyType == &quot;MODEL_SLOT&quot;)) &amp;&amp;data.isVirtualModelModelSlot)"
 		index="9"
 		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 		name="VirtualModelSelector">
@@ -95,13 +95,13 @@
 			mandatory="true" />
 	</Custom>
 	<Label label="flexo_concept" align="left" localize="true"
-		visible="(((data.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+		visible="(((data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="FlexoConceptLabel" />
 	<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 		dataClassForComponent="org.openflexo.foundation.fml.FlexoConcept"
 		localize="true" manageDynamicModel="true" data="data.flexoConcept"
-		visible="(((data.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+		visible="(((data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
 		index="9"
 		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 		name="FlexoConceptSelector">
@@ -109,14 +109,14 @@
 			value="controller.serviceManager.virtualModelLibrary" mandatory="true" />
 	</Custom>
 	<Label id="39" label="meta_model" align="left" localize="true"
-		visible="(((data.propertyType = &quot;MODEL_SLOT&quot;)) &amp; data.isTypeAwareModelSlot)"
+		visible="(((data.propertyType == &quot;MODEL_SLOT&quot;)) &amp;&amp;data.isTypeAwareModelSlot)"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label12" />
 	<Custom id="40"
 		componentClassName="org.openflexo.components.widget.FIBMetaModelSelector"
 		dataClassForComponent="org.openflexo.foundation.technologyadapter.FlexoMetaModelResource"
 		localize="true" manageDynamicModel="true" data="data.metaModelResource"
-		visible="(((data.propertyType = &quot;MODEL_SLOT&quot;)) &amp; data.isTypeAwareModelSlot)"
+		visible="(((data.propertyType == &quot;MODEL_SLOT&quot;)) &amp;&amp;data.isTypeAwareModelSlot)"
 		index="9"
 		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		name="MetaModelSelector">
@@ -129,10 +129,10 @@
 		<Assignment id="44" variable="component.resourceManager"
 			value="controller.serviceManager.resourceManager" mandatory="true" />
 		<Assignment id="45" variable="component.technologyAdapter"
-			value="TechnologyAdapterDD.selected" mandatory="true" />
+			value="technologyAdapterDD.selected" mandatory="true" />
 	</Custom>
 	<Label id="46" label="role_type" align="left" localize="true"
-		visible="((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;))"
+		visible="((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label14" />
 	<DropDown id="47" autoSelectFirstRow="true"
@@ -140,17 +140,17 @@
 		showText="true" list="data.availableFlexoRoleTypes" showIcon="true"
 		icon="controller.getTechnologyAdapterController(data.technologyAdapter).getIconForFlexoRole(object)"
 		format="object.simpleName" data="data.flexoRoleClass"
-		visible="((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;))"
+		visible="((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 		name="dropdown" />
 	<Label id="48" label="container" align="left" localize="true"
-		visible="((((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)) | (data.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+		visible="((((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)) || (data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label4" />
-	<Custom id="49" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+	<Custom id="49" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		dataClassForComponent="org.openflexo.connie.DataBinding"
 		manageDynamicModel="true" data="data.container"
-		visible="((((data.propertyType = &quot;TECHNOLOGY_ROLE&quot;) | (data.propertyType = &quot;MODEL_SLOT&quot;)) | (data.propertyType = &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
+		visible="((((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)) || (data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 		name="CustomSelector">
 		<Assignment id="50" variable="component.bindable"
@@ -159,7 +159,7 @@
 	<Label id="51" label="default_value" align="left" localize="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label5" />
-	<Custom id="52" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+	<Custom id="52" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		dataClassForComponent="org.openflexo.connie.DataBinding"
 		manageDynamicModel="true" data="data.defaultValue"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"

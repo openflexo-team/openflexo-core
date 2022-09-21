@@ -15,7 +15,7 @@
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				format="" icon="" tooltip="" localize="true" enable=""
 				manageDynamicModel="true" clickAction="" doubleClickAction=""
 				rightClickAction="" enterPressedAction="" valueChangedAction=""

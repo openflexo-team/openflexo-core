@@ -53,8 +53,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
@@ -92,11 +90,14 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 /**
  * Widget allowing to edit a {@link FMLCompilationUnit} using FML textual syntax
  * 
+ * This widget is build with a {@link FMLRSyntaxTextArea} presenting source code, and is augmented with a browser, a validation panel, and
+ * search features
+ * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FMLEditor extends JPanel implements PropertyChangeListener, DocumentListener {
+public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
@@ -171,8 +172,6 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
 
-		textArea.getDocument().addDocumentListener(this);
-
 		try {
 			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/dark.xml"));
 			Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/default.xml"));
@@ -223,8 +222,8 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		ErrorStrip errorStrip = new ErrorStrip(textArea);
 		editorPanel.add(errorStrip, BorderLayout.LINE_END);
 
-		parser = new FMLEditorParser(this);// new XmlParser();
-		textArea.addParser(parser);
+		parser = new FMLEditorParser(this);
+		textArea.setParser(parser);
 
 		splitPanel.add(editorPanel, LayoutPosition.CENTER.name());
 
@@ -276,7 +275,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		return fmlResource.getFactory();
 	}
 
-	public RSyntaxTextArea getTextArea() {
+	public FMLRSyntaxTextArea getTextArea() {
 		return textArea;
 	}
 
@@ -308,6 +307,8 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 			return;
 		}
 		if (evt.getPropertyName().equals("FMLPrettyPrint")) {
+
+			// FML MAY have changed (this is not sure)
 			// System.out.println("Received " + evt);
 			if (SwingUtilities.isEventDispatchThread()) {
 				updateFMLAsText();
@@ -327,8 +328,28 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		parser.parse((RSyntaxDocument) textArea.getDocument(), textArea.getSyntaxEditingStyle());
 	}
 
+	private String lastFML;
+
+	/**
+	 * Called (always in EDT) when FML pretty print of represented {@link FMLCompilationUnit} may have changed
+	 * 
+	 * We first check that FML really change, and update text accordingly, preventing the parser to be called again
+	 */
 	private void updateFMLAsText() {
-		getTextArea().setText(fmlResource.getCompilationUnit().getFMLPrettyPrint());
+
+		String newFML = fmlResource.getCompilationUnit().getFMLPrettyPrint();
+
+		if (lastFML == null || !lastFML.equals(newFML)) {
+
+			// This is a real change
+			// System.out.println(">>>>>>>>>>> Really update FML !!!! ");
+			// System.out.println(newFML);
+			// Thread.dumpStack();
+
+			lastFML = newFML;
+			getTextArea().setTextNoParsingAnalysis(newFML);
+		}
+
 	}
 
 	private boolean modelWillChange = false;
@@ -339,7 +360,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 
 	protected void modelHasChanged(boolean requiresNewPrettyPrint) {
 		modelWillChange = false;
-		validationPanel.setDataObject(getValidationReport());
+		if (validationPanel != null) {
+			validationPanel.setDataObject(getValidationReport());
+		}
 		if (requiresNewPrettyPrint) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -348,27 +371,6 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 				}
 			});
 		}
-	}
-
-	private boolean documentModified = false;
-
-	public boolean isDocumentModified() {
-		return documentModified;
-	}
-
-	@Override
-	public void insertUpdate(DocumentEvent e) {
-		documentModified = true;
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent e) {
-		documentModified = true;
-	}
-
-	@Override
-	public void changedUpdate(DocumentEvent e) {
-		documentModified = true;
 	}
 
 	private static final int KNOB_SIZE = 5;

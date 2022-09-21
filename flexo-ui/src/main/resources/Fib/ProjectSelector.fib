@@ -13,7 +13,7 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		borderTitle="Panel" trackViewPortHeight="true">
 		<Label id="3"
-			visible="((data.matchingValues.size != 1) &amp; data.isFiltered)"
+			visible="((data.matchingValues.size != 1) &amp;&amp;data.isFiltered)"
 			manageDynamicModel="false" useScrollBar="false"
 			data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
 			name="MatchesLabel" controllerClassName="org.openflexo.gina.controller.FIBController"
@@ -47,7 +47,7 @@
 			icon="controller.flexoController.iconForObject(projectReference)"
 			filtered="false" label="projectReference.referencedProject.projectName" defaultVisible="true"
 			dataClassName="org.openflexo.foundation.project.FlexoProjectReference"
-			name="projectReference" isEditable="false" tooltip="projectReference.URI">
+			name="projectReference" isEditable="false" tooltip="projectReference.uRI">
 			<Children id="10" name="children"
 				data="projectReference.referencedProject.importedProjects" />
 		</BrowserElement>

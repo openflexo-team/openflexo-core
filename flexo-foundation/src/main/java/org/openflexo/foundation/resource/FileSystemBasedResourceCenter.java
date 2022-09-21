@@ -62,8 +62,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -81,6 +81,8 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
@@ -227,6 +229,13 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		@Override
 		public File getRootDirectory() {
 			return getBaseArtefact();
+		}
+
+		private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
+
+		@Override
+		public Resource getBaseArtefactAsResource() {
+			return FS_RESOURCE_LOCATOR.retrieveResource(getBaseArtefact());
 		}
 
 		/**
@@ -1107,10 +1116,11 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		 */
 		@Override
 		public List<String> getPathTo(File aFile) throws IOException {
-			if (FileUtils.directoryContainsFile(getRootFolder().getSerializationArtefact(), aFile, true)) {
+			File rootFolder = getRootFolder().getSerializationArtefact().getCanonicalFile();
+			if (FileUtils.directoryContainsFile(rootFolder, aFile, true)) {
 				List<String> pathTo = new ArrayList<>();
 				File f = aFile.getParentFile().getCanonicalFile();
-				while (f != null && !f.equals(getRootFolder().getSerializationArtefact().getCanonicalFile())) {
+				while (f != null && !f.equals(rootFolder)) {
 					pathTo.add(0, f.getName());
 					f = f.getParentFile();
 				}
@@ -1168,6 +1178,12 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 				e.printStackTrace();
 				return null;
 			}
+		}
+
+		@Override
+		public String getDisplayableStatus() {
+			return "[uri=\"" + getDefaultBaseURI() + "\" dir=\"" + getRootDirectory().getAbsolutePath() + "\"] with "
+					+ getAllResources().size() + " resources";
 		}
 
 	}

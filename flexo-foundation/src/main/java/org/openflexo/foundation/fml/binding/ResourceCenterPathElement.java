@@ -41,11 +41,13 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -56,12 +58,13 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  * @author sylvain
  *
  */
-public class ResourceCenterPathElement extends SimplePathElement {
+public class ResourceCenterPathElement extends SimplePathElementImpl<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(ResourceCenterPathElement.class.getPackage().getName());
 
-	public ResourceCenterPathElement(IBindingPathElement parent) {
-		super(parent, FMLBindingFactory.RESOURCE_CENTER, FlexoResourceCenter.class);
+	public ResourceCenterPathElement(IBindingPathElement parent, Bindable bindable) {
+		super(parent, FMLBindingFactory.RESOURCE_CENTER_PROPERTY_NAME, FlexoResourceCenter.class, bindable);
+		setProperty(FMLBindingFactory.RESOURCE_CENTER_PROPERTY);
 	}
 
 	@Override
@@ -91,6 +94,16 @@ public class ResourceCenterPathElement extends SimplePathElement {
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

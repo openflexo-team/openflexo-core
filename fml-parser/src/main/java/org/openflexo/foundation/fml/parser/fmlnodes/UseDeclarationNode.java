@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+∑ * Copyright (c) 2019, Openflexo
  * 
  * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -49,14 +49,14 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDeclaration, MainSemanticsAnalyzer> {
+public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public UseDeclarationNode(AUseDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public UseDeclarationNode(AUseDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public UseDeclarationNode(UseModelSlotDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public UseDeclarationNode(UseModelSlotDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 			e.printStackTrace();
 		}
 		UseModelSlotDeclaration returned = getFactory().newUseModelSlotDeclaration(modelSlotClass);
-		returned.setAbbrev(astNode.getTaId().getText());
+		returned.setAbbrev(getText(astNode.getTaId()));
 		return returned;
 	}
 

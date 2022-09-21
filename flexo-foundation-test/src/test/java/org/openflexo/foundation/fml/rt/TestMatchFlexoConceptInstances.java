@@ -112,11 +112,11 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml");
 		assertNotNull(viewPoint);
-		assertNotNull(vm = viewPoint.getVirtualModelNamed("VM"));
+		assertNotNull(vm = viewPoint.getVirtualModelNamed("MyVM"));
 		assertNotNull(concept = vm.getFlexoConcept("Concept"));
 		assertNotNull(matchingVM = viewPoint.getVirtualModelNamed("MatchingVM"));
 		assertNotNull(matchedConcept = matchingVM.getFlexoConcept("MatchedConcept"));
-		assertNotNull(vm2 = viewPoint.getVirtualModelNamed("VM2"));
+		assertNotNull(vm2 = viewPoint.getVirtualModelNamed("MyVM2"));
 		assertNotNull(conceptA = vm2.getFlexoConcept("ConceptA"));
 		assertNotNull(conceptB = vm2.getFlexoConcept("ConceptB"));
 		assertNotNull(matchingVM2 = viewPoint.getVirtualModelNamed("MatchingVM2"));
@@ -181,6 +181,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(5)
 	public void testPopulateModel() {
+
 		assertNotNull(c1 = createInstance(concept, model, "c1"));
 		assertNotNull(c2 = createInstance(concept, model, "c2"));
 		assertNotNull(c3 = createInstance(concept, model, "c3"));

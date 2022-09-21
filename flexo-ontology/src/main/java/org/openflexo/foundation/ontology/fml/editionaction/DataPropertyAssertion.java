@@ -142,6 +142,8 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}

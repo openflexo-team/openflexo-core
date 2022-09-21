@@ -1,0 +1,62 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelD.fml")
+@Version("0.1")
+model TestVirtualModelD {
+
+  int a;
+  Foo[0,*] allA;
+  Foo aFoo;
+  TestVirtualModelD vmD;
+
+  List<Foo> sequencingList  {
+    List<Foo> get() {
+	  return select Foo from this;
+    }
+  };
+  
+  concept Foo {
+  	create() {
+  	}
+  }
+
+  justReturn() {
+  	return;
+  }
+
+  int returnExpression() {
+  	return sequencingList.size;
+  }
+
+  List<Foo> returnFMLAction() {
+  	return select Foo from this;
+  }
+
+  Foo returnNewInstance() {
+  	return new Foo();
+  }
+
+  assignExpression() {
+  	a = sequencingList.size;
+  }
+  
+  localAssignExpression() {
+  	int b = sequencingList.size;
+  }
+  
+  assignFMLAction() {
+  	allA = (select Foo from this);
+  }
+
+  assignNewInstance() {
+  	aFoo = new Foo();
+  }
+  
+  localAssignNewInstance() {
+	Foo anOtherFoo = new Foo();
+  }
+  
+
+}

@@ -38,18 +38,21 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AActionClause;
 import org.openflexo.foundation.fml.parser.node.ADeleteAbstractActionClause;
 import org.openflexo.foundation.fml.parser.node.ADeleteClause;
@@ -86,8 +89,8 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	private String behaviourName;
 	private List<DataBinding<?>> behaviourArgs;
 
-	public EndMatchActionNode(AEndMatchActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public EndMatchActionNode(AEndMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -95,8 +98,8 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 	}
 
-	public EndMatchActionNode(FinalizeMatching action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public EndMatchActionNode(FinalizeMatching action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	private void handleArguments(PArgumentList argumentList, FinalizeMatching modelObject) {
@@ -111,7 +114,8 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	}
 
 	private void handleArgument(PExpression expression, FinalizeMatching modelObject) {
-		DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
+		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
+				getSemanticsAnalyzer(), this);
 
 		if (behaviourArgs == null) {
 			behaviourArgs = new ArrayList<>();
@@ -155,12 +159,23 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	public FinalizeMatching buildModelObjectFromAST(AEndMatchActionFmlActionExp astNode) {
 		FinalizeMatching returned = getFactory().newFinalizeMatching();
 
-		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(), getFragment(astNode.getConceptName()));
-		returned.setMatchedType(conceptType);
+		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
+		if (type instanceof FlexoConceptInstanceType) {
+			conceptType = (FlexoConceptInstanceType) type;
+			returned.setMatchedType((FlexoConceptInstanceType) type);
+		}
+		else {
+			throwIssue("Unexpected matched type " + getText(astNode.getConceptName()), getConceptNameFragment());
+		}
+
+		// conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(), getFragment(astNode.getConceptName()));
+		// returned.setMatchedType(conceptType);
 
 		if (astNode.getInClause() instanceof AInClause) {
 			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
-			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeExpression(inExpression, getAnalyser(), returned);
+			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeDataBinding(inExpression, returned,
+					BindingDefinitionType.GET, MatchingSet.class, getSemanticsAnalyzer(), this);
+
 			returned.setMatchingSet(matchingSet);
 		}
 		if (astNode.getAbstractActionClause() instanceof ANormalAbstractActionClause) {
@@ -188,34 +203,34 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("end"), getEndFragment());
-		append(staticContents(SPACE,"match",""), getMatchFragment());
+		append(staticContents(SPACE, "match", ""), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
-		append(staticContents(SPACE, "in",""), getInFragment());
-		append(staticContents(SPACE, "(",""), getLParInFragment());
-		append(dynamicContents(() -> getInAsString()), getInExpressionFragment());
-		append(staticContents(")"), getRParInFragment());
+		append(staticContents(SPACE, "in", ""), getInFragment());
+		//append(staticContents(SPACE, "(", ""), getLParInFragment());
+		append(dynamicContents(SPACE,() -> getInAsString()), getInExpressionFragment());
+		//append(staticContents(")"), getRParInFragment());
 
-		when(() -> isNormalAction())
-		.thenAppend(staticContents(SPACE,"action",""), getActionFragment())
-		.thenAppend(staticContents("::"), getColonColonFragment())
-		.thenAppend(dynamicContents(() -> getModelObject().getFlexoBehaviour().getName()), getBehaviourNameFragment())
-		.thenAppend(staticContents("("), getAbstractActionLParFragment())
-		.thenAppend(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getAbstractActionArgumentsFragment())
-		.thenAppend(staticContents(")"), getAbstractActionRParFragment());
+		when(() -> isNormalAction()).thenAppend(staticContents(SPACE, "action", ""), getActionFragment())
+				.thenAppend(staticContents("::"), getColonColonFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getFlexoBehaviour().getName()), getBehaviourNameFragment())
+				.thenAppend(staticContents("("), getAbstractActionLParFragment())
+				.thenAppend(dynamicContents(() -> serializeArguments(getModelObject().getParameters())),
+						getAbstractActionArgumentsFragment())
+				.thenAppend(staticContents(")"), getAbstractActionRParFragment());
 
-		when(() -> isDeleteAction())
-		.thenAppend(staticContents(SPACE,"delete",""), getDeleteFragment())
-		.thenAppend(staticContents("::"), getColonColonFragment())
-		.thenAppend(dynamicContents(() -> getModelObject().getFlexoBehaviour().getName()), getBehaviourNameFragment())
-		.thenAppend(staticContents("("), getAbstractActionLParFragment())
-		.thenAppend(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getAbstractActionArgumentsFragment())
-		.thenAppend(staticContents(")"), getAbstractActionRParFragment());
+		when(() -> isDeleteAction()).thenAppend(staticContents(SPACE, "delete", ""), getDeleteFragment())
+				.thenAppend(staticContents("::"), getColonColonFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getFlexoBehaviour().getName()), getBehaviourNameFragment())
+				.thenAppend(staticContents("("), getAbstractActionLParFragment())
+				.thenAppend(dynamicContents(() -> serializeArguments(getModelObject().getParameters())),
+						getAbstractActionArgumentsFragment())
+				.thenAppend(staticContents(")"), getAbstractActionRParFragment());
 
 		append(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 	}
 
 	private boolean isNormalAction() {
@@ -281,7 +296,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		return null;
 	}
 
-	private RawSourceFragment getLParInFragment() {
+	/*private RawSourceFragment getLParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
 			if (inClause instanceof AInClause) {
@@ -290,7 +305,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParInFragment() {
 		if (getASTNode() != null) {
 			PInClause inClause = getASTNode().getInClause();
@@ -299,7 +314,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getInExpressionFragment() {
 		if (getASTNode() != null) {

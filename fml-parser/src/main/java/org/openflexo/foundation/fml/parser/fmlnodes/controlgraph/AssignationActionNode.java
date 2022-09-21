@@ -41,10 +41,12 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
@@ -62,8 +64,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignationActionNode.class.getPackage().getName());
 
-	public AssignationActionNode(AAssignmentStatementExpression astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AssignationActionNode(AAssignmentStatementExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -71,8 +73,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 
 	}
 
-	public AssignationActionNode(AssignationAction<?> action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public AssignationActionNode(AssignationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -85,7 +87,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		returned.setAssignation((DataBinding) extractLeft(returned));
 
 		// Right
-		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getRight(), getAnalyser());
+		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getRight(), getSemanticsAnalyzer());
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof AssignableAction) {
 				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
@@ -125,11 +127,16 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	}
 
 	private DataBinding<?> extractLeft(AssignationAction<?> bindable) {
+
 		if (getLefthandSide() instanceof AFieldLeftHandSide) {
-			return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
+			// return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
+			return ExpressionFactory.makeDataBinding((AFieldLeftHandSide) getLefthandSide(), bindable, BindingDefinitionType.SET,
+					Object.class, getSemanticsAnalyzer(), this);
 		}
 		else if (getLefthandSide() instanceof AIdentifierLeftHandSide) {
-			return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
+			// return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
+			return ExpressionFactory.makeDataBinding(((AIdentifierLeftHandSide) getLefthandSide()), bindable, BindingDefinitionType.SET,
+					Object.class, getSemanticsAnalyzer(), this);
 		}
 		return null;
 	}

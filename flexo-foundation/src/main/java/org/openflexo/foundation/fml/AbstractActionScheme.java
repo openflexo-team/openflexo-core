@@ -127,6 +127,8 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return true;

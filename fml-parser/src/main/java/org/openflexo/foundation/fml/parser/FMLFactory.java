@@ -47,7 +47,8 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.parser.node.TCidentifier;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -69,11 +70,11 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 
 	private static final Logger logger = Logger.getLogger(FMLFactory.class.getPackage().getName());
 
-	public FMLFactory(MainSemanticsAnalyzer analyzer) {
+	public FMLFactory(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(analyzer);
 	}
 
-	public Class<? extends FlexoRole<?>> getRoleClass(TIdentifier roleIdentifier) {
+	public Class<? extends FlexoRole<?>> getRoleClass(TUidentifier roleIdentifier) {
 		if (roleIdentifier.getText().equals("ModelInstance")) {
 			return FMLRTVirtualModelInstanceModelSlot.class;
 		}
@@ -89,7 +90,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	public Class<? extends FlexoRole<?>> getRoleClass(TIdentifier taIdentifier, TIdentifier roleIdentifier) {
+	public Class<? extends FlexoRole<?>> getRoleClass(TCidentifier taIdentifier, TUidentifier roleIdentifier) {
 		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
 		if (modelSlotClass != null) {
 			return getRoleClass(roleIdentifier, modelSlotClass);
@@ -97,7 +98,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	private Class<? extends ModelSlot<?>> getModelSlotClass(TIdentifier taIdentifier) {
+	private Class<? extends ModelSlot<?>> getModelSlotClass(TCidentifier taIdentifier) {
 		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {
 			if (taIdentifier.getText().equals(useModelSlotDeclaration.getAbbrev())) {
 				return useModelSlotDeclaration.getModelSlotClass();
@@ -106,7 +107,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	private Class<? extends FlexoRole<?>> getRoleClass(TIdentifier roleIdentifier, Class<? extends ModelSlot<?>> modelSlotClass) {
+	private Class<? extends FlexoRole<?>> getRoleClass(TUidentifier roleIdentifier, Class<? extends ModelSlot<?>> modelSlotClass) {
 
 		return getServiceManager().getTechnologyAdapterService().getFlexoRole(modelSlotClass, roleIdentifier.getText());
 
@@ -203,7 +204,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	public Class<? extends FlexoBehaviour> getBehaviourClass(TIdentifier behaviourIdentifier) {
+	public Class<? extends FlexoBehaviour> getBehaviourClass(TUidentifier behaviourIdentifier) {
 		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {
 			Class<? extends FlexoBehaviour> behaviourClass = getBehaviourClass(behaviourIdentifier,
 					useModelSlotDeclaration.getModelSlotClass());
@@ -214,7 +215,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	public Class<? extends FlexoBehaviour> getBehaviourClass(TIdentifier taIdentifier, TIdentifier behaviourIdentifier) {
+	public Class<? extends FlexoBehaviour> getBehaviourClass(TCidentifier taIdentifier, TUidentifier behaviourIdentifier) {
 		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
 		if (modelSlotClass != null) {
 			return getBehaviourClass(behaviourIdentifier, modelSlotClass);
@@ -222,12 +223,12 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	private Class<? extends FlexoBehaviour> getBehaviourClass(TIdentifier behaviourIdentifier,
+	private Class<? extends FlexoBehaviour> getBehaviourClass(TUidentifier behaviourIdentifier,
 			Class<? extends ModelSlot<?>> modelSlotClass) {
 		return getServiceManager().getTechnologyAdapterService().getFlexoBehaviour(modelSlotClass, behaviourIdentifier.getText());
 	}
 
-	public Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TIdentifier taIdentifier, TIdentifier roleIdentifier) {
+	public Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TCidentifier taIdentifier, TUidentifier roleIdentifier) {
 		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
 		if (modelSlotClass != null) {
 			return getEditionActionClass(roleIdentifier, modelSlotClass);
@@ -235,7 +236,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	private Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TIdentifier editionActionIdentifier,
+	private Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TUidentifier editionActionIdentifier,
 			Class<? extends ModelSlot<?>> modelSlotClass) {
 		return getServiceManager().getTechnologyAdapterService().getEditionAction(modelSlotClass, editionActionIdentifier.getText());
 	}
@@ -257,7 +258,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}*/
 
-	public Class<? extends FMLObject> getFMLObjectClass(TIdentifier objectIdentifier) {
+	public Class<? extends FMLObject> getFMLObjectClass(TUidentifier objectIdentifier) {
 		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {
 			Class<? extends FMLObject> objectClass = getFMLObjectClass(objectIdentifier, useModelSlotDeclaration.getModelSlotClass());
 			if (objectClass != null) {
@@ -267,7 +268,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	public Class<? extends FMLObject> getFMLObjectClass(TIdentifier taIdentifier, TIdentifier objectIdentifier) {
+	public Class<? extends FMLObject> getFMLObjectClass(TCidentifier taIdentifier, TUidentifier objectIdentifier) {
 		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
 		if (modelSlotClass != null) {
 			return getFMLObjectClass(objectIdentifier, modelSlotClass);
@@ -275,7 +276,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	private Class<? extends FMLObject> getFMLObjectClass(TIdentifier objectIdentifier, Class<? extends ModelSlot<?>> modelSlotClass) {
+	private Class<? extends FMLObject> getFMLObjectClass(TUidentifier objectIdentifier, Class<? extends ModelSlot<?>> modelSlotClass) {
 
 		return getServiceManager().getTechnologyAdapterService().getFMLObject(modelSlotClass, objectIdentifier.getText());
 

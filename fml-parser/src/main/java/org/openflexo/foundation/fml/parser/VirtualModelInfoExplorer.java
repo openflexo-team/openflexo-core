@@ -38,20 +38,33 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.beans.PropertyChangeSupport;
+import java.util.Stack;
+import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
-import org.openflexo.connie.BindingFactory;
-import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Constant;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
+import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
+import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
+import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A visitor allowing to find some infos on a {@link VirtualModel}
@@ -59,18 +72,46 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * @author sylvain
  * 
  */
-public class VirtualModelInfoExplorer extends DepthFirstAdapter implements Bindable {
+public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements BindingEvaluationContext*/ {
 
-	private final MainSemanticsAnalyzer analyzer;
+	private static final Logger logger = Logger.getLogger(VirtualModelInfoExplorer.class.getPackage().getName());
+
+	private final FMLCompilationUnitSemanticsAnalyzer analyzer;
 
 	private VirtualModelInfo info;
 
-	public VirtualModelInfoExplorer(MainSemanticsAnalyzer analyzer) {
+	private FMLCompilationUnit compilationUnit;
+
+	public VirtualModelInfoExplorer(Start tree, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super();
 		this.analyzer = analyzer;
 		info = new VirtualModelInfo();
 
-		System.out.println(analyzer.getRawSource().debug());
+		tree.apply(this);
+
+		for (ElementImportDeclaration importDeclaration : compilationUnit.getElementImports()) {
+			try {
+				String importedResourceURI = importDeclaration.getResourceReference().getBindingValue(compilationUnit);
+				// System.out.println("Found import " + importedResourceURI);
+				if (StringUtils.isNotEmpty(importedResourceURI)) {
+					info.addToDependencies(importedResourceURI);
+				}
+				else {
+					logger.warning("Cannot not find resource identified by " + importDeclaration.getResourceReference());
+				}
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// System.out.println(analyzer.getRawSource().debug());
 	}
 
 	public VirtualModelInfo getVirtualModelInfo() {
@@ -78,86 +119,93 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter implements Binda
 	}
 
 	@Override
+	public void inAFmlCompilationUnit(AFmlCompilationUnit node) {
+
+		super.inAFmlCompilationUnit(node);
+		compilationUnit = analyzer.getModelFactory().newCompilationUnit();
+		compilationUnit.initializeDeserialization(analyzer.getModelFactory());
+	}
+
+	@Override
 	public void inAModelDecl(AModelDecl node) {
 		super.inAModelDecl(node);
-		info.name = node.getIdentifier().getText();
+		info.setName(node.getUidentifier().getText());
+	}
+
+	private Stack<String> conceptsStack = new Stack<>();
+
+	@Override
+	public void inAConceptDecl(AConceptDecl node) {
+		super.inAConceptDecl(node);
+		String conceptName = node.getUidentifier().getText();
+		if (!conceptsStack.isEmpty()) {
+			conceptName = conceptsStack.peek() + "#" + conceptName;
+		}
+		conceptsStack.push(conceptName);
+		info.addToFlexoConcepts(conceptName);
+	}
+
+	@Override
+	public void outAConceptDecl(AConceptDecl node) {
+		super.outAConceptDecl(node);
+		conceptsStack.pop();
 	}
 
 	@Override
 	public void inASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
 		super.inASingleAnnotationAnnotation(node);
 
-		String key = analyzer.getTypeFactory().makeFullQualifiedIdentifier(node.getIdentifier());
-		DataBinding<?> valueExpression = ExpressionFactory.makeExpression(node.getConditionalExp(), analyzer, this);
+		String key = analyzer.makeFullQualifiedIdentifier(node.getTag());
+		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(node.getConditionalExp(), compilationUnit,
+				BindingDefinitionType.GET, Object.class, analyzer, null);
 		if (valueExpression.getExpression() instanceof Constant) {
 			String text = analyzer.getText(node.getConditionalExp());
 			if (text.startsWith("\"") && text.endsWith("\"")) {
 				text = text.substring(1, text.length() - 1);
 			}
 			if (key.equalsIgnoreCase(VirtualModel.URI_KEY)) {
-				info.uri = text;
+				info.setURI(text);
 			}
-			if (key.equals(VirtualModel.VERSION_KEY)) {
-				info.version = text;
+			if (key.equalsIgnoreCase(VirtualModel.VERSION_KEY)) {
+				info.setVersion(text);
 			}
-			System.out.println("Hop " + key + "=" + text);
-			// returned.setSerializationRepresentation(analyzer.getText(node.getConditionalExp()));
 		}
-		/*else {
-			returned.setValueExpression((DataBinding) valueExpression);
-		}*/
 
 	}
 
 	@Override
 	public void inAUseDecl(AUseDecl node) {
-		// TODO Auto-generated method stub
 		super.inAUseDecl(node);
 		Class<? extends ModelSlot<?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class
-					.forName(analyzer.getTypeFactory().makeFullQualifiedIdentifier(node.getIdentifier()));
-			info.requiredModelSlotList = (info.requiredModelSlotList == null ? modelSlotClass.getName()
-					: info.requiredModelSlotList + "," + modelSlotClass.getName());
+			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
+			info.addToRequiredModelSlot(modelSlotClass.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		// TODO Auto-generated method stub
-		return null;
+	public void inANamespaceDecl(ANamespaceDecl node) {
+		super.inANamespaceDecl(node);
+		NamespaceDeclarationNode importNode = new NamespaceDeclarationNode(node, analyzer);
+		NamespaceDeclaration nsDeclaration = importNode.getModelObject();
+		compilationUnit.addToNamespaces(nsDeclaration);
 	}
 
 	@Override
-	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
-		return null;
+	public void inAUriImportImportDecl(AUriImportImportDecl node) {
+		super.inAUriImportImportDecl(node);
+		ElementImportNode importNode = new ElementImportNode(node, analyzer);
+		ElementImportDeclaration importDeclaration = importNode.getModelObject();
+		compilationUnit.addToElementImports(importDeclaration);
 	}
 
 	@Override
-	public BindingModel getBindingModel() {
-		// TODO Auto-generated method stub
-		return null;
+	public void inANamedUriImportImportDecl(ANamedUriImportImportDecl node) {
+		super.inANamedUriImportImportDecl(node);
+		ElementImportNode importNode = new ElementImportNode(node, analyzer);
+		ElementImportDeclaration importDeclaration = importNode.getModelObject();
+		compilationUnit.addToElementImports(importDeclaration);
 	}
-
-	@Override
-	public BindingFactory getBindingFactory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

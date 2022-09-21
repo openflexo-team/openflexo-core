@@ -1,0 +1,20 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelA2.fml/ChildVM1.fml")
+@Version("0.1")
+model ChildVM1 {
+
+	concept ChildConceptA {
+		concept ChildConceptB {
+		}
+	}
+
+	concept ChildConceptB {
+		concept ChildConceptC {
+			concept ChildConceptD {
+			}
+		}
+	}
+
+	concept ChildConceptE extends ChildConceptB {
+	}
+
+}

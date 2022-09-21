@@ -305,6 +305,7 @@ unexpected_exception_occured=OpenFlexo has detected an internal error. OpenFlexo
 uri=URI
 validate=Validate
 validate_project=Validate Project
+validation_locales=Validation locales
 validation_window=Validation window
 value=Value
 version=Version

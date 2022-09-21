@@ -1,0 +1,23 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestGetSetProperty.fml")
+@Version("0.1")
+model TestGetSetProperty {
+
+	private String myValue;
+
+	create::createNew () {
+		myValue = "Hello world !";
+	}
+
+	String getSetProperty  {
+	  String get() {
+		return myValue;
+	  }
+	  set(String value) {
+		log(("want to set " + value));
+		myValue = value;
+	  }
+	};
+
+}

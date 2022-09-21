@@ -42,7 +42,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -84,7 +84,7 @@ public interface EmptyControlGraph extends FMLControlGraph {
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			// Nothing to do
 			return null;
 		}

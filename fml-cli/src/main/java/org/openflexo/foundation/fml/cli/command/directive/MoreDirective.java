@@ -42,19 +42,27 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AObjectMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.APlainMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AResourceMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.PBinding;
-import org.openflexo.foundation.fml.cli.parser.node.PMoreDirective;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.parser.node.AMoreDirective;
+import org.openflexo.foundation.fml.parser.node.AObjectMoreDirective;
+import org.openflexo.foundation.fml.parser.node.APathMoreDirective;
+import org.openflexo.foundation.fml.parser.node.APlainMoreDirective;
+import org.openflexo.foundation.fml.parser.node.AResourceMoreDirective;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PMoreDirective;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents more resource directive in FML command-line interpreter
@@ -64,94 +72,147 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(MoreDirective.MoreDirectiveImpl.class)
 @DirectiveDeclaration(
 		keyword = "more",
 		usage = "more [<expression> | -r <resource>]",
 		description = "Print informations on current object, or expression or resource when supplied",
 		syntax = "more | <reference> | <expression> | -r <resource>")
-public class MoreDirective extends Directive {
+public interface MoreDirective extends Directive<AMoreDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MoreDirective.class.getPackage().getName());
+	public FlexoResource<?> getResource();
 
-	private FlexoResource<?> resource;
-	private Object object;
-	private boolean isPlain = false;
+	public Object getAddressedObject();
 
-	public MoreDirective(AMoreDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-		System.out.println("New EnterDirective");
+	public static abstract class MoreDirectiveImpl extends DirectiveImpl<AMoreDirective> implements MoreDirective {
 
-		PMoreDirective moreDirective = node.getMoreDirective();
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(MoreDirective.class.getPackage().getName());
 
-		if (moreDirective instanceof APlainMoreDirective) {
-			isPlain = true;
-		}
-		else if (moreDirective instanceof AResourceMoreDirective) {
-			resource = getResource(((AResourceMoreDirective) moreDirective).getResourceUri().getText());
-		}
-		else if (moreDirective instanceof AObjectMoreDirective) {
-			PBinding referencedObject = ((AObjectMoreDirective) moreDirective).getBinding();
-			// System.out.println("On entre dans l'objet: " + referencedObject);
-			object = evaluate(referencedObject, CommandTokenType.LocalReference);
-			// System.out.println("Found as local reference: " + object);
-			if (object == null) {
-				object = evaluate(referencedObject, CommandTokenType.Expression);
-				// System.out.println("Found as expression: " + object);
+		private boolean isPlain = false;
+
+		private FlexoResource<?> resource;
+		private String path;
+		private DataBinding<?> expression;
+
+		@Override
+		public void create(AMoreDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
+
+			PMoreDirective moreDirective = node.getMoreDirective();
+
+			if (moreDirective instanceof APlainMoreDirective) {
+				isPlain = true;
+			}
+			else if (moreDirective instanceof AResourceMoreDirective) {
+				resource = retrieveResource(((AResourceMoreDirective) moreDirective).getReferenceByUri());
+			}
+			else if (moreDirective instanceof APathMoreDirective) {
+				path = retrievePath(((APathMoreDirective) moreDirective).getPath());
+			}
+			else if (moreDirective instanceof AObjectMoreDirective) {
+				PExpression referencedObject = ((AObjectMoreDirective) moreDirective).getExpression();
+				expression = retrieveExpression(referencedObject);
 			}
 		}
-	}
 
-	public FlexoResource<?> getResource() {
-		return resource;
-	}
-
-	public Object getObject() {
-		return object;
-	}
-
-	@Override
-	public void execute() {
-		if (isPlain) {
-			if (getCommandInterpreter().getFocusedObject() == null) {
-				getErrStream().println("No focused object");
+		@Override
+		public String toString() {
+			if (isPlain) {
+				return "more";
 			}
-			else {
-				renderObject(getCommandInterpreter().getFocusedObject());
+			if (StringUtils.isNotEmpty(path)) {
+				return "more -f " + path;
 			}
+			else if (resource != null) {
+				return "more -r [\"" + resource.getURI() + "\"]";
+			}
+			else if (expression != null) {
+				return "more " + expression;
+			}
+			return "more ?";
 		}
-		else if (resource != null) {
-			if (!resource.isLoaded()) {
-				try {
-					resource.loadResourceData();
-					if (resource.getLoadedResourceData() instanceof FlexoObject) {
-						renderObject((FlexoObject) resource.getLoadedResourceData());
-					}
-					else {
-						getErrStream().println("No textual renderer for such data.");
-					}
-				} catch (FileNotFoundException e) {
-					getErrStream().println("Cannot find resource " + resource.getURI());
-				} catch (ResourceLoadingCancelledException e) {
-				} catch (FlexoException e) {
-					getErrStream().println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
+
+		@Override
+		public FlexoResource<?> getResource() {
+			return resource;
+		}
+
+		@Override
+		public Object getAddressedObject() {
+			if (isPlain) {
+				if (getCommandInterpreter().getFocusedObject() == null) {
+					getErrStream().println("No focused object");
+					return null;
+				}
+				else {
+					return getCommandInterpreter().getFocusedObject();
 				}
 			}
+			if (StringUtils.isNotEmpty(path)) {
+				FlexoResource<?> adressedResource = retrieveResourceFromPath(path);
+				if (adressedResource != null) {
+					try {
+						return adressedResource.getResourceData();
+					} catch (FileNotFoundException e) {
+						getErrStream().println("Cannot enter into " + path + " : file not found");
+					} catch (ResourceLoadingCancelledException e) {
+						getErrStream().println("Cannot enter into " + path + " : cancelled loading");
+					} catch (FlexoException e) {
+						getErrStream().println("Cannot enter into " + path + " : unexpected exception");
+						e.printStackTrace();
+					}
+					return null;
+				}
+				getErrStream().println("Cannot enter into " + path + " : not a resource");
+			}
+			else if (resource != null) {
+				try {
+					return resource.getResourceData();
+				} catch (FileNotFoundException e) {
+					getErrStream().println("Cannot enter into " + path + " : file not found");
+				} catch (ResourceLoadingCancelledException e) {
+					getErrStream().println("Cannot enter into " + path + " : cancelled loading");
+				} catch (FlexoException e) {
+					getErrStream().println("Cannot enter into " + path + " : unexpected exception");
+					e.printStackTrace();
+				}
+				return null;
+			}
+			else if (expression != null) {
+				try {
+					return expression.getBindingValue(getCommandInterpreter());
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return "enter ?";
 		}
-		else if (object != null) {
+
+		@Override
+		public Object execute() throws FMLCommandExecutionException {
+			super.execute();
+
+			Object object = getAddressedObject();
 			if (object instanceof FlexoObject) {
 				renderObject((FlexoObject) object);
+				return getAddressedObject();
 			}
 			else {
-				getErrStream().println("No textual renderer for such data.");
+				throw new FMLCommandExecutionException("No textual renderer for such data.");
 			}
 		}
-		else {
-			getErrStream().println("Cannot access to object");
-		}
-	}
 
-	private void renderObject(FlexoObject object) {
-		getOutStream().println(object.render().trim());
+		private void renderObject(FlexoObject object) {
+			getOutStream().println(object.render().trim());
+		}
 	}
 }

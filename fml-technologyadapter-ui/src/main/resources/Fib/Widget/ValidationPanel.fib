@@ -19,7 +19,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				name="ValidationPanel">
 				<Label id="89" label="" align="left"
-					data="((((&quot;&quot; + data.errorsCount) + &quot; errors, &quot;) + data.warningsCount.size) + &quot; warnings&quot;)"
+					data="((((&quot;&quot; + data.errorsCount) + &quot; errors, &quot;) + data.warningsCount) + &quot; warnings&quot;)"
 					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 					font="SansSerif,2,11" name="Label" />
 				<Label id="90"
@@ -49,11 +49,11 @@
 				backgroundSecondarySelectionColor="178,215,255" showFooter="false"
 				lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
 				rowHeight="18" manageDynamicModel="true"
-				doubleClickAction="controller.fixIssue(IssuesTable.selected)"
+				doubleClickAction="controller.fixIssue(issuesTable.selected)"
 				data="data.allIssues"
-				clickAction="controller.showIssue(IssuesTable.selected)"
+				clickAction="controller.showIssue(issuesTable.selected)"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right)"
-				visible="controller.showErrorsWarnings" name="IssuesTable">
+				visible="controller.showErrorsWarnings" name="issuesTable">
 				<IconColumn id="94"
 					data="controller.iconForObject(iterator)" resizable="false"
 					title="icon" displayTitle="false" columnWidth="20" showIcon="false"
@@ -62,6 +62,10 @@
 					data="data.validationModel.localizedIssueMessage(iterator)"
 					resizable="true" title="errors/warnings" displayTitle="true"
 					columnWidth="250" showIcon="false" name="label" />
+				<NumberColumn id="1000"
+					data="data.getLineNumber(iterator)"
+					resizable="false" title="line" displayTitle="true"
+					columnWidth="50" showIcon="false" name="line" />			    
 			</Table>
 		</Panel>
 	<LocalizedDictionary id="96">

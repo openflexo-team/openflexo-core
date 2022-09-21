@@ -53,7 +53,6 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.InvalidNameException;
-import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.SingleMetaData;
@@ -257,8 +256,12 @@ public interface VirtualModel extends FlexoConcept {
 	@Reindexer(FLEXO_CONCEPTS_KEY)
 	public void moveFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
+	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 *
+	 * Look in contained VirtualModel and contained FlexoConcept, and examine dependencies (imports)<br>
+	 * TODO: presents algorithm (semantics of first found concept, think of inheritance and embedding)
 	 * 
 	 * @param flexoConceptNameOrURI
 	 * @return
@@ -411,9 +414,29 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
 	public CompilationUnitResource getCompilationUnitResource();
+
+	/**
+	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link VirtualModel}<br>
+	 * 
+	 * Lookup algorithm follows:
+	 * <ul>
+	 * <li>If name matches declared {@link VirtualModel} return this {@link VirtualModel}</li>
+	 * <li>If name matches any container {@link VirtualModel} (recursively from current to container), return related
+	 * {@link VirtualModel}</li>
+	 * <li>If name matches any parent {@link VirtualModel} (inheritance semantics), return related {@link VirtualModel}</li>
+	 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}</li>
+	 * <li>Lookup up also in contained and loaded {@link VirtualModel}</li>
+	 * </ul>
+	 * 
+	 * @param conceptName
+	 * @return
+	 */
+	@Override
+	public FlexoConcept lookupFlexoConceptWithName(String conceptName);
 
 	/**
 	 * Default implementation for {@link VirtualModel} API
@@ -429,11 +452,12 @@ public interface VirtualModel extends FlexoConcept {
 		private VirtualModelInstanceType vmInstanceType;
 		private VirtualModelInstanceType defaultVMInstanceType = new VirtualModelInstanceType(this);
 
-		// Used during deserialization, do not use it
+		private final FMLBindingFactory bindingFactory;
+
+		// We create here the FMLBindingFactory
 		public VirtualModelImpl() {
 			super();
-			// System.out.println("Creating VirtualModel " + Integer.toHexString(hashCode()));
-			// Thread.dumpStack();
+			bindingFactory = new FMLBindingFactory(this);
 		}
 
 		@Override
@@ -547,6 +571,8 @@ public interface VirtualModel extends FlexoConcept {
 			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
 		}*/
 
+		public static final String URI_ANNOTATION_NAME = "URI";
+
 		/**
 		 * Returns URI for this {@link VirtualModel}.<br>
 		 * Note that if this {@link VirtualModel} is contained in another {@link VirtualModel}, URI is computed from URI of container
@@ -566,8 +592,8 @@ public interface VirtualModel extends FlexoConcept {
 				return getContainerVirtualModel().getURI() + "/" + getName()
 						+ (getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX) ? "" : CompilationUnitResourceFactory.FML_SUFFIX);
 			}
-			if (getMetaData("URI") instanceof SingleMetaData) {
-				return ((SingleMetaData<String>) getMetaData("URI")).getValue(String.class);
+			if (getMetaData(URI_ANNOTATION_NAME) instanceof SingleMetaData) {
+				return ((SingleMetaData<String>) getMetaData(URI_ANNOTATION_NAME)).getValue(String.class);
 			}
 			if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 				return getCompilationUnit().getResource().getURI();
@@ -588,12 +614,12 @@ public interface VirtualModel extends FlexoConcept {
 					// We prevent ',' so that we can use it as a delimiter in tags.
 					anURI = anURI.replace(",", "");
 				}
-				if (getMetaData("URI") instanceof SingleMetaData) {
-					((SingleMetaData<String>) getMetaData("URI")).setValue(anURI, String.class);
+				if (getMetaData(URI_ANNOTATION_NAME) instanceof SingleMetaData) {
+					((SingleMetaData<String>) getMetaData(URI_ANNOTATION_NAME)).setValue(anURI, String.class);
 				}
 				else if (getCompilationUnit() == null || getCompilationUnit().getResource() == null || anURI == null
 						|| !anURI.equals(getCompilationUnit().getResource().getURI())) {
-					FMLMetaData uriMD = getFMLModelFactory().newSingleMetaData("URI", anURI, String.class);
+					FMLMetaData uriMD = getFMLModelFactory().newSingleMetaData(URI_ANNOTATION_NAME, anURI, String.class);
 					addToMetaData(uriMD);
 				}
 				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
@@ -744,6 +770,36 @@ public interface VirtualModel extends FlexoConcept {
 				innerConceptsFacet.notifiedConceptsChanged();
 		}
 
+		@Override
+		protected FlexoConcept lookupFlexoConceptWithName(String conceptName, Set<FlexoConcept> visited) {
+			if (visited.contains(this)) {
+				return null;
+			}
+			FlexoConcept returned = super.lookupFlexoConceptWithName(conceptName, visited);
+			if (returned != null) {
+				return returned;
+			}
+			if (getContainerVirtualModel() != null) {
+				returned = ((FlexoConceptImpl) getContainerVirtualModel()).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (VirtualModel virtualModel : getVirtualModels()) {
+				returned = ((FlexoConceptImpl) virtualModel).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (FlexoConcept concept : getFlexoConcepts()) {
+				returned = ((FlexoConceptImpl) concept).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			return returned;
+		}
+
 		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
@@ -751,6 +807,7 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@Deprecated
 		public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI) {
 			if (StringUtils.isEmpty(flexoConceptNameOrURI)) {
 				return null;
@@ -761,6 +818,9 @@ public interface VirtualModel extends FlexoConcept {
 					return flexoConcept;
 				}
 				if (flexoConcept.getName() != null && flexoConcept.getURI().equals(flexoConceptNameOrURI)) {
+					return flexoConcept;
+				}
+				if (flexoConcept.getName() != null && flexoConcept.getLocalURI().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
 			}
@@ -1062,13 +1122,8 @@ public interface VirtualModel extends FlexoConcept {
 			return returned;
 		}
 
-		private FMLBindingFactory bindingFactory = null;
-
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (bindingFactory == null) {
-				bindingFactory = new FMLBindingFactory(this);
-			}
 			return bindingFactory;
 		}
 
@@ -1175,6 +1230,7 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@Deprecated
 		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
 			if (getCompilationUnit() != null) {
 				return getCompilationUnit().getVirtualModelNamed(virtualModelNameOrURI);

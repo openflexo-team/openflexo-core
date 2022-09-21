@@ -1,0 +1,33 @@
+// This test is intented to test concept lookup from a given context
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestVirtualModelA3.fml"];
+context;
+assert virtualModel != null;
+//validate virtualModel;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+log "Name:"+virtualModel.name;
+log "Parents:"+virtualModel.parentFlexoConcepts;
+assert virtualModel.name == "TestVirtualModelA3";
+assert virtualModel.parentFlexoConcepts.size == 1;
+parentVM = virtualModel.parentFlexoConcepts.get(0);
+log "parent:"+parentVM;
+assert virtualModel.lookupFlexoConceptWithName("TestVirtualModelA3") == virtualModel;
+assert virtualModel.lookupFlexoConceptWithName("TestVirtualModelA") == parentVM;
+assert virtualModel.lookupFlexoConceptWithName("TestVirtualModel") == null;
+childVirtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml/TestVirtualModel.fml"];
+assert childVirtualModel != null;
+assert virtualModel.lookupFlexoConceptWithName("TestVirtualModel") == childVirtualModel;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptA") != null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptB") != null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptC") != null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptD") != null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptE") != null;
+
+// lookup from compilation unit
+compilationUnit = virtualModel.compilationUnit;
+assert compilationUnit != null;
+
+

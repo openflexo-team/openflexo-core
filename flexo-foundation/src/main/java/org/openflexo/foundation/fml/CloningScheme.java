@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -57,6 +59,11 @@ public interface CloningScheme extends AbstractCreationScheme {
 
 		public CloningSchemeImpl() {
 			super();
+		}
+
+		@Override
+		public Type getNewInstanceType() {
+			return getAnalyzedReturnType();
 		}
 
 	}

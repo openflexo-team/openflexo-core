@@ -39,10 +39,11 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -50,23 +51,25 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAnnotation, SingleMetaData<?>, MainSemanticsAnalyzer> {
+public class SingleMetaDataNode
+		extends AbstractMetaDataNode<ASingleAnnotationAnnotation, SingleMetaData<?>, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public SingleMetaDataNode(ASingleAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public SingleMetaDataNode(ASingleAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public SingleMetaDataNode(SingleMetaData<?> metaData, MainSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public SingleMetaDataNode(SingleMetaData<?> metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override
 	public SingleMetaData<?> buildModelObjectFromAST(ASingleAnnotationAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
+		String key = makeFullQualifiedIdentifier(astNode.getTag());
 
 		SingleMetaData<?> returned = getFactory().newSingleMetaData(key);
 
-		DataBinding<?> valueExpression = ExpressionFactory.makeExpression(astNode.getConditionalExp(), getAnalyser(), returned);
+		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(astNode.getConditionalExp(), returned, BindingDefinitionType.GET,
+				Object.class, getSemanticsAnalyzer(), this);
 
 		if (valueExpression.getExpression() instanceof Constant) {
 			returned.setSerializationRepresentation(getText(astNode.getConditionalExp()));
@@ -91,7 +94,7 @@ public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAn
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getTag());
 		}
 		return null;
 	}

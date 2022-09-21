@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<VirtualModel id="FLX-3" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="1.0" uri="http://openflexo.org/test/TestResourceCenter/TestSequence.fml" version="0.1" name="TestSequence" userID="FLX" flexoID="3">
-  <FMLLocalizedDictionary id="SYL-7" userID="SYL" flexoID="7" />
-  <Inspector id="FLX-2" inspectorTitle="TestSequence" userID="FLX" flexoID="2" />
-</VirtualModel>

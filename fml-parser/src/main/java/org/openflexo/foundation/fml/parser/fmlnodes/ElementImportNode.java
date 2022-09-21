@@ -39,9 +39,11 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.URIExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AObjectInResourceReferenceByUri;
 import org.openflexo.foundation.fml.parser.node.AResourceReferenceByUri;
@@ -58,14 +60,14 @@ import org.openflexo.toolbox.StringUtils;
 
 // AUriImportImportDecl
 // ANamedUriImportImportDecl
-public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportDeclaration, MainSemanticsAnalyzer> {
+public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public ElementImportNode(PImportDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ElementImportNode(PImportDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ElementImportNode(ElementImportDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public ElementImportNode(ElementImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override
@@ -86,14 +88,21 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 		}
 		if (astNode instanceof ANamedUriImportImportDecl) {
 			ref = ((ANamedUriImportImportDecl) astNode).getObject();
-			returned.setAbbrev(((ANamedUriImportImportDecl) astNode).getName().getText());
+			returned.setAbbrev(getText(((ANamedUriImportImportDecl) astNode).getName()));
 		}
 		if (ref instanceof AObjectInResourceReferenceByUri) {
-			returned.setResourceReference(new DataBinding(getText(((AObjectInResourceReferenceByUri) ref).getResource())));
-			returned.setObjectReference(new DataBinding(getText(((AObjectInResourceReferenceByUri) ref).getObject())));
+			DataBinding<String> resourceReference = URIExpressionFactory.makeDataBinding(
+					((AObjectInResourceReferenceByUri) ref).getResource(), returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(),
+					this);
+			returned.setResourceReference(resourceReference);
+			DataBinding<String> objectReference = URIExpressionFactory.makeDataBinding(((AObjectInResourceReferenceByUri) ref).getObject(),
+					returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
+			returned.setObjectReference(objectReference);
 		}
 		if (ref instanceof AResourceReferenceByUri) {
-			returned.setResourceReference(new DataBinding(getText(((AResourceReferenceByUri) ref).getResource())));
+			DataBinding<String> resourceReference = URIExpressionFactory.makeDataBinding(((AResourceReferenceByUri) ref).getResource(),
+					returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
+			returned.setResourceReference(resourceReference);
 		}
 		return returned;
 	}

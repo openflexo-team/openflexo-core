@@ -47,9 +47,11 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.MatchConditionBindingModel;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.logging.FlexoLogger;
@@ -146,18 +148,26 @@ public interface MatchCondition extends FlexoConceptObject {
 			try {
 				returned = condition.getBindingValue(new BindingEvaluationContext() {
 					@Override
+					public ExpressionEvaluator getEvaluator() {
+						return new FMLExpressionEvaluator(this);
+					}
+
+					@Override
 					public Object getValue(BindingVariable variable) {
 						if (variable.getVariableName().equals(SELECTED)) {
 							return proposedFCI;
 						}
 						return evaluationContext.getValue(variable);
 					}
+
 				});
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			if (returned == null) {

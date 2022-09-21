@@ -9,10 +9,10 @@
 		selectionMode="ContiguousTreeSelection" showFooter="true"
 		rootVisible="true" showRootsHandle="true" 
 		localize="true" manageDynamicModel="true"
-		clickAction="controller.singleClick(DocumentBrowser.selected)"
-		doubleClickAction="controller.doubleClick(DocumentBrowser.selected)"
-		rightClickAction="controller.rightClick(DocumentBrowser.selected,event)"
-		name="DocumentBrowser" index="0"
+		clickAction="controller.singleClick(documentBrowser.selected)"
+		doubleClickAction="controller.doubleClick(documentBrowser.selected)"
+		rightClickAction="controller.rightClick(documentBrowser.selected,event)"
+		name="documentBrowser" index="0"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		selected="controller.selectedDocumentElement">
 		<BrowserElement
@@ -41,7 +41,7 @@
 			isEditable="false" name="drawingRunElement">
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.doc.FlexoDocTable"
-			label="'TABLE'" icon="controller.iconForObject(table)"
+			label="&quot;TABLE&quot;" icon="controller.iconForObject(table)"
 			isEditable="false" filtered="false"
 			defaultVisible="true" name="table">
 		</BrowserElement>

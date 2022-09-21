@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -131,6 +130,29 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		status = Status.Started;
 	}
 
+	private Map<String, List<PendingResourceDependency>> pendingResourceDependencies = new HashMap<>();
+
+	class PendingResourceDependency {
+		FlexoResource<?> resource;
+		String dependencyURI;
+
+		PendingResourceDependency(FlexoResource<?> resource, String dependencyURI) {
+			super();
+			this.resource = resource;
+			this.dependencyURI = dependencyURI;
+		}
+	}
+
+	public void registerPendingDependencyResource(FlexoResource<?> resource, String dependencyURI) {
+		// System.out.println("registerPendingDependencyResource " + dependencyURI + " for " + resource);
+		List<PendingResourceDependency> l = pendingResourceDependencies.get(dependencyURI);
+		if (l == null) {
+			l = new ArrayList<PendingResourceDependency>();
+			pendingResourceDependencies.put(dependencyURI, l);
+		}
+		l.add(new PendingResourceDependency(resource, dependencyURI));
+	}
+
 	// It should be synchronized has the same resource could be registered several times in different threads
 	public synchronized void registerResource(FlexoResource<?> resource) throws DuplicateURIException {
 
@@ -140,6 +162,11 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		}
 
 		if (getResource(resource.getURI()) != null) {
+			// This URI seems to be already registered
+			if (getResource(resource.getURI()) == resource) {
+				// That's fine, but this resource is already registered
+				return;
+			}
 			throw new DuplicateURIException(resource);
 		}
 
@@ -154,6 +181,16 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			logger.info("Resource with null URI: " + resource);
 			resource.getURI();
 			Thread.dumpStack();
+		}
+		else {
+			List<PendingResourceDependency> prdList = pendingResourceDependencies.get(resource.getURI());
+			if (prdList != null && prdList.size() > 0) {
+				for (PendingResourceDependency prd : prdList) {
+					// System.out.println("Resolved pending dependency " + prd.dependencyURI);
+					prd.resource.addToDependencies(resource);
+				}
+				pendingResourceDependencies.remove(resource.getURI());
+			}
 		}
 	}
 
@@ -301,34 +338,33 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		}
 	}
 
-	private Map<Thread, Stack<FlexoResource<?>>> resourceLoadingCausality = new HashMap<>();
+	/*private Map<Thread, Stack<FlexoResource<?>>> resourceLoadingCausality = new HashMap<>();
 	private List<CrossReferenceDependency> crossReferenceDependencies = new ArrayList<>();
-
+	
 	public void crossReferencesLoadingSchemeDetected(FlexoResource<?> resource) {
+	
+		System.out.println("Hopala, cross references detected.... for " + resource);
+		Thread.dumpStack();
+	
 		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
 		if (stack != null && !stack.isEmpty()) {
-			/*System.out.println("Detected cycle while requesting resource " + resource + " while loading " + stack.peek());
-			System.out.println(" > " + resource.getName());
-			for (int i = stack.size() - 1; i >= 0; i--) {
-				System.out.println(" > " + stack.get(i).getName());
-			}*/
 			CrossReferenceDependency crossReferenceDependency = new CrossReferenceDependency(resource, stack.peek());
 			if (!crossReferenceDependencies.contains(crossReferenceDependency)) {
 				crossReferenceDependencies.add(crossReferenceDependency);
 			}
 		}
 	}
-
+	
 	public class CrossReferenceDependency {
 		private final FlexoResource<?> requestedResource;
 		private final FlexoResource<?> requestingResource;
-
+	
 		public CrossReferenceDependency(FlexoResource<?> requestedResource, FlexoResource<?> requestingResource) {
 			super();
 			this.requestedResource = requestedResource;
 			this.requestingResource = requestingResource;
 		}
-
+	
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -338,7 +374,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			result = prime * result + ((requestingResource == null) ? 0 : requestingResource.hashCode());
 			return result;
 		}
-
+	
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -364,26 +400,19 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 				return false;
 			return true;
 		}
-
+	
 		private ResourceManager getEnclosingInstance() {
 			return ResourceManager.this;
 		}
-	}
+	}*/
 
 	public void resourceWillLoad(FlexoResource<?> resource, ResourceWillLoad notification) {
-		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		/*Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
 		if (stack == null) {
 			stack = new Stack<>();
 			resourceLoadingCausality.put(Thread.currentThread(), stack);
 		}
-		/*if (!stack.isEmpty()) {
-			System.out.println(
-					"################### Loading " + resource.getName() + " as requested by " + stack.peek().getName() + " loading");
-		}
-		else {
-			System.out.println("################### Loading " + resource.getName());
-		}*/
-		stack.push(resource);
+		stack.push(resource);*/
 
 		if (getServiceManager() != null) {
 			getServiceManager().notify(this, notification);
@@ -391,7 +420,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	public void resourceLoaded(FlexoResource<?> resource, ResourceLoaded<?> notification) {
-		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		/*Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
 		if (stack != null) {
 			// System.out.println("################### Finished loading " + resource.getName());
 			stack.pop();
@@ -405,7 +434,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 					getServiceManager().notify(this, new ResourceLoaded<>(crossReferenceDependency.requestingResource));
 				}
 			}
-		}
+		}*/
 		if (getServiceManager() != null) {
 			getServiceManager().notify(this, notification);
 		}
@@ -598,9 +627,8 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	public List<FlexoResource<?>> getResources(Object serializationArtefact) {
 		List<FlexoResource<?>> returned = new ArrayList<>();
-		System.out.println("On cherche " + serializationArtefact);
 		for (FlexoResource<?> flexoResource : resources) {
-			System.out.println(" > " + flexoResource + " io=" + flexoResource.getIODelegate().getSerializationArtefact());
+			// System.out.println(" > " + flexoResource + " io=" + flexoResource.getIODelegate().getSerializationArtefact());
 			if (flexoResource.getIODelegate().getSerializationArtefact().equals(serializationArtefact)) {
 				returned.add(flexoResource);
 			}

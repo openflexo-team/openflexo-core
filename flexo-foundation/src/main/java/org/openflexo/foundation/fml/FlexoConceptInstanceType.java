@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.connie.type.TypingSpace;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.toolbox.StringUtils;
@@ -275,11 +276,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		}
 	}
 
-	/*@Override
-	public void setSerializedConfiguration(String aConfiguration, ModelFactory factory) {
-		System.out.println("Tiens, faudrait que je puisse configurer " + this + " avec " + aConfiguration + " for " + factory);
-	}*/
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -290,7 +286,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		}
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -322,6 +318,33 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			return anFlexoConcept.getInstanceType();
 		// logger.warning("Trying to get a InstanceType for a null FlexoConcept");
 		return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+	}
+
+	/**
+	 * Return a new {@link FlexoConceptInstanceType} by translating current {@link FlexoConceptInstanceType} into the typing context denoted
+	 * by supplied {@link TypingSpace}.<br>
+	 * 
+	 * We retrieve here {@link FlexoConcept} from supplied TypingSpace using its name
+	 * 
+	 * @param typingSpace
+	 * @return
+	 */
+	@Override
+	public FlexoConceptInstanceType translateTo(TypingSpace typingSpace) {
+		String conceptName;
+		if (isResolved()) {
+			conceptName = getFlexoConcept().getName();
+		}
+		else {
+			conceptName = getConceptURI();
+		}
+		Type returned = typingSpace.resolveType(conceptName);
+		if (returned instanceof FlexoConceptInstanceType) {
+			// Type was found and looked up
+			return (FlexoConceptInstanceType) returned;
+		}
+		// When not found, return a type which may be resolved later
+		return new FlexoConceptInstanceType(conceptName, getCustomTypeFactory());
 	}
 
 }

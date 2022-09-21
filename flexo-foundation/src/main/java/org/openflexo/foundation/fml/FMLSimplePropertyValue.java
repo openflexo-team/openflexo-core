@@ -48,6 +48,7 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
+ * A {@link FMLPropertyValue} which has a simple value
  *
  * @author sylvain
  *
@@ -72,14 +73,21 @@ public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPrope
 		protected static final Logger logger = FlexoLogger.getLogger(FMLSimplePropertyValue.class.getPackage().getName());
 
 		@Override
-		public void apply(M object) {
+		public void applyPropertyValueToModelObject(M object) {
 			getProperty().set(getValue(), object);
+		}
+
+		@Override
+		public void retrievePropertyValueFromModelObject(M object) {
+			setValue(getProperty().get(object));
 		}
 
 		@Override
 		public String toString() {
 
-			return "FMLSimplePropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
+			return "FMLSimplePropertyValue[" + Integer.toHexString(hashCode()) + "/"
+					+ (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + ",required="
+					+ (getProperty() != null ? getProperty().isRequired() : "?") + "]";
 		}
 
 	}

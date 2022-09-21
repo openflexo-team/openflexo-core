@@ -49,6 +49,7 @@ import java.util.List;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.p2pp.P2PPNode;
@@ -86,11 +87,11 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 			throws ModelDefinitionException, ParseException, IOException {
 
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
-		FMLParser parser = new FMLParser();
+		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
 		FMLCompilationUnit compilationUnit = parser.parse(fileResource.openInputStream(), fmlModelFactory, (modelSlotClasses) -> {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;
-		});
+		}, true);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 
@@ -155,8 +156,9 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 */
 	protected static void debug(P2PPNode<?, ?> node, int indent) {
 		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
-				+ node.getLastParsedFragment() /*+ " model:" + node.getModelObject()*/ + " pre=" + node.getPrelude() + " post="
-				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/);
+				+ ((FMLPrettyPrintDelegate) node).getStartLocation() + "-" + node.getEndPosition() + " pre=" + node.getPrelude() + " post="
+				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/
+				+ " model=" + node.getModelObject());
 		// System.err.println(node.getLastParsed());
 		// node.getLastParsed();
 		indent++;
@@ -175,11 +177,11 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 * @throws IOException
 	 */
 	protected static FMLCompilationUnit parseFile(Resource resource) throws ModelDefinitionException, ParseException, IOException {
-		FMLParser parser = new FMLParser();
+		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
 		return parser.parse(resource.openInputStream(), new FMLModelFactory(null, serviceManager), (modelSlotClasses) -> {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;
-		});
+		}, true);
 	}
 
 	protected static void testNormalizedFMLRepresentationEquals(FMLCompilationUnit compilationUnit, String resourceFile) {
@@ -259,6 +261,37 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 		for (int i = 0; i < rows1.size(); i++) {
 			assertEquals(rows1.get(i)/*.trim()*/, rows2.get(i)/*.trim()*/);
 		}
+	}
+
+	static FMLCompilationUnitNode rootNode;
+
+	protected <N extends P2PPNode, M> N checkNodeForObject(String expectedFragment, String expectedModelObjectValue, M object) {
+		return checkNodeForObject(expectedFragment, null, null, expectedModelObjectValue, object);
+	}
+
+	protected <N extends P2PPNode, M> N checkNodeForObject(String expectedFragment, String expectedPrelude, String expectedPostlude,
+			String expectedModelObjectValue, M object) {
+		return checkNode(expectedFragment, expectedPrelude, expectedPostlude, expectedModelObjectValue, (N) rootNode.getObjectNode(object));
+	}
+
+	protected <N extends P2PPNode, M> N checkNodeForObject(String expectedFragment, String expectedPrelude, String expectedPostlude,
+			M object) {
+		return checkNode(expectedFragment, expectedPrelude, expectedPostlude, null, (N) rootNode.getObjectNode(object));
+	}
+
+	protected <N extends P2PPNode, M> N checkNode(String expectedFragment, String expectedModelObjectValue, N node) {
+		return checkNode(expectedFragment, null, null, expectedModelObjectValue, node);
+	}
+
+	protected <N extends P2PPNode, M> N checkNode(String expectedFragment, String expectedPrelude, String expectedPostlude,
+			String expectedModelObjectValue, N node) {
+		assertEquals(expectedFragment, ((FMLPrettyPrintDelegate) node).getStartLocation() + "-" + node.getEndPosition());
+		assertEquals(expectedPrelude, node.getPrelude() != null ? node.getPrelude().toString() : null);
+		assertEquals(expectedPostlude, node.getPostlude() != null ? node.getPostlude().toString() : null);
+		if (expectedModelObjectValue != null) {
+			assertEquals(expectedModelObjectValue, node.getModelObject().toString());
+		}
+		return node;
 	}
 
 }

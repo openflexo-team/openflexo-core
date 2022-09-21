@@ -1,0 +1,32 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM2.fml")
+@Version("0.1")
+model MyVM2 {
+
+	create::_create () {
+	}
+
+	concept ConceptA {
+		String nameA;
+		@UI(
+			@TextField(value="aNameA")
+		)
+		create::_create (required String aNameA) {
+			nameA = parameters.aNameA;
+		}
+		delete::_delete () {
+		}
+		concept ConceptB {
+			String nameB;
+			@UI(
+				@TextField(value="aNameB")
+			)
+			create::_create (required String aNameB) {
+				nameB = parameters.aNameB;
+			}
+			delete::_delete () {
+			}
+		}
+	}
+}

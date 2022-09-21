@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AComplexAnnotationAnnotation;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -50,19 +50,19 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * 
  */
 public class MultiValuedMetaDataNode
-		extends AbstractMetaDataNode<AComplexAnnotationAnnotation, MultiValuedMetaData, MainSemanticsAnalyzer> {
+		extends AbstractMetaDataNode<AComplexAnnotationAnnotation, MultiValuedMetaData, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public MultiValuedMetaDataNode(AComplexAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public MultiValuedMetaDataNode(AComplexAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public MultiValuedMetaDataNode(MultiValuedMetaData metaData, MainSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public MultiValuedMetaDataNode(MultiValuedMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override
 	public MultiValuedMetaData buildModelObjectFromAST(AComplexAnnotationAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
+		String key = makeFullQualifiedIdentifier(astNode.getTag());
 
 		MultiValuedMetaData returned = getFactory().newMultiValuedMetaData(key);
 		return returned;
@@ -82,7 +82,7 @@ public class MultiValuedMetaDataNode
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getTag());
 		}
 		return null;
 	}

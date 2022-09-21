@@ -115,6 +115,11 @@ public interface RemoteResourceCenter extends FlexoResourceCenter<Object> {
 			return null;
 		}
 
+		@Override
+		public String getDisplayableStatus() {
+			return "[uri=\"" + getDefaultBaseURI() + "\"] with " + getAllResources().size() + " resources";
+		}
+
 	}
 
 	@ModelEntity

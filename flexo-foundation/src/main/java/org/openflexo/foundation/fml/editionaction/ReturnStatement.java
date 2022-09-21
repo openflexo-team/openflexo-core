@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -68,7 +68,7 @@ public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			T value = getAssignationValue(evaluationContext);
 			throw new ReturnException(value);
 		}

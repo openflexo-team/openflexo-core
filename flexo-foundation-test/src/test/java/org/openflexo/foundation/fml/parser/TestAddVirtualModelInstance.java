@@ -52,12 +52,12 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourCallArgumentNode;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -121,18 +121,20 @@ public class TestAddVirtualModelInstance extends FMLParserTestCase {
 		assertTrue(actionScheme.getControlGraph() instanceof AssignationAction);
 		AssignationAction assignationAction = (AssignationAction) actionScheme.getControlGraph();
 		assertEquals("myModel", assignationAction.getAssignation().toString());
-		assertTrue(assignationAction.getAssignableAction() instanceof AddVirtualModelInstance);
-		AddVirtualModelInstance addAction = (AddVirtualModelInstance) assignationAction.getAssignableAction();
+		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
+		ExpressionAction expressionAction = (ExpressionAction) assignationAction.getAssignableAction();
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
-		AddVirtualModelInstanceNode addActionNode = (AddVirtualModelInstanceNode) (P2PPNode) rootNode.getObjectNode(addAction);
-		BehaviourCallArgumentNode arg1Node = (BehaviourCallArgumentNode) (P2PPNode) rootNode
-				.getObjectNode(addAction.getParameters().get(0));
-		BehaviourCallArgumentNode arg2Node = (BehaviourCallArgumentNode) (P2PPNode) rootNode
-				.getObjectNode(addAction.getParameters().get(1));
+		ExpressionActionNode expressionActionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expressionAction);
+		DataBindingNode dbNode = (DataBindingNode) (P2PPNode) rootNode.getObjectNode(expressionAction.getExpression());
 
-		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName=\"foo\")", addAction.getFMLPrettyPrint());
-		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName = \"foo\")", addAction.getNormalizedFML());
+		/*BehaviourCallArgumentNode arg1Node = (BehaviourCallArgumentNode) (P2PPNode) rootNode
+				.getObjectNode(expressionAction.getParameters().get(0));
+		BehaviourCallArgumentNode arg2Node = (BehaviourCallArgumentNode) (P2PPNode) rootNode
+				.getObjectNode(expressionAction.getParameters().get(1));*/
+
+		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName=\"foo\")", expressionAction.getFMLPrettyPrint());
+		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName=\"foo\")", expressionAction.getNormalizedFML());
 
 		assertEquals("(13:1)-(15:2)", behaviourNode.getLastParsedFragment().toString());
 		assertEquals("(12:0)-(13:0)", behaviourNode.getPrelude().toString());
@@ -142,17 +144,17 @@ public class TestAddVirtualModelInstance extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(14:12)-(14:71)", addActionNode.getLastParsedFragment().toString());
+		/*assertEquals("(14:12)-(14:71)", addActionNode.getLastParsedFragment().toString());
 		assertEquals(null, addActionNode.getPrelude());
 		assertEquals(null, addActionNode.getPostlude());
-
+		
 		assertEquals("(14:24)-(14:30)", arg1Node.getLastParsedFragment().toString());
 		assertEquals(null, arg1Node.getPrelude());
 		assertEquals("(14:30)-(14:31)", arg1Node.getPostlude().toString());
-
+		
 		assertEquals("(14:31)-(14:32)", arg2Node.getLastParsedFragment().toString());
 		assertEquals(null, arg2Node.getPrelude());
-		assertEquals(null, arg2Node.getPostlude());
+		assertEquals(null, arg2Node.getPostlude());*/
 
 		System.out.println("FML:" + actionScheme.getFMLPrettyPrint());
 

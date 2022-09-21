@@ -43,24 +43,24 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
+public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
 
-	public FlexoPropertyNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoPropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoPropertyNode(T property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public FlexoPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 
 	@Override
 	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
+		return getSemanticsAnalyzer().getCompilationUnit();
 	}
 
 }

@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -57,8 +57,8 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReturnStatementNode.class.getPackage().getName());
 
-	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -66,8 +66,8 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 
 	}
 
-	public ReturnStatementNode(ReturnStatement<?> action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public ReturnStatementNode(ReturnStatement<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -77,7 +77,7 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 
 		// Right
 
-		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getAnalyser());
+		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getSemanticsAnalyzer());
 
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof AssignableAction) {

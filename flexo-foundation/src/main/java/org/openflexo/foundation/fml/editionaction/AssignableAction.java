@@ -45,13 +45,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -78,7 +78,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 * @return
 	 */
 	@Override
-	public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+	public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
 	/**
 	 * Return property to which this action is bound with an assignation, if this action is the right-hand side of an
@@ -186,7 +186,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		 * @return
 		 */
 		@Override
-		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
 		/**
 		 * Used to instantiate AssignationAction while value set to this action

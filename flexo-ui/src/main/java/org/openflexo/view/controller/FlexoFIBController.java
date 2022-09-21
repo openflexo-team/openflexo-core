@@ -298,6 +298,9 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 					return tac.getValidationReport((ResourceData<?>) object);
 				}
 				if (object instanceof InnerResourceData) {
+					//System.out.println("Pour l'objet: " + object);
+					//System.out.println("On retourne le ValidationReport "
+					//		+ tac.getValidationReport(((InnerResourceData<?>) object).getResourceData()));
 					return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData());
 				}
 			}

@@ -51,8 +51,10 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -67,6 +69,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CreatePrimitiveRole.CreatePrimitiveRoleImpl.class)
 @XMLElement
+@FML("CreatePrimitiveRole")
 public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, PrimitiveRole<?>> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -124,6 +127,8 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -137,6 +142,8 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -149,6 +156,8 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;
@@ -220,7 +229,7 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 		}
 
 		@Override
-		public PrimitiveRole<?> execute(RunTimeEvaluationContext evaluationContext) throws ActionExecutionCancelledException {
+		public PrimitiveRole<?> execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -239,7 +248,7 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 				action.doAction();
 
 				if (action.hasBeenCancelled()) {
-					throw new ActionExecutionCancelledException();
+					throw new FMLExecutionException(new ActionExecutionCancelledException());
 				}
 
 				return action.getNewFlexoRole();

@@ -51,7 +51,6 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.Flexo;
 import org.openflexo.br.SendBugReportServiceTask;
-import org.openflexo.drm.DefaultHelpRetriever;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
@@ -107,7 +106,6 @@ public class FlexoApplication {
 				null/*UserType.getCurrentUserType().getIdentifier()*/);
 		FlexoHelp.reloadHelpSet();
 		FlexoObjectImpl.setCurrentUserIdentifier(applicationContext.getGeneralPreferences().getUserIdentifier());// Loads the preferences
-		FlexoObjectImpl.setHelpRetriever(new DefaultHelpRetriever(applicationContext.getDocResourceManager()));
 		// Thread myThread = new Thread(new FocusOwnerDisplayer());
 		// myThread.start();
 	}

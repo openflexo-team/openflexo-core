@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FMLInstancePropertyValue;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -62,12 +62,12 @@ public class FMLInstancePropertyValueNode<M extends FMLObject, T extends FMLObje
 
 	private static final Logger logger = Logger.getLogger(FMLInstancePropertyValueNode.class.getPackage().getName());
 
-	public FMLInstancePropertyValueNode(AInstanceQualifiedArgument astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLInstancePropertyValueNode(AInstanceQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FMLInstancePropertyValueNode(FMLInstancePropertyValue<M, T> propertyValue, MainSemanticsAnalyzer analyser) {
-		super(propertyValue, analyser);
+	public FMLInstancePropertyValueNode(FMLInstancePropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(propertyValue, analyzer);
 	}
 
 	@Override
@@ -88,8 +88,8 @@ public class FMLInstancePropertyValueNode<M extends FMLObject, T extends FMLObje
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getName(), SPACE), getArgNameFragment());
-		append(staticContents("", "=", SPACE), getAssignFragment());
+		append(dynamicContents(() -> getModelObject().getProperty().getLabel()), getArgNameFragment());
+		append(staticContents("="), getAssignFragment());
 		append(childContents("", () -> getModelObject().getInstance(), "", Indentation.DoNotIndent));
 	}
 

@@ -100,7 +100,7 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
+		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml");
 		assertNotNull(viewPoint);
 
 		fmlResource = viewPoint.getResource();

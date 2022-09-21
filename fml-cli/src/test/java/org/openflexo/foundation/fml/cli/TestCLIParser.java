@@ -80,6 +80,15 @@ public class TestCLIParser extends OpenflexoTestCase {
 		assertParsable("cd foo");
 		assertParsable("cd foo.ext");
 		assertNotParsable("cd");
+
+		assertParsable("cd resources-resources");
+		assertParsable("cd flexo-test-resources");
+		assertParsable("cd flexo-test-resources/src/main/resources/TestResourceCenter/FML");
+		assertParsable("cd /var/folders/r6/s7gmms4n437gbyr5vpdhb4d80000gn/T/TestResourceCenter4401486062616967125");
+		assertParsable("cd GIT2-1");
+		assertParsable("cd GIT2.1");
+		assertParsable("cd GIT-2.1");
+		assertParsable("cd GIT-2.1.0");
 	}
 
 	@Test
@@ -134,37 +143,38 @@ public class TestCLIParser extends OpenflexoTestCase {
 
 	@Test
 	public void testOpen() throws ParseException {
+		assertParsable("open project.prj");
 		assertParsable("open Project.prj");
 		assertNotParsable("open");
 	}
 
 	@Test
 	public void testLoad() throws ParseException {
-		assertParsable("load [http://full/path/resource/uri]");
-		assertParsable("load [http://full/path/resource/uri.fml]");
-		assertParsable("load [http://ensta-bretagne.fr/cyber/cta/CTA.fml]");
+		assertParsable("load -r [\"http://full/path/resource/uri\"]");
+		assertParsable("load -r [\"http://full/path/resource/uri.fml\"]");
+		assertParsable("load -r [\"http://ensta-bretagne.fr/cyber/cta/CTA.fml\"]");
 		assertNotParsable("load");
-		assertNotParsable("load Foo");
+		assertParsable("load Foo");
 	}
 
 	@Test
 	public void testMore() throws ParseException {
 		assertParsable("more");
-		assertParsable("more Foo");
-		assertParsable("more -r [http://full/path/resource/uri]");
-		assertParsable("more -r[http://full/path/resource/uri.fml]");
-		assertParsable("more -r [http://ensta-bretagne.fr/cyber/cta/CTA.fml]");
-		assertNotParsable("more [http://full/path/resource/uri]");
+		assertParsable("more foo");
+		assertParsable("more -r [\"http://full/path/resource/uri\"]");
+		assertParsable("more -r[\"http://full/path/resource/uri.fml\"]");
+		assertParsable("more -r [\"http://ensta-bretagne.fr/cyber/cta/CTA.fml\"]");
+		assertNotParsable("more [\"http://full/path/resource/uri\"]");
 	}
 
 	@Test
 	public void testEnter() throws ParseException {
-		assertParsable("enter Identifier");
-		assertParsable("enter Full.Qualified.Identifier");
+		assertParsable("enter identifier");
+		assertParsable("enter full.qualified.identifier");
 		assertParsable("enter a.full.expression(args)");
-		assertParsable("enter -r [http://full/path/resource/uri]");
-		assertParsable("enter -r [http://full/path/resource/uri.fml]");
-		assertParsable("enter -r [http://ensta-bretagne.fr/cyber/cta/CTA.fml]");
+		assertParsable("enter -r [\"http://full/path/resource/uri\"]");
+		assertParsable("enter -r [\"http://full/path/resource/uri.fml\"]");
+		assertParsable("enter -r [\"http://ensta-bretagne.fr/cyber/cta/CTA.fml\"]");
 		assertNotParsable("enter");
 		assertNotParsable("enter -r");
 		assertNotParsable("enter expression1 expression2");

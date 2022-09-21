@@ -42,7 +42,6 @@ package org.openflexo;
 import java.io.File;
 
 import org.openflexo.br.BugReportService;
-import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
@@ -91,8 +90,9 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	 * @param playMode
 	 *            true when GINA 'play' mode set to true
 	 */
-	public InteractiveApplicationContext(String localizationRelativePath, boolean devMode, boolean recordMode, boolean playMode) {
-		super(localizationRelativePath, devMode);
+	public InteractiveApplicationContext(String localizationRelativePath, boolean enableDirectoryWatching, boolean devMode,
+			boolean recordMode, boolean playMode) {
+		super(localizationRelativePath, enableDirectoryWatching, devMode);
 	}
 
 	@Override
@@ -142,11 +142,6 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	@Override
 	protected PreferencesService createPreferencesService() {
 		return new PreferencesService();
-	}
-
-	@Override
-	protected DocResourceManager createDocResourceManager() {
-		return new DocResourceManager();
 	}
 
 	@Override

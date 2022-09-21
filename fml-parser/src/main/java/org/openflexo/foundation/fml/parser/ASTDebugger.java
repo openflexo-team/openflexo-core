@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -51,8 +50,13 @@ import org.openflexo.toolbox.StringUtils;
  */
 public class ASTDebugger extends DepthFirstAdapter {
 
-	public ASTDebugger(Start tree) {
+	public static void debug(Node tree) {
+		new ASTDebugger(tree);
+	}
+
+	private ASTDebugger(Node tree) {
 		super();
+		System.out.println("ASTDebugger :: " + tree + " of " + tree.getClass());
 		tree.apply(this);
 	}
 
@@ -61,7 +65,7 @@ public class ASTDebugger extends DepthFirstAdapter {
 	@Override
 	public void defaultIn(Node node) {
 		super.defaultIn(node);
-		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + "> " + node.getClass().getSimpleName());
+		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + "> " + node.getClass().getSimpleName() + " " + node);
 		indent++;
 	}
 

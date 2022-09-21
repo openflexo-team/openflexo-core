@@ -76,7 +76,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTimeTestCase {
 
-	private static VirtualModel viewPoint;
+	private static VirtualModel rootVM;
 	private static VirtualModel vm1;
 	private static FlexoConcept conceptA;
 	private static FlexoConcept conceptB;
@@ -101,14 +101,14 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		instanciateTestServiceManager();
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml");
-		assertNotNull(viewPoint);
-		assertNotNull(vm1 = viewPoint.getVirtualModelNamed("VM1"));
+		rootVM = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestVirtualModelB.fml");
+		assertNotNull(rootVM);
+		assertNotNull(vm1 = rootVM.getVirtualModelNamed("MyVM1"));
 		assertNotNull(conceptA = vm1.getFlexoConcept("ConceptA"));
 		assertNotNull(conceptB = vm1.getFlexoConcept("ConceptB"));
 		assertNotNull(conceptC = vm1.getFlexoConcept("ConceptC"));
 
-		assertVirtualModelIsValid(viewPoint);
+		assertVirtualModelIsValid(rootVM);
 		assertVirtualModelIsValid(vm1);
 
 	}
@@ -132,7 +132,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
 		action.setNewVirtualModelInstanceName("MyView");
 		action.setNewVirtualModelInstanceTitle("Test creation of a new view");
-		action.setVirtualModel(viewPoint);
+		action.setVirtualModel(rootVM);
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		newView = action.getNewVirtualModelInstance();
@@ -170,6 +170,9 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 	@Test
 	@TestOrder(5)
 	public void testPopulateVMI1() {
+
+		// Programmaticaly create new instances, default arguments values are used
+
 		assertNotNull(conceptInstanceA1 = createInstance(conceptA, vmi1, "ConceptInstanceA1"));
 		assertNotNull(conceptInstanceA2 = createInstance(conceptA, vmi1, "ConceptInstanceA2"));
 		assertNotNull(conceptInstanceB1 = createInstance(conceptB, conceptInstanceA1, "ConceptInstanceB1"));
@@ -189,8 +192,8 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		assertEquals("ConceptInstanceA1", conceptInstanceA1.getFlexoPropertyValue("a1"));
 		assertEquals("ConceptInstanceA1", conceptInstanceA1.getFlexoActor("a1"));
-		assertEquals(7, (long) conceptInstanceA1.getFlexoPropertyValue("a2"));
-		assertEquals(7, (long) conceptInstanceA1.getFlexoActor("a2"));
+		assertEquals(7, (int) conceptInstanceA1.getFlexoPropertyValue("a2"));
+		assertEquals(7, (int) conceptInstanceA1.getFlexoActor("a2"));
 
 		assertEquals("ConceptInstanceB1", conceptInstanceB1.getFlexoPropertyValue("b1"));
 		assertEquals("ConceptInstanceB1", conceptInstanceB1.getFlexoActor("b1"));

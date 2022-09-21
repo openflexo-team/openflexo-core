@@ -52,7 +52,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -62,6 +61,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -287,6 +287,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -303,6 +305,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -310,7 +314,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition, VirtualModelInstance<?, ?> vmi,
 				RunTimeEvaluationContext evaluationContext)
-				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
 			Expression indexableTerm = getIndexableTerm(indexableCondition);
 			Expression oppositeTerm = getOppositeTerm(indexableCondition);
 
@@ -390,6 +394,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 						e.printStackTrace();
 					} catch (InvocationTargetException e) {
 						e.printStackTrace();
+					} catch (ReflectiveOperationException e) {
+						e.printStackTrace();
 					}
 				}
 
@@ -442,7 +448,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
 				Expression rightTerm = binaryExpression.getRightArgument();
 				boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
-				if (binaryExpression.getOperator() == BooleanBinaryOperator.EQUALS) {
+				if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
 					if (leftTermUsesSelectedBindingVariable) {
 						if (rightTermUsesSelectedBindingVariable) {
 							return null;
@@ -465,7 +471,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
 				Expression rightTerm = binaryExpression.getRightArgument();
 				boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
-				if (binaryExpression.getOperator() == BooleanBinaryOperator.EQUALS) {
+				if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
 					if (leftTermUsesSelectedBindingVariable) {
 						if (rightTermUsesSelectedBindingVariable)
 							return null;

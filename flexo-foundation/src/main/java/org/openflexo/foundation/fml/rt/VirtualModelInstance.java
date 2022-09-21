@@ -58,11 +58,11 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IndexableContainer;
-import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEvent;
@@ -72,14 +72,13 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -98,7 +97,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -707,7 +705,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container) {
 
 			FlexoConceptInstance returned = buildNewFlexoConceptInstance(concept);
-			if (container != null) {
+			if (container != null && container != this) {
 				container.addToEmbeddedFlexoConceptInstances(returned);
 			}
 			addToFlexoConceptInstances(returned);
@@ -1168,7 +1166,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public Object getValue(BindingVariable variable) {
 
-			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getVirtualModel() != null
+			if (variable == null) {
+				return null;
+			}
+			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME) && getVirtualModel() != null
 					&& getVirtualModel().getContainerVirtualModel() != null) {
 				return getContainerVirtualModelInstance();
 			}
@@ -1207,6 +1208,11 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				public IndexedValueListener(FlexoConceptInstance fci) {
 					super(indexableTerm, new BindingEvaluationContext() {
 						@Override
+						public ExpressionEvaluator getEvaluator() {
+							return new FMLExpressionEvaluator(this);
+						}
+
+						@Override
 						public Object getValue(BindingVariable variable) {
 							if (variable.getVariableName().equals(FetchRequestCondition.SELECTED)) {
 								return fci;
@@ -1222,6 +1228,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 					} catch (NullReferenceException e) {
 						e.printStackTrace();
 					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					} catch (ReflectiveOperationException e) {
 						e.printStackTrace();
 					}
 

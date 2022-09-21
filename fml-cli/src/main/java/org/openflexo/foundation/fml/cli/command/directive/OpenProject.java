@@ -45,14 +45,22 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AOpenDirective;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.parser.node.AOpenDirective;
+import org.openflexo.foundation.fml.parser.node.APathOpenDirective;
+import org.openflexo.foundation.fml.parser.node.AResourceOpenDirective;
+import org.openflexo.foundation.fml.parser.node.POpenDirective;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents open project directive in FML command-line interpreter
@@ -62,84 +70,129 @@ import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(OpenProject.OpenProjectImpl.class)
 @DirectiveDeclaration(
 		keyword = "open",
-		usage = "open <project.prj>",
+		usage = "open <project.prj> | -r <resource>",
 		description = "Open project denoted by supplied path",
-		syntax = "open <path>")
-public class OpenProject extends Directive {
+		syntax = "open <path> | -r <resource>")
+public interface OpenProject extends Directive<AOpenDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(OpenProject.class.getPackage().getName());
+	public File getProjectDirectory();
 
-	private String projectPath;
-	private File projectDirectory;
+	public static abstract class OpenProjectImpl extends DirectiveImpl<AOpenDirective> implements OpenProject {
 
-	public OpenProject(AOpenDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-		projectPath = retrievePath(node.getPath());
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(OpenProject.class.getPackage().getName());
 
-	public File getProjectDirectory() {
-		if (projectDirectory == null) {
-			projectDirectory = new File(getCommandInterpreter().getWorkingDirectory(), projectPath);
-			try {
-				projectDirectory = new File(projectDirectory.getCanonicalPath());
-			} catch (IOException e) {
-				e.printStackTrace();
+		private FlexoProjectResource<?> projectResource;
+		private String projectPath;
+		private File projectDirectory;
+
+		@Override
+		public void create(AOpenDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
+
+			POpenDirective openDirective = node.getOpenDirective();
+
+			if (openDirective instanceof AResourceOpenDirective) {
+				projectResource = (FlexoProjectResource<?>) retrieveResource(((AResourceOpenDirective) openDirective).getReferenceByUri());
+			}
+			else if (openDirective instanceof APathOpenDirective) {
+				projectPath = retrievePath(((APathOpenDirective) openDirective).getPath());
 			}
 		}
-		return projectDirectory;
-	}
 
-	@Override
-	public boolean isValid() {
-		return getProjectDirectory() != null && getProjectDirectory().isDirectory() && getProjectDirectory().exists()
-				&& getProjectDirectory().getName().endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX);
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		if (getProjectDirectory() == null) {
-			return "No project specified";
+		@Override
+		public String toString() {
+			if (StringUtils.isNotEmpty(projectPath)) {
+				return "open " + projectPath;
+			}
+			else if (projectResource != null) {
+				return "open -r [\"" + projectResource.getURI() + "\"]";
+			}
+			return "open";
 		}
-		else if (!getProjectDirectory().exists()) {
-			return "Cannot find project: " + getProjectDirectory().getName();
-		}
-		else if (!getProjectDirectory().getName().endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
-			return getProjectDirectory().getName() + " does not seems to be project: should end with "
-					+ FlexoProjectResourceFactory.PROJECT_SUFFIX;
-		}
-		else if (!getProjectDirectory().isDirectory()) {
-			return getProjectDirectory().getName() + " does not seems to be project: not a directory";
-		}
-		return null;
-	}
 
-	@Override
-	public void execute() {
+		@Override
+		public File getProjectDirectory() {
+			if (projectDirectory == null) {
+				if (StringUtils.isNotEmpty(projectPath)) {
+					projectDirectory = new File(getCommandInterpreter().getWorkingDirectory(), projectPath);
+				}
+				else if (projectResource != null) {
+					System.out.println("projectResource=" + projectResource);
+					projectDirectory = (File) projectResource.getDelegateResourceCenter().getBaseArtefact();
+					System.out.println("projectDirectory=" + projectDirectory);
+				}
+				try {
+					projectDirectory = new File(projectDirectory.getCanonicalPath());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return projectDirectory;
+		}
 
-		if (isValid()) {
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return getProjectDirectory() != null && getProjectDirectory().isDirectory() && getProjectDirectory().exists()
+					&& getProjectDirectory().getName().endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX);
+		}
 
-			for (FlexoResourceCenter<?> rc : getCommandInterpreter().getServiceManager().getResourceCenterService().getResourceCenters()) {
-				if (rc instanceof FlexoProject && ((FlexoProject<?>) rc).getProjectDirectory().equals(getProjectDirectory())) {
-					getOutStream().println("This project is already opened");
-					return;
+		@Override
+		public String invalidCommandReason() {
+			if (getProjectDirectory() == null) {
+				return "No project specified";
+			}
+			else if (!getProjectDirectory().exists()) {
+				return "Cannot find project: " + getProjectDirectory().getName();
+			}
+			else if (!getProjectDirectory().getName().endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
+				return getProjectDirectory().getName() + " does not seems to be project: should end with "
+						+ FlexoProjectResourceFactory.PROJECT_SUFFIX;
+			}
+			else if (!getProjectDirectory().isDirectory()) {
+				return getProjectDirectory().getName() + " does not seems to be project: not a directory";
+			}
+			return null;
+		}
+
+		@Override
+		public FlexoProject<?> execute() throws FMLCommandExecutionException {
+
+			super.execute();
+
+			if (isSyntaxicallyValid()) {
+
+				for (FlexoResourceCenter<?> rc : getCommandInterpreter().getServiceManager().getResourceCenterService()
+						.getResourceCenters()) {
+					if (rc instanceof FlexoProject && ((FlexoProject<?>) rc).getProjectDirectory().equals(getProjectDirectory())) {
+						getOutStream().println("This project is already opened");
+						return (FlexoProject<?>) rc;
+					}
+				}
+
+				try {
+					logger.info(
+							"Open project " + getProjectDirectory() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
+					getOutStream().println("Open project " + getProjectDirectory());
+					FlexoEditor editor = getCommandInterpreter().getServiceManager().getProjectLoaderService()
+							.loadProject(getProjectDirectory());
+					FlexoProject<?> project = editor.getProject();
+					getCommandInterpreter().setWorkingDirectory(getProjectDirectory());
+					getCommandInterpreter().enterProject(project, editor);
+					getOutStream().println("Project " + project.getName() + " successfully opened.");
+					return project;
+				} catch (ProjectInitializerException e) {
+					throw new FMLCommandExecutionException("Project initializing exception", e);
+				} catch (ProjectLoadingCancelledException e) {
+					throw new FMLCommandExecutionException(e);
 				}
 			}
 
-			try {
-				getOutStream().println("Open project " + getProjectDirectory());
-				FlexoEditor editor = getCommandInterpreter().getServiceManager().getProjectLoaderService()
-						.loadProject(getProjectDirectory());
-				FlexoProject<?> project = editor.getProject();
-				getCommandInterpreter().setWorkingDirectory(getProjectDirectory());
-				getOutStream().println("Project " + project.getName() + " successfully opened.");
-			} catch (ProjectInitializerException e) {
-				getErrStream().println("Project initializing exception: " + e.getMessage());
-				e.printStackTrace();
-			} catch (ProjectLoadingCancelledException e) {
-			}
+			return null;
 		}
 	}
 }

@@ -41,9 +41,10 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.BasicProperty;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerExpressionVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerFmlActionVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -57,12 +58,12 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BasicPropertyNode.class.getPackage().getName());
 
-	public BasicPropertyNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BasicPropertyNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public BasicPropertyNode(T property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public BasicPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	protected RawSourceFragment getVisibilityFragment() {
@@ -90,11 +91,49 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 		if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier());
 			}
-			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier());
 			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier());
+			}
+
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getAssignFragment() {
+		if (getASTNode() != null) {
+			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
+			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+				return null;
+			}
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getAssign());
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getAssign());
+			}
+
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getDefaultValueFragment() {
+		if (getASTNode() != null) {
+			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
+			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+				return null;
+			}
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getExpression());
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getFmlActionExp());
+			}
+
 		}
 		return null;
 	}

@@ -44,7 +44,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,11 +90,31 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(vpLib);
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestSingleInheritance.fml");
 		assertNotNull(virtualModel);
-		assertVirtualModelIsValid(virtualModel);
-		conceptA = virtualModel.getFlexoConcept("A");
+
+		conceptA = virtualModel.getFlexoConcept("ConceptA");
 		assertNotNull(conceptA);
-		conceptB = virtualModel.getFlexoConcept("B");
+		conceptB = virtualModel.getFlexoConcept("ConceptB");
 		assertNotNull(conceptB);
+
+		assertTrue(conceptA.isSuperConceptOf(conceptB));
+
+		/*System.out.println(virtualModel.getCompilationUnit().getFMLPrettyPrint());
+		
+		System.out.println("ConceptA BindingModel = " + conceptA.getBindingModel());
+		System.out.println("ConceptB BindingModel = " + conceptB.getBindingModel());
+		
+		System.out.println("parents=" + conceptB.getParentFlexoConcepts());
+		assertSameList(conceptB.getParentFlexoConcepts(), conceptA);
+		
+		CreationScheme createB = conceptB.getCreationSchemes().get(0);
+		Sequence s1 = (Sequence) createB.getControlGraph();
+		Sequence s2 = (Sequence) s1.getControlGraph2();
+		AssignationAction<?> a = (AssignationAction<?>) s2.getControlGraph2();
+		
+		System.out.println(a.getFMLPrettyPrint());
+		System.out.println("a BindingModel = " + a.getBindingModel());*/
+
+		assertVirtualModelIsValid(virtualModel);
 	}
 
 	@Test
@@ -128,10 +147,11 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptA);
+
 		CreationScheme cs = conceptA.getCreationSchemes().get(0);
 		action.setCreationScheme(cs);
 		action.doAction();
@@ -139,13 +159,13 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		a = action.getNewFlexoConceptInstance();
 		assertNotNull(a);
 
-		assertEquals("A", a.execute("this.foo"));
-		assertEquals(42, (long) a.execute("this.doSomething()"));
+		assertEquals("ConceptA", a.execute("this.foo"));
+		assertEquals(42, (int) a.execute("this.doSomething()"));
 	}
 
 	@Test
 	@TestOrder(5)
-	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptB);
@@ -156,7 +176,7 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		b = action.getNewFlexoConceptInstance();
 		assertNotNull(b);
 
-		assertEquals("AB", b.execute("this.foo"));
+		assertEquals("ConceptAConceptB", b.execute("this.foo"));
 		assertEquals(84, (long) b.execute("this.doSomething()"));
 	}
 }

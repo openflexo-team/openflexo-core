@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.WrappedFMLObject;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -52,17 +52,17 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * 
  */
 public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FMLPropertyValue<M, T>, M extends FMLObject, T>
-		extends FMLObjectNode<N, P, MainSemanticsAnalyzer> {
+		extends FMLObjectNode<N, P, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractFMLPropertyValueNode.class.getPackage().getName());
 
-	public AbstractFMLPropertyValueNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractFMLPropertyValueNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractFMLPropertyValueNode(P property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public AbstractFMLPropertyValueNode(P property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -75,11 +75,11 @@ public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FML
 		if (getParent().getModelObject() instanceof WrappedFMLObject) {
 			WrappedFMLObject<M> wrappedObject = (WrappedFMLObject<M>) getParent().getModelObject();
 			wrappedObject.getObject().addToFMLPropertyValues(getModelObject());
-			getModelObject().apply(wrappedObject.getObject());
+			getModelObject().applyPropertyValueToModelObject(wrappedObject.getObject());
 		}
 		else {
 			((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
-			getModelObject().apply((M) getParent().getModelObject());
+			getModelObject().applyPropertyValueToModelObject((M) getParent().getModelObject());
 		}
 		// System.out.println("Tiens faudrait appliquer la propriete " + getModelObject() + " a " + getParent().getModelObject());
 		return this;

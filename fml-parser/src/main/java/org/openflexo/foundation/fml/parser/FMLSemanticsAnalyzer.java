@@ -38,32 +38,64 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
+import org.openflexo.foundation.fml.parser.node.ACompositeCident;
+import org.openflexo.foundation.fml.parser.node.ACompositeCidentAnnotationTag;
+import org.openflexo.foundation.fml.parser.node.ACompositeTident;
+import org.openflexo.foundation.fml.parser.node.ACompositeTidentAnnotationTag;
+import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
+import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PAnnotationTag;
+import org.openflexo.foundation.fml.parser.node.PCompositeCident;
+import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PCompositeTident;
+import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
+import org.openflexo.foundation.fml.parser.node.TCidentifier;
+import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.ChainedCollection;
 
 /**
- * Base class implementing semantics analyzer, based on sablecc grammar visitor<br>
+ * Base class implementing semantics analyzer, based on sablecc FML grammar visitor<br>
+ * 
+ * A {@link FMLSemanticsAnalyzer} basically manages:
+ * <ul>
+ * <li>a {@link FMLModelFactory}</li>
+ * <li>a {@link FMLBindingFactory}</li>
+ * <li>a typing space ({@link AbstractFMLTypingSpace})</li>
+ * <li>an eventual {@link FragmentManager}</li>
+ * </ul>
  * 
  * @author sylvain
  * 
@@ -73,7 +105,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	private FMLModelFactory factory;
 
 	// Stack of FMLObjectNode beeing build during semantics analyzing
-	protected Stack<FMLObjectNode<?, ?, ?>> fmlNodes = new Stack<>();
+	protected Stack<ObjectNode<?, ?, ?>> fmlNodes = new Stack<>();
 
 	private Node rootNode;
 
@@ -82,71 +114,128 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		this.rootNode = rootNode;
 	}
 
-	public final FMLModelFactory getFactory() {
-		return factory;
-	}
+	/**
+	 * Return {@link FMLCompilationUnit} we are dealing with, if any
+	 * 
+	 * @return
+	 */
+	public abstract FMLCompilationUnit getCompilationUnit();
 
-	public final void setFactory(FMLModelFactory factory) {
-		this.factory = factory;
-	}
+	/**
+	 * Return applicable {@link AbstractFMLTypingSpace} in the context of this {@link FMLSemanticsAnalyzer}
+	 * 
+	 * @return
+	 */
+	public abstract AbstractFMLTypingSpace getTypingSpace();
 
-	public abstract MainSemanticsAnalyzer getMainAnalyzer();
+	/**
+	 * Return applicable {@link FMLBindingFactory} in the context of this {@link FMLSemanticsAnalyzer}
+	 * 
+	 * @return
+	 */
+	public abstract FMLBindingFactory getFMLBindingFactory();
 
-	public Node getRootNode() {
-		return rootNode;
-	}
-
-	public final FlexoServiceManager getServiceManager() {
-		if (getFactory() != null) {
-			return getFactory().getServiceManager();
-		}
-		return null;
-	}
-
-	protected final void finalizeDeserialization(FMLObjectNode<?, ?, ?> node) {
-		node.finalizeDeserialization();
-		for (P2PPNode<?, ?> child : node.getChildren()) {
-			finalizeDeserialization((FMLObjectNode<?, ?, ?>) child);
-		}
-	}
-
-	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
-		if (!fmlNodes.isEmpty()) {
-			FMLObjectNode<?, ?, ?> current = fmlNodes.peek();
-			current.addToChildren(fmlNode);
-		}
-		fmlNodes.push(fmlNode);
-	}
-
-	protected <N extends FMLObjectNode<?, ?, ?>> N pop() {
-		N builtFMLNode = (N) fmlNodes.pop();
-		builtFMLNode.deserialize();
-		// builtFMLNode.initializePrettyPrint();
-		return builtFMLNode;
-	}
-
-	public FMLObjectNode<?, ?, ?> peek() {
-		if (!fmlNodes.isEmpty()) {
-			return fmlNodes.peek();
-		}
-		return null;
-	}
-
-	public FMLObjectNode<?, ?, ?> getCurrentNode() {
-		return peek();
-	}
-
-	public FragmentManager getFragmentManager() {
-		return getMainAnalyzer().getFragmentManager();
-	}
+	/**
+	 * Return applicable {@link FragmentManager} in the context of this {@link FMLSemanticsAnalyzer}, if any<br>
+	 * (might be null if fragment management is not applicable to this analyzer)
+	 * 
+	 * @return
+	 */
+	public abstract FragmentManager getFragmentManager();
 
 	/**
 	 * Return original version of last serialized raw source, FOR THE ENTIRE compilation unit
 	 * 
 	 * @return
 	 */
-	public RawSource getRawSource() {
-		return getMainAnalyzer().getRawSource();
+	public abstract RawSource getRawSource();
+
+	/**
+	 * Retrieve (creates when required) a new {@link ObjectNode} for supplied AST node
+	 * 
+	 * @param <N>
+	 *            type of AST node
+	 * @param <FMLN>
+	 *            type of {@link ObjectNode}
+	 * @param astNode
+	 *            the AST node we are considering
+	 * @param function
+	 *            a function returning the {@link ObjectNode} to build from AST node, when required
+	 * @return
+	 */
+	public abstract <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function);
+
+	/**
+	 * Called when an issue was found, handled by the adequate FMLSemanticsManager implementation
+	 * 
+	 * @param errorMessage
+	 * @param fragment
+	 * @param startPosition
+	 */
+	public abstract void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition);
+
+	/**
+	 * Return a list of all semantics analyzing issues found in the context of this {@link FMLSemanticsAnalyzer}
+	 * 
+	 * @return
+	 */
+	public abstract List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
+
+	// Not sure it is still required
+	// TODO: check this
+	@Deprecated
+	public abstract FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer();
+
+	public Node getRootNode() {
+		return rootNode;
+	}
+
+	public final FMLModelFactory getModelFactory() {
+		return factory;
+	}
+
+	public final void setModelFactory(FMLModelFactory factory) {
+		this.factory = factory;
+	}
+
+	public final FlexoServiceManager getServiceManager() {
+		if (getModelFactory() != null) {
+			return getModelFactory().getServiceManager();
+		}
+		return null;
+	}
+
+	protected final void finalizeDeserialization(ObjectNode<?, ?, ?> node) {
+		node.finalizeDeserialization();
+		for (P2PPNode<?, ?> child : node.getChildren()) {
+			finalizeDeserialization((ObjectNode<?, ?, ?>) child);
+		}
+	}
+
+	protected void push(ObjectNode<?, ?, ?> fmlNode) {
+		if (!fmlNodes.isEmpty()) {
+			ObjectNode<?, ?, ?> current = fmlNodes.peek();
+			current.addToChildren(fmlNode);
+		}
+		fmlNodes.push(fmlNode);
+	}
+
+	protected <N extends ObjectNode<?, ?, ?>> N pop() {
+		N builtFMLNode = (N) fmlNodes.pop();
+		builtFMLNode.deserialize();
+		// builtFMLNode.initializePrettyPrint();
+		return builtFMLNode;
+	}
+
+	public <N extends ObjectNode<?, ?, ?>> N peek() {
+		if (!fmlNodes.isEmpty()) {
+			return (N) fmlNodes.peek();
+		}
+		return null;
+	}
+
+	public ObjectNode<?, ?, ?> getCurrentNode() {
+		return peek();
 	}
 
 	/**
@@ -162,7 +251,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 					getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length()));
 		}
 		else {
-			return getMainAnalyzer().getFragmentManager().retrieveFragment(node);
+			return getFragmentManager().retrieveFragment(node);
 		}
 	}
 
@@ -186,11 +275,104 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		ChainedCollection<Node> collection = new ChainedCollection<>();
 		collection.add(node);
 		collection.add(otherNodes);
-		return getMainAnalyzer().getFragmentManager().getFragment(collection);
+		return getFragmentManager().getFragment(collection);
 	}
 
 	public String getText(Node node) {
 		return getFragment(node).getRawText();
+	}
+
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+		List<String> returned = new ArrayList<>();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.add(((AIdentifierPrefix) p).getLidentifier().getText());
+			}
+		}
+		returned.add(identifier.getText());
+		return returned;
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+		}
+		returned.append(identifier.getText());
+		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
+		if (compositeIdentifier instanceof ANormalCompositeIdent) {
+			return makeFullQualifiedIdentifier(((ANormalCompositeIdent) compositeIdentifier).getPrefixes(),
+					((ANormalCompositeIdent) compositeIdentifier).getIdentifier());
+		}
+		if (compositeIdentifier instanceof AConstantCompositeIdent) {
+			return makeFullQualifiedIdentifier(((AConstantCompositeIdent) compositeIdentifier).getPrefixes(),
+					((AConstantCompositeIdent) compositeIdentifier).getIdentifier());
+		}
+		return null;
+	}
+
+	public String makeFullQualifiedIdentifier(PAnnotationTag annotationTag) {
+		if (annotationTag instanceof ACompositeCidentAnnotationTag) {
+			return makeFullQualifiedIdentifier(((ACompositeCidentAnnotationTag) annotationTag).getCompositeCident());
+		}
+		if (annotationTag instanceof ACompositeTidentAnnotationTag) {
+			return makeFullQualifiedIdentifier(((ACompositeTidentAnnotationTag) annotationTag).getCompositeTident());
+		}
+		return null;
+	}
+
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
+		List<String> returned = new ArrayList<>();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.add(((AIdentifierPrefix) p).getLidentifier().getText());
+			}
+		}
+		returned.add(identifier.getText());
+		return returned;
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+		}
+		returned.append(identifier.getText());
+		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TCidentifier identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+		}
+		returned.append(identifier.getText());
+		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeTident) {
+			return makeFullQualifiedIdentifier(((ACompositeTident) compositeIdentifier).getPrefixes(),
+					((ACompositeTident) compositeIdentifier).getIdentifier());
+		}
+		return null;
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeCident compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeCident) {
+			return makeFullQualifiedIdentifier(((ACompositeCident) compositeIdentifier).getPrefixes(),
+					((ACompositeCident) compositeIdentifier).getIdentifier());
+		}
+		return null;
 	}
 
 	// Hack used to detect that we are not deserializing FML property values but a MatchingCriteria
@@ -210,8 +392,36 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		insideMatchAction = false;
 	}
 
+	// Hack used to detect that we are deserializing a new_instance
+	// TODO fix this hack
+	protected boolean insideNewInstance = false;
+
+	@Override
+	public void inASimpleNewInstance(ASimpleNewInstance node) {
+		super.inASimpleNewInstance(node);
+		insideNewInstance = true;
+	}
+
+	@Override
+	public void outASimpleNewInstance(ASimpleNewInstance node) {
+		super.outASimpleNewInstance(node);
+		insideNewInstance = false;
+	}
+
+	@Override
+	public void inAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
+		super.inAFullQualifiedNewInstance(node);
+		insideNewInstance = true;
+	}
+
+	@Override
+	public void outAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
+		super.outAFullQualifiedNewInstance(node);
+		insideNewInstance = false;
+	}
+
 	protected boolean handleFMLArgument() {
-		return !insideMatchAction;
+		return !insideMatchAction && !insideNewInstance;
 	}
 
 	@Override
@@ -219,7 +429,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inASimpleQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -237,7 +447,8 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAInstanceQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLInstancePropertyValueNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new FMLInstancePropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -255,7 +466,8 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAListInstancesQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLInstancesListPropertyValueNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new FMLInstancesListPropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -273,7 +485,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inASimpleQualifiedInstance(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -291,7 +503,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAFullQualifiedQualifiedInstance(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 

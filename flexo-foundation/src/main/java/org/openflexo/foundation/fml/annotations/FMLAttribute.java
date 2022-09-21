@@ -63,6 +63,10 @@ public @interface FMLAttribute {
 	 */
 	public String value();
 
+	public int index() default 64;
+
+	public String description() default "";
+
 	/**
 	 * Indicates if whether this property is required
 	 * 

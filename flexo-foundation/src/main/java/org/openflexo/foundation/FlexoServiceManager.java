@@ -283,7 +283,7 @@ public abstract class FlexoServiceManager {
 
 	protected abstract FlexoProjectReferenceLoader createProjectReferenceLoader();
 
-	protected abstract FlexoResourceCenterService createResourceCenterService();
+	protected abstract FlexoResourceCenterService createResourceCenterService(boolean enableDirectoryWatching);
 
 	protected abstract TechnologyAdapterService createTechnologyAdapterService(FlexoResourceCenterService flexoResourceCenterService);
 

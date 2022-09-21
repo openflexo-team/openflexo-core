@@ -40,9 +40,13 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.ExpressionProperty;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -61,12 +65,12 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 
 	private static final Logger logger = Logger.getLogger(ExpressionPropertyNode.class.getPackage().getName());
 
-	public ExpressionPropertyNode(AExpressionPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ExpressionPropertyNode(AExpressionPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ExpressionPropertyNode(ExpressionProperty<?> property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public ExpressionPropertyNode(ExpressionProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -78,8 +82,13 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
 		}
-		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
-		returned.setExpression(makeBinding(astNode.getExpressionValue(), returned));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
+		// returned.setExpression(makeBinding(astNode.getExpressionValue(), returned));
+
+		DataBinding<Object> expression = ExpressionFactory.makeDataBinding(astNode.getExpressionValue(), returned,
+				BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
+		returned.setExpression(expression);
+
 		return returned;
 	}
 

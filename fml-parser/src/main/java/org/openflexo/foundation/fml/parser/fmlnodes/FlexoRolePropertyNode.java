@@ -38,15 +38,19 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
@@ -65,16 +69,18 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 
 	private static final Logger logger = Logger.getLogger(FlexoRolePropertyNode.class.getPackage().getName());
 
-	public FlexoRolePropertyNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoRolePropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoRolePropertyNode(R modelSlot, MainSemanticsAnalyzer analyser) {
-		super(modelSlot, analyser);
+	public FlexoRolePropertyNode(R modelSlot, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(modelSlot, analyzer);
 	}
 
 	@Override
 	public R buildModelObjectFromAST(PInnerConceptDecl astNode) {
+
+		Type type = TypeFactory.makeType(getPType(), getSemanticsAnalyzer().getTypingSpace());
 
 		Class<? extends FlexoRole<?>> roleClass = null;
 		if (astNode instanceof AFmlInnerConceptDecl) {
@@ -84,29 +90,24 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 			roleClass = getFMLFactory().getRoleClass(((AFmlFullyQualifiedInnerConceptDecl) astNode).getTaId(),
 					((AFmlFullyQualifiedInnerConceptDecl) astNode).getRole());
 		}
+		if (astNode instanceof AJavaInnerConceptDecl && type instanceof FlexoConceptInstanceType) {
+			// In this case this is a FlexoConceptInstanceRole
+			roleClass = FlexoConceptInstanceRole.class;
+		}
+		if (roleClass == null) {
+			throwIssue("Cannot find roleClass", getFragment(astNode));
+			return null;
+		}
+
 		R returned = (R) getFactory().newInstance(roleClass);
-		if (astNode instanceof AFmlInnerConceptDecl) {
-			returned.setVisibility(getVisibility(((AFmlInnerConceptDecl) astNode).getVisibility()));
-			try {
-				returned.setName(((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
-			} catch (InvalidNameException e) {
-				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
-			}
-			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
-			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
-			returned.setType(type);
+		returned.setVisibility(getVisibility(getPVisibility()));
+		try {
+			returned.setName(getLidentifierName().getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + (getLidentifierName().getText()));
 		}
-		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
-			try {
-				returned.setName(((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
-			} catch (InvalidNameException e) {
-				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
-			}
-			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
-			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
-			returned.setType(type);
-		}
+		returned.setCardinality(getCardinality(getPCardinality()));
+		returned.setType(type);
 		return returned;
 	}
 
@@ -118,23 +119,41 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
-		append(dynamicContents(SPACE,() -> getModelObject().getName(), SPACE), getNameFragment());
+		append(dynamicContents(SPACE, () -> getModelObject().getName(), SPACE), getNameFragment());
+
+		// TODO : handle case where no parameter is required and where no 'with' clause is required
+		/*when(() -> requiresWithClause())
+				.thenAppend(staticContents("", "with", SPACE), null)
+				.thenAppend(when(() -> isFullQualified())
+						.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
+						.thenAppend(staticContents("::"), getColonColonFragment()))
+				.thenAppend(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment())
+				.thenAppend(when(() -> hasFMLProperties())
+						.thenAppend(staticContents("("), getFMLParametersLParFragment())
+						.thenAppend(childrenContents("", "",() -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "", Indentation.DoNotIndent, FMLPropertyValue.class))
+						.thenAppend(staticContents(")"), getFMLParametersRParFragment()))
+				.thenAppend(staticContents(";"), getSemiFragment());*/
+
 		append(staticContents("", "with", SPACE), getWithFragment());
 		when(() -> isFullQualified())
-		.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
-		.thenAppend(staticContents("::"), getColonColonFragment());
+				.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
+				.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
 		when(() -> hasFMLProperties())
-		.thenAppend(staticContents("("), getFMLParametersLParFragment())
-		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
-				FMLPropertyValue.class))
-		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+				.thenAppend(staticContents("("), getFMLParametersLParFragment())
+				.thenAppend(childrenContents("", "",() -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "", Indentation.DoNotIndent, FMLPropertyValue.class))
+				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 		append(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 	}
+
+	/*public boolean requiresWithClause() {
+		System.out.println("HasFMLProperties for " + getASTNode() + "=" + hasFMLProperties());
+		return true;
+	}*/
 
 }

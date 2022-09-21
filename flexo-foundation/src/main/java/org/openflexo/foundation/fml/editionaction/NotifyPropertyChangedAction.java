@@ -129,6 +129,8 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 
 			// System.out.println("FirePropertyChangeSupport for " + hasPCSupport + " propertyName=" + getPropertyName());

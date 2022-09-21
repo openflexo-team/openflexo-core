@@ -1,0 +1,19 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestAssignment.fml")
+model TestAssignment {
+
+	concept MyConceptA {
+		String foo;
+		String foo2;
+		int i;
+		
+		create () {
+			log("Creating MyConceptA instance");
+			foo = foo2 = "foo";
+			i=1;
+			i=i+=2;
+		}
+	}
+
+}

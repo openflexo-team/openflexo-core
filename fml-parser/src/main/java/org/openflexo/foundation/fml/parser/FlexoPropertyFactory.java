@@ -39,12 +39,16 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.BasicPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
@@ -68,7 +72,7 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoPropertyFactory.class.getPackage().getName());
 
-	public FlexoPropertyFactory(MainSemanticsAnalyzer analyzer) {
+	public FlexoPropertyFactory(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(analyzer);
 	}
 
@@ -76,9 +80,17 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 		return new AbstractPropertyNode(node, getAnalyzer());
 	}
 
-	BasicPropertyNode<?> makeBasicPropertyNode(AJavaInnerConceptDecl node) {
-		Type type = getTypeFactory().makeType(node.getType());
-		if (getTypeFactory().getPrimitiveType(type) != null) {
+	FlexoPropertyNode<?, ?> makeBasicPropertyNode(AJavaInnerConceptDecl node) {
+		Type type = TypeFactory.makeType(node.getType(), getAnalyzer().getTypingSpace());
+
+		if (type instanceof VirtualModelInstanceType) {
+			return new ModelSlotPropertyNode(node, getAnalyzer());
+		}
+		else if (type instanceof FlexoConceptInstanceType) {
+			return new FlexoRolePropertyNode(node, getAnalyzer());
+		}
+
+		if (TypeUtils.isPrimitive(type) || type.equals(String.class) || type.equals(Date.class)) {
 			return new PrimitiveRoleNode(node, getAnalyzer());
 		}
 		else {

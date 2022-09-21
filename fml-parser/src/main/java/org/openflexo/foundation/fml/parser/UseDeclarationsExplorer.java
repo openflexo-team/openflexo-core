@@ -53,11 +53,11 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  */
 public class UseDeclarationsExplorer extends DepthFirstAdapter {
 
-	private final MainSemanticsAnalyzer analyzer;
+	private final FMLCompilationUnitSemanticsAnalyzer analyzer;
 
 	private List<Class<? extends ModelSlot<?>>> modelSlotClasses = new ArrayList<>();
 
-	public UseDeclarationsExplorer(MainSemanticsAnalyzer analyzer) {
+	public UseDeclarationsExplorer(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super();
 		this.analyzer = analyzer;
 	}
@@ -72,8 +72,7 @@ public class UseDeclarationsExplorer extends DepthFirstAdapter {
 		super.inAUseDecl(node);
 		Class<? extends ModelSlot<?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class
-					.forName(analyzer.getTypeFactory().makeFullQualifiedIdentifier(node.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
 			modelSlotClasses.add(modelSlotClass);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

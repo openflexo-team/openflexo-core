@@ -85,8 +85,8 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testVirtualModelView() {
-		validateFIB("Fib/FML/VirtualModelView.fib");
+	public void testCompilationUnitView() {
+		validateFIB("Fib/FML/CompilationUnitView.fib");
 	}
 
 }

@@ -50,7 +50,7 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
  * @author sylvain
  * 
  */
-public interface FMLPrettyPrintDelegate<T extends FMLObject> extends PrettyPrintDelegate<T> {
+public interface FMLPrettyPrintDelegate<T> extends PrettyPrintDelegate<T> {
 
 	/**
 	 * Return fragment matching AST node
@@ -74,38 +74,5 @@ public interface FMLPrettyPrintDelegate<T extends FMLObject> extends PrettyPrint
 
 	public enum FragmentContext {
 		NAME, URI, HEADER
-	}
-
-	public static class SemanticAnalysisIssue {
-		private String message;
-		private int line = -1;
-		private int offset = -1;
-		private int length = -1;
-
-		public SemanticAnalysisIssue(String errorMessage, RawSourceFragment fragment) {
-			super();
-			this.message = errorMessage;
-			if (fragment != null) {
-				this.line = fragment.getStartPosition().getLine();
-				this.offset = fragment.getStartPosition().getOffset();
-				this.length = fragment.getLength();
-			}
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public int getLine() {
-			return line;
-		}
-
-		public int getOffset() {
-			return offset;
-		}
-
-		public int getLength() {
-			return length;
-		}
 	}
 }

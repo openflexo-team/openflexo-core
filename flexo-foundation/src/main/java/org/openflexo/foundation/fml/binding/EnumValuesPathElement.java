@@ -42,24 +42,28 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.localization.FlexoLocalization;
 
-public class EnumValuesPathElement extends SimplePathElement {
+public class EnumValuesPathElement extends SimplePathElementImpl<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(EnumValuesPathElement.class.getPackage().getName());
 
 	private FlexoEnum accessedEnum;
 
-	public EnumValuesPathElement(IBindingPathElement parent, FlexoEnum accessedEnum) {
-		super(parent, "values", new ParameterizedTypeImpl(List.class, accessedEnum.getInstanceType()));
+	public EnumValuesPathElement(IBindingPathElement parent, FlexoEnum accessedEnum, Bindable bindable) {
+		super(parent, FMLBindingFactory.ENUM_VALUES_PROPERTY_NAME, new ParameterizedTypeImpl(List.class, accessedEnum.getInstanceType()),
+				bindable);
 		this.accessedEnum = accessedEnum;
+		setProperty(FMLBindingFactory.ENUM_VALUES_PROPERTY);
 	}
 
 	@Override
@@ -85,6 +89,16 @@ public class EnumValuesPathElement extends SimplePathElement {
 	@Override
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
+		// Not applicable
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
 		// Not applicable
 	}
 

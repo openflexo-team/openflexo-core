@@ -42,10 +42,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.AbstractProperty;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerExpressionVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerFmlActionVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -58,12 +60,12 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractPropertyNode.class.getPackage().getName());
 
-	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractPropertyNode(AbstractProperty<?> property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public AbstractPropertyNode(AbstractProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -75,7 +77,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setType(getTypeFactory().makeType(astNode.getType()));
+		returned.setType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 		return returned;
 	}
 
@@ -108,10 +110,13 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 		if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier());
 			}
-			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier());
+			}
+			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier());
 			}
 		}
 		return null;

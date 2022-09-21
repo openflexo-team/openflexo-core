@@ -38,13 +38,13 @@
 				trackViewPortHeight="true" layout="gridbag" name="ParametersPanel">
 				<Table id="10" showFooter="true" manageDynamicModel="true"
 					selectionMode="MultipleIntervalSelection"
-					data="data.parameters" rightClickAction="controller.rightClick(ParametersTable.selected,event)"
+					data="data.parameters" rightClickAction="controller.rightClick(parametersTable.selected,event)"
 					boundToSelectionManager="true" index="0" localize="true"
 					font="SansSerif.plain,0,11"
 					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=1.0;x=0;y=0)"
 					iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter"
 					backgroundNonSelectionColor="255,255,255" autoSelectFirstRow="true"
-					name="ParametersTable" backgroundSecondarySelectionColor="178,215,255">
+					name="parametersTable" backgroundSecondarySelectionColor="178,215,255">
 					<IconColumn id="11" data="controller.iconForObject(iterator)"
 						displayTitle="false" title="icon" name="icon" columnWidth="20"
 						resizable="false" showIcon="false" />
@@ -64,33 +64,33 @@
 					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
 					layout="box" name="ParametersOrderingPanel">
 					<Button id="16"
-						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0)"
+						enable="(parametersTable.selected != null) &amp;&amp;(parametersTable.selected.index &gt; 0)"
 						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
-						action="data.parameterFirst(ParametersTable.selected)" index="0"
+						action="data.parameterFirst(parametersTable.selected)" index="0"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
 						label="">
 					</Button>
 					<Button id="18"
-						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0)"
+						enable="(parametersTable.selected != null) &amp;&amp;(parametersTable.selected.index &gt; 0)"
 						buttonIcon="controller.arrowUp" buttonType="Trigger" name="Button2"
-						action="data.parameterUp(ParametersTable.selected)" index="1"
+						action="data.parameterUp(parametersTable.selected)" index="1"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
 						label="">
 					</Button>
 					<Button id="20"
-						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (data.parameters.size - 1))"
+						enable="(parametersTable.selected != null) &amp;&amp;(parametersTable.selected.index &lt; (data.parameters.size - 1))"
 						buttonIcon="controller.arrowDown" buttonType="Trigger" name="Button3"
-						action="data.parameterDown(ParametersTable.selected)" index="2"
+						action="data.parameterDown(parametersTable.selected)" index="2"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
 						label="">
 					</Button>
 					<Button id="22"
-						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (data.parameters.size - 1))"
+						enable="(parametersTable.selected != null) &amp;&amp;(parametersTable.selected.index &lt; (data.parameters.size - 1))"
 						buttonIcon="controller.arrowBottom" buttonType="Trigger" name="Button4"
-						action="data.parameterLast(ParametersTable.selected)" index="3"
+						action="data.parameterLast(parametersTable.selected)" index="3"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
 						label="">
@@ -98,7 +98,7 @@
 				</Panel>
 				<Panel id="24" darkLevel="2" borderLeft="10" sizeAdjustment="OriginalSize"
 					border="rounded3d" borderRight="10" trackViewPortWidth="true"
-					index="2" align="left" enable="ParametersTable.selected != null"
+					index="2" align="left" enable="parametersTable.selected != null"
 					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
 					borderBottom="10" titleFont="SansSerif,0,11" borderTop="10"
 					trackViewPortHeight="true" layout="twocols" name="DetailsPanel">
@@ -106,7 +106,7 @@
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="parameter_name" />
 					<TextField id="26" columns="7" name="TextField"
-						data="ParametersTable.selected.name"
+						data="parametersTable.selected.name"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
 					<Label id="27" name="Label2" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -114,7 +114,7 @@
 					<Custom id="28" manageDynamicModel="true"
 						dataClassForComponent="java.lang.reflect.Type"
 						componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
-						name="TypeSelector" data="ParametersTable.selected.type" localize="true"
+						name="TypeSelector" data="parametersTable.selected.type" localize="true"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
 						<Assignment variable="component.customTypeManager"
 							value="controller.serviceManager.technologyAdapterService" />
@@ -124,23 +124,23 @@
 					<Label id="30" name="Label3" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="widget" />
-					<DropDown id="31" data="ParametersTable.selected.widget"
+					<DropDown id="31" data="parametersTable.selected.widget"
 						localize="true"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 						showText="true"
 						iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter$WidgetType"
 						showIcon="false" autoSelectFirstRow="true" name="dropdown"
-						list="ParametersTable.selected.availableWidgetTypes" />
+						list="parametersTable.selected.availableWidgetTypes" />
 					<Label id="32"
-						visible="(ParametersTable.selected.widget = &quot;CUSTOM_WIDGET&quot;)"
+						visible="(parametersTable.selected.widget == &quot;CUSTOM_WIDGET&quot;)"
 						name="Label4" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="container" />
 					<Custom id="33"
-						visible="(ParametersTable.selected.widget = &quot;CUSTOM_WIDGET&quot;)"
+						visible="(parametersTable.selected.widget == &quot;CUSTOM_WIDGET&quot;)"
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-						name="CustomSelector" data="ParametersTable.selected.container"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+						name="CustomSelector" data="parametersTable.selected.container"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="34" mandatory="true" variable="component.bindable" />
 					</Custom>
@@ -150,19 +150,19 @@
 					<Custom id="36" manageDynamicModel="true"
 
 						dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-						name="CustomSelector2" data="ParametersTable.selected.defaultValue"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+						name="CustomSelector2" data="parametersTable.selected.defaultValue"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="37" mandatory="true" variable="component.bindable" />
 					</Custom>
-					<Label id="38" visible="ParametersTable.selected.isListType"
+					<Label id="38" visible="parametersTable.selected.isListType"
 						name="Label6" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="list_of_values" />
-					<Custom id="39" visible="ParametersTable.selected.isListType"
+					<Custom id="39" visible="parametersTable.selected.isListType"
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-						name="CustomSelector3" data="ParametersTable.selected.list"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+						name="CustomSelector3" data="parametersTable.selected.list"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="40" mandatory="true" variable="component.bindable" />
 					</Custom>
@@ -170,14 +170,14 @@
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="required" />
 					<CheckBox id="42" selected="true" name="checkbox"
-						data="ParametersTable.selected.isRequired"
+						data="parametersTable.selected.isRequired"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
 					<Label id="43" name="Label8" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="description" />
 					<TextArea id="44" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 						useScrollBar="true" columns="8" name="TextArea2"
-						data="ParametersTable.selected.description" text="TextArea"
+						data="parametersTable.selected.description" text="TextArea"
 						constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 				</Panel>
@@ -204,7 +204,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="steps_number" readOnly="false" />
 			<Custom index="21" manageDynamicModel="true" useScrollBar="false" visible="data.longRunningAction"
-				data="data.stepsNumber" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				data="data.stepsNumber" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				opaque="false" name="StepsNumberCC"
 				localize="true" 
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"

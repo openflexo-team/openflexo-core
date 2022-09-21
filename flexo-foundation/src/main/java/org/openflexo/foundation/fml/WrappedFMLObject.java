@@ -73,6 +73,22 @@ public interface WrappedFMLObject<O extends FMLObject> extends FMLPrettyPrintabl
 
 		protected static final Logger logger = FlexoLogger.getLogger(WrappedFMLObject.class.getPackage().getName());
 
+		private O object;
+
+		@Override
+		public O getObject() {
+			return object;
+		}
+
+		@Override
+		public void setObject(O object) {
+			if ((object == null && this.object != null) || (object != null && !object.equals(this.object))) {
+				O oldValue = this.object;
+				this.object = object;
+				getPropertyChangeSupport().firePropertyChange("object", oldValue, object);
+			}
+		}
+
 		@Override
 		public FMLCompilationUnit getResourceData() {
 			if (getObject() != null) {
@@ -111,6 +127,37 @@ public interface WrappedFMLObject<O extends FMLObject> extends FMLPrettyPrintabl
 				return getObject().getFMLProperty(propertyName, modelFactory);
 			}
 			return null;
+		}
+
+		@Override
+		public String toString() {
+			return "WrappedFMLObjectImpl@" + Integer.toHexString(hashCode()) + "[" + getObject() + "]";
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((object == null) ? 0 : object.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			WrappedFMLObjectImpl other = (WrappedFMLObjectImpl) obj;
+			if (object == null) {
+				if (other.object != null)
+					return false;
+			}
+			else if (!object.equals(other.object))
+				return false;
+			return true;
 		}
 
 	}

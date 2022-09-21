@@ -1,0 +1,58 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.lang.String;
+
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM2.fml"] as MyVM2;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml")
+@Version("0.1")
+model MatchingVM2 {
+	MyVM2 _model with ModelInstance(isRequired = true);
+
+	create::_create (required MyVM2 _model) {
+		_model = parameters._model;
+	}
+
+	synchronize () {
+		MatchingSet matchingSet = begin match MatchedConceptA from (this);
+		for (ConceptA conceptA : select ConceptA from (_model)) {
+			MatchedConceptA matchedA = match MatchedConceptA in (matchingSet) from (this) where (conceptA=conceptA) create::_create((conceptA.nameA + "-matched"),conceptA);
+			matchedA.synchronize();
+		}
+		end match MatchedConceptA in (matchingSet) delete::_delete();
+	}
+
+	concept MatchedConceptA {
+		ConceptA conceptA with ConceptInstance(virtualModelInstance = _model);
+		String name;
+		@UI(
+			@TextField(value="aName")
+		)
+		create::_create (required String aName, required ConceptA aConceptA) {
+			conceptA = parameters.aConceptA;
+			name = parameters.aName;
+		}
+		delete::_delete () {
+		}
+		synchronize () {
+			MatchingSet matchingSet = begin match MatchedConceptB from (this);
+			for (ConceptB conceptB : select ConceptB from (conceptA)) {
+				MatchedConceptB matchedConceptB = match MatchedConceptB in (matchingSet) from (this) where (conceptB=conceptB) create::_create((conceptB.nameB + "-matched"),conceptB);
+			}
+			end match MatchedConceptB in (matchingSet) delete::_delete();
+		}
+		concept MatchedConceptB {
+			ConceptB conceptB with ConceptInstance(virtualModelInstance = _model);
+			String name;
+			@UI(
+				@TextField(value="aName")
+			)
+			create::_create (required String aName, required ConceptB aConceptB) {
+				conceptB = parameters.aConceptB;
+				name = parameters.aName;
+			}
+			delete::_delete () {
+			}
+		}
+	}
+}

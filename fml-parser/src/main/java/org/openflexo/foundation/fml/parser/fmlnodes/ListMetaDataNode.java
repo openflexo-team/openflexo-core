@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AListAnnotationAnnotation;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -49,19 +49,19 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class ListMetaDataNode extends AbstractMetaDataNode<AListAnnotationAnnotation, ListMetaData, MainSemanticsAnalyzer> {
+public class ListMetaDataNode extends AbstractMetaDataNode<AListAnnotationAnnotation, ListMetaData, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public ListMetaDataNode(AListAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ListMetaDataNode(AListAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ListMetaDataNode(ListMetaData metaData, MainSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public ListMetaDataNode(ListMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override
 	public ListMetaData buildModelObjectFromAST(AListAnnotationAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
+		String key = makeFullQualifiedIdentifier(astNode.getTag());
 
 		ListMetaData returned = getFactory().newListMetaData(key);
 		return returned;
@@ -81,7 +81,7 @@ public class ListMetaDataNode extends AbstractMetaDataNode<AListAnnotationAnnota
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getTag());
 		}
 		return null;
 	}

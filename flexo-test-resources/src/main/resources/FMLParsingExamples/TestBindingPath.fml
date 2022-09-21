@@ -1,0 +1,63 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+    Object a;
+
+	testSimpleValue() {
+		a = 42;
+	}
+
+	testSimpleExpression() {
+		a.b = c+42;
+	}
+
+	testSimpleBindingPath() {
+		a = b.c;
+	}
+
+	testMethodCall() {
+		a = b();
+	}
+
+	testMethodCall2() {
+		a = b.c.d();
+	}
+
+	testMethodCall3() {
+		a = b.c().d().e;
+	}
+
+	testMethodCall4() {
+		a = super();
+	}
+
+	testMethodCall5() {
+		a = super.init();
+	}
+
+	testMethodCallWithArguments() {
+		a = b.c(1);
+	}
+	
+	/*testMethodCallWithArguments2() {
+		a = b(c.d.e());
+	}*/
+	
+	/*testMethodCallWithArguments3() {
+		a = b.c.d(e,f+1);
+	}*/
+	
+	/*testNewInstance() {
+	    a = new Toto(b,c.d+e);
+	}
+
+	testInnerNewInstance() {
+	    a = f.g.new Toto(b,c.d+e);
+	}*/
+
+}

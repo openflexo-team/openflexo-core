@@ -44,7 +44,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,13 +93,13 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestMultipleInheritance.fml");
 		assertNotNull(virtualModel);
 		assertVirtualModelIsValid(virtualModel);
-		conceptA = virtualModel.getFlexoConcept("A");
+		conceptA = virtualModel.getFlexoConcept("MyConceptA");
 		assertNotNull(conceptA);
-		conceptB = virtualModel.getFlexoConcept("B");
+		conceptB = virtualModel.getFlexoConcept("MyConceptB");
 		assertNotNull(conceptB);
-		conceptC = virtualModel.getFlexoConcept("C");
+		conceptC = virtualModel.getFlexoConcept("MyConceptC");
 		assertNotNull(conceptB);
-		conceptD = virtualModel.getFlexoConcept("D");
+		conceptD = virtualModel.getFlexoConcept("MyConceptD");
 		assertNotNull(conceptB);
 	}
 
@@ -134,7 +133,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptA);
@@ -146,12 +145,12 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(a);
 
 		assertEquals("A", a.execute("this.foo"));
-		assertEquals(42, (long) a.execute("this.doSomething()"));
+		assertEquals(42, (int) a.execute("this.doSomething()"));
 	}
 
 	@Test
 	@TestOrder(5)
-	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptB);
@@ -168,7 +167,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(6)
-	public void testCreateC() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateC() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptC);
@@ -185,7 +184,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(7)
-	public void testCreateD() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateD() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		log("Instanciation de D");
 

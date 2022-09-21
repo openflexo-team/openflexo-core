@@ -112,6 +112,8 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 	@Override
 	public BehaviourParameterBindingModel getBindingModel();
 
+	public FlexoBehaviourParameter getParameter();
+
 	public static abstract class BehaviourCallArgumentImpl<T extends FlexoConceptObject> extends FlexoBehaviourObjectImpl
 			implements BehaviourCallArgument<T> {
 
@@ -132,6 +134,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 			}
 		}*/
 
+		@Override
 		public FlexoBehaviourParameter getParameter() {
 			return param;
 		}
@@ -188,7 +191,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 				}*/
 				return null;
 			}
-			else if (getValue().forceRevalidate()) {
+			else if (getValue().revalidate()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
@@ -196,6 +199,8 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 				return null;

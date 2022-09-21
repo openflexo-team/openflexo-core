@@ -42,6 +42,7 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.connie.binding.Property;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
@@ -51,7 +52,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * 
  */
-public interface IFlexoOntologyStructuralProperty<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyFeature<TA> {
+public interface IFlexoOntologyStructuralProperty<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyFeature<TA>, Property {
 
 	/**
 	 * Range of property.

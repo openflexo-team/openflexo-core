@@ -190,6 +190,8 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;

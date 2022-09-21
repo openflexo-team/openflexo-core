@@ -1,0 +1,85 @@
+/**
+ * Testing match operators
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as DIAGRAM;
+
+import ["http://some_uri/ADiagSpecification.diagramspecification"] as diagramSpecification;
+import [diagramSpecification+"/ExampleDiagram.diagram"] as exampleDiagram;
+import [exampleDiagram:"SYL_56"] as redShape;
+import [exampleDiagram:"SYL_78"] as blueArc;
+
+model TestMatch {
+	
+	//Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = diagramSpecification);	
+	//ConceptualModel conceptualModel;
+	
+	public void updateDiagram () {  
+		MatchingSet<MyConceptGR> matchingSet 
+			= (begin match MyConceptGR from (this) where (selected.myConcept!=null));
+		for (MyConcept aConcept : conceptualModel.allConcepts) {
+			match MyConceptGR 
+				in (matchingSet) 
+				from (this) 
+				where (myConcept=aConcept)
+				create::representNewConcept(aConcept);
+		}
+		end match MyConceptGR in (matchingSet) delete::removeFromDiagram();
+	}
+
+	/*concept MyConceptGR {
+		
+		MyConcept myConcept;
+		DiagramShape shape with DIAGRAM::ShapeRole (
+			metaModelElement = redShape,
+			label = myConcept.name
+		);
+		
+		representNewConcept(MyConcept concept) {
+			myConcept = parameters.concept;
+			shape = DIAGRAM::AddShape(container=diagram) in (diagram);
+		}
+		
+		// DropScheme
+		dropNewConcept(String name) with drop(target=topLevel) {
+			myConcept = new MyConcept::init(name);
+			shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
+		}
+		
+		delete::deleteConcept() {
+			delete (myConcept);
+			delete (shape);
+		}
+		
+		delete::removeFromDiagram() {
+			myConcept = null;
+			delete (shape);
+		}
+	}
+	
+	concept LinkGR {
+		
+		MyConceptGR fromGR;
+		MyConceptGR toGR;
+		DiagramConnector connector with DIAGRAM::ConnectorRole (
+			metaModelElement = blueArc,
+			label = "connected with"
+		);
+		
+		// LinkScheme
+		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+			fromGR = fromTarget;
+			toGR = toTarget;
+			performLink(fromTarget.myConcept,toTarget.myConcept);
+			connector = DIAGRAM::AddConnector(fromShape=fromGR.shape,toShape=toGR.shape) in (diagram);
+		}
+		
+		performLink(MyConcept fromConcept, MyConcept toConcept) {
+			fromConcept.connectedWith = toConcept;			
+		}
+		
+	}*/
+
+
+}

@@ -44,14 +44,16 @@ import java.io.StringReader;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.parser.lexer.Lexer;
-import org.openflexo.foundation.fml.cli.parser.node.Start;
-import org.openflexo.foundation.fml.cli.parser.parser.Parser;
+import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
+import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
+import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.foundation.fml.parser.parser.Parser;
+import org.openflexo.p2pp.RawSource;
 
 /**
- * This class provides the parsing service for Connie expressions and bindings. This includes syntactic and semantics analyzer.<br>
+ * This class provides the parsing service for FML commands. This includes syntactic and semantics analyzer.<br>
  * 
- * SableCC is used to generate the grammar located in connie-parser.<br>
+ * SableCC is used to generate the grammar located in fml-parser.<br>
  * 
  * @author sylvain
  */
@@ -69,19 +71,21 @@ public class CommandParser {
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
 	 */
-	public static AbstractCommand parse(String aCommand, AbstractCommandInterpreter commandInterpreter) throws ParseException {
+	public static AbstractCommand<?> parse(String aCommand, AbstractCommandInterpreter commandInterpreter) throws ParseException {
 		try {
 			// System.out.println("Parsing: " + anExpression);
 
+			RawSource rawSource = new RawSource(new StringReader(aCommand));
+
 			// Create a Parser instance.
-			Parser p = new Parser(new Lexer(new PushbackReader(new StringReader(aCommand))));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(new StringReader(aCommand)), EntryPointKind.Command));
 
 			// Parse the input.
 			Start tree = p.parse();
 
 			// Apply the semantics analyzer.
 			if (commandInterpreter != null) {
-				CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter);
+				CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter, tree, rawSource);
 				tree.apply(t);
 				return t.getCommand();
 			}
@@ -90,7 +94,7 @@ public class CommandParser {
 			}
 
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 			throw new ParseException(e.getMessage() + " while parsing " + aCommand);
 		}
 	}

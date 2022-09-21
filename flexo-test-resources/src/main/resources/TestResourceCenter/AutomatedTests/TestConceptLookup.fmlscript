@@ -1,0 +1,66 @@
+// This test is intented to test concept lookup from a given context
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestVirtualModelA2.fml"];
+context;
+assert virtualModel != null;
+//validate virtualModel;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+log "Name:"+virtualModel.name;
+assert virtualModel.name == "TestVirtualModelA2";
+assert virtualModel.parentFlexoConcepts.size == 0;
+assert virtualModel.lookupFlexoConceptWithName("TestVirtualModelA2") == virtualModel;
+
+// Those concepts are not accessible though virtual model
+assert virtualModel.lookupFlexoConceptWithName("TestVirtualModelA") == null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptA") == null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptB") == null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptC") == null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptD") == null;
+assert virtualModel.lookupFlexoConceptWithName("FlexoConceptE") == null;
+
+// But, those concepts are accessible though import relation
+compilationUnit = virtualModel.compilationUnit;
+assert compilationUnit != null;
+assert compilationUnit.lookupFlexoConceptWithName("TestVirtualModelA") != null;
+assert compilationUnit.lookupFlexoConceptWithName("FlexoConceptA") != null;
+assert compilationUnit.lookupFlexoConceptWithName("FlexoConceptB") != null;
+assert compilationUnit.lookupFlexoConceptWithName("FlexoConceptC") != null;
+assert compilationUnit.lookupFlexoConceptWithName("FlexoConceptD") != null;
+assert compilationUnit.lookupFlexoConceptWithName("FlexoConceptE") != null;
+
+// Those concepts are not accessible since child VM is not loaded
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptA") == null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptB") == null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptC") == null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptD") == null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptE") == null;
+
+// We now load child VM
+assert virtualModel.lookupFlexoConceptWithName("ChildVM1") == null;
+childVirtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestVirtualModelA2.fml/ChildVM1.fml"];
+assert childVirtualModel != null;
+
+// We attempt to lookup those concepts from childVirtualModel
+assert childVirtualModel.lookupFlexoConceptWithName("ChildConceptA") != null;
+assert childVirtualModel.lookupFlexoConceptWithName("ChildConceptB") != null;
+assert childVirtualModel.lookupFlexoConceptWithName("ChildConceptC") != null;
+assert childVirtualModel.lookupFlexoConceptWithName("ChildConceptD") != null;
+assert childVirtualModel.lookupFlexoConceptWithName("ChildConceptE") != null;
+
+// Those concepts are accessible from virtualModel because it is loaded
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptA") != null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptB") != null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptC") != null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptD") != null;
+assert virtualModel.lookupFlexoConceptWithName("ChildConceptE") != null;
+
+// Those concepts are also accessible from compilation unit
+assert compilationUnit.lookupFlexoConceptWithName("ChildConceptA") != null;
+assert compilationUnit.lookupFlexoConceptWithName("ChildConceptB") != null;
+assert compilationUnit.lookupFlexoConceptWithName("ChildConceptC") != null;
+assert compilationUnit.lookupFlexoConceptWithName("ChildConceptD") != null;
+assert compilationUnit.lookupFlexoConceptWithName("ChildConceptE") != null;
+

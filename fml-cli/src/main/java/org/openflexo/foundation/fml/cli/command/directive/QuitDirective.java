@@ -41,10 +41,12 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AQuitDirective;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.parser.node.AQuitDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents quit directive in FML command-line interpreter
@@ -54,18 +56,26 @@ import org.openflexo.foundation.fml.cli.parser.node.AQuitDirective;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(QuitDirective.QuitDirectiveImpl.class)
 @DirectiveDeclaration(keyword = "quit", usage = "quit", description = "Quit FML command-line interpreter", syntax = "quit")
-public class QuitDirective extends Directive {
+public interface QuitDirective extends Directive<AQuitDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(QuitDirective.class.getPackage().getName());
+	public static abstract class QuitDirectiveImpl extends DirectiveImpl<AQuitDirective> implements QuitDirective {
 
-	public QuitDirective(AQuitDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-	}
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(QuitDirective.class.getPackage().getName());
 
-	@Override
-	public void execute() {
-		getCommandInterpreter().stop();
+		@Override
+		public String toString() {
+			return "quit";
+		}
+
+		@Override
+		public Object execute() throws FMLCommandExecutionException {
+			super.execute();
+			getCommandInterpreter().stop();
+			return null;
+		}
 	}
 }

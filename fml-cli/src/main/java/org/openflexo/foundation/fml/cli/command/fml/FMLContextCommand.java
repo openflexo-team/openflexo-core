@@ -43,11 +43,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.CLIUtils;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
+import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -59,45 +62,57 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(FMLContextCommand.FMLContextCommandImpl.class)
 @FMLCommandDeclaration(keyword = "context", usage = "context", description = "Display current evaluation context", syntax = "context")
-public class FMLContextCommand extends FMLCommand {
+public interface FMLContextCommand extends FMLCommand<AContextFmlCommand> {
 
-	private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
+	public static abstract class FMLContextCommandImpl extends FMLCommandImpl<AContextFmlCommand> implements FMLContextCommand {
+		private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
 
-	public FMLContextCommand(AContextFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer, null);
-	}
-
-	@Override
-	public void execute() {
-
-		if (getCommandInterpreter().getFocusedObject() != null) {
-			getOutStream().println(CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject()));
+		@Override
+		public void create(AContextFmlCommand node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 		}
 
-		int maxTypeCols = -1;
-		int maxNameCols = -1;
-
-		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
-			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
-			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
-			String name = bv.getVariableName();
-			if (type.length() > maxTypeCols) {
-				maxTypeCols = type.length();
-			}
-			if (name.length() > maxNameCols) {
-				maxNameCols = name.length();
-			}
+		@Override
+		public String toString() {
+			return "context";
 		}
 
-		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
-			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
-			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
-			String name = bv.getVariableName();
+		@Override
+		public Object execute() throws FMLCommandExecutionException {
 
-			getOutStream().println(type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
-					+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
-					+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv)));
+			super.execute();
+
+			if (getCommandInterpreter().getFocusedObject() != null) {
+				getOutStream().println(CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject()));
+			}
+
+			int maxTypeCols = -1;
+			int maxNameCols = -1;
+
+			for (BindingVariable bv : getCommandInterpreter().getValues().keySet()) {
+				String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
+				String name = bv.getVariableName();
+				if (type.length() > maxTypeCols) {
+					maxTypeCols = type.length();
+				}
+				if (name.length() > maxNameCols) {
+					maxNameCols = name.length();
+				}
+			}
+
+			for (BindingVariable bv : getCommandInterpreter().getValues().keySet()) {
+				String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
+				String name = bv.getVariableName();
+
+				getOutStream().println(type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
+						+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
+						+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv)));
+			}
+
+			return null;
 		}
 	}
 }

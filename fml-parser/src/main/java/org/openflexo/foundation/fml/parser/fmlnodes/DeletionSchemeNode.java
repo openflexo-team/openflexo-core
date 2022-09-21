@@ -44,7 +44,7 @@ import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
@@ -68,12 +68,12 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeletionSchemeNode.class.getPackage().getName());
 
-	public DeletionSchemeNode(PBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public DeletionSchemeNode(PBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public DeletionSchemeNode(DeletionScheme DeletionScheme, MainSemanticsAnalyzer analyser) {
-		super(DeletionScheme, analyser);
+	public DeletionSchemeNode(DeletionScheme DeletionScheme, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(DeletionScheme, analyzer);
 	}
 
 	private boolean isAnonymous() {
@@ -105,7 +105,8 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
+					getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);
@@ -130,11 +131,11 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 		when(() -> !isAnonymous())
 				.thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
-		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
-		when(() -> isAbstract())
+		when(() -> hasNoImplementation())
 				.thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))

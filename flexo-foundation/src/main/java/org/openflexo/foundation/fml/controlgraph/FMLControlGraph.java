@@ -41,10 +41,10 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -52,8 +52,9 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -146,7 +147,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	 * @param evaluationContext
 	 * @return
 	 */
-	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
 	/**
 	 * This method allows to retrieve a flattened list of all chained control graphs
@@ -209,8 +210,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getOwner() != null) {
-				return getOwner().getFlexoConcept();
+			if (getOwner() instanceof FlexoConceptObject) {
+				return ((FlexoConceptObject) getOwner()).getFlexoConcept();
 			}
 			return null;
 		}
@@ -408,6 +409,19 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 					controlGraph.notifiedScopeChanged();
 				}
 			});
+		}
+
+		@Override
+		public BindingFactory getBindingFactory() {
+			BindingFactory returned = super.getBindingFactory();
+			if (returned == null) {
+				// Maybe owner is not a FlexoConceptObject (for example in FML scripting)
+				// So we give a chance here to retrieve the BindingFactory from owner
+				if (getOwner() != null) {
+					return getOwner().getBindingFactory();
+				}
+			}
+			return returned;
 		}
 
 	}

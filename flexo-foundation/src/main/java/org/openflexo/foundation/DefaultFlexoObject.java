@@ -130,6 +130,10 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
+	public void performSuperInitializer(Object... args) {
+	}
+
+	@Override
 	public boolean isSerializing() {
 		return false;
 	}
@@ -145,7 +149,7 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
-	public boolean equalsObject(Object obj, Function<ModelProperty, Boolean> considerProperty) {
+	public boolean equalsObject(Object obj, Function<ModelProperty<?>, Boolean> considerProperty) {
 		return false;
 	}
 

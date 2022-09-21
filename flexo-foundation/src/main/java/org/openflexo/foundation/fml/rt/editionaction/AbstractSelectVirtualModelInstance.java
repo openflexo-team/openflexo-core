@@ -176,7 +176,7 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			getContainer().forceRevalidate();
+			getContainer().revalidate();
 			getVirtualModelType();
 		}
 
@@ -265,6 +265,8 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}

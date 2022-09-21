@@ -91,7 +91,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		instanciateTestServiceManager();
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
+		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml");
 		assertNotNull(viewPoint);
 		assertEquals(1, viewPoint.getVirtualModels(true).size());
 		virtualModel = viewPoint.getVirtualModels(true).get(0);

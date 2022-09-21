@@ -120,6 +120,10 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 			System.out.println(
 					"Parsed " + dataBinding + " as " + dataBinding.getExpression() + " of " + dataBinding.getExpression().getClass());
 
+			if (expectedValidity && !dataBinding.isValid()) {
+				fail("Binding is not valid: " + dataBinding + " reason: " + dataBinding.invalidBindingReason());
+			}
+
 			assertEquals(expectedValidity, dataBinding.isValid());
 
 			if (dataBinding.isValid()) {
@@ -129,7 +133,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 			return dataBinding;
 
 		}
-		System.out.println("Could not Parse " + dataBinding + " defined as " + dataBinding.getUnparsedBinding());
+		System.out.println("Could not Parse " + dataBinding + " defined as " + dataBinding);
 		fail("Unparseable binding");
 		return null;
 	}
@@ -511,12 +515,12 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		System.out.println("Et maintenant le db vaut: " + db);
 
-		assertEquals("(nameHasChanged + aString)", db.toString());
+		assertEquals("nameHasChanged + aString", db.toString());
 		assertTrue(db.isValid());
 
 		stringProperty1.setName("aStringInVirtualModel");
 
-		assertEquals("(aStringInVirtualModel + aString)", db.toString());
+		assertEquals("aStringInVirtualModel + aString", db.toString());
 		assertTrue(db.isValid());
 
 	}
@@ -530,6 +534,12 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		System.out.println("*********** testChangeParameterName");
 
 		DataBinding<?> db = makeBinding(actionScheme, "parameters.aFlag", true, Boolean.TYPE);
+
+		/*BindingValue bv = (BindingValue) db.getExpression();
+		System.out.println("variable: " + bv.getBindingVariable());
+		for (BindingPathElement bindingPathElement : bv.getBindingPath()) {
+			System.out.println(" > " + bindingPathElement + " activated=" + bindingPathElement.isActivated());
+		}*/
 
 		assertTrue(db.isValid());
 
@@ -559,11 +569,11 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		actionScheme.getParameters().get(0).setName("aRenamedParameter");
 
-		assertEquals("((aStringInVirtualModel + aString) + parameters.aRenamedParameter)", db.toString());
+		assertEquals("aStringInVirtualModel + aString + parameters.aRenamedParameter", db.toString());
 		assertTrue(db.isValid());
 
 		actionScheme.getParameters().get(0).setName("aFlag");
-		assertEquals("((aStringInVirtualModel + aString) + parameters.aFlag)", db.toString());
+		assertEquals("aStringInVirtualModel + aString + parameters.aFlag", db.toString());
 		assertTrue(db.isValid());
 
 		db.delete();

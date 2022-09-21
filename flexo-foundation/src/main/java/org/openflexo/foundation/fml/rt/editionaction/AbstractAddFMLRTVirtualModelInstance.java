@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -72,7 +72,7 @@ public interface AbstractAddFMLRTVirtualModelInstance
 		}
 
 		@Override
-		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			// System.out.println("Now create a FMLRTVirtualModelInstance");
 			return super.execute(evaluationContext);
 		}

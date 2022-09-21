@@ -1,0 +1,5 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelB.fml")
+@Version("0.1")
+@Description("A VirtualModel designed for test purposes")
+model TestVirtualModelB {
+}

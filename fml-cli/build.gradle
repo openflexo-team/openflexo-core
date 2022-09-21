@@ -1,6 +1,7 @@
 dependencies {
   // openflexo dep
   implementation project(':flexo-foundation')
+  implementation project(':fml-parser')
   // external dep
   api group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
@@ -10,7 +11,7 @@ dependencies {
   testImplementation project(':flexo-test-resources')
 }
 
-apply plugin: 'sablecc'
+//apply plugin: 'sablecc'
 
 // use with gradle --no-daemon --console plain fml-cli:run -q
 apply plugin: 'application'

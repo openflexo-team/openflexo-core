@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -78,7 +78,7 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 
 		@Override
-		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			return super.execute(evaluationContext);
 		}
 
@@ -94,7 +94,8 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 		}
 
 		@Override
-		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
 			FlexoConceptInstance container = null;
 			VMI vmi = getVirtualModelInstance(evaluationContext);
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);

@@ -41,7 +41,6 @@ package org.openflexo.foundation;
 
 import java.io.PrintStream;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.openflexo.toolbox.StringUtils;
@@ -111,6 +110,13 @@ public interface FlexoService {
 	public Collection<ServiceOperation<?>> getAvailableServiceOperations();
 
 	/**
+	 * Make a new {@link ServiceOperation} available
+	 * 
+	 * @param serviceOperation
+	 */
+	public void addToAvailableServiceOperations(ServiceOperation<?> serviceOperation);
+
+	/**
 	 * Receives a new {@link ServiceNotification} broadcasted from the {@link FlexoServiceManager}
 	 * 
 	 * @param caller
@@ -150,14 +156,17 @@ public interface FlexoService {
 
 		public abstract String usage(S service);
 
+		public abstract String getSyntax(S service);
+
 		public abstract String description();
 
 		public String getArgument();
 
-		public List<ServiceOperationOption> getOptions();
+		// public List<ServiceOperationOption> getOptions();
 
 		public void execute(S service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options);
 
+		public String getStringRepresentation(Object argumentValue);
 	}
 
 	public static class ServiceOperationOption {
@@ -203,6 +212,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "display this help";
 		}
@@ -212,10 +226,15 @@ public interface FlexoService {
 			return null;
 		}
 
+		/*@Override
+		public String getArgumentOption() {
+			return null;
+		}
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -226,6 +245,12 @@ public interface FlexoService {
 						+ serviceOperation.description());
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 
 	public static class DisplayServiceStatus implements ServiceOperation<FlexoService> {
@@ -243,6 +268,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "display status of service";
 		}
@@ -252,15 +282,26 @@ public interface FlexoService {
 			return null;
 		}
 
+		/*@Override
+		public String getArgumentOption() {
+			return null;
+		}
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
 			out.println(service.getDisplayableStatus());
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 
 	public static class StartService implements ServiceOperation<FlexoService> {
@@ -278,6 +319,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "start service";
 		}
@@ -287,10 +333,15 @@ public interface FlexoService {
 			return null;
 		}
 
+		/*@Override
+		public String getArgumentOption() {
+			return null;
+		}
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -302,6 +353,12 @@ public interface FlexoService {
 				out.println("Service already started");
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 
 	public static class StopService implements ServiceOperation<FlexoService> {
@@ -319,6 +376,11 @@ public interface FlexoService {
 		}
 
 		@Override
+		public String getSyntax(FlexoService service) {
+			return "service " + service.getServiceName() + " " + getOperationName();
+		}
+
+		@Override
 		public String description() {
 			return "stop service";
 		}
@@ -328,10 +390,15 @@ public interface FlexoService {
 			return null;
 		}
 
+		/*@Override
+		public String getArgumentOption() {
+			return null;
+		}
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -343,5 +410,11 @@ public interface FlexoService {
 				out.println("Service not started");
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 }

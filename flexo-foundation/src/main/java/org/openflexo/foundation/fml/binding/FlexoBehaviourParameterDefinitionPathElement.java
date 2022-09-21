@@ -41,14 +41,17 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 
-public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElement {
+@Deprecated
+// Should be refactored
+public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElementImpl {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterDefinitionPathElement.class.getPackage().getName());
 
@@ -56,8 +59,8 @@ public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElem
 
 	private static final String PARAMETER_DEFINITION = "definition";
 
-	public FlexoBehaviourParameterDefinitionPathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter) {
-		super(parent, PARAMETER_DEFINITION, parameter.getImplementedInterface());
+	public FlexoBehaviourParameterDefinitionPathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter, Bindable bindable) {
+		super(parent, PARAMETER_DEFINITION, parameter.getImplementedInterface(), bindable);
 		this.parameter = parameter;
 	}
 
@@ -94,6 +97,16 @@ public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElem
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Operation not allowed");
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

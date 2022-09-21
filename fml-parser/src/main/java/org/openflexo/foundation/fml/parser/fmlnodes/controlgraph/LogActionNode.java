@@ -40,8 +40,11 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.LogAction;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -55,8 +58,8 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LogActionNode.class.getPackage().getName());
 
-	public LogActionNode(ALogActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public LogActionNode(ALogActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -64,8 +67,8 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 
 	}
 
-	public LogActionNode(LogAction action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public LogActionNode(LogAction action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -73,7 +76,10 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 	public LogAction buildModelObjectFromAST(ALogActionFmlActionExp astNode) {
 		LogAction returned = getFactory().newLogAction();
 
-		returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
+		DataBinding<String> logString = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), returned, BindingDefinitionType.GET,
+				String.class, getSemanticsAnalyzer(), this);
+		// returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
+		returned.setLogString(logString);
 		returned.setLogLevel(LogLevel.INFO);
 
 		return returned;
@@ -84,9 +90,9 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("log"), getLogFragment());
-		append(staticContents("("), getLParFragment());
+		// append(staticContents("("), getLParFragment());
 		append(dynamicContents(() -> getModelObject().getLogString().toString()), getExpressionFragment());
-		append(staticContents(")"), getRParFragment());
+		// append(staticContents(")"), getRParFragment());
 		append(staticContents(";"), getSemiFragment());
 
 	}
@@ -98,12 +104,12 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		return null;
 	}
 
-	protected RawSourceFragment getLParFragment() {
+	/*protected RawSourceFragment getLParFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getLPar());
 		}
 		return null;
-	}
+	}*/
 
 	protected RawSourceFragment getExpressionFragment() {
 		if (getASTNode() != null) {
@@ -112,11 +118,11 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		return null;
 	}
 
-	protected RawSourceFragment getRParFragment() {
+	/*protected RawSourceFragment getRParFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getRPar());
 		}
 		return null;
-	}
+	}*/
 
 }

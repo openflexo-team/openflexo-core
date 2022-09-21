@@ -44,25 +44,28 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
-import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.localization.LocalizedDelegate;
@@ -144,6 +147,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		this(flexoBehaviour, focusedObject, globalSelection, ownerAction.getEditor());
 		setOwnerAction(ownerAction);
 		ownerAction.addToEmbeddedActions(this);
+	}
+
+	@Override
+	public final ExpressionEvaluator getEvaluator() {
+		return new FMLExpressionEvaluator(this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -351,33 +359,18 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	/**
 	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
 	 */
-	protected void executeControlGraph() throws OperationCancelledException, FlexoException {
+	protected void executeControlGraph() throws OperationCancelledException, FMLExecutionException {
 
 		if (getApplicableFlexoBehaviour() != null && getApplicableFlexoBehaviour().getControlGraph() != null) {
 			try {
 				getApplicableFlexoBehaviour().getControlGraph().execute(this);
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
-			} catch (OperationCancelledException e) {
-				compensateCancelledExecution();
-				// TODO: let the UndoManager do the compensation job: too buggy yet
-				// throw e;
-				return;
-			} catch (ActionExecutionCancelledException e) {
-				compensateCancelledExecution();
-				// TODO: let the UndoManager do the compensation job: too buggy yet
-				// throw e;
-				return;
-			} catch (FlexoException e) {
+			} catch (FMLExecutionException e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
 				System.err.println(getApplicableFlexoBehaviour().getFMLPrettyPrint());
 				e.printStackTrace();
 				throw e;
-			} catch (Exception e) {
-				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getApplicableFlexoBehaviour().getFMLPrettyPrint());
-				e.printStackTrace();
-				throw new FlexoException(e);
 			}
 			if (defaultMatchingSet != null) {
 				finalizeDefaultMatchingSet();
@@ -393,6 +386,26 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	public Object getReturnedValue() {
 		return returnedValue;
+	}
+
+	@Override
+	public void logOut(String message, LogLevel logLevel) {
+		if (getEditor() != null && getEditor().getFMLConsole() != null) {
+			getEditor().getFMLConsole().log(message, logLevel, getFlexoConceptInstance(), getFlexoBehaviour());
+		}
+		else {
+			System.out.println(message);
+		}
+	}
+
+	@Override
+	public void logErr(String message, LogLevel logLevel) {
+		if (getEditor() != null && getEditor().getFMLConsole() != null) {
+			getEditor().getFMLConsole().log(message, logLevel, getFlexoConceptInstance(), getFlexoBehaviour());
+		}
+		else {
+			System.err.println(message);
+		}
 	}
 
 	public MatchingSet initiateDefaultMatchingSet(MatchFlexoConceptInstance action) {

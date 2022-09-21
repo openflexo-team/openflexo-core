@@ -46,7 +46,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -164,7 +163,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		assertNotNull(viewPoint.getBindingModel());
 		assertEquals(1, viewPoint.getBindingModel().getBindingVariablesCount());
-		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
+		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
 
 	}
 
@@ -180,7 +179,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
-		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource("VM1", viewPoint.getResource(), true);
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource("MyVM1", viewPoint.getResource(), true);
 		virtualModel1 = newVMResource.getLoadedResourceData().getVirtualModel();
 
 		assertTrue(virtualModel1.getResource().getIODelegate().exists());
@@ -190,40 +189,40 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		System.out.println("BM=" + virtualModel1.getBindingModel());
 
 		assertEquals(2, virtualModel1.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(viewPoint),
-				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
-		CompilationUnitResource newVMResource2 = factory.makeContainedCompilationUnitResource("VM2", virtualModel1.getResource(), true);
+		CompilationUnitResource newVMResource2 = factory.makeContainedCompilationUnitResource("MyVM2", virtualModel1.getResource(), true);
 		virtualModel2 = newVMResource2.getLoadedResourceData().getVirtualModel();
 
 		assertTrue(virtualModel2.getResource().getIODelegate().exists());
 
 		assertNotNull(virtualModel2.getBindingModel());
 		assertEquals(2, virtualModel2.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel2),
-				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
-		CompilationUnitResource newVMResource3 = factory.makeContainedCompilationUnitResource("VM3", virtualModel2.getResource(), true);
+		CompilationUnitResource newVMResource3 = factory.makeContainedCompilationUnitResource("MyVM3", virtualModel2.getResource(), true);
 		virtualModel3 = newVMResource3.getLoadedResourceData().getVirtualModel();
 		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel3.getResource().getDirectory()).exists());
 		assertTrue(virtualModel3.getResource().getIODelegate().exists());
 
 		assertNotNull(virtualModel3.getBindingModel());
 		assertEquals(2, virtualModel3.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel2),
-				virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel3),
-				virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
 		// Now we create the vm1 model slot
 		CreateModelSlot createMS1 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
@@ -293,12 +292,12 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		System.out.println("Saved: " + virtualModel1.getResource().getIODelegate());
 
 		assertEquals(2, flexoConceptA.getBindingModel().getBindingVariablesCount());
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aStringInA");
@@ -336,7 +335,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		createEditionAction1.setAssignation(new DataBinding<>("aStringInA"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("\"foo\""));
 		action1.setName("action1");
 
 		assertTrue(action1.getAssignation().isValid());
@@ -392,7 +391,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(6)
 	public void testInstanciateVirtualModelInstances()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testInstanciateVirtualModelInstances()");
 
@@ -504,7 +503,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(7)
 	public void checkContainerAccess()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 		assertEquals(vmi3, vmi3.execute("this"));
 		assertEquals(vmi2, vmi3.execute("this.container"));
 		assertEquals(vmi2, vmi3.execute("container"));
@@ -517,28 +516,28 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(8)
 	public void checkIntrospectiveAccess()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
-		assertEquals(virtualModel3, vmi3.execute("this.concept"));
-		assertEquals(virtualModel3, vmi3.execute("this.virtualModel"));
-		assertEquals(virtualModel2, vmi3.execute("this.container.concept"));
-		assertEquals(virtualModel2, vmi3.execute("container.concept"));
-		assertEquals(virtualModel2, vmi3.execute("this.container.virtualModel"));
-		assertEquals(virtualModel2, vmi3.execute("container.virtualModel"));
-		assertEquals(virtualModel1, vmi3.execute("this.container.container.concept"));
-		assertEquals(virtualModel1, vmi3.execute("container.container.concept"));
-		assertEquals(virtualModel1, vmi3.execute("this.container.container.virtualModel"));
-		assertEquals(virtualModel1, vmi3.execute("container.container.virtualModel"));
-		assertEquals(viewPoint, vmi3.execute("this.container.container.container.concept"));
-		assertEquals(viewPoint, vmi3.execute("container.container.container.concept"));
-		assertEquals(viewPoint, vmi3.execute("this.container.container.container.virtualModel"));
-		assertEquals(viewPoint, vmi3.execute("container.container.container.virtualModel"));
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
+		assertEquals(virtualModel3, vmi3.execute("this.conceptType"));
+		assertEquals(virtualModel3, vmi3.execute("this.virtualModelType"));
+		assertEquals(virtualModel2, vmi3.execute("this.container.conceptType"));
+		assertEquals(virtualModel2, vmi3.execute("container.conceptType"));
+		assertEquals(virtualModel2, vmi3.execute("this.container.virtualModelType"));
+		assertEquals(virtualModel2, vmi3.execute("container.virtualModelType"));
+		assertEquals(virtualModel1, vmi3.execute("this.container.container.conceptType"));
+		assertEquals(virtualModel1, vmi3.execute("container.container.conceptType"));
+		assertEquals(virtualModel1, vmi3.execute("this.container.container.virtualModelType"));
+		assertEquals(virtualModel1, vmi3.execute("container.container.virtualModelType"));
+		assertEquals(viewPoint, vmi3.execute("this.container.container.container.conceptType"));
+		assertEquals(viewPoint, vmi3.execute("container.container.container.conceptType"));
+		assertEquals(viewPoint, vmi3.execute("this.container.container.container.virtualModelType"));
+		assertEquals(viewPoint, vmi3.execute("container.container.container.virtualModelType"));
 
 	}
 
 	@Test
 	@TestOrder(10)
 	public void testInstanciateFlexoConceptInstance()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testInstanciateFlexoConceptInstance()");
 
@@ -560,20 +559,20 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		assertEquals("foo", fci.getFlexoActor("aStringInA"));
 		assertEquals(true, fci.getFlexoActor("aBooleanInA"));
-		assertEquals(8, (long) fci.getFlexoActor("anIntegerInA"));
+		assertEquals(8, (int) fci.getFlexoActor("anIntegerInA"));
 
 		fci.setFlexoActor(false, (FlexoRole<Boolean>) flexoConceptA.getAccessibleProperty("anOtherBooleanInA"));
 
 		assertEquals(6, flexoConceptA.getBindingModel().getBindingVariablesCount());
 
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
+		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY).getType());
+				flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME).getType());
 
 		assertEquals(fci, fci.execute("this"));
 		assertEquals(vmi1, fci.execute("this.container"));
 		assertEquals(vmi1, fci.execute("container"));
-		assertEquals(flexoConceptA, fci.execute("this.concept"));
+		assertEquals(flexoConceptA, fci.execute("this.conceptType"));
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA").getType());
@@ -585,7 +584,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		assertEquals(8, (long) fci.execute("anIntegerInA"));
+		assertEquals(8, (int) fci.execute("anIntegerInA"));
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
 		assertEquals(Boolean.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
@@ -596,7 +595,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(vmi2, vmi3.execute("vm2"));
 		assertEquals(vmi1, vmi3.execute("this.vm1"));
 		assertEquals(vmi2, vmi3.execute("this.vm2"));
-		assertEquals(1, (long) vmi3.execute("this.vm1.flexoConceptInstances.size"));
+		assertEquals(1, (int) vmi3.execute("this.vm1.flexoConceptInstances.size"));
 		assertSame(fci, vmi3.execute("this.vm1.flexoConceptInstances.get(0)"));
 	}
 
@@ -607,6 +606,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	 * 
 	 * @throws IOException
 	 * @throws InvalidBindingException
+	 * @throws ReflectiveOperationException
 	 */
 	/*@Test
 	@TestOrder(11)
@@ -646,7 +646,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(12)
 	public void testReloadProject() throws ResourceLoadingCancelledException, FlexoException, TypeMismatchException, NullReferenceException,
-			InvocationTargetException, IOException, InvalidBindingException {
+			IOException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testReloadProject()");
 
@@ -671,11 +671,11 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(retrievedVPResource);
 
 		VirtualModel reloadedViewPoint = retrievedVPResource.getCompilationUnit().getVirtualModel();
-		VirtualModel reloadedVM1 = reloadedViewPoint.getVirtualModelNamed("VM1");
+		VirtualModel reloadedVM1 = reloadedViewPoint.getVirtualModelNamed("MyVM1");
 		assertNotNull(reloadedVM1);
-		VirtualModel reloadedVM2 = reloadedVM1.getVirtualModelNamed("VM2");
+		VirtualModel reloadedVM2 = reloadedVM1.getVirtualModelNamed("MyVM2");
 		assertNotNull(reloadedVM2);
-		VirtualModel reloadedVM3 = reloadedVM2.getVirtualModelNamed("VM3");
+		VirtualModel reloadedVM3 = reloadedVM2.getVirtualModelNamed("MyVM3");
 		assertNotNull(reloadedVM3);
 
 		System.out.println("Found resource " + reloadedViewPoint.getURI());
@@ -731,20 +731,20 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(newView, vmi3.execute("this.container.container.container"));
 		assertEquals(newView, vmi3.execute("container.container.container"));
 
-		assertEquals(reloadedVM3, vmi3.execute("this.concept"));
-		assertEquals(reloadedVM3, vmi3.execute("this.virtualModel"));
-		assertEquals(reloadedVM2, vmi3.execute("this.container.concept"));
-		assertEquals(reloadedVM2, vmi3.execute("container.concept"));
-		assertEquals(reloadedVM2, vmi3.execute("this.container.virtualModel"));
-		assertEquals(reloadedVM2, vmi3.execute("container.virtualModel"));
-		assertEquals(reloadedVM1, vmi3.execute("this.container.container.concept"));
-		assertEquals(reloadedVM1, vmi3.execute("container.container.concept"));
-		assertEquals(reloadedVM1, vmi3.execute("this.container.container.virtualModel"));
-		assertEquals(reloadedVM1, vmi3.execute("container.container.virtualModel"));
-		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.concept"));
-		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.concept"));
-		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.virtualModel"));
-		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.virtualModel"));
+		assertEquals(reloadedVM3, vmi3.execute("this.conceptType"));
+		assertEquals(reloadedVM3, vmi3.execute("this.virtualModelType"));
+		assertEquals(reloadedVM2, vmi3.execute("this.container.conceptType"));
+		assertEquals(reloadedVM2, vmi3.execute("container.conceptType"));
+		assertEquals(reloadedVM2, vmi3.execute("this.container.virtualModelType"));
+		assertEquals(reloadedVM2, vmi3.execute("container.virtualModelType"));
+		assertEquals(reloadedVM1, vmi3.execute("this.container.container.conceptType"));
+		assertEquals(reloadedVM1, vmi3.execute("container.container.conceptType"));
+		assertEquals(reloadedVM1, vmi3.execute("this.container.container.virtualModelType"));
+		assertEquals(reloadedVM1, vmi3.execute("container.container.virtualModelType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.conceptType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.conceptType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.virtualModelType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.virtualModelType"));
 
 	}
 

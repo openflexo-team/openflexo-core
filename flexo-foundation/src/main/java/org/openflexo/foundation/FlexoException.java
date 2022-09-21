@@ -54,7 +54,7 @@ public class FlexoException extends Exception {
 		super();
 	}
 
-	public FlexoException(Exception exception) {
+	public FlexoException(Throwable exception) {
 		super(exception);
 	}
 
@@ -62,7 +62,7 @@ public class FlexoException extends Exception {
 		super(message);
 	}
 
-	public FlexoException(String message, Exception e) {
+	public FlexoException(String message, Throwable e) {
 		super(message, e);
 	}
 

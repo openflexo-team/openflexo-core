@@ -39,8 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -50,18 +50,18 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl> {
 
-	public JavaImportNode(AJavaImportImportDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public JavaImportNode(AJavaImportImportDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public JavaImportNode(JavaImportDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public JavaImportNode(JavaImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override
 	public JavaImportDeclaration buildModelObjectFromAST(AJavaImportImportDecl astNode) {
 		JavaImportDeclaration returned = super.buildModelObjectFromAST(astNode);
-		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier((ACompositeIdent) astNode.getIdentifier()));
+		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier((ACompositeTident) astNode.getIdentifier()));
 		return returned;
 	}
 

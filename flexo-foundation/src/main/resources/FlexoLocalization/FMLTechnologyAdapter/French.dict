@@ -212,6 +212,7 @@ iterator_name=iterator_name
 java_imports=java_imports
 key_properties=Propri\u00E9t\u00E9s identit\u00E9
 label=Libell\u00E9
+line=line
 list=Liste
 list_of_values=list_of_values
 listen_to=listen_to

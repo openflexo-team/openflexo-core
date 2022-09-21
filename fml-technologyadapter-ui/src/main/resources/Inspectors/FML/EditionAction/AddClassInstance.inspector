@@ -41,7 +41,7 @@
 				name="ConditionsTable" textNonSelectionColor="0,0,0"
 				backgroundSecondarySelectionColor="173,215,255">
 				<CustomColumn id="9" data="iterator" format="object.toString"
-					componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+					componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 					displayTitle="true" title="parameter" name="parameter" columnWidth="80"
 					resizable="true" showIcon="false">
 				</CustomColumn>

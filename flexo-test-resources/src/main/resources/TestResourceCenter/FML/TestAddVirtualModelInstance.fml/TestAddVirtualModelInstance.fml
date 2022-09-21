@@ -1,0 +1,13 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml")
+@Author("sylvain")
+public model TestAddVirtualModelInstance {
+	MyVM vm with ModelInstance();
+
+	create::createInstance () {
+		vm = new MyVM("foo") with (virtualModelInstanceName = "myVMInstance");
+	}
+}

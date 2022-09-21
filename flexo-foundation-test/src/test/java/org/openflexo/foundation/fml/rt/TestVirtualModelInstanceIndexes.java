@@ -345,11 +345,11 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	@TestOrder(6)
 	public void testCreateRequests() {
 
-		makeRequest("selectLastName", "selected.lastName = 'Smith'");
-		makeRequest("selectFirstName", "'John' = selected.firstName");
-		makeRequest("selectAge", "selected.age = 11");
-		makeRequest("selectLastNamePlusAge", "selected.lastName+'-'+selected.age = 'Smith-43'");
-		makeRequest("selectLastNameAndAge", "selected.lastName = 'Smith'", "selected.age=43");
+		makeRequest("selectLastName", "selected.lastName == \"Smith\"");
+		makeRequest("selectFirstName", "\"John\" == selected.firstName");
+		makeRequest("selectAge", "selected.age == 11");
+		makeRequest("selectLastNamePlusAge", "selected.lastName+'-'+selected.age == \"Smith-43\"");
+		makeRequest("selectLastNameAndAge", "selected.lastName == \"Smith\"", "selected.age==43");
 
 		System.out.println("FML=\n" + virtualModel.getFMLPrettyPrint());
 

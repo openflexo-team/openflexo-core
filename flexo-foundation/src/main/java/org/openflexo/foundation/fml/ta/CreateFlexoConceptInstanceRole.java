@@ -52,8 +52,10 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -69,6 +71,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CreateFlexoConceptInstanceRole.CreateFlexoConceptInstanceRoleImpl.class)
 @XMLElement
+@FML("CreateFlexoConceptInstanceRole")
 public interface CreateFlexoConceptInstanceRole
 		extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, FlexoConceptInstanceRole> {
 
@@ -138,6 +141,8 @@ public interface CreateFlexoConceptInstanceRole
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -150,6 +155,8 @@ public interface CreateFlexoConceptInstanceRole
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;
@@ -164,6 +171,8 @@ public interface CreateFlexoConceptInstanceRole
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -176,6 +185,8 @@ public interface CreateFlexoConceptInstanceRole
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;
@@ -267,7 +278,7 @@ public interface CreateFlexoConceptInstanceRole
 		}
 
 		@Override
-		public FlexoConceptInstanceRole execute(RunTimeEvaluationContext evaluationContext) throws ActionExecutionCancelledException {
+		public FlexoConceptInstanceRole execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -293,7 +304,7 @@ public interface CreateFlexoConceptInstanceRole
 				action.doAction();
 
 				if (action.hasBeenCancelled()) {
-					throw new ActionExecutionCancelledException();
+					throw new FMLExecutionException(new ActionExecutionCancelledException());
 				}
 
 				logger.info("return" + action.getNewFlexoRole());

@@ -45,12 +45,12 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.Function.FunctionArgument;
-import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.SimpleMethodPathElementImpl;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TransformException;
@@ -61,6 +61,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -79,45 +80,67 @@ import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPathElement extends FunctionPathElement implements PropertyChangeListener {
+public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<FlexoBehaviour> implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
 
-	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
-		super(parent, flexoBehaviour, args);
+	// private FMLBindingFactory bindingFactory;
 
+	public FlexoBehaviourPathElement(IBindingPathElement parent, String methodName, List<DataBinding<?>> args, Bindable bindable) {
+		super(parent, methodName, args, bindable);
+		// this.bindingFactory = (FMLBindingFactory) bindable.getBindingFactory();
+	}
+
+	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour behaviour, List<DataBinding<?>> args, Bindable bindable) {
+		super(parent, behaviour, args, bindable);
+		// this.bindingFactory = (FMLBindingFactory) bindable.getBindingFactory();
+	}
+
+	public FMLBindingFactory getBindingFactory() {
+		return (FMLBindingFactory) getBindable().getBindingFactory();
+	}
+
+	@Override
+	public void setFunction(FlexoBehaviour behaviour) {
+		super.setFunction(behaviour);
+		lastKnownType = behaviour != null ? behaviour.getReturnType() : null;
 	}
 
 	@Override
 	public void activate() {
 		super.activate();
+		startListenToBehaviour();
 		// Do not instanciate parameters now, we will do it later
 		// instanciateParameters(owner);
-		if (getFlexoBehaviour() != null) {
-			if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
-				getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
-			}
+		/*if (getFlexoBehaviour() != null) {
 			for (FunctionArgument arg : getFlexoBehaviour().getArguments()) {
-				DataBinding<?> argValue = getParameter(arg);
+				DataBinding<?> argValue = getArgumentValue(arg);
 				if (argValue != null && arg != null) {
 					argValue.setDeclaredType(arg.getArgumentType());
 				}
 			}
 			lastKnownType = getFlexoBehaviour().getReturnType();
-		}
-		else {
-			logger.warning("Inconsistent data: null FlexoBehaviour");
-		}
+		}*/
 	}
 
 	@Override
 	public void desactivate() {
+		stopListenToBehaviour();
+		super.desactivate();
+	}
+
+	private void startListenToBehaviour() {
+		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
+			getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+	}
+
+	private void stopListenToBehaviour() {
 		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
 			getFlexoBehaviour().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.desactivate();
 	}
 
 	@Override
@@ -130,11 +153,6 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 
 	public FlexoBehaviour getFlexoBehaviour() {
 		return getFunction();
-	}
-
-	@Override
-	public FlexoBehaviour getFunction() {
-		return (FlexoBehaviour) super.getFunction();
 	}
 
 	@Override
@@ -153,7 +171,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
 				// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
 				// getFlexoBehaviour().getName());
-				serializationRepresentation = null;
+				clearSerializationRepresentation();
 				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
@@ -163,7 +181,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 			}
 			if (lastKnownType != getType()) {
 				lastKnownType = getType();
-				serializationRepresentation = null;
+				clearSerializationRepresentation();
 				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
@@ -222,7 +240,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
 					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
-						DataBinding<?> param = getParameter(p);
+						DataBinding<?> param = getArgumentValue(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);
 						if (paramValue != null) {
@@ -253,7 +271,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
 					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
-						DataBinding<?> param = getParameter(p);
+						DataBinding<?> param = getArgumentValue(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);
 						if (paramValue != null) {
@@ -281,9 +299,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 				logger.warning("Don't know what to do with " + target);
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);
-		} catch (
-
-		IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			StringBuffer warningMessage = new StringBuffer(
 					"While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage());
 			warningMessage.append(", object = " + target);
@@ -293,13 +309,15 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 			logger.warning(warningMessage.toString());
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
 		}
 		return null;
 
 	}
 
 	@Override
-	public FunctionPathElement transform(ExpressionTransformer transformer) throws TransformException {
+	public FlexoBehaviourPathElement transform(ExpressionTransformer transformer) throws TransformException {
 		return this;
 	}
 
@@ -313,6 +331,36 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 		// By default, we assume that the result of the execution of a FlexoBehaviour is not notification-safe
 		// (we cannot rely on the fact that a notification will be thrown if the result of the execution of the behaviour change)
 		return false;
+	}
+
+	@Override
+	public boolean requiresContext() {
+		return true;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return getFlexoBehaviour() != null;
+	}
+
+	@Override
+	public void resolve() {
+		if (getParent() != null) {
+			FlexoBehaviour function = (FlexoBehaviour) getBindingFactory().retrieveFunction(getParent().getType(), getParsed(),
+					getArguments());
+			setFunction(function);
+			if (isActivated()) {
+				startListenToBehaviour();
+			}
+			if (function == null) {
+				logger.warning("cannot find behaviour " + getParsed() + " for " + getParent() + " with arguments " + getArguments());
+			}
+		}
+		else {
+			logger.warning("cannot find parent for " + this);
+			// Thread.dumpStack();
+			// System.exit(-1);
+		}
 	}
 
 }

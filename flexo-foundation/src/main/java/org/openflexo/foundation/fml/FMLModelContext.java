@@ -42,18 +42,21 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.annotations.FMLAttribute.AttributeKind;
+import org.openflexo.foundation.fml.annotations.UsageExample;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.ModelFactory;
@@ -72,12 +75,12 @@ public class FMLModelContext {
 	public static class FMLEntity<I extends FMLObject> {
 		private ModelEntity<I> modelEntity;
 		private FML fmlAnnotation;
-		private Set<FMLProperty<? super I, ?>> properties;
+		private List<FMLProperty<? super I, ?>> properties;
 
 		private FMLEntity(FML fmlAnnotation, ModelEntity<I> modelEntity) {
 			this.fmlAnnotation = fmlAnnotation;
 			this.modelEntity = modelEntity;
-			properties = new HashSet<>();
+			properties = new ArrayList<>();
 			try {
 				Iterator<ModelProperty<? super I>> iterator = modelEntity.getProperties();
 				while (iterator.hasNext()) {
@@ -94,13 +97,35 @@ public class FMLModelContext {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			Collections.sort(properties, new Comparator<FMLProperty<? super I, ?>>() {
+				@Override
+				public int compare(FMLProperty<? super I, ?> o1, FMLProperty<? super I, ?> o2) {
+					if (o1.isRequired() && !o2.isRequired()) {
+						return -1;
+					}
+					if (!o1.isRequired() && o2.isRequired()) {
+						return 1;
+					}
+
+					if (o1.getIndex() == o2.getIndex()) {
+						return Collator.getInstance().compare(o1.getLabel(), o2.getLabel());
+					}
+					else {
+						return o1.getIndex() - o2.getIndex();
+					}
+				}
+			});
 		}
 
 		public FML getFmlAnnotation() {
 			return fmlAnnotation;
 		}
 
-		public Set<FMLProperty<? super I, ?>> getProperties() {
+		public UsageExample[] getFMLExamples() {
+			return fmlAnnotation.examples();
+		}
+
+		public List<FMLProperty<? super I, ?>> getProperties() {
 			return properties;
 		}
 
@@ -138,8 +163,21 @@ public class FMLModelContext {
 			this.fmlAnnotation = fmlAnnotation;
 		}
 
+		@Override
+		public String toString() {
+			return "FMLProperty[" + getName() + "/" + getType() + "/required=" + isRequired() + "]";
+		}
+
 		public String getName() {
 			return modelProperty.getPropertyIdentifier();
+		}
+
+		public String getLabel() {
+			return fmlAnnotation.value();
+		}
+
+		public String getDescription() {
+			return fmlAnnotation.description();
 		}
 
 		public Type getType() {
@@ -154,8 +192,16 @@ public class FMLModelContext {
 			return fmlAnnotation.required();
 		}
 
+		public int getIndex() {
+			return fmlAnnotation.index();
+		}
+
 		public ModelProperty<I> getModelProperty() {
 			return modelProperty;
+		}
+
+		public String getPathNameInUsage() {
+			return getLabel() + "_path";
 		}
 
 		public T getDefaultValue(ModelFactory factory) {
@@ -232,7 +278,7 @@ public class FMLModelContext {
 					if (value instanceof FMLObject) {
 						FMLInstancePropertyValue returnedInstance = object.getFMLModelFactory()
 								.newInstancePropertyValue((FMLProperty) this);
-						returnedInstance.setInstance(object.getWrappedFMLObject((FMLObject) value));
+						returnedInstance.setInstance(object.getFMLModelFactory().getWrappedFMLObject((FMLObject) value));
 						return returnedInstance;
 					}
 					else {
@@ -244,7 +290,7 @@ public class FMLModelContext {
 						FMLInstancesListPropertyValue returnedInstancesList = object.getFMLModelFactory()
 								.newInstancesListPropertyValue((FMLProperty) this);
 						for (FMLObject o : ((List<FMLObject>) value)) {
-							returnedInstancesList.addToInstances(object.getWrappedFMLObject(o));
+							returnedInstancesList.addToInstances(object.getFMLModelFactory().getWrappedFMLObject(o));
 						}
 						return returnedInstancesList;
 					}

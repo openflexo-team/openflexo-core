@@ -45,7 +45,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -58,6 +57,9 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLModelContext.FMLEntity;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.md.BasicMetaData;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
@@ -107,7 +109,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
 @XMLElement(idFactory = "userIdentifier+'-'+flexoID")
-@Imports({ @Import(FMLPropertyValue.class) })
+@Imports({ @Import(FMLPropertyValue.class), @Import(FlexoPropertyPathElement.class), @Import(ModelSlotPathElement.class),
+		@Import(CreationSchemePathElement.class) })
 public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLCompilationUnit>, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
@@ -262,9 +265,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public boolean hasFMLProperties(FMLModelFactory modelFactory);
 
-	public Set<FMLProperty> getFMLProperties(FMLModelFactory modelFactory);
+	public List<FMLProperty<?, ?>> getFMLProperties(FMLModelFactory modelFactory);
 
-	public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory);
+	public FMLProperty<?, ?> getFMLProperty(String propertyName, FMLModelFactory modelFactory);
 
 	public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory);
 
@@ -274,7 +277,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	// public void decodeFMLProperties(String serializedMap);
 
-	public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object);
+	// public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object);
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
@@ -419,7 +422,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public FlexoServiceManager getServiceManager() {
 			if (getVirtualModelLibrary() != null) {
-				return getDeclaringCompilationUnit().getVirtualModelLibrary().getServiceManager();
+				return getVirtualModelLibrary().getServiceManager();
 			}
 			if (getDeserializationFactory() != null) {
 				return getDeserializationFactory().getServiceManager();
@@ -671,16 +674,16 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		@Override
-		public Set<FMLProperty> getFMLProperties(FMLModelFactory modelFactory) {
+		public List<FMLProperty<?, ?>> getFMLProperties(FMLModelFactory modelFactory) {
 			if (getFMLEntity(modelFactory) != null) {
-				return (Set) getFMLEntity(modelFactory).getProperties();
+				return (List) getFMLEntity(modelFactory).getProperties();
 			}
 			return null;
 		}
 
 		@Override
-		public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory) {
-			Set<FMLProperty> fmlProperties = getFMLProperties(modelFactory);
+		public FMLProperty<?, ?> getFMLProperty(String propertyName, FMLModelFactory modelFactory) {
+			List<FMLProperty<?, ?>> fmlProperties = getFMLProperties(modelFactory);
 			if (fmlProperties != null) {
 				for (FMLProperty fmlProperty : getFMLProperties(modelFactory)) {
 					if (fmlProperty.getName().equals(propertyName)) {
@@ -691,7 +694,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return null;
 		}
 
-		private Map<FMLProperty, FMLPropertyValue> fmlPropertyValues = new HashMap<>();
+		protected Map<FMLProperty, FMLPropertyValue> fmlPropertyValues = new HashMap<>();
 
 		@Override
 		public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
@@ -703,6 +706,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 						if (pValue != null && pValue.isRequired(modelFactory)) {
 							fmlPropertyValues.put(fmlProperty, pValue);
 						}
+					}
+					else {
+						// The property value is existing, but we have no guarantee that its value is up-to-date
+						pValue.retrievePropertyValueFromModelObject(this);
 					}
 				}
 				List<FMLPropertyValue<?, ?>> returned = new ArrayList<>();
@@ -735,17 +742,18 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			fmlPropertyValues.put(propertyValue.getProperty(), propertyValue);
 		}
 
-		private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
-
+		/*private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
+		
 		@Override
 		public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object) {
+			System.out.println("On cherche dans " + this + " le wrapped de " + object);
 			WrappedFMLObject<O> returned = (WrappedFMLObject<O>) wrappedObjects.get(object);
 			if (returned == null) {
 				returned = getFMLModelFactory().newWrappedFMLObject(object);
 				wrappedObjects.put(object, returned);
 			}
 			return returned;
-		}
+		}*/
 
 		/*@Override
 		public final String encodeFMLProperties(FMLModelFactory modelFactory) {
@@ -830,7 +838,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public ValidationIssue<BindingIsRecommandedAndShouldBeValid<C>, C> applyValidation(C object) {
 			if (getBinding(object) != null && getBinding(object).isSet()) {
 				// We force revalidate the binding to be sure that the binding is valid
-				if (!getBinding(object).forceRevalidate()) {
+				if (!getBinding(object).revalidate()) {
 					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<>(this);
@@ -908,7 +916,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public ValidationIssue<BindingMustBeValid<C>, C> applyValidation(C object) {
 			if (getBinding(object) != null && getBinding(object).isSet()) {
 				// We force revalidate the binding to be sure that the binding is valid
-				if (!getBinding(object).forceRevalidate()) {
+				if (!getBinding(object).revalidate()) {
 					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<>(this);
@@ -973,17 +981,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
 			// We force revalidate the binding to be sure that the binding is valid
-			else if (!b.forceRevalidate()) {
+			else if (!b.revalidate()) {
 				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
 				// + ". Reason: " + b.invalidBindingReason());
 				// Thread.dumpStack();
-
-				/*if (b.toString().equals("donneesReferentiel.tiers")) {
-					System.out.println(
-							"C'est la que j'ai mon probleme, avec " + b + " pour " + object + " of " + object.getImplementedInterface());
-					System.out.println("reason: " + b.invalidBindingReason());
-					Thread.dumpStack();
-				}*/
 
 				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<>(this, object);
 
@@ -1077,9 +1078,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 				/*System.out.println("InvalidRequiredBindingIssue:");
 				System.out.println("object: " + anObject);
-				System.out.println(anObject.getFMLRepresentation());
 				System.out.println("binding=" + rule.getBinding(anObject));
-				System.out.println("reason=" + rule.getBinding(anObject).invalidBindingReason());*/
+				System.out.println("bindable=" + rule.getBinding(anObject).getOwner());
+				System.out.println("binding model=" + rule.getBinding(anObject).getOwner().getBindingModel());
+				System.out.println("reason=" + rule.getBinding(anObject).invalidBindingReason());
+				Thread.dumpStack();*/
 			}
 
 			public DataBinding<?> getBinding() {

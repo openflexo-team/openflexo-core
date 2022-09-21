@@ -71,7 +71,9 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 			directoryResourceCenter.setBaseArtefact(resourceCenterDirectory);
 			directoryResourceCenter.setFlexoResourceCenterService(rcService);
 			directoryResourceCenter.update();
-			directoryResourceCenter.startDirectoryWatching();
+			if (rcService.isDirectoryWatchingEnabled()) {
+				directoryResourceCenter.startDirectoryWatching();
+			}
 			return directoryResourceCenter;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();

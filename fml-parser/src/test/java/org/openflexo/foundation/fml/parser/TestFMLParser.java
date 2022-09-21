@@ -77,7 +77,7 @@ public class TestFMLParser {
 
 	@Parameterized.Parameters(name = "{1}")
 	public static Collection<Object[]> generateData() {
-		return Resources.getMatchingResource(ResourceLocator.locateResource("FMLExamples"), ".fml");
+		return Resources.getMatchingResource(ResourceLocator.locateResource("FMLParsingExamples"), ".fml");
 	}
 
 	private final Resource fmlResource;
@@ -92,10 +92,10 @@ public class TestFMLParser {
 		// testFMLCompilationUnit(fmlResource);
 		System.out.println("Parsing FML resource " + fmlResource);
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
-		FMLParser parser = new FMLParser();
+		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
 		FMLCompilationUnit compilationUnit = parser.parse(fmlResource.openInputStream(), fmlModelFactory, (modelSlotClasses) -> {
 			return null;
-		});
+		}, true);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 
@@ -129,7 +129,7 @@ public class TestFMLParser {
 	protected static FlexoServiceManager serviceManager;
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {
-		serviceManager = new DefaultFlexoServiceManager(null, true) {
+		serviceManager = new DefaultFlexoServiceManager(null, false, true) {
 
 			@Override
 			protected LocalizationService createLocalizationService(String relativePath) {

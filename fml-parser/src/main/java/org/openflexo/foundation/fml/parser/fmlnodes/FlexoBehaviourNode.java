@@ -42,8 +42,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -58,7 +58,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -66,26 +66,27 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
+public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour>
+		extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
 
 	// private ControlGraphFactory controlGraphFactory;
 
-	public FlexoBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoBehaviourNode(T property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
-		// controlGraphFactory = new ControlGraphFactory(null, analyser);
+	public FlexoBehaviourNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
+		// controlGraphFactory = new ControlGraphFactory(null, analyzer);
 	}
 
 	/*@Override
 	public ControlGraphFactory getControlGraphFactory() {
 		if (controlGraphFactory == null) {
-			controlGraphFactory = new ControlGraphFactory(getFlexoBehaviourBody(getASTNode()), getAnalyser());
+			controlGraphFactory = new ControlGraphFactory(getFlexoBehaviourBody(getASTNode()), getanalyzer());
 		}
 		return controlGraphFactory;
 	}*/
@@ -174,16 +175,20 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		System.out.println("On gere le parametre " + parameter);
 		System.out.println("On gere rien en fait");
 	
-		BehaviourParameterNode paramNode = new BehaviourParameterNode(parameter, getAnalyser());
+		BehaviourParameterNode paramNode = new BehaviourParameterNode(parameter, getanalyzer());
 	}*/
 
-	protected boolean isAbstract() {
+	protected boolean hasNoImplementation() {
+		if (getModelObject() != null) {
+			return getModelObject().getControlGraph() == null;
+		}
 		if (getASTNode() != null) {
 			return (getFlexoBehaviourBody(getASTNode()) instanceof AEmptyFlexoBehaviourBody);
 		}
-		else {
+		/*else {
 			return getModelObject().isAbstract();
-		}
+		}*/
+		return true;
 	}
 
 	/**
@@ -254,7 +259,7 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		return null;
 	}
 
-	protected TIdentifier getName() {
+	protected TLidentifier getName() {
 		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
 			return ((ANamedConstructorBehaviourDecl) getASTNode()).getName();
 		}

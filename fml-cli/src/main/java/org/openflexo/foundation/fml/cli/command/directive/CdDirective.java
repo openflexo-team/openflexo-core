@@ -43,10 +43,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.parser.node.ACdDirective;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents #cd directive in FML command-line interpreter
@@ -56,55 +60,78 @@ import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(CdDirective.CdDirectiveImpl.class)
 @DirectiveDeclaration(keyword = "cd", usage = "cd <directory>", description = "Change working directory", syntax = "cd <path>")
-public class CdDirective extends Directive {
+public interface CdDirective extends Directive<ACdDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdDirective.class.getPackage().getName());
+	public static abstract class CdDirectiveImpl extends DirectiveImpl<ACdDirective> implements CdDirective {
 
-	private String path;
-	private File newDirectory;
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(CdDirective.class.getPackage().getName());
 
-	public CdDirective(ACdDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
-		path = retrievePath(node.getPath());
-	}
+		private String path;
 
-	public File getNewDirectory() {
-		if (newDirectory == null) {
-			newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
+		@Override
+		public void create(ACdDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
+			path = retrievePath(node.getPath());
+		}
+
+		@Override
+		public String toString() {
+			return "cd " + path;
+		}
+
+		public File getNewDirectory() {
+			File newDirectory;
+			if (path.startsWith("/")) {
+				newDirectory = new File(path);
+			}
+			else {
+				newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
+			}
 			try {
 				newDirectory = new File(newDirectory.getCanonicalPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			return newDirectory;
 		}
-		return newDirectory;
-	}
 
-	@Override
-	public boolean isValid() {
-		return getNewDirectory() != null && getNewDirectory().isDirectory() && getNewDirectory().exists();
-	}
+		@Override
+		public boolean isSyntaxicallyValid() {
+			return StringUtils.isNotEmpty(path);
+		}
 
-	@Override
-	public String invalidCommandReason() {
-		if (getNewDirectory() == null) {
-			return "No directory";
+		@Override
+		public boolean isValidInThatContext() {
+			return getNewDirectory() != null && getNewDirectory().isDirectory() && getNewDirectory().exists();
 		}
-		else if (!getNewDirectory().exists()) {
-			return "Cannot find directory: " + getNewDirectory().getName();
-		}
-		else if (!getNewDirectory().isDirectory()) {
-			return getNewDirectory().getName() + " is not a directory";
-		}
-		return null;
-	}
 
-	@Override
-	public void execute() {
-		if (isValid()) {
-			getCommandInterpreter().setWorkingDirectory(newDirectory);
+		@Override
+		public String invalidCommandReason() {
+			if (getNewDirectory() == null) {
+				return "No directory";
+			}
+			else if (!getNewDirectory().exists()) {
+				return "Cannot find directory: " + getNewDirectory().getName();
+			}
+			else if (!getNewDirectory().isDirectory()) {
+				return getNewDirectory().getName() + " is not a directory";
+			}
+			return null;
+		}
+
+		@Override
+		public File execute() throws FMLCommandExecutionException {
+			super.execute();
+			if (isValidInThatContext()) {
+				File newDirectory = getNewDirectory();
+				getCommandInterpreter().setWorkingDirectory(newDirectory);
+				return newDirectory;
+			}
+			throw new FMLCommandExecutionException(invalidCommandReason());
 		}
 	}
 }

@@ -30,6 +30,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.resource.FlexoIODelegate;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -275,41 +276,50 @@ public class CompilationUnitResourceFactory
 
 		returned.initName(baseName);
 
+		// We initiate a first factory (that may evolve regarding requiredModelSlotList
+		returned.setFactory(makeModelFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
+
 		// VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
-		VirtualModelInfo vpi = returned.findVirtualModelInfo(resourceCenter);
+		VirtualModelInfo vpi = returned.getVirtualModelInfo(resourceCenter);
 
 		// logger.fine("Found " + vpi.name + " uri=" + vpi.uri + " version=" + vpi.version + " " + vpi.requiredModelSlotList);
 
 		if (vpi != null) {
-			returned.setURI(vpi.uri);
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
+			returned.setURI(vpi.getURI());
+			if (StringUtils.isNotEmpty(vpi.getVersion())) {
+				returned.setVersion(new FlexoVersion(vpi.getVersion()));
 			}
 			else {
 				returned.setVersion(INITIAL_REVISION);
 			}
-			/*if (StringUtils.isNotEmpty(vpi.modelVersion)) {
-				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
+			if (vpi.getDependencies() != null) {
+				for (String dependencyURI : vpi.getDependencies()) {
+					FlexoResource dependency = resourceCenter.getServiceManager().getResourceManager().getResource(dependencyURI);
+					if (dependency != null) {
+						returned.addToDependencies(dependency);
+					}
+					else {
+						// Dependency not yet found, register as pending
+						resourceCenter.getServiceManager().getResourceManager().registerPendingDependencyResource(returned, dependencyURI);
+					}
+				}
 			}
-			else {
-				returned.setModelVersion(CURRENT_FML_VERSION);
-			}*/
 			try {
-				returned.setUsedModelSlots(vpi.requiredModelSlotList);
+				returned.setUsedModelSlots(vpi.getRequiredModelSlotListAsString());
 			} catch (ClassNotFoundException e) {
 				logger.warning("Could not find " + e.getMessage());
 			}
 			// We set a new factory because of required model slots
-			if (StringUtils.isNotEmpty(vpi.requiredModelSlotList)) {
+			if (StringUtils.isNotEmpty(vpi.getRequiredModelSlotListAsString())) {
 				returned.setFactory(makeModelFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
 			}
-			if (StringUtils.isNotEmpty(vpi.virtualModelClassName)) {
+			if (StringUtils.isNotEmpty(vpi.getVirtualModelClassName())) {
 				Class<? extends VirtualModel> virtualModelClass = null;
 				try {
-					virtualModelClass = (Class<? extends VirtualModel>) Class.forName(vpi.virtualModelClassName);
+					virtualModelClass = (Class<? extends VirtualModel>) Class.forName(vpi.getVirtualModelClassName());
 					returned.setVirtualModelClass(virtualModelClass);
 				} catch (ClassNotFoundException e) {
-					logger.warning("Cannot find class " + vpi.virtualModelClassName);
+					logger.warning("Cannot find class " + vpi.getVirtualModelClassName());
 				}
 			}
 		}

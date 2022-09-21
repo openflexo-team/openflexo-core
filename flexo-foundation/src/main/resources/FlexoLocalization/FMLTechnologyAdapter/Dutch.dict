@@ -212,6 +212,7 @@ iterator_name=Iterator name
 java_imports=java_imports
 key_properties=Key properties
 label=label
+line=line
 list=list
 list_of_values=List of values
 listen_to=Listen to

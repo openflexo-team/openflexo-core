@@ -41,13 +41,15 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLSimplePropertyValue;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.pamela.exceptions.InvalidDataException;
@@ -66,12 +68,12 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 	private static final Logger logger = Logger.getLogger(FMLSimplePropertyValueNode.class.getPackage().getName());
 
-	public FMLSimplePropertyValueNode(ASimpleQualifiedArgument astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLSimplePropertyValueNode(ASimpleQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FMLSimplePropertyValueNode(FMLSimplePropertyValue<M, T> propertyValue, MainSemanticsAnalyzer analyser) {
-		super(propertyValue, analyser);
+	public FMLSimplePropertyValueNode(FMLSimplePropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(propertyValue, analyzer);
 	}
 
 	@Override
@@ -86,12 +88,21 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 		if (fmlProperty == null) {
 			logger.warning("Cannot find FML property " + propertyName + " in " + getParent().getModelObject());
+			// if (!getParent().getModelObject().toString().contains("WrappedFMLObject")) {
+			// System.out.println("Available properties");
+			// for (FMLProperty<?, ?> p : ((FMLObject) getParent().getModelObject()).getFMLProperties(getFactory())) {
+			// System.out.println(" > " + p);
+			// }
+			// }
 			return this;
 		}
 
 		getModelObject().setProperty(fmlProperty);
 
-		DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
+		// DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
+
+		DataBinding<Object> value = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), modelObject, BindingDefinitionType.GET,
+				Object.class, getSemanticsAnalyzer(), this);
 		// System.out.println("value=" + value);
 
 		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
@@ -108,7 +119,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 					getModelObject().setValue((T) constantValue);
 				}
 				else {
-					logger.warning("Invalid value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
+					logger.warning("Invalid value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
 							+ " value: " + constantValue + " of " + constantValue.getClass());
 				}
 			}
@@ -129,7 +140,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			}
 
 			if (!found) {
-				logger.warning("Unexpected value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
+				logger.warning("Unexpected value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
 						+ " value: " + value);
 			}
 		}
@@ -141,15 +152,14 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 	public FMLSimplePropertyValue<M, T> buildModelObjectFromAST(ASimpleQualifiedArgument astNode) {
 
 		return (FMLSimplePropertyValue<M, T>) getFactory().newSimplePropertyValue();
-
 	}
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getName(), SPACE), getArgNameFragment());
-		append(staticContents("", "=", SPACE), getAssignFragment());
+		append(dynamicContents(() -> getModelObject().getProperty().getLabel()), getArgNameFragment());
+		append(staticContents("="), getAssignFragment());
 		append(dynamicContents(() -> encodeFMLProperty(getModelObject().getValue())), getValueFragment());
 	}
 

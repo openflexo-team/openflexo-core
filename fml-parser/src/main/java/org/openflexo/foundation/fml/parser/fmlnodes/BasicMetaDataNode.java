@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.md.BasicMetaData;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ABasicAnnotationAnnotation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -47,19 +47,20 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class BasicMetaDataNode extends AbstractMetaDataNode<ABasicAnnotationAnnotation, BasicMetaData, MainSemanticsAnalyzer> {
+public class BasicMetaDataNode
+		extends AbstractMetaDataNode<ABasicAnnotationAnnotation, BasicMetaData, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public BasicMetaDataNode(ABasicAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BasicMetaDataNode(ABasicAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public BasicMetaDataNode(BasicMetaData metaData, MainSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public BasicMetaDataNode(BasicMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override
 	public BasicMetaData buildModelObjectFromAST(ABasicAnnotationAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
+		String key = makeFullQualifiedIdentifier(astNode.getTag());
 
 		BasicMetaData returned = getFactory().newBasicMetaData(key);
 		return returned;
@@ -75,7 +76,7 @@ public class BasicMetaDataNode extends AbstractMetaDataNode<ABasicAnnotationAnno
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getTag());
 		}
 		return null;
 	}

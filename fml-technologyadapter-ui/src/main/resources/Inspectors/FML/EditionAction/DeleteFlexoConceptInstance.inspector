@@ -47,7 +47,7 @@
 				<LabelColumn data="iterator.param.name" format=""
 					title="parameter" columnWidth="80" resizable="true" displayTitle="true"
 					color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
-				<CustomColumn componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				<CustomColumn componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 					customRendering="false" disableTerminateEditOnFocusLost="false"
 					data="iterator.value" format="" title="value" columnWidth="200"
 					resizable="true" displayTitle="true" color="" bgColor="" tooltip=""

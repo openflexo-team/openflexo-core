@@ -47,8 +47,10 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -63,6 +65,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CreateContainedVirtualModel.CreateContainedVirtualModelImpl.class)
 @XMLElement
+@FML("CreateContainedVirtualModel")
 public interface CreateContainedVirtualModel extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, VirtualModel> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -110,6 +113,8 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -148,6 +153,8 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -173,7 +180,7 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 		}
 
 		@Override
-		public VirtualModel execute(RunTimeEvaluationContext evaluationContext) throws ActionExecutionCancelledException {
+		public VirtualModel execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -189,7 +196,7 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 				action.doAction();
 
 				if (action.hasBeenCancelled()) {
-					throw new ActionExecutionCancelledException();
+					throw new FMLExecutionException(new ActionExecutionCancelledException());
 				}
 
 				return action.getNewVirtualModel();

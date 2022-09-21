@@ -38,18 +38,22 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
@@ -65,12 +69,12 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FetchRequestNode.class.getPackage().getName());
 
-	public FetchRequestNode(ASelectActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FetchRequestNode(ASelectActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FetchRequestNode(FR action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public FetchRequestNode(FR action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@Override
@@ -79,7 +83,17 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		// FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getSelectedTypeName());
 
-		FlexoConceptInstanceType type = getTypeFactory().makeFlexoConceptType(astNode.getSelectedTypeName());
+		FlexoConceptInstanceType selectType = null;
+
+		Type type = TypeFactory.makeType(astNode.getSelectedTypeName(), getSemanticsAnalyzer().getTypingSpace());
+		if (type instanceof FlexoConceptInstanceType) {
+			selectType = (FlexoConceptInstanceType) type;
+		}
+		else {
+			throwIssue("Unexpected fetch request type " + getText(astNode.getSelectedTypeName()), getTypeFragment());
+		}
+
+		// FlexoConceptInstanceType type = getTypeFactory().makeFlexoConceptType(astNode.getSelectedTypeName());
 
 		// System.out.println("Found type: " + type);
 
@@ -98,7 +112,8 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			selectAction.setType((VirtualModelInstanceType) type);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
+				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getSemanticsAnalyzer(), this);
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 			}
@@ -116,10 +131,11 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			if (concept != null && selectAction != null) {
 				selectAction.setFlexoConceptType(concept);
 			}*/
-			selectAction.setType(type);
+			selectAction.setType(selectType);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
+				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getSemanticsAnalyzer(), this);
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 
@@ -145,22 +161,24 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("select"), getSelectFragment());
 
-		when(() -> isUnique())
-		.thenAppend(staticContents(SPACE,"unique",""), getUniqueFragment());
+		when(() -> isUnique()).thenAppend(staticContents(SPACE, "unique", ""), getUniqueFragment());
 
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getFetchedType())), getTypeFragment());
 
-		append(staticContents(SPACE, "from",""), getFromFragment());
-		append(staticContents(SPACE, "(",""), getLParFromFragment());
-		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
-		append(staticContents(")"), getRParFromFragment());
+		append(staticContents(SPACE, "from", ""), getFromFragment());
+		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
+		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		//append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// final to true is here a little hack to prevent semi to be removed at pretty-print
+		// This is due to a wrong management of semi
+		// TODO: refactor 'semi' management
+		when(() -> requiresSemi(),true).thenAppend(staticContents(";"), getSemiFragment());
+		// @formatter:on
 	}
 
 	private String getFromAsString() {
@@ -222,7 +240,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		return null;
 	}
 
-	private RawSourceFragment getLParFromFragment() {
+	/*private RawSourceFragment getLParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
@@ -231,7 +249,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getRParFromFragment() {
 		if (getASTNode() != null) {
 			PFromClause fromClause = getASTNode().getFromClause();
@@ -240,7 +258,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			}
 		}
 		return null;
-	}
+	}*/
 
 	private RawSourceFragment getFromExpressionFragment() {
 		if (getASTNode() != null) {

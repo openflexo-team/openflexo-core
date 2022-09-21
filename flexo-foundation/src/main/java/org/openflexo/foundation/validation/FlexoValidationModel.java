@@ -40,7 +40,7 @@ package org.openflexo.foundation.validation;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.BindingEvaluator;
+import org.openflexo.connie.java.util.JavaBindingEvaluator;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
@@ -93,10 +93,11 @@ public class FlexoValidationModel extends ValidationModel {
 			try {
 				if (context instanceof ValidationIssue) {
 					ValidationIssue<?, ?> issue = (ValidationIssue<?, ?>) context;
-					Type t = new ParameterizedTypeImpl(context.getClass(), issue.getCause().getClass(), issue.getValidable().getClass());
-					return (String) BindingEvaluator.evaluateBinding(asBindingExpression, context, t);
+					Type t = new ParameterizedTypeImpl(context.getClass(), issue.getCause() != null ? issue.getCause().getClass() : null,
+							issue.getValidable() != null ? issue.getValidable().getClass() : null);
+					return (String) JavaBindingEvaluator.evaluateBinding(asBindingExpression, context, t);
 				}
-				return (String) BindingEvaluator.evaluateBinding(asBindingExpression, context);
+				return (String) JavaBindingEvaluator.evaluateBinding(asBindingExpression, context);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return localized;

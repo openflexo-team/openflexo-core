@@ -84,7 +84,7 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	 * @param devMode
 	 *            true when 'developer' mode set to true (enable more services)
 	 */
-	public DefaultFlexoServiceManager(String localizationRelativePath, boolean devMode) {
+	public DefaultFlexoServiceManager(String localizationRelativePath, boolean enableDirectoryWatching, boolean devMode) {
 
 		DataBinding.setDefaultCachingStrategy(CachingStrategy.PRAGMATIC_CACHE);
 
@@ -110,7 +110,7 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		ProjectNatureService projectNatureService = createProjectNatureService();
 		registerService(projectNatureService);
 
-		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
+		FlexoResourceCenterService resourceCenterService = createResourceCenterService(enableDirectoryWatching);
 		registerService(resourceCenterService);
 
 		TechnologyAdapterService technologyAdapterService = createTechnologyAdapterService(resourceCenterService);
@@ -137,8 +137,8 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	}
 
 	@Override
-	protected FlexoResourceCenterService createResourceCenterService() {
-		return DefaultResourceCenterService.getNewInstance(false);
+	protected FlexoResourceCenterService createResourceCenterService(boolean enableDirectoryWatching) {
+		return DefaultResourceCenterService.getNewInstance(true, false);
 	}
 
 	@Override

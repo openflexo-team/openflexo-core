@@ -48,6 +48,7 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
+ * A {@link FMLPropertyValue} which has a {@link FMLObject} value (wrapped in a {@link WrappedFMLObject})
  *
  * @author sylvain
  *
@@ -71,8 +72,13 @@ public interface FMLInstancePropertyValue<M extends FMLObject, T extends FMLObje
 		protected static final Logger logger = FlexoLogger.getLogger(FMLInstancePropertyValue.class.getPackage().getName());
 
 		@Override
-		public void apply(M object) {
+		public void applyPropertyValueToModelObject(M object) {
 			getProperty().set(getValue(), object);
+		}
+
+		@Override
+		public void retrievePropertyValueFromModelObject(M object) {
+			setInstance(object.getFMLModelFactory().getWrappedFMLObject(getProperty().get(object)));
 		}
 
 		@Override

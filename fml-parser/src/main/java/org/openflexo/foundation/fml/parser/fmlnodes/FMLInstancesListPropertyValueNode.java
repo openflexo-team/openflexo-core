@@ -45,7 +45,7 @@ import org.openflexo.foundation.fml.FMLInstancesListPropertyValue;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.WrappedFMLObject;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -64,12 +64,13 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 
 	private static final Logger logger = Logger.getLogger(FMLInstancesListPropertyValueNode.class.getPackage().getName());
 
-	public FMLInstancesListPropertyValueNode(AListInstancesQualifiedArgument astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLInstancesListPropertyValueNode(AListInstancesQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FMLInstancesListPropertyValueNode(FMLInstancesListPropertyValue<M, T> propertyValue, MainSemanticsAnalyzer analyser) {
-		super(propertyValue, analyser);
+	public FMLInstancesListPropertyValueNode(FMLInstancesListPropertyValue<M, T> propertyValue,
+			FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(propertyValue, analyzer);
 	}
 
 	@Override
@@ -92,8 +93,8 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getName(), SPACE), getArgNameFragment());
-		append(staticContents("", "=", SPACE), getAssignFragment());
+		append(dynamicContents(() -> getModelObject().getProperty().getLabel()), getArgNameFragment());
+		append(staticContents("="), getAssignFragment());
 		append(staticContents("{"), getLBrcFragment());
 		append(childrenContents("", "", () -> getModelObject().getInstances(), "," + SPACE, "", Indentation.DoNotIndent,
 				WrappedFMLObject.class));

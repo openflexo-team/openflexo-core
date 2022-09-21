@@ -1,0 +1,22 @@
+/**
+ * Test annotation
+ */
+
+// This is the main declaration
+@BasicAnnotation
+@SingleAnnotation("value")
+@ComplexAnnotation(key1="aValue",key2="anOtherValue")
+@SomeAnnotation("value2")
+@ListAnnotation(
+	@BasicAnnotation
+	@SingleAnnotation("value")
+	@ComplexAnnotation(key1="aValue",key2="anOtherValue")
+	@SomeAnnotations("value1")
+	@SomeAnnotations("value2")
+	@SomeAnnotations("value3")
+)
+@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/TestAnnotations.fml")
+@Version("0.1")
+model TestAnnotations {
+	
+}

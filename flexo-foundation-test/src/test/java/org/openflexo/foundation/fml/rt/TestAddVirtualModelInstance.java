@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
@@ -49,6 +50,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
@@ -77,8 +79,14 @@ public class TestAddVirtualModelInstance extends OpenflexoProjectAtRunTimeTestCa
 		assertNotNull(vpLib);
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml");
 		assertNotNull(virtualModel);
+		assertNotNull(containedVM = virtualModel.getVirtualModelNamed("MyVM"));
+
+		CompilationUnitResource virtualModelResource = virtualModel.getResource();
+		CompilationUnitResource containedVMResource = containedVM.getResource();
+
+		assertTrue(virtualModelResource.getDependencies().contains(containedVMResource));
+
 		assertVirtualModelIsValid(virtualModel);
-		assertNotNull(containedVM = virtualModel.getVirtualModelNamed("VM"));
 		assertVirtualModelIsValid(containedVM);
 
 		System.out.println("virtualModel: " + virtualModel.getCompilationUnit().getFMLPrettyPrint());
@@ -91,7 +99,7 @@ public class TestAddVirtualModelInstance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("containedVM: " + containedVM.getCompilationUnit().getFMLPrettyPrint());
 
 		assertNotNull(creationScheme = virtualModel.getCreationSchemes().get(0));
-		assertEquals("vm = new VM() with (virtualModelInstanceName = \"myVMInstance\");",
+		assertEquals("vm = new MyVM(\"foo\") with (virtualModelInstanceName=\"myVMInstance\");",
 				creationScheme.getControlGraph().getFMLPrettyPrint());
 
 	}

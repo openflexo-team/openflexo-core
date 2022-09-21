@@ -1,0 +1,13 @@
+@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/TestReference.fml/VMc.fml")
+@Version("0.1")
+@Author("sylvain")
+public model VMc {
+
+	@Author("sylvain")
+	public concept ConceptInC {
+		create::_create () {
+		}
+		delete::_delete () {
+		}
+	}
+}

@@ -58,8 +58,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -471,6 +471,11 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		}
 
 		@Override
+		public Resource getBaseArtefactAsResource() {
+			return getBaseArtefact();
+		}
+
+		@Override
 		public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter<?> technologyAdapter) {
 			// Trivial implementation
 			return false;
@@ -872,6 +877,11 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		@Override
 		public String relativePath(InJarResourceImpl serializationArtefact) {
 			return JarUtils.makePathRelativeTo(serializationArtefact, getBaseArtefact());
+		}
+
+		@Override
+		public String getDisplayableStatus() {
+			return "[uri=\"" + getDefaultBaseURI() + "\" jarFile=\"" + getJarFile() + "\"] with " + getAllResources().size() + " resources";
 		}
 
 	}

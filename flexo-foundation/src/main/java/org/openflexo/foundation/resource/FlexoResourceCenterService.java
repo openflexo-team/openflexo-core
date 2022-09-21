@@ -47,10 +47,10 @@ import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.pamela.AccessibleProxyObject;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 
 /**
  * This service implements access policy to resource centers in the context of a {@link FlexoServiceManager} (which, in interactive mode, is
@@ -63,7 +63,9 @@ import org.openflexo.pamela.annotations.Getter.Cardinality;
  */
 @ModelEntity
 public interface FlexoResourceCenterService extends FlexoService, AccessibleProxyObject {
+
 	public static final String RESOURCE_CENTERS = "resourceCenters";
+	public static final String DIRECTORY_WATCHING_ENABLED = "directoryWatchingEnabled";
 
 	public FlexoResourceCenter<?> getFlexoResourceCenter(String baseURI);
 
@@ -78,6 +80,12 @@ public interface FlexoResourceCenterService extends FlexoService, AccessibleProx
 
 	@Remover(RESOURCE_CENTERS)
 	public void removeFromResourceCenters(FlexoResourceCenter<?> resourceCenter);
+
+	@Getter(value = DIRECTORY_WATCHING_ENABLED, defaultValue = "true")
+	public boolean isDirectoryWatchingEnabled();
+
+	@Setter(DIRECTORY_WATCHING_ENABLED)
+	public void setDirectoryWatchingEnabled(boolean enable);
 
 	/**
 	 * Save all locations for registered resource centers on disk

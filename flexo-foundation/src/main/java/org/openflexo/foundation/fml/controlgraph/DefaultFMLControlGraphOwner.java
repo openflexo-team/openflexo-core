@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.controlgraph;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoConceptObject.FlexoConceptObjectImpl;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;

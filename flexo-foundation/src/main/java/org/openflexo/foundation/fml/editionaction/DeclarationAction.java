@@ -42,10 +42,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -122,7 +122,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		}*/
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			T value = getAssignationValue(evaluationContext);
 			evaluationContext.declareVariable(getVariableName(), value);
 			return value;
@@ -192,15 +192,38 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 		@Override
 		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> applyValidation(
-				DeclarationAction<?> anExpressionProperty) {
-			if (anExpressionProperty.getDeclaredType() != null && anExpressionProperty.getAnalyzedType() != null) {
-				if (!TypeUtils.isTypeAssignableFrom(anExpressionProperty.getDeclaredType(), anExpressionProperty.getAnalyzedType())
-						&& !TypeUtils.isTypeAssignableFrom(anExpressionProperty.getAnalyzedType(),
-								anExpressionProperty.getDeclaredType())) {
-					return new ValidationError<>(this, anExpressionProperty, "types_are_not_compatibles");
-				}
+				DeclarationAction<?> declaration) {
+
+			Type expected = declaration.getDeclaredType();
+			Type analyzed = declaration.getAssignableType();
+			if (!TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+				return new NotCompatibleTypesIssue(this, declaration, expected, analyzed);
 			}
+
 			return null;
+		}
+
+		public static class NotCompatibleTypesIssue
+				extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> {
+
+			private Type expectedType;
+			private Type analyzedType;
+
+			public NotCompatibleTypesIssue(DeclaredTypeShouldBeCompatibleWithAnalyzedType rule, DeclarationAction<?> anObject,
+					Type expected, Type analyzed) {
+				super(rule, anObject, "types_are_not_compatible_in_declaration_:_($expectedType)_is_not_assignable_from_($analyzedType)");
+				this.analyzedType = analyzed;
+				this.expectedType = expected;
+			}
+
+			public String getExpectedType() {
+				return TypeUtils.simpleRepresentation(expectedType);
+			}
+
+			public String getAnalyzedType() {
+				return TypeUtils.simpleRepresentation(analyzedType);
+			}
+
 		}
 
 	}

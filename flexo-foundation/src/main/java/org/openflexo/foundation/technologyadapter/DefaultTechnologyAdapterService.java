@@ -438,7 +438,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			// System.out.println("ta: " + ta);
 			for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
 				// System.out.println("msType=" + msType + " modelSlotClass=" + modelSlotClass);
-				if (msType != null && modelSlotClass.isAssignableFrom(msType)) {
+				if (msType != null && msType.isAssignableFrom(modelSlotClass)) {
 					return ta;
 				}
 			}
@@ -500,11 +500,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				FML annotation = editionActionClass.getAnnotation(FML.class);
 				if (annotation != null) {
 					availableEditionActionsByFMLKeyword.put(annotation.value(), editionActionClass);
-					System.out.println("store " + editionActionClass + " for " + annotation.value());
+					// System.out.println("store " + editionActionClass + " for " + annotation.value());
 				}
 				// Also store it using class name
 				availableEditionActionsByFMLKeyword.put(editionActionClass.getSimpleName(), editionActionClass);
-				System.out.println("store " + editionActionClass + " for " + editionActionClass.getSimpleName());
+				// System.out.println("store " + editionActionClass + " for " + editionActionClass.getSimpleName());
 			}
 		}
 		return returned;
@@ -531,11 +531,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 					FML annotation = objectClass.getAnnotation(FML.class);
 					if (annotation != null) {
 						availableFMLObjectsByFMLKeyword.put(annotation.value(), objectClass);
-						System.out.println("store " + objectClass + " for " + annotation.value());
+						// System.out.println("store " + objectClass + " for " + annotation.value());
 					}
 					// Also store it using class name
 					availableFMLObjectsByFMLKeyword.put(objectClass.getSimpleName(), objectClass);
-					System.out.println("store " + objectClass + " for " + objectClass.getSimpleName());
+					// System.out.println("store " + objectClass + " for " + objectClass.getSimpleName());
 				}
 			} catch (ModelDefinitionException e) {
 				// TODO Auto-generated catch block
@@ -790,12 +790,17 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 		@Override
 		public String getOperationName() {
-			return "activate";
+			return "activate_ta";
 		}
 
 		@Override
 		public String usage(TechnologyAdapterService service) {
-			return "service " + service.getServiceName() + " activate <ta>";
+			return "service " + service.getServiceName() + " activate_ta <ta>";
+		}
+
+		@Override
+		public String getSyntax(TechnologyAdapterService service) {
+			return "service " + service.getServiceName() + " " + getOperationName() + " " + getArgument();
 		}
 
 		@Override
@@ -808,10 +813,15 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			return "<ta>";
 		}
 
+		/*@Override
+		public String getArgumentOption() {
+			return null;
+		}
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(TechnologyAdapterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -821,6 +831,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				service.activateTechnologyAdapter(ta, true);
 				out.println("TechnologyAdapter " + ta + " has been activated");
 			}
+		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
 		}
 	}
 

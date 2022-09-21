@@ -303,6 +303,8 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}

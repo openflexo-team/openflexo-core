@@ -14,7 +14,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
 			<Custom
-				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" name="VMNameBS" index="7"
 				data="data.virtualModelName"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
@@ -25,7 +25,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
 			<Custom
-				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" name="ContainerBS" index="9" data="data.container"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">

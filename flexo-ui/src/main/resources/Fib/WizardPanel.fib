@@ -10,7 +10,7 @@
       </Panel>
       <Panel id="8" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" constraints="border(location=center)" name="FIBPanel2">
         <Label id="9" label="label" align="left" data="data.currentStep.title" foregroundColor="128,128,128" constraints="border(location=center)" font="SansSerif,2,11" name="Label" />
-        <Label id="10" label="label" align="left" data="((data.currentStep.isTransitionalStep &amp; (data.currentStep.index = data.steps.size)) ? (data.currentStep.index.toString + &quot;/...&quot;) : ((data.currentStep.index.toString + &quot;/&quot;) + data.steps.size.toString))" constraints="border(location=west)" name="Label2" />
+        <Label id="10" label="label" align="left" data="((data.currentStep.isTransitionalStep &amp;&amp;(data.currentStep.index == data.steps.size)) ? (data.currentStep.index.toString + &quot;/...&quot;) : ((data.currentStep.index.toString + &quot;/&quot;) + data.steps.size.toString))" constraints="border(location=west)" name="Label2" />
       </Panel>
     </Panel>
   </Panel>

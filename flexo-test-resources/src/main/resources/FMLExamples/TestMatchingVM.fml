@@ -1,0 +1,16 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.lang.String;
+
+model TestMatchingVM {
+
+	synchronizeUsingMatchingSet () {
+		MatchingSet matchingSet = begin match MatchedConcept from this;
+		for (Concept _concept : select MatchedConcept from this) {
+		}
+	}
+
+	concept MatchedConcept {
+		String myProperty;
+	}
+}

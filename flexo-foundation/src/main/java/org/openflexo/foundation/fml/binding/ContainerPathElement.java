@@ -41,9 +41,10 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -71,16 +72,17 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  *
  */
-public class ContainerPathElement extends SimplePathElement {
+public class ContainerPathElement extends SimplePathElementImpl<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(ContainerPathElement.class.getPackage().getName());
 
 	private FlexoConcept applicableFlexoConcept;
 	private FlexoConcept containerType;
 
-	public ContainerPathElement(IBindingPathElement parent, FlexoConcept applicableFlexoConcept) {
-		super(parent, FlexoConceptBindingModel.CONTAINER_PROPERTY, Object.class);
+	public ContainerPathElement(IBindingPathElement parent, FlexoConcept applicableFlexoConcept, Bindable bindable) {
+		super(parent, FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME, Object.class, bindable);
 		this.applicableFlexoConcept = applicableFlexoConcept;
+		setProperty(FlexoConceptBindingModel.CONTAINER_PROPERTY);
 		if (applicableFlexoConcept instanceof VirtualModel) {
 			containerType = ((VirtualModel) applicableFlexoConcept).getContainerVirtualModel();
 		}
@@ -157,4 +159,13 @@ public class ContainerPathElement extends SimplePathElement {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
+	}
 }

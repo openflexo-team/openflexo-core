@@ -79,6 +79,10 @@ public class ValidationIssueNotice extends FMLNotice {
 
 	}
 
+	public ValidationIssue<?, ?> getIssue() {
+		return issue;
+	}
+
 	@Override
 	public boolean isFixable() {
 		return (issue instanceof ProblemIssue) && ((ProblemIssue) issue).isFixable();

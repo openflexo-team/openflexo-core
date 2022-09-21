@@ -44,8 +44,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -97,6 +99,7 @@ import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.swing.ImageUtils;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
@@ -165,14 +168,21 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setName(String name) throws InvalidNameException;
 
 	/**
-	 * Return the URI of the {@link NamedFMLObject}<br>
-	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
+	 * Return the URI of this {@link FlexoConcept}<br>
+	 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
 	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
+	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
+	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
+	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept#AnInnerConcept.MyBehaviour
 	 * 
 	 * @return String representing unique URI of this object
 	 */
 	public String getURI();
+
+	/**
+	 * Return local URI of this {@link FlexoConcept} (URI in the context of owning {@link VirtualModel}
+	 */
+	public String getLocalURI();
 
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
 	@XMLAttribute
@@ -261,10 +271,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * Search is perform in entire scope, and includes parent concept behaviours (inherited behaviours included)
 	 * 
 	 * @param behaviourName
-	 * @param parameters
+	 * @param arguments
 	 * @return
 	 */
-	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... parameters);
+	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... arguments);
 
 	/**
 	 * Return {@link FlexoBehaviour} matching supplied signature (expressed with types), which are declared for this concept. Result does
@@ -658,6 +668,23 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public List<FlexoConcept> getAllParentFlexoConcepts();
 
+	/**
+	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FlexoConcept}<br>
+	 * 
+	 * Lookup algorithm follows:
+	 * <ul>
+	 * <li>If name matches declared {@link FlexoConcept} return this {@link FlexoConcept}</li>
+	 * <li>If name matches any container {@link VirtualModel} or {@link FlexoConcept} (recursively from current to container), return
+	 * related {@link FlexoConcept}</li>
+	 * <li>If name matches any parent {@link FlexoConcept} (inheritance semantics), return related {@link VirtualModel}</li>
+	 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}</li>
+	 * </ul>
+	 * 
+	 * @param conceptName
+	 * @return
+	 */
+	public FlexoConcept lookupFlexoConceptWithName(String conceptName);
+
 	@PropertyIdentifier(type = Resource.class)
 	public static final String BIG_ICON_RESOURCE_KEY = "bigIconResource";
 	@PropertyIdentifier(type = Resource.class)
@@ -870,20 +897,35 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Return the URI of the {@link FlexoConcept}<br>
+		 * Return the URI of this {@link FlexoConcept}<br>
 		 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
 		 * eg<br>
 		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
 		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
+		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept#AnInnerConcept.MyBehaviour
 		 * 
 		 * @return String representing unique URI of this object
 		 */
 		@Override
 		public String getURI() {
+			if (getContainerFlexoConcept() != null) {
+				return getContainerFlexoConcept().getURI() + "#" + getName();
+			}
 			if (getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getURI() + "#" + getName();
 			}
 			return "null#" + getName();
+		}
+
+		/**
+		 * Return local URI of this {@link FlexoConcept} (URI in the context of owning {@link VirtualModel}
+		 */
+		@Override
+		public String getLocalURI() {
+			if (getContainerFlexoConcept() != null) {
+				return getContainerFlexoConcept().getLocalURI() + "#" + getName();
+			}
+			return getName();
 		}
 
 		@Override
@@ -1556,7 +1598,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 			for (FlexoProperty<?> pr : propertiesToDelete) {
 				if (pr instanceof PrimitiveRole) {
-					AssignationAction<Object> nullifyStatement = getFMLModelFactory().newAssignationAction(new DataBinding<>("null"));
+					AssignationAction<Object> nullifyStatement = getFMLModelFactory().newAssignationAction("null");
 					nullifyStatement.setAssignation(new DataBinding<>(pr.getPropertyName()));
 					newDeletionScheme.getControlGraph().sequentiallyAppend(nullifyStatement);
 				}
@@ -1588,7 +1630,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public String toString() {
-			return "FlexoConcept:" + getName();
+			return "FlexoConcept:" + getName() + "[" + Integer.toHexString(hashCode()) + "]";
 		}
 
 		@Override
@@ -1914,6 +1956,64 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 		}
 
+		/**
+		 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FlexoConcept}<br>
+		 * 
+		 * Lookup algorithm follows:
+		 * <ul>
+		 * <li>If name matches declared {@link FlexoConcept} return this {@link FlexoConcept}</li>
+		 * <li>If name matches any container {@link VirtualModel} or {@link FlexoConcept} (recursively from current to container), return
+		 * related {@link FlexoConcept}</li>
+		 * <li>If name matches any parent {@link FlexoConcept} (inheritance semantics), return related {@link VirtualModel}</li>
+		 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}/li>
+		 * </ul>
+		 * 
+		 * @param conceptName
+		 * @return
+		 */
+		@Override
+		public final FlexoConcept lookupFlexoConceptWithName(String conceptName) {
+			return lookupFlexoConceptWithName(conceptName, new HashSet<>());
+		}
+
+		protected FlexoConcept lookupFlexoConceptWithName(String conceptName, Set<FlexoConcept> visited) {
+			if (visited.contains(this)) {
+				return null;
+			}
+			visited.add(this);
+			if (StringUtils.isEmpty(conceptName)) {
+				return null;
+			}
+			if (getName().equals(conceptName)) {
+				return this;
+			}
+			if (getOwner() != null) {
+				FlexoConcept returned = ((FlexoConceptImpl) getOwner()).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			if (getContainerFlexoConcept() != null) {
+				FlexoConcept returned = ((FlexoConceptImpl) getContainerFlexoConcept()).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				FlexoConcept returned = ((FlexoConceptImpl) parentConcept).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			for (FlexoConcept embeddedConcept : getEmbeddedFlexoConcepts()) {
+				FlexoConcept returned = ((FlexoConceptImpl) embeddedConcept).lookupFlexoConceptWithName(conceptName, visited);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			return null;
+		}
+
 		private List<Validable> embeddedValidable = null;
 
 		@Override
@@ -2025,6 +2125,19 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 		}
 
+		/*@Override
+		public void setAbstract(boolean isAbstract) {
+			System.out.println("Hop, le concept " + getName() + " abstract=" + isAbstract);
+			performSuperSetter(IS_ABSTRACT_KEY, isAbstract);
+			System.out.println("FML: " + getFMLPrettyPrint());
+		}
+		
+		@Override
+		public void setVisibility(Visibility visibility) {
+			System.out.println("Hop, le concept " + getName() + " visibility=" + visibility);
+			performSuperSetter(VISIBILITY_KEY, visibility);
+			System.out.println("FML: " + getFMLPrettyPrint());
+		}*/
 	}
 
 	@DefineValidationRule

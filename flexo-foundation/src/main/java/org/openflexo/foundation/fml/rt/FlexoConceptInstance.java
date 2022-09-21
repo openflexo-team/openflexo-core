@@ -55,12 +55,12 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.MultipleParametersBindingEvaluator;
 import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -81,7 +81,10 @@ import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
+import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -447,7 +450,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @throws InvocationTargetException
 	 */
 	public <T> T execute(String expression)
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException;
+			throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, InvalidBindingException;
 
 	/**
 	 * Use the current FlexoConceptInstance as the run-time context of an expression supplied<br>
@@ -474,7 +477,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @throws InvocationTargetException
 	 */
 	public <T> T execute(String expression, Object... parameters)
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException;
+			throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, InvalidBindingException;
 
 	/**
 	 * Instantiate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
@@ -559,6 +562,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			variables = new HashMap<>();
 		}
 
+		@Override
+		public ExpressionEvaluator getEvaluator() {
+			return new FMLExpressionEvaluator(this);
+		}
+
+		/**
+		 * Implements {@link #getFocusedObject()} of {@link RunTimeEvaluationContext} : local evaluation context is the
+		 * {@link FlexoConceptInstance} itself
+		 */
+		@Override
+		public FlexoObject getFocusedObject() {
+			return this;
+		}
+
 		// TODO: this is not a good idea, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 		private FlexoEditor getFlexoEditor() {
 			if (getResourceCenter() != null && getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
@@ -632,6 +649,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			protected HashMap<String, Object> localVariables = new HashMap<>();
 
 			@Override
+			public ExpressionEvaluator getEvaluator() {
+				return new FMLExpressionEvaluator(this);
+			}
+
+			@Override
 			public FlexoEditor getEditor() {
 				return getFlexoEditor();
 			}
@@ -642,6 +664,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					return getEditor().getFMLRunTimeEngine();
 				}
 				return null;
+			}
+
+			@Override
+			public FlexoObject getFocusedObject() {
+				return getFlexoConceptInstance();
 			}
 
 			@Override
@@ -695,15 +722,36 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 
-			/*@Override
-			public void debug(String aLogString, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-				getFlexoConceptInstance().debug(aLogString, fci, behaviour);
-			}
-			
 			@Override
-			public void log(String aLogString, FMLConsole.LogLevel logLevel, FlexoConceptInstance fci, FlexoBehaviour behaviour) {
-				getFlexoConceptInstance().log(aLogString, logLevel, fci, behaviour);
-			}*/
+			public void logOut(String message, LogLevel logLevel) {
+				getFlexoConceptInstance().logOut(message, logLevel);
+			}
+
+			@Override
+			public void logErr(String message, LogLevel logLevel) {
+				getFlexoConceptInstance().logErr(message, logLevel);
+			}
+
+		}
+
+		@Override
+		public void logOut(String message, LogLevel logLevel) {
+			if (getEditor() != null && getEditor().getFMLConsole() != null) {
+				getEditor().getFMLConsole().log(message, logLevel, this, null);
+			}
+			else {
+				System.out.println(message);
+			}
+		}
+
+		@Override
+		public void logErr(String message, LogLevel logLevel) {
+			if (getEditor() != null && getEditor().getFMLConsole() != null) {
+				getEditor().getFMLConsole().log(message, logLevel, this, null);
+			}
+			else {
+				System.err.println(message);
+			}
 		}
 
 		@Override
@@ -754,6 +802,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						e.getTargetException().printStackTrace();
 						logger.warning(
 								"Unexpected exception " + e.getTargetException() + " while executing expression property=" + flexoProperty);
+						return null;
+					} catch (ReflectiveOperationException e) {
+						e.printStackTrace();
+						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
 						return null;
 					}
 				}
@@ -847,6 +899,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						} catch (InvocationTargetException e) {
 							e.printStackTrace();
 						} catch (NotSettableContextException e) {
+							e.printStackTrace();
+						} catch (ReflectiveOperationException e) {
 							e.printStackTrace();
 						}
 					}
@@ -1540,6 +1594,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -1556,6 +1612,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				} catch (NotSettableContextException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 				return true;
@@ -1608,13 +1666,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public Object getValue(BindingVariable variable) {
 
-			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
+			if (variable == null) {
+				return null;
+			}
+			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
 				return this;
 			}
 			else if (variable instanceof SuperBindingVariable) {
 				return getSuperReference(((SuperBindingVariable) variable).getSuperConcept());
 			}
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getFlexoConcept() != null) {
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME) && getFlexoConcept() != null) {
 				if (getFlexoConcept().getContainerFlexoConcept() != null) {
 					return getContainerFlexoConceptInstance();
 				}
@@ -1708,8 +1769,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						+ getClass());
 				return;
 			}*/
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY + " in " + this + " of " + getClass());
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
+				logger.warning(
+						"Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY_NAME + " in " + this + " of " + getClass());
 				return;
 			}
 
@@ -1907,7 +1969,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					// Quick and dirty hasck to force revalidate
 					if (!rendererWasForceRevalidated) {
 						String invalidReason = getFlexoConcept().getInspector().getRenderer().invalidBindingReason();
-						getFlexoConcept().getInspector().getRenderer().forceRevalidate();
+						getFlexoConcept().getInspector().getRenderer().revalidate();
 						rendererWasForceRevalidated = true;
 						if (getFlexoConcept().getInspector().getRenderer().isValid()) {
 							logger.warning("Please investigate: i was required to force revalidate renderer: "
@@ -1973,6 +2035,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				} catch (NullReferenceException e) {
 					// e.printStackTrace();
 				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				} finally {
 					isComputingRenderer = false;
@@ -2082,7 +2146,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public <T> T execute(String expression)
-				throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, InvalidBindingException {
 			DataBinding<T> db = new DataBinding<>(expression, this, Object.class, BindingDefinitionType.GET);
 			if (!db.isValid()) {
 				logger.warning("Invalid binding " + db + " reason: " + db.invalidBindingReason());
@@ -2095,8 +2159,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public <T> T execute(String expression, Object... parameters)
-				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
-			return (T) MultipleParametersBindingEvaluator.evaluateBinding(expression, getBindingFactory(), this, parameters);
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
+			return (T) FMLMultipleParametersBindingEvaluator.evaluateBinding(expression, getBindingFactory(), this, parameters);
 		}
 
 		@Override

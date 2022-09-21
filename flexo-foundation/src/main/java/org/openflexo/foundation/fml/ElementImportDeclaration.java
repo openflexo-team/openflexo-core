@@ -176,8 +176,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		@Override
 		public void setResourceReference(DataBinding<String> resourceReference) {
 			if (resourceReference != null) {
-				this.resourceReference = new DataBinding<String>(resourceReference.toString(), this, String.class,
-						DataBinding.BindingDefinitionType.GET);
+				this.resourceReference = resourceReference;
+				this.resourceReference.setOwner(this);
 				this.resourceReference.setBindingName("resourceReference");
 				this.resourceReference.setMandatory(true);
 			}
@@ -199,8 +199,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		@Override
 		public void setObjectReference(DataBinding<String> objectReference) {
 			if (objectReference != null) {
-				this.objectReference = new DataBinding<String>(objectReference.toString(), this, String.class,
-						DataBinding.BindingDefinitionType.GET);
+				this.objectReference = objectReference;
+				this.objectReference.setOwner(this);
 				this.objectReference.setBindingName("objectReference");
 				this.objectReference.setMandatory(true);
 			}
@@ -219,22 +219,18 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				try {
 					referencedObject = buildReferencedObject();
 				} catch (TypeMismatchException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -243,8 +239,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 		private boolean isBuildingReferencedObject = false;
 
-		private FlexoObject buildReferencedObject() throws TypeMismatchException, NullReferenceException, InvocationTargetException,
-				FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		private FlexoObject buildReferencedObject() throws TypeMismatchException, NullReferenceException, FileNotFoundException,
+				ResourceLoadingCancelledException, FlexoException, ReflectiveOperationException {
 
 			if (isBuildingReferencedObject) {
 				return null;
@@ -266,6 +262,10 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 					if (getObjectReference().isSet() && getObjectReference().isValid()) {
 						objectReference = getObjectReference().getBindingValue(getReflectedBindingEvaluationContext());
 					}
+
+					// System.out.println("On cherche le referenced object pour " + this);
+					// System.out.println("ResourceReference: " + getResourceReference());
+					// System.out.println("resourceURI=" + resourceURI);
 
 					/*if (getResourceReference().isSet() && getResourceReference().isValid()) {
 						System.out.println("----> On cherche l'uri pour " + getResourceReference());
@@ -300,7 +300,11 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 					FlexoResource<?> resource = serviceManager.getResourceManager().getResource(resourceURI);
 					if (resource != null) {
 
-						ResourceData<?> resourceData = resource.getResourceData();
+						// System.out.println("resource=" + resource);
+						// System.out.println("resource.getLoadedResourceData()=" + resource.getLoadedResourceData());
+
+						// We should have already loaded this resource, otherwise it means that this resource was a cross reference
+						ResourceData<?> resourceData = resource.getLoadedResourceData();
 
 						/*if (resourceData instanceof FMLCompilationUnit) {
 							return ((FMLCompilationUnit) resourceData).getVirtualModel();
@@ -323,7 +327,17 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				isBuildingReferencedObject = false;
 			}
 
-			logger.warning("Cannot access FlexoServiceManager ");
+			logger.warning("Cannot access FlexoServiceManager, resourceData=" + getResourceData());
+
+			/*if (getResourceData() instanceof FMLCompilationUnit) {
+				FMLCompilationUnitImpl cu = (FMLCompilationUnitImpl) getResourceData();
+				System.out.println("vmlib=" + cu.getVirtualModelLibrary());
+				System.out.println("dfact=" + cu.getDeserializationFactory());
+				System.out.println("sm=" + cu.getServiceManager());
+			}
+			
+			Thread.dumpStack();
+			System.exit(-1);*/
 			return null;
 
 		}

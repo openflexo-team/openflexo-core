@@ -1,0 +1,17 @@
+/**
+ * First test of a empty model
+ * Test use, import and model declaration
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+use some.package.name.AModelSlot as MS;
+
+import java.lang.String;
+import java.util.List;
+import AClass;
+
+// This is the main declaration
+// URI of the VirtualModel is here implicit and is the concatenation of URI of RC + name of this VirtualModel
+model MyModel {
+	
+}

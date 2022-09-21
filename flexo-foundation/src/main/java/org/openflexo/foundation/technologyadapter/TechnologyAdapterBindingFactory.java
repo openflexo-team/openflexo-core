@@ -41,6 +41,7 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
@@ -62,27 +63,27 @@ import org.openflexo.foundation.fml.TechnologySpecificType;
 public abstract class TechnologyAdapterBindingFactory extends JavaBindingFactory {
 	static final Logger logger = Logger.getLogger(TechnologyAdapterBindingFactory.class.getPackage().getName());
 
-	private final HashMap<IBindingPathElement, HashMap<Object, SimplePathElement>> storedBindingPathElements;
+	private final HashMap<IBindingPathElement, HashMap<Object, SimplePathElement<?>>> storedBindingPathElements;
 
 	public TechnologyAdapterBindingFactory() {
 		storedBindingPathElements = new HashMap<>();
 	}
 
-	protected final SimplePathElement getSimplePathElement(Object object, IBindingPathElement parent) {
-		HashMap<Object, SimplePathElement> storedValues = storedBindingPathElements.get(parent);
+	protected final SimplePathElement<?> getSimplePathElement(Object object, IBindingPathElement parent, Bindable bindable) {
+		HashMap<Object, SimplePathElement<?>> storedValues = storedBindingPathElements.get(parent);
 		if (storedValues == null) {
 			storedValues = new HashMap<>();
 			storedBindingPathElements.put(parent, storedValues);
 		}
-		SimplePathElement returned = storedValues.get(object);
+		SimplePathElement<?> returned = storedValues.get(object);
 		if (returned == null) {
-			returned = makeSimplePathElement(object, parent);
+			returned = makeSimplePathElement(object, parent, bindable);
 			storedValues.put(object, returned);
 		}
 		return returned;
 	}
 
-	protected abstract SimplePathElement makeSimplePathElement(Object object, IBindingPathElement parent);
+	protected abstract SimplePathElement<?> makeSimplePathElement(Object object, IBindingPathElement parent, Bindable bindable);
 
 	/**
 	 * Return boolean indicating if this binding path element strategy should apply to supplied type

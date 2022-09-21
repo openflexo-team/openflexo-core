@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -51,12 +51,12 @@ import org.openflexo.foundation.fml.parser.node.Node;
 public abstract class AbstractMetaDataNode<N extends Node, T extends FMLMetaData, A extends FMLSemanticsAnalyzer>
 		extends FMLObjectNode<N, T, A> {
 
-	public AbstractMetaDataNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractMetaDataNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractMetaDataNode(T metaData, MainSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public AbstractMetaDataNode(T metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override

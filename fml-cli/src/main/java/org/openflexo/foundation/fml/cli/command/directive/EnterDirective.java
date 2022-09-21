@@ -39,21 +39,30 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.CLIUtils;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AObjectEnterDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AResourceEnterDirective;
-import org.openflexo.foundation.fml.cli.parser.node.PBinding;
-import org.openflexo.foundation.fml.cli.parser.node.PEnterDirective;
-import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.parser.node.AEnterDirective;
+import org.openflexo.foundation.fml.parser.node.AObjectEnterDirective;
+import org.openflexo.foundation.fml.parser.node.APathEnterDirective;
+import org.openflexo.foundation.fml.parser.node.AResourceEnterDirective;
+import org.openflexo.foundation.fml.parser.node.PEnterDirective;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents enter directive in FML command-line interpreter
@@ -64,64 +73,121 @@ import org.openflexo.foundation.resource.FlexoResource;
  * @author sylvain
  * 
  */
+@ModelEntity
+@ImplementationClass(EnterDirective.EnterDirectiveImpl.class)
 @DirectiveDeclaration(
 		keyword = "enter",
-		usage = "enter <expression> | -r <resource>",
+		usage = "enter <expression> | -r <resource> | -f <path>",
 		description = "Enter in a given object, denoted by a resource or an expression",
-		syntax = "enter <reference> | <expression> | -r <resource>")
-public class EnterDirective extends Directive {
+		syntax = "enter <expression> | -r <resource> | -f <path>")
+public interface EnterDirective extends Directive<AEnterDirective> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EnterDirective.class.getPackage().getName());
+	public static abstract class EnterDirectiveImpl extends DirectiveImpl<AEnterDirective> implements EnterDirective {
 
-	private FlexoResource<?> resource;
-	private Object object;
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(EnterDirective.class.getPackage().getName());
 
-	public EnterDirective(AEnterDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+		private FlexoResource<?> resource;
+		private String path;
+		private DataBinding<?> expression;
 
-		PEnterDirective enterDirective = node.getEnterDirective();
+		@Override
+		public void create(AEnterDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+			performSuperInitializer(node, commandSemanticsAnalyzer);
 
-		if (enterDirective instanceof AResourceEnterDirective) {
-			resource = getResource(((AResourceEnterDirective) enterDirective).getResourceUri().getText());
-		}
-		else if (enterDirective instanceof AObjectEnterDirective) {
-			PBinding referencedObject = ((AObjectEnterDirective) enterDirective).getBinding();
-			// System.out.println("On entre dans l'objet: " + referencedObject);
-			object = evaluate(referencedObject, CommandTokenType.LocalReference);
-			// System.out.println("Found as local reference: " + object);
-			if (object == null) {
-				object = evaluate(referencedObject, CommandTokenType.Expression);
-				// System.out.println("Found as expression: " + object);
+			PEnterDirective enterDirective = node.getEnterDirective();
+
+			if (enterDirective instanceof AResourceEnterDirective) {
+				resource = retrieveResource(((AResourceEnterDirective) enterDirective).getReferenceByUri());
+			}
+			else if (enterDirective instanceof APathEnterDirective) {
+				path = retrievePath(((APathEnterDirective) enterDirective).getPath());
+			}
+			else if (enterDirective instanceof AObjectEnterDirective) {
+				PExpression referencedObject = ((AObjectEnterDirective) enterDirective).getExpression();
+				expression = retrieveExpression(referencedObject);
 			}
 		}
-	}
 
-	public FlexoResource<?> getResource() {
-		return resource;
-	}
+		@Override
+		public String toString() {
+			if (StringUtils.isNotEmpty(path)) {
+				return "enter -f " + path;
+			}
+			else if (resource != null) {
+				return "enter -r [\"" + resource.getURI() + "\"]";
+			}
+			else if (expression != null) {
+				return "enter " + expression;
+			}
+			return "enter ?";
+		}
 
-	public Object getObject() {
-		return object;
-	}
+		public FlexoResource<?> getResource() {
+			return resource;
+		}
 
-	@Override
-	public void execute() {
-		if (getResource() instanceof CompilationUnitResource) {
-			object = ((CompilationUnitResource) getResource()).getCompilationUnit();
+		public Object getAddressedObject() {
+			if (StringUtils.isNotEmpty(path)) {
+				FlexoResource<?> adressedResource = retrieveResourceFromPath(path);
+				if (adressedResource != null) {
+					try {
+						return adressedResource.getResourceData();
+					} catch (FileNotFoundException e) {
+						getErrStream().println("Cannot enter into " + path + " : file not found");
+					} catch (ResourceLoadingCancelledException e) {
+						getErrStream().println("Cannot enter into " + path + " : cancelled loading");
+					} catch (FlexoException e) {
+						getErrStream().println("Cannot enter into " + path + " : unexpected exception");
+						e.printStackTrace();
+					}
+					return null;
+				}
+				getErrStream().println("Cannot enter into " + path + " : not a resource");
+			}
+			else if (resource != null) {
+				try {
+					return resource.getResourceData();
+				} catch (FileNotFoundException e) {
+					getErrStream().println("Cannot enter into " + path + " : file not found");
+				} catch (ResourceLoadingCancelledException e) {
+					getErrStream().println("Cannot enter into " + path + " : cancelled loading");
+				} catch (FlexoException e) {
+					getErrStream().println("Cannot enter into " + path + " : unexpected exception");
+					e.printStackTrace();
+				}
+				return null;
+			}
+			else if (expression != null) {
+				try {
+					return expression.getBindingValue(getCommandInterpreter());
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return "enter ?";
 		}
-		if (getResource() instanceof AbstractVirtualModelInstanceResource) {
-			object = ((AbstractVirtualModelInstanceResource) getResource()).getVirtualModelInstance();
-		}
-		if (object instanceof FlexoObject) {
-			getOutStream().println("Entering in context " + CLIUtils.denoteObject(object));
-			getCommandInterpreter().enterFocusedObject((FlexoObject) object);
-		}
-		else if (object != null) {
-			getErrStream().println("Cannot enter into " + object.getClass() + " : " + object);
-		}
-		else {
-			getErrStream().println("Cannot access denoted context");
+
+		@Override
+		public FlexoObject execute() throws FMLCommandExecutionException {
+			super.execute();
+
+			Object object = getAddressedObject();
+			if (object instanceof FlexoObject) {
+				getOutStream().println("Entering in context " + CLIUtils.denoteObject(object));
+				getCommandInterpreter().enterFocusedObject((FlexoObject) object);
+				return (FlexoObject) object;
+			}
+			else {
+				throw new FMLCommandExecutionException("Cannot enter into " + path + " : not a FlexoObject");
+			}
 		}
 	}
 }

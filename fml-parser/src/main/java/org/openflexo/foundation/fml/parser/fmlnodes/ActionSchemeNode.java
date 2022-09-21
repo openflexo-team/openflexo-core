@@ -44,12 +44,14 @@ import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * <pre>
@@ -64,18 +66,22 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeNode.class.getPackage().getName());
 
-	public ActionSchemeNode(AMethodBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ActionSchemeNode(AMethodBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ActionSchemeNode(ActionScheme creationScheme, MainSemanticsAnalyzer analyser) {
-		super(creationScheme, analyser);
+	public ActionSchemeNode(ActionScheme creationScheme, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(creationScheme, analyzer);
 	}
 
 	@Override
 	public ActionScheme buildModelObjectFromAST(AMethodBehaviourDecl astNode) {
 		ActionScheme returned = getFactory().newActionScheme();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
+		returned.setAbstract(astNode.getKwAbstract() != null);
+		if (astNode.getType() != null) {
+			returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
+		}
 
 		// handleParameters(astNode);
 
@@ -87,7 +93,8 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
+					getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);
@@ -107,12 +114,14 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 		//append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
 		//		FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
+		when(() -> isAbstract()).thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
+		when(() -> hasDeclaredType()).thenAppend(dynamicContents(() -> serializeType(getModelObject().getDeclaredType()),SPACE), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
-		when(() -> isAbstract())
+		when(() -> hasNoImplementation())
 		.thenAppend(staticContents(";"), getSemiFragment())
 		.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
 		.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
@@ -133,6 +142,31 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 					Indentation.DoNotIndent);
 			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
 		}*/
+	}
+
+	public boolean hasDeclaredType() {
+		if (getASTNode() != null) {
+			return getASTNode().getType() != null;
+		}
+		return getModelObject().getDeclaredType() != null;
+	}
+
+	// TODO: maybe abstract should be implemented at FlexoBehaviour level ???
+	public boolean isAbstract() {
+		if (getModelObject() != null) {
+			return getModelObject().isAbstract();
+		}
+		if (getASTNode() != null) {
+			return getASTNode().getKwAbstract() != null;
+		}
+		return getModelObject().isAbstract();
+	}
+
+	protected RawSourceFragment getAbstractFragment() {
+		if (getASTNode() != null && getASTNode().getKwAbstract() != null) {
+			return getFragment(getASTNode().getKwAbstract());
+		}
+		return null;
 	}
 
 }

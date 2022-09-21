@@ -91,6 +91,7 @@ import org.openflexo.foundation.validation.FlexoProjectValidationModel;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationModel;
 import org.openflexo.pamela.validation.ValidationReport;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
@@ -230,6 +231,14 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	@Override
 	public I getBaseArtefact() {
 		return getProjectDirectory();
+	}
+
+	@Override
+	public Resource getBaseArtefactAsResource() {
+		if (getDelegateResourceCenter() != null) {
+			return getDelegateResourceCenter().getBaseArtefactAsResource();
+		}
+		return null;
 	}
 
 	@Override
@@ -1468,6 +1477,11 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			return getDelegateResourceCenter().relativePath(serializationArtefact);
 		}
 		return null;
+	}
+
+	@Override
+	public String getDisplayableStatus() {
+		return "[uri=\"" + getProjectURI() + "\"] with " + getAllResources().size() + " resources";
 	}
 
 }

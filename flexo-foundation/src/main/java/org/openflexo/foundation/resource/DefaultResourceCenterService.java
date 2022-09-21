@@ -92,11 +92,12 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * 
 	 * @return
 	 */
-	public static FlexoResourceCenterService getNewInstance(boolean isDev) {
+	public static FlexoResourceCenterService getNewInstance(boolean enableDirectoryWatching, boolean isDev) {
 		try {
 			ModelFactory factory = new ModelFactory(FlexoResourceCenterService.class);
 			factory.setImplementingClassForInterface(DefaultResourceCenterService.class, FlexoResourceCenterService.class);
 			DefaultResourceCenterService returned = (DefaultResourceCenterService) factory.newInstance(FlexoResourceCenterService.class);
+			returned.setDirectoryWatchingEnabled(enableDirectoryWatching);
 			returned.setDevMode(isDev);
 			returned.loadAvailableRCFromClassPath();
 			return returned;
@@ -112,8 +113,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * 
 	 * @return
 	 */
-	public static FlexoResourceCenterService getNewInstance(List<ResourceCenterEntry<?>> resourceCenterEntries, boolean isDev) {
-		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance(isDev);
+	public static FlexoResourceCenterService getNewInstance(List<ResourceCenterEntry<?>> resourceCenterEntries,
+			boolean enableDirectoryWatching, boolean isDev) {
+		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance(enableDirectoryWatching, isDev);
 		for (ResourceCenterEntry<?> entry : resourceCenterEntries) {
 			FlexoResourceCenter<?> rc = entry.makeResourceCenter(returned);
 			if (rc != null) {
@@ -267,7 +269,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 */
 	public final <I> void lookupProjectsInResourceCenter(FlexoResourceCenter<I> resourceCenter) {
 
-		logger.info("--------> lookupProjectsInResourceCenter for " + resourceCenter);
+		logger.fine("--------> lookupProjectsInResourceCenter for " + resourceCenter);
 
 		Iterator<I> it;
 
@@ -279,7 +281,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			if (!isIgnorable(resourceCenter, serializationArtefact)) {
 				FlexoResource<?> r = tryToLookupResource(resourceCenter, serializationArtefact);
 				if (r != null) {
-					logger.info(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
+					logger.fine(">>>>>>>>>> Look-up resource " + r.getImplementedInterface().getSimpleName() + " " + r.getURI());
 				}
 			}
 			if (resourceCenter.isDirectory(serializationArtefact)) {
@@ -707,7 +709,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.getDisplayableStatus() + " with " + getResourceCenters().size() + " resource centers");
 		for (FlexoResourceCenter<?> rc : getResourceCenters()) {
-			sb.append("\n[" + rc.getDefaultBaseURI() + "] with " + rc.getAllResources().size() + " resources");
+			sb.append("\n" + rc.getDisplayableStatus());
 		}
 		return sb.toString();
 	}
@@ -732,7 +734,12 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 		@Override
 		public String usage(FlexoResourceCenterService service) {
-			return "service " + service.getServiceName() + " add_rc <path>";
+			return "service " + service.getServiceName() + " add_rc -d <path>";
+		}
+
+		@Override
+		public String getSyntax(FlexoResourceCenterService service) {
+			return "service " + service.getServiceName() + " " + getOperationName() + " -d " + getArgument();
 		}
 
 		@Override
@@ -745,10 +752,15 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			return "<path>";
 		}
 
+		/*@Override
+		public String getArgumentOption() {
+			return "-d";
+		}
+		
 		@Override
 		public List<ServiceOperationOption> getOptions() {
 			return null;
-		}
+		}*/
 
 		@Override
 		public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
@@ -765,6 +777,12 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				}
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName() + " -d " + ((File) argumentValue).getAbsolutePath();
+		}
+
 	}
 
 	@Override

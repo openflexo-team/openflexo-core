@@ -1,0 +1,25 @@
+namespace "http://openflexo.org/test/TestResourceCenter/" as RC; 
+
+import java.lang.String;
+
+import [RC+"TestCrossReferences1.fml"];
+import [RC+"TestCrossReferences2.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestMetaData.fml")
+@Version("0.1")
+model TestMetaData {
+
+	concept MyConceptA extends ConceptA {
+	
+		concept MyConceptC extends ConceptC {
+			concept MyConceptE {
+			}
+		}
+
+		concept MyConceptD {
+		}
+	}
+
+	concept MyConceptB extends MyConceptA {
+	}
+}
