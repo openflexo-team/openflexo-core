@@ -186,7 +186,7 @@ public class TestFMLEditor7 extends OpenflexoFIBTestCase {
 		System.out.println("foo: " + foo);
 
 		ValidationReport validation = validate(compilationUnit);
-		assertEquals(0, validation.getErrorsCount());
+		assertEquals(2, validation.getErrorsCount());
 
 	}
 
