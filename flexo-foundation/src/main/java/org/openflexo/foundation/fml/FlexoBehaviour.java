@@ -881,12 +881,40 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
-			if (behaviour.getDeclaredType() != null && behaviour.getAnalyzedReturnType() != null && !(behaviour.isAbstract())) {
-				if (!TypeUtils.isTypeAssignableFrom(behaviour.getDeclaredType(), behaviour.getAnalyzedReturnType())) {
-					return new ValidationError<>(this, behaviour, "types_are_not_compatibles");
+
+			if (!behaviour.isAbstract()) {
+				Type expected = behaviour.getDeclaredType();
+				Type analyzed = behaviour.getAnalyzedReturnType();
+				if (expected != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+					return new NotCompatibleTypesIssue(this, behaviour, expected, analyzed);
 				}
 			}
+
 			return null;
+		}
+
+		public static class NotCompatibleTypesIssue
+				extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, FlexoBehaviour> {
+
+			private Type expectedType;
+			private Type analyzedType;
+
+			public NotCompatibleTypesIssue(DeclaredTypeShouldBeCompatibleWithAnalyzedType rule, FlexoBehaviour anObject, Type expected,
+					Type analyzed) {
+				super(rule, anObject,
+						"types_are_not_compatible_in_behaviour_($validable.signature)_:_($expectedType)_is_not_assignable_from_($analyzedType)");
+				this.analyzedType = analyzed;
+				this.expectedType = expected;
+			}
+
+			public String getExpectedType() {
+				return TypeUtils.simpleRepresentation(expectedType);
+			}
+
+			public String getAnalyzedType() {
+				return TypeUtils.simpleRepresentation(analyzedType);
+			}
+
 		}
 
 	}
