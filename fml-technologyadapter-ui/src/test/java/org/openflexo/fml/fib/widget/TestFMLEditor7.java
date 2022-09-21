@@ -66,6 +66,7 @@ import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.gina.utils.InspectorGroup;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -99,7 +100,6 @@ public class TestFMLEditor7 extends OpenflexoFIBTestCase {
 	private static VirtualModel virtualModel;
 
 	private static FlexoConcept foo;
-	private static FlexoConcept foo2;
 
 	@Test
 	@TestOrder(3)
@@ -130,8 +130,6 @@ public class TestFMLEditor7 extends OpenflexoFIBTestCase {
 		gcDelegate.addTab("FML Editor", fmlEditor);
 		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
 		assertNotNull(cu);
-		assertEquals(4, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(9, cu.getVirtualModel().getFlexoBehaviours().size());
 	}
 
 	@Test
@@ -172,45 +170,24 @@ public class TestFMLEditor7 extends OpenflexoFIBTestCase {
 		gcDelegate.tearDown();
 	}
 
-	/*@Test
+	@Test
 	@TestOrder(6)
 	@Category(UITest.class)
-	public void firstStep() {
+	public void performSomeChecks() {
 
-		log("firstStep");
+		log("performSomeChecks");
 
-		// @formatter:off
-		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
-				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestVirtualModelA.fml\")\n" 
-				+ "@Version(\"0.1\")\n"
-				+ "model TestVirtualModelA {\n" 
-				+ "  concept Foo {\n" 
-				+ "  }\n"
-				+ "  \n"
-				+ "  List<Foo> retrieveFoos() {\n"
-				+ "    return select Foo from this;\n"
-				+ "  }\n"
-				+ "}\n";
-		// @formatter:on
+		assertEquals(5, compilationUnit.getVirtualModel().getFlexoProperties().size());
+		assertEquals(9, compilationUnit.getVirtualModel().getFlexoBehaviours().size());
+		assertEquals(1, compilationUnit.getVirtualModel().getFlexoConcepts().size());
 
-		fmlEditor.getTextArea().setText(fml);
-		fmlEditor.parseImmediately();
-
-		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
-		assertNotNull(cu);
-		assertEquals(0, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
-		assertEquals(1, cu.getVirtualModel().getFlexoConcepts().size());
-
-		assertSame(cu, compilationUnit);
-		assertSame(cu.getVirtualModel(), virtualModel);
-
-		foo = cu.getVirtualModel().getFlexoConcept("Foo");
+		foo = compilationUnit.getVirtualModel().getFlexoConcept("Foo");
+		assertNotNull(foo);
 		System.out.println("foo: " + foo);
 
-		ValidationReport validation = validate(cu);
+		ValidationReport validation = validate(compilationUnit);
 		assertEquals(0, validation.getErrorsCount());
 
-	}*/
+	}
 
 }

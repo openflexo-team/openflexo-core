@@ -9,6 +9,7 @@ model TestVirtualModelD {
   int a;
   Foo[0,*] allA;
   Foo aFoo;
+  TestVirtualModelD vmD;
 
   List<Foo> sequencingList  {
     List<Foo> get() {
