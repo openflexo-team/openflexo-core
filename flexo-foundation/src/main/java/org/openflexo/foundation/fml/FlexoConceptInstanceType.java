@@ -286,7 +286,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		}
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -332,7 +332,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	@Override
 	public FlexoConceptInstanceType translateTo(TypingSpace typingSpace) {
 		String conceptName;
-		if (isResolved()) {
+		if (isResolved() && getFlexoConcept() != null) {
 			conceptName = getFlexoConcept().getName();
 		}
 		else {
