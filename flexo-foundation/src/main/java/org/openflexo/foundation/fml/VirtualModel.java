@@ -785,16 +785,20 @@ public interface VirtualModel extends FlexoConcept {
 					return returned;
 				}
 			}
-			for (VirtualModel virtualModel : getVirtualModels()) {
-				returned = ((FlexoConceptImpl) virtualModel).lookupFlexoConceptWithName(conceptName, visited);
-				if (returned != null) {
-					return returned;
+			if (getVirtualModels() != null) {
+				for (VirtualModel virtualModel : getVirtualModels()) {
+					returned = ((FlexoConceptImpl) virtualModel).lookupFlexoConceptWithName(conceptName, visited);
+					if (returned != null) {
+						return returned;
+					}
 				}
 			}
-			for (FlexoConcept concept : getFlexoConcepts()) {
-				returned = ((FlexoConceptImpl) concept).lookupFlexoConceptWithName(conceptName, visited);
-				if (returned != null) {
-					return returned;
+			if (getFlexoConcepts() != null) {
+				for (FlexoConcept concept : getFlexoConcepts()) {
+					returned = ((FlexoConceptImpl) concept).lookupFlexoConceptWithName(conceptName, visited);
+					if (returned != null) {
+						return returned;
+					}
 				}
 			}
 			return returned;
