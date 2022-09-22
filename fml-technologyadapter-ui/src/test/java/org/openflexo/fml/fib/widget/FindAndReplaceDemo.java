@@ -90,7 +90,7 @@ public class FindAndReplaceDemo extends JFrame implements ActionListener {
 		ErrorStrip errorStrip = new ErrorStrip(textArea);
 		cp.add(errorStrip, BorderLayout.LINE_END);
 
-		Parser p = new FMLEditorParser(null);// new XmlParser();
+		Parser p = new FMLEditorParser(null, null);// new XmlParser();
 		textArea.addParser(p);
 		// p.parse(textArea.getD, style)
 

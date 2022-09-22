@@ -222,10 +222,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		ErrorStrip errorStrip = new ErrorStrip(textArea);
 		editorPanel.add(errorStrip, BorderLayout.LINE_END);
 
-		parser = new FMLEditorParser(this);
-		textArea.setParser(parser);
-
 		splitPanel.add(editorPanel, LayoutPosition.CENTER.name());
+
+		parser = new FMLEditorParser(this, fmlResource.getLoadedResourceData());
+		textArea.setParser(parser);
 
 		browser = new FIBCompilationUnitDetailedBrowser(fmlResource.getLoadedResourceData(), flexoController);
 		splitPanel.add(browser, LayoutPosition.RIGHT.name());

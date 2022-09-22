@@ -73,10 +73,15 @@ public class FMLEditorParser extends AbstractParser {
 	private final FMLCompilationUnitParser fmlParser;
 	private FMLParseResult result;
 
-	public FMLEditorParser(FMLEditor editor) {
+	public FMLEditorParser(FMLEditor editor, FMLCompilationUnit compilationUnit) {
 		this.editor = editor;
 		fmlParser = new FMLCompilationUnitParser();
 		result = new FMLParseResult(this);
+		if (compilationUnit != null) {
+			FMLValidationReport validationReport = validate(compilationUnit);
+			result.setValidationReport(validationReport);
+		}
+
 	}
 
 	public FMLCompilationUnitParser getFMLParser() {
@@ -111,11 +116,14 @@ public class FMLEditorParser extends AbstractParser {
 
 		// We keep this log unless debug of 2.1.x is performed, because a parsing is really impacting and should be tracked
 		System.out.println("---------> Parsing FML document......");
+		// Thread.dumpStack();
 
 		result.clearNotices();
 		editor.getGutter().removeAllTrackingIcons();
 
 		boolean requiresNewPrettyPrint = false;
+
+		result.setParsedLines(0, editor.getTextArea().getLineCount());
 
 		try {
 			// Prevent editor from concurrent modification
@@ -155,15 +163,17 @@ public class FMLEditorParser extends AbstractParser {
 			requiresNewPrettyPrint = pcListener.requiresNewPrettyPrint();
 
 			// We perform a full validation to detect validation issues
-			FMLValidationReport validationReport = validate(existingData);
-			result.setValidationReport(validationReport);
+			validate(existingData);
 
+			/*FMLValidationReport validationReport = validate(existingData);
+			result.setValidationReport(validationReport);
+			
 			// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
 				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
 				result.addSemanticAnalysisIssue(semanticAnalysisIssue);
 			}
-
+			
 			// Adding notices from validation
 			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllErrors()) {
 				result.addNotice(new ValidationIssueNotice(this, validationIssue));
@@ -173,7 +183,7 @@ public class FMLEditorParser extends AbstractParser {
 			}
 			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllInfoIssues()) {
 				result.addNotice(new ValidationIssueNotice(this, validationIssue));
-			}
+			}*/
 
 		} catch (ParseException e) {
 			// Parse error: cannot do more than display position when parsing failed
@@ -190,9 +200,9 @@ public class FMLEditorParser extends AbstractParser {
 			editor.modelHasChanged(requiresNewPrettyPrint);
 		}
 
-		result.setParsedLines(0, editor.getTextArea().getLineCount());
+		// result.setParsedLines(0, editor.getTextArea().getLineCount());
 
-		for (ParserNotice parserNotice : result.getNotices()) {
+		/*for (ParserNotice parserNotice : result.getNotices()) {
 			try {
 				// System.out.println("Adding line " + parserNotice.getLine() + " message: " + parserNotice.getMessage());
 				if (parserNotice.getLine() > 0 && parserNotice.getLine() <= editor.getTextArea().getLineCount()) {
@@ -205,7 +215,7 @@ public class FMLEditorParser extends AbstractParser {
 				System.out.println("BadLocationException when trying to add at line: " + (parserNotice.getLine() - 1));
 				e.printStackTrace();
 			}
-		}
+		}*/
 
 		return result;
 
@@ -226,13 +236,54 @@ public class FMLEditorParser extends AbstractParser {
 	}
 
 	private FMLValidationReport validate(FMLCompilationUnit compilationUnit) {
+
+		result.clearNotices();
+		editor.getGutter().removeAllTrackingIcons();
+
 		FMLValidationReport virtualModelReport = (FMLValidationReport) getFMLTechnologyAdapterController()
 				.getValidationReport(compilationUnit);
+		result.setValidationReport(virtualModelReport);
+
 		try {
 			virtualModelReport.revalidate(compilationUnit);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
+
+		// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
+		for (SemanticAnalysisIssue semanticAnalysisIssue : compilationUnit.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
+			result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
+			result.addSemanticAnalysisIssue(semanticAnalysisIssue);
+		}
+
+		// Adding notices from validation
+		for (ValidationIssue<?, ?> validationIssue : virtualModelReport.getAllErrors()) {
+			result.addNotice(new ValidationIssueNotice(this, validationIssue));
+		}
+		for (ValidationIssue<?, ?> validationIssue : virtualModelReport.getAllWarnings()) {
+			result.addNotice(new ValidationIssueNotice(this, validationIssue));
+		}
+		for (ValidationIssue<?, ?> validationIssue : virtualModelReport.getAllInfoIssues()) {
+			result.addNotice(new ValidationIssueNotice(this, validationIssue));
+		}
+
+		result.setParsedLines(0, editor.getTextArea().getLineCount());
+
+		for (ParserNotice parserNotice : result.getNotices()) {
+			try {
+				// System.out.println("Adding line " + parserNotice.getLine() + " message: " + parserNotice.getMessage());
+				if (parserNotice.getLine() > 0 && parserNotice.getLine() <= editor.getTextArea().getLineCount()) {
+					editor.getGutter().addLineTrackingIcon(parserNotice.getLine() - 1, ((FMLNotice) parserNotice).getIcon());
+				}
+				else {
+					logger.warning("Unexpected notice at line:" + parserNotice.getLength() + " " + parserNotice);
+				}
+			} catch (BadLocationException e) {
+				System.out.println("BadLocationException when trying to add at line: " + (parserNotice.getLine() - 1));
+				e.printStackTrace();
+			}
+		}
+
 		return virtualModelReport;
 	}
 
@@ -258,7 +309,7 @@ public class FMLEditorParser extends AbstractParser {
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getSource() == existingData) {
 				if (evt.getPropertyName().equals(FMLCompilationUnit.JAVA_IMPORTS_KEY)) {
-					System.out.println("Attention, nouveau Java import");
+					// System.out.println("Attention, nouveau Java import");
 					requiresNewPrettyPrint = true;
 				}
 				else if (evt.getPropertyName().equals(FMLCompilationUnit.ELEMENT_IMPORTS_KEY)) {
