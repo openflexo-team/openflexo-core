@@ -244,13 +244,38 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 		@Override
 		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, GetProperty<?>> applyValidation(
 				GetProperty<?> aGetProperty) {
-			if (aGetProperty.getDeclaredType() != null && aGetProperty.getAnalyzedType() != null) {
-				if (!TypeUtils.isTypeAssignableFrom(aGetProperty.getDeclaredType(), aGetProperty.getAnalyzedType())
-						&& !TypeUtils.isTypeAssignableFrom(aGetProperty.getAnalyzedType(), aGetProperty.getDeclaredType())) {
-					return new ValidationError<>(this, aGetProperty, "types_are_not_compatibles");
-				}
+
+			Type expected = aGetProperty.getDeclaredType();
+			Type analyzed = aGetProperty.getAnalyzedType();
+			if (expected != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+				return new NotCompatibleTypesIssue(this, aGetProperty, expected, analyzed);
 			}
+
 			return null;
+		}
+
+		public static class NotCompatibleTypesIssue
+				extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, GetProperty<?>> {
+
+			private Type expectedType;
+			private Type analyzedType;
+
+			public NotCompatibleTypesIssue(DeclaredTypeShouldBeCompatibleWithAnalyzedType rule, GetProperty<?> anObject, Type expected,
+					Type analyzed) {
+				super(rule, anObject,
+						"types_are_not_compatible_in_get_control_graph_for_($validable.name)_:_($expectedType)_is_not_assignable_from_($analyzedType)");
+				this.analyzedType = analyzed;
+				this.expectedType = expected;
+			}
+
+			public String getExpectedType() {
+				return TypeUtils.simpleRepresentation(expectedType);
+			}
+
+			public String getAnalyzedType() {
+				return TypeUtils.simpleRepresentation(analyzedType);
+			}
+
 		}
 
 	}
