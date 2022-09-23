@@ -673,8 +673,12 @@ Productions
      | {expression_statement}         statement_expression semi
      | {do_statement}                 kw_do statement kw_while l_par expression r_par semi
      | {return_empty}                 kw_return semi
-     | {return}                       kw_return expression semi
-     | {return_fml_action_expression} kw_return fml_action_exp semi
+     | {return_value}                 return_value_statement
+     ;
+
+   return_value_statement = 
+       {expression}   kw_return expression semi
+     | {fml_action}   kw_return fml_action_exp semi
      ;
 
    statement_no_short_if =
@@ -690,7 +694,7 @@ Productions
      ;
 
    statement_expression =
-       {assignment}             [left]:left_hand_side assignment_operator [right]:expression
+       {assignment}             assignment_statement_expression
      | {pre_increment}          pre_incr_exp
      | {pre_decrement}          pre_decr_exp
      | {post_increment}         post_incr_exp
@@ -698,7 +702,11 @@ Productions
      | {method_invocation}      method_invocation
      | {new_instance}           new_instance
      | {fml_action_expression}  fml_action_exp
-     | {fml_action_assignment}  [left]:left_hand_side assignment_operator [right]:fml_action_exp
+     ;
+
+   assignment_statement_expression =
+       {expression}  [left]:left_hand_side assignment_operator [right]:expression
+     | {fml_action}  [left]:left_hand_side assignment_operator [right]:fml_action_exp
      ;
 
    method_invocation =

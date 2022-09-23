@@ -44,7 +44,9 @@ import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.AExpressionReturnValueStatement;
+import org.openflexo.foundation.fml.parser.node.AFmlActionReturnValueStatement;
+import org.openflexo.foundation.fml.parser.node.PReturnValueStatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -52,12 +54,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWithoutTrailingSubstatement, ReturnStatement<?>> {
+public class ReturnStatementNode extends AssignableActionNode<PReturnValueStatement, ReturnStatement<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReturnStatementNode.class.getPackage().getName());
 
-	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public ReturnStatementNode(PReturnValueStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
@@ -72,13 +74,19 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public ReturnStatement<?> buildModelObjectFromAST(AReturnStatementWithoutTrailingSubstatement astNode) {
+	public ReturnStatement<?> buildModelObjectFromAST(PReturnValueStatement astNode) {
 		ReturnStatement<?> returned = getFactory().newReturnStatement();
 
 		// Right
-
-		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getSemanticsAnalyzer());
-
+		ControlGraphNode<?, ?> assignableActionNode = null;
+		if (astNode instanceof AExpressionReturnValueStatement) {
+			assignableActionNode = ControlGraphFactory.makeControlGraphNode(((AExpressionReturnValueStatement) astNode).getExpression(),
+					getSemanticsAnalyzer());
+		}
+		if (astNode instanceof AFmlActionReturnValueStatement) {
+			assignableActionNode = ControlGraphFactory.makeControlGraphNode(((AFmlActionReturnValueStatement) astNode).getFmlActionExp(),
+					getSemanticsAnalyzer());
+		}
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof AssignableAction) {
 				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
@@ -88,6 +96,10 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 				System.err.println("Unexpected " + assignableActionNode.getModelObject());
 				Thread.dumpStack();
 			}
+		}
+		else {
+			System.err.println("Unexpected " + astNode);
+			Thread.dumpStack();
 		}
 
 		return returned;
@@ -105,15 +117,21 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 
 	@Override
 	protected RawSourceFragment getSemiFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getSemi());
+		if (getASTNode() instanceof AExpressionReturnValueStatement) {
+			return getFragment(((AExpressionReturnValueStatement) getASTNode()).getSemi());
+		}
+		if (getASTNode() instanceof AFmlActionReturnValueStatement) {
+			return getFragment(((AFmlActionReturnValueStatement) getASTNode()).getSemi());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getReturnFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwReturn());
+		if (getASTNode() instanceof AExpressionReturnValueStatement) {
+			return getFragment(((AExpressionReturnValueStatement) getASTNode()).getKwReturn());
+		}
+		if (getASTNode() instanceof AFmlActionReturnValueStatement) {
+			return getFragment(((AFmlActionReturnValueStatement) getASTNode()).getKwReturn());
 		}
 		return null;
 	}

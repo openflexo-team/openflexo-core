@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpres
 import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANoTrailStatement;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
-import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.AReturnValueStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ATaEditionActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
@@ -72,6 +72,10 @@ import org.openflexo.toolbox.StringUtils;
  * Such a factory works with a parent {@link FMLCompilationUnitSemanticsAnalyzer}
  * 
  * @author sylvain
+ *
+ */
+/**
+ * @author sylvainguerin
  *
  */
 public class ControlGraphFactory extends FMLSemanticsAnalyzer {
@@ -577,17 +581,39 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		super.inADoStatementStatementWithoutTrailingSubstatement(node);
 	}
 
+	/*
+	 * <pre>
+	 *  return_value_statement = 
+	 *      {expression}   kw_return expression semi
+	 *    | {fml_action}   kw_return fml_action_exp semi
+	 *    ;
+	 * </pre>
+	 */
+
 	@Override
+	public void inAReturnValueStatementWithoutTrailingSubstatement(AReturnValueStatementWithoutTrailingSubstatement node) {
+		super.inAReturnValueStatementWithoutTrailingSubstatement(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node.getReturnValueStatement(),
+				n -> new ReturnStatementNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAReturnValueStatementWithoutTrailingSubstatement(AReturnValueStatementWithoutTrailingSubstatement node) {
+		super.outAReturnValueStatementWithoutTrailingSubstatement(node);
+		pop();
+	}
+
+	/*@Override
 	public void inAReturnStatementWithoutTrailingSubstatement(AReturnStatementWithoutTrailingSubstatement node) {
 		super.inAReturnStatementWithoutTrailingSubstatement(node);
 		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ReturnStatementNode(n, getCompilationUnitAnalyzer())));
 	}
-
+	
 	@Override
 	public void outAReturnStatementWithoutTrailingSubstatement(AReturnStatementWithoutTrailingSubstatement node) {
 		super.outAReturnStatementWithoutTrailingSubstatement(node);
 		pop();
-	}
+	}*/
 
 	@Override
 	public void inAReturnEmptyStatementWithoutTrailingSubstatement(AReturnEmptyStatementWithoutTrailingSubstatement node) {
@@ -601,38 +627,36 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		pop();
 	}
 
-	/*
-	 * <pre>
-	 *  expression_statement =
-	 *       statement_expression semi;
-	 *	
-	 *	statement_expression =
-	 *        {assignment}             assignment |
-	 *        {pre_increment}          pre_increment_expression |
-	 *        {pre_decrement}          pre_decrement_expression |
-	 *        {post_increment}         post_increment_expression |
-	 *        {post_decrement}         post_decrement_expression |
-	 *        {method_invocation}      method_invocation |
-	 *        {new_instance}           new_instance |
-	 *        {fml_action_expression}  fml_action_expression;
+	/*	 
+	 * 	 <pre>  
+	 *   statement_expression =
+	 *	       {assignment}             assignment_statement_expression
+	 *	     | {pre_increment}          pre_incr_exp
+	 *	     | {pre_decrement}          pre_decr_exp
+	 *	     | {post_increment}         post_incr_exp
+	 *	     | {post_decrement}         post_decr_exp
+	 *	     | {method_invocation}      method_invocation
+	 *	     | {new_instance}           new_instance
+	 *	     | {fml_action_expression}  fml_action_exp
+	 *	     ;
+	 *
+	 *	   assignment_statement_expression =
+	 *	       {expression}  [left]:left_hand_side assignment_operator [right]:expression
+	 *	     | {fml_action}  [left]:left_hand_side assignment_operator [right]:fml_action_exp
+	 *	     ;
 	 * </pre>
 	 */
-
 	@Override
 	public void inAAssignmentStatementExpression(AAssignmentStatementExpression node) {
-		// TODO Auto-generated method stub
 		super.inAAssignmentStatementExpression(node);
-		// if (node.getAssignmentOperator() instanceof AAssignAssignmentOperator) {
-		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new AssignationActionNode(n, getCompilationUnitAnalyzer())));
-		// }
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node.getAssignmentStatementExpression(),
+				n -> new AssignationActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
 	public void outAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		super.outAAssignmentStatementExpression(node);
-		// if (node.getAssignmentOperator() instanceof AAssignAssignmentOperator) {
 		pop();
-		// }
 	}
 
 	@Override

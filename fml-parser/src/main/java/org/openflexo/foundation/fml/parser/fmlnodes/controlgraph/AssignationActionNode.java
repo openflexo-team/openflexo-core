@@ -47,10 +47,12 @@ import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
+import org.openflexo.foundation.fml.parser.node.AExpressionAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
+import org.openflexo.foundation.fml.parser.node.AFmlActionAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.PAssignmentOperator;
+import org.openflexo.foundation.fml.parser.node.PAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.PLeftHandSide;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -59,12 +61,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class AssignationActionNode extends AssignableActionNode<AAssignmentStatementExpression, AssignationAction<?>> {
+public class AssignationActionNode extends AssignableActionNode<PAssignmentStatementExpression, AssignationAction<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignationActionNode.class.getPackage().getName());
 
-	public AssignationActionNode(AAssignmentStatementExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public AssignationActionNode(PAssignmentStatementExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
@@ -79,7 +81,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public AssignationAction<?> buildModelObjectFromAST(AAssignmentStatementExpression astNode) {
+	public AssignationAction<?> buildModelObjectFromAST(PAssignmentStatementExpression astNode) {
 		AssignationAction<?> returned = getFactory().newAssignationAction();
 		// System.out.println(">>>>>> Assignation " + astNode);
 
@@ -87,7 +89,15 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		returned.setAssignation((DataBinding) extractLeft(returned));
 
 		// Right
-		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getRight(), getSemanticsAnalyzer());
+		ControlGraphNode<?, ?> assignableActionNode = null;
+		if (astNode instanceof AExpressionAssignmentStatementExpression) {
+			assignableActionNode = ControlGraphFactory.makeControlGraphNode(((AExpressionAssignmentStatementExpression) astNode).getRight(),
+					getSemanticsAnalyzer());
+		}
+		if (astNode instanceof AFmlActionAssignmentStatementExpression) {
+			assignableActionNode = ControlGraphFactory.makeControlGraphNode(((AFmlActionAssignmentStatementExpression) astNode).getRight(),
+					getSemanticsAnalyzer());
+		}
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof AssignableAction) {
 				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
@@ -97,6 +107,10 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 				System.err.println("Unexpected " + assignableActionNode.getModelObject());
 				Thread.dumpStack();
 			}
+		}
+		else {
+			System.err.println("Unexpected " + astNode);
+			Thread.dumpStack();
 		}
 		return returned;
 	}
@@ -113,15 +127,21 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	}
 
 	private PLeftHandSide getLefthandSide() {
-		if (getASTNode() != null) {
-			return getASTNode().getLeft();
+		if (getASTNode() instanceof AExpressionAssignmentStatementExpression) {
+			return ((AExpressionAssignmentStatementExpression) getASTNode()).getLeft();
+		}
+		if (getASTNode() instanceof AFmlActionAssignmentStatementExpression) {
+			return ((AFmlActionAssignmentStatementExpression) getASTNode()).getLeft();
 		}
 		return null;
 	}
 
 	private PAssignmentOperator getOperator() {
-		if (getASTNode() != null) {
-			return getASTNode().getAssignmentOperator();
+		if (getASTNode() instanceof AExpressionAssignmentStatementExpression) {
+			return ((AExpressionAssignmentStatementExpression) getASTNode()).getAssignmentOperator();
+		}
+		if (getASTNode() instanceof AFmlActionAssignmentStatementExpression) {
+			return ((AFmlActionAssignmentStatementExpression) getASTNode()).getAssignmentOperator();
 		}
 		return null;
 	}
