@@ -63,11 +63,8 @@ public class FIBCompilationUnitDetailedBrowser extends FIBBrowserView<FMLCompila
 		super(compilationUnit, controller, FIB_FILE,
 				controller != null ? controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales() : null);
 		SwingUtilities.invokeLater(() -> {
-			System.out.println("HOP");
-			if (getFIBView("Browser") instanceof JFIBBrowserWidget) {
-				System.out.println("trouve !");
-				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("Browser");
-				System.out.println("On expand: " + compilationUnit.getVirtualModel().getStructuralFacet());
+			if (getFIBView("browser") instanceof JFIBBrowserWidget) {
+				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("browser");
 				browser.performExpand(compilationUnit.getVirtualModel());
 				browser.performExpand(compilationUnit.getVirtualModel().getStructuralFacet());
 				browser.performExpand(compilationUnit.getVirtualModel().getBehaviouralFacet());
