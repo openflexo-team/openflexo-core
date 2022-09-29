@@ -47,6 +47,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.InvalidNameException;
@@ -78,6 +79,7 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
@@ -157,6 +159,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Setter(DECLARED_TYPE_KEY)
 	public void setDeclaredType(Type type);
+
+	/**
+	 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(DECLARED_TYPE_KEY)
+	public void updateDeclaredType(Type type);
 
 	@Override
 	public Type getReturnType();
@@ -370,6 +380,24 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		private final FlexoBehaviourParametersValuesType flexoBehaviourParametersValuesType = new FlexoBehaviourParametersValuesType(this);
 
 		private DataBinding<Integer> stepsNumber;
+
+		/**
+		 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void updateDeclaredType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
+				setDeclaredType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setDeclaredType(type);
+			}
+		}
 
 		@Override
 		public Type getReturnType() {
@@ -885,6 +913,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			if (!behaviour.isAbstract()) {
 				Type expected = behaviour.getDeclaredType();
 				Type analyzed = behaviour.getAnalyzedReturnType();
+				// System.out.println("expected " + expected + " of " + expected.getClass());
+				// System.out.println("analyzed " + analyzed + " of " + analyzed.getClass());
 				if (expected != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
 					return new NotCompatibleTypesIssue(this, behaviour, expected, analyzed);
 				}
