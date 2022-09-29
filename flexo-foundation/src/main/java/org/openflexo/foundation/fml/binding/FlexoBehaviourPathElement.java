@@ -49,6 +49,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimpleMethodPathElementImpl;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
@@ -346,15 +347,24 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	@Override
 	public void resolve() {
 		if (getParent() != null) {
-			FlexoBehaviour function = (FlexoBehaviour) getBindingFactory().retrieveFunction(getParent().getType(), getParsed(),
-					getArguments());
-			setFunction(function);
-			if (isActivated()) {
-				startListenToBehaviour();
+
+			Function retrievedFunction = getBindingFactory().retrieveFunction(getParent().getType(), getParsed(), getArguments());
+
+			if (retrievedFunction instanceof FlexoBehaviour) {
+				FlexoBehaviour behaviour = (FlexoBehaviour) retrievedFunction;
+				setFunction(behaviour);
+				if (isActivated()) {
+					startListenToBehaviour();
+				}
+				if (behaviour == null) {
+					logger.warning("cannot find behaviour " + getParsed() + " for " + getParent() + " with arguments " + getArguments());
+				}
 			}
-			if (function == null) {
-				logger.warning("cannot find behaviour " + getParsed() + " for " + getParent() + " with arguments " + getArguments());
+			else {
+				logger.severe("Inconsistant data : function is not a behaviour " + getParsed() + " for " + getParent() + " of "
+						+ getParent().getType() + " with arguments " + getArguments());
 			}
+
 		}
 		else {
 			logger.warning("cannot find parent for " + this);
