@@ -1,0 +1,36 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelE.fml")
+@Version("0.1")
+model TestVirtualModelE {
+
+  List<Foo> fooList  {
+    List<Foo> get() {
+      return select Foo from this;
+    }
+    set(List<Foo> value) {
+    }
+  };
+
+  List<Foo> fooList2  {
+    List<Foo> get() {
+      return select Foo from this;
+    }
+    set(List<Foo> value) {
+      log "Sets fooList with "+value;
+      // Do something here
+    }
+  };
+
+  Foo getFoo(required String name) {
+    return select unique Foo from this;
+  }
+
+  concept Foo {
+    create() {
+    }
+  }
+
+}
