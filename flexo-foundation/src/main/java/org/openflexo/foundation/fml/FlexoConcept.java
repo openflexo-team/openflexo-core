@@ -1795,7 +1795,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
 			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList
 					&& !PREVENT_PARENT_CONCEPTS_DECODING) {
-				System.out.println("On decode les concepts parent de " + getName() + " : " + parentFlexoConceptList);
 				isDecodingParentFlexoConceptList = true;
 				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
 				List<FlexoConcept> parentConcepts = new ArrayList<>();
