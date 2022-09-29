@@ -144,7 +144,7 @@ public class TestSequences extends FMLParserTestCase {
 		assertEquals("(13:2)-(14:0)", behaviourNode.getPrelude().toString());
 		assertEquals("(15:2)-(16:0)", behaviourNode.getPostlude().toString());
 
-		assertEquals("(14:19)-(15:2)", controlGraphNode.getLastParsedFragment().toString());
+		assertEquals("(14:20)-(15:1)", controlGraphNode.getLastParsedFragment().toString());
 		assertEquals(null, controlGraphNode.getPrelude());
 		assertEquals(null, controlGraphNode.getPostlude());
 

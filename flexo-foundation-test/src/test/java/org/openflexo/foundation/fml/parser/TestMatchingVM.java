@@ -140,7 +140,7 @@ public class TestMatchingVM extends FMLParserTestCase {
 		DataBindingNode db2Node = checkNode("(9:53)-(9:57)", "this", (DataBindingNode) fetchRequestNode.getChildren().get(0));
 
 		EmptyControlGraph emptyCG = (EmptyControlGraph) iterationAction.getControlGraph();
-		EmptyControlGraphNode emptyCGNode = checkNodeForObject("(9:59)-(10:3)", null, emptyCG);
+		EmptyControlGraphNode emptyCGNode = checkNodeForObject("(9:59)-(10:2)", null, emptyCG);
 
 	}
 
