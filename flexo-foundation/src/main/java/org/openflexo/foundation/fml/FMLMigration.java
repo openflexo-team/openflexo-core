@@ -39,10 +39,8 @@
 
 package org.openflexo.foundation.fml;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * Indicates a model modification used in the context of XML to FML serialization scheme<br>
@@ -52,10 +50,10 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = ElementType.METHOD)
+// @Target(value = ElementType.METHOD)
 @Deprecated
 public @interface FMLMigration {
 
-	String value();
+	String value() default "Should disappear in 3.0.0";
 
 }

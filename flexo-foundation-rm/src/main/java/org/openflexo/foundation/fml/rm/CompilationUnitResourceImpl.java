@@ -67,6 +67,7 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.InvalidRequiredBindingIssue;
+import org.openflexo.foundation.fml.FMLObject.FMLObjectImpl;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -917,6 +918,10 @@ public abstract class CompilationUnitResourceImpl
 
 	private FMLCompilationUnit loadFromXML() {
 
+		if (getPersistencyStrategy() == PersistencyStrategy.XML2FML) {
+			FMLObjectImpl.IS_CONVERTING_FROM_XML = true;
+		}
+
 		System.out.println("Loading from XML " + getXMLArtefact());
 		try {
 			System.out.println("Resource " + getXMLArtefactResource());
@@ -962,6 +967,10 @@ public abstract class CompilationUnitResourceImpl
 		}
 		returned.setResource(this);
 		getFMLParser().initPrettyPrint(returned);
+
+		if (getPersistencyStrategy() == PersistencyStrategy.XML2FML) {
+			FMLObjectImpl.IS_CONVERTING_FROM_XML = false;
+		}
 
 		return returned;
 	}
