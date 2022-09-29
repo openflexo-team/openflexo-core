@@ -133,22 +133,26 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
 
-		append(dynamicContents(DOUBLE_SPACE, () -> serializeType(getModelObject().getType()), SPACE), getGetTypeFragment());
-		append(staticContents("get"), getGetFragment());
-		append(staticContents("("), getGetLParFragment());
-		append(staticContents(")"), getGetRParFragment());
-		append(staticContents(SPACE, "{", ""), getGetLBrcFragment());
-		append(childContents(LINE_SEPARATOR, () -> getGetControlGraph(), LINE_SEPARATOR, Indentation.Indent));
-		append(staticContents(LINE_SEPARATOR + DOUBLE_SPACE, "}", ""), getGetRBrcFragment());
-
-		when(() -> isSettable()).thenAppend(staticContents(LINE_SEPARATOR + DOUBLE_SPACE, "set", ""), getSetFragment())
+		appendBlock()
+			.append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getGetTypeFragment())
+			.append(staticContents("get"), getGetFragment())
+			.append(staticContents("("), getGetLParFragment())
+			.append(staticContents(")"), getGetRParFragment())
+			.append(staticContents(SPACE, "{", ""), getGetLBrcFragment())
+			.append(childContents(LINE_SEPARATOR, () -> getGetControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+			.append(staticContents(LINE_SEPARATOR, "}", ""), getGetRBrcFragment())
+			.indent();
+	
+		when(() -> isSettable()).thenAppend(staticContents(LINE_SEPARATOR, "set", ""), getSetFragment())
 				.thenAppend(staticContents("("), getSetLParFragment())
 				.thenAppend(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getSetTypeFragment())
 				.thenAppend(dynamicContents(() -> ((GetSetProperty<?>) getModelObject()).getValueVariableName()),
 						getSetVariableValueFragment())
-				.thenAppend(staticContents(")"), getSetRParFragment()).thenAppend(staticContents(SPACE, "{", ""), getSetLBrcFragment())
+				.thenAppend(staticContents(")"), getSetRParFragment())
+				.thenAppend(staticContents(SPACE, "{", ""), getSetLBrcFragment())
 				.thenAppend(childContents(LINE_SEPARATOR, () -> getSetControlGraph(), LINE_SEPARATOR, Indentation.Indent))
-				.thenAppend(staticContents(LINE_SEPARATOR + DOUBLE_SPACE, "}", ""), getSetRBrcFragment());
+				.thenAppend(staticContents(LINE_SEPARATOR, "}", ""), getSetRBrcFragment())
+				.indent();
 
 		append(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 
