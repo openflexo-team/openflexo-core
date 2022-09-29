@@ -1788,11 +1788,14 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		// Testing XML->FML migration
 		@Deprecated
+		@FMLMigration
 		public static boolean PREVENT_PARENT_CONCEPTS_DECODING = false;
 
+		@FMLMigration
 		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
 			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList
 					&& !PREVENT_PARENT_CONCEPTS_DECODING) {
+				System.out.println("On decode les concepts parent de " + getName() + " : " + parentFlexoConceptList);
 				isDecodingParentFlexoConceptList = true;
 				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
 				List<FlexoConcept> parentConcepts = new ArrayList<>();
@@ -1821,6 +1824,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				}
 				else {
 					// Some concepts are not decoded yet, we don't do anything
+					System.out.println("Bizarre, on a pas reussi a decoder tous les concepts " + parentFlexoConceptList);
 				}
 				isDecodingParentFlexoConceptList = false;
 			}
