@@ -43,6 +43,8 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * @author sylvain
@@ -59,6 +61,31 @@ public class EmptyControlGraphNode extends ControlGraphNode<Node, EmptyControlGr
 
 	public EmptyControlGraphNode(EmptyControlGraph sequence, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(sequence, analyzer);
+	}
+
+	@Override
+	public RawSourceFragment getLastParsedFragment() {
+		return super.getLastParsedFragment();
+	}
+
+	// Tricky area : we should not take { } under account
+	@Override
+	public RawSourcePosition getStartPosition() {
+		RawSourcePosition returned = super.getStartPosition();
+		if (returned != null && returned.getCharAfter().equals('{')) {
+			returned = returned.increment();
+		}
+		return returned;
+	}
+
+	// Tricky area : we should not take { } under account
+	@Override
+	public RawSourcePosition getEndPosition() {
+		RawSourcePosition returned = super.getEndPosition();
+		if (returned != null && returned.decrement().getCharAfter().equals('}')) {
+			returned = returned.decrement();
+		}
+		return returned;
 	}
 
 	@Override
