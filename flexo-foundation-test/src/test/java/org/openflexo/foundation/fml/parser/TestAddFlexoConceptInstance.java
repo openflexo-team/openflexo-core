@@ -47,16 +47,20 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddFlexoConceptInstanceNode;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -137,6 +141,56 @@ public class TestAddFlexoConceptInstance extends FMLParserTestCase {
 		assertEquals("(10:13)-(10:31)", expressionActionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionActionNode.getPrelude());
 		assertEquals(null, expressionActionNode.getPostlude());
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Test
+	@TestOrder(4)
+	public void testNewFullQualifiedInstanceNoArg1() throws ParseException, ModelDefinitionException, IOException {
+		log("testNewFullQualifiedInstanceNoArg1()");
+
+		ActionScheme actionScheme = (ActionScheme) compilationUnit.getVirtualModel()
+				.getFlexoBehaviour("testNewFullQualifiedInstanceNoArg1");
+		assertNotNull(actionScheme);
+
+		System.out.println("PP:" + actionScheme.getFMLPrettyPrint());
+		System.out.println("Norm:" + actionScheme.getNormalizedFML());
+
+		FlexoBehaviourNode<?, ?> behaviourNode = (FlexoBehaviourNode) actionScheme.getPrettyPrintDelegate();
+		assertSame(behaviourNode, rootNode.getObjectNode(actionScheme));
+		debug(behaviourNode, 0);
+
+		assertTrue(actionScheme.getControlGraph() instanceof AssignationAction);
+		AssignationAction assignationAction = (AssignationAction) actionScheme.getControlGraph();
+		assertEquals("aConcept", assignationAction.getAssignation().toString());
+		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
+		ExpressionAction expressionAction = (ExpressionAction) assignationAction.getAssignableAction();
+
+		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
+		ExpressionActionNode expressionActionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expressionAction);
+
+		assertEquals("(13:1)-(15:2)", behaviourNode.getLastParsedFragment().toString());
+		assertEquals("(12:1)-(13:0)", behaviourNode.getPrelude().toString());
+		assertEquals("(15:2)-(16:0)", behaviourNode.getPostlude().toString());
+
+		assertEquals("(14:2)-(14:42)", assignationNode.getLastParsedFragment().toString());
+		assertEquals(null, assignationNode.getPrelude());
+		assertEquals(null, assignationNode.getPostlude());
+
+		assertEquals("(14:13)-(14:41)", expressionActionNode.getLastParsedFragment().toString());
+		assertEquals(null, expressionActionNode.getPrelude());
+		assertEquals(null, expressionActionNode.getPostlude());
+
+		DataBinding expression = expressionAction.getExpression();
+		assertTrue(expression.isBindingValue());
+		BindingValue bv = (BindingValue) expression.getExpression();
+		assertTrue(bv.getBindingPath().get(0) instanceof CreationSchemePathElement);
+
+		AddFlexoConceptInstanceNode creationSchemePathNode = (AddFlexoConceptInstanceNode) (P2PPNode) rootNode
+				.getObjectNode(bv.getBindingPath().get(0));
+		assertNotNull(creationSchemePathNode);
+		assertEquals("(14:13)-(14:41)", creationSchemePathNode.getLastParsedFragment().toString());
 
 	}
 
