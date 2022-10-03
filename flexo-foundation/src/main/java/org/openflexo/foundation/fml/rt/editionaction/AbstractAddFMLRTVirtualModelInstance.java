@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -57,6 +58,8 @@ import org.openflexo.pamela.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAddFMLRTVirtualModelInstance.AbstractAddFMLRTVirtualModelInstanceImpl.class)
+@FMLMigration("ExpressionAction should be used instead")
+@Deprecated
 public interface AbstractAddFMLRTVirtualModelInstance
 		extends AbstractAddVirtualModelInstance<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance> {
 

@@ -49,6 +49,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance.AddClassInstanceImpl;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -80,6 +81,8 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ImplementationClass(AddClassInstanceImpl.class)
 @XMLElement
 @FML("AddClassInstance")
+@FMLMigration("ExpressionAction should be used instead")
+@Deprecated
 public interface AddClassInstance extends AssignableAction<Object> {
 
 	String TYPE = "type";

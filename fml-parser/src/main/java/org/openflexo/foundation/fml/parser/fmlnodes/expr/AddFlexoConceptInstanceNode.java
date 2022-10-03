@@ -190,18 +190,22 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	public CreationSchemePathElement buildModelObjectFromAST(Node astNode) {
 
 		if (readyToBuildModelObject()) {
+			CreationSchemePathElement pathElement = null;
 			Type type = null;
 			if (astNode instanceof ASimpleNewInstance) {
 				handleArguments(((ASimpleNewInstance) astNode).getArgumentList());
 				type = TypeFactory.makeType(((ASimpleNewInstance) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
+				pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type, getParentPathElement(), null,
+						getArguments(), getBindable());
 			}
 			else if (astNode instanceof AFullQualifiedNewInstance) {
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
-				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getSemanticsAnalyzer().getTypingSpace());
+				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(),
+						getSemanticsAnalyzer().getTypingSpace());
+				pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type, getParentPathElement(),
+						((AFullQualifiedNewInstance) astNode).getConstructorName().getText(), getArguments(), getBindable());
 			}
 
-			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
-					getParentPathElement(), null, getArguments(), getBindable());
 			return pathElement;
 
 			/*NewFlexoConceptInstanceBindingPathElement returned = new NewFlexoConceptInstanceBindingPathElement(

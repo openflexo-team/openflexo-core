@@ -280,7 +280,7 @@ public class BindingPathFactory {
 			appendSimpleNewInstanceInvocation((ASimpleNewInstance) node);
 		}
 		else if (node instanceof AFullQualifiedNewInstance) {
-			// TODO: Do the stuff for full qualified new instance
+			appendFullQualifiedNewInstanceInvocation((AFullQualifiedNewInstance) node);
 		}
 	}
 
@@ -414,6 +414,40 @@ public class BindingPathFactory {
 			bindingPathElements.add(pathElement);
 
 		}
+
+	}
+
+	private void appendFullQualifiedNewInstanceInvocation(AFullQualifiedNewInstance node) {
+
+		appendBindingPath(node.getNewContainmentClause());
+
+		Type type = TypeFactory.makeType(node.getConceptName(), expressionFactory.getTypingSpace());
+		// System.out.println("Found type " + type + " of " + type.getClass());
+
+		final IBindingPathElement parent = retrieveActualParent();
+
+		if (type instanceof VirtualModelInstanceType) {
+			AddVirtualModelInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new AddVirtualModelInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			nodesPath.add(pathElementNode);
+			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
+			bindingPathElements.add(pathElement);
+		}
+		else if (type instanceof FlexoConceptInstanceType) {
+			AddFlexoConceptInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new AddFlexoConceptInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			nodesPath.add(pathElementNode);
+			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
+			bindingPathElements.add(pathElement);
+		}
+		/*else {
+			AddClassInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new AddClassInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			nodesPath.add(pathElementNode);
+			JavaNewInstanceMethodPathElement pathElement = pathElementNode.getModelObject();
+			bindingPathElements.add(pathElement);
+		
+		}*/
 
 	}
 

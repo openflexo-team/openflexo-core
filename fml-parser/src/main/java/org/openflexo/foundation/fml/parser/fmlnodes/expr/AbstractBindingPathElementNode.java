@@ -45,8 +45,8 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.BindingPathElement.BindingPathElementOwner;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
@@ -122,7 +122,8 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 
 	protected String getLastPathIdentifier(PPrimary primary) {
 		if (primary instanceof AIdentifierPrimary) {
-			String fullQualifiedIdentifier = getSemanticsAnalyzer().makeFullQualifiedIdentifier(((AIdentifierPrimary) primary).getCompositeIdent());
+			String fullQualifiedIdentifier = getSemanticsAnalyzer()
+					.makeFullQualifiedIdentifier(((AIdentifierPrimary) primary).getCompositeIdent());
 			if (fullQualifiedIdentifier.contains(".")) {
 				return fullQualifiedIdentifier.substring(fullQualifiedIdentifier.lastIndexOf(".") + 1);
 			}

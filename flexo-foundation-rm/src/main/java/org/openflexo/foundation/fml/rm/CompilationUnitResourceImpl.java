@@ -226,6 +226,10 @@ public abstract class CompilationUnitResourceImpl
 			}
 		}
 		super.stopDeserializing();
+
+		if (willConvertFromXMLtoFML) {
+			convertFromXMLToFML();
+		}
 	}
 
 	@Override
@@ -919,7 +923,7 @@ public abstract class CompilationUnitResourceImpl
 	private FMLCompilationUnit loadFromXML() {
 
 		if (getPersistencyStrategy() == PersistencyStrategy.XML2FML) {
-			FMLObjectImpl.IS_CONVERTING_FROM_XML = true;
+			willConvertFromXMLtoFML();
 		}
 
 		System.out.println("Loading from XML " + getXMLArtefact());
@@ -966,6 +970,7 @@ public abstract class CompilationUnitResourceImpl
 			virtualModel.removeFromUseDeclarations(useModelSlotDeclaration);
 		}
 		returned.setResource(this);
+
 		getFMLParser().initPrettyPrint(returned);
 
 		if (getPersistencyStrategy() == PersistencyStrategy.XML2FML) {
@@ -973,6 +978,19 @@ public abstract class CompilationUnitResourceImpl
 		}
 
 		return returned;
+	}
+
+	private boolean willConvertFromXMLtoFML = false;
+
+	private void willConvertFromXMLtoFML() {
+		FMLObjectImpl.IS_CONVERTING_FROM_XML = true;
+		willConvertFromXMLtoFML = true;
+	}
+
+	private void convertFromXMLToFML() {
+
+		new XMLToFMLConverter(getLoadedResourceData()).convert();
+
 	}
 
 	private void saveToXML(FMLCompilationUnit toBeSaved) throws SaveResourceException {

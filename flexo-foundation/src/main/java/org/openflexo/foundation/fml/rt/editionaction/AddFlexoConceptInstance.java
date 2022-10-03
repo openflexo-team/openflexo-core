@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -69,6 +70,8 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("AddFlexoConceptInstance")
+@FMLMigration("ExpressionAction should be used instead")
+@Deprecated
 public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>>
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 

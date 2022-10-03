@@ -48,6 +48,8 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ImplementationClass(AbstractCreationScheme.AbstractCreationSchemeImpl.class)
 public abstract interface AbstractCreationScheme extends FlexoBehaviour, AbstractConstructor {
 
+	public boolean isDefaultCreationScheme();
+
 	public static abstract class AbstractCreationSchemeImpl extends FlexoBehaviourImpl implements AbstractCreationScheme {
 
 		@Override
@@ -55,5 +57,9 @@ public abstract interface AbstractCreationScheme extends FlexoBehaviour, Abstrac
 			return getAnalyzedReturnType();
 		}
 
+		@Override
+		public boolean isDefaultCreationScheme() {
+			return false;
+		}
 	}
 }

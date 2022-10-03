@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -81,8 +82,17 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
+	@Deprecated /* Will disappear */
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_TITLE_KEY = "virtualModelInstanceTitle";
+	// @PropertyIdentifier(type = DataBinding.class)
+	// public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String RESOURCE_URI_KEY = "resourceURI";
+	@PropertyIdentifier(type = FlexoResourceCenter.class)
+	public static final String RESOURCE_CENTER_KEY = "resourceCenter";
+	@PropertyIdentifier(type = String.class)
+	public static final String DYNAMIC_RELATIVE_PATH_KEY = "dynamicRelativePath";
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
 	@XMLAttribute
@@ -92,13 +102,43 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 	@Setter(VIRTUAL_MODEL_INSTANCE_NAME_KEY)
 	public void setVirtualModelInstanceName(DataBinding<String> virtualModelInstanceName);
 
+	@Deprecated /* Will disappear */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, ignoreForEquality = true)
 	@XMLAttribute
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, required = false)
 	public DataBinding<String> getVirtualModelInstanceTitle();
 
+	@Deprecated /* Will disappear */
 	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
 	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
+
+	/*@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoConceptInstance> getContainer();
+	
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<FlexoConceptInstance> container);*/
+
+	@Getter(value = RESOURCE_URI_KEY)
+	@XMLAttribute
+	public DataBinding<String> getResourceURI();
+
+	@Setter(RESOURCE_URI_KEY)
+	public void setResourceURI(DataBinding<String> resourceURI);
+
+	@Getter(value = RESOURCE_CENTER_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoResourceCenter<?>> getResourceCenter();
+
+	@Setter(RESOURCE_CENTER_KEY)
+	public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter);
+
+	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
+	@XMLAttribute
+	public DataBinding<String> getDynamicRelativePath();
+
+	@Setter(DYNAMIC_RELATIVE_PATH_KEY)
+	public void setDynamicRelativePath(DataBinding<String> relativePath);
 
 	@Override
 	public FlexoConceptInstanceType getType();
@@ -113,6 +153,11 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 		private Type lastKnownType = null;
 
 		private DataBinding<String> virtualModelInstanceName;
+		// private DataBinding<FlexoConceptInstance> container;
+
+		private DataBinding<String> dynamicRelativePath;
+		private DataBinding<String> resourceURI;
+		private DataBinding<FlexoResourceCenter<?>> resourceCenter;
 
 		@Override
 		public void activate() {
@@ -150,6 +195,13 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 				return (FlexoConceptInstanceType) getCreationScheme().getReturnType();
 			}
 			return (FlexoConceptInstanceType) super.getType();
+		}
+
+		public FlexoConcept getFlexoConcept() {
+			if (getType() != null) {
+				return getType().getFlexoConcept();
+			}
+			return null;
 		}
 
 		@Override
@@ -213,6 +265,91 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 				aVirtualModelInstanceName.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.virtualModelInstanceName = aVirtualModelInstanceName;
+		}
+
+		/*@Override
+		public DataBinding<FlexoConceptInstance> getContainer() {
+			if (container == null) {
+				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
+				container.setBindingName("container");
+				container.setDeclaredType(getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null
+						? getFlexoConcept().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
+			}
+			return container;
+		}
+		
+		@Override
+		public void setContainer(DataBinding<FlexoConceptInstance> aContainer) {
+			if (aContainer != null) {
+				aContainer.setOwner(this);
+				aContainer.setBindingName("container");
+				aContainer.setDeclaredType(getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null
+						? getFlexoConcept().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
+				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.container = aContainer;
+		}*/
+
+		@Override
+		public DataBinding<String> getResourceURI() {
+			if (resourceURI == null) {
+				resourceURI = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				resourceURI.setBindingName("resourceURI");
+			}
+			return resourceURI;
+		}
+
+		@Override
+		public void setResourceURI(DataBinding<String> resourceURI) {
+			if (resourceURI != null) {
+				resourceURI.setOwner(this);
+				resourceURI.setDeclaredType(String.class);
+				resourceURI.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				resourceURI.setBindingName("resourceURI");
+			}
+			this.resourceURI = resourceURI;
+		}
+
+		@Override
+		public DataBinding<String> getDynamicRelativePath() {
+			if (dynamicRelativePath == null) {
+				dynamicRelativePath = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				dynamicRelativePath.setBindingName("dynamicRelativePath");
+			}
+			return dynamicRelativePath;
+		}
+
+		@Override
+		public void setDynamicRelativePath(DataBinding<String> dynamicRelativePath) {
+			if (dynamicRelativePath != null) {
+				dynamicRelativePath.setOwner(this);
+				dynamicRelativePath.setDeclaredType(String.class);
+				dynamicRelativePath.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				dynamicRelativePath.setBindingName("dynamicRelativePath");
+			}
+			this.dynamicRelativePath = dynamicRelativePath;
+		}
+
+		@Override
+		public DataBinding<FlexoResourceCenter<?>> getResourceCenter() {
+			if (resourceCenter == null) {
+				resourceCenter = new DataBinding<>(this, FlexoResourceCenter.class, DataBinding.BindingDefinitionType.GET);
+				resourceCenter.setBindingName("resourceCenter");
+			}
+			return resourceCenter;
+		}
+
+		@Override
+		public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter) {
+			if (resourceCenter != null) {
+				resourceCenter.setOwner(this);
+				resourceCenter.setDeclaredType(FlexoResourceCenter.class);
+				resourceCenter.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				resourceCenter.setBindingName("resourceCenter");
+			}
+			this.resourceCenter = resourceCenter;
 		}
 
 		/*@Override
@@ -312,18 +449,44 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 			// if (serializationRepresentation == null) {
 
 			StringBuffer returned = new StringBuffer();
-			if (getFunction() != null) {
-				returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+
+			if (isResolved()) {
+				if (getFunction().isDefaultCreationScheme()) {
+					returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+				}
+				else {
+					returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "::" + getFunction().getName() + "(");
+				}
 				boolean isFirst = true;
 				for (Function.FunctionArgument a : getFunction().getArguments()) {
 					returned.append((isFirst ? "" : ",") + getArgumentValue(a));
 					isFirst = false;
 				}
 				returned.append(")");
-				if (getType() instanceof VirtualModelInstanceType) {
+				if (hasWithClause()) {
+					returned.append(" with (");
+					isFirst = true;
 					if (getVirtualModelInstanceName() != null && getVirtualModelInstanceName().isSet()) {
-						returned.append(" with (virtualModelInstanceName=" + getVirtualModelInstanceName() + ")");
+						returned.append((isFirst ? "" : ",") + "virtualModelInstanceName=" + getVirtualModelInstanceName());
+						isFirst = false;
 					}
+					/*if (getContainer() != null && getContainer().isSet()) {
+						returned.append((isFirst ? "" : ",") + "container=" + getContainer());
+						isFirst = false;
+					}*/
+					if (getResourceURI() != null && getResourceURI().isSet()) {
+						returned.append((isFirst ? "" : ",") + "uri=" + getResourceURI());
+						isFirst = false;
+					}
+					if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
+						returned.append((isFirst ? "" : ",") + "path=" + getDynamicRelativePath());
+						isFirst = false;
+					}
+					if (getResourceCenter() != null && getResourceCenter().isSet()) {
+						returned.append((isFirst ? "" : ",") + "rc=" + getResourceCenter());
+						isFirst = false;
+					}
+					returned.append(")");
 				}
 			}
 			else {
@@ -333,6 +496,22 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 			return returned.toString();
 			// }
 			// return serializationRepresentation;
+		}
+
+		private boolean hasWithClause() {
+			if (getType() instanceof VirtualModelInstanceType) {
+				return true;
+			}
+			if (getResourceURI() != null && getResourceURI().isSet()) {
+				return true;
+			}
+			if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
+				return true;
+			}
+			if (getResourceCenter() != null && getResourceCenter().isSet()) {
+				return true;
+			}
+			return false;
 		}
 
 		@Override
@@ -360,14 +539,27 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 				}
 
 				if (parentType instanceof FlexoConceptInstanceType) {
+
 					FlexoConcept parentContext = ((FlexoConceptInstanceType) parentType).getFlexoConcept();
 					if (parentContext instanceof VirtualModel) {
 						VirtualModel vm = (VirtualModel) parentContext;
-						if (!vm.getAllRootFlexoConcepts().contains(getCreationScheme().getFlexoConcept())) {
-							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
-									+ parentContext.getName();
-							check.valid = false;
-							return check;
+						if (getFlexoConcept() instanceof VirtualModel) {
+							// A VirtualModel inside another VirtualModel
+							if (!(((VirtualModel) getFlexoConcept()).getContainerVirtualModel()).isAssignableFrom(vm)) {
+								check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName()
+										+ " in " + parentContext.getName();
+								check.valid = false;
+								return check;
+							}
+						}
+						else {
+							// A simple FlexoConcept in a VirtualModel
+							if (!vm.getAllRootFlexoConcepts().contains(getCreationScheme().getFlexoConcept())) {
+								check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName()
+										+ " in " + parentContext.getName();
+								check.valid = false;
+								return check;
+							}
 						}
 					}
 					else if (parentContext instanceof FlexoConcept) {
@@ -443,6 +635,12 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 				// System.out.println("type: " + getType() + " resolved=" + getType().isResolved());
 				// System.out.println("arguments: " + getArguments() + " size: " + getArguments().size());
 			}
+			/*else {
+				if (getType().toString().contains("Foo2")) {
+					System.out.println("C'est la que je resouds Foo2");
+					Thread.dumpStack();
+				}
+			}*/
 		}
 	}
 }

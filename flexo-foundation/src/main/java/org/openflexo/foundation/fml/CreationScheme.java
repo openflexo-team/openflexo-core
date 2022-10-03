@@ -98,5 +98,13 @@ public interface CreationScheme extends AbstractCreationScheme {
 			return null;
 		}
 
+		@Override
+		public boolean isDefaultCreationScheme() {
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getCreationSchemes().size() == 1 && isAnonymous();
+			}
+			return false;
+		}
+
 	}
 }

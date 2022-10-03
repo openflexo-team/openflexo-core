@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -69,6 +70,8 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("AddVirtualModelInstance")
+@FMLMigration("ExpressionAction should be used instead")
+@Deprecated
 public interface AddVirtualModelInstance extends AbstractAddFMLRTVirtualModelInstance {
 
 	/**

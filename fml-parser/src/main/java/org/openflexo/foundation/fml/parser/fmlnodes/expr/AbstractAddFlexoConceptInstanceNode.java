@@ -82,6 +82,7 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 			Bindable bindable) {
 		super(astNode, analyzer, bindable);
 		this.parent = parent;
+		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);

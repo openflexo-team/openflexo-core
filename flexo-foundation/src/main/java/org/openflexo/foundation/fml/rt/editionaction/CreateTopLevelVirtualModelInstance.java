@@ -46,6 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -82,6 +83,8 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ImplementationClass(CreateTopLevelVirtualModelInstance.CreateTopLevelVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("CreateTopLevelVirtualModelInstance")
+@FMLMigration("ExpressionAction should be used instead")
+@Deprecated
 public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirtualModelInstance {
 
 	@PropertyIdentifier(type = DataBinding.class)

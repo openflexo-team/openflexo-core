@@ -51,6 +51,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.WildcardTypeImpl;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -74,6 +75,8 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(AddToListAction.AddToListActionImpl.class)
 @XMLElement
+@FMLMigration("ExpressionAction should be used instead")
+@Deprecated
 public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = DataBinding.class)
