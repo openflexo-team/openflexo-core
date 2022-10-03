@@ -1,0 +1,81 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+model MyModel {
+
+	testNewSimpleInstance() {
+		ConceptA aConcept = new ConceptA();
+	}
+	
+	testNewFullQualifiedInstanceNoArg1() {
+		ConceptB aConcept = new ConceptB::constructor1();
+	}
+	
+	testNewFullQualifiedInstanceNoArg2() {
+		ConceptB aConcept = new ConceptB::constructor2();
+	}
+	
+	testNewFullQualifiedInstanceOneArg() {
+		ConceptB aConcept = new ConceptB::constructor3("test");
+	}
+	
+	testNewFullQualifiedInstanceTwoArgs() {
+		ConceptB aConcept = new ConceptB::constructor4("test",3);
+	}
+	
+	/**
+	 * A concept with default constructor
+	 */
+	concept ConceptA {
+	
+		int i;
+	
+		// This is the default constructor for that concept
+		// We don't need to supply a name (forbidden if multiple constructors)
+		create () {  
+			i = 1;
+		}
+	
+	}
+
+	/**
+	 * A concept with multiple constructors
+	 */
+	concept ConceptB {
+
+		int i;
+		String foo;
+
+		// A first constructor for that concept
+		create::constructor1 () {  
+			i = 1;
+			foo = "foo";
+		}
+		
+		// Another constructor for that concept
+		create::constructor2 () {  
+			i = 2;
+			foo = "foo2";
+		}
+
+		// Another constructor for that concept
+		create::constructor3 (String aString) {  
+			i = 1;
+			foo = aString;
+		}
+
+		// Another constructor for that concept
+		create::constructor4 (String aString, int anInt) {  
+			i = anInt;
+			foo = aString;
+		}
+
+	
+	}
+
+}

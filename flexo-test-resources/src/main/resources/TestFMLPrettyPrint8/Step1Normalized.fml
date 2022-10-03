@@ -1,0 +1,52 @@
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	testNewSimpleInstance() {
+		ConceptA aConcept = new ConceptA();
+	}
+
+	testNewFullQualifiedInstanceNoArg1() {
+		ConceptB aConcept = new ConceptB::constructor1();
+	}
+
+	testNewFullQualifiedInstanceNoArg2() {
+		ConceptB aConcept = new ConceptB::constructor2();
+	}
+
+	testNewFullQualifiedInstanceOneArg() {
+		ConceptB aConcept = new ConceptB::constructor3("test");
+	}
+
+	testNewFullQualifiedInstanceTwoArgs() {
+		ConceptB aConcept = new ConceptB::constructor4("test",3);
+	}
+
+	concept ConceptA {
+		int i;
+		create() {
+			i = 1;
+		}
+	}
+
+	concept ConceptB {
+		int i;
+		String foo;
+		create::constructor1() {
+			i = 1;
+			foo = "foo";
+		}
+		create::constructor2() {
+			i = 2;
+			foo = "foo2";
+		}
+		create::constructor3(String aString) {
+			i = 1;
+			foo = aString;
+		}
+		create::constructor4(String aString, int anInt) {
+			i = anInt;
+			foo = aString;
+		}
+	}
+}

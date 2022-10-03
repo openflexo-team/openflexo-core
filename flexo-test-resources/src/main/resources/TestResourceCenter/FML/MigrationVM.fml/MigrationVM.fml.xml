@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-1" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="2.0" version="0.1" uri="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml" visibility="Public" name="MigrationVM" author="sylvainguerin" userID="SYL" flexoID="1">
+  <FlexoConcept id="SYL-55" visibility="Public" name="Foo" author="sylvainguerin" userID="SYL" flexoID="55">
+    <Inspector id="SYL-56" inspectorTitle="Foo" userID="SYL" flexoID="56" />
+    <EmbeddedFlexoConcept id="SYL-94" visibility="Public" name="Foo2" author="sylvainguerin" userID="SYL" flexoID="94">
+      <Inspector id="SYL-95" inspectorTitle="Foo2" userID="SYL" flexoID="95" />
+      <CreationScheme id="SYL-99" label="create" name="create" width="800" height="600" userID="SYL" flexoID="99">
+        <BehaviourControlGraph_EmptyControlGraph id="SYL-105" userID="SYL" flexoID="105" />
+      </CreationScheme>
+      <DeletionScheme id="SYL-100" label="delete" name="delete" width="800" height="600" userID="SYL" flexoID="100">
+        <BehaviourControlGraph_EmptyControlGraph id="SYL-106" userID="SYL" flexoID="106" />
+      </DeletionScheme>
+    </EmbeddedFlexoConcept>
+    <CreationScheme id="SYL-60" label="create" name="create" width="800" height="600" userID="SYL" flexoID="60">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-73" userID="SYL" flexoID="73" />
+    </CreationScheme>
+    <DeletionScheme id="SYL-61" label="delete" name="delete" width="800" height="600" userID="SYL" flexoID="61">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-74" userID="SYL" flexoID="74" />
+    </DeletionScheme>
+    <CreationScheme id="SYL-84" label="create2" name="create2" width="800" height="600" userID="SYL" flexoID="84">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-89" userID="SYL" flexoID="89" />
+      <GenericBehaviourParameter id="SYL-90" isRequired="true" widget="TEXT_FIELD" name="aString" type="java.lang.String" userID="SYL" flexoID="90" />
+    </CreationScheme>
+  </FlexoConcept>
+  <FlexoConcept idref="SYL-94" />
+  <Inspector id="SYL-2" inspectorTitle="MigrationVM" userID="SYL" flexoID="2" />
+  <FlexoConceptInstanceRole id="SYL-91" virtualModelInstance="this" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo" cloningStrategy="Reference" cardinality="ZeroOne" name="aFoo" userID="SYL" flexoID="91" />
+  <ActionScheme id="SYL-6" label="testNewClass" name="testNewClass" width="800" height="600" userID="SYL" flexoID="6">
+    <BehaviourControlGraph_DeclarationAction id="SYL-9" variable="aString" userID="SYL" flexoID="9">
+      <AssignableAction_AddClassInstance id="SYL-8" type="java.lang.String" userID="SYL" flexoID="8">
+        <parameter>"value"</parameter>
+      </AssignableAction_AddClassInstance>
+    </BehaviourControlGraph_DeclarationAction>
+  </ActionScheme>
+  <ActionScheme id="SYL-13" label="testNewClass2" name="testNewClass2" width="800" height="600" userID="SYL" flexoID="13">
+    <BehaviourControlGraph_Sequence id="SYL-30" userID="SYL" flexoID="30">
+      <ControlGraph2_Sequence id="SYL-31" ownerContext="controlGraph2" userID="SYL" flexoID="31">
+        <ControlGraph2_ConditionalAction id="SYL-22" condition="(aDate != null)" ownerContext="controlGraph2" userID="SYL" flexoID="22">
+          <ElseControlGraph_DeclarationAction id="SYL-29" variable="aString3" ownerContext="elseControlGraph" userID="SYL" flexoID="29">
+            <AssignableAction_AddClassInstance id="SYL-28" type="java.lang.String" userID="SYL" flexoID="28">
+              <parameter>"value"</parameter>
+            </AssignableAction_AddClassInstance>
+          </ElseControlGraph_DeclarationAction>
+          <ThenControlGraph_DeclarationAction id="SYL-26" variable="aString2" ownerContext="thenControlGraph" userID="SYL" flexoID="26">
+            <AssignableAction_AddClassInstance id="SYL-25" type="java.lang.String" userID="SYL" flexoID="25">
+              <parameter>"value"</parameter>
+            </AssignableAction_AddClassInstance>
+          </ThenControlGraph_DeclarationAction>
+        </ControlGraph2_ConditionalAction>
+        <ControlGraph1_DeclarationAction id="SYL-20" variable="aDate" ownerContext="controlGraph1" userID="SYL" flexoID="20">
+          <AssignableAction_AddClassInstance id="SYL-19" type="java.util.Date" userID="SYL" flexoID="19" />
+        </ControlGraph1_DeclarationAction>
+      </ControlGraph2_Sequence>
+      <ControlGraph1_DeclarationAction id="SYL-17" variable="aString" ownerContext="controlGraph1" userID="SYL" flexoID="17">
+        <AssignableAction_AddClassInstance id="SYL-16" type="java.lang.String" userID="SYL" flexoID="16">
+          <parameter>"value"</parameter>
+        </AssignableAction_AddClassInstance>
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+  <ActionScheme id="SYL-32" label="testAddToList" name="testAddToList" width="800" height="600" userID="SYL" flexoID="32">
+    <BehaviourControlGraph_Sequence id="SYL-43" userID="SYL" flexoID="43">
+      <ControlGraph2_Sequence id="SYL-44" ownerContext="controlGraph2" userID="SYL" flexoID="44">
+        <ControlGraph2_Sequence id="SYL-52" ownerContext="controlGraph2" userID="SYL" flexoID="52">
+          <ControlGraph2_Sequence id="SYL-53" ownerContext="controlGraph2" userID="SYL" flexoID="53">
+            <ControlGraph2_Sequence id="SYL-54" ownerContext="controlGraph2" userID="SYL" flexoID="54">
+              <ControlGraph2_AddToListAction id="SYL-51" list="aListOfString" ownerContext="controlGraph2" userID="SYL" flexoID="51">
+                <AssignableAction_AddClassInstance id="SYL-50" type="java.lang.String" userID="SYL" flexoID="50" />
+              </ControlGraph2_AddToListAction>
+              <ControlGraph1_AddToListAction id="SYL-48" list="aListOfString" ownerContext="controlGraph1" userID="SYL" flexoID="48">
+                <AssignableAction_ExpressionAction id="SYL-47" expression="aString2" userID="SYL" flexoID="47" />
+              </ControlGraph1_AddToListAction>
+            </ControlGraph2_Sequence>
+            <ControlGraph1_AddToListAction id="SYL-46" list="aListOfString" ownerContext="controlGraph1" userID="SYL" flexoID="46">
+              <AssignableAction_ExpressionAction id="SYL-45" expression="aString1" userID="SYL" flexoID="45" />
+            </ControlGraph1_AddToListAction>
+          </ControlGraph2_Sequence>
+          <ControlGraph1_DeclarationAction id="SYL-42" variable="aString2" ownerContext="controlGraph1" userID="SYL" flexoID="42">
+            <AssignableAction_AddClassInstance id="SYL-41" type="java.lang.String" userID="SYL" flexoID="41">
+              <parameter>"value"</parameter>
+            </AssignableAction_AddClassInstance>
+          </ControlGraph1_DeclarationAction>
+        </ControlGraph2_Sequence>
+        <ControlGraph1_DeclarationAction id="SYL-39" variable="aString1" ownerContext="controlGraph1" userID="SYL" flexoID="39">
+          <AssignableAction_AddClassInstance id="SYL-38" type="java.lang.String" userID="SYL" flexoID="38" />
+        </ControlGraph1_DeclarationAction>
+      </ControlGraph2_Sequence>
+      <ControlGraph1_DeclarationAction id="SYL-36" variable="aListOfString" ownerContext="controlGraph1" userID="SYL" flexoID="36">
+        <AssignableAction_AddClassInstance id="SYL-35" type="java.util.ArrayList&lt;java.lang.String&gt;" userID="SYL" flexoID="35" />
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+  <ActionScheme id="SYL-62" label="testAddToList2" name="testAddToList2" width="800" height="600" userID="SYL" flexoID="62">
+    <BehaviourControlGraph_Sequence id="SYL-75" userID="SYL" flexoID="75">
+      <ControlGraph2_Sequence id="SYL-76" ownerContext="controlGraph2" userID="SYL" flexoID="76">
+        <ControlGraph2_AddToListAction id="SYL-72" list="allFoos" ownerContext="controlGraph2" userID="SYL" flexoID="72">
+          <AssignableAction_SelectUniqueFlexoConceptInstance id="SYL-70" container="this" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo" receiver="this" userID="SYL" flexoID="70">
+            <Condition id="SYL-71" condition="true" userID="SYL" flexoID="71" />
+          </AssignableAction_SelectUniqueFlexoConceptInstance>
+        </ControlGraph2_AddToListAction>
+        <ControlGraph1_AddToListAction id="SYL-68" list="allFoos" ownerContext="controlGraph1" userID="SYL" flexoID="68">
+          <AssignableAction_ExpressionAction id="SYL-67" expression="allFoos.get(0)" userID="SYL" flexoID="67" />
+        </ControlGraph1_AddToListAction>
+      </ControlGraph2_Sequence>
+      <ControlGraph1_DeclarationAction id="SYL-66" variable="allFoos" ownerContext="controlGraph1" userID="SYL" flexoID="66">
+        <AssignableAction_SelectFlexoConceptInstance id="SYL-65" container="this" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo" receiver="this" userID="SYL" flexoID="65" />
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+  <ActionScheme id="SYL-77" label="testNewInstance" name="testNewInstance" width="800" height="600" userID="SYL" flexoID="77">
+    <BehaviourControlGraph_Sequence id="SYL-92" userID="SYL" flexoID="92">
+      <ControlGraph2_Sequence id="SYL-93" ownerContext="controlGraph2" userID="SYL" flexoID="93">
+        <ControlGraph2_Sequence id="SYL-107" ownerContext="controlGraph2" userID="SYL" flexoID="107">
+          <ControlGraph2_DeclarationAction id="SYL-104" variable="myFoo2" ownerContext="controlGraph2" userID="SYL" flexoID="104">
+            <AssignableAction_AddFlexoConceptInstance id="SYL-102" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo2.create()" container="aFoo" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo2" receiver="this" ownerContext="controlGraph2" userID="SYL" flexoID="102" />
+          </ControlGraph2_DeclarationAction>
+          <ControlGraph1_AssignationAction id="SYL-88" assign="aFoo" ownerContext="controlGraph1" userID="SYL" flexoID="88">
+            <AssignableAction_AddFlexoConceptInstance id="SYL-86" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo.create2(aString)" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo" receiver="this" ownerContext="controlGraph2" userID="SYL" flexoID="86">
+              <AddFlexoConceptInstanceParameter id="SYL-87" paramName="aString" value="&quot;foo&quot;" userID="SYL" flexoID="87" />
+            </AssignableAction_AddFlexoConceptInstance>
+          </ControlGraph1_AssignationAction>
+        </ControlGraph2_Sequence>
+        <ControlGraph1_AddFlexoConceptInstance id="SYL-83" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo.create()" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo" receiver="this" ownerContext="controlGraph1" userID="SYL" flexoID="83" />
+      </ControlGraph2_Sequence>
+      <ControlGraph1_DeclarationAction id="SYL-81" variable="newFoo" ownerContext="controlGraph1" userID="SYL" flexoID="81">
+        <AssignableAction_AddFlexoConceptInstance id="SYL-80" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo.create()" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo" receiver="this" userID="SYL" flexoID="80" />
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+  <ActionScheme id="SYL-108" label="testNewVirtualModelInstance" name="testNewVirtualModelInstance" width="800" height="600" userID="SYL" flexoID="108">
+    <BehaviourControlGraph_Sequence id="SYL-126" userID="SYL" flexoID="126">
+      <ControlGraph2_DeclarationAction id="SYL-127" variable="insideVM" ownerContext="controlGraph2" userID="SYL" flexoID="127">
+        <AssignableAction_AddVirtualModelInstance id="SYL-124" virtualModelInstanceName="&quot;anInsideVMI&quot;" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml/InsideVM.fml.init(anInteger)" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml/InsideVM.fml" receiver="topLevelVM" ownerContext="controlGraph2" userID="SYL" flexoID="124">
+          <AddFlexoConceptInstanceParameter id="SYL-125" paramName="anInteger" value="42" userID="SYL" flexoID="125" />
+        </AssignableAction_AddVirtualModelInstance>
+      </ControlGraph2_DeclarationAction>
+      <ControlGraph1_DeclarationAction id="SYL-122" variable="topLevelVM" ownerContext="controlGraph1" userID="SYL" flexoID="122">
+        <AssignableAction_CreateTopLevelVirtualModelInstance id="SYL-120" resourceCenter="this.resourceCenter" dynamicRelativePath="&quot;a.path&quot;" resourceURI="&quot;anURI&quot;" virtualModelInstanceName="&quot;newVMI&quot;" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml.init(aString)" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml" userID="SYL" flexoID="120">
+          <AddFlexoConceptInstanceParameter id="SYL-121" paramName="aString" value="&quot;test&quot;" userID="SYL" flexoID="121" />
+        </AssignableAction_CreateTopLevelVirtualModelInstance>
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+  <CreationScheme id="SYL-112" label="init" name="init" width="800" height="600" userID="SYL" flexoID="112">
+    <BehaviourControlGraph_EmptyControlGraph id="SYL-113" userID="SYL" flexoID="113" />
+    <GenericBehaviourParameter id="SYL-115" widget="TEXT_FIELD" name="aString" type="java.lang.String" userID="SYL" flexoID="115" />
+  </CreationScheme>
+  <ActionScheme id="SYL-128" label="testNewEmbeddedInstance" name="testNewEmbeddedInstance" width="800" height="600" userID="SYL" flexoID="128">
+    <BehaviourControlGraph_DeclarationAction id="SYL-130" variable="myFoo2" userID="SYL" flexoID="130">
+      <AssignableAction_AddFlexoConceptInstance id="SYL-131" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo2.create()" container="aFoo" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml#Foo2" receiver="this" ownerContext="controlGraph2" userID="SYL" flexoID="131" />
+    </BehaviourControlGraph_DeclarationAction>
+  </ActionScheme>
+  <ActionScheme id="SYL-132" label="testNewEmbeddedVirtualModelInstance" name="testNewEmbeddedVirtualModelInstance" width="800" height="600" userID="SYL" flexoID="132">
+    <BehaviourControlGraph_DeclarationAction id="SYL-135" variable="insideVM" userID="SYL" flexoID="135">
+      <AssignableAction_AddVirtualModelInstance id="SYL-136" virtualModelInstanceName="&quot;anInsideVMI&quot;" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml/InsideVM.fml.init(anInteger)" flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml/InsideVM.fml" receiver="this" ownerContext="controlGraph2" userID="SYL" flexoID="136">
+        <AddFlexoConceptInstanceParameter id="SYL-133" paramName="anInteger" value="42" userID="SYL" flexoID="133" />
+      </AssignableAction_AddVirtualModelInstance>
+    </BehaviourControlGraph_DeclarationAction>
+  </ActionScheme>
+</VirtualModel>

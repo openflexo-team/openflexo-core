@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-1" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="2.0" version="0.1" uri="http://openflexo.org/test/TestResourceCenter/MigrationVM.fml/InsideVM.fml" visibility="Public" name="InsideVM" author="sylvainguerin" userID="SYL" flexoID="1">
+  <Inspector id="SYL-2" inspectorTitle="InsideVM" userID="SYL" flexoID="2" />
+  <CreationScheme id="SYL-6" label="init" name="init" width="800" height="600" userID="SYL" flexoID="6">
+    <BehaviourControlGraph_EmptyControlGraph id="SYL-7" userID="SYL" flexoID="7" />
+    <GenericBehaviourParameter id="SYL-8" widget="INTEGER" name="anInteger" type="int" userID="SYL" flexoID="8" />
+  </CreationScheme>
+</VirtualModel>
