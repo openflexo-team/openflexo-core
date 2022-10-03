@@ -1,0 +1,13 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestReplaceWith.fml")
+@Version("0.1")
+model TestReplaceWith { 
+
+	int a;
+
+	testBehaviour () {
+		a=1;
+		a=2;
+		a=3;
+		a=4;
+	}
+}
