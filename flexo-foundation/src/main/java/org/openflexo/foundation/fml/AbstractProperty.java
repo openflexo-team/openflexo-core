@@ -42,11 +42,13 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
@@ -85,6 +87,14 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 	@Setter(TYPE_KEY)
 	public void setType(Type type);
 
+	/**
+	 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(TYPE_KEY)
+	public void updateType(Type type);
+
 	public static abstract class AbstractPropertyImpl<T> extends FlexoPropertyImpl<T> implements AbstractProperty<T> {
 
 		@Override
@@ -113,6 +123,24 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 		@Override
 		public boolean isNotificationSafe() {
 			return true;
+		}
+
+		/**
+		 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void updateType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
+				setType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setType(type);
+			}
 		}
 
 	}

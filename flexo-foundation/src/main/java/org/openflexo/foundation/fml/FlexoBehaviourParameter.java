@@ -54,6 +54,7 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.InvalidNameException;
@@ -68,6 +69,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
@@ -195,6 +197,14 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	@Setter(TYPE_KEY)
 	public void setType(Type aType);
+
+	/**
+	 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(TYPE_KEY)
+	public void updateType(Type type);
 
 	@Override
 	@Getter(value = WIDGET_KEY)
@@ -344,6 +354,24 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			/*if (!getAvailableWidgetTypes().contains(getWidget()) && getAvailableWidgetTypes().size() > 0) {
 				setWidget(getAvailableWidgetTypes().get(0));
 			}*/
+		}
+
+		/**
+		 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void updateType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
+				setType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setType(type);
+			}
 		}
 
 		private WidgetType getWidgetType(String metaDataKey) {

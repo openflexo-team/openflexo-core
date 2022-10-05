@@ -52,6 +52,7 @@ import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
@@ -82,6 +83,15 @@ public interface JavaRole<T> extends BasicProperty<T> {
 	@Override
 	@Setter(TYPE_KEY)
 	public void setType(Type type);
+
+	/**
+	 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Override
+	@Updater(TYPE_KEY)
+	public void updateType(Type type);
 
 	public static abstract class JavaRoleImpl<T> extends BasicPropertyImpl<T> implements JavaRole<T> {
 

@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
@@ -56,6 +57,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
@@ -100,6 +102,14 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	@Setter(DECLARED_TYPE_KEY)
 	public void setDeclaredType(Type type);
 
+	/**
+	 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(DECLARED_TYPE_KEY)
+	public void updateDeclaredType(Type type);
+
 	public Type getAnalyzedType();
 
 	public static abstract class GetPropertyImpl<T> extends FlexoPropertyImpl<T> implements GetProperty<T> {
@@ -135,6 +145,24 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 				return getDeclaredType();
 			}
 			return getAnalyzedType();
+		}
+
+		/**
+		 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void updateDeclaredType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
+				setDeclaredType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setDeclaredType(type);
+			}
 		}
 
 		@Override

@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
@@ -53,6 +54,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
@@ -83,6 +85,14 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 	@Setter(DECLARED_TYPE_KEY)
 	public void setDeclaredType(Type type);
+
+	/**
+	 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(DECLARED_TYPE_KEY)
+	public void updateDeclaredType(Type type);
 
 	public Type getAnalyzedType();
 
@@ -163,6 +173,24 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				return getDeclaredType();
 			}
 			return getAnalyzedType();
+		}
+
+		/**
+		 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void updateDeclaredType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
+				setDeclaredType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setDeclaredType(type);
+			}
 		}
 
 		@Override
