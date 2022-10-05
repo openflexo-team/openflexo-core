@@ -42,10 +42,18 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.node.ABlockStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AExpressionStatementStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.ANoTrailStatement;
+import org.openflexo.foundation.fml.parser.node.AStatementWithoutTrailingSubstatementStatementNoShortIf;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PStatement;
+import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.PStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.TLBrc;
+import org.openflexo.foundation.fml.parser.node.TRBrc;
 import org.openflexo.foundation.fml.parser.node.TSemi;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -91,6 +99,74 @@ public abstract class ControlGraphNode<N extends Node, T extends FMLControlGraph
 	protected RawSourceFragment getSemiFragment() {
 		if (getSemi() != null) {
 			return getFragment(getSemi());
+		}
+		return null;
+	}
+
+	/**
+	 * Return LBrc token of supplied statement, if any
+	 * 
+	 * @param statement
+	 * @return
+	 */
+	protected TLBrc getLBrc(PStatement statement) {
+		if (statement instanceof ANoTrailStatement) {
+			PStatementWithoutTrailingSubstatement statementWithoutTrailingSubstatement = ((ANoTrailStatement) statement)
+					.getStatementWithoutTrailingSubstatement();
+			if (statementWithoutTrailingSubstatement instanceof ABlockStatementWithoutTrailingSubstatement) {
+				return ((ABlockStatementWithoutTrailingSubstatement) statementWithoutTrailingSubstatement).getLBrc();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return RBrc token of supplied statement, if any
+	 * 
+	 * @param statement
+	 * @return
+	 */
+	protected TRBrc getRBrc(PStatement statement) {
+		if (statement instanceof ANoTrailStatement) {
+			PStatementWithoutTrailingSubstatement statementWithoutTrailingSubstatement = ((ANoTrailStatement) statement)
+					.getStatementWithoutTrailingSubstatement();
+			if (statementWithoutTrailingSubstatement instanceof ABlockStatementWithoutTrailingSubstatement) {
+				return ((ABlockStatementWithoutTrailingSubstatement) statementWithoutTrailingSubstatement).getRBrc();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return LBrc token of supplied statement, if any
+	 * 
+	 * @param statement
+	 * @return
+	 */
+	protected TLBrc getLBrc(PStatementNoShortIf statement) {
+		if (statement instanceof AStatementWithoutTrailingSubstatementStatementNoShortIf) {
+			PStatementWithoutTrailingSubstatement statementWithoutTrailingSubstatement = ((AStatementWithoutTrailingSubstatementStatementNoShortIf) statement)
+					.getStatementWithoutTrailingSubstatement();
+			if (statementWithoutTrailingSubstatement instanceof ABlockStatementWithoutTrailingSubstatement) {
+				return ((ABlockStatementWithoutTrailingSubstatement) statementWithoutTrailingSubstatement).getLBrc();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return RBrc token of supplied statement, if any
+	 * 
+	 * @param statement
+	 * @return
+	 */
+	protected TRBrc getRBrc(PStatementNoShortIf statement) {
+		if (statement instanceof AStatementWithoutTrailingSubstatementStatementNoShortIf) {
+			PStatementWithoutTrailingSubstatement statementWithoutTrailingSubstatement = ((AStatementWithoutTrailingSubstatementStatementNoShortIf) statement)
+					.getStatementWithoutTrailingSubstatement();
+			if (statementWithoutTrailingSubstatement instanceof ABlockStatementWithoutTrailingSubstatement) {
+				return ((ABlockStatementWithoutTrailingSubstatement) statementWithoutTrailingSubstatement).getRBrc();
+			}
 		}
 		return null;
 	}

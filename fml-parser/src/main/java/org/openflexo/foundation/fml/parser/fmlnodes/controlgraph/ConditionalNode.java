@@ -52,7 +52,6 @@ import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PStatement;
-import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -109,7 +108,7 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		append(staticContents("if"), getIfFragment());
 		append(staticContents(SPACE, "(", ""), getLParFragment());
 		append(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment());
-		append(staticContents(")"), getLParFragment());
+		append(staticContents(")"), getRParFragment());
 
 		append(staticContents(SPACE, "{", ""), getThenLBrcFragment());
 		append(childContents(LINE_SEPARATOR, () -> getModelObject().getThenControlGraph(), "", Indentation.Indent));
@@ -195,36 +194,38 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 	}
 
 	protected RawSourceFragment getThenLBrcFragment() {
-		/*if (getASTNode() != null && getASTNode().getSetDecl() instanceof ASetDecl
-				&& ((ASetDecl) getASTNode().getSetDecl()).getFlexoBehaviourBody() != null) {
-			PFlexoBehaviourBody flexoBehaviourBody = ((ASetDecl) getASTNode().getSetDecl()).getFlexoBehaviourBody();
-			if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-				return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) flexoBehaviourBody).getBlock()).getLBrc());
-			}
-		}*/
-		// System.out.println("getASTNode()=" + getASTNode());
 
 		if (getASTNode() instanceof AIfSimpleStatement) {
-			PStatement statement = ((AIfSimpleStatement) getASTNode()).getStatement();
-			System.out.println("Je cherche le LEFT dans " + statement + " of " + statement.getClass());
+			return getFragment(getLBrc(((AIfSimpleStatement) getASTNode()).getStatement()));
 		}
 		if (getASTNode() instanceof AIfElseStatement) {
-			PStatementNoShortIf statement = ((AIfElseStatement) getASTNode()).getStatementNoShortIf();
-			System.out.println("Je cherche le LEFT dans " + statement + " of " + statement.getClass());
+			return getFragment(getLBrc(((AIfElseStatement) getASTNode()).getStatementNoShortIf()));
 		}
-
 		return null;
 	}
 
 	protected RawSourceFragment getThenRBrcFragment() {
+		if (getASTNode() instanceof AIfSimpleStatement) {
+			return getFragment(getRBrc(((AIfSimpleStatement) getASTNode()).getStatement()));
+		}
+		if (getASTNode() instanceof AIfElseStatement) {
+			return getFragment(getRBrc(((AIfElseStatement) getASTNode()).getStatementNoShortIf()));
+		}
 		return null;
 	}
 
 	protected RawSourceFragment getElseLBrcFragment() {
-		return null;
+		return getFragment(getLBrc(getElseStatement()));
 	}
 
 	protected RawSourceFragment getElseRBrcFragment() {
+		return getFragment(getRBrc(getElseStatement()));
+	}
+
+	protected PStatement getElseStatement() {
+		if (getASTNode() instanceof AIfElseStatement) {
+			return (((AIfElseStatement) getASTNode()).getStatement());
+		}
 		return null;
 	}
 

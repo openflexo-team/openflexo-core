@@ -156,7 +156,7 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 		append(dynamicContents(() -> getModelObject().getIteratorName()), getIteratorNameFragment());
 		append(staticContents(SPACE, ":", SPACE), getColonFragment());
 		append(childContents("", () -> getModelObject().getIterationAction(), "", Indentation.DoNotIndent));
-		append(staticContents(")"), getLParFragment());
+		append(staticContents(")"), getRParFragment());
 
 		append(staticContents(SPACE, "{", ""), getLBrcFragment());
 		append(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), "", Indentation.Indent));
@@ -237,21 +237,20 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 	}
 
 	protected RawSourceFragment getLBrcFragment() {
-		// System.out.println("getASTNode()=" + getASTNode());
-
-		/*if (getASTNode() instanceof AIfSimpleStatement) {
-			PStatement statement = ((AIfSimpleStatement) getASTNode()).getStatement();
-			System.out.println("Je cherche le LEFT dans " + statement + " of " + statement.getClass());
-		}
-		if (getASTNode() instanceof AIfElseStatement) {
-			PStatementNoShortIf statement = ((AIfElseStatement) getASTNode()).getStatementNoShortIf();
-			System.out.println("Je cherche le LEFT dans " + statement + " of " + statement.getClass());
-		}*/
-
-		return null;
+		return getFragment(getLBrc(getStatement()));
 	}
 
 	protected RawSourceFragment getRBrcFragment() {
+		return getFragment(getRBrc(getStatement()));
+	}
+
+	protected PStatement getStatement() {
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return ((AForEnhancedExpressionStatement) getASTNode()).getStatement();
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return ((AForEnhancedFmlActionStatement) getASTNode()).getStatement();
+		}
 		return null;
 	}
 
