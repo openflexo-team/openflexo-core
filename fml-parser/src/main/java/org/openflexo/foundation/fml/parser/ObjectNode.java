@@ -553,6 +553,9 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	 * @return
 	 */
 	public RawSourceFragment getFragment(Node node) {
+		if (node == null) {
+			return null;
+		}
 		if (node instanceof Token) {
 			Token token = (Token) node;
 			return getRawSource().makeFragment(getRawSource().makePositionBeforeChar(token.getLine(), token.getPos()),
