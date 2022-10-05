@@ -254,6 +254,7 @@ redo=Herstellen
 refactor=Refactor
 relative_path=Relative path
 removing_resource_center=Removing resource center
+render=Render
 renderer=Renderer
 required=Required
 reset=Reset

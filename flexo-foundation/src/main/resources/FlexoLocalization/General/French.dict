@@ -254,6 +254,7 @@ redo=Refaire
 refactor=Transformer
 relative_path=Chemin relatif
 removing_resource_center=removing_resource_center
+render=render
 renderer=Rendu
 required=Requis
 reset=RAZ
