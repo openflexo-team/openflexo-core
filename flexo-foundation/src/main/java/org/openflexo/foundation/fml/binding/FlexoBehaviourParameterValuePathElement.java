@@ -64,9 +64,9 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 	private Type lastKnownType = null;
 
 	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter, Bindable bindable) {
-		super(parent, parameter.getName(), parameter.getType(), bindable);
+		super(parent, parameter != null ? parameter.getName() : null, parameter != null ? parameter.getType() : null, bindable);
 		this.parameter = parameter;
-		lastKnownType = parameter.getType();
+		lastKnownType = parameter != null ? parameter.getType() : null;
 	}
 
 	@Override
@@ -91,7 +91,10 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 
 	@Override
 	public Type getType() {
-		return parameter.getType();
+		if (parameter != null) {
+			return parameter.getType();
+		}
+		return null;
 	}
 
 	@Override
@@ -119,17 +122,26 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 
 	@Override
 	public String getLabel() {
-		return parameter.getName();
+		if (parameter != null) {
+			return parameter.getName();
+		}
+		return null;
 	}
 
 	@Override
 	public String getPropertyName() {
-		return parameter.getName();
+		if (parameter != null) {
+			return parameter.getName();
+		}
+		return null;
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return parameter.getDescription();
+		if (parameter != null) {
+			return parameter.getDescription();
+		}
+		return null;
 	}
 
 	@Override
