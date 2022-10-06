@@ -142,6 +142,12 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 
 		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
 
+		/*System.out.println("Prout");
+		for (FMLPropertyValue<?, ?> fmlPropertyValue : myModelModelSlot.getFMLPropertyValues(myModelModelSlot.getFMLModelFactory())) {
+			System.out.println(" > " + fmlPropertyValue);
+		}
+		System.exit(-1);*/
+
 		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step1Normalized.fml");
 		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step1PrettyPrint.fml");
 
