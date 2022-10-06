@@ -43,8 +43,8 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 
@@ -90,7 +90,8 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompila
 	public void finalizeDeserialization() {
 		if (getModelObject() != null) {
 			if (!getModelObject().isValid()) {
-				throwIssue(getModelObject().invalidBindingReason(), getFragment());
+				// No reason to throw from now, this will be detected later during model validation
+				// throwIssue(getModelObject().invalidBindingReason(), getFragment());
 			}
 		}
 	}
