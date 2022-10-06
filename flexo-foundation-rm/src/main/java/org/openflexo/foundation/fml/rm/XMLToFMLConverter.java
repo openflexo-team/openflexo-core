@@ -294,7 +294,7 @@ public class XMLToFMLConverter {
 
 		FMLControlGraph replacingAction = null;
 
-		if (list.isValid() && list.getExpression() instanceof BindingValue) {
+		if (/*list.isValid() &&*/ list.getExpression() instanceof BindingValue) {
 
 			BindingValue listBindingValue = (BindingValue) list.getExpression();
 
@@ -340,6 +340,16 @@ public class XMLToFMLConverter {
 
 				replacingAction = sequence;
 			}
+		}
+		else {
+			System.out.println("Un probleme avec list=" + list);
+			System.out.println("valid: " + list.isValid());
+			System.out.println("reason: " + list.invalidBindingReason());
+			System.out.println("expression " + list.getExpression());
+			if (list.getExpression() != null) {
+				System.out.println("of " + list.getExpression().getClass());
+			}
+			// System.exit(-1);
 		}
 
 		if (replacingAction != null) {
