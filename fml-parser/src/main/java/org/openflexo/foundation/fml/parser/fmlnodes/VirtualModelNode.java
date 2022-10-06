@@ -116,8 +116,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 
 		when(() -> getModelObject().getParentFlexoConcepts().size() > 0)
 				.thenAppend(staticContents(SPACE, "extends", SPACE), getExtendsFragment())
-				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment())
-				.elseAppend(staticContents(""), getSuperClauseFragment());
+				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment());
 
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class));

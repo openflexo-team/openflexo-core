@@ -85,14 +85,13 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
 		if (parentTypes != null) {
-			System.out.println("Hop pour " + parentTypes + " in " + getASTNode());
+			// System.out.println("finalizeDeserialization() for " + parentTypes + " in " + getASTNode());
 			for (FlexoConceptInstanceType parentType : parentTypes) {
-				System.out.println(" > " + parentType);
-				System.out.println(" > " + parentType.getFlexoConcept());
+				// System.out.println(" > " + parentType);
+				// System.out.println(" > " + parentType.getFlexoConcept());
 				if (parentType != null && parentType.getFlexoConcept() != null) {
 					try {
-						System.out.println(" >> " + getModelObject());
-						// System.exit(-1);
+						// System.out.println(" >> " + getModelObject());
 						getModelObject().addToParentFlexoConcepts(parentType.getFlexoConcept());
 					} catch (InconsistentFlexoConceptHierarchyException e) {
 						throwIssue("Inconsistent concept hierarchy", getSuperTypeListFragment());
