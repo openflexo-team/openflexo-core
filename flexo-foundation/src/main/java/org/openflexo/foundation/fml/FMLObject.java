@@ -990,8 +990,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			}
 			// We force revalidate the binding to be sure that the binding is valid
 			else if (!b.revalidate()) {
-				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
-				// + ". Reason: " + b.invalidBindingReason());
+				FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
+						+ ". Reason: " + b.invalidBindingReason());
 				// Thread.dumpStack();
 
 				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<>(this, object);
