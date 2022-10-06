@@ -1,0 +1,99 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.lang.String;
+
+@Version("0.1")
+@URI("http://openflexo.org/test/TestResourceCenter/TestConceptualModel.fml")
+@Description("Conceptual model for PetriNet")
+public model TestConceptualModel {
+
+	public concept Place {
+		String name;
+		String description;
+		int nbToken;
+		@UI(
+			@TextField(value="conceptName")
+		)
+		create::_create(String conceptName) {
+			name = parameters.conceptName;
+			nbToken = 0;
+		}
+		delete::_delete() {
+		}
+	}
+
+	public concept Transition {
+		String name;
+		String description;
+		PlaceToTransitionEdge[0,*] incomings with ConceptInstance(virtualModelInstance=container);
+		TransitionToPlaceEdge[0,*] outgoings with ConceptInstance(virtualModelInstance=container);
+		@UI(
+			@TextField(value="conceptName")
+		)
+		create::_create(String conceptName) {
+			name = parameters.conceptName;
+		}
+		delete::_delete() {
+		}
+		public step() {
+			if (this.isFireable()) {
+				for (TransitionToPlaceEdge outgoing : outgoings) {
+					outgoing.activate();
+				}
+				for (PlaceToTransitionEdge incoming : incomings) {
+					incoming.activate();
+				}
+			}
+		}
+		public isFireable() {
+			for (PlaceToTransitionEdge incoming : incomings) {
+				if (!incoming.isActivable()) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+
+	public concept PlaceToTransitionEdge extends Edge {
+		Place sourceConcept with ConceptInstance(virtualModelInstance=container);
+		Transition destinationConcept with ConceptInstance(virtualModelInstance=container);
+		create::_create(Place sourceConcept, Transition destinationConcept) {
+			sourceConcept = parameters.sourceConcept;
+			destinationConcept = parameters.destinationConcept;
+			destinationConcept.incomings.add(this);
+		}
+		delete::_delete() {
+		}
+		public isActivable() {
+			return sourceConcept.nbToken >= weight;
+		}
+		public activate() {
+			sourceConcept.nbToken = sourceConcept.nbToken - 1;
+		}
+	}
+
+	public concept TransitionToPlaceEdge extends Edge {
+		Transition sourceConcept with ConceptInstance(virtualModelInstance=container);
+		Place destinationConcept with ConceptInstance(virtualModelInstance=container);
+		create::_create(Transition sourceConcept, Place destinationConcept) {
+			sourceConcept = parameters.sourceConcept;
+			destinationConcept = parameters.destinationConcept;
+			sourceConcept.outgoings.add(this);
+		}
+		delete::_delete() {
+		}
+		public activate() {
+			destinationConcept.nbToken = destinationConcept.nbToken + 1;
+		}
+	}
+
+	public concept Edge {
+		int weight;
+		create::_create() {
+			weight = 1;
+		}
+		delete::_delete() {
+		}
+	}
+}
