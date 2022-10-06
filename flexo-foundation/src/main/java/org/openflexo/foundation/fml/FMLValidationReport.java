@@ -39,14 +39,15 @@
 package org.openflexo.foundation.fml;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.FragmentContext;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.pamela.validation.InformationIssue;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -138,7 +139,7 @@ public class FMLValidationReport extends ValidationReport {
 	@Override
 	public void revalidate() throws InterruptedException {
 
-		lineNumbers.clear();
+		// lineNumbers.clear();
 		for (ValidationIssue issue : getAllIssues()) {
 			if (issue.getCause() instanceof BindingIsRequiredAndMustBeValid) {
 				reanalyzeBinding(issue);
@@ -161,7 +162,7 @@ public class FMLValidationReport extends ValidationReport {
 
 	public void appendParseError(ParseError parseError, int line) {
 		getRootNode().addToValidationIssues(parseError);
-		setLineNumber(parseError, line);
+		// setLineNumber(parseError, line);
 		notifyChange();
 	}
 
@@ -178,20 +179,41 @@ public class FMLValidationReport extends ValidationReport {
 		notifyChange();
 	}
 
-	private Map<ValidationIssue<?, ?>, Integer> lineNumbers = new HashMap<>();
+	// private Map<ValidationIssue<?, ?>, Integer> lineNumbers = new HashMap<>();
 
 	public int getLineNumber(ValidationIssue<?, ?> issue) {
+		if (issue instanceof ParseError) {
+			return ((ParseError) issue).getLine();
+		}
 		if (issue instanceof SemanticAnalysisIssue) {
 			return ((SemanticAnalysisIssue) issue).getLine();
 		}
-		Integer returned = lineNumbers.get(issue);
+		RawSourceFragment fragment = getFragment(issue);
+		if (fragment != null) {
+			return getFragment(issue).getStartPosition().getLine();
+		}
+		/*Integer returned = lineNumbers.get(issue);
 		if (returned != null) {
 			return returned;
-		}
+		}*/
 		return -1;
 	}
 
-	public void setLineNumber(ValidationIssue<?, ?> issue, Integer line) {
+	/*public void setLineNumber(ValidationIssue<?, ?> issue, Integer line) {
 		lineNumbers.put(issue, line);
+	}*/
+
+	public RawSourceFragment getFragment(ValidationIssue<?, ?> issue) {
+		if (issue != null && issue.getCause() != null && issue.getValidable() instanceof FMLPrettyPrintable) {
+			if (StringUtils.isNotEmpty(issue.getCause().getFragmentContext())) {
+				FragmentContext context = FragmentContext.valueOf(issue.getCause().getFragmentContext());
+				if (context != null) {
+					return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment(context);
+				}
+			}
+			return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment();
+		}
+		return null;
 	}
+
 }

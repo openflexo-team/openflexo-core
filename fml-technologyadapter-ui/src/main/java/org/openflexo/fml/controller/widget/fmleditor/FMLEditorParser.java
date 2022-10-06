@@ -188,12 +188,17 @@ public class FMLEditorParser extends AbstractParser {
 		} catch (ParseException e) {
 			// Parse error: cannot do more than display position when parsing failed
 			// TODO: handle errors during parsing
-			if (result.getValidationReport() == null) {
+			/*if (result.getValidationReport() == null) {
 				FMLValidationReport validationReport = validate(null);
 				result.setValidationReport(validationReport);
+			}*/
+			/*if (result.getValidationReport() != null) {
+				result.getValidationReport().clear();
 			}
+			result.clearNotices();
 			result.addNotice(new ParseErrorNotice(this, e));
-			result.addParseError(e);
+			result.addParseError(e);*/
+			handleParseError(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -235,6 +240,19 @@ public class FMLEditorParser extends AbstractParser {
 		return editor.getFMLTechnologyAdapterController();
 	}
 
+	private void handleParseError(ParseException e) {
+		if (result.getValidationReport() != null) {
+			result.getValidationReport().clear();
+		}
+		result.clearNotices();
+		result.addNotice(new ParseErrorNotice(this, e));
+		result.addParseError(e);
+
+		result.setParsedLines(0, e.getLine());
+
+		updateEditorGutter();
+	}
+
 	private FMLValidationReport validate(FMLCompilationUnit compilationUnit) {
 
 		result.clearNotices();
@@ -269,6 +287,12 @@ public class FMLEditorParser extends AbstractParser {
 
 		result.setParsedLines(0, editor.getTextArea().getLineCount());
 
+		updateEditorGutter();
+
+		return virtualModelReport;
+	}
+
+	private void updateEditorGutter() {
 		for (ParserNotice parserNotice : result.getNotices()) {
 			try {
 				// System.out.println("Adding line " + parserNotice.getLine() + " message: " + parserNotice.getMessage());
@@ -284,7 +308,6 @@ public class FMLEditorParser extends AbstractParser {
 			}
 		}
 
-		return virtualModelReport;
 	}
 
 	/**

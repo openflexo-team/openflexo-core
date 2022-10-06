@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import org.fife.ui.rsyntaxtextarea.parser.DefaultParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
-import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.ParseError;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
@@ -76,14 +75,14 @@ public class FMLParseResult extends DefaultParseResult {
 		this.validationReport = validationReport;
 	}
 
-	@Override
+	/*@Override
 	public void addNotice(ParserNotice notice) {
 		// System.out.println(">>>>>>>>>> addNotice " + notice + " at line " + notice.getLine());
 		if (notice instanceof ValidationIssueNotice) {
 			validationReport.setLineNumber(((ValidationIssueNotice) notice).getIssue(), notice.getLine());
 		}
 		super.addNotice(notice);
-	}
+	}*/
 
 	public void addSemanticAnalysisIssue(SemanticAnalysisIssue<?, ?> issue) {
 		validationReport.appendSemanticAnalysisIssue(issue);
@@ -91,9 +90,10 @@ public class FMLParseResult extends DefaultParseResult {
 	}
 
 	public void addParseError(ParseException e) {
-		ParseError parseError = new ParseError(validationReport.getCompilationUnit(), e.getMessage());
+		ParseError parseError = new ParseError(validationReport.getCompilationUnit(), e.getMessage(), e.getLine());
 		validationReport.appendParseError(parseError, e.getLine());
 		errors.add(parseError);
+		Thread.dumpStack();
 	}
 
 	@Override

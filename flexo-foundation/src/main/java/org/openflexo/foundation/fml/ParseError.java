@@ -46,14 +46,20 @@ import org.openflexo.pamela.validation.ValidationError;
  */
 public class ParseError extends ValidationError {
 	private String parseExceptionMessage;
+	private int line;
 
-	public ParseError(FMLCompilationUnit compilationUnit, String parseExceptionMessage) {
+	public ParseError(FMLCompilationUnit compilationUnit, String parseExceptionMessage, int line) {
 		super(null, compilationUnit, "parse_exception_($parseExceptionMessage)");
 		this.parseExceptionMessage = parseExceptionMessage;
+		this.line = line;
 	}
 
 	public String getParseExceptionMessage() {
 		return parseExceptionMessage;
+	}
+
+	public int getLine() {
+		return line;
 	}
 
 	@Override
