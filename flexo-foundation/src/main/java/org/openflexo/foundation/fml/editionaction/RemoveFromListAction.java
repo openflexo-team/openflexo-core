@@ -48,6 +48,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -61,6 +62,8 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(RemoveFromListAction.RemoveFromListActionImpl.class)
 @XMLElement
+@FMLMigration("ExpressionAction should be used instead")
+@Deprecated
 public interface RemoveFromListAction<T> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)

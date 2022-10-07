@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +48,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
 import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
@@ -57,6 +59,7 @@ import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
@@ -72,6 +75,7 @@ public class XMLToFMLConverter {
 
 	private List<AddClassInstance> addClassInstanceActions = new ArrayList<>();
 	private List<AddToListAction<?>> addToListActions = new ArrayList<>();
+	private List<RemoveFromListAction<?>> removeFromListActions = new ArrayList<>();
 	private List<AddFlexoConceptInstance<?>> addFlexoConceptInstanceActions = new ArrayList<>();
 	private List<AddVirtualModelInstance> addVirtualModelInstanceActions = new ArrayList<>();
 	private List<CreateTopLevelVirtualModelInstance> createTopLevelVirtualModelInstanceActions = new ArrayList<>();
@@ -83,6 +87,7 @@ public class XMLToFMLConverter {
 	public void convert() {
 
 		System.out.println("convertFromXMLToFML for " + compilationUnit);
+		// System.exit(-1);
 
 		compilationUnit.accept(new PAMELAVisitor() {
 			@Override
@@ -94,6 +99,9 @@ public class XMLToFMLConverter {
 				if (object instanceof AddToListAction) {
 					addToListActions.add((AddToListAction) object);
 				}
+				if (object instanceof RemoveFromListAction) {
+					removeFromListActions.add((RemoveFromListAction) object);
+				}
 				if (object instanceof AddFlexoConceptInstance) {
 					addFlexoConceptInstanceActions.add((AddFlexoConceptInstance) object);
 				}
@@ -102,6 +110,13 @@ public class XMLToFMLConverter {
 				}
 				if (object instanceof CreateTopLevelVirtualModelInstance) {
 					createTopLevelVirtualModelInstanceActions.add((CreateTopLevelVirtualModelInstance) object);
+				}
+				if (object instanceof AbstractActionScheme) {
+					AbstractActionScheme behaviour = (AbstractActionScheme) object;
+					if (behaviour.getDeclaredType() == null) {
+						Type analyzedType = behaviour.getAnalyzedReturnType();
+						behaviour.setDeclaredType(analyzedType);
+					}
 				}
 			}
 		});
@@ -112,6 +127,10 @@ public class XMLToFMLConverter {
 
 		for (AddToListAction addToListAction : addToListActions) {
 			migrateAddToListAction(addToListAction);
+		}
+
+		for (RemoveFromListAction addToListAction : removeFromListActions) {
+			migrateRemoveFromListAction(addToListAction);
 		}
 
 		for (AddFlexoConceptInstance addFlexoConceptInstance : addFlexoConceptInstanceActions) {
@@ -294,7 +313,9 @@ public class XMLToFMLConverter {
 
 		FMLControlGraph replacingAction = null;
 
-		if (/*list.isValid() &&*/ list.getExpression() instanceof BindingValue) {
+		list.revalidate();
+
+		if (list.getExpression() instanceof BindingValue) {
 
 			BindingValue listBindingValue = (BindingValue) list.getExpression();
 
@@ -342,7 +363,7 @@ public class XMLToFMLConverter {
 			}
 		}
 		else {
-			System.out.println("Un probleme avec list=" + list);
+			System.out.println("Unexpected list=" + list);
 			System.out.println("valid: " + list.isValid());
 			System.out.println("reason: " + list.invalidBindingReason());
 			System.out.println("expression " + list.getExpression());
@@ -354,6 +375,51 @@ public class XMLToFMLConverter {
 
 		if (replacingAction != null) {
 			addToListAction.replaceWith(replacingAction);
+		}
+
+	}
+
+	private void migrateRemoveFromListAction(RemoveFromListAction removeFromListAction) {
+
+		DataBinding<List> list = removeFromListAction.getList();
+
+		FMLControlGraph replacingAction = null;
+
+		list.revalidate();
+
+		if (list.getExpression() instanceof BindingValue) {
+
+			BindingValue listBindingValue = (BindingValue) list.getExpression();
+
+			// The most simple case
+			DataBinding<Object> objectToAdd = removeFromListAction.getValue();
+
+			ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
+			SimpleMethodPathElement<?> addPathElement = (SimpleMethodPathElement<?>) compilationUnit.getVirtualModel().getBindingFactory()
+					.makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "remove",
+							Collections.singletonList(objectToAdd), expAction);
+			// pathElement.setBindingPathElementOwner(this);
+
+			listBindingValue.addBindingPathElement(addPathElement);
+
+			DataBinding expression = new DataBinding(expAction, Void.TYPE, BindingDefinitionType.GET);
+			expression.setExpression(listBindingValue);
+			expAction.setExpression(expression);
+			replacingAction = expAction;
+		}
+		else {
+			System.out.println("Unexpected list=" + list);
+			System.out.println("valid: " + list.isValid());
+			System.out.println("reason: " + list.invalidBindingReason());
+			System.out.println("expression " + list.getExpression());
+			if (list.getExpression() != null) {
+				System.out.println("of " + list.getExpression().getClass());
+			}
+			// System.exit(-1);
+		}
+
+		if (replacingAction != null) {
+			removeFromListAction.replaceWith(replacingAction);
 		}
 
 	}
