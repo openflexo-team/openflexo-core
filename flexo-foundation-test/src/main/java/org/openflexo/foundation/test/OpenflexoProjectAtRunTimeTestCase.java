@@ -52,6 +52,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -268,7 +269,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	/**
 	 * Load project denoted by supplied project directory
 	 * 
-	 * @param prjDir
+	 * @param projectDirectory
 	 * @return
 	 */
 	protected FlexoEditor loadProject(File projectDirectory) {
@@ -289,6 +290,17 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		} catch (ProjectLoadingCancelledException e) {
 			e.printStackTrace();
 			fail();
+		}
+		return null;
+	}
+
+	protected FlexoEditor loadProject(FlexoProjectResource<?> projectResource) {
+		if (projectResource.getIODelegate().getSerializationArtefact() instanceof File) {
+
+			File projectDirectory = ((File) projectResource.getIODelegate().getSerializationArtefact()).getParentFile();
+			System.out.println("projectDirectory=" + projectDirectory);
+
+			return loadProject(projectDirectory);
 		}
 		return null;
 	}
