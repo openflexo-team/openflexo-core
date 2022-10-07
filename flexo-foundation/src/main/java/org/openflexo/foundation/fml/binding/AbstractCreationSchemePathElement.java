@@ -192,7 +192,10 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 		@Override
 		public FlexoConceptInstanceType getType() {
 			if (getCreationScheme() != null) {
-				return (FlexoConceptInstanceType) getCreationScheme().getReturnType();
+				if (getCreationScheme().getReturnType() instanceof FlexoConceptInstanceType) {
+					return (FlexoConceptInstanceType) getCreationScheme().getReturnType();
+				}
+				return null;
 			}
 			return (FlexoConceptInstanceType) super.getType();
 		}
