@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -725,14 +726,21 @@ public interface VirtualModel extends FlexoConcept {
 		 */
 		@Override
 		public List<FlexoConcept> getAllSuperFlexoConcepts() {
+			if (isComputingSuperFlexoConcepts) {
+				return Collections.emptyList();
+			}
+			isComputingSuperFlexoConcepts = true;
 			ArrayList<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept fc : getFlexoConcepts()) {
 				if (fc.isSuperConceptOfContainerVirtualModel()) {
 					returned.add(fc);
 				}
 			}
+			isComputingSuperFlexoConcepts = false;
 			return returned;
 		}
+
+		private boolean isComputingSuperFlexoConcepts = false;
 
 		// Override PAMELA internal call by providing custom notification support
 		@Override
