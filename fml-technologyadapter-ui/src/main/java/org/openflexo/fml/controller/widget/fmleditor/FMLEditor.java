@@ -314,15 +314,21 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 				updateFMLAsText();
 			}
 			else {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						updateFMLAsText();
-					}
-				});
+				if (!updateFMLAsTextRequested) {
+					// We aggregate all the notifications to avoid to compute too many pretty-prints
+					updateFMLAsTextRequested = true;
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							updateFMLAsText();
+						}
+					});
+				}
 			}
 		}
 	}
+
+	private boolean updateFMLAsTextRequested = false;
 
 	public void parseImmediately() {
 		parser.parse((RSyntaxDocument) textArea.getDocument(), textArea.getSyntaxEditingStyle());
@@ -349,6 +355,8 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 			lastFML = newFML;
 			getTextArea().setTextNoParsingAnalysis(newFML);
 		}
+
+		updateFMLAsTextRequested = false;
 
 	}
 
