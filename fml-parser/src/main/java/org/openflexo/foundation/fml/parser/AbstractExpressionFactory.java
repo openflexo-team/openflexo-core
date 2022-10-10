@@ -292,11 +292,8 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 					return getExpression(((ALitteralUriExpressionPrimary) n).getLitString());
 				}*/
 
-				logger.warning("In expressionFactory: " + this + " : no expression registered for " + n + " of  " + n.getClass());
-				// Thread.dumpStack();
-				// System.out.println("parentAnalyzer=" + parentAnalyzer);
-				// System.out.println("Virer ce code !!!!");
-				// System.exit(-1);
+				// This may be NOT an issue
+				// logger.warning("In expressionFactory: " + this + " : no expression registered for " + n + " of " + n.getClass());
 			}
 			return returned;
 		}
