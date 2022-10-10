@@ -624,6 +624,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public boolean hasNavigationScheme();
 
+	public CreationScheme getDefaultCreationScheme();
+
 	public DeletionScheme getDefaultDeletionScheme();
 
 	public DeletionScheme generateDefaultDeletionScheme();
@@ -1539,6 +1541,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				}
 			}
 			return false;
+		}
+
+		@Override
+		public CreationScheme getDefaultCreationScheme() {
+			for (CreationScheme creationScheme : getCreationSchemes()) {
+				if (creationScheme.isDefaultCreationScheme()) {
+					return creationScheme;
+				}
+			}
+			return null;
 		}
 
 		@Override

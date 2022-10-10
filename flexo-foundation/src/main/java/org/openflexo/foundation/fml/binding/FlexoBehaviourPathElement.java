@@ -50,6 +50,7 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
+import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimpleMethodPathElementImpl;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
@@ -66,6 +67,7 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceImpl.SuperReference;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
@@ -198,9 +200,14 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	public Object getBindingValue(Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
-		try {
+		FlexoConcept conceptualLevel = null;
 
-			FlexoConcept conceptualLevel = null;
+		if (isSuperConstructorCall && context instanceof CreationSchemeAction) {
+			conceptualLevel = ((CreationSchemeAction) context).getCreationScheme().getFlexoConcept().getParentFlexoConcepts().get(0);
+			target = ((CreationSchemeAction) context).getFlexoConceptInstance();
+		}
+
+		try {
 
 			// In this case, caller is 'super', we should identify the conceptual level of execution
 			if (target instanceof SuperReference) {
@@ -323,11 +330,6 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	}
 
 	@Override
-	public String getSerializationRepresentation() {
-		return super.getSerializationRepresentation();
-	}
-
-	@Override
 	public boolean isNotificationSafe() {
 		// By default, we assume that the result of the execution of a FlexoBehaviour is not notification-safe
 		// (we cannot rely on the fact that a notification will be thrown if the result of the execution of the behaviour change)
@@ -360,17 +362,86 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 					logger.warning("cannot find behaviour " + getParsed() + " for " + getParent() + " with arguments " + getArguments());
 				}
 			}
-			else {
+			else if (retrievedFunction != null) {
 				logger.severe("Inconsistant data : function is not a behaviour " + getParsed() + " for " + getParent() + " of "
 						+ getParent().getType() + " with arguments " + getArguments());
 			}
+			else {
+				// retrieved function not found yet
+				// System.out.println("On trouve pas le behaviour " + getParsed() + " in " + getParent().getType() + " of "
+				// + (getParent().getType() != null ? getParent().getType().getClass() : "null") + " (pour le moment)");
+			}
 
+		}
+		else if (getParsed().equals("super") && getBindable() instanceof FMLControlGraph
+				&& ((FMLControlGraph) getBindable()).getRootOwner() instanceof CreationScheme) {
+			CreationScheme cs = (CreationScheme) ((FMLControlGraph) getBindable()).getRootOwner();
+			if (cs.getFlexoConcept() != null && cs.getFlexoConcept().getParentFlexoConcepts() != null) {
+				// Find adequate parent concept
+				for (FlexoConcept parentConcept : cs.getFlexoConcept().getParentFlexoConcepts()) {
+					if (parentConcept.getDefaultCreationScheme() != null) {
+						// Lookup default creation scheme
+						setFunction(parentConcept.getDefaultCreationScheme());
+						System.out.println("Ah, j'ai mon truc !!!, cs=" + cs);
+						System.out.println("concept: " + cs.getFlexoConcept());
+						System.out.println("function: " + getFunction() + " in " + getFunction().getFlexoConcept());
+						isSuperConstructorCall = true;
+						break;
+					}
+				}
+			}
 		}
 		else {
 			logger.warning("cannot find parent for " + this);
 			// Thread.dumpStack();
 			// System.exit(-1);
 		}
+	}
+
+	private boolean isSuperConstructorCall = false;
+
+	@Override
+	public BindingPathCheck checkBindingPathIsValid(IBindingPathElement parentElement, Type parentType) {
+		// Special case for super() constructor call
+		if (isSuperConstructorCall) {
+			BindingPathCheck check = new BindingPathCheck();
+			for (FunctionArgument arg : getFunction().getArguments()) {
+				DataBinding<?> argValue = getArgumentValue(arg);
+				// System.out.println("Checking " + argValue + " valid="
+				// + argValue.isValid());
+				if (argValue == null) {
+					check.invalidBindingReason = "Parameter value for function: " + getFunction() + " : " + "invalid null argument "
+							+ arg.getArgumentName();
+					check.valid = false;
+					return check;
+				}
+				if (!argValue.isValid()) {
+					check.invalidBindingReason = "Parameter value for function: " + getFunction() + " : " + "invalid argument "
+							+ arg.getArgumentName() + " reason=" + argValue.invalidBindingReason();
+					check.valid = false;
+					return check;
+				}
+			}
+			check.returnedType = getFunction().getFlexoConcept().getInstanceType();
+			check.valid = true;
+			return check;
+		}
+		return super.checkBindingPathIsValid(parentElement, parentType);
+	}
+
+	@Override
+	protected String getFunctionNameToDisplay() {
+		if (isSuperConstructorCall) {
+			return "super";
+		}
+		else {
+			return super.getFunctionNameToDisplay();
+		}
+	}
+
+	@Override
+	public boolean supportsNullValues() {
+		return isSuperConstructorCall;
 	}
 
 }

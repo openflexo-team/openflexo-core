@@ -436,6 +436,12 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 				return new FlexoBehaviourPathElement(parent, methodName, args, bindable);
 			}
 		}
+
+		if (methodName.equals("super") && parent == null) {
+			// In this case, this a call to super() constructor
+			return new FlexoBehaviourPathElement(null, "super", args, bindable);
+		}
+
 		return super.makeSimpleMethodPathElement(parent, methodName, args, bindable);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
 		// This method is used while executing DiagramElement inspectors

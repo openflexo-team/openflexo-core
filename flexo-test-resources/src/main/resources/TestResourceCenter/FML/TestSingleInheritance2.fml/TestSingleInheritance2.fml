@@ -1,0 +1,42 @@
+import java.lang.String;
+
+// Same as TestSingleInheritance.fml with anonymous constructors
+@URI("http://openflexo.org/test/TestResourceCenter/TestSingleInheritance2.fml")
+@Version("0.1")
+@Author("sylvain")
+model TestSingleInheritance2 {
+
+	@Author("sylvain")
+	concept ConceptA {
+		String foo;
+		create() {
+			log("Creating ConceptA instance here");
+			// Is that the "good" file ?
+			foo = "ConceptA";
+		}
+		delete() {
+		}
+		doSomething () {
+			log("Do something in ConceptA");
+			return 42;
+		}
+	}
+
+	@Author("sylvain")
+	concept ConceptB extends ConceptA {
+		create() {
+			super();
+			log("Creating ConceptB instance");
+			foo = (foo + "ConceptB");
+		}
+		delete() {
+		}
+		doSomething () {
+			log("Do something in ConceptB");
+			return (super.doSomething() * 2);
+		}
+	}
+	
+	create() {
+	}
+}
