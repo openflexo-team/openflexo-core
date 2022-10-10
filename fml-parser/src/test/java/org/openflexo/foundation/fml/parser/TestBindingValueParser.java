@@ -88,6 +88,12 @@ public class TestBindingValueParser extends ExpressionParserTestCase {
 	}
 
 	@Test
+	public void testExpressionWithBindings2() {
+		tryToParse("beginDate.toString.substring(0,(beginDate.toString.length - 9))",
+		 "beginDate.toString.substring(0,beginDate.toString.length - 9)", BindingValue.class, null, serviceManager, false);
+	}
+
+	@Test
 	public void testWithSuper1() {
 		tryToParse("super.a", "super.a", BindingValue.class, null, serviceManager, false);
 	}
