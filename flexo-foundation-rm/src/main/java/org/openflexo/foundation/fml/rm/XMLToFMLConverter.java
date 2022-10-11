@@ -137,7 +137,7 @@ public class XMLToFMLConverter {
 			System.out.println(" > " + flexoConcept + " container: " + flexoConcept.getContainerFlexoConcept() + " parent: "
 					+ flexoConcept.getParentFlexoConcepts());
 		}
-		System.exit(-1);
+		// System.exit(-1);
 
 		compilationUnit.accept(new PAMELAVisitor() {
 			@Override
