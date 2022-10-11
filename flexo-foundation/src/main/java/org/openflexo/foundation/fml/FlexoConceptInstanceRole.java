@@ -162,6 +162,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			}
 			if (flexoConceptType == null && _getFlexoConceptTypeURI() != null && getVirtualModelLibrary() != null) {
 				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_getFlexoConceptTypeURI(), false);
+				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, type);
+				notifyResultingTypeChanged();
 			}
 			/*System.out.println("On me demande le type, je renvoie: " + flexoConceptType);
 			System.out.println("uri=" + _getFlexoConceptTypeURI());
@@ -200,6 +202,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			super.finalizeDeserialization();
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getVirtualModelLibrary() != null) {
 				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_flexoConceptTypeURI, true);
+				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, type);
+				notifyResultingTypeChanged();
 			}
 		}
 
@@ -399,9 +403,13 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public Type getType() {
 
 			if (flexoConceptType == null) {
-				if (type == null && StringUtils.isNotEmpty(_getFlexoConceptTypeURI()) && getTechnologyAdapter() != null
+				if (type == FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE
+						&& StringUtils.isNotEmpty(_getFlexoConceptTypeURI()) && getTechnologyAdapter() != null
 						&& getTechnologyAdapter().getFlexoConceptInstanceTypeFactory() != null) {
 					type = getTechnologyAdapter().getFlexoConceptInstanceTypeFactory().makeCustomType(_getFlexoConceptTypeURI());
+					// getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, getFlexoConceptType());
+					getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, type);
+					notifyResultingTypeChanged();
 				}
 				return type;
 			}
