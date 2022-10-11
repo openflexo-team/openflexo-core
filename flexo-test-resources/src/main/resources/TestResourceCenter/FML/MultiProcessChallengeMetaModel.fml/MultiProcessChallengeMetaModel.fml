@@ -1,0 +1,717 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+@URI("http://www.openflexo.org/test/MultiProcessChallengeMetaModel.fml")
+@Version("0.1")
+public model MetaModel {
+	List<Actor> actorList  {
+	  List<Actor> get() {
+		return select Actor from this;
+	  }
+	  set(List<Actor> value) {
+	  }
+	};
+
+	@UI(
+		@TextField(value="name")
+	)
+	getActor(required String name) {
+		return select unique Actor from this;
+	}
+
+/*	@Author("sylvain")
+	public concept ProcessType extends Type {
+		TaskType[0,*] taskTypes with ConceptInstance(virtualModelInstance=container);
+		Gateway[0,*] gateways with ConceptInstance(virtualModelInstance=container);
+		Begin initialTaskType with ConceptInstance(virtualModelInstance=container);
+		End[0,*] finalTaskTypes with ConceptInstance(virtualModelInstance=container);
+		List<Sequencing> sequencingList  {
+		  List<Sequencing> get() {
+			return select Sequencing from this;
+		  }
+		  set(List<Sequencing> value) {
+		  }
+		};
+		List<AndSplit> andSplitList  {
+		  List<AndSplit> get() {
+			return select AndSplit from this;
+		  }
+		  set(List<AndSplit> value) {
+		  }
+		};
+		List<AndJoin> andJoinList  {
+		  List<AndJoin> get() {
+			return select AndJoin from this;
+		  }
+		  set(List<AndJoin> value) {
+		  }
+		};
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(parameters.name);
+		}
+		delete::_delete() {
+		}
+		addToTaskTypes(required TaskType taskType) {
+		}
+		setInitialTaskType(required Begin _begin) {
+			initialTaskType = parameters._begin;
+		}
+		addToFinalTaskTypes(required End _end) {
+		}
+		addToGateways(required Gateway gateway) {
+		}
+		@UI(
+			@TextField(value="name")
+		)
+		public newProcess(required String name) {
+			Process returned = FMLRT::AddFlexoConceptInstance() in container;
+			for (TaskType taskType : taskTypes) {
+				log"Creating new Task for " + taskType;
+				Task newTask = taskType.newTask(returned.name + "-" + taskType.name,returned);
+				log"Created new Task for " + taskType + " --> " + newTask;
+				if (taskType = initialTaskType) {
+					returned.initialTask = newTask;
+				}
+			}
+			return returned;
+		}
+		removeFromGateways(required Gateway gateway) {
+			gateways.remove(parameters.gateway);
+		}
+		removeFromTaskTypes(required Gateway taskType) {
+			taskTypes.remove(parameters.taskType);
+		}
+		removeFromFinalTaskTypes(required Gateway taskType) {
+			finalTaskTypes.remove(parameters.taskType);
+		}
+		getTask(required TaskType taskType, Process process) {
+			return select unique Task from parameters.process;
+		}
+		@Author("sylvain")
+		public concept TaskType extends Type {
+			Actor creator with ConceptInstance();
+			ActorType[0,*] allowedActorTypes with ConceptInstance(virtualModelInstance=container.container);
+			Actor[0,*] allowedActors with ConceptInstance(virtualModelInstance=container.container);
+			ArtifactType[0,*] usedArtifactTypes with ConceptInstance(virtualModelInstance=container.container);
+			ArtifactType[0,*] producedArtifactTypes with ConceptInstance(virtualModelInstance=container.container);
+			int expectedDuration;
+			boolean isCritical;
+			@UI(
+				@TextField(value="name")
+			)
+			create::_create(String name) {
+				super._create(parameters.name);
+				isCritical = false;
+			}
+			delete::_delete() {
+				if (container != null) {
+					container.taskTypes.remove(this);
+				}
+			}
+			public addAllowedActorType(required ActorType actorType) {
+				if (this.isValidActorType(parameters.actorType)) {
+					this.update();
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			public addAllowedActor(required Actor actor) {
+				if (this.isValidActor(parameters.actor)) {
+					this.update();
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			public addUsedArtifactType(required ArtifactType artifactType) {
+				if (this.isValidUsedArtifactType(parameters.artifactType)) {
+					this.update();
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			public addProducedArtifactType(required ArtifactType artifactType) {
+				if (this.isValidProducedArtifactType(parameters.artifactType)) {
+					this.update();
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			@UI(
+				@TextField(value="name")
+			)
+			newTask(String name, Process process) {
+				log"Creating new Task " + parameters.name + " process=" + parameters.process;
+				return FMLRT::AddFlexoConceptInstance() in container.container;
+			}
+			isValidActorType(required ActorType actorType) {
+				return true;
+			}
+			isValidActor(required Actor actor) {
+				return true;
+			}
+			isValidUsedArtifactType(required ArtifactType artifactType) {
+				return true;
+			}
+			isValidProducedArtifactType(required ArtifactType artifactType) {
+				return true;
+			}
+			public setCreator(required Actor creator) {
+				creator = parameters.creator;
+			}
+			isAuthorizedActor(required Actor actor) {
+				for (ActorType allowedActorType : allowedActorTypes) {
+					if (parameters.actor.hasActorType(allowedActorType)) {
+						return this.isValidActorType(allowedActorType);
+					}
+				}
+				for (Actor allowedActor : allowedActors) {
+					if (parameters.actor = allowedActor) {
+						return this.isValidActor(allowedActor);
+					}
+				}
+				return false;
+			}
+		}
+		@Author("sylvain")
+		public abstract concept Gateway extends Type {
+			@UI(
+				@TextField(value="name")
+			)
+			create::_create(String name) {
+				super._create(parameters.name);
+			}
+			delete::_delete() {
+			}
+			abstract execute(required Process process) {
+			}
+		}
+		@Author("sylvain")
+		public concept Sequencing extends Gateway {
+			TaskType _in with ConceptInstance(virtualModelInstance=container.container);
+			TaskType out with ConceptInstance(virtualModelInstance=container.container);
+			create::_create() {
+				super._create("Sequence");
+			}
+			delete::_delete() {
+			}
+			execute(required Process process) {
+				Task inTask = parameters.process.getTask(in);
+				if (inTask.completed) {
+					Task outTask = parameters.process.getTask(out);
+					if (outTask.isStartable() & !outTask.completed) {
+						outTask.startTask();
+					}
+				}
+			}
+		}
+		@Author("sylvain")
+		public concept AndSplit extends Gateway {
+			TaskType _in with ConceptInstance(virtualModelInstance=container.container);
+			TaskType[1,*] out with ConceptInstance(virtualModelInstance=container.container);
+			create::_create() {
+				super._create("AndSplit");
+			}
+			delete::_delete() {
+			}
+			execute(required Process process) {
+				Task inTask = parameters.process.getTask(in);
+				if (inTask.completed) {
+					for (TaskType taskType : out) {
+						Task outTask = parameters.process.getTask(taskType);
+						if (outTask.isStartable() & !outTask.completed) {
+							outTask.startTask();
+						}
+					}
+				}
+			}
+		}
+		@Author("sylvain")
+		public concept OrSplit extends Gateway {
+			TaskType _in with ConceptInstance(virtualModelInstance=container.container);
+			TaskType[1,*] out with ConceptInstance(virtualModelInstance=container.container);
+			create::_create() {
+				super._create("OrSplit");
+			}
+			delete::_delete() {
+			}
+			execute(required Process process) {
+				Task inTask = parameters.process.getTask(in);
+				if (inTask.completed) {
+					for (TaskType taskType : out) {
+						Task outTask = parameters.process.getTask(taskType);
+						if (outTask.isStartable() & !outTask.completed) {
+							outTask.startTask();
+						}
+					}
+				}
+			}
+		}
+		@Author("sylvain")
+		public concept AndJoin extends Gateway {
+			TaskType out with ConceptInstance(virtualModelInstance=container.container);
+			TaskType[1,*] _in with ConceptInstance(virtualModelInstance=container.container);
+			create::_create() {
+				super._create("AndJoin");
+			}
+			delete::_delete() {
+			}
+			execute(required Process process) {
+				if (this.areAllTasksCompleted(parameters.process)) {
+					Task outTask = parameters.process.getTask(out);
+					if (outTask.isStartable() & !outTask.completed) {
+						outTask.startTask();
+					}
+				}
+			}
+			areAllTasksCompleted(Process process) {
+				for (Object taskType : in) {
+					Task inTask = parameters.process.getTask(taskType);
+					if (!inTask.completed) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		@Author("sylvain")
+		public concept OrJoin extends Gateway {
+			TaskType out with ConceptInstance(virtualModelInstance=container.container);
+			TaskType[1,*] _in with ConceptInstance(virtualModelInstance=container.container);
+			create::_create() {
+				super._create("OrJoin");
+			}
+			delete::_delete() {
+			}
+			isOneTaskCompleted(Process process) {
+				for (Object taskType : in) {
+					Task inTask = parameters.process.getTask(taskType);
+					if (inTask.completed) {
+						return false;
+					}
+				}
+				return false;
+			}
+			execute(required Process process) {
+				if (this.isOneTaskCompleted(parameters.process)) {
+					Task outTask = parameters.process.getTask(out);
+					if (outTask.isStartable() & !outTask.completed) {
+						outTask.startTask();
+					}
+				}
+			}
+		}
+		public concept Begin extends TaskType {
+			create::_create() {
+				super._create("Begin");
+			}
+			delete::_delete() {
+				if ((((container != null) & container.initialTaskType) == this)) {
+					container.initialTaskType = null;
+				}
+			}
+			@UI(
+				@TextField(value="name")
+			)
+			newTask(String name, Process process) {
+				log"Creating new BeginTask " + parameters.name + " process=" + parameters.process;
+				return FMLRT::AddFlexoConceptInstance() in container.container;
+			}
+		}
+		public concept End extends TaskType {
+			create::_create() {
+				super._create("End");
+			}
+			delete::_delete() {
+				if (container != null) {
+					container.finalTaskTypes.remove(this);
+				}
+			}
+			@UI(
+				@TextField(value="name")
+			)
+			newTask(String name, Process process) {
+				log"Creating new BeginTask " + parameters.name + " process=" + parameters.process;
+				return FMLRT::AddFlexoConceptInstance() in container.container;
+			}
+		}
+	}*/
+
+	@Author("sylvain")
+	public concept Type extends ModelingElement {
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(parameters.name);
+		}
+		delete::_delete() {
+		}
+	}
+
+	@Author("sylvain")
+	public abstract concept ModelingElement {
+		String name;
+		Date lastUpdated;
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			name = parameters.name;
+			this.update();
+		}
+		delete::_delete() {
+		}
+		public update() {
+			lastUpdated = new Date();
+		}
+	}
+
+	@Author("sylvain")
+	public concept ActorType extends Type {
+		ActorType[0,*] parentActorTypes with ConceptInstance(virtualModelInstance=container);
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(parameters.name);
+		}
+		delete::_delete() {
+		}
+		public addParentActorType(required ActorType actorType) {
+		}
+		isOrSpecializesActorType(required ActorType actorType) {
+			if (parameters.actorType = this) {
+				return true;
+			}
+			for (ActorType parentActorType : parentActorTypes) {
+				if (parentActorType.isOrSpecializesActorType(parameters.actorType)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	@Author("sylvain")
+	public abstract concept Instance extends ModelingElement {
+		abstract Type type;
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(parameters.name);
+		}
+		delete::_delete() {
+		}
+	}
+
+	@Author("sylvain")
+	public abstract concept MultiInstance extends ModelingElement {
+		abstract List<Type> types;
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(parameters.name);
+		}
+		delete::_delete() {
+		}
+	}
+
+	@Author("sylvain")
+	public concept Actor extends MultiInstance {
+		ActorType[0,*] types with ConceptInstance(virtualModelInstance=container);
+		boolean isSenior;
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(parameters.name);
+			isSenior = false;
+		}
+		delete::_delete() {
+		}
+		public addActorType(required ActorType actorType) {
+		}
+		hasActorType(ActorType actorType) {
+			for (ActorType type : types) {
+				if (type.isOrSpecializesActorType(parameters.actorType)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		removeActorType(required ActorType actorType) {
+			types.remove(parameters.actorType);
+		}
+	}
+
+	@Author("sylvain")
+	public concept Process extends Instance {
+		ProcessType type with ConceptInstance(virtualModelInstance=container);
+		Task[1,*] tasks with ConceptInstance(virtualModelInstance=container);
+		Task initialTask with ConceptInstance(virtualModelInstance=container);
+		Boolean isProcessStartable  {
+		  Boolean get() {
+			for (Task task : tasks) {
+				if (!task.isStartable()) {
+					return false;
+				}
+			}
+			return true;
+		  }
+		  set(Boolean value) {
+		  }
+		};
+		boolean processCompleted;
+		Date startProcessDate;
+		Date completeProcessDate;
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name, ProcessType processType) {
+			super._create(parameters.name);
+			type = parameters.processType;
+			for (Object taskType : type.taskTypes) {
+				Task newTask = taskType.newTask(taskType.name,this);
+			}
+			initialTask = this.getTask(type.initialTaskType);
+			processCompleted = false;
+		}
+		delete::_delete() {
+		}
+		public startProcess() {
+			log"Starting process " + name;
+			log"initial task = " + initialTask;
+			initialTask.startTask();
+			startProcessDate = new Date();
+		}
+		getTask(required TaskType taskType) {
+			return select unique Task from this;
+		}
+		completeProcess() {
+			log"Process " + name + " has finished";
+			completeProcessDate = new Date();
+			processCompleted = true;
+		}
+		public executeGateways() {
+			for (Object gateway : type.gateways) {
+				gateway.execute(this);
+			}
+		}
+		@Author("sylvain")
+		public concept Task extends Instance {
+			TaskType type with ConceptInstance(virtualModelInstance=container.container);
+			Date beginDate;
+			Date endDate;
+			Actor[0,*] performingActors with ConceptInstance(virtualModelInstance=container.container);
+			Artifact[0,*] usedArtifacts with ConceptInstance(virtualModelInstance=container.container);
+			Artifact[0,*] producedArtifacts with ConceptInstance(virtualModelInstance=container.container);
+			boolean isActive;
+			String performingActorsLabel  {
+			  String get() {
+				if (performingActors.size > 0) {
+					String label = "";
+					for (Actor actor : performingActors) {
+						label = label + " " + actor.name;
+					}
+					return label;
+				}
+				else {
+					return "No actor assigned";
+				}
+			  }
+			  set(String value) {
+			  }
+			};
+			String statusLabel  {
+			  String get() {
+				if (this.isStartable()) {
+					if (isActive | completed) {
+						if (completed) {
+							return "Completed";
+						}
+						else {
+							return beginDate.toString.substring(0,beginDate.toString.length - 9);
+						}
+					}
+					else {
+						return "Not started";
+					}
+				}
+				else {
+					return "Not startable";
+				}
+			  }
+			  set(String value) {
+			  }
+			};
+			boolean completed;
+			@UI(
+				@TextField(value="name")
+			)
+			create::_create(String name, TaskType taskType) {
+				super._create(parameters.name);
+				type = parameters.taskType;
+				isActive = false;
+				completed = false;
+			}
+			delete::_delete() {
+			}
+			isAuthorizedActor(required Actor actor) {
+				return type.isAuthorizedActor(parameters.actor);
+			}
+			public addToPerformingActors(required Actor actor) {
+				if (this.isAuthorizedActor(parameters.actor)) {
+					log"This actor is AUTHORIZED";
+				}
+				else {
+					log"This actor is NOT AUTHORIZED";
+				}
+			}
+			isAuthorizedProducedArtifact(required Artifact artifact) {
+				for (Object allowedArtifactType : type.producedArtifactTypes) {
+					if (parameters.artifact.hasArtifactType(allowedArtifactType)) {
+						return true;
+					}
+				}
+				return false;
+			}
+			public addToProducedArtifacts(required Artifact artifact) {
+				if (this.isAuthorizedProducedArtifact(parameters.artifact)) {
+					log"This produced artifact is AUTHORIZED";
+				}
+				else {
+					log"This produced artifact is NOT AUTHORIZED";
+				}
+			}
+			isAuthorizedUsedArtifact(required Artifact artifact) {
+				for (Object allowedArtifactType : type.usedArtifactTypes) {
+					if (parameters.artifact.hasArtifactType(allowedArtifactType)) {
+						return true;
+					}
+				}
+				return false;
+			}
+			public addToUsedArtifacts(required Artifact artifact) {
+				if (this.isAuthorizedUsedArtifact(parameters.artifact)) {
+					log"This used artifact is AUTHORIZED";
+				}
+				else {
+					log"This used artifact is NOT AUTHORIZED";
+				}
+			}
+			public startTask() {
+				beginDate = new Date();
+				isActive = true;
+				log"Start abstract task " + this;
+			}
+			public finishTask() {
+				isActive = false;
+				completed = true;
+				endDate = new Date();
+				container.executeGateways();
+				log"Finish abstract task " + this;
+			}
+			isStartable() {
+				return performingActors.size > 0;
+			}
+			addToPerformingActor(required Actor actor) {
+			}
+		}
+	}
+
+
+	@Author("sylvain")
+	public concept ArtifactType extends Type {
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(parameters.name);
+		}
+		delete::_delete() {
+		}
+		@UI(
+			@TextField(value="name")
+		)
+		newArtifact(String name) {
+			Artifact returned = FMLRT::AddFlexoConceptInstance() in container;
+			return returned;
+		}
+	}
+
+	@Author("sylvain")
+	public concept Artifact extends MultiInstance {
+		ArtifactType[0,*] types with ConceptInstance(virtualModelInstance=container);
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name) {
+			super._create(name);
+		}
+		delete::_delete() {
+		}
+		hasArtifactType(ArtifactType artifactType) {
+			for (ArtifactType type : types) {
+				if (type = parameters.artifactType) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	public concept BeginTask extends Task {
+		delete::_delete() {
+		}
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name, TaskType taskType) {
+			super._create(parameters.name,parameters.taskType);
+		}
+		public startTask() {
+			super.startTask();
+			log"Start BEGIN " + this;
+			this.finishTask();
+		}
+		isStartable() {
+			return true;
+		}
+	}
+
+	public concept EndTask extends Task {
+		delete::_delete() {
+		}
+		@UI(
+			@TextField(value="name")
+		)
+		create::_create(String name, TaskType taskType) {
+			super._create(parameters.name,parameters.taskType);
+		}
+		public startTask() {
+			super.startTask();
+			log"Start EndTask";
+			this.finishTask();
+		}
+		isStartable() {
+			return true;
+		}
+		public finishTask() {
+			super.finishTask();
+			log"Finish EndTask";
+			container.completeProcess();
+		}
+	}
+}
