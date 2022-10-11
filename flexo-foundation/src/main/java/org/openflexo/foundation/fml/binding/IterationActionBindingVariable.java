@@ -70,7 +70,23 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 				&& ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
 			((IterationAction) action).getIterationAction().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+
+		/*if (action.getIteratorName().equals("taskType")) {
+			if (action instanceof IterationAction) {
+				ExpressionActionImpl expression = (ExpressionActionImpl) (((IterationAction) action).getIterationAction());
+				System.out.println("expression=" + expression.getExpression());
+				if (expression.getExpression().toString().equals("taskTypes")) {
+					System.out.println("OK j'ai ma variable " + this + " iteration=" + action);
+				}
+			}
+		}*/
 	}
+
+	/*@Override
+	public String toString() {
+		return "IterationBindingVariable " + getVariableName() + "/" + TypeUtils.simpleRepresentation(getType()) + " ["
+				+ Integer.toHexString(hashCode()) + "]";
+	}*/
 
 	@Override
 	public void delete() {
