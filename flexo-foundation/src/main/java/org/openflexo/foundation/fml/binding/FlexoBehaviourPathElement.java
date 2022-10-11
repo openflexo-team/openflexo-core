@@ -64,6 +64,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -373,18 +374,19 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 			}
 
 		}
-		else if (getParsed().equals("super") && getBindable() instanceof FMLControlGraph
+		else if (getParsed().equals(FMLKeywords.Super.getKeyword()) && getBindable() instanceof FMLControlGraph
 				&& ((FMLControlGraph) getBindable()).getRootOwner() instanceof CreationScheme) {
 			CreationScheme cs = (CreationScheme) ((FMLControlGraph) getBindable()).getRootOwner();
 			if (cs.getFlexoConcept() != null && cs.getFlexoConcept().getParentFlexoConcepts() != null) {
 				// Find adequate parent concept
 				for (FlexoConcept parentConcept : cs.getFlexoConcept().getParentFlexoConcepts()) {
+					// TODO: what if more than one parent declare a default constructor ?
 					if (parentConcept.getDefaultCreationScheme() != null) {
 						// Lookup default creation scheme
 						setFunction(parentConcept.getDefaultCreationScheme());
-						System.out.println("Ah, j'ai mon truc !!!, cs=" + cs);
-						System.out.println("concept: " + cs.getFlexoConcept());
-						System.out.println("function: " + getFunction() + " in " + getFunction().getFlexoConcept());
+						// System.out.println("Found cs=" + cs);
+						// System.out.println("concept: " + cs.getFlexoConcept());
+						// System.out.println("function: " + getFunction() + " in " + getFunction().getFlexoConcept());
 						isSuperConstructorCall = true;
 						break;
 					}
@@ -432,7 +434,7 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	@Override
 	protected String getFunctionNameToDisplay() {
 		if (isSuperConstructorCall) {
-			return "super";
+			return FMLKeywords.Super.getKeyword();
 		}
 		else {
 			return super.getFunctionNameToDisplay();

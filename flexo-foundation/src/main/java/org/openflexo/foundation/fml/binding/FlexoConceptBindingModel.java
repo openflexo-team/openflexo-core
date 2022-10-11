@@ -46,6 +46,7 @@ import java.util.Map;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptImpl;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -85,7 +86,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 	private final Map<FlexoConcept, SuperBindingVariable> superVariablesMap;
 
 	public static final String THIS_PROPERTY_NAME = "this";
-	public static final String SUPER_PROPERTY_NAME = "super";
+	public static final String SUPER_PROPERTY_NAME = FMLKeywords.Super.getKeyword();
 	public static final String CONTAINER_PROPERTY_NAME = "container";
 	public static final String RENDERER_PROPERTY_NAME = "render";
 

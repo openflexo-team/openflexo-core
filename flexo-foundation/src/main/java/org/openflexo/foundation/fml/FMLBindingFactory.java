@@ -428,7 +428,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 		}*/
 		if (parent != null) {
 
-			if (parent.getLabel().startsWith("super")) {
+			if (parent.getLabel().startsWith(FMLKeywords.Super.getKeyword())) {
 				return new FlexoBehaviourPathElement(parent, methodName, args, bindable);
 			}
 
@@ -437,9 +437,9 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			}
 		}
 
-		if (methodName.equals("super") && parent == null) {
+		if (methodName.equals(FMLKeywords.Super.getKeyword()) && parent == null) {
 			// In this case, this a call to super() constructor
-			return new FlexoBehaviourPathElement(null, "super", args, bindable);
+			return new FlexoBehaviourPathElement(null, FMLKeywords.Super.getKeyword(), args, bindable);
 		}
 
 		return super.makeSimpleMethodPathElement(parent, methodName, args, bindable);
