@@ -49,9 +49,12 @@ import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
@@ -59,6 +62,7 @@ import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -84,9 +88,92 @@ public class XMLToFMLConverter {
 		this.compilationUnit = compilationUnit;
 	}
 
+	private void convertConditionalDataBinding(DataBinding<Boolean> condition) {
+		if (!condition.isValid()) {
+			String oldExp = condition.toString();
+			if (oldExp.contains("=")) {
+				String newExpressionAsString = oldExp.replace("=", "==");
+				condition.setUnparsedBinding(newExpressionAsString);
+				condition.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
+						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
+			}
+			if (oldExp.contains("&")) {
+				String newExpressionAsString = oldExp.replace("&", "&&");
+				condition.setUnparsedBinding(newExpressionAsString);
+				condition.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
+						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
+			}
+			if (oldExp.contains("|")) {
+				String newExpressionAsString = oldExp.replace("|", "||");
+				condition.setUnparsedBinding(newExpressionAsString);
+				condition.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
+						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
+			}
+		}
+	}
+
+	private void convertExpressionDataBinding(DataBinding<?> expression) {
+		if (!expression.isValid()) {
+			String oldExp = expression.toString();
+			if (oldExp.contains("super.create")) {
+				String newExpressionAsString = oldExp.replace("super.create(", "super(");
+				expression.setUnparsedBinding(newExpressionAsString);
+				expression.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + expression + " valid: " + expression.isValid()
+						+ (!expression.isValid() ? " reason: " + expression.invalidBindingReason() : ""));
+			}
+		}
+	}
+
 	public void convert() {
 
 		System.out.println("convertFromXMLToFML for " + compilationUnit);
+
+		System.out.println("In " + compilationUnit.getVirtualModel());
+		for (FlexoConcept flexoConcept : compilationUnit.getVirtualModel().getFlexoConcepts()) {
+			System.out.println(" > " + flexoConcept + " container: " + flexoConcept.getContainerFlexoConcept() + " parent: "
+					+ flexoConcept.getParentFlexoConcepts());
+		}
+		System.exit(-1);
+
+		compilationUnit.accept(new PAMELAVisitor() {
+			@Override
+			public void visit(Object object) {
+				if (object instanceof CreationScheme) {
+					CreationScheme cs = (CreationScheme) object;
+					if (cs.getName().equals("_create")) {
+						cs.setAnonymous(true);
+					}
+				}
+			}
+		});
+
+		compilationUnit.accept(new PAMELAVisitor() {
+			@Override
+			public void visit(Object object) {
+				System.out.println("> visit " + object);
+				if (object instanceof FetchRequestCondition) {
+					FetchRequestCondition condition = (FetchRequestCondition) object;
+					convertConditionalDataBinding(condition.getCondition());
+				}
+				if (object instanceof ConditionalAction) {
+					ConditionalAction condition = (ConditionalAction) object;
+					convertConditionalDataBinding(condition.getCondition());
+				}
+				if (object instanceof ExpressionAction) {
+					ExpressionAction condition = (ExpressionAction) object;
+					convertExpressionDataBinding(condition.getExpression());
+				}
+			}
+		});
+
+		if (true) {
+			return;
+		}
+
 		// System.exit(-1);
 
 		compilationUnit.accept(new PAMELAVisitor() {
