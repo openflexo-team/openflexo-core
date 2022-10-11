@@ -88,8 +88,12 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		private DataBinding<T> expression;
 
-		// private Type assignableType = null;
-		// private boolean isComputingAssignableType = false;
+		// This is the last assignable type that was computed
+		// This value will be used to notify type changes
+		private Type lastKnownAssignableType = UndefinedType.INSTANCE;
+
+		// Flag to prevent stack overflow
+		private boolean isAnalyzingType = false;
 
 		@Override
 		public void finalizeDeserialization() {
@@ -98,26 +102,49 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			getAssignableType();
 		}
 
-		private boolean isAnalyzingType = false;
-
 		@Override
 		public Type getAssignableType() {
 
 			if (isAnalyzingType) {
-				return UndefinedType.INSTANCE;
+				return lastKnownAssignableType;
 			}
 
 			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 				isAnalyzingType = true;
-				Type returned = getExpression().getAnalyzedType();
+				Type lastKnown = lastKnownAssignableType;
+				lastKnownAssignableType = getExpression().getAnalyzedType();
+				notifyAssignableTypeMightHaveChanged(lastKnown, lastKnownAssignableType);
 				isAnalyzingType = false;
-				return returned;
+				return lastKnownAssignableType;
 			}
 
-			// TODO
+			/*if (!getExpression().isValid() && getExpression().toString().equals("type.taskTypes") && getExpression().getOwner() != null
+					&& getExpression().getOwner().getBindingFactory() != null
+					&& !getExpression().invalidBindingReason().contains("infinite-loop")) {
+			
+				if (getExpression().isBindingValue()) {
+					System.out.println(
+							"******** Trop nul, c'est pas valide: " + getExpression() + " car " + getExpression().invalidBindingReason());
+					BindingValue bv = (BindingValue) getExpression().getExpression();
+					BindingVariable bindingVariable = bv.getBindingVariable();
+					System.out.println("bindingVariable=" + bindingVariable + " of " + bindingVariable.getType() + " of "
+							+ bindingVariable.getType().getClass());
+					System.out.println("BF: " + getExpression().getOwner().getBindingFactory());
+					if (bindingVariable.getType().toString().equals("ProcessType")) {
+						System.out.println("Type: " + bindingVariable.getType());
+						System.out.println("concept: " + ((FlexoConceptInstanceType) bindingVariable.getType()).getFlexoConcept());
+						FlexoConcept concept = ((FlexoConceptInstanceType) bindingVariable.getType()).getFlexoConcept();
+						System.out.println("properties:" + concept.getAccessibleProperties());
+						// Thread.dumpStack();
+						System.exit(-1);
+					}
+				}
+			
+			}*/
+
+			// TODO : je pense que ceci n'est plus utile et doit etre supprime
 			// Gros hack ici: le probleme est que la BindingFactory n'etait pas valide au moment de l'analyse
 			// Il faut donc ecouter les modifications de getBindingFactory()
-
 			if (getExpression() != null && !getExpression().isValid()) {
 				isAnalyzingType = true;
 				getExpression().revalidate();
@@ -155,16 +182,17 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public void notifiedScopeChanged() {
 			super.notifiedScopeChanged();
-			notifyTypeMightHaveChanged();
+			notifyAssignableTypeMightHaveChanged(lastKnownAssignableType, getExpression().getAnalyzedType());
 		}
 
 		/**
-		 * Called to explicitely check assignable type<br>
-		 * Force expression DataBinding to be re-evaluated
+		 * Notify assignableType changes
 		 */
-		private void notifyTypeMightHaveChanged() {
-			// assignableType = null;
-			getPropertyChangeSupport().firePropertyChange("assignableType", null, getAssignableType());
+		private void notifyAssignableTypeMightHaveChanged(Type lastKnown, Type newAssignableType) {
+			getPropertyChangeSupport().firePropertyChange("assignableType", lastKnown, newAssignableType);
+			lastKnownAssignableType = newAssignableType;
+
+			// TODO : virer ces deux lignes qui me semblent inutiles
 			getPropertyChangeSupport().firePropertyChange("iteratorType", null, getIteratorType());
 			getPropertyChangeSupport().firePropertyChange("isIterable", null, isIterable());
 		}
@@ -173,7 +201,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			super.notifiedBindingChanged(dataBinding);
 			if (dataBinding == getExpression()) {
-				notifyTypeMightHaveChanged();
+				notifyAssignableTypeMightHaveChanged(lastKnownAssignableType, getExpression().getAnalyzedType());
 			}
 		}
 
@@ -181,7 +209,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 			super.notifiedBindingDecoded(dataBinding);
 			if (dataBinding == getExpression()) {
-				notifyTypeMightHaveChanged();
+				notifyAssignableTypeMightHaveChanged(lastKnownAssignableType, getExpression().getAnalyzedType());
 			}
 		}
 
@@ -197,11 +225,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		@Override
 		public void setExpression(DataBinding<T> expression) {
-
-			/*if (expression.toString().contains("log(\"CreationScheme in B\")")) {
-				System.out.println("Qui est le con ?");
-				Thread.dumpStack();
-			}*/
 
 			if (expression != null) {
 				expression.setOwner(this);
@@ -246,12 +269,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				throw new FMLExecutionException(e);
 			}
 		}
-
-		/*@Override
-		public String toString() {
-			// A virer bien sur !!!
-			return "Coucou l'expression avec " + getExpression() + " valid=" + getExpression().isValid();
-		}*/
 
 	}
 
