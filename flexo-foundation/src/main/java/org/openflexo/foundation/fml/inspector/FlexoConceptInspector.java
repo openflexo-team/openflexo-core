@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FlexoConceptFormatterBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptInspectorBindingModel;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -87,6 +88,8 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 	public static final String INSPECTOR_TITLE_KEY = "inspectorTitle";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String RENDERER_KEY = "renderer";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String DELEGATE_CONCEPT_INSTANCE_KEY = "delegateConceptInstance";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String ENTRIES_KEY = "entries";
 
@@ -110,6 +113,13 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 
 	@Setter(RENDERER_KEY)
 	public void setRenderer(DataBinding<String> renderer);
+
+	@Getter(value = DELEGATE_CONCEPT_INSTANCE_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoConceptInstance> getDelegateConceptInstance();
+
+	@Setter(DELEGATE_CONCEPT_INSTANCE_KEY)
+	public void setDelegateConceptInstance(DataBinding<FlexoConceptInstance> delegateConceptInstance);
 
 	@Getter(value = ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = InspectorEntry.INSPECTOR_KEY)
 	@XMLElement
@@ -157,6 +167,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 		private FlexoConcept _flexoConcept;
 		// private Vector<InspectorEntry> entries;
 		private DataBinding<String> renderer;
+		private DataBinding<FlexoConceptInstance> delegateConceptInstance;
 
 		private final FlexoConceptFormatter formatter;
 
@@ -288,6 +299,27 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 			}
 			this.renderer = renderer;
 			notifiedBindingChanged(this.renderer);
+		}
+
+		@Override
+		public DataBinding<FlexoConceptInstance> getDelegateConceptInstance() {
+			if (delegateConceptInstance == null) {
+				delegateConceptInstance = new DataBinding<>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
+				delegateConceptInstance.setBindingName("delegateConceptInstance");
+			}
+			return delegateConceptInstance;
+		}
+
+		@Override
+		public void setDelegateConceptInstance(DataBinding<FlexoConceptInstance> aDelegateConceptInstance) {
+			if (aDelegateConceptInstance != null) {
+				aDelegateConceptInstance.setOwner(this);
+				aDelegateConceptInstance.setDeclaredType(FlexoConceptInstance.class);
+				aDelegateConceptInstance.setBindingDefinitionType(BindingDefinitionType.GET);
+				aDelegateConceptInstance.setBindingName("delegateConceptInstance");
+			}
+			this.delegateConceptInstance = aDelegateConceptInstance;
+			notifiedBindingChanged(this.delegateConceptInstance);
 		}
 
 		public class FlexoConceptFormatterImpl extends DefaultBindable implements FlexoConceptFormatter {

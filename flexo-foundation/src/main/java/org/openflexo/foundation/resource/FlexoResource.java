@@ -551,6 +551,16 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public <I> String parentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc);
 
 	/**
+	 * Return relative path of parent of parent of underlying serialization artefact, relatively to base artefact of supplied resource
+	 * center
+	 * 
+	 * @param <I>
+	 * @param rc
+	 * @return
+	 */
+	public <I> String parentParentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc);
+
+	/**
 	 * Callback called when a cycle was detected in Resource Loading Scheme, and when the resource beeing requested has finally been loaded.
 	 * 
 	 * @param requestedResource

@@ -57,11 +57,9 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -85,10 +83,10 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.CompoundIssue;
-import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -254,7 +252,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				return true;
 			}
 			if (getFlexoConceptType() != null) {
-				return getFlexoConceptType().getContainerFlexoConcept() != null;
+				return getFlexoConceptType().getApplicableContainerFlexoConcept() != null;
 			}
 			return false;
 		}
@@ -286,9 +284,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (container == null) {
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
-				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+				container
+						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getApplicableContainerFlexoConcept() != null
+								? getFlexoConceptType().getApplicableContainerFlexoConcept().getInstanceType()
+								: FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -298,9 +297,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (aContainer != null) {
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
-				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+				aContainer
+						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getApplicableContainerFlexoConcept() != null
+								? getFlexoConceptType().getApplicableContainerFlexoConcept().getInstanceType()
+								: FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
@@ -368,8 +368,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						setCreationScheme(null);
 					}
 				}
-				if (flexoConceptType != null && flexoConceptType.getContainerFlexoConcept() != null) {
-					getContainer().setDeclaredType(flexoConceptType.getContainerFlexoConcept().getInstanceType());
+				if (flexoConceptType != null && flexoConceptType.getApplicableContainerFlexoConcept() != null) {
+					getContainer().setDeclaredType(flexoConceptType.getApplicableContainerFlexoConcept().getInstanceType());
 				}
 				else {
 					getContainer().setDeclaredType(FlexoConceptInstance.class);
@@ -613,6 +613,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
 			if (vmInstance == null) {
 				logger.warning("null FMLRTVirtualModelInstance");
+				System.out.println("evaluationContext=" + evaluationContext);
+				Thread.dumpStack();
 				return null;
 			}
 
@@ -630,7 +632,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
 
-			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
+			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
 					logger.warning("null container while creating new concept " + getFlexoConceptType());
@@ -647,7 +649,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			FCI newFCI = makeNewFlexoConceptInstance(evaluationContext);
 
-			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
+			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
 				container.addToEmbeddedFlexoConceptInstances(newFCI);
 			}
 
@@ -850,81 +852,110 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> returned = super.applyValidation(
 					object);
-			if (returned instanceof UndefinedRequiredBindingIssue) {
-				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
+			/*if (returned instanceof UndefinedRequiredBindingIssue) {
+				//((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
 			}
-			else {
-				DataBinding<FMLRTVirtualModelInstance> binding = getBinding(object);
+			else {*/
+			DataBinding<FMLRTVirtualModelInstance> binding = getBinding(object);
 
-				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
-					if (!(object.getFlexoConceptType() instanceof VirtualModel) && object.getFlexoConceptType()
-							.getOwningVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel()) {
+			if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
+				VirtualModel analyzedVirtualModelType = ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel();
+				VirtualModel requiredVirtualModelType = object.getFlexoConceptType().getOwningVirtualModel();
+
+				if (!(object.getFlexoConceptType() instanceof VirtualModel)
+						&& !requiredVirtualModelType.isAssignableFrom(analyzedVirtualModelType)) {
+
+					if (analyzedVirtualModelType.isAssignableFrom(requiredVirtualModelType)) {
+						// In this case, this is possible, but no guaranty offered
+						returned = new ValidationWarning<>(this, object, "unguaranteed_virtual_model_type");
+					}
+					else {
 						returned = new ValidationError<>(this, object, "incompatible_virtual_model_type");
+					}
 
-						/*System.out.println(object.getRootOwner().getFMLRepresentation());
-						System.out.println("binding=" + binding);
-						System.out.println("binding.getAnalyzedType()=" + binding.getAnalyzedType());
-						System.out.println("object.getFlexoConceptType()=" + object.getFlexoConceptType());
-						System.out.println("object.getFlexoConceptType().getOwningVirtualModel()="
-								+ object.getFlexoConceptType().getOwningVirtualModel());*/
+					System.out.println(object.getRootOwner());
+					System.out.println("binding=" + binding);
+					System.out.println("binding.getAnalyzedType()=" + binding.getAnalyzedType());
+					System.out.println("analyzedVirtualModelType=" + analyzedVirtualModelType);
+					System.out.println("object.getFlexoConceptType()=" + object.getFlexoConceptType());
+					System.out.println("requiredVirtualModelType=" + requiredVirtualModelType);
 
-						// Attempt to find some solutions...
+					// Attempt to find some solutions...
 
-						for (FMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
-							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
-								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
-							}
-						}
-
-						if (object.getRootOwner() instanceof FlexoConceptObject) {
-							if (((FlexoConceptObject) object.getRootOwner()).getFlexoConcept() instanceof VirtualModel) {
-								for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) ((FlexoConceptObject) object.getRootOwner())
-										.getFlexoConcept()).getModelSlots(FMLRTModelSlot.class)) {
-									// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-									if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
-										((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
-									}
+					/*if (object.getOwningVirtualModel() != null && object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class) != null) {
+					
+					if (object.getRootOwner() instanceof FlexoConceptObject) {
+						if (((FlexoConceptObject) object.getRootOwner()).getFlexoConcept() instanceof VirtualModel) {
+							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) ((FlexoConceptObject) object.getRootOwner())
+									.getFlexoConcept()).getModelSlots(FMLRTModelSlot.class)) {
+								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
+								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
+									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 								}
 							}
 						}
-
 					}
+					
+					if (object.getRootOwner() != null) {
+						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
+							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+									.getModelSlots(FMLRTModelSlot.class)) {
+								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
+								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
+									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+								}
+							}
+						}
+					}
+					
+					if (object.getRootOwner() != null) {
+						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
+							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+									.getModelSlots(FMLRTModelSlot.class)) {
+								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
+								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
+									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+								}
+							}
+						}
+					}*/
+
+					// }
 				}
 			}
 			return returned;
 		}
 
-		protected static class UseLocalVirtualModelInstance extends
+		/*		protected static class UseLocalVirtualModelInstance extends
 				FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance<?, ?>>, AbstractAddFlexoConceptInstance<?, ?>> {
-
-			public UseLocalVirtualModelInstance() {
-				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
-			}
-
-			@Override
-			protected void fixAction() {
-				AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
-				action.setReceiver(new DataBinding<>("virtualModelInstance", action));
-			}
-		}
-
-		protected static class UseFMLRTModelSlot extends
+		
+					public UseLocalVirtualModelInstance() {
+						super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
+					}
+		
+					@Override
+					protected void fixAction() {
+						AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
+						action.setReceiver(new DataBinding<>("virtualModelInstance", action));
+					}
+				}
+		
+				protected static class UseFMLRTModelSlot extends
 				FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance<?, ?>>, AbstractAddFlexoConceptInstance<?, ?>> {
-
-			private final FMLRTModelSlot<?, ?> modelSlot;
-
-			public UseFMLRTModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
-				super("sets_receiver_to_'" + modelSlot.getName() + "'");
-				this.modelSlot = modelSlot;
-			}
-
-			@Override
-			protected void fixAction() {
-				AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
-				action.setReceiver(new DataBinding<>(modelSlot.getName(), action));
-			}
-		}
+		
+					private final FMLRTModelSlot<?, ?> modelSlot;
+		
+					public UseFMLRTModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
+						super("sets_receiver_to_'" + modelSlot.getName() + "'");
+						this.modelSlot = modelSlot;
+					}
+		
+					@Override
+					protected void fixAction() {
+						AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
+						action.setReceiver(new DataBinding<>(modelSlot.getName(), action));
+					}
+				}*/
 
 	}
 

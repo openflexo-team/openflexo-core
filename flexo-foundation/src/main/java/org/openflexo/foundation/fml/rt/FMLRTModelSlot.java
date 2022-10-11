@@ -253,10 +253,26 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		 */
 		@Override
 		public final VirtualModel getAccessedVirtualModel() {
-			if (getAccessedVirtualModelResource() != null && !getAccessedVirtualModelResource().isLoading()) {
+			if (getAccessedVirtualModelResource() != null /*&& !getAccessedVirtualModelResource().isLoading()*/) {
+				if (getAccessedVirtualModelResource().isLoaded()) {
+					return getAccessedVirtualModelResource().getLoadedResourceData().getVirtualModel();
+				}
+				else if (!getAccessedVirtualModelResource().isLoading()) {
+					try {
+						return getAccessedVirtualModelResource().getResourceData().getVirtualModel();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (ResourceLoadingCancelledException e) {
+						e.printStackTrace();
+					} catch (FlexoException e) {
+						e.printStackTrace();
+					}
+				}
+				return null;
+
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
-				try {
+				/*try {
 					return getAccessedVirtualModelResource().getResourceData().getVirtualModel();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -264,7 +280,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 					e.printStackTrace();
 				} catch (FlexoException e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 			if (type != null && type.isResolved()) {
 				return type.getVirtualModel();

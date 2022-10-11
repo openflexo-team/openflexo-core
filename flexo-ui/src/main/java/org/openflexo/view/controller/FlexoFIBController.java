@@ -76,6 +76,9 @@ import org.openflexo.foundation.fml.action.MoveVirtualModelToContainerVirtualMod
 import org.openflexo.foundation.fml.action.MoveVirtualModelToDirectory;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTValidationReport;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
@@ -250,6 +253,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		ImageIcon returned = cachedIcons.get(object);
 		if (returned == null) {
 			returned = retrieveIconForObject(object);
+
 			if (object instanceof Validable && hasValidationReport((Validable) object)) {
 				if (hasErrors((Validable) object)) {
 					returned = IconFactory.getImageIcon(returned, IconLibrary.ERROR);
@@ -268,27 +272,32 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	}
 
 	public boolean hasValidationReport(Validable object) {
-		FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
-		return (validationReport != null);
+		return getValidationReport(object) != null;
 	}
 
 	public boolean hasErrors(Validable object) {
-		FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
-		if (validationReport != null) {
-			return validationReport.hasErrors((FMLObject) object);
+		ValidationReport validationReport = getValidationReport(object);
+		if (object instanceof FMLObject && validationReport instanceof FMLValidationReport) {
+			return ((FMLValidationReport) validationReport).hasErrors((FMLObject) object);
+		}
+		if (object instanceof VirtualModelInstanceObject && validationReport instanceof FMLRTValidationReport) {
+			return ((FMLRTValidationReport) validationReport).hasErrors((VirtualModelInstanceObject) object);
 		}
 		return false;
 	}
 
 	public boolean hasWarnings(Validable object) {
-		FMLValidationReport validationReport = (FMLValidationReport) getValidationReport(object);
-		if (validationReport != null) {
-			return validationReport.hasWarnings((FMLObject) object);
+		ValidationReport validationReport = getValidationReport(object);
+		if (object instanceof FMLObject && validationReport instanceof FMLValidationReport) {
+			return ((FMLValidationReport) validationReport).hasWarnings((FMLObject) object);
+		}
+		if (object instanceof VirtualModelInstanceObject && validationReport instanceof FMLRTValidationReport) {
+			return ((FMLRTValidationReport) validationReport).hasWarnings((VirtualModelInstanceObject) object);
 		}
 		return false;
 	}
 
-	public ValidationReport getValidationReport(Validable object) {
+	/*public ValidationReport getValidationReport(Validable object) {
 		if (getServiceManager() != null && object instanceof TechnologyObject) {
 			TechnologyAdapter ta = ((TechnologyObject<?>) object).getTechnologyAdapter();
 			TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
@@ -302,6 +311,32 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 					//System.out.println("On retourne le ValidationReport "
 					//		+ tac.getValidationReport(((InnerResourceData<?>) object).getResourceData()));
 					return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData());
+				}
+			}
+		}
+		return null;
+	}*/
+
+	public ValidationReport getValidationReport(Validable object) {
+		if (getServiceManager() != null) {
+			TechnologyAdapter ta = null;
+			if (object instanceof TechnologyObject) {
+				ta = ((TechnologyObject<?>) object).getTechnologyAdapter();
+			}
+			else if (object instanceof VirtualModelInstanceObject) {
+				ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			}
+			if (ta != null) {
+				TechnologyAdapterController<?> tac = getServiceManager().getTechnologyAdapterControllerService()
+						.getTechnologyAdapterController(ta);
+				if (tac != null) {
+					if (object instanceof ResourceData) {
+						return tac.getValidationReport((ResourceData<?>) object, !SwingUtilities.isEventDispatchThread());
+					}
+					if (object instanceof InnerResourceData) {
+						return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData(),
+								!SwingUtilities.isEventDispatchThread());
+					}
 				}
 			}
 		}

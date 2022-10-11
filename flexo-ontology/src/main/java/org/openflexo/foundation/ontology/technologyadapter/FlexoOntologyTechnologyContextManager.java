@@ -70,20 +70,27 @@ public abstract class FlexoOntologyTechnologyContextManager<TA extends Technolog
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyTechnologyContextManager.class.getPackage().getName());
 
-	protected Hashtable<IFlexoOntologyClass<TA>, IndividualOfClass<TA>> individualsOfClass;
+	protected Hashtable<IFlexoOntologyClass<TA>, IndividualOfClass<TA, ?, ?>> individualsOfClass;
 	protected Hashtable<IFlexoOntologyClass<TA>, SubClassOfClass<TA>> subclassesOfClass;
 	protected Hashtable<IFlexoOntologyStructuralProperty<TA>, SubPropertyOfProperty<TA>> subpropertiesOfProperty;
 
-	public IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
+	public IndividualOfClass<TA, ?, ?> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (individualsOfClass.get(anOntologyClass) != null) {
 			return individualsOfClass.get(anOntologyClass);
 		}
 		else {
-			IndividualOfClass<TA> returned = new IndividualOfClass<>(anOntologyClass);
-			individualsOfClass.put(anOntologyClass, returned);
-			return returned;
+			try {
+				IndividualOfClass<TA, ?, ?> returned = makeIndividualOfClass(anOntologyClass); // new IndividualOfClass<>(anOntologyClass);
+				individualsOfClass.put(anOntologyClass, returned);
+				return returned;
+			} catch (ClassCastException e) {
+				logger.warning(e.getMessage());
+				return null;
+			}
 		}
 	}
+
+	public abstract IndividualOfClass<TA, ?, ?> makeIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass);
 
 	public SubClassOfClass<TA> getSubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (subclassesOfClass.get(anOntologyClass) != null) {

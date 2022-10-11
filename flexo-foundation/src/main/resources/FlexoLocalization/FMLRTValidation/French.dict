@@ -1,0 +1,6 @@
+consistency_check_ok=consistency_check_ok
+instance_has_no_type=instance_has_no_type
+missing_required_role_($role.name)_for_($flexoConceptInstance)=missing_required_role_($role.name)_for_($flexoConceptInstance)
+missing_required_roles_($role.name)_for_($flexoConceptInstance)=missing_required_roles_($role.name)_for_($flexoConceptInstance)
+revalidating=revalidating
+validating=validating

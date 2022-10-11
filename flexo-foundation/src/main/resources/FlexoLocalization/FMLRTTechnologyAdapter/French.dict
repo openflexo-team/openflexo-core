@@ -1,3 +1,6 @@
+<html><a\ href\="">hide_errors_warnings</a></html>=<html><a href\="">hide_errors_warnings</a></html>
+<html><a\ href\="">revalidate</a></html>=<html><a href\="">revalidate</a></html>
+<html><a\ href\="">show_errors_warnings</a></html>=<html><a href\="">show_errors_warnings</a></html>
 a_virtual_model_instance_with_that_name_already_exists=a_virtual_model_instance_with_that_name_already_exists
 cannot_instantiate_enum=Impossible d'instancier l'\u00E9numeration
 choose_fml_controlled_diagram_virtual_model=choose_fml_controlled_diagram_virtual_model
@@ -8,6 +11,7 @@ define_new_concept_instance=D\u00E9finition d'un nouvelle instance
 delete_virtual_model_instance=Supprimer l'instance de VirtualModel
 describe_flexo_concept_instance=Description de l'instance
 discouraged_name_for_new_virtual_model_instance=Ce nom n'est pas recommand\u00E9 pour une instance de VirtualModel
+errors/warnings=errors/warnings
 initializing_adapter=Initialisation du connecteur
 instantiate_flexo_concept=Instancier un concept
 instantiate_virtual_model=Instancier un VirtualModel
@@ -22,4 +26,6 @@ property=Propri\u00E9t\u00E9
 really_delete_this_virtual_model_instance_?=really_delete_this_virtual_model_instance_?
 saving=Sauvegarde de
 select_a_creation_scheme=Choix d'un CreationScheme
+title=title
+validating_virtual_model_instance...=validating_virtual_model_instance...
 value=Valeur

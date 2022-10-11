@@ -50,7 +50,7 @@ import org.openflexo.gina.annotation.FIBPanel;
  * 
  */
 @FIBPanel("Fib/CustomType/VirtualModelInstanceTypeEditor.fib")
-public class VirtualModelInstanceTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<VirtualModelInstanceType> {
+public class VirtualModelInstanceTypeEditor extends FMLCustomTypeEditor<VirtualModelInstanceType> {
 
 	private CompilationUnitResource selectedVirtualModel = null;
 
@@ -60,7 +60,7 @@ public class VirtualModelInstanceTypeEditor extends AbstractFlexoConceptInstance
 
 	@Override
 	public String getPresentationName() {
-		return "VirtualModel inst.";
+		return "Model instance";
 	}
 
 	@Override

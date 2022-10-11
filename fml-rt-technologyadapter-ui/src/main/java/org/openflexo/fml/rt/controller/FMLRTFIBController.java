@@ -40,8 +40,14 @@ package org.openflexo.fml.rt.controller;
 
 import java.util.logging.Logger;
 
+import org.openflexo.components.validation.RevalidationTask;
+import org.openflexo.fml.controller.validation.FixIssueDialog;
+import org.openflexo.fml.controller.validation.IssueFixing;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.FMLRTValidationReport;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
@@ -50,6 +56,9 @@ import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.pamela.validation.ProblemIssue;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
 
@@ -86,8 +95,9 @@ public class FMLRTFIBController extends FlexoFIBController {
 	}
 
 	public FIBComponent inspectorForFlexoConceptInstance(FlexoConceptInstance fci) {
-		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null) {
-			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getFlexoConcept());
+		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null
+				&& fci.getInspectedObject() != null && fci.getFlexoConcept() != null) {
+			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getInspectedObject().getFlexoConcept());
 		}
 		return null;
 	}
@@ -102,6 +112,68 @@ public class FMLRTFIBController extends FlexoFIBController {
 	public void deleteFlexoConceptInstance(FlexoConceptInstance conceptInstance) {
 		System.out.println("delete FCI, container=" + conceptInstance);
 		conceptInstance.delete();
+	}
+
+	public void deleteActorReference(FlexoConceptInstance fci, ActorReference<?> actorReference) {
+		System.out.println("deleteActorReference with " + fci + " et " + actorReference);
+		if (fci != null) {
+			fci.removeFromActors(actorReference);
+		}
+	}
+
+	private boolean showErrorsWarnings = true;
+
+	public boolean showErrorsWarnings() {
+		return showErrorsWarnings;
+	}
+
+	public void setShowErrorsWarnings(boolean showErrorsWarnings) {
+		// System.out.println("setShowErrorsWarnings with " + showErrorsWarnings);
+		if (this.showErrorsWarnings != showErrorsWarnings) {
+			this.showErrorsWarnings = showErrorsWarnings;
+			getPropertyChangeSupport().firePropertyChange("showErrorsWarnings", !showErrorsWarnings, showErrorsWarnings);
+		}
+	}
+
+	public void showIssue(ValidationIssue<?, ?> issue) {
+		if (issue != null) {
+			Validable objectToSelect = issue.getValidable();
+			// getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
+			if (objectToSelect instanceof FlexoObject) {
+				getFlexoController().getSelectionManager().setSelectedObject((FlexoObject) objectToSelect);
+			}
+		}
+	}
+
+	public void fixIssue(ValidationIssue<?, ?> issue) {
+		if (issue instanceof ProblemIssue) {
+			VirtualModelInstance vmiToRevalidate = null;
+			if (issue.getValidationReport().getRootObject() instanceof VirtualModelInstance) {
+				vmiToRevalidate = (VirtualModelInstance) issue.getValidationReport().getRootObject();
+			}
+			IssueFixing<?, ?> fixing = new IssueFixing<>((ProblemIssue<?, ?>) issue, getFlexoController());
+			FixIssueDialog dialog = new FixIssueDialog(fixing, getFlexoController());
+			dialog.showDialog();
+			if (dialog.getStatus() == Status.VALIDATED) {
+				fixing.fix();
+				if (vmiToRevalidate != null) {
+					revalidate(vmiToRevalidate);
+				}
+			}
+			else if (dialog.getStatus() == Status.NO) {
+				fixing.ignore();
+			}
+		}
+	}
+
+	public void revalidate(VirtualModelInstance virtualModelInstance) {
+		if (getServiceManager() != null) {
+			FMLRTTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(FMLRTTechnologyAdapterController.class);
+			FMLRTValidationReport virtualModelInstanceReport = (FMLRTValidationReport) tac.getValidationReport(virtualModelInstance, true);
+			RevalidationTask validationTask = new RevalidationTask(virtualModelInstanceReport);
+			getServiceManager().getTaskManager().scheduleExecution(validationTask);
+		}
 	}
 
 }

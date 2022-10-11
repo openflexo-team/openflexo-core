@@ -43,13 +43,34 @@ import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyTechnologyContextManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 
-public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements TechnologySpecificType<TA> {
+/**
+ * An abstract type defined as an {@link IFlexoOntologyIndividual} of a given {@link IFlexoOntologyClass}
+ * 
+ * @author sylvain
+ *
+ * @param <TA>
+ *            technology adapter class
+ * @param <I>
+ *            type of {@link IFlexoOntologyIndividual}
+ * @param <C>
+ *            type of {@link IFlexoOntologyClass}
+ */
+public abstract class IndividualOfClass<TA extends TechnologyAdapter<TA>, I extends IFlexoOntologyIndividual<TA>, C extends IFlexoOntologyClass<TA>>
+		implements TechnologySpecificType<TA> {
+
+	public static <TA extends TechnologyAdapter<TA>, I extends IFlexoOntologyIndividual<TA>, C extends IFlexoOntologyClass<TA>> IndividualOfClass<TA, I, C> getIndividualOfClass(
+			C anOntologyClass) {
+		if (anOntologyClass == null) {
+			return null;
+		}
+		return (IndividualOfClass<TA, I, C>) ((FlexoOntologyTechnologyContextManager<TA>) anOntologyClass.getTechnologyAdapter()
+				.getTechnologyContextManager()).getIndividualOfClass(anOntologyClass);
+	}
 
 	/**
 	 * Factory for IndividualOfClass instances
@@ -57,25 +78,31 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 	 * @author sylvain
 	 * 
 	 */
-	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>, FMLRTTechnologyAdapter>
-			implements ReferenceOwner {
+	public abstract static class IndividualOfClassTypeFactory<TA extends TechnologyAdapter<TA>, I extends IFlexoOntologyIndividual<TA>, C extends IFlexoOntologyClass<TA>, IC extends IndividualOfClass<TA, I, C>>
+			extends TechnologyAdapterTypeFactory<IC, TA> implements ReferenceOwner {
 
-		public IndividualOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+		public IndividualOfClassTypeFactory(TA technologyAdapter) {
 			super(technologyAdapter);
 		}
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
-		public Class<IndividualOfClass<?>> getCustomType() {
-			return (Class) IndividualOfClass.class;
+		public abstract Class<IC> getCustomType();
+
+		public IC getIndividualOfClass(C anOntologyClass) {
+			if (anOntologyClass == null) {
+				return null;
+			}
+			return (IC) ((FlexoOntologyTechnologyContextManager<TA>) anOntologyClass.getTechnologyAdapter().getTechnologyContextManager())
+					.getIndividualOfClass(anOntologyClass);
 		}
 
 		@Override
-		public IndividualOfClass<?> makeCustomType(String configuration) {
+		public IC makeCustomType(String configuration) {
 
-			FlexoObjectReference<IFlexoOntologyClass<?>> reference = new FlexoObjectReference<>(configuration, this);
+			FlexoObjectReference<C> reference = new FlexoObjectReference<>(configuration, this);
 
-			IFlexoOntologyClass<?> ontologyClass = reference.getObject();
+			C ontologyClass = reference.getObject();
 
 			if (ontologyClass != null) {
 				return getIndividualOfClass(ontologyClass);
@@ -84,7 +111,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 		}
 
 		@Override
-		public void configureFactory(IndividualOfClass<?> type) {
+		public void configureFactory(IC type) {
 		}
 
 		@Override
@@ -105,21 +132,13 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 
 	}
 
-	public static <TA extends TechnologyAdapter<TA>> IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
-		if (anOntologyClass == null) {
-			return null;
-		}
-		return ((FlexoOntologyTechnologyContextManager<TA>) anOntologyClass.getTechnologyAdapter().getTechnologyContextManager())
-				.getIndividualOfClass(anOntologyClass);
-	}
+	private final C ontologyClass;
 
-	private final IFlexoOntologyClass<TA> ontologyClass;
-
-	public IndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
+	public IndividualOfClass(C anOntologyClass) {
 		this.ontologyClass = anOntologyClass;
 	}
 
-	public IFlexoOntologyClass<TA> getOntologyClass() {
+	public C getOntologyClass() {
 		if (ontologyClass != null) {
 			return ontologyClass;
 		}
@@ -127,15 +146,13 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 	}
 
 	@Override
-	public Class<?> getBaseClass() {
-		return IFlexoOntologyIndividual.class;
-	}
+	public abstract Class<? extends I> getBaseClass();
 
 	@Override
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
 		if (aType instanceof IndividualOfClass) {
-			return ontologyClass.isSuperConceptOf(((IndividualOfClass<TA>) aType).getOntologyClass());
+			return ontologyClass.isSuperConceptOf(((IndividualOfClass<TA, I, C>) aType).getOntologyClass());
 		}
 		return false;
 	}
@@ -147,16 +164,6 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 		}
 		// TODO please implement me
 		return true;
-	}
-
-	@Override
-	public String simpleRepresentation() {
-		return getClass().getSimpleName() + "(" + (ontologyClass != null ? ontologyClass.getName() : "") + ")";
-	}
-
-	@Override
-	public String fullQualifiedRepresentation() {
-		return getClass().getName() + "(" + getSerializationRepresentation() + ")";
 	}
 
 	@Override
@@ -197,7 +204,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IndividualOfClass<?> other = (IndividualOfClass<?>) obj;
+		IndividualOfClass<TA, I, C> other = (IndividualOfClass<TA, I, C>) obj;
 		if (ontologyClass == null) {
 			if (other.ontologyClass != null)
 				return false;

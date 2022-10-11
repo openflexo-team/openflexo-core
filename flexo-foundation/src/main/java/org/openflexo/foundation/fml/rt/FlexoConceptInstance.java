@@ -50,6 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
@@ -70,6 +71,7 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -92,6 +94,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.DeserializationFinalizer;
 import org.openflexo.pamela.annotations.DeserializationInitializer;
 import org.openflexo.pamela.annotations.Embedded;
@@ -107,6 +110,11 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.CompoundIssue;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -127,7 +135,7 @@ import org.openflexo.toolbox.StringUtils;
 public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
-	public static final String EMPTY_STRING = "<empty>";
+	public static final String EMPTY_STRING = "<null>";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_URI_KEY = "flexoConceptURI";
@@ -394,6 +402,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	public String getStringRepresentation();
 
+	public String getStringRepresentationWithID();
+
 	public boolean hasValidRenderer();
 
 	@DeserializationInitializer
@@ -534,6 +544,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @return
 	 */
 	public int hashCodeUsingRoles();
+
+	/**
+	 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+	 */
+	public FlexoConceptInstance getInspectedObject();
 
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
@@ -1676,7 +1691,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return getSuperReference(((SuperBindingVariable) variable).getSuperConcept());
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME) && getFlexoConcept() != null) {
-				if (getFlexoConcept().getContainerFlexoConcept() != null) {
+				if (getFlexoConcept().getApplicableContainerFlexoConcept() != null) {
 					return getContainerFlexoConceptInstance();
 				}
 				return getOwningVirtualModelInstance();
@@ -1708,7 +1723,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return variables.get(variable.getVariableName());
 			}
 
-			logger.warning("Cannot find BindingVariable " + variable);
+			logger.warning("Cannot find BindingVariable " + variable + " for " + this);
 			return null;
 		}
 
@@ -1966,7 +1981,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null
 					&& getFlexoConcept().getInspector().getRenderer() != null) {
 				if (!getFlexoConcept().getInspector().getRenderer().isValid()) {
-					// Quick and dirty hasck to force revalidate
+					// Quick and dirty hack to force revalidate
 					if (!rendererWasForceRevalidated) {
 						String invalidReason = getFlexoConcept().getInspector().getRenderer().invalidBindingReason();
 						getFlexoConcept().getInspector().getRenderer().revalidate();
@@ -1977,7 +1992,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						}
 					}
 				}
-				return getFlexoConcept().getInspector().getRenderer().isValid();
+				// return getFlexoConcept().getInspector().getRenderer().isValid();
+			}
+
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getApplicableRenderer() != null;
 			}
 
 			return false;
@@ -1986,6 +2005,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		private BindingValueChangeListener<String> rendererChangeListener = null;
 
 		private boolean isComputingRenderer = false;
+
+		@Override
+		public String getStringRepresentationWithID() {
+			return getStringRepresentation() + " [ID=" + getFlexoID() + "]";
+		}
 
 		@Override
 		public String getStringRepresentation() {
@@ -2003,11 +2027,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (hasValidRenderer() && !isComputingRenderer) {
 				try {
 					isComputingRenderer = true;
-					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(this);
+					Object obj = getFlexoConcept().getApplicableRenderer().getBindingValue(this);
 
 					if (rendererChangeListener == null) {
-						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getInspector().getRenderer(),
-								this) {
+						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getApplicableRenderer(), this) {
 							@Override
 							public void bindingValueChanged(Object source, String newValue) {
 								/*System.out.println(" bindingValueChanged() detected for string representation of "
@@ -2049,6 +2072,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public String extendedStringRepresentation() {
 			StringBuffer sb = new StringBuffer();
 			sb.append((getFlexoConcept() != null ? getFlexoConcept().getName() : "null"));
+			sb.append("[ID=" + getFlexoID() + "]");
 			boolean isFirst = true;
 			for (List<ActorReference<?>> refList : actors.values()) {
 				for (ActorReference<?> ref : refList) {
@@ -2326,6 +2350,295 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				result = prime * result + ((flexoConceptInstance == null) ? 0 : flexoConceptInstance.hashCodeUsingRoles());
 			}
 			return result;
+		}
+
+		/**
+		 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+		 */
+		@Override
+		public FlexoConceptInstance getInspectedObject() {
+			if (getFlexoConcept() != null && getFlexoConcept().hasDelegatedInspector()) {
+				try {
+					FlexoConceptInstance delegate = getFlexoConcept().getInspector().getDelegateConceptInstance().getBindingValue(this);
+					return delegate;
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return this;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class FlexoConceptInstanceMustHaveType extends ValidationRule<FlexoConceptInstanceMustHaveType, FlexoConceptInstance> {
+		public FlexoConceptInstanceMustHaveType() {
+			super(FlexoConceptInstance.class, "flexo_concept_instance_must_have_a_type");
+		}
+
+		@Override
+		public ValidationIssue<FlexoConceptInstanceMustHaveType, FlexoConceptInstance> applyValidation(
+				FlexoConceptInstance flexoConceptInstance) {
+
+			if (flexoConceptInstance.getFlexoConcept() == null) {
+				DeleteThisInstance fixProposal = new DeleteThisInstance(flexoConceptInstance);
+				return new ValidationError<>(this, flexoConceptInstance, "instance_has_no_type", fixProposal);
+				// return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_behaviours");
+			}
+
+			// return new CompoundIssue<>(flexoConceptInstance,
+			// new ValidationError<>(this, flexoConceptInstance, "moi j'aime pas les frites"),
+			// new ValidationWarning<>(this, flexoConceptInstance, "et pas trop les saucisses"));
+			return null;
+		}
+
+		protected static class DeleteThisInstance extends FixProposal<FlexoConceptInstanceMustHaveType, FlexoConceptInstance> {
+
+			private final FlexoConceptInstance flexoConceptInstance;
+
+			public DeleteThisInstance(FlexoConceptInstance flexoConceptInstance) {
+				super("create_default_deletion_scheme");
+				this.flexoConceptInstance = flexoConceptInstance;
+			}
+
+			public FlexoConceptInstance getFlexoConceptInstance() {
+				return flexoConceptInstance;
+			}
+
+			@Override
+			protected void fixAction() {
+				getFlexoConceptInstance().delete();
+			}
+
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class RoleCardinalitiesMustBeValid extends ValidationRule<RoleCardinalitiesMustBeValid, FlexoConceptInstance> {
+		public RoleCardinalitiesMustBeValid() {
+			super(FlexoConceptInstance.class, "role_cardinalities_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<RoleCardinalitiesMustBeValid, FlexoConceptInstance> applyValidation(
+				FlexoConceptInstance flexoConceptInstance) {
+
+			if (flexoConceptInstance.getFlexoConcept() != null) {
+
+				List<ValidationIssue<RoleCardinalitiesMustBeValid, FlexoConceptInstance>> issues = new ArrayList<>();
+
+				for (FlexoRole<?> flexoRole : flexoConceptInstance.getFlexoConcept().getAccessibleRoles()) {
+					if (flexoRole.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept())) {
+						List<?> actorReferenceList = flexoConceptInstance.getActorReferenceList(flexoRole);
+						switch (flexoRole.getCardinality()) {
+							case One:
+								if (actorReferenceList == null || actorReferenceList.size() == 0) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"missing_required_role_($role.name)_for_($flexoConceptInstance)"));
+								}
+								else if (actorReferenceList.size() > 1) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
+								}
+								break;
+							case ZeroOne:
+								if (actorReferenceList != null && actorReferenceList.size() > 1) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
+								}
+								break;
+							case OneMany:
+								System.out.println("actorReferenceList = " + actorReferenceList);
+								if (actorReferenceList == null || actorReferenceList.size() == 0) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"missing_required_roles_($role.name)_for_($flexoConceptInstance)"));
+								}
+
+							default:
+								break;
+						}
+					}
+					/*else {
+						System.out.println("Do not check for " + flexoRole.getName() + " because it applies to "
+								+ flexoRole.getFlexoConcept() + " and i am a " + flexoConceptInstance.getFlexoConcept());
+					}*/
+				}
+
+				if (issues.size() > 0) {
+					return new CompoundIssue<>(flexoConceptInstance, issues);
+				}
+
+			}
+
+			return null;
+		}
+
+		public class InvalidCardinality extends ValidationError<RoleCardinalitiesMustBeValid, FlexoConceptInstance> {
+
+			private FlexoRole<?> role;
+			private FlexoConceptInstance flexoConceptInstance;
+
+			public InvalidCardinality(FlexoRole<?> role, FlexoConceptInstance flexoConceptInstance, String message) {
+				super(RoleCardinalitiesMustBeValid.this, flexoConceptInstance, message);
+				this.role = role;
+				this.flexoConceptInstance = flexoConceptInstance;
+			}
+
+			public FlexoRole<?> getRole() {
+				return role;
+			}
+
+			public FlexoConceptInstance getFlexoConceptInstance() {
+				return flexoConceptInstance;
+			}
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class ConstraintsShouldNotBeViolated extends ValidationRule<ConstraintsShouldNotBeViolated, FlexoConceptInstance> {
+		public ConstraintsShouldNotBeViolated() {
+			super(FlexoConceptInstance.class, "concept_constraints_should_not_be_violated");
+		}
+
+		@Override
+		public ValidationIssue<ConstraintsShouldNotBeViolated, FlexoConceptInstance> applyValidation(
+				FlexoConceptInstance flexoConceptInstance) {
+
+			if (flexoConceptInstance.getFlexoConcept() != null) {
+				List<ValidationIssue<ConstraintsShouldNotBeViolated, FlexoConceptInstance>> issues = new ArrayList<>();
+				applyValidationToConcept(flexoConceptInstance, flexoConceptInstance.getFlexoConcept(), issues);
+				if (issues.size() > 0) {
+					return new CompoundIssue<>(flexoConceptInstance, issues);
+				}
+			}
+
+			return null;
+		}
+
+		private void applyValidationToConcept(FlexoConceptInstance flexoConceptInstance, FlexoConcept concept,
+				List<ValidationIssue<ConstraintsShouldNotBeViolated, FlexoConceptInstance>> issues) {
+			for (FlexoConceptConstraint constraint : concept.getFlexoConceptConstraints()) {
+				if (constraint.getHasIteration()) {
+					try {
+						List<?> iterationObjects = constraint.getIteration().getBindingValue(flexoConceptInstance);
+						for (Object item : iterationObjects) {
+							// System.out.println("constraint = " + constraint);
+							// System.out.println("constraint.getConstraint() = " + constraint.getConstraint());
+							// System.out.println("valid : " + constraint.getConstraint().isValid());
+							// System.out.println("reason: " + constraint.getConstraint().invalidBindingReason());
+
+							// Hack
+							// TODO: fix this
+							if (!constraint.getConstraint().isValid()) {
+								constraint.getConstraint().revalidate();
+							}
+
+							if (!constraint.getConstraint().isValid()) {
+								issues.add(new ValidationError<>(this, flexoConceptInstance, "constraint_is_not_valid_for($validable)"));
+								return;
+							}
+
+							Boolean evaluateConstraint = constraint.getConstraint().getBindingValue(new BindingEvaluationContext() {
+								@Override
+								public Object getValue(BindingVariable variable) {
+									if (variable.getVariableName().equals(constraint.getIteratorName())) {
+										return item;
+									}
+									return flexoConceptInstance.getValue(variable);
+								}
+
+								@Override
+								public ExpressionEvaluator getEvaluator() {
+									return new FMLExpressionEvaluator(this);
+								}
+							});
+
+							// System.out.println("evaluateConstraint : " + evaluateConstraint);
+
+							if (!evaluateConstraint) {
+								issues.add(new ViolatedConstraint(constraint, flexoConceptInstance, item));
+							}
+						}
+					} catch (TypeMismatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ReflectiveOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else {
+					try {
+						if (!constraint.getConstraint().getBindingValue(flexoConceptInstance)) {
+							issues.add(new ViolatedConstraint(constraint, flexoConceptInstance));
+						}
+					} catch (TypeMismatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ReflectiveOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			for (FlexoConcept parentConcept : concept.getParentFlexoConcepts()) {
+				applyValidationToConcept(flexoConceptInstance, parentConcept, issues);
+			}
+		}
+
+		public class ViolatedConstraint extends ValidationError<ConstraintsShouldNotBeViolated, FlexoConceptInstance> {
+
+			private FlexoConceptConstraint constraint;
+			private FlexoConceptInstance flexoConceptInstance;
+			private Object item;
+
+			public ViolatedConstraint(FlexoConceptConstraint constraint, FlexoConceptInstance flexoConceptInstance) {
+				super(ConstraintsShouldNotBeViolated.this, flexoConceptInstance, constraint.getName());
+				this.constraint = constraint;
+				this.flexoConceptInstance = flexoConceptInstance;
+			}
+
+			public ViolatedConstraint(FlexoConceptConstraint constraint, FlexoConceptInstance flexoConceptInstance, Object item) {
+				this(constraint, flexoConceptInstance);
+				this.item = item;
+			}
+
+			public FlexoConceptConstraint getConstraint() {
+				return constraint;
+			}
+
+			public FlexoConceptInstance getFlexoConceptInstance() {
+				return flexoConceptInstance;
+			}
+
+			public Object getItem() {
+				return item;
+			}
+
 		}
 
 	}

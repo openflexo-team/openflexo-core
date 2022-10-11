@@ -595,8 +595,9 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 
 		@Override
 		public ValidationIssue<PropertyShadowingAnOtherOne, FlexoProperty<?>> applyValidation(FlexoProperty<?> property) {
-			if (property != null && property.getFlexoConcept() != null && property.getFlexoConcept().getContainerFlexoConcept() != null) {
-				if (property.getFlexoConcept().getContainerFlexoConcept().getAccessibleProperty(property.getName()) != null) {
+			if (property != null && property.getFlexoConcept() != null
+					&& property.getFlexoConcept().getApplicableContainerFlexoConcept() != null) {
+				if (property.getFlexoConcept().getApplicableContainerFlexoConcept().getAccessibleProperty(property.getName()) != null) {
 					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
@@ -610,6 +611,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 			}
 			return null;
 		}
+
 	}
 
 }

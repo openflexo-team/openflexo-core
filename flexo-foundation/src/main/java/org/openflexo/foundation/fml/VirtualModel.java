@@ -52,6 +52,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
@@ -300,14 +301,39 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
+	@NotificationUnsafe
 	public List<FlexoConcept> getAllRootFlexoConcepts();
+
+	/**
+	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no container (contaiment semantics)<br>
+	 * (where container is the virtual model itself).
+	 * 
+	 * @param includeParents
+	 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+	 * @param includeAbstractConcepts
+	 *            When 'includeAbstractConcepts' is false, do not return abstract {@link FlexoConcept}
+	 * @return
+	 */
+	@NotificationUnsafe
+	public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts);
 
 	/**
 	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
 	 * 
 	 * @return
 	 */
+	@NotificationUnsafe
 	public List<FlexoConcept> getAllSuperFlexoConcepts();
+
+	/**
+	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
+	 * 
+	 * @param includeParents
+	 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+	 * @return
+	 */
+	@NotificationUnsafe
+	public List<FlexoConcept> getAllSuperFlexoConcepts(boolean includeParents);
 
 	public boolean hasNature(VirtualModelNature nature);
 
@@ -707,15 +733,44 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@NotificationUnsafe
 		public List<FlexoConcept> getAllRootFlexoConcepts() {
+
+			return getAllRootFlexoConcepts(false, true);
+		}
+
+		/**
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no container (contaiment semantics)<br>
+		 * (where container is the virtual model itself).
+		 * 
+		 * @param includeParents
+		 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+		 * @param includeAbstractConcepts
+		 *            When 'includeAbstractConcepts' is false, do not return abstract {@link FlexoConcept}
+		 * @return
+		 */
+		@Override
+		@NotificationUnsafe
+		public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts) {
 
 			Vector<FlexoConcept> returned = new Vector<>();
 			for (FlexoConcept ep : getFlexoConcepts()) {
-				if (ep.isRoot()) {
+				if (ep.isRoot() && ep.getApplicableContainerFlexoConcept() == null && (includeAbstractConcepts || (!ep.isAbstract()))) {
 					returned.add(ep);
 				}
 			}
+			if (includeParents) {
+				for (FlexoConcept parent : getParentFlexoConcepts()) {
+					if (parent instanceof VirtualModel) {
+						returned.addAll(((VirtualModel) parent).getAllRootFlexoConcepts(includeParents, includeAbstractConcepts));
+					}
+					else {
+						logger.warning("Inconsistent data : " + parent + " is not a VirtualModel");
+					}
+				}
+			}
 			return returned;
+
 		}
 
 		/**
@@ -725,6 +780,7 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@NotificationUnsafe
 		public List<FlexoConcept> getAllSuperFlexoConcepts() {
 			if (isComputingSuperFlexoConcepts) {
 				return Collections.emptyList();
@@ -742,6 +798,34 @@ public interface VirtualModel extends FlexoConcept {
 
 		private boolean isComputingSuperFlexoConcepts = false;
 
+		/**
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
+		 * 
+		 * @param includeParents
+		 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+		 * @return
+		 */
+		@Override
+		@NotificationUnsafe
+		public List<FlexoConcept> getAllSuperFlexoConcepts(boolean includeParents) {
+			if (!includeParents) {
+				return getAllSuperFlexoConcepts();
+			}
+			else {
+				List<FlexoConcept> returned = new ArrayList<>();
+				for (FlexoConcept concept : getFlexoConcepts()) {
+					List<FlexoConcept> l = concept.getTopLevelSuperConcepts();
+					for (FlexoConcept c : l) {
+						if (!returned.contains(c)) {
+							returned.add(c);
+						}
+					}
+				}
+				return returned;
+
+			}
+		}
+
 		// Override PAMELA internal call by providing custom notification support
 		@Override
 		public void addToFlexoConcepts(FlexoConcept aFlexoConcept) {
@@ -754,6 +838,8 @@ public interface VirtualModel extends FlexoConcept {
 
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null, aFlexoConcept);
+			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", null, aFlexoConcept);
+			getPropertyChangeSupport().firePropertyChange("getAllRootFlexoConcepts(boolean,boolean)", null, aFlexoConcept);
 			if (aFlexoConcept.getParentFlexoConcepts() != null) {
 				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, null, aFlexoConcept);
@@ -768,6 +854,8 @@ public interface VirtualModel extends FlexoConcept {
 			performSuperRemover(FLEXO_CONCEPTS_KEY, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", aFlexoConcept, null);
 			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", aFlexoConcept, null);
+			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", aFlexoConcept, null);
+			getPropertyChangeSupport().firePropertyChange("getAllRootFlexoConcepts(boolean,boolean)", aFlexoConcept, null);
 			if (aFlexoConcept.getParentFlexoConcepts() != null) {
 				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, aFlexoConcept, null);

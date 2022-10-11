@@ -215,8 +215,8 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 				logger.warning("Found not initialized parameter " + parameter);
 				Object defaultValue = parameter.getDefaultValue(this);
 				if (defaultValue != null) {
-					logger.warning("Giving value " + defaultValue);
-					parameterValues.put(parameter, defaultValue);
+					logger.fine("Giving value " + defaultValue);
+					parameterValues.put(parameter.getArgumentName(), defaultValue);
 					if (!parameter.isValid(this, defaultValue)) {
 						logger.info("Parameter " + parameter + " is not valid for value " + defaultValue);
 						returned = false;

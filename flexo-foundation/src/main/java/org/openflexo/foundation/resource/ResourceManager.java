@@ -425,7 +425,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			// System.out.println("################### Finished loading " + resource.getName());
 			stack.pop();
 		}
-		for (CrossReferenceDependency crossReferenceDependency : crossReferenceDependencies) {
+		for (CrossReferenceDependency crossReferenceDependency : new ArrayList<>(crossReferenceDependencies)) {
 			if (crossReferenceDependency.requestedResource == resource) {
 				crossReferenceDependency.requestingResource.resolvedCrossReferenceDependency(crossReferenceDependency.requestedResource);
 				if (getServiceManager() != null) {

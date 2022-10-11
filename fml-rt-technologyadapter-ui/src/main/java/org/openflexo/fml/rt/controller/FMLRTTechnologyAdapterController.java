@@ -38,6 +38,9 @@
 
 package org.openflexo.fml.rt.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -51,6 +54,7 @@ import org.openflexo.fml.rt.controller.action.MoveVirtualModelInstanceInitialize
 import org.openflexo.fml.rt.controller.action.NavigationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.OpenVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitializer;
+import org.openflexo.fml.rt.controller.validation.FMLRTValidateActionizer;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
 import org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceRepositoriesBrowser;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -67,9 +71,12 @@ import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTValidationModel;
+import org.openflexo.foundation.fml.rt.FMLRTValidationReport;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
@@ -77,12 +84,19 @@ import org.openflexo.foundation.fml.rt.editionaction.ExecuteFML;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteFlexoBehaviour;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationModel;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -100,6 +114,9 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 public class FMLRTTechnologyAdapterController extends TechnologyAdapterController<FMLRTTechnologyAdapter> {
 
 	static final Logger logger = Logger.getLogger(FlexoController.class.getPackage().getName());
+
+	private FMLRTValidationModel validationModel;
+	private Map<VirtualModelInstance, FMLRTValidationReport> validationReports = new HashMap<>();
 
 	@Override
 	public Class<FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
@@ -136,6 +153,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
 		// FMLRTVirtualModelInstance
+
+		new FMLRTValidateActionizer(this, actionInitializer);
 
 		new CreateBasicVirtualModelInstanceInitializer(actionInitializer);
 		new DeleteVirtualModelInstanceInitializer(actionInitializer);
@@ -341,4 +360,79 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public Class<FMLRTPreferences> getPreferencesClass() {
 		return FMLRTPreferences.class;
 	}
+
+	public FMLRTValidationModel getFMLRTValidationModel() {
+		if (validationModel == null) {
+			validationModel = getServiceManager().getVirtualModelLibrary().getFMLRTValidationModel();
+		}
+		return validationModel;
+	}
+
+	@Override
+	public ValidationModel getValidationModel(Class<? extends ResourceData<?>> resourceDataClass) {
+		if (VirtualModelInstance.class.isAssignableFrom(resourceDataClass)) {
+			return getFMLRTValidationModel();
+		}
+		return null;
+	}
+
+	@Override
+	public ValidationReport getValidationReport(ResourceData<?> resourceData, boolean createWhenNotExistent) {
+		if (resourceData instanceof VirtualModelInstance) {
+			ValidationReport returned = validationReports.get(resourceData);
+			if (returned == null && createWhenNotExistent) {
+				return makeValidationReport((VirtualModelInstance) resourceData);
+			}
+			return returned;
+		}
+		return null;
+	}
+
+	private FMLRTValidationReport makeValidationReport(VirtualModelInstance<?, ?> vmi) {
+		FMLRTValidationReport validationReport = null;
+		try {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("Validating virtual model instance " + vmi);
+			}
+			Progress.progress(getLocales().localizedForKey("validating_virtual_model_instance..."));
+			validationReport = (FMLRTValidationReport) getFMLRTValidationModel().validate(vmi);
+			validationReports.put(vmi, validationReport);
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("End validating virtual model instance " + vmi);
+				logger.info("Errors=" + validationReport.getAllErrors().size());
+				for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
+					logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
+							+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
+				}
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return validationReport;
+	}
+
+	@Override
+	public void resourceLoading(TechnologyAdapterResource<?, FMLRTTechnologyAdapter> resource) {
+		// logger.info("RESOURCE LOADED: " + resource);
+
+		if (resource instanceof AbstractVirtualModelInstanceResource) {
+			VirtualModelInstance vmi = (VirtualModelInstance) ((AbstractVirtualModelInstanceResource) resource).getLoadedResourceData();
+			if (vmi != null) {
+				makeValidationReport(vmi);
+			}
+		}
+	}
+
+	@Override
+	public void resourceUnloaded(TechnologyAdapterResource<?, FMLRTTechnologyAdapter> resource) {
+		logger.warning("RESOURCE UNLOADED not fully implemented: " + resource);
+
+		if (resource instanceof AbstractVirtualModelInstanceResource) {
+			VirtualModelInstance vmi = (VirtualModelInstance) ((AbstractVirtualModelInstanceResource) resource).getLoadedResourceData();
+			if (vmi != null) {
+				validationReports.remove(vmi);
+			}
+		}
+	}
+
 }

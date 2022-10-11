@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
-import java.util.Hashtable;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -146,9 +145,9 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof Hashtable) {
-			Hashtable<FlexoBehaviourParameter, Object> allParameters = (Hashtable<FlexoBehaviourParameter, Object>) target;
-			return allParameters.get(parameter);
+		if (target instanceof ParameterValues) {
+			ParameterValues allParameters = (ParameterValues) target;
+			return allParameters.get(parameter.getArgumentName());
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
@@ -162,7 +161,7 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 			// System.out.println("Setting value " + value + " for " + parameter);
 			// System.out.println("Parent=" + getParent() + " of " + getParent().getClass());
 			if (value != null) {
-				allParameters.put(parameter, value);
+				allParameters.put(parameter.getArgumentName(), value);
 			}
 			else {
 				allParameters.remove(parameter);

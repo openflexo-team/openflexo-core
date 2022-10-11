@@ -120,7 +120,10 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 			if (getConditional().isSet() && getConditional().isValid()) {
 				try {
 					Boolean returned = getConditional().getBindingValue(flexoConceptInstance);
-					return returned;
+					if (returned != null) {
+						return returned;
+					}
+					return true;
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {

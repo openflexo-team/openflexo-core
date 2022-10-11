@@ -511,7 +511,7 @@ public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 		 */
 		@Override
 		public List<?> getListOfObjects() {
-			if (getType() instanceof FlexoEnumType) {
+			if (getType() instanceof FlexoEnumType && ((FlexoEnumType) getType()).getFlexoEnum() != null) {
 				return ((FlexoEnumType) getType()).getFlexoEnum().getInstances();
 			}
 			return null;

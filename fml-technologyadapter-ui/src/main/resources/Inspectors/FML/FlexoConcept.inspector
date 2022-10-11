@@ -74,7 +74,7 @@
 			</Table>
 
 
-			<Label name="ConstraintsLabel" label="constraints" index="18"
+			<!--  <Label name="ConstraintsLabel" label="constraints" index="18"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
 			<Table name="ConstraintsTable" iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
@@ -102,7 +102,148 @@
 					name="add_constraint" />
 				<RemoveAction method="controller.deleteConstraint(data,selected)"
 					name="delete_constraint" />
-			</Table>
+			</Table>-->
+
+			<Label label="constraints" index="18" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)" />
+			<Panel darkLevel="1" borderLeft="0" sizeAdjustment="OriginalSize"
+				opaque="false" border="empty" borderRight="2" trackViewPortWidth="true"
+				index="19" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				borderBottom="2" titleFont="SansSerif,0,11" borderTop="2"
+				trackViewPortHeight="true" layout="gridbag" name="ConstraintsPanel">
+				<Table showFooter="true" manageDynamicModel="true"
+					enable="data != null" selectionMode="MultipleIntervalSelection"
+					data="data.flexoConceptConstraints" rightClickAction="controller.rightClick(ConstraintsTable.selected,event)"
+					boundToSelectionManager="true" index="0" localize="true"
+					font="SansSerif.plain,0,11"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)"
+					iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
+					backgroundNonSelectionColor="255,255,255" autoSelectFirstRow="true"
+					name="ConstraintsTable" backgroundSecondarySelectionColor="178,215,255">
+					<IconColumn data="controller.iconForObject(iterator)"
+						displayTitle="false" title="icon" name="icon" columnWidth="20"
+						resizable="false" showIcon="false" />
+					<TextFieldColumn data="iterator.name"
+						displayTitle="true" title="constraint" name="constraint" columnWidth="120"
+						resizable="true" showIcon="false" />
+					<!-- <AddAction id="13" name="add_parameter" method="controller.createFlexoBehaviourParameter(data)" 
+						/> <RemoveAction id="14" name="delete" method="controller.deleteParameter(data,selected)" 
+						/> -->
+
+					<AddAction method="controller.createConstraint(data)"
+						name="add_concept_constraint" />
+					<RemoveAction method="controller.deleteConstraint(data,selected)"
+						name="delete" />
+
+				</Table>
+				<Panel borderLeft="0" sizeAdjustment="OriginalSize"
+					opaque="false" border="empty" borderRight="0" trackViewPortWidth="true"
+					index="0" align="left"
+					constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					borderBottom="0" borderTitle="Panel" boxLayoutAxis="Y_AXIS"
+					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
+					layout="box" name="ConstraintsOrderingPanel">
+					<Button
+						enable="(ConstraintsTable.selected != null) &amp; (ConstraintsTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
+						action="data.entryFirst(ConstraintsTable.selected)" index="0"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
+						label="">
+					</Button>
+					<Button
+						enable="(ConstraintsTable.selected != null) &amp; (ConstraintsTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowUp" buttonType="Trigger" name="Button2"
+						action="data.entryUp(ConstraintsTable.selected)" index="1"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
+						label="">
+					</Button>
+					<Button
+						enable="(ConstraintsTable.selected != null) &amp; (ConstraintsTable.selected.index &lt; (data.entries.size - 1))"
+						buttonIcon="controller.arrowDown" buttonType="Trigger" name="Button3"
+						action="data.entryDown(ConstraintsTable.selected)" index="2"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
+						label="">
+					</Button>
+					<Button
+						enable="(ConstraintsTable.selected != null) &amp; (ConstraintsTable.selected.index &lt; (data.entries.size - 1))"
+						buttonIcon="controller.arrowBottom" buttonType="Trigger" name="Button4"
+						action="data.entryLast(ConstraintsTable.selected)" index="3"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
+						label="">
+					</Button>
+				</Panel>
+				<Panel darkLevel="2" borderLeft="0" sizeAdjustment="OriginalSize"
+					border="rounded3d" borderRight="0" trackViewPortWidth="true"
+					index="2" align="left" enable="ConstraintsTable.selected != null"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+					borderBottom="5" titleFont="SansSerif,0,11" borderTop="5"
+					trackViewPortHeight="true" layout="twocols" name="DetailsPanel">
+					<Label name="Label" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="constraint" enable="ConstraintsTable.selected != null" />
+					<TextField columns="7" name="TextField"
+						data="ConstraintsTable.selected.name"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" 
+						enable="ConstraintsTable.selected != null"/>
+					<Label name="Label7" localize="true" align="left" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="iterate" />
+					<CheckBox selected="true" name="checkbox" enable="ConstraintsTable.selected != null"
+						data="ConstraintsTable.selected.hasIteration"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label name="IteratorNameLabel" localize="true" align="left" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="iterator_name" visible="ConstraintsTable.selected.hasIteration"/>
+					<TextField columns="7" name="TextField" visible="ConstraintsTable.selected.hasIteration"
+						data="ConstraintsTable.selected.iteratorName" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label name="IterationLabel" localize="true" align="left" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="iteration" visible="ConstraintsTable.selected.hasIteration"/>
+					<Custom manageDynamicModel="true" enable="ConstraintsTable.selected != null"
+						dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector2" data="ConstraintsTable.selected.iteration" visible="ConstraintsTable.selected.hasIteration"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<Assignment id="37" mandatory="true" variable="component.bindable" />
+					</Custom>
+					<Label
+						name="ConstraintLabel" localize="true" align="left" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="constraint" />
+					<Custom
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector" data="ConstraintsTable.selected.constraint" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<!--  <Assignment mandatory="true" variable="component.bindable" /> -->
+					</Custom>
+					<Label
+						name="ViolationHookLabel" localize="true" align="left" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="violation_hook" />
+					<Custom
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector" data="ConstraintsTable.selected.violationHook" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<!--  <Assignment mandatory="true" variable="component.bindable" /> -->
+					</Custom>
+					<Label name="DescriptionLabel" localize="true" align="left" enable="ConstraintsTable.selected != null"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="description" />
+					<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+						useScrollBar="true" columns="8" name="TextArea2" enable="ConstraintsTable.selected != null"
+						data="ConstraintsTable.selected.description" text="TextArea"
+						constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+				</Panel>
+			</Panel>
 
 
 		</Tab>

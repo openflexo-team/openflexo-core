@@ -161,7 +161,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoActionWizard<CreateFl
 		public List<FlexoConcept> getAvailableFlexoConcepts() {
 			Stream<FlexoConcept> concepts;
 			if (getContainer() instanceof FMLRTVirtualModelInstance) {
-				concepts = ((FMLRTVirtualModelInstance) getContainer()).getVirtualModel().getAllRootFlexoConcepts().stream();
+				concepts = ((FMLRTVirtualModelInstance) getContainer()).getVirtualModel().getAllRootFlexoConcepts(true, false).stream();
 			}
 			else {
 				concepts = getContainer().getFlexoConcept().getAccessibleEmbeddedFlexoConcepts().stream();

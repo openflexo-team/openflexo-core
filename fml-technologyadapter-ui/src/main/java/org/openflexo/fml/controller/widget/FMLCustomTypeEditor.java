@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.components.widget.DefaultCustomTypeEditorImpl;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -56,11 +57,11 @@ import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent.CustomCompon
  * @author sylvain
  * 
  */
-public abstract class AbstractFlexoConceptInstanceTypeEditor<T extends FlexoConceptInstanceType> extends DefaultCustomTypeEditorImpl<T> {
+public abstract class FMLCustomTypeEditor<T extends CustomType> extends DefaultCustomTypeEditorImpl<T> {
 
 	private List<FlexoConcept> matchingValues = new ArrayList<>();
 
-	public AbstractFlexoConceptInstanceTypeEditor(FlexoServiceManager serviceManager) {
+	public FMLCustomTypeEditor(FlexoServiceManager serviceManager) {
 		super(serviceManager);
 	}
 

@@ -102,7 +102,7 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 			FlexoConceptInstance container = null;
 			VMI vmi = getVirtualModelInstance(evaluationContext);
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
-			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
+			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
 					logger.warning("null container while creating new concept " + instantiatedFlexoConcept);

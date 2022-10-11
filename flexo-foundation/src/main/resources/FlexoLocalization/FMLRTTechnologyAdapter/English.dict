@@ -1,3 +1,6 @@
+<html><a\ href\="">hide_errors_warnings</a></html>=<html><a href\="">hide errors warnings</a></html>
+<html><a\ href\="">revalidate</a></html>=<html><a href\="">revalidate</a></html>
+<html><a\ href\="">show_errors_warnings</a></html>=<html><a href\="">show errors warnings</a></html>
 a_virtual_model_instance_with_that_name_already_exists=A virtual model instance with that name already exists
 cannot_instantiate_enum=Cannot instantiate enum
 choose_fml_controlled_diagram_virtual_model=Choose fml controlled diagram virtual model
@@ -8,6 +11,7 @@ define_new_concept_instance=Define new concept instance
 delete_virtual_model_instance=Delete virtual model instance
 describe_flexo_concept_instance=Describe flexo concept instance
 discouraged_name_for_new_virtual_model_instance=Discouraged name for new virtual model instance
+errors/warnings=Errors/warnings
 initializing_adapter=Initializing adapter
 instantiate_flexo_concept=Instantiate flexo concept
 instantiate_virtual_model=Instantiate virtual model
@@ -22,4 +26,6 @@ property=Property
 really_delete_this_virtual_model_instance_?=Really delete this virtual model instance ?
 saving=Saving
 select_a_creation_scheme=Select a creation scheme
+title=Title
+validating_virtual_model_instance...=Validating virtual model instance...
 value=Value

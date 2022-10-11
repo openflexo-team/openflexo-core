@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="twocols" darkLevel="0"
+	dataClassName="org.openflexo.ontology.components.widget.ObjectIndividualTypeEditor"
+	controllerClassName="org.openflexo.components.widget.DefaultCustomTypeEditorImpl$SelectorFIBController"
+	opaque="false">
+	<Panel borderLeft="0" sizeAdjustment="OriginalSize"
+		borderRight="0" border="empty" trackViewPortWidth="true" index="1"
+		align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		borderBottom="0" borderTitle="Panel" borderTop="0"
+		trackViewPortHeight="true" layout="gridbag" name="FIBPanel">
+		<TextField  columns="6"
+			name="FilteredClassName" data="data.filteredClassName"
+			text="TextField" index="3" localize="true"
+			constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" />
+		<!-- enterPressedAction="data.search()" -->
+		<Image
+			data="data.searchIcon.image"
+			name="SearchImage" index="3"
+			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="" />
+		<!--  <Button enable="(!(data.searchMode))"
+			clickAction="data.search()" buttonIcon="data.searchIcon"
+			buttonType="Trigger" name="SearchButton" index="3"
+			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="" />
+		<Button enable="data.searchMode" clickAction="data.done()"
+			buttonIcon="data.doneIcon" buttonType="Trigger" name="DoneButton"
+			index="4" localize="true"
+			constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			label="" />-->
+		<Label
+			name="MatchesLabel"
+			data="data.searchLabel"
+			index="5" font="Dialog,2,10" align="right"
+			constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" />
+		<!--  <Label
+			visible="((data.matchingValues.size != 1) &amp; data.searchMode)"
+			name="MatchesLabel"
+			data="((data.matchingClasses.size &gt; 1) ? ((&quot;Found &quot; + data.matchingClasses.size) + &quot; matches&quot;) : &quot;No matches&quot;)"
+			index="5" font="Dialog,2,10" align="right"
+			constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" />
+		<Label
+			visible="(data.matchingValues.size &lt;= 1) | (!data.searchMode)"
+			name="InfoLabel" index="6" localize="true" font="Dialog,2,10"
+			align="right"
+			constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+			label="You might use wildcards (* = any string) and press 'Search'" />-->
+	</Panel>
+	<List visibleRowCount="4" rowHeight="18"
+		createNewRowOnClick="false" boundToSelectionManager="true"
+		selectionMode="MultipleIntervalSelection"
+		selected="data.selectedClass" layoutOrientation="vertical"
+		index="0" data=""
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		visible="(data.matchingValues.size &gt; 1)" useScrollBar="true"
+		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+		verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+		name="PotentialMatches" format="object.name"
+		icon="controller.iconForObject(object)" tooltip="" localize="true"
+		enable="" manageDynamicModel="true"
+		clickAction="controller.selectedObjectChanged()"
+		doubleClickAction="controller.apply()" rightClickAction=""
+		enterPressedAction="controller.apply()" valueChangedAction=""
+		list="data.matchingValues" array="" showIcon="true"
+		iteratorClassName="org.openflexo.foundation.ontology.IFlexoOntologyClass"
+		autoSelectFirstRow="true" />
+	<Label label="metamodel" 
+		constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
+		name="MetaModelLabel" localize="true" />
+	<Custom
+		componentClassName="org.openflexo.components.widget.FIBMetaModelSelector"
+		localize="true" manageDynamicModel="true" name="MetaModelSelector"
+		data="data.metaModelResource"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)">
+		<Assignment variable="component.resourceManager"
+			value="data.serviceManager.resourceManager" />
+		<Assignment variable="component.technologyAdapter"
+			value="data.technologyAdapter" />
+	</Custom>
+	<Browser root="data.browserModel"
+		iteratorClassName="org.openflexo.foundation.ontology.IFlexoOntologyClass"
+		visibleRowCount="10" rowHeight="18" boundToSelectionManager="false"
+		selectionMode="DiscontiguousTreeSelection"
+		selected="data.selectedClass" showFooter="true" rootVisible="false"
+		showRootsHandle="true" localize="true" manageDynamicModel="true"
+		clickAction="controller.selectedObjectChanged()"
+		doubleClickAction="controller.apply()"
+		enterPressedAction="controller.apply()" name="OntologyBrowser"
+		index="2"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
+		<BrowserElement
+			dataClassName="org.openflexo.ontology.components.widget.OntologyBrowserModel"
+			isEditable="false" filtered="false" defaultVisible="true"
+			name="model">
+			<Children data="model.roots" name="children" />
+		</BrowserElement>
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl"
+			label="element.name" icon="controller.iconForObject(element)"
+			tooltip="element.displayableDescription" isEditable="false"
+			filtered="false" defaultVisible="true" name="element">
+			<Children data="data.browserModel.getChildren(element)"
+				name="children" />
+		</BrowserElement>
+	</Browser>
+	<LocalizedDictionary />
+</Panel>

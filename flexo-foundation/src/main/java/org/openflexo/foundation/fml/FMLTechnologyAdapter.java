@@ -44,6 +44,7 @@ import java.util.List;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoConceptType.DefaultFlexoConceptTypeFactory;
 import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
@@ -114,6 +115,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	private DefaultFlexoConceptInstanceTypeFactory fciFactory;
 	private FlexoEnumTypeFactory enumFactory;
 	private DefaultVirtualModelInstanceTypeFactory vmiFactory;
+	private DefaultFlexoConceptTypeFactory conceptFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
@@ -121,6 +123,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
 		taService.registerTypeClass(FlexoEnumType.class, getFlexoEnumTypeFactory());
 		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
+		taService.registerTypeClass(FlexoConceptType.class, getFlexoConceptTypeFactory());
 	}
 
 	public FlexoResourceTypeFactory getFlexoResourceTypeFactory() {
@@ -149,6 +152,13 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 			vmiFactory = new DefaultVirtualModelInstanceTypeFactory(this);
 		}
 		return vmiFactory;
+	}
+
+	public DefaultFlexoConceptTypeFactory getFlexoConceptTypeFactory() {
+		if (conceptFactory == null) {
+			conceptFactory = new DefaultFlexoConceptTypeFactory(this);
+		}
+		return conceptFactory;
 	}
 
 	public VirtualModelLibrary getVirtualModelLibrary() {

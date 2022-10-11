@@ -258,7 +258,11 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/TextAreaIcon.png"));
 	public static final ImageIconResource TEXT_FIELD_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/TextFieldIcon.png"));
+	
+	public static final ImageIconResource DATA_BINDING_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/LinkIcon_16x16.png"));
 
+	
 	// Markers
 	public static final IconMarker ABSTRACT_MARKER = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Abstract.png")), 14, 0);

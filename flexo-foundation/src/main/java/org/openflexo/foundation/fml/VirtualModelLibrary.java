@@ -54,6 +54,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
+import org.openflexo.foundation.fml.rt.FMLRTValidationModel;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -76,7 +77,8 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	private static final Logger logger = Logger.getLogger(VirtualModelLibrary.class.getPackage().getName());
 
-	public FMLValidationModel viewPointValidationModel;
+	public FMLValidationModel fmlValidationModel;
+	public FMLRTValidationModel fmlRTValidationModel;
 
 	private final Map<String, CompilationUnitResource> map;
 
@@ -572,14 +574,25 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	}
 
 	public FMLValidationModel getFMLValidationModel() {
-		if (viewPointValidationModel == null && serviceManager != null) {
+		if (fmlValidationModel == null && serviceManager != null) {
 			try {
-				viewPointValidationModel = new FMLValidationModel(serviceManager.getTechnologyAdapterService());
+				fmlValidationModel = new FMLValidationModel(serviceManager.getTechnologyAdapterService());
 			} catch (ModelDefinitionException e) {
 				e.printStackTrace();
 			}
 		}
-		return viewPointValidationModel;
+		return fmlValidationModel;
+	}
+
+	public FMLRTValidationModel getFMLRTValidationModel() {
+		if (fmlRTValidationModel == null && serviceManager != null) {
+			try {
+				fmlRTValidationModel = new FMLRTValidationModel(serviceManager.getTechnologyAdapterService());
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+		return fmlRTValidationModel;
 	}
 
 	@Override

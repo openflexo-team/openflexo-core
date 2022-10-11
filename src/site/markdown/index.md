@@ -1,21 +1,21 @@
-[/images/components/fml-core/FMLCore] Openflexo-core
+/images/components/fml-core/FMLCore] Openflexo-core
 
 # Openflexo infrastructure to support federation
 
-Each business manages its own set of information, domain specific languages, tools, models.... 
-
+Each business manages its own set of information, domain specific languages, tools, models...
+  
 Extending, combining, synchronizing, representing them in a suited environment without duplicating this set of data is therefore key.
-
+  
 Openflexo offers a dedicated language (Flexo Modeling Language or FML) for defining domain-specific perspectives in relation to heterogeneous and separated technologies. 
-
+  
 Besides it provides a set of mecanisms for manipulating and representing federated informations.
   
 ## Virtual Models, Flexo Concepts, Flexo Roles and Flexo Behaviours
 
 In order to manipulate informations Openflexo aggregates them in an atomic notion called Flexo Concept.
-
+  
 A Flexo Concept associates various informations from different information sources(models, metamodels, graphical representation, GUI, spreesheets etc…). 
-
+  
 These associations are called a Flexo Roles. A Model Slot is a reference pointing a kind of information resource(Excel sheet, EMF metamodel...), or even a Virtual model.
 
 Flexo Concepts can be grouped by concerns within a modeling space named Virtual Model.
@@ -26,7 +26,7 @@ In Openflexo a Viewpoint provides the convention, rules and technologies for con
 
 An Openflexo View is the instantiation of a particular Viewpoint with its own Objective relevant to some of the preoccupations of the Viewpoint.
 
-Openflexo Core depends on {{{https://connie.openflexo.org/SNAPSHOT}Connie}}, {{{https://pamela.openflexo.org/SNAPSHOT}Pamela}}, {{{https://diana.openflexo.org/SNAPSHOT}Diana}} and {{{https://gina.openflexo.org/SNAPSHOT}Gina}} projects.
+Openflexo Core depends on [Connie](https://openflexo.org/connie/), [Pamela](https://openflexo.org/pamela/), [Diana](https://openflexo.org/diana/) and [Gina](https://openflexo.org/gina/) projects.
   
 ## Contents of this package
 

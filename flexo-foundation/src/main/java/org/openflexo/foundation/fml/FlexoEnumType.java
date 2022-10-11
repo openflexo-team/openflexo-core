@@ -38,7 +38,10 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEnumInstance;
 
 /**
@@ -63,6 +66,22 @@ public class FlexoEnumType extends FlexoConceptInstanceType {
 	public Class<?> getBaseClass() {
 		return FlexoEnumInstance.class;
 	}
+
+	@Override
+	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
+		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
+
+		if (aType instanceof FlexoEnumType) {
+			return (flexoConcept == null) || (flexoConcept.isAssignableFrom(((FlexoEnumType) aType).getFlexoConcept()));
+		}
+		
+		if (permissive && aType.equals(FlexoEnumInstance.class)) {
+			return true;
+		}
+		
+		return false;
+	}
+
 
 	@Override
 	public FlexoEnum getFlexoConcept() {

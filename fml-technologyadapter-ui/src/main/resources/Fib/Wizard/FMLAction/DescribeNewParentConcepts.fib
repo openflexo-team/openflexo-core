@@ -28,8 +28,8 @@
 			displayTitle="true" disableTerminateEditOnFocusLost="false" title="flexo_concept"
 			columnWidth="80" resizable="true" showIcon="false">
 			<ColumnAssignment mandatory="true" variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
-			<ColumnAssignment mandatory="true" variable="component.restrictToContext" value="true" />
-			<ColumnAssignment mandatory="true" variable="component.inheritingContext" value="data.virtualModel"  />
+			<!--<ColumnAssignment mandatory="true" variable="component.restrictToContext" value="false" />
+			<ColumnAssignment mandatory="true" variable="component.inheritingContext" value="data.virtualModel"  />-->
 		</CustomColumn>
 		<RemoveAction id="13" name="delete"
 			method="data.deleteParentFlexoConceptEntry(selected)" />

@@ -255,12 +255,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		// logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
-			Object value = parameterValues.get(parameter);
+			Object value = parameterValues.get(parameter.getArgumentName());
 			if (value == null) {
 				value = parameter.getDefaultValue(this);
 				// logger.info("Parameter " + parameter.getName() + " default value = " + defaultValue);
 				if (value != null) {
-					parameterValues.put(parameter, value);
+					parameterValues.put(parameter.getArgumentName(), value);
 				}
 			}
 			/*if (parameter instanceof ListParameter) {
@@ -343,12 +343,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				return ((URIParameter) parameter).getDefaultValue(this);
 			}
 		}*/
-		return parameterValues.get(parameter);
+		return parameterValues.get(parameter.getArgumentName());
 	}
 
 	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
 		// System.out.println("setParameterValue " + value + " for parameter " + parameter.getName());
-		parameterValues.put(parameter, value);
+		parameterValues.put(parameter.getArgumentName(), value);
 		/*for (FlexoBehaviourParameter p : getEditionScheme().getParameters()) {
 			if (p instanceof URIParameter) {
 				// System.out.println("Hop, je recalcule l'uri, ici");
@@ -567,14 +567,24 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return true;
 	}
 
-	public class ParameterValues extends Hashtable<FlexoBehaviourParameter, Object> {
+	public class ParameterValues extends Hashtable<String, Object> {
 
 		@Override
-		public synchronized Object put(FlexoBehaviourParameter parameter, Object value) {
+		public synchronized Object get(Object key) {
+			if (!(key instanceof String)) {
+				System.out.println("Unexpected key : " + key);
+				Thread.dumpStack();
+			}
+			return super.get(key);
+		}
+
+		@Override
+		public synchronized Object put(String name, Object value) {
 			if (value == null) {
 				return null;
 			}
-			Object returned = super.put(parameter, value);
+
+			Object returned = super.put(name, value);
 			/*for (FlexoBehaviourParameter p : parameter.getFlexoBehaviour().getParameters()) {
 				if (p != parameter && p instanceof URIParameter && ((URIParameter) p).getModelSlot() instanceof TypeAwareModelSlot) {
 					URIParameter uriParam = (URIParameter) p;

@@ -118,5 +118,13 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 			return "ModelObjectActorReference [" + getRoleName() + "] " + Integer.toHexString(hashCode()) + " references "
 					+ getModellingElement() + "[reference: " + getObjectReference() + "]";
 		}
+
+		@Override
+		public String getStringRepresentation() {
+			if (getModellingElement() instanceof FlexoConceptInstance) {
+				return ((FlexoConceptInstance) getModellingElement()).getStringRepresentationWithID();
+			}
+			return super.getStringRepresentation();
+		}
 	}
 }

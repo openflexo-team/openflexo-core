@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -150,6 +151,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
+	public static final String APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY = "applicableContainerFlexoConcept";
+
 	// TODO: (SGU) i think we have to remove inverse property here
 	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -191,12 +194,38 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Setter(VISIBILITY_KEY)
 	public void setVisibility(Visibility visibility);
 
+	/**
+	 * Return container {@link FlexoConcept} relative to containment. This is the {@link FlexoConcept} in which lives this concept
+	 * 
+	 * @return
+	 */
 	@Getter(value = CONTAINER_FLEXO_CONCEPT_KEY, inverse = EMBEDDED_FLEXO_CONCEPT_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getContainerFlexoConcept();
 
+	/**
+	 * Sets container {@link FlexoConcept} (relative to containment).
+	 * 
+	 * Note that this is an explicit declaration. When unspecified (let to null), this containment is inherited from its parent concepts
+	 * 
+	 * @param name
+	 */
 	@Setter(CONTAINER_FLEXO_CONCEPT_KEY)
-	public void setContainerFlexoConcept(FlexoConcept name);
+	public void setContainerFlexoConcept(FlexoConcept container);
+
+	/**
+	 * Return applicable container {@link FlexoConcept} (relative to containment). When no explicit declaration was defined for this
+	 * concept, this containment is inherited from its parent concepts
+	 */
+	public FlexoConcept getApplicableContainerFlexoConcept();
+
+	/**
+	 * Sets applicable container {@link FlexoConcept} (relative to containment).
+	 * 
+	 * 
+	 * @param name
+	 */
+	public void setApplicableContainerFlexoConcept(FlexoConcept concept);
 
 	/**
 	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
@@ -224,6 +253,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@Finder(collection = EMBEDDED_FLEXO_CONCEPT_KEY, attribute = FlexoConcept.NAME_KEY)
 	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
+
+	/**
+	 * Return FlexoConcept in the same {@link VirtualModel} declaring this concept as its container {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer();
 
 	/**
 	 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
@@ -630,7 +666,19 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public DeletionScheme generateDefaultDeletionScheme();
 
+	/**
+	 * Return type representing an instance of this concept
+	 * 
+	 * @return
+	 */
 	public FlexoConceptInstanceType getInstanceType();
+
+	/**
+	 * Return type representing this concept or a sub-concept of this concept
+	 * 
+	 * @return
+	 */
+	public FlexoConceptType getConceptType();
 
 	public FlexoConceptStructuralFacet getStructuralFacet();
 
@@ -669,6 +717,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	public List<FlexoConcept> getAllParentFlexoConcepts();
+
+	public List<FlexoConcept> getTopLevelSuperConcepts();
 
 	/**
 	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FlexoConcept}<br>
@@ -769,6 +819,29 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public ImageIcon getSmallIcon();
 
+	/**
+	 * Return boolean indicating if this concept defines a delegated inspector
+	 * 
+	 * @return
+	 */
+	public boolean hasDelegatedInspector();
+
+	/**
+	 * Return applicable inspector, while returning delegate inspector when relevant, or current concept inspector
+	 * 
+	 * @return
+	 */
+	public FlexoConceptInspector getApplicableInspector();
+
+	/**
+	 * Return applicable renderer, exploiting concept hierarchy and finding most specialized one
+	 * 
+	 * @return
+	 */
+	public DataBinding<String> getApplicableRenderer();
+
+	public String getPresentationName();
+
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
@@ -780,6 +853,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private InnerConceptsFacet innerConceptsFacet;
 
 		private final FlexoConceptInstanceType instanceType = new FlexoConceptInstanceType(this);
+		private final FlexoConceptType conceptType = new FlexoConceptType(this);
 
 		private FlexoConceptBindingModel bindingModel;
 
@@ -811,9 +885,24 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return nature.hasNature(this);
 		}
 
+		/**
+		 * Return type representing an instance of this concept
+		 * 
+		 * @return
+		 */
 		@Override
 		public FlexoConceptInstanceType getInstanceType() {
 			return instanceType;
+		}
+
+		/**
+		 * Return type representing this concept or a sub-concept of this concept
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoConceptType getConceptType() {
+			return conceptType;
 		}
 
 		@Override
@@ -1014,11 +1103,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			// First take declared properties
 			computedAccessibleProperties.addAll(getDeclaredProperties());
 
-			// Take properties obtained by containment
-			if (getContainerFlexoConcept() != null && considerContainment) {
-				computedAccessibleProperties.addAll(getContainerFlexoConcept().retrieveAccessibleProperties(considerContainment));
-			}
-
 			// Take inherited properties
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
 				for (FlexoProperty<?> p : parentConcept.retrieveAccessibleProperties(considerContainment)) {
@@ -1031,6 +1115,15 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 						else if (inheritedProperties.get(p.getName()).isSuperPropertyOf(p)) {
 							inheritedProperties.put(p.getName(), p);
 						}
+					}
+				}
+			}
+
+			// Take properties obtained by containment
+			if (getContainerFlexoConcept() != null && considerContainment) {
+				for (FlexoProperty<?> p : getContainerFlexoConcept().retrieveAccessibleProperties(considerContainment)) {
+					if (getDeclaredProperty(p.getPropertyName()) == null && inheritedProperties.get(p.getPropertyName()) == null) {
+						computedAccessibleProperties.add(p);
 					}
 				}
 			}
@@ -1301,6 +1394,25 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			returned.addAll(getEmbeddedFlexoConcepts());
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
 				returned.addAll(parentConcept.getEmbeddedFlexoConcepts());
+			}
+			return returned;
+		}
+
+		/**
+		 * Return FlexoConcept in the same {@link VirtualModel} declaring this concept as its container {@link FlexoConcept}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer() {
+
+			// Implements a cache
+
+			List<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept flexoConcept : getDeclaringCompilationUnit().getVirtualModel().getFlexoConcepts()) {
+				if (flexoConcept.getApplicableContainerFlexoConcept() == this) {
+					returned.add(flexoConcept);
+				}
 			}
 			return returned;
 		}
@@ -1725,6 +1837,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public void setContainerFlexoConcept(FlexoConcept aConcept) {
+			FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_KEY, aConcept);
 			clearAccessiblePropertiesCache();
 			VirtualModel owningVirtualModel = getOwningVirtualModel();
@@ -1733,6 +1846,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
 						owningVirtualModel.getAllRootFlexoConcepts());
 			}
+			getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
+					getApplicableContainerFlexoConcept());
 		}
 
 		@Override
@@ -1863,6 +1978,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
+				FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 				parentFlexoConcepts.add(parentFlexoConcept);
 				parentFlexoConcept.addToChildFlexoConcepts(this);
 				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
@@ -1874,6 +1990,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
 							owningVirtualModel.getAllSuperFlexoConcepts());
 				}
+				getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
+						getApplicableContainerFlexoConcept());
 				setIsModified();
 			}
 			else {
@@ -1929,6 +2047,23 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				returned.addAll(concept.getAllParentFlexoConcepts());
 			}
 
+			return returned;
+		}
+
+		@Override
+		public List<FlexoConcept> getTopLevelSuperConcepts() {
+			if (getParentFlexoConcepts().size() == 0) {
+				return Collections.singletonList(this);
+			}
+			List<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				List<FlexoConcept> l = parentConcept.getTopLevelSuperConcepts();
+				for (FlexoConcept concept : l) {
+					if (!returned.contains(concept)) {
+						returned.add(concept);
+					}
+				}
+			}
 			return returned;
 		}
 
@@ -2121,6 +2256,122 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return smallIcon;
 		}
 
+		/**
+		 * Return boolean indicating if this concept defines a delegated inspector
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean hasDelegatedInspector() {
+			if (getInspector() != null && getInspector().getDelegateConceptInstance() != null
+					&& getInspector().getDelegateConceptInstance().isSet() && getInspector().getDelegateConceptInstance().isSet()) {
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Return applicable inspector, while returning delegate inspector when relevant, or current concept inspector
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInspector getApplicableInspector() {
+			if (hasDelegatedInspector()) {
+				Type analyzedType = getInspector().getDelegateConceptInstance().getAnalyzedType();
+				if (analyzedType instanceof FlexoConceptInstanceType) {
+					return ((FlexoConceptInstanceType) analyzedType).getFlexoConcept().getApplicableInspector();
+				}
+			}
+			return getInspector();
+		}
+
+		/**
+		 * Return applicable renderer, exploiting concept hierarchy and finding most specialized one
+		 * 
+		 * @return
+		 */
+		@Override
+		public DataBinding<String> getApplicableRenderer() {
+			if (getInspector() != null && getInspector().getRenderer() != null && getInspector().getRenderer().isSet()
+					&& getInspector().getRenderer().isValid()) {
+				return getInspector().getRenderer();
+			}
+			else if (getParentFlexoConcepts().size() > 0) {
+				List<FlexoConcept> parentConceptsWithARenderer = new ArrayList<>();
+				for (FlexoConcept parent : getParentFlexoConcepts()) {
+					if (parent.getApplicableRenderer() != null) {
+						parentConceptsWithARenderer.add(parent);
+					}
+				}
+				if (parentConceptsWithARenderer.size() > 0) {
+					return FMLUtils.getMostSpecializedConcept(parentConceptsWithARenderer).getApplicableRenderer();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String getPresentationName() {
+			if (getApplicableInspector() != null && StringUtils.isNotEmpty(getApplicableInspector().getInspectorTitle())) {
+				return getApplicableInspector().getInspectorTitle();
+			}
+			else {
+				return getName();
+			}
+
+		}
+
+		/**
+		 * Return applicable container {@link FlexoConcept} (relative to containment). When no explicit declaration was defined for this
+		 * concept, this containment is inherited from its parent concepts
+		 */
+		@Override
+		public FlexoConcept getApplicableContainerFlexoConcept() {
+			if (getContainerFlexoConcept() != null) {
+				return getContainerFlexoConcept();
+			}
+			return getApplicableContainerFlexoConceptInheritedFromParents();
+		}
+
+		private FlexoConcept getApplicableContainerFlexoConceptInheritedFromParents() {
+			List<FlexoConcept> parentContainers = new ArrayList<>();
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				if (parent.getApplicableContainerFlexoConcept() != null) {
+					parentContainers.add(parent.getApplicableContainerFlexoConcept());
+				}
+			}
+			if (parentContainers.size() > 0) {
+				return FMLUtils.getMostSpecializedConcept(parentContainers);
+			}
+			return null;
+		}
+
+		/**
+		 * Sets applicable container {@link FlexoConcept} (relative to containment).
+		 * 
+		 * 
+		 * @param name
+		 */
+		@Override
+		public void setApplicableContainerFlexoConcept(FlexoConcept concept) {
+			if (getApplicableContainerFlexoConcept() != concept) {
+				if (concept == getApplicableContainerFlexoConceptInheritedFromParents()) {
+					// No need to redefine
+					setContainerFlexoConcept(null);
+				}
+				else {
+					setContainerFlexoConcept(concept);
+				}
+				notifyContainerChanges();
+			}
+		}
+
+		private void notifyContainerChanges() {
+			getPropertyChangeSupport().firePropertyChange("applicableContainerFlexoConcept", false, true);
+			getPropertyChangeSupport().firePropertyChange("allEmbeddedFlexoConceptsDeclaringThisConceptAsContainer", false, true);
+		}
+
 		@Override
 		public String getAuthor() {
 			String returned = getSingleMetaData("Author", String.class);
@@ -2138,6 +2389,26 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			if (isDeserializing() || requireChange(getAuthor(), author)) {
 				setSingleMetaData("Author", author, String.class);
 			}
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class ContainerFlexoConceptMustBeConsistentWithParents
+			extends ValidationRule<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> {
+		public ContainerFlexoConceptMustBeConsistentWithParents() {
+			super(FlexoConcept.class, "container_flexo_concept_must_be_consistent_with_parents");
+		}
+
+		@Override
+		public ValidationIssue<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+			if (flexoConcept.getContainerFlexoConcept() != null && flexoConcept.getParentFlexoConcepts().size() > 0) {
+				FlexoConcept applicableParent = ((FlexoConceptImpl) flexoConcept).getApplicableContainerFlexoConceptInheritedFromParents();
+				if (applicableParent != null && !applicableParent.isSuperConceptOf(flexoConcept.getContainerFlexoConcept())) {
+					return new ValidationError<>(this, flexoConcept, "container_declaration_is_not_compatible_with_parents_definition");
+				}
+			}
+			return null;
 		}
 
 		/*@Override

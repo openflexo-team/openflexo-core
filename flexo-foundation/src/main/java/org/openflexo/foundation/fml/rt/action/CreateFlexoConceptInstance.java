@@ -85,7 +85,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 		public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<FlexoObject> globalSelection) {
 			if (object instanceof FMLRTVirtualModelInstance) {
 				if (((FMLRTVirtualModelInstance) object).getVirtualModel() != null) {
-					return ((FMLRTVirtualModelInstance) object).getVirtualModel().getAllRootFlexoConcepts().size() > 0;
+					return ((FMLRTVirtualModelInstance) object).getVirtualModel().getAllRootFlexoConcepts(true, false).size() > 0;
 				}
 				return false;
 			}

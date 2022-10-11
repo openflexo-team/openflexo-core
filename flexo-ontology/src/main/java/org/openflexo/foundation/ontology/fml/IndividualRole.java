@@ -58,6 +58,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
+import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(IndividualRole.IndividualRoleImpl.class)
@@ -129,9 +130,13 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		}
 
 		private String conceptURI;
+		private IFlexoOntologyClass<?> concept;
 
 		@Override
 		public String _getConceptURI() {
+			if (concept != null) {
+				return concept.getURI();
+			}
 			return conceptURI;
 		}
 
@@ -142,14 +147,28 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 		@Override
 		public IFlexoOntologyClass<?> getOntologicType() {
+			if (concept != null) {
+				return concept;
+			}
+			else if (StringUtils.isNotEmpty(conceptURI)) {
+				concept = findOntologicType(conceptURI);
+			}
+			return concept;
+		}
+
+		private IFlexoOntologyClass<?> findOntologicType(String conceptURI) {
 			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getOwningVirtualModel())) {
-				return FlexoOntologyVirtualModelNature.getOntologyClass(_getConceptURI(), getOwningVirtualModel());
+				return FlexoOntologyVirtualModelNature.getOntologyClass(conceptURI, getOwningVirtualModel());
+			}
+			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getDeclaringCompilationUnit().getVirtualModel())) {
+				return FlexoOntologyVirtualModelNature.getOntologyClass(conceptURI, getDeclaringCompilationUnit().getVirtualModel());
 			}
 			return null;
 		}
 
 		@Override
 		public void setOntologicType(IFlexoOntologyClass<?> ontologyClass) {
+			concept = ontologyClass;
 			conceptURI = ontologyClass != null ? ontologyClass.getURI() : null;
 		}
 

@@ -50,8 +50,12 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UndefinedType;
+import org.openflexo.foundation.fml.FMLUtils;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -209,6 +213,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
+					return false;
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				} catch (ReflectiveOperationException e) {
@@ -298,6 +303,17 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 					if (TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
 						return inferedType2;
 					}
+					if (inferedType1 instanceof FlexoConceptInstanceType && inferedType2 instanceof FlexoConceptInstanceType) {
+						FlexoConcept ancestor = FMLUtils.getMostSpecializedAncestor(
+								((FlexoConceptInstanceType) inferedType1).getFlexoConcept(),
+								((FlexoConceptInstanceType) inferedType2).getFlexoConcept());
+						if (ancestor != null) {
+							return ancestor.getInstanceType();
+						}
+						else {
+							return FlexoConceptInstance.class;
+						}
+					}
 				}
 
 				return inferedType1;
@@ -348,9 +364,14 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 					if (inferedType1 != Void.class && inferedType2 != Void.class
 							&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
 							&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
-						return new ValidationError<>(this, conditional,
-								"types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1) + " and "
-										+ TypeUtils.simpleRepresentation(inferedType2) + ")");
+
+						if (inferedType1 instanceof FlexoConceptInstanceType && inferedType2 instanceof FlexoConceptInstanceType) {
+						}
+						else {
+							return new ValidationError<>(this, conditional,
+									"types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1) + " and "
+											+ TypeUtils.simpleRepresentation(inferedType2) + ")");
+						}
 					}
 				}
 			}

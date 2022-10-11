@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.controller.widget;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -46,6 +47,7 @@ import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.rm.Resource;
@@ -66,6 +68,8 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	public FIBFlexoConceptSelector(FlexoConcept editedObject) {
 		super(editedObject);
+		defaultExpectedType = editedObject != null ? FlexoConceptType.retrieveFlexoConceptType(editedObject.getFlexoConcept())
+				: FlexoConceptType.UNDEFINED_FLEXO_CONCEPT_TYPE;
 	}
 
 	@Override
@@ -207,6 +211,12 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	}
 
 	public FlexoObject getRootObject() {
+		if (getExpectedFlexoConceptType() != null) {
+			return getExpectedFlexoConceptType();
+		}
+		if (getExpectedType() instanceof FlexoConceptType && ((FlexoConceptType) getExpectedType()).getFlexoConcept() != null) {
+			return ((FlexoConceptType) getExpectedType()).getFlexoConcept();
+		}
 		if (getInheritingContext() != null) {
 			return getInheritingContextRoot();
 		}
@@ -279,5 +289,71 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		};
 		editor.launch();
 	}*/
+
+	private Type expectedType;
+	private FlexoConceptType defaultExpectedType;
+	private FlexoConcept expectedFlexoConceptType = null;
+
+	public Type getDefaultExpectedType() {
+		return defaultExpectedType;
+	}
+
+	public Type getExpectedType() {
+		if (expectedFlexoConceptType != null) {
+			return expectedFlexoConceptType.getConceptType();
+		}
+		if (expectedType == null) {
+			return getDefaultExpectedType();
+		}
+		return expectedType;
+	}
+
+	@CustomComponentParameter(name = "expectedType", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setExpectedType(Type expectedType) {
+
+		System.out.println("hop on sette expectedType=" + expectedType);
+
+		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
+			Type oldValue = this.expectedType;
+			this.expectedType = expectedType;
+			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
+		}
+	}
+
+	public FlexoConcept getExpectedFlexoConceptType() {
+		return expectedFlexoConceptType;
+	}
+
+	@CustomComponentParameter(name = "expectedFlexoConceptType", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setExpectedFlexoConceptType(FlexoConcept expectedFlexoConceptType) {
+
+		if ((expectedFlexoConceptType == null && this.expectedFlexoConceptType != null)
+				|| (expectedFlexoConceptType != null && !expectedFlexoConceptType.equals(this.expectedFlexoConceptType))) {
+			FlexoConcept oldValue = this.expectedFlexoConceptType;
+			this.expectedFlexoConceptType = expectedFlexoConceptType;
+			getPropertyChangeSupport().firePropertyChange("expectedFlexoConceptType", oldValue, expectedFlexoConceptType);
+			getPropertyChangeSupport().firePropertyChange("expectedType", null, getExpectedType());
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+		}
+	}
+
+	public String getExpectedFlexoConceptTypeURI() {
+		if (expectedFlexoConceptType != null) {
+			return expectedFlexoConceptType.getURI();
+		}
+		return null;
+	}
+
+	@CustomComponentParameter(name = "expectedFlexoConceptTypeURI", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setExpectedFlexoConceptTypeURI(String expectedFlexoConceptTypeURI) {
+
+		if (getServiceManager() != null) {
+			expectedFlexoConceptType = getServiceManager().getVirtualModelLibrary().getFlexoConcept(expectedFlexoConceptTypeURI);
+			System.out.println("sets concept to : " + expectedFlexoConceptType);
+			getPropertyChangeSupport().firePropertyChange("expectedFlexoConceptType", null, expectedFlexoConceptType);
+			getPropertyChangeSupport().firePropertyChange("expectedType", null, getExpectedType());
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+		}
+	}
 
 }

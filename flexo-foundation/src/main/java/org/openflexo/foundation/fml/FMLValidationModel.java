@@ -111,6 +111,8 @@ public class FMLValidationModel extends FlexoValidationModel {
 		if (object == null) {
 			return new FMLValidationReport(this, null);
 		}
-		return super.validate(object);
+		if (object != null)
+			return super.validate(object);
+		return null;
 	}
 }
