@@ -46,6 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.UndefinedType;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -117,6 +118,18 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				isAnalyzingType = false;
 				return lastKnownAssignableType;
 			}
+
+			/*if (getExpression().toString().equals("container.completeProcess()")) {
+				System.out.println("Mon BM c'est " + getBindingModel());
+				System.out.println("root:" + getRootOwner());
+				if (getRootOwner() instanceof FlexoBehaviour) {
+					System.out.println("concept: " + ((FlexoBehaviour) getRootOwner()).getFlexoConcept());
+					if (((FlexoBehaviour) getRootOwner()).getFlexoConcept() != null) {
+						System.out.println("container: " + ((FlexoBehaviour) getRootOwner()).getFlexoConcept().getContainerFlexoConcept());
+					}
+				}
+				System.out.println("container: " + getBindingModel().getBindingVariableNamed("container"));
+			}*/
 
 			/*if (!getExpression().isValid() && getExpression().toString().equals("type.taskTypes") && getExpression().getOwner() != null
 					&& getExpression().getOwner().getBindingFactory() != null

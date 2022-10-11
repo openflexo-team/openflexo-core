@@ -371,6 +371,13 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 				// retrieved function not found yet
 				// System.out.println("On trouve pas le behaviour " + getParsed() + " in " + getParent().getType() + " of "
 				// + (getParent().getType() != null ? getParent().getType().getClass() : "null") + " (pour le moment)");
+
+				/*if (getParsed().equals("completeProcess")) {
+					System.out.println("On trouve pas le behaviour " + getParsed() + " in " + getParent().getType() + " of "
+							+ (getParent().getType() != null ? getParent().getType().getClass() : "null") + " (pour le moment)");
+					System.out.println("parent=" + getParent() + " of " + getParent().getClass());
+				}*/
+
 			}
 
 		}
