@@ -131,7 +131,7 @@ public class SplashWindow extends JDialog {
 		getContentPane().add(urlLabel);
 		urlLabel.setBounds(290, 263, 280, 12);
 
-		JLabel copyrightLabel = new JLabel("(c) Copyright Openflexo, 2013, all rights reserved", SwingConstants.RIGHT);
+		JLabel copyrightLabel = new JLabel("(c) Copyright Openflexo, 2013-2022, all rights reserved", SwingConstants.RIGHT);
 		copyrightLabel.setForeground(Color.DARK_GRAY);
 		copyrightLabel.setFont(new Font("SansSerif", Font.PLAIN, 9));
 		getContentPane().add(copyrightLabel);
