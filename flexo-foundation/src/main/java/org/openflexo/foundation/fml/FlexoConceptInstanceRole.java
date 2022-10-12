@@ -381,8 +381,15 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			return FMLRTTechnologyAdapter.class;
 		}
 
+		// Flag used to avoid stack overflow
+		private boolean isHandlingRequiredImports = false;
+		
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			if (isHandlingRequiredImports) {
+				return;
+			}
+			isHandlingRequiredImports = true;
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
 				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
@@ -390,6 +397,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit());
 				}
 			}
+			isHandlingRequiredImports = false;
 		}
 
 		@Override
