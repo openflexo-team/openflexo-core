@@ -1,0 +1,16 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/HelloWorld.fml")
+@Author("sylvainguerin")
+public model HelloWorld {
+
+	String myString;
+
+	create() {
+		myString = "Hello" + " " + "world with Ihab !";		
+	}
+
+	public void printHello() {
+		log myString;
+	}
+}

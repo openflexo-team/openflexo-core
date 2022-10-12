@@ -1,0 +1,10 @@
+// First tests with Ihab : Hello World use case
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/HelloWorld.fml"];
+context;
+log virtualModel.fMLPrettyPrint;
+service ResourceCenterService add_temp_rc;
+myVMI = new HelloWorld() with (virtualModelInstanceName="test1");
+myVMI.printHello();
+assert myVMI.myString=="Hello world with Ihab !";
+
+
