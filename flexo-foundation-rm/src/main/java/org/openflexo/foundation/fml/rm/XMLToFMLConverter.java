@@ -170,12 +170,6 @@ public class XMLToFMLConverter {
 			}
 		});
 
-		if (true) {
-			return;
-		}
-
-		// System.exit(-1);
-
 		compilationUnit.accept(new PAMELAVisitor() {
 			@Override
 			public void visit(Object object) {
