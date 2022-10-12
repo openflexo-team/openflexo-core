@@ -41,8 +41,8 @@ package org.openflexo.fml.rt.controller.validation;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fml.controller.FMLTechnologyAdapterController;
-import org.openflexo.foundation.fml.FMLValidationModel;
+import org.openflexo.fml.rt.controller.FMLRTTechnologyAdapterController;
+import org.openflexo.foundation.fml.rt.FMLRTValidationModel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ProblemIssue;
@@ -57,7 +57,7 @@ public class IssueFixing<R extends ValidationRule<R, V>, V extends Validable> ex
 	private static final Logger logger = FlexoLogger.getLogger(IssueFixing.class.getPackage().getName());
 
 	private ProblemIssue<R, V> issue;
-	private FMLValidationModel validationModel;
+	private FMLRTValidationModel validationModel;
 	private FlexoController controller;
 
 	public IssueFixing(ProblemIssue<R, V> issue, FlexoController controller) {
@@ -65,9 +65,9 @@ public class IssueFixing<R extends ValidationRule<R, V>, V extends Validable> ex
 		this.issue = issue;
 		this.controller = controller;
 		if (controller != null && controller.getApplicationContext() != null) {
-			FMLTechnologyAdapterController tac = controller.getApplicationContext().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			validationModel = tac.getFMLValidationModel();
+			FMLRTTechnologyAdapterController tac = controller.getApplicationContext().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(FMLRTTechnologyAdapterController.class);
+			validationModel = tac.getFMLRTValidationModel();
 		}
 	}
 
@@ -75,7 +75,7 @@ public class IssueFixing<R extends ValidationRule<R, V>, V extends Validable> ex
 		return issue;
 	}
 
-	public FMLValidationModel getValidationModel() {
+	public FMLRTValidationModel getValidationModel() {
 		return validationModel;
 	}
 
