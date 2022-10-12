@@ -123,7 +123,7 @@ public class SplashWindow extends JDialog {
 			 */
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ToolBox.openURL("http://www.openflexo.com");
+				ToolBox.openURL("http://www.openflexo.org");
 			}
 		});
 		urlLabel.setForeground(new Color(180, 150, 200));
