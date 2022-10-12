@@ -41,8 +41,8 @@ package org.openflexo.fml.rt.controller;
 import java.util.logging.Logger;
 
 import org.openflexo.components.validation.RevalidationTask;
-import org.openflexo.fml.controller.validation.FixIssueDialog;
-import org.openflexo.fml.controller.validation.IssueFixing;
+import org.openflexo.fml.rt.controller.validation.FixIssueDialog;
+import org.openflexo.fml.rt.controller.validation.IssueFixing;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;

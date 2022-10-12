@@ -42,7 +42,7 @@ package org.openflexo.fml.rt.controller.validation;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.fml.controller.FMLFIBController;
+import org.openflexo.fml.rt.controller.FMLRTFIBController;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
@@ -92,14 +92,14 @@ public class FixIssueDialog extends JFIBDialog<IssueFixing> {
 	}
 
 	@Override
-	public FMLFIBController getController() {
-		return (FMLFIBController) super.getController();
+	public FMLRTFIBController getController() {
+		return (FMLRTFIBController) super.getController();
 	}
 
 	@Override
-	protected FMLFIBController makeFIBController(FIBComponent fibComponent, GinaViewFactory<?> viewFactory,
+	protected FMLRTFIBController makeFIBController(FIBComponent fibComponent, GinaViewFactory<?> viewFactory,
 			LocalizedDelegate parentLocalizer) {
-		FMLFIBController returned = new FMLFIBController(fibComponent, viewFactory);
+		FMLRTFIBController returned = new FMLRTFIBController(fibComponent, viewFactory);
 		returned.setParentLocalizer(parentLocalizer);
 		return returned;
 	}
@@ -113,9 +113,9 @@ public class FixIssueDialog extends JFIBDialog<IssueFixing> {
 		}
 	}
 
-	protected static FMLFIBController makeFIBController(FIBComponent fibComponent, GinaViewFactory<?> viewFactory,
+	protected static FMLRTFIBController makeFIBController(FIBComponent fibComponent, GinaViewFactory<?> viewFactory,
 			LocalizedDelegate parentLocalizer, IssueFixing issueFixing) {
-		FMLFIBController returned = new FMLFIBController(fibComponent, viewFactory);
+		FMLRTFIBController returned = new FMLRTFIBController(fibComponent, viewFactory);
 		returned.setFlexoController(issueFixing.getController());
 		returned.setParentLocalizer(parentLocalizer);
 		return returned;
