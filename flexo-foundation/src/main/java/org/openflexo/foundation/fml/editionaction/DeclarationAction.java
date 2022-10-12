@@ -108,6 +108,15 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 		private ControlGraphBindingModel<?> inferedBindingModel = null;
 
+		@Override
+		public Type getDeclaredType() {
+			Type returned = (Type) performSuperGetter(DECLARED_TYPE_KEY);
+			if (returned == null) {
+				return getAnalyzedType();
+			}
+			return returned;
+		}
+
 		/*@Override
 		public void setVariableName(String variableName) {
 			if (variableName.equals("model")) {
