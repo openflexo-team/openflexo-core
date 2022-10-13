@@ -126,14 +126,14 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	public VirtualModel getVirtualModelType();
 
 	/*public FMLRTModelSlot<?, ?> getVirtualModelModelSlot();
-	
+
 	public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot);*/
 
 	@Override
 	public FlexoConceptInstanceType buildType(String serializedType);
 
 	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance>
-			implements FlexoConceptInstanceRole {
+	implements FlexoConceptInstanceRole {
 
 		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
@@ -149,7 +149,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public boolean getIsPrimaryRole() {
 			return false;
 		}
-		
+
 		@Override
 		public void setIsPrimaryRole(boolean isPrimary) {
 			// Not relevant
@@ -170,7 +170,9 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			System.out.println("getVirtualModelLibrary()" + getVirtualModelLibrary());
 			System.out.println("type: " + type + " resolved=" + type.isResolved());
 			System.out.println("concept: " + type.getFlexoConcept());*/
-			type.resolve();
+			if (!type.isResolved()) {
+				type.resolve();
+			}
 			/*System.out.println("- type: " + type + " resolved=" + type.isResolved());
 			System.out.println("- factory=" + type.getCustomTypeFactory());
 			System.out.println("- concept: " + type.getFlexoConcept());*/
@@ -383,7 +385,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		// Flag used to avoid stack overflow
 		private boolean isHandlingRequiredImports = false;
-		
+
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			if (isHandlingRequiredImports) {
@@ -498,7 +500,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	@DefineValidationRule
 	public static class VirtualModelInstanceIsRecommandedAndShouldBeValid
-			extends BindingIsRecommandedAndShouldBeValid<FlexoConceptInstanceRole> {
+	extends BindingIsRecommandedAndShouldBeValid<FlexoConceptInstanceRole> {
 		public VirtualModelInstanceIsRecommandedAndShouldBeValid() {
 			super("'virtual_model_instance'_binding_is_recommanded_and_should_be_valid", FlexoConceptInstanceRole.class);
 		}
