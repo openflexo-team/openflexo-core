@@ -77,7 +77,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	 * 
 	 */
 	public static class DefaultFlexoConceptInstanceTypeFactory extends
-			TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> implements FlexoConceptInstanceTypeFactory {
+	TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> implements FlexoConceptInstanceTypeFactory {
 
 		@Override
 		public Class<FlexoConceptInstanceType> getCustomType() {
@@ -154,6 +154,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	public FlexoConceptInstanceType(String flexoConceptURI, CustomTypeFactory<?> customTypeFactory) {
 		this.conceptURI = flexoConceptURI;
 		this.customTypeFactory = customTypeFactory;
+
 		// System.out.println("Created: FlexoConceptInstanceType-[" + Integer.toHexString(super.hashCode()) + "] for " + flexoConceptURI);
 		// Thread.dumpStack();
 	}
@@ -193,11 +194,11 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		if (aType instanceof FlexoConceptInstanceType) {
 			return (flexoConcept == null) || (flexoConcept.isAssignableFrom(((FlexoConceptInstanceType) aType).getFlexoConcept()));
 		}
-		
+
 		if (permissive && aType.equals(FlexoConceptInstance.class)) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -216,7 +217,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 				returned = returned.substring(returned.lastIndexOf("/") + 1);
 			}
 			if (returned.contains("#")) {
-				returned = returned.substring(returned.lastIndexOf("#"));
+				returned = returned.substring(returned.lastIndexOf("#") + 1);
 			}
 			if (returned.endsWith(".fml")) {
 				returned = returned.substring(0, returned.length() - 4);
