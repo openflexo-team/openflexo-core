@@ -400,6 +400,18 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
+		public Type getDeclaredType() {
+			Type returned = (Type) performSuperGetter(DECLARED_TYPE_KEY);
+			if (returned == null) {
+				if (getAnalyzedReturnType() instanceof Class) {
+					return TypeUtils.toPrimitive((Class)getAnalyzedReturnType());
+				}
+				return getAnalyzedReturnType();
+			}
+			return returned;
+		}
+
+		@Override
 		public Type getReturnType() {
 			if (getDeclaredType() != null) {
 				return getDeclaredType();

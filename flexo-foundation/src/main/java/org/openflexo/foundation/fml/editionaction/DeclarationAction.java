@@ -112,6 +112,9 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		public Type getDeclaredType() {
 			Type returned = (Type) performSuperGetter(DECLARED_TYPE_KEY);
 			if (returned == null) {
+				if (getAnalyzedType() instanceof Class) {
+					return TypeUtils.toPrimitive((Class)getAnalyzedType());
+				}
 				return getAnalyzedType();
 			}
 			return returned;
@@ -221,7 +224,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 	@DefineValidationRule
 	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
-			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> {
+	extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> {
 
 		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
 			super(DeclarationAction.class, "declared_types_and_analyzed_types_must_be_compatible");
@@ -241,7 +244,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		public static class NotCompatibleTypesIssue
-				extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> {
+		extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> {
 
 			private Type expectedType;
 			private Type analyzedType;
