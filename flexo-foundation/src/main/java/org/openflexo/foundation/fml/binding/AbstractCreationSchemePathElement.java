@@ -566,7 +566,7 @@ public interface AbstractCreationSchemePathElement<CS extends AbstractCreationSc
 						}
 					}
 					else if (parentContext instanceof FlexoConcept) {
-						if (!parentContext.getEmbeddedFlexoConcepts().contains(getCreationScheme().getFlexoConcept())) {
+						if (!parentContext.getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer().contains(getCreationScheme().getFlexoConcept())) {
 							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
 									+ parentContext.getName();
 							check.valid = false;
