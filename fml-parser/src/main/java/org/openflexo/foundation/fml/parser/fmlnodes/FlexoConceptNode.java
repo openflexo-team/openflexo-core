@@ -108,7 +108,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class));
-		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getEmbeddedFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
+		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class));
 		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
 
