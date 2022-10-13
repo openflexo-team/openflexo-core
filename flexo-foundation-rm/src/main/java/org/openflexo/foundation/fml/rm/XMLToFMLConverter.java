@@ -403,9 +403,11 @@ public class XMLToFMLConverter {
 			if (addToListAction.getAssignableAction() instanceof ExpressionAction) {
 				// The most simple case
 				DataBinding<Object> objectToAdd = ((ExpressionAction) addToListAction.getAssignableAction()).getExpression();
-
+				
 				ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
-				SimpleMethodPathElement<?> addPathElement = (SimpleMethodPathElement<?>) compilationUnit.getVirtualModel()
+				objectToAdd.setOwner(expAction);
+				list.setOwner(expAction);
+				SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel()
 						.getBindingFactory().makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "add",
 								Collections.singletonList(objectToAdd), expAction);
 				// pathElement.setBindingPathElementOwner(this);
@@ -413,6 +415,7 @@ public class XMLToFMLConverter {
 				listBindingValue.addBindingPathElement(addPathElement);
 
 				DataBinding expression = new DataBinding(expAction, Void.TYPE, BindingDefinitionType.GET);
+				expression.setOwner(expAction);
 				expression.setExpression(listBindingValue);
 				expAction.setExpression(expression);
 				replacingAction = expAction;
@@ -428,7 +431,7 @@ public class XMLToFMLConverter {
 				sequence.setControlGraph1(declarationAction);
 
 				ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
-				SimpleMethodPathElement<?> addPathElement = (SimpleMethodPathElement<?>) compilationUnit.getVirtualModel()
+				SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel()
 						.getBindingFactory().makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "add",
 								Collections.singletonList(new DataBinding("item")), expAction);
 				// pathElement.setBindingPathElementOwner(this);
@@ -455,7 +458,7 @@ public class XMLToFMLConverter {
 		}
 
 		if (replacingAction != null) {
-			addToListAction.replaceWith(replacingAction);
+			addToListAction.replaceWith(replacingAction);			
 		}
 
 	}
@@ -473,12 +476,15 @@ public class XMLToFMLConverter {
 			BindingValue listBindingValue = (BindingValue) list.getExpression();
 
 			// The most simple case
-			DataBinding<Object> objectToAdd = removeFromListAction.getValue();
+			DataBinding<Object> objectToRemove = removeFromListAction.getValue();
 
 			ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
-			SimpleMethodPathElement<?> addPathElement = (SimpleMethodPathElement<?>) compilationUnit.getVirtualModel().getBindingFactory()
+			objectToRemove.setOwner(expAction);
+			list.setOwner(expAction);
+			
+			SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel().getBindingFactory()
 					.makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "remove",
-							Collections.singletonList(objectToAdd), expAction);
+							Collections.singletonList(objectToRemove), expAction);
 			// pathElement.setBindingPathElementOwner(this);
 
 			listBindingValue.addBindingPathElement(addPathElement);
