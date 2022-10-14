@@ -319,6 +319,8 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 						builtSequenceNode = newSequenceNode;
 					}
 				}
+				//System.out.println("finalizeBlockStatements() DONE for "+currentBlockNode+" of "+currentBlockNode.getClass());
+				getCompilationUnitAnalyzer().registerFMLNode(currentBlockNode, rootSequenceNode);
 				currentBlockNode = null;
 				push(rootSequenceNode);
 				pop();
