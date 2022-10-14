@@ -111,13 +111,19 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	public List<FMLControlGraph> getFlattenedSequence();
 
 	public static abstract class SequenceImpl extends FMLControlGraphImpl implements Sequence {
-
+	
 		@Override
 		public void setControlGraph1(FMLControlGraph aControlGraph) {
 			if (aControlGraph != null) {
 				aControlGraph.setOwnerContext(CONTROL_GRAPH1_KEY);
 			}
 			performSuperSetter(CONTROL_GRAPH1_KEY, aControlGraph);
+			
+			// Because BindingModel of control graph 2 relies on control graph 1, update base BindingModel of CG2
+			if (getControlGraph2() != null) {
+				getControlGraph2().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph2()));
+			}
+
 		}
 
 		@Override
@@ -226,26 +232,10 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 			super.setOwner(owner);
 
 			if (getControlGraph1() != null) {
-
-				// System.out.println("WAS: " + getControlGraph1().getInferedBindingModel());
-				// resetInferedBindingModel();
-				// getControlGraph1().resetInferedBindingModel();
-				// System.out.println("NOW: " + getControlGraph1().getInferedBindingModel());
 				getControlGraph1().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph1()));
-				// getControlGraph1().getBindingModel().setBaseBindingModel(getInferedBindingModel());
 			}
 			if (getControlGraph2() != null) {
 				getControlGraph2().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph2()));
-				// getControlGraph2().getBindingModel().setBaseBindingModel(getInferedBindingModel());
-
-				/*if (getBaseBindingModel(getControlGraph2()) != getInferedBindingModel()) {
-					System.out.println("Ya un pb la !!!!");
-				
-					if (getBaseBindingModel(getControlGraph2()) == getControlGraph1().getInferedBindingModel()) {
-						System.out.println("c'est bien ca, c'est un " + getControlGraph1().getInferedBindingModel().getClass());
-						System.out.println("Base BM = " + getControlGraph1().getInferedBindingModel().getBaseBindingModel());
-					}
-				}*/
 			}
 		}
 
@@ -319,7 +309,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				getControlGraph2().accept(visitor);
 			}
 		}
-
+		
 	}
 
 	@DefineValidationRule
