@@ -330,7 +330,7 @@ public class TestBindingPath extends FMLParserTestCase {
 		DataBindingNode expressionValueNode = checkNode("(36:6)-(36:13)", "super()", (DataBindingNode) expressionNode.getChildren().get(0));
 		BindingPathNode valueNode = checkNode("(36:6)-(36:13)", "super()", (BindingPathNode) expressionValueNode.getChildren().get(0));
 
-		SuperMethodCallBindingPathElementNode pathElementNode1 = checkNode("(36:6)-(36:13)", "JavaInstanceMethodPathElement:super()",
+		SuperMethodCallBindingPathElementNode pathElementNode1 = checkNode("(36:6)-(36:13)", "FlexoBehaviourPathElement:super()",
 				(SuperMethodCallBindingPathElementNode) valueNode.getChildren().get(0));
 	}
 
