@@ -46,6 +46,7 @@ import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.ParseError;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.UnexpectedExceptionError;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.pamela.validation.ValidationError;
 
@@ -91,9 +92,14 @@ public class FMLParseResult extends DefaultParseResult {
 
 	public void addParseError(ParseException e) {
 		ParseError parseError = new ParseError(validationReport.getCompilationUnit(), e.getMessage(), e.getLine());
-		validationReport.appendParseError(parseError, e.getLine());
+		validationReport.appendValidationError(parseError, e.getLine());
 		errors.add(parseError);
-		Thread.dumpStack();
+	}
+
+	public void addUnexpectedException(Exception e) {
+		UnexpectedExceptionError unexpectedExceptionError = new UnexpectedExceptionError(validationReport.getCompilationUnit(), e);
+		validationReport.appendValidationError(unexpectedExceptionError, 0);
+		errors.add(unexpectedExceptionError);
 	}
 
 	@Override

@@ -201,6 +201,7 @@ public class FMLEditorParser extends AbstractParser {
 			handleParseError(e);
 		} catch (Exception e) {
 			e.printStackTrace();
+			handleUnexpectedException(e);
 		} finally {
 			editor.modelHasChanged(requiresNewPrettyPrint);
 		}
@@ -249,6 +250,19 @@ public class FMLEditorParser extends AbstractParser {
 		result.addParseError(e);
 
 		result.setParsedLines(0, e.getLine());
+
+		updateEditorGutter();
+	}
+
+	private void handleUnexpectedException(Exception e) {
+		if (result.getValidationReport() != null) {
+			result.getValidationReport().clear();
+		}
+		result.clearNotices();
+		result.addNotice(new UnexpectedExceptionNotice(this, e));
+		result.addUnexpectedException(e);
+
+		//result.setParsedLines(0, 0);
 
 		updateEditorGutter();
 	}

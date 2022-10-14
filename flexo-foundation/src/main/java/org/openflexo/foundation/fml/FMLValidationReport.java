@@ -160,8 +160,8 @@ public class FMLValidationReport extends ValidationReport {
 		notifyChange();
 	}
 
-	public void appendParseError(ParseError parseError, int line) {
-		getRootNode().addToValidationIssues(parseError);
+	public void appendValidationError(ValidationError error, int line) {
+		getRootNode().addToValidationIssues(error);
 		// setLineNumber(parseError, line);
 		notifyChange();
 	}
