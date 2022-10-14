@@ -167,7 +167,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			return getFMLModelFactory().newModelSlotPathElement(parent, (ModelSlot<?>) object, bindable);
 			// return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
 		}
-		if (object instanceof FlexoProperty) {
+		if (object instanceof FlexoProperty && getFMLModelFactory() != null) {
 			return getFMLModelFactory().newFlexoPropertyPathElement(parent, (FlexoProperty<?>) object, bindable);
 			// return new FlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
 		}
@@ -401,7 +401,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 		List<? extends SimplePathElement<?>> accessibleSimplePathElements = getAccessibleSimplePathElements(parent, bindable);
 		if (accessibleSimplePathElements != null) {
 			for (SimplePathElement<?> e : accessibleSimplePathElements) {
-				if (e.getLabel() != null && e.getLabel().equals(propertyName)) {
+				if (e != null && e.getLabel() != null && e.getLabel().equals(propertyName)) {
 					returned = e;
 				}
 			}
