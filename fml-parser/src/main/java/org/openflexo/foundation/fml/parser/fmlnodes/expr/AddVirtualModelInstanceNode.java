@@ -205,6 +205,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 
 			decodeFMLProperties(getFMLParameters(), pathElement);
 
+			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
 			/*NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
 					(VirtualModelInstanceType) type, null, // default constructor,

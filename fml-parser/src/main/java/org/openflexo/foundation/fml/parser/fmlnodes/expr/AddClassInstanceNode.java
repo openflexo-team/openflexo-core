@@ -89,6 +89,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 
 			JavaNewInstanceMethodPathElement pathElement = (JavaNewInstanceMethodPathElement) getBindingFactory()
 					.makeNewInstancePathElement(type, parent, null, getArguments(), getBindable());
+			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
 		}
 		return null;

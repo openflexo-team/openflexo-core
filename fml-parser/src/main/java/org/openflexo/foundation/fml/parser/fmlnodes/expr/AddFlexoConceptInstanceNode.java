@@ -164,7 +164,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
 		if (getModelObject().getType() instanceof FlexoConceptInstanceType) {
-			FlexoConcept typeConcept = ((FlexoConceptInstanceType) getModelObject().getType()).getFlexoConcept();
+			FlexoConcept typeConcept = getModelObject().getType().getFlexoConcept();
 			if (typeConcept == null) {
 				throwIssue("Cannot find FlexoConcept " + getModelObject().getType(), getTypeFragment());
 			}
@@ -206,6 +206,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 						((AFullQualifiedNewInstance) astNode).getConstructorName().getText(), getArguments(), getBindable());
 			}
 
+			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
 
 			/*NewFlexoConceptInstanceBindingPathElement returned = new NewFlexoConceptInstanceBindingPathElement(
