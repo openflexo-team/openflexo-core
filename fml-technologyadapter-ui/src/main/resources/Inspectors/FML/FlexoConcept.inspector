@@ -207,7 +207,7 @@
 						label="iteration" visible="constraintsTable.selected.hasIteration"/>
 					<Custom manageDynamicModel="true" enable="constraintsTable.selected != null"
 						dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector2" data="constraintsTable.selected.iteration" visible="constraintsTable.selected.hasIteration"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="37" mandatory="true" variable="component.bindable" />
@@ -218,7 +218,7 @@
 						label="constraint" />
 					<Custom
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector" data="constraintsTable.selected.constraint" enable="constraintsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<!--  <Assignment mandatory="true" variable="component.bindable" /> -->
@@ -229,7 +229,7 @@
 						label="violation_hook" />
 					<Custom
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector" data="constraintsTable.selected.violationHook" enable="constraintsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<!--  <Assignment mandatory="true" variable="component.bindable" /> -->
