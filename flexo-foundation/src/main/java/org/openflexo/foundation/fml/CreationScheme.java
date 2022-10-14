@@ -78,6 +78,14 @@ public interface CreationScheme extends AbstractCreationScheme {
 			}
 			return super.getName();
 		}
+		
+		@Override
+		protected String getDisplayName() {
+			if (isAnonymous()) {
+				return "create";
+			}
+			return super.getDisplayName();
+		}
 
 		@Override
 		public SuperCreationSchemeActionFactory getSuperCreationSchemeActionFactory(FlexoConceptInstance fci) {

@@ -74,6 +74,14 @@ public interface DeletionScheme extends AbstractActionScheme {
 			}
 			return super.getName();
 		}
+		
+		@Override
+		protected String getDisplayName() {
+			if (isAnonymous()) {
+				return "delete";
+			}
+			return super.getDisplayName();
+		}
 
 		@Override
 		public DeletionSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {

@@ -714,13 +714,18 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		public String getSignature() {
 			if (behaviourSignature == null) {
 				StringBuffer signature = new StringBuffer();
-				signature.append(getName());
+				signature.append(getDisplayName());
 				signature.append("(");
 				signature.append(getParameterListAsString(false));
 				signature.append(")");
 				behaviourSignature = signature.toString();
 			}
 			return behaviourSignature;
+		}
+		
+		// Name to display in signature
+		protected String getDisplayName() {
+			return getName();
 		}
 
 		protected String getParameterListAsString(boolean fullyQualified) {
