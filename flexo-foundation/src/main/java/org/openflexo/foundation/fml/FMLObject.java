@@ -940,7 +940,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 			@SafeVarargs
 			public InvalidBindingIssue(BindingMustBeValid<C> rule, C anObject, FixProposal<BindingMustBeValid<C>, C>... fixProposals) {
-				super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
+				//super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
+				super(rule, anObject, "($reason)", fixProposals);
 			}
 
 			public DataBinding<?> getBinding() {
@@ -1082,7 +1083,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			@SafeVarargs
 			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
-				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_value_is_invalid: ($binding)", fixProposals);
+				//super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_value_is_invalid: ($binding)", fixProposals);
+				super(rule, anObject, "($reason)", fixProposals);
 
 				/*System.out.println("InvalidRequiredBindingIssue:");
 				System.out.println("object: " + anObject);
