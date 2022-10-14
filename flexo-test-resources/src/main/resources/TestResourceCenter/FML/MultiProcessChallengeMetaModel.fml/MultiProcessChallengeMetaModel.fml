@@ -1,20 +1,24 @@
 use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
+import java.util.Date;
+import java.lang.String;
+
 @URI("http://www.openflexo.org/test/MultiProcessChallengeMetaModel.fml")
 @Version("0.1")
+@Author("sylvain")
 public model MetaModel {
 	List<Actor> actorList  {
-	  List<Actor> get() {
-		return select Actor from this;
-	  }
-	  set(List<Actor> value) {
-	  }
+		List<Actor> get() {
+			return select Actor from this;
+		}
+		set(List<Actor> value) {
+		}
 	};
 
 	@UI(
 		@TextField(value="name")
 	)
-	getActor(required String name) {
+	Actor getActor(required String name) {
 		return select unique Actor from this;
 	}
 
@@ -25,68 +29,71 @@ public model MetaModel {
 		Begin initialTaskType with ConceptInstance(virtualModelInstance=container);
 		End[0,*] finalTaskTypes with ConceptInstance(virtualModelInstance=container);
 		List<Sequencing> sequencingList  {
-		  List<Sequencing> get() {
-			return select Sequencing from this;
-		  }
-		  set(List<Sequencing> value) {
-		  }
+			List<Sequencing> get() {
+				return select Sequencing from this;
+			}
+			set(List<Sequencing> value) {
+			}
 		};
 		List<AndSplit> andSplitList  {
-		  List<AndSplit> get() {
-			return select AndSplit from this;
-		  }
-		  set(List<AndSplit> value) {
-		  }
+			List<AndSplit> get() {
+				return select AndSplit from this;
+			}
+			set(List<AndSplit> value) {
+			}
 		};
 		List<AndJoin> andJoinList  {
-		  List<AndJoin> get() {
-			return select AndJoin from this;
-		  }
-		  set(List<AndJoin> value) {
-		  }
+			List<AndJoin> get() {
+				return select AndJoin from this;
+			}
+			set(List<AndJoin> value) {
+			}
 		};
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(parameters.name);
+		create(String name) {
+			super(parameters.name);
 		}
-		delete::_delete() {
+		delete() {
 		}
-		addToTaskTypes(required TaskType taskType) {
+		void addToTaskTypes(required TaskType taskType) {
+			taskTypes.add(parameters.taskType);
 		}
-		setInitialTaskType(required Begin _begin) {
-			initialTaskType = parameters._begin;
+		void setInitialTaskType(required Begin beginTaskType) {
+			initialTaskType = parameters.beginTaskType;
 		}
-		addToFinalTaskTypes(required End _end) {
+		void addToFinalTaskTypes(required End endTaskType) {
+			finalTaskTypes.add(parameters.endTaskType);
 		}
-		addToGateways(required Gateway gateway) {
+		void addToGateways(required Gateway gateway) {
+			gateways.add(parameters.gateway);
 		}
 		@UI(
 			@TextField(value="name")
 		)
-		public newProcess(required String name) {
-			Process returned = FMLRT::AddFlexoConceptInstance() in container;
+		public Process newProcess(required String name) {
+			Process returned = new Process(parameters.name,this);
 			for (TaskType taskType : taskTypes) {
-				log"Creating new Task for " + taskType;
+				log("Creating new Task for " + taskType);
 				Task newTask = taskType.newTask(returned.name + "-" + taskType.name,returned);
-				log"Created new Task for " + taskType + " --> " + newTask;
-				if (taskType = initialTaskType) {
+				log((("Created new Task for " + taskType) + " --> ") + newTask);
+				if (taskType == initialTaskType) {
 					returned.initialTask = newTask;
 				}
 			}
 			return returned;
 		}
-		removeFromGateways(required Gateway gateway) {
+		void removeFromGateways(required Gateway gateway) {
 			gateways.remove(parameters.gateway);
 		}
-		removeFromTaskTypes(required Gateway taskType) {
+		void removeFromTaskTypes(required Gateway taskType) {
 			taskTypes.remove(parameters.taskType);
 		}
-		removeFromFinalTaskTypes(required Gateway taskType) {
+		void removeFromFinalTaskTypes(required Gateway taskType) {
 			finalTaskTypes.remove(parameters.taskType);
 		}
-		getTask(required TaskType taskType, Process process) {
+		Task getTask(required TaskType taskType, Process process) {
 			return select unique Task from parameters.process;
 		}
 		@Author("sylvain")
@@ -101,17 +108,18 @@ public model MetaModel {
 			@UI(
 				@TextField(value="name")
 			)
-			create::_create(String name) {
-				super._create(parameters.name);
+			create(String name) {
+				super(parameters.name);
 				isCritical = false;
 			}
-			delete::_delete() {
+			delete() {
 				if (container != null) {
 					container.taskTypes.remove(this);
 				}
 			}
-			public addAllowedActorType(required ActorType actorType) {
+			public boolean addAllowedActorType(required ActorType actorType) {
 				if (this.isValidActorType(parameters.actorType)) {
+					allowedActorTypes.add(parameters.actorType);
 					this.update();
 					return true;
 				}
@@ -119,8 +127,9 @@ public model MetaModel {
 					return false;
 				}
 			}
-			public addAllowedActor(required Actor actor) {
+			public boolean addAllowedActor(required Actor actor) {
 				if (this.isValidActor(parameters.actor)) {
+					allowedActors.add(parameters.actor);
 					this.update();
 					return true;
 				}
@@ -128,8 +137,9 @@ public model MetaModel {
 					return false;
 				}
 			}
-			public addUsedArtifactType(required ArtifactType artifactType) {
+			public boolean addUsedArtifactType(required ArtifactType artifactType) {
 				if (this.isValidUsedArtifactType(parameters.artifactType)) {
+					usedArtifactTypes.add(parameters.artifactType);
 					this.update();
 					return true;
 				}
@@ -137,8 +147,9 @@ public model MetaModel {
 					return false;
 				}
 			}
-			public addProducedArtifactType(required ArtifactType artifactType) {
+			public boolean addProducedArtifactType(required ArtifactType artifactType) {
 				if (this.isValidProducedArtifactType(parameters.artifactType)) {
+					producedArtifactTypes.add(parameters.artifactType);
 					this.update();
 					return true;
 				}
@@ -149,33 +160,33 @@ public model MetaModel {
 			@UI(
 				@TextField(value="name")
 			)
-			newTask(String name, Process process) {
-				log"Creating new Task " + parameters.name + " process=" + parameters.process;
-				return FMLRT::AddFlexoConceptInstance() in container.container;
+			Task newTask(String name, Process process) {
+				log((("Creating new Task " + parameters.name) + " process=") + parameters.process);
+				return parameters.process.new Task(parameters.name,this);
 			}
-			isValidActorType(required ActorType actorType) {
+			boolean isValidActorType(required ActorType actorType) {
 				return true;
 			}
-			isValidActor(required Actor actor) {
+			boolean isValidActor(required Actor actor) {
 				return true;
 			}
-			isValidUsedArtifactType(required ArtifactType artifactType) {
+			boolean isValidUsedArtifactType(required ArtifactType artifactType) {
 				return true;
 			}
-			isValidProducedArtifactType(required ArtifactType artifactType) {
+			boolean isValidProducedArtifactType(required ArtifactType artifactType) {
 				return true;
 			}
-			public setCreator(required Actor creator) {
+			public void setCreator(required Actor creator) {
 				creator = parameters.creator;
 			}
-			isAuthorizedActor(required Actor actor) {
+			boolean isAuthorizedActor(required Actor actor) {
 				for (ActorType allowedActorType : allowedActorTypes) {
 					if (parameters.actor.hasActorType(allowedActorType)) {
 						return this.isValidActorType(allowedActorType);
 					}
 				}
 				for (Actor allowedActor : allowedActors) {
-					if (parameters.actor = allowedActor) {
+					if (parameters.actor == allowedActor) {
 						return this.isValidActor(allowedActor);
 					}
 				}
@@ -187,28 +198,28 @@ public model MetaModel {
 			@UI(
 				@TextField(value="name")
 			)
-			create::_create(String name) {
-				super._create(parameters.name);
+			create(String name) {
+				super(parameters.name);
 			}
-			delete::_delete() {
+			delete() {
 			}
-			abstract execute(required Process process) {
+			abstract void execute(required Process process) {
 			}
 		}
 		@Author("sylvain")
 		public concept Sequencing extends Gateway {
 			TaskType _in with ConceptInstance(virtualModelInstance=container.container);
 			TaskType out with ConceptInstance(virtualModelInstance=container.container);
-			create::_create() {
-				super._create("Sequence");
+			create() {
+				super("Sequence");
 			}
-			delete::_delete() {
+			delete() {
 			}
-			execute(required Process process) {
-				Task inTask = parameters.process.getTask(in);
+			void execute(required Process process) {
+				Task inTask = parameters.process.getTask(_in);
 				if (inTask.completed) {
 					Task outTask = parameters.process.getTask(out);
-					if (outTask.isStartable() & !outTask.completed) {
+					if (outTask.isStartable() && !outTask.completed) {
 						outTask.startTask();
 					}
 				}
@@ -218,17 +229,17 @@ public model MetaModel {
 		public concept AndSplit extends Gateway {
 			TaskType _in with ConceptInstance(virtualModelInstance=container.container);
 			TaskType[1,*] out with ConceptInstance(virtualModelInstance=container.container);
-			create::_create() {
-				super._create("AndSplit");
+			create() {
+				super("AndSplit");
 			}
-			delete::_delete() {
+			delete() {
 			}
-			execute(required Process process) {
-				Task inTask = parameters.process.getTask(in);
+			void execute(required Process process) {
+				Task inTask = parameters.process.getTask(_in);
 				if (inTask.completed) {
 					for (TaskType taskType : out) {
 						Task outTask = parameters.process.getTask(taskType);
-						if (outTask.isStartable() & !outTask.completed) {
+						if (outTask.isStartable() && !outTask.completed) {
 							outTask.startTask();
 						}
 					}
@@ -239,17 +250,17 @@ public model MetaModel {
 		public concept OrSplit extends Gateway {
 			TaskType _in with ConceptInstance(virtualModelInstance=container.container);
 			TaskType[1,*] out with ConceptInstance(virtualModelInstance=container.container);
-			create::_create() {
-				super._create("OrSplit");
+			create() {
+				super("OrSplit");
 			}
-			delete::_delete() {
+			delete() {
 			}
-			execute(required Process process) {
-				Task inTask = parameters.process.getTask(in);
+			void execute(required Process process) {
+				Task inTask = parameters.process.getTask(_in);
 				if (inTask.completed) {
 					for (TaskType taskType : out) {
 						Task outTask = parameters.process.getTask(taskType);
-						if (outTask.isStartable() & !outTask.completed) {
+						if (outTask.isStartable() && !outTask.completed) {
 							outTask.startTask();
 						}
 					}
@@ -260,21 +271,21 @@ public model MetaModel {
 		public concept AndJoin extends Gateway {
 			TaskType out with ConceptInstance(virtualModelInstance=container.container);
 			TaskType[1,*] _in with ConceptInstance(virtualModelInstance=container.container);
-			create::_create() {
-				super._create("AndJoin");
+			create() {
+				super("AndJoin");
 			}
-			delete::_delete() {
+			delete() {
 			}
-			execute(required Process process) {
+			void execute(required Process process) {
 				if (this.areAllTasksCompleted(parameters.process)) {
 					Task outTask = parameters.process.getTask(out);
-					if (outTask.isStartable() & !outTask.completed) {
+					if (outTask.isStartable() && !outTask.completed) {
 						outTask.startTask();
 					}
 				}
 			}
-			areAllTasksCompleted(Process process) {
-				for (Object taskType : in) {
+			boolean areAllTasksCompleted(Process process) {
+				for (TaskType taskType : _in) {
 					Task inTask = parameters.process.getTask(taskType);
 					if (!inTask.completed) {
 						return false;
@@ -287,13 +298,13 @@ public model MetaModel {
 		public concept OrJoin extends Gateway {
 			TaskType out with ConceptInstance(virtualModelInstance=container.container);
 			TaskType[1,*] _in with ConceptInstance(virtualModelInstance=container.container);
-			create::_create() {
-				super._create("OrJoin");
+			create() {
+				super("OrJoin");
 			}
-			delete::_delete() {
+			delete() {
 			}
-			isOneTaskCompleted(Process process) {
-				for (Object taskType : in) {
+			boolean isOneTaskCompleted(Process process) {
+				for (TaskType taskType : _in) {
 					Task inTask = parameters.process.getTask(taskType);
 					if (inTask.completed) {
 						return false;
@@ -301,37 +312,37 @@ public model MetaModel {
 				}
 				return false;
 			}
-			execute(required Process process) {
+			void execute(required Process process) {
 				if (this.isOneTaskCompleted(parameters.process)) {
 					Task outTask = parameters.process.getTask(out);
-					if (outTask.isStartable() & !outTask.completed) {
+					if (outTask.isStartable() && !outTask.completed) {
 						outTask.startTask();
 					}
 				}
 			}
 		}
 		public concept Begin extends TaskType {
-			create::_create() {
-				super._create("Begin");
+			create() {
+				super("Begin");
 			}
-			delete::_delete() {
-				if ((((container != null) & container.initialTaskType) == this)) {
+			delete() {
+				if (container != null && (container.initialTaskType = this)) {
 					container.initialTaskType = null;
 				}
 			}
 			@UI(
 				@TextField(value="name")
 			)
-			newTask(String name, Process process) {
-				log"Creating new BeginTask " + parameters.name + " process=" + parameters.process;
-				return FMLRT::AddFlexoConceptInstance() in container.container;
+			BeginTask newTask(String name, Process process) {
+				log((("Creating new BeginTask " + parameters.name) + " process=") + parameters.process);
+				return parameters.process.new BeginTask(parameters.name,this);
 			}
 		}
 		public concept End extends TaskType {
-			create::_create() {
-				super._create("End");
+			create() {
+				super("End");
 			}
-			delete::_delete() {
+			delete() {
 				if (container != null) {
 					container.finalTaskTypes.remove(this);
 				}
@@ -339,9 +350,9 @@ public model MetaModel {
 			@UI(
 				@TextField(value="name")
 			)
-			newTask(String name, Process process) {
-				log"Creating new BeginTask " + parameters.name + " process=" + parameters.process;
-				return FMLRT::AddFlexoConceptInstance() in container.container;
+			EndTask newTask(String name, Process process) {
+				log((("Creating new BeginTask " + parameters.name) + " process=") + parameters.process);
+				return parameters.process.new EndTask(parameters.name,this);
 			}
 		}
 	}*/
@@ -351,10 +362,10 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(parameters.name);
+		create(String name) {
+			super(parameters.name);
 		}
-		delete::_delete() {
+		delete() {
 		}
 	}
 
@@ -365,13 +376,13 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
+		create(String name) {
 			name = parameters.name;
 			this.update();
 		}
-		delete::_delete() {
+		delete() {
 		}
-		public update() {
+		public void update() {
 			lastUpdated = new Date();
 		}
 	}
@@ -382,15 +393,16 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(parameters.name);
+		create(String name) {
+			super(parameters.name);
 		}
-		delete::_delete() {
+		delete() {
 		}
-		public addParentActorType(required ActorType actorType) {
+		public void addParentActorType(required ActorType actorType) {
+			parentActorTypes.add(parameters.actorType);
 		}
-		isOrSpecializesActorType(required ActorType actorType) {
-			if (parameters.actorType = this) {
+		boolean isOrSpecializesActorType(required ActorType actorType) {
+			if (parameters.actorType == this) {
 				return true;
 			}
 			for (ActorType parentActorType : parentActorTypes) {
@@ -408,10 +420,10 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(parameters.name);
+		create(String name) {
+			super(parameters.name);
 		}
-		delete::_delete() {
+		delete() {
 		}
 	}
 
@@ -421,10 +433,10 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(parameters.name);
+		create(String name) {
+			super(parameters.name);
 		}
-		delete::_delete() {
+		delete() {
 		}
 	}
 
@@ -435,15 +447,16 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(parameters.name);
+		create(String name) {
+			super(parameters.name);
 			isSenior = false;
 		}
-		delete::_delete() {
+		delete() {
 		}
-		public addActorType(required ActorType actorType) {
+		public void addActorType(required ActorType actorType) {
+			types.add(parameters.actorType);
 		}
-		hasActorType(ActorType actorType) {
+		boolean hasActorType(ActorType actorType) {
 			for (ActorType type : types) {
 				if (type.isOrSpecializesActorType(parameters.actorType)) {
 					return true;
@@ -451,7 +464,7 @@ public model MetaModel {
 			}
 			return false;
 		}
-		removeActorType(required ActorType actorType) {
+		void removeActorType(required ActorType actorType) {
 			types.remove(parameters.actorType);
 		}
 	}
@@ -462,16 +475,16 @@ public model MetaModel {
 		Task[1,*] tasks with ConceptInstance(virtualModelInstance=container);
 		Task initialTask with ConceptInstance(virtualModelInstance=container);
 		Boolean isProcessStartable  {
-		  Boolean get() {
-			for (Task task : tasks) {
-				if (!task.isStartable()) {
-					return false;
+			Boolean get() {
+				for (Task task : tasks) {
+					if (!task.isStartable()) {
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
-		  }
-		  set(Boolean value) {
-		  }
+			set(Boolean value) {
+			}
 		};
 		boolean processCompleted;
 		Date startProcessDate;
@@ -479,33 +492,34 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name, ProcessType processType) {
-			super._create(parameters.name);
+		create(String name, ProcessType processType) {
+			super(parameters.name);
 			type = parameters.processType;
-			for (Object taskType : type.taskTypes) {
+			for (TaskType taskType : type.taskTypes) {
 				Task newTask = taskType.newTask(taskType.name,this);
+				tasks.add(newTask);
 			}
 			initialTask = this.getTask(type.initialTaskType);
 			processCompleted = false;
 		}
-		delete::_delete() {
+		delete() {
 		}
-		public startProcess() {
-			log"Starting process " + name;
-			log"initial task = " + initialTask;
+		public void startProcess() {
+			log("Starting process " + name);
+			log("initial task = " + initialTask);
 			initialTask.startTask();
 			startProcessDate = new Date();
 		}
-		getTask(required TaskType taskType) {
+		Task getTask(required TaskType taskType) {
 			return select unique Task from this;
 		}
-		completeProcess() {
-			log"Process " + name + " has finished";
+		void completeProcess() {
+			log(("Process " + name) + " has finished");
 			completeProcessDate = new Date();
 			processCompleted = true;
 		}
-		public executeGateways() {
-			for (Object gateway : type.gateways) {
+		public void executeGateways() {
+			for (Gateway gateway : type.gateways) {
 				gateway.execute(this);
 			}
 		}
@@ -519,134 +533,179 @@ public model MetaModel {
 			Artifact[0,*] producedArtifacts with ConceptInstance(virtualModelInstance=container.container);
 			boolean isActive;
 			String performingActorsLabel  {
-			  String get() {
-				if (performingActors.size > 0) {
-					String label = "";
-					for (Actor actor : performingActors) {
-						label = label + " " + actor.name;
+				String get() {
+					if (performingActors.size > 0) {
+						String label = "";
+						for (Actor actor : performingActors) {
+							label = label + " " + actor.name;
+						}
+						return label;
 					}
-					return label;
+					else {
+						return "No actor assigned";
+					}
 				}
-				else {
-					return "No actor assigned";
+				set(String value) {
 				}
-			  }
-			  set(String value) {
-			  }
 			};
 			String statusLabel  {
-			  String get() {
-				if (this.isStartable()) {
-					if (isActive | completed) {
-						if (completed) {
-							return "Completed";
+				String get() {
+					if (this.isStartable()) {
+						if (isActive || completed) {
+							if (completed) {
+								return "Completed";
+							}
+							else {
+								return beginDate.toString.substring(0,beginDate.toString.length - 9);
+							}
 						}
 						else {
-							return beginDate.toString.substring(0,beginDate.toString.length - 9);
+							return "Not started";
 						}
 					}
 					else {
-						return "Not started";
+						return "Not startable";
 					}
 				}
-				else {
-					return "Not startable";
+				set(String value) {
 				}
-			  }
-			  set(String value) {
-			  }
 			};
 			boolean completed;
 			@UI(
 				@TextField(value="name")
 			)
-			create::_create(String name, TaskType taskType) {
-				super._create(parameters.name);
+			create(String name, TaskType taskType) {
+				super(parameters.name);
 				type = parameters.taskType;
 				isActive = false;
 				completed = false;
 			}
-			delete::_delete() {
+			delete() {
 			}
-			isAuthorizedActor(required Actor actor) {
+			boolean isAuthorizedActor(required Actor actor) {
 				return type.isAuthorizedActor(parameters.actor);
 			}
-			public addToPerformingActors(required Actor actor) {
+			public void addToPerformingActors(required Actor actor) {
 				if (this.isAuthorizedActor(parameters.actor)) {
 					log"This actor is AUTHORIZED";
+					performingActors.add(parameters.actor);
 				}
 				else {
 					log"This actor is NOT AUTHORIZED";
 				}
 			}
-			isAuthorizedProducedArtifact(required Artifact artifact) {
-				for (Object allowedArtifactType : type.producedArtifactTypes) {
+			boolean isAuthorizedProducedArtifact(required Artifact artifact) {
+				for (ArtifactType allowedArtifactType : type.producedArtifactTypes) {
 					if (parameters.artifact.hasArtifactType(allowedArtifactType)) {
 						return true;
 					}
 				}
 				return false;
 			}
-			public addToProducedArtifacts(required Artifact artifact) {
+			public void addToProducedArtifacts(required Artifact artifact) {
 				if (this.isAuthorizedProducedArtifact(parameters.artifact)) {
 					log"This produced artifact is AUTHORIZED";
+					producedArtifacts.add(parameters.artifact);
 				}
 				else {
 					log"This produced artifact is NOT AUTHORIZED";
 				}
 			}
-			isAuthorizedUsedArtifact(required Artifact artifact) {
-				for (Object allowedArtifactType : type.usedArtifactTypes) {
+			boolean isAuthorizedUsedArtifact(required Artifact artifact) {
+				for (ArtifactType allowedArtifactType : type.usedArtifactTypes) {
 					if (parameters.artifact.hasArtifactType(allowedArtifactType)) {
 						return true;
 					}
 				}
 				return false;
 			}
-			public addToUsedArtifacts(required Artifact artifact) {
+			public void addToUsedArtifacts(required Artifact artifact) {
 				if (this.isAuthorizedUsedArtifact(parameters.artifact)) {
 					log"This used artifact is AUTHORIZED";
+					usedArtifacts.add(parameters.artifact);
 				}
 				else {
 					log"This used artifact is NOT AUTHORIZED";
 				}
 			}
-			public startTask() {
+			public void startTask() {
 				beginDate = new Date();
 				isActive = true;
-				log"Start abstract task " + this;
+				log("Start abstract task " + this);
 			}
-			public finishTask() {
+			public void finishTask() {
 				isActive = false;
 				completed = true;
 				endDate = new Date();
 				container.executeGateways();
-				log"Finish abstract task " + this;
+				log("Finish abstract task " + this);
 			}
-			isStartable() {
+			boolean isStartable() {
 				return performingActors.size > 0;
 			}
-			addToPerformingActor(required Actor actor) {
+			void addToPerformingActor(required Actor actor) {
+				performingActors.add(parameters.actor);
+			}
+		}
+		public concept BeginTask extends Task {
+			delete() {
+			}
+			@UI(
+				@TextField(value="name")
+			)
+			create(String name, TaskType taskType) {
+				super(parameters.name,parameters.taskType);
+			}
+			public void startTask() {
+				super.startTask();
+				log("Start BEGIN " + this);
+				this.finishTask();
+			}
+			boolean isStartable() {
+				return true;
+			}
+		}
+		public concept EndTask extends Task {
+			delete() {
+			}
+			@UI(
+				@TextField(value="name")
+			)
+			create(String name, TaskType taskType) {
+				super(parameters.name,parameters.taskType);
+			}
+			public void startTask() {
+				super.startTask();
+				log"Start EndTask";
+				this.finishTask();
+			}
+			boolean isStartable() {
+				return true;
+			}
+			public void finishTask() {
+				super.finishTask();
+				log"Finish EndTask";
+				container.completeProcess();
 			}
 		}
 	}
-
 
 	@Author("sylvain")
 	public concept ArtifactType extends Type {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(parameters.name);
+		create(String name) {
+			super(parameters.name);
 		}
-		delete::_delete() {
+		delete() {
 		}
 		@UI(
 			@TextField(value="name")
 		)
-		newArtifact(String name) {
-			Artifact returned = FMLRT::AddFlexoConceptInstance() in container;
+		Artifact newArtifact(String name) {
+			Artifact returned = new Artifact(parameters.name);
+			returned.types.add(this);
 			return returned;
 		}
 	}
@@ -657,61 +716,18 @@ public model MetaModel {
 		@UI(
 			@TextField(value="name")
 		)
-		create::_create(String name) {
-			super._create(name);
+		create(String name) {
+			super(name);
 		}
-		delete::_delete() {
+		delete() {
 		}
-		hasArtifactType(ArtifactType artifactType) {
+		boolean hasArtifactType(ArtifactType artifactType) {
 			for (ArtifactType type : types) {
-				if (type = parameters.artifactType) {
+				if (type == parameters.artifactType) {
 					return true;
 				}
 			}
 			return false;
-		}
-	}
-
-	public concept BeginTask extends Task {
-		delete::_delete() {
-		}
-		@UI(
-			@TextField(value="name")
-		)
-		create::_create(String name, TaskType taskType) {
-			super._create(parameters.name,parameters.taskType);
-		}
-		public startTask() {
-			super.startTask();
-			log"Start BEGIN " + this;
-			this.finishTask();
-		}
-		isStartable() {
-			return true;
-		}
-	}
-
-	public concept EndTask extends Task {
-		delete::_delete() {
-		}
-		@UI(
-			@TextField(value="name")
-		)
-		create::_create(String name, TaskType taskType) {
-			super._create(parameters.name,parameters.taskType);
-		}
-		public startTask() {
-			super.startTask();
-			log"Start EndTask";
-			this.finishTask();
-		}
-		isStartable() {
-			return true;
-		}
-		public finishTask() {
-			super.finishTask();
-			log"Finish EndTask";
-			container.completeProcess();
 		}
 	}
 }
