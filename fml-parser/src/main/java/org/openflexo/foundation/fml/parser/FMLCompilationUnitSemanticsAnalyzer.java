@@ -197,6 +197,12 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	private Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
 
+	public void debugASTNodes() {
+		for (Node node : nodesForAST.keySet()) {
+			System.out.println(node.getClass().getSimpleName()+" -> "+nodesForAST.get(node)+" ["+node+"]");
+		}
+	}
+	
 	/*public Map<Node, FMLObjectNode> getNodesForAST() {
 		return nodesForAST;
 	}*/
