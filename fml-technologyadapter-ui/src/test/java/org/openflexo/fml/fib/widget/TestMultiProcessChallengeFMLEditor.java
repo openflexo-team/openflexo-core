@@ -66,6 +66,7 @@ import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.gina.utils.InspectorGroup;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -132,12 +133,22 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 		gcDelegate.addTab("FML Editor", fmlEditor);
 		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
 		assertNotNull(cu);
-		assertEquals(0, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(0, cu.getVirtualModel().getFlexoBehaviours().size());
+		assertEquals(1, cu.getVirtualModel().getFlexoProperties().size());
+		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
+	}
+	
+	@Test
+	@TestOrder(5)
+	public void validate() {
+		System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
+
+		ValidationReport report = validate(compilationUnit);
+		assertEquals(0, report.getAllErrors().size());
+		
 	}
 
 	@Test
-	@TestOrder(5)
+	@TestOrder(6)
 	@Category(UITest.class)
 	public void testInstanciateWidget() {
 

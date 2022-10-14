@@ -22,7 +22,7 @@ public model MetaModel {
 		return select unique Actor from this;
 	}
 
-/*	@Author("sylvain")
+	@Author("sylvain")
 	public concept ProcessType extends Type {
 		TaskType[0,*] taskTypes with ConceptInstance(virtualModelInstance=container);
 		Gateway[0,*] gateways with ConceptInstance(virtualModelInstance=container);
@@ -355,7 +355,7 @@ public model MetaModel {
 				return parameters.process.new EndTask(parameters.name,this);
 			}
 		}
-	}*/
+	}
 
 	@Author("sylvain")
 	public concept Type extends ModelingElement {
