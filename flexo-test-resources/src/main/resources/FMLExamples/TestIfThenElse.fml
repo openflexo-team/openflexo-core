@@ -1,0 +1,20 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	test() {
+		if (true) {
+			log "1";
+			log "2";
+		}
+		else {
+			log "3";
+			log "4";
+		}
+	}
+		
+}
