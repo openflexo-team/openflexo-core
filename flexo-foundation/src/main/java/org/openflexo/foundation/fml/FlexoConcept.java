@@ -1876,17 +1876,23 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		// Used for serialization, do not use as API
 		@Override
+		@FMLMigration
 		public String _getParentFlexoConceptsList() {
 			if (parentFlexoConceptList == null && getParentFlexoConcepts().size() > 0) {
 				parentFlexoConceptList = computeParentFlexoConceptList();
-			}
+		}
 			return parentFlexoConceptList;
 		}
 
+		@FMLMigration
+		private boolean parentFlexoConceptListWasExplicitelySet = false;
+		
 		// Used for serialization, do not use as API
 		@Override
+		@FMLMigration
 		public void _setParentFlexoConceptsList(String parentFlexoConceptList) {
 			this.parentFlexoConceptList = parentFlexoConceptList;
+			parentFlexoConceptListWasExplicitelySet = true;
 		}
 
 		private String computeParentFlexoConceptList() {
@@ -1920,7 +1926,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@FMLMigration
 		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
-			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList
+			if (parentFlexoConceptListWasExplicitelySet && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList
 					&& !PREVENT_PARENT_CONCEPTS_DECODING) {
 				isDecodingParentFlexoConceptList = true;
 				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
@@ -1953,6 +1959,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					System.out.println("Bizarre, on a pas reussi a decoder tous les concepts " + parentFlexoConceptList);
 				}
 				isDecodingParentFlexoConceptList = false;
+				parentFlexoConceptListWasExplicitelySet = false;
 			}
 		}
 
@@ -1960,7 +1967,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public List<FlexoConcept> getParentFlexoConcepts() {
-			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null) {
+			if (parentFlexoConceptListWasExplicitelySet && getVirtualModelLibrary() != null) {
 				decodeParentFlexoConceptList(!isDeserializing());
 			}
 			return parentFlexoConcepts;
@@ -1977,6 +1984,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException {
+
 			if (!isSuperConceptOf(parentFlexoConcept)) {
 				FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 				parentFlexoConcepts.add(parentFlexoConcept);
