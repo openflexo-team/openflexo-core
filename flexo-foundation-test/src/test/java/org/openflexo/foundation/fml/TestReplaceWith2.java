@@ -140,13 +140,6 @@ public class TestReplaceWith2 extends OpenflexoTestCase {
 		System.out.println("PP="+s1.getFMLPrettyPrint());
 		System.out.println("PP="+s2.getFMLPrettyPrint());
 
-
-		System.out.println("Celui la c'est n'importe quoi !!!");
-		s1.e.printStackTrace();
-		
-		//System.exit(-1);
-		s2.e.printStackTrace();
-		
 		assertSame(s1,s2);
 	
 		System.out.println("BOwner="+bbm.getControlGraph().getOwner());
