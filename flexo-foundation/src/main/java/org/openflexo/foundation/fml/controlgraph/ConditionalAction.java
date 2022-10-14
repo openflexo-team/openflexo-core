@@ -119,10 +119,6 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		private DataBinding<Boolean> condition;
 
-		public ConditionalActionImpl() {
-			super();
-		}
-
 		@Override
 		public void setThenControlGraph(FMLControlGraph aControlGraph) {
 			if (aControlGraph != null) {
