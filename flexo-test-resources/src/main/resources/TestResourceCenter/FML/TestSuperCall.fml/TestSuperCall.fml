@@ -1,0 +1,22 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestSuperCall.fml")
+@Version("0.1")
+model TestSuperCall { 
+
+	concept ParentConcept {
+	
+		String foo;
+	
+		create(String arg) {
+			foo = parameters.arg;
+		}
+	}
+	
+	concept ChildConcept extends ParentConcept {
+	
+		create(String arg) {
+			super(parameters.arg);
+		}
+	}
+	
+	
+}
