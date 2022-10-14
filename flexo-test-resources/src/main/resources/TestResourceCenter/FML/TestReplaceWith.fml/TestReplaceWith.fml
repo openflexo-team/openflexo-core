@@ -4,10 +4,23 @@ model TestReplaceWith {
 
 	int a;
 
-	testBehaviour () {
+	testBehaviour() {
 		a=1;
 		a=2;
 		a=3;
 		a=4;
+	}
+	
+	testBehaviour2() {
+		if (a>0) {
+			a=1;
+			a=2;
+			a=3;
+		}
+		else {
+			a=4;
+			a=5;
+			a=6;
+		}
 	}
 }
