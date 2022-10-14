@@ -49,7 +49,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -177,80 +176,79 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
-		Type returned = super.resolveType(typeAsString);
-		if (returned instanceof UnresolvedType) {
-			// Try to match a VirtualModel in this ExecutionUnit
-			if (foundVirtualModels.get(typeAsString) != null) {
-				VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
-				unresolvedTypes.add(vmiType);
-				return vmiType;
-			}
-			// Or a FlexoConcept in this ExecutionUnit
-			else if (foundConcepts.get(typeAsString) != null) {
-				FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
-				unresolvedTypes.add(fciType);
-				return fciType;
-			}
-			// Not found
-			// Look in imported VirtualModels
-			if (analyzer.getCompilationUnit() != null) {
-				for (ElementImportDeclaration importDeclaration : analyzer.getCompilationUnit().getElementImports()) {
-					try {
-						String resourceURI = null;
-						Object resourceRef = importDeclaration.getResourceReference().getBindingValue(analyzer.getCompilationUnit());
-						if (resourceRef instanceof String) {
-							resourceURI = (String) resourceRef;
-						}
-						else if (resourceRef instanceof ResourceData) {
-							resourceURI = ((ResourceData) resourceRef).getResource().getURI();
-						}
-						else {
-							logger.warning("Unexpected resourceRef: " + resourceRef + " for " + importDeclaration);
-							continue;
-						}
-						FlexoResource resource = analyzer.getServiceManager().getResourceManager().getResource(resourceURI);
-						if (resource instanceof CompilationUnitResource) {
-							VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
-							if (info != null) {
-								if (info.getName().equals(typeAsString)) {
-									// Found type as a VirtualModel
-									VirtualModelInstanceType vmiType = new VirtualModelInstanceType(info.getURI(),
-											new VirtualModelInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
-													(CompilationUnitResource) resource));
-									unresolvedTypes.add(vmiType);
-									return vmiType;
+		// First try to match a VirtualModel in this ExecutionUnit
+		if (foundVirtualModels.get(typeAsString) != null) {
+			VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
+			unresolvedTypes.add(vmiType);
+			return vmiType;
+		}
+		// Then look for a FlexoConcept in this ExecutionUnit
+		else if (foundConcepts.get(typeAsString) != null) {
+			FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+			unresolvedTypes.add(fciType);
+			return fciType;
+		}
+		// Not found
+		// Look in imported VirtualModels
+		if (analyzer.getCompilationUnit() != null) {
+			for (ElementImportDeclaration importDeclaration : analyzer.getCompilationUnit().getElementImports()) {
+				try {
+					String resourceURI = null;
+					Object resourceRef = importDeclaration.getResourceReference().getBindingValue(analyzer.getCompilationUnit());
+					if (resourceRef instanceof String) {
+						resourceURI = (String) resourceRef;
+					}
+					else if (resourceRef instanceof ResourceData) {
+						resourceURI = ((ResourceData) resourceRef).getResource().getURI();
+					}
+					else {
+						logger.warning("Unexpected resourceRef: " + resourceRef + " for " + importDeclaration);
+						continue;
+					}
+					FlexoResource resource = analyzer.getServiceManager().getResourceManager().getResource(resourceURI);
+					if (resource instanceof CompilationUnitResource) {
+						VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
+						if (info != null) {
+							if (info.getName().equals(typeAsString)) {
+								// Found type as a VirtualModel
+								VirtualModelInstanceType vmiType = new VirtualModelInstanceType(info.getURI(),
+										new VirtualModelInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
+												(CompilationUnitResource) resource));
+								unresolvedTypes.add(vmiType);
+								return vmiType;
+							}
+							for (String conceptLocalURI : info.getFlexoConcepts()) {
+								String conceptName = conceptLocalURI;
+								if (conceptLocalURI.contains("#")) {
+									conceptName = conceptLocalURI.substring(conceptLocalURI.lastIndexOf("#") + 1);
 								}
-								for (String conceptLocalURI : info.getFlexoConcepts()) {
-									String conceptName = conceptLocalURI;
-									if (conceptLocalURI.contains("#")) {
-										conceptName = conceptLocalURI.substring(conceptLocalURI.lastIndexOf("#") + 1);
-									}
 
-									if (conceptLocalURI.equals(typeAsString) || conceptName.equals(typeAsString)) {
-										FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(
-												info.getURI() + "#" + conceptLocalURI, new FlexoConceptInImportedVirtualModelFactory(
-														getFMLTechnologyAdapter(), (CompilationUnitResource) resource));
-										unresolvedTypes.add(fciType);
-										return fciType;
+								if (conceptLocalURI.equals(typeAsString) || conceptName.equals(typeAsString)) {
+									FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(
+											info.getURI() + "#" + conceptLocalURI, new FlexoConceptInImportedVirtualModelFactory(
+													getFMLTechnologyAdapter(), (CompilationUnitResource) resource));
+									unresolvedTypes.add(fciType);
+									return fciType;
 
-									}
 								}
 							}
 						}
-					} catch (TypeMismatchException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (NullReferenceException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ReflectiveOperationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
-		return returned;
+
+		// Still not found : delegate to the parent
+		return super.resolveType(typeAsString);
 	}
 
 	public List<CustomType> getUnresolvedTypes() {
