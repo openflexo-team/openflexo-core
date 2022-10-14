@@ -50,6 +50,7 @@ import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -88,46 +89,6 @@ public class XMLToFMLConverter {
 		this.compilationUnit = compilationUnit;
 	}
 
-	private void convertConditionalDataBinding(DataBinding<Boolean> condition) {
-		if (!condition.isValid()) {
-			String oldExp = condition.toString();
-			if (oldExp.contains("=")) {
-				String newExpressionAsString = oldExp.replace("=", "==");
-				condition.setUnparsedBinding(newExpressionAsString);
-				condition.revalidate();
-				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
-						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
-			}
-			if (oldExp.contains("&")) {
-				String newExpressionAsString = oldExp.replace("&", "&&");
-				condition.setUnparsedBinding(newExpressionAsString);
-				condition.revalidate();
-				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
-						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
-			}
-			if (oldExp.contains("|")) {
-				String newExpressionAsString = oldExp.replace("|", "||");
-				condition.setUnparsedBinding(newExpressionAsString);
-				condition.revalidate();
-				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
-						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
-			}
-		}
-	}
-
-	private void convertExpressionDataBinding(DataBinding<?> expression) {
-		if (!expression.isValid()) {
-			String oldExp = expression.toString();
-			if (oldExp.contains("super.create")) {
-				String newExpressionAsString = oldExp.replace("super.create(", "super(");
-				expression.setUnparsedBinding(newExpressionAsString);
-				expression.revalidate();
-				System.out.println("Replaced " + oldExp + " by " + expression + " valid: " + expression.isValid()
-						+ (!expression.isValid() ? " reason: " + expression.invalidBindingReason() : ""));
-			}
-		}
-	}
-
 	public void convert() {
 
 		System.out.println("convertFromXMLToFML for " + compilationUnit);
@@ -146,6 +107,12 @@ public class XMLToFMLConverter {
 					CreationScheme cs = (CreationScheme) object;
 					if (cs.getName().equals("_create")) {
 						cs.setAnonymous(true);
+					}
+				}
+				if (object instanceof DeletionScheme) {
+					DeletionScheme ds = (DeletionScheme) object;
+					if (ds.getName().equals("_delete")) {
+						ds.setAnonymous(true);
 					}
 				}
 			}
@@ -458,7 +425,7 @@ public class XMLToFMLConverter {
 		}
 
 		if (replacingAction != null) {
-			addToListAction.replaceWith(replacingAction);			
+			addToListAction.replaceWith(replacingAction);	
 		}
 
 	}
@@ -510,5 +477,47 @@ public class XMLToFMLConverter {
 		}
 
 	}
+	
+	private void convertConditionalDataBinding(DataBinding<Boolean> condition) {
+		if (!condition.isValid()) {
+			String oldExp = condition.toString();
+			if (oldExp.contains("=")) {
+				String newExpressionAsString = oldExp.replace("=", "==");
+				condition.setUnparsedBinding(newExpressionAsString);
+				condition.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
+						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
+			}
+			if (oldExp.contains("&")) {
+				String newExpressionAsString = oldExp.replace("&", "&&");
+				condition.setUnparsedBinding(newExpressionAsString);
+				condition.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
+						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
+			}
+			if (oldExp.contains("|")) {
+				String newExpressionAsString = oldExp.replace("|", "||");
+				condition.setUnparsedBinding(newExpressionAsString);
+				condition.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + condition + " valid: " + condition.isValid()
+						+ (!condition.isValid() ? " reason: " + condition.invalidBindingReason() : ""));
+			}
+		}
+	}
+
+	private void convertExpressionDataBinding(DataBinding<?> expression) {
+		if (!expression.isValid()) {
+			String oldExp = expression.toString();
+			if (oldExp.contains("super.create")) {
+				String newExpressionAsString = oldExp.replace("super.create(", "super(");
+				expression.setUnparsedBinding(newExpressionAsString);
+				expression.revalidate();
+				System.out.println("Replaced " + oldExp + " by " + expression + " valid: " + expression.isValid()
+						+ (!expression.isValid() ? " reason: " + expression.invalidBindingReason() : ""));
+			}
+		}
+	}
+
+
 
 }
