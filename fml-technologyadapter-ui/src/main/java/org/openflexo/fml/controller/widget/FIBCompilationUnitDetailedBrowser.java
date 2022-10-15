@@ -40,10 +40,13 @@ package org.openflexo.fml.controller.widget;
 
 import javax.swing.SwingUtilities;
 
+import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -59,9 +62,12 @@ import org.openflexo.view.controller.FlexoController;
 public class FIBCompilationUnitDetailedBrowser extends FIBBrowserView<FMLCompilationUnit> {
 	private static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBCompilationUnitDetailedBrowser.fib");
 
-	public FIBCompilationUnitDetailedBrowser(FMLCompilationUnit compilationUnit, FlexoController controller) {
+	private final FMLEditor fmlEditor;
+	
+	public FIBCompilationUnitDetailedBrowser(FMLCompilationUnit compilationUnit, FMLEditor fmlEditor, FlexoController controller) {
 		super(compilationUnit, controller, FIB_FILE,
 				controller != null ? controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales() : null);
+		this.fmlEditor = fmlEditor;
 		SwingUtilities.invokeLater(() -> {
 			if (getFIBView("browser") instanceof JFIBBrowserWidget) {
 				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("browser");
@@ -73,6 +79,24 @@ public class FIBCompilationUnitDetailedBrowser extends FIBBrowserView<FMLCompila
 		});
 	}
 
+	public FMLEditor getFMLEditor() {
+		return fmlEditor;
+	}
+	
+	@Override
+	public FIBCompilationUnitDetailedBrowserFIBController getFIBController() {
+		return (FIBCompilationUnitDetailedBrowserFIBController) super.getFIBController();
+	}
+
+	
+	@Override
+	protected FIBCompilationUnitDetailedBrowserFIBController createFibController(FIBComponent fibComponent, FlexoController controller,
+			LocalizedDelegate locales) {
+		FIBCompilationUnitDetailedBrowserFIBController returned = (FIBCompilationUnitDetailedBrowserFIBController)super.createFibController(fibComponent, controller, locales);
+		returned.setBrowser(this);
+		return returned;
+	}
+	
 	/*@Override
 	public void fireObjectSelected(FlexoObject object) {
 		// System.out.println("FIBVirtualModelLibraryBrowser / fireObjectSelected: " + object);

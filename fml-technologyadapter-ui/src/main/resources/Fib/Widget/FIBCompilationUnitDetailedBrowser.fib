@@ -3,7 +3,7 @@
 	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
 	border="empty" sizeAdjustment="OriginalSize" layout="border"
 	borderRight="0"
-	controllerClassName="org.openflexo.fml.controller.FMLFIBController">
+	controllerClassName="org.openflexo.fml.controller.widget.FIBCompilationUnitDetailedBrowserFIBController">
 		<Browser id="6" backgroundSelectionColor="9,80,208"
 			visibleRowCount="5" boundToSelectionManager="true"
 			backgroundNonSelectionColor="255,255,255"

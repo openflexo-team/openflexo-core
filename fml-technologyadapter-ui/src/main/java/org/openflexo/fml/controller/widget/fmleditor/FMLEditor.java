@@ -44,6 +44,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.RadialGradientPaint;
+import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
@@ -53,6 +54,10 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import javax.swing.text.Highlighter.HighlightPainter;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
@@ -71,8 +76,10 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -109,6 +116,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 	private final CompilationUnitResource fmlResource;
 
 	private FMLRSyntaxTextArea textArea;
+	private RTextScrollPane scrollPane;
 	private Gutter gutter;
 	private TextFinderPanel finderToolbar;
 
@@ -198,6 +206,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 			e.printStackTrace();
 		}
 
+		highlighter = textArea.getHighlighter();
+		painter = new DefaultHighlighter.DefaultHighlightPainter(new Color(206,235,255));
+
+
 		textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
 
 		fmlResource.getLoadedResourceData().getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -205,14 +217,14 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		JPanel editorPanel = new JPanel();
 		editorPanel.setLayout(new BorderLayout());
 
-		RTextScrollPane sp = new RTextScrollPane(textArea);
-		((RSyntaxTextArea) sp.getTextArea()).setSyntaxEditingStyle("text/fml");
-		editorPanel.add(sp, BorderLayout.CENTER);
+		scrollPane = new RTextScrollPane(textArea);
+		((RSyntaxTextArea) scrollPane.getTextArea()).setSyntaxEditingStyle("text/fml");
+		editorPanel.add(scrollPane, BorderLayout.CENTER);
 
 		finderToolbar = new TextFinderPanel(this);
 		editorPanel.add(finderToolbar, BorderLayout.SOUTH);
 
-		gutter = sp.getGutter();
+		gutter = scrollPane.getGutter();
 		// gutter.setBookmarkIcon(new ImageIcon("bookmark.png"));
 		// gutter.setBookmarkIcon(IconLibrary.FIXABLE_ERROR_ICON);
 		gutter.setBookmarkingEnabled(true);
@@ -227,7 +239,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		parser = new FMLEditorParser(this, fmlResource.getLoadedResourceData());
 		textArea.setParser(parser);
 
-		browser = new FIBCompilationUnitDetailedBrowser(fmlResource.getLoadedResourceData(), flexoController);
+		browser = new FIBCompilationUnitDetailedBrowser(fmlResource.getLoadedResourceData(), this, flexoController);
 		splitPanel.add(browser, LayoutPosition.RIGHT.name());
 
 		validationPanel = new ValidationPanel(getValidationReport(), flexoController);
@@ -429,5 +441,35 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		split.setChildren(l1, MSL_FACTORY.makeDivider(), l2);
 		return split;
 	}
+
+	private Highlighter highlighter;
+	private HighlightPainter painter;
+
+	public void clearHighlights() {
+		highlighter.removeAllHighlights();
+	}
+
+
+	public void highlightObject(FMLPrettyPrintable object) {
+		FMLObjectNode<?,?,?> node = (FMLObjectNode<?,?,?>)object.getPrettyPrintDelegate();
+		int beginIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getStartPosition());
+		int endIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getEndPosition());
+		//System.out.println("Fragment: "+node.getLastParsedFragment());
+		//System.out.println("On selectionne "+beginIndex+"-"+endIndex);
+		try {
+			Rectangle viewRect = textArea.modelToView(beginIndex);
+			viewRect.height = scrollPane.getBounds().height-20;
+			// Scroll to make the rectangle visible
+			textArea.scrollRectToVisible(viewRect);
+			// And add highlight
+			highlighter.addHighlight(beginIndex, endIndex, painter );
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+
 
 }
