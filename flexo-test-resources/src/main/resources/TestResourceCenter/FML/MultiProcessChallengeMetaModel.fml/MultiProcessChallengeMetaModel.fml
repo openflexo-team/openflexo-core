@@ -6,7 +6,7 @@ import java.lang.String;
 @URI("http://www.openflexo.org/test/MultiProcessChallengeMetaModel.fml")
 @Version("0.1")
 @Author("sylvain")
-public model MetaModel {
+public model MultiProcessChallengeMetaModel {
 	List<Actor> actorList  {
 		List<Actor> get() {
 			return select Actor from this;
