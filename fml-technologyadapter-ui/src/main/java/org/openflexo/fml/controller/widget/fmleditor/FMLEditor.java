@@ -85,12 +85,12 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.swing.layout.JXMultiSplitPane;
-import org.openflexo.swing.layout.JXMultiSplitPane.DividerPainter;
 import org.openflexo.swing.layout.MultiSplitLayout;
+import org.openflexo.swing.layout.MultiSplitLayoutFactory;
+import org.openflexo.swing.layout.JXMultiSplitPane.DividerPainter;
 import org.openflexo.swing.layout.MultiSplitLayout.Divider;
 import org.openflexo.swing.layout.MultiSplitLayout.Leaf;
 import org.openflexo.swing.layout.MultiSplitLayout.Split;
-import org.openflexo.swing.layout.MultiSplitLayoutFactory;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
@@ -210,7 +210,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		painter = new DefaultHighlighter.DefaultHighlightPainter(new Color(206,235,255));
 
 
-		textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
+		//textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
 
 		fmlResource.getLoadedResourceData().getPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -244,6 +244,11 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 		validationPanel = new ValidationPanel(getValidationReport(), flexoController);
 		splitPanel.add(validationPanel, LayoutPosition.BOTTOM.name());
+		
+		// This call is a little bit brutal, because it triggers a new parsing
+		// But it has the advantage to recompute a full-valid FML pretty-print with FML code and internal representation synchronized
+		// Validation status is also updated during this call
+		textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
 
 	}
 
