@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -53,7 +56,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechnologyAdapter> {
+public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechnologyAdapter>,PropertyChangeListener {
 
 	protected FlexoConcept flexoConcept;
 	protected String conceptURI;
@@ -62,6 +65,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	// should be nullified as quickly as possible (nullified when resolved)
 	protected CustomTypeFactory<?> customTypeFactory;
 
+	private final PropertyChangeSupport pcSupport;
+	
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
 	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType((FlexoConcept) null);
@@ -145,13 +150,15 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		}
 	}
 
-	public FlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
-		this.flexoConcept = anFlexoConcept;
+	public FlexoConceptInstanceType(FlexoConcept aFlexoConcept) {
+		pcSupport = new PropertyChangeSupport(this);
+		setFlexoConcept(aFlexoConcept);
 		// System.out.println("Created: FlexoConceptInstanceType-[" + Integer.toHexString(super.hashCode()) + "]");
 		// Thread.dumpStack();
 	}
 
 	public FlexoConceptInstanceType(String flexoConceptURI, CustomTypeFactory<?> customTypeFactory) {
+		pcSupport = new PropertyChangeSupport(this);
 		this.conceptURI = flexoConceptURI;
 		this.customTypeFactory = customTypeFactory;
 
@@ -159,6 +166,17 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		// Thread.dumpStack();
 	}
 
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public CustomTypeFactory<?> getCustomTypeFactory() {
 		return customTypeFactory;
 	}
@@ -174,6 +192,13 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		return flexoConcept;
 	}
 
+	protected void setFlexoConcept(FlexoConcept flexoConcept) {
+		this.flexoConcept = flexoConcept;
+		if (flexoConcept != null) {
+			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+	}
+	
 	@Override
 	public FMLTechnologyAdapter getSpecificTechnologyAdapter() {
 		if (flexoConcept != null) {
@@ -273,8 +298,9 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		if (factory instanceof FlexoConceptInstanceTypeFactory) {
 			FlexoConcept concept = ((FlexoConceptInstanceTypeFactory) factory).resolveFlexoConcept(this);
 			if (concept != null) {
-				flexoConcept = concept;
+				setFlexoConcept(concept);
 				this.customTypeFactory = null;
+				getPropertyChangeSupport().firePropertyChange(TYPE_CHANGED, false, true);
 			}
 			else {
 				this.customTypeFactory = factory;
@@ -353,4 +379,19 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		return new FlexoConceptInstanceType(conceptName, getCustomTypeFactory());
 	}
 
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() instanceof FlexoConcept) {
+			// We listen here to the FlexoConcept which this type refers to
+			// We need to notify a TYPE_CHANGED event for all objects listening to that type
+			if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.ACCESSIBLE_PROPERTIES_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.ACCESSIBLE_BEHAVIOURS_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
+				// TODO: maybe other properties may involve TYPE_CHANGED ???
+				getPropertyChangeSupport().firePropertyChange(TYPE_CHANGED, false, true);
+			}
+		}
+	}
+	
 }
