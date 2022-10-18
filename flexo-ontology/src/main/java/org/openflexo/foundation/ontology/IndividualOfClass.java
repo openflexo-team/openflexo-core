@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.ontology;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
@@ -133,11 +134,24 @@ public abstract class IndividualOfClass<TA extends TechnologyAdapter<TA>, I exte
 	}
 
 	private final C ontologyClass;
+	private final PropertyChangeSupport pcSupport;
 
 	public IndividualOfClass(C anOntologyClass) {
+		pcSupport = new PropertyChangeSupport(this);
 		this.ontologyClass = anOntologyClass;
 	}
 
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public C getOntologyClass() {
 		if (ontologyClass != null) {
 			return ontologyClass;

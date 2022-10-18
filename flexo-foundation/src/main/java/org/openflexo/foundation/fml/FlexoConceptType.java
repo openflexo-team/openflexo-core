@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -54,6 +55,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 public class FlexoConceptType implements TechnologySpecificType<FMLTechnologyAdapter> {
 
+	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptType.class.getPackage().getName());
+
 	protected FlexoConcept flexoConcept;
 	protected String conceptURI;
 
@@ -61,7 +64,7 @@ public class FlexoConceptType implements TechnologySpecificType<FMLTechnologyAda
 	// should be nullified as quickly as possible (nullified when resolved)
 	protected CustomTypeFactory<?> customTypeFactory;
 
-	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptType.class.getPackage().getName());
+	private final PropertyChangeSupport pcSupport;
 
 	public static FlexoConceptType UNDEFINED_FLEXO_CONCEPT_TYPE = new FlexoConceptType((FlexoConcept) null);
 
@@ -139,14 +142,27 @@ public class FlexoConceptType implements TechnologySpecificType<FMLTechnologyAda
 	}
 
 	public FlexoConceptType(FlexoConcept anFlexoConcept) {
+		pcSupport = new PropertyChangeSupport(this);
 		this.flexoConcept = anFlexoConcept;
 	}
 
 	public FlexoConceptType(String flexoConceptURI, CustomTypeFactory<?> customTypeFactory) {
+		pcSupport = new PropertyChangeSupport(this);
 		this.conceptURI = flexoConceptURI;
 		this.customTypeFactory = customTypeFactory;
 	}
 
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public String getConceptURI() {
 		return conceptURI;
 	}

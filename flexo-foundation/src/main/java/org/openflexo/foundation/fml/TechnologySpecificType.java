@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
  * Represents a {@link CustomType} in a given technology, returned by {@link #getSpecificTechnologyAdapter()} method
@@ -47,8 +48,10 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author sylvain
  * 
  */
-public interface TechnologySpecificType<TA extends TechnologyAdapter<TA>> extends CustomType {
+public interface TechnologySpecificType<TA extends TechnologyAdapter<TA>> extends CustomType, HasPropertyChangeSupport {
 
+	public static final String TYPE_CHANGED = "typeChanged";
+	
 	public TA getSpecificTechnologyAdapter();
 
 }

@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.ontology;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
@@ -115,11 +116,24 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter<TA>> implements 
 	}
 
 	private final IFlexoOntologyStructuralProperty<TA> ontologyProperty;
+	private final PropertyChangeSupport pcSupport;
 
 	public SubPropertyOfProperty(IFlexoOntologyStructuralProperty<TA> anOntologyProperty) {
+		pcSupport = new PropertyChangeSupport(this);
 		this.ontologyProperty = anOntologyProperty;
 	}
 
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public IFlexoOntologyStructuralProperty<TA> getOntologyProperty() {
 		return ontologyProperty;
 	}

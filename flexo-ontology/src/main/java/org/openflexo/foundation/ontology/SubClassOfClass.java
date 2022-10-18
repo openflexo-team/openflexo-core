@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.ontology;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
@@ -114,11 +115,24 @@ public class SubClassOfClass<TA extends TechnologyAdapter<TA>> implements Techno
 	}
 
 	private final IFlexoOntologyClass<TA> ontologyClass;
+	private final PropertyChangeSupport pcSupport;
 
 	public SubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
+		pcSupport = new PropertyChangeSupport(this);
 		this.ontologyClass = anOntologyClass;
 	}
 
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public IFlexoOntologyClass<TA> getOntologyClass() {
 		if (ontologyClass != null) {
 			return ontologyClass;
