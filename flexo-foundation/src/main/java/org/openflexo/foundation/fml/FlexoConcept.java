@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -151,6 +153,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
+	public static final String ACCESSIBLE_PROPERTIES_KEY = "accessibleProperties";
+	public static final String ACCESSIBLE_BEHAVIOURS_KEY = "accessibleBehaviours";
 	public static final String APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY = "applicableContainerFlexoConcept";
 
 	// TODO: (SGU) i think we have to remove inverse property here
@@ -842,7 +846,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public String getPresentationName();
 
-	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
+	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept, PropertyChangeListener {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 
@@ -857,6 +861,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		private FlexoConceptBindingModel bindingModel;
 
+		@Deprecated
 		private String parentFlexoConceptList;
 
 		/**
@@ -1989,18 +1994,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 				parentFlexoConcepts.add(parentFlexoConcept);
 				parentFlexoConcept.addToChildFlexoConcepts(this);
+				// Listen to the new parent FlexoConcept
+				parentFlexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
-				parentFlexoConceptList = null;
-				accessibleProperties = null;
-				VirtualModel owningVirtualModel = getOwningVirtualModel();
-				if (owningVirtualModel != null) {
-					owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
-					owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
-							owningVirtualModel.getAllSuperFlexoConcepts());
-				}
+				notifyParentConceptsHaveChanged();
 				getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
 						getApplicableContainerFlexoConcept());
-				setIsModified();
 			}
 			else {
 				throw new InconsistentFlexoConceptHierarchyException(
@@ -2010,9 +2009,19 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
+			// Stop listen to new parent FlexoConcept
+			FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
+			parentFlexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
 			parentFlexoConcepts.remove(parentFlexoConcept);
 			parentFlexoConcept.removeFromChildFlexoConcepts(this);
 			getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", parentFlexoConcept, null);
+			notifyParentConceptsHaveChanged();
+			getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
+					getApplicableContainerFlexoConcept());
+		}
+
+		// Called when the parent concept hierarchy has changed
+		private void notifyParentConceptsHaveChanged() {
 			parentFlexoConceptList = null;
 			accessibleProperties = null;
 			VirtualModel owningVirtualModel = getOwningVirtualModel();
@@ -2021,8 +2030,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
 						owningVirtualModel.getAllSuperFlexoConcepts());
 			}
+			getPropertyChangeSupport().firePropertyChange(ACCESSIBLE_PROPERTIES_KEY, false,true);
+			getPropertyChangeSupport().firePropertyChange(ACCESSIBLE_BEHAVIOURS_KEY, false,true);
+			setIsModified();
+			
 		}
-
+		
 		/**
 		 * Return declared parent FlexoConcept for this {@link FlexoConcept}<br>
 		 * Declared parent FlexoConcept are those returned by getParentFlexoConcepts() method
@@ -2396,6 +2409,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public void setAuthor(String author) {
 			if (isDeserializing() || requireChange(getAuthor(), author)) {
 				setSingleMetaData("Author", author, String.class);
+			}
+		}
+		
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.ACCESSIBLE_PROPERTIES_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.ACCESSIBLE_BEHAVIOURS_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
+				notifyParentConceptsHaveChanged();
 			}
 		}
 
