@@ -40,6 +40,7 @@ package org.openflexo.fml.fib.widget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -56,6 +57,7 @@ import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
@@ -136,15 +138,41 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 		assertEquals(1, cu.getVirtualModel().getFlexoProperties().size());
 		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
 	}
-	
+
 	@Test
 	@TestOrder(5)
 	public void validate() {
-		System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
+		//System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
+
+		FlexoConcept modelingElement = compilationUnit.getVirtualModel().getFlexoConcept("ModelingElement");
+		assertNotNull(modelingElement);
+		assertNotNull(modelingElement.getAccessibleProperty("name"));
+
+		FlexoConcept typeElement = compilationUnit.getVirtualModel().getFlexoConcept("Type");
+		assertNotNull(typeElement);
+		assertTrue(typeElement.getParentFlexoConcepts().contains(modelingElement));
+		assertNotNull(typeElement.getAccessibleProperty("name"));
+
+		FlexoConcept taskTypeElement = compilationUnit.getVirtualModel().getFlexoConcept("TaskType");
+		assertNotNull(taskTypeElement);
+		assertTrue(taskTypeElement.getParentFlexoConcepts().contains(typeElement));
+		assertNotNull(taskTypeElement.getAccessibleProperty("name"));
+
+
+		/*System.out.println("modelingElement="+modelingElement);
+		System.out.println("modelingElement.name="+modelingElement.getAccessibleProperty("name"));
+
+		System.out.println("typeElement="+typeElement);
+		System.out.println("typeElement.parent="+typeElement.getParentFlexoConcepts());
+		System.out.println("typeElement.name="+typeElement.getAccessibleProperty("name"));
+
+		System.out.println("taskTypeElement="+taskTypeElement);
+		System.out.println("taskTypeElement.parent="+taskTypeElement.getParentFlexoConcepts());
+		System.out.println("taskTypeElement.name="+taskTypeElement.getAccessibleProperty("name"));*/
 
 		ValidationReport report = validate(compilationUnit);
 		assertEquals(0, report.getAllErrors().size());
-		
+
 	}
 
 	@Test
@@ -163,6 +191,27 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 		// ModuleInspectorController inspectorController = new ModuleInspectorController(null);
 		// fibController.setInspectorController
 		gcDelegate.addTab("Standard GUI", widget.getController());
+	}
+
+	@Test
+	@TestOrder(7)
+	@Category(UITest.class)
+	public void testValidateAfterTextEditionTimeOut() {
+
+		log("testValidateAfterTextEditionTimeOut");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		FMLCompilationUnit cu2 = fmlEditor.getFMLResource().getCompilationUnit();
+		assertSame(compilationUnit, cu2);
+
+		ValidationReport report = validate(cu2);
+		assertEquals(0, report.getAllErrors().size());
 	}
 
 	public static void initGUI() {
