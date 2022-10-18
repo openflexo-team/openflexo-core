@@ -43,7 +43,6 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 
 /**
@@ -52,24 +51,29 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
  * @author sylvain
  * 
  */
-public class DeclarationBindingVariable extends BindingVariable implements PropertyChangeListener {
+public class DeclarationBindingVariable extends AbstractFMLBindingVariable implements PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(DeclarationBindingVariable.class.getPackage().getName());
 
 	private final DeclarationAction<?> action;
-	private Type lastKnownType = null;
 
 	public DeclarationBindingVariable(DeclarationAction<?> action) {
-		super(action.getVariableName(), action.getAssignableType(), true);
+		super(action.getVariableName(), true);
 		this.action = action;
 		setCacheable(false);
-		lastKnownType = action.getAssignableType();
+		typeMightHaveChanged();
 		if (action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+		if (action.getAssignableAction() != null && action.getAssignableAction().getPropertyChangeSupport() != null) {
+			action.getAssignableAction().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
 	public void delete() {
+		if (action.getAssignableAction() != null && action.getAssignableAction().getPropertyChangeSupport() != null) {
+			action.getAssignableAction().getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
@@ -92,16 +96,18 @@ public class DeclarationBindingVariable extends BindingVariable implements Prope
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		super.propertyChange(evt);
 		if (evt.getSource() == getAction()) {
 			if (evt.getPropertyName().equals(DeclarationAction.VARIABLE_NAME_KEY)) {
-				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}
-			if (lastKnownType != getType()) {
-				// System.out.println("Notify type changing");
-				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
-				lastKnownType = getType();
+			else {
+				typeMightHaveChanged();
 			}
 		}
+		if (evt.getSource() == getAction().getAssignableAction()) {
+			typeMightHaveChanged();
+		}
 	}
+
 }

@@ -55,16 +55,15 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
  * @author sylvain
  *
  */
-public class FlexoPropertyBindingVariable extends BindingVariable implements PropertyChangeListener {
+public class FlexoPropertyBindingVariable extends AbstractFMLBindingVariable implements PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(FlexoPropertyBindingVariable.class.getPackage().getName());
 
 	private final FlexoProperty<?> flexoProperty;
-	private Type lastKnownType = null;
 
 	public FlexoPropertyBindingVariable(FlexoProperty<?> flexoProperty) {
-		super(flexoProperty.getName(), flexoProperty.getResultingType(), !flexoProperty.isReadOnly());
+		super(flexoProperty.getName(), !flexoProperty.isReadOnly());
 		this.flexoProperty = flexoProperty;
-		lastKnownType = flexoProperty.getResultingType();
+		typeMightHaveChanged();
 		if (flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
@@ -72,10 +71,6 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 
 	@Override
 	public void delete() {
-		// System.out.println("################# Desactivate " + this + " " + Integer.toHexString(hashCode()) + " on ecoute " +
-		// flexoProperty
-		// + " cs=" + flexoProperty.getPropertyChangeSupport());
-
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
@@ -99,6 +94,8 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 
+		super.propertyChange(evt);
+		
 		if (evt.getSource() == getFlexoProperty()) {
 			if (evt.getPropertyName().equals(FlexoProperty.NAME_KEY) || evt.getPropertyName().equals(FlexoProperty.PROPERTY_NAME_KEY)) {
 				// System.out.println("Notify name changing for " + getFlexoProperty() + " new=" + getVariableName());
@@ -106,33 +103,7 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 					getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 				}
 			}
-			if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoProperty.RESULTING_TYPE_PROPERTY)) {
-				Type newType = getFlexoProperty().getResultingType();
-				if (lastKnownType == null || !lastKnownType.equals(newType)) {
-					/*System.out.println("pcSupport=" + getPropertyChangeSupport());
-					if (getPropertyChangeSupport() == null) {
-						System.out.println("trop con lui");
-						System.out.println("ca vient de " + evt.getSource());
-						Thread.dumpStack();
-					}*/
-					if (getPropertyChangeSupport() != null) {
-						getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, newType);
-					}
-					lastKnownType = newType;
-				}
-			}
-			if (lastKnownType != getType()) {
-				// We might arrive here only in the case of a FlexoRole does not correctely notify
-				// its type change. We warn it to 'tell' the developper that such notification should be done
-				// in FlexoRole (see IndividualRole for example)
-				// logger.warning("Detecting un-notified type changing for FlexoProperty " + flexoProperty + " from " + lastKnownType + " to
-				// "
-				// + getType() + ". Trying to handle case.");
-				if (getPropertyChangeSupport() != null) {
-					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
-				}
-				lastKnownType = getType();
-			}
+			typeMightHaveChanged();
 		}
 	}
 

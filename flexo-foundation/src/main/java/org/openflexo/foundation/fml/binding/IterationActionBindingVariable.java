@@ -43,7 +43,6 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.controlgraph.AbstractIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 
@@ -53,16 +52,17 @@ import org.openflexo.foundation.fml.controlgraph.IterationAction;
  * @author sylvain
  * 
  */
-public class IterationActionBindingVariable extends BindingVariable implements PropertyChangeListener {
+public class IterationActionBindingVariable extends AbstractFMLBindingVariable implements PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(IterationActionBindingVariable.class.getPackage().getName());
 
 	private final AbstractIterationAction action;
-	private Type lastKnownType = null;
+	//private Type lastKnownType = null;
 
 	public IterationActionBindingVariable(AbstractIterationAction action) {
-		super(action.getIteratorName(), action.getItemType(), true);
+		super(action.getIteratorName(), true);
 		this.action = action;
-		lastKnownType = action.getItemType();
+		//lastKnownType = action.getItemType();
+		typeMightHaveChanged();
 		if (action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
@@ -71,16 +71,23 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 			((IterationAction) action).getIterationAction().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
-		/*if (action.getIteratorName().equals("taskType")) {
+		/*if (action.getIteratorName().equals("foo2")) {
 			if (action instanceof IterationAction) {
 				ExpressionActionImpl expression = (ExpressionActionImpl) (((IterationAction) action).getIterationAction());
 				System.out.println("expression=" + expression.getExpression());
-				if (expression.getExpression().toString().equals("taskTypes")) {
-					System.out.println("OK j'ai ma variable " + this + " iteration=" + action);
+				if (expression.getExpression().toString().equals("allFoo2s")) {
+					System.out.println("OK dans "+this+" j'ai ma variable " + this + " iteration=" + action);
+					System.out.println("type="+getType());
+					PROUT = true;
 				}
 			}
 		}*/
+			
+		//System.out.println("action:"+action);
+		//System.out.println("iterator:"+action.getIteratorName());
 	}
+
+	//boolean PROUT = false;
 
 	/*@Override
 	public String toString() {
@@ -121,12 +128,14 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 		// if (debug) {
 		// System.out.println("****** propertyChange " + evt.getPropertyName() + " source=" + evt.getSource());
 		// }
+		super.propertyChange(evt);
+		
 		if (evt.getSource() == getAction()) {
 			if (evt.getPropertyName().equals(IterationAction.ITERATOR_NAME_KEY)) {
 				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}
-			iteratorTypeMightHaveChanged();
+			typeMightHaveChanged();
 			if (evt.getPropertyName().equals(IterationAction.ITERATION_CONTROL_GRAPH_KEY)) {
 				if (action instanceof IterationAction && ((IterationAction) action).getIterationAction() != null
 						&& ((IterationAction) action).getIterationAction().getPropertyChangeSupport() != null) {
@@ -135,22 +144,47 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 					// .println("****** Also listening " + ((IterationAction) action).getIterationAction().getFMLRepresentation());
 					((IterationAction) action).getIterationAction().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
-				iteratorTypeMightHaveChanged();
+				typeMightHaveChanged();
 			}
 		}
 		if ((getAction() instanceof IterationAction) && (evt.getSource() == ((IterationAction) getAction()).getIterationAction())) {
-			iteratorTypeMightHaveChanged();
+			typeMightHaveChanged();
 		}
+		/*if (evt.getSource() == getType() && evt.getPropertyName().equals(TechnologySpecificType.TYPE_CHANGED)) {
+			System.out.println("Yes !!! le type est modifie pour "+getType());
+			System.out.println("Je notifie donc en tant que "+this);
+			getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, null, getType());
+		}
+		
+		if (evt.getSource() instanceof FlexoConcept && evt.getPropertyName().equals("parentFlexoConcepts")) {
+			System.out.println("PROUT hop, le concept "+evt.getSource()+" change de parents !!!");
+			FlexoProperty<?> accessibleProperty = ((FlexoConcept)evt.getSource()).getAccessibleProperty("name");
+			if (accessibleProperty != null) {
+				System.out.println("et donc on trouve finalement "+accessibleProperty);
+				System.out.println("Je notifie donc en tant que "+this);
+				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, null, getType());
+			}
+			//System.exit(-1);
+		}*/
 	}
 
-	private void iteratorTypeMightHaveChanged() {
+	/*private void iteratorTypeMightHaveChanged() {
 		if (lastKnownType != getType()) {
-			// if (debug) {
-			// System.out.println("Iterator type changed for " + getType());
-			// }
+			if (lastKnownType instanceof TechnologySpecificType) {
+				((TechnologySpecificType)lastKnownType).getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			if (getType() instanceof TechnologySpecificType) {
+				((TechnologySpecificType)getType()).getPropertyChangeSupport().addPropertyChangeListener(this);
+			}
+			
 			getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
 			lastKnownType = getType();
 		}
-	}
+	}*/
+	
+	/*@Override
+	public String toString() {
+		return "IterationActionBindingVariable["+Integer.toHexString(hashCode())+"]";
+	}*/
 
 }

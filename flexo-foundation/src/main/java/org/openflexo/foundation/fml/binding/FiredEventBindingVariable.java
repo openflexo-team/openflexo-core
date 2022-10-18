@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 
@@ -14,16 +13,15 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
  * @author sylvain
  * 
  */
-public class FiredEventBindingVariable extends BindingVariable implements PropertyChangeListener {
+public class FiredEventBindingVariable extends AbstractFMLBindingVariable implements PropertyChangeListener {
 
 	public static final String EVENT_NAME = "event";
 	private final EventListener eventListener;
-	private Type lastKnownType = null;
 
 	public FiredEventBindingVariable(EventListener eventListener) {
-		super(EVENT_NAME, FlexoConceptInstanceType.getFlexoConceptInstanceType(eventListener.getEventType()), true);
+		super(EVENT_NAME, true);
 		this.eventListener = eventListener;
-		lastKnownType = getType();
+		typeMightHaveChanged();
 		if (eventListener.getPropertyChangeSupport() != null) {
 			eventListener.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
@@ -56,19 +54,11 @@ public class FiredEventBindingVariable extends BindingVariable implements Proper
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		
+		super.propertyChange(evt);
+		
 		if (evt.getSource() == getEventListener()) {
-			/*if (evt.getPropertyName().equals(GetSetProperty.VALUE_VARIABLE_NAME_KEY)) {
-				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
-				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
-			}*/
-			valueVariableTypeMightHaveChanged();
-		}
-	}
-
-	private void valueVariableTypeMightHaveChanged() {
-		if (lastKnownType != getType()) {
-			getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
-			lastKnownType = getType();
+			typeMightHaveChanged();
 		}
 	}
 
