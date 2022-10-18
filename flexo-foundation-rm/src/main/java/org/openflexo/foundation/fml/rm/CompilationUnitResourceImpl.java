@@ -326,6 +326,7 @@ public abstract class CompilationUnitResourceImpl
 	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
 		cuNode.getSemanticsAnalyzer().finalizeDeserialization();
+		notifyResourceLoaded();
 	}
 
 	/**
@@ -373,7 +374,7 @@ public abstract class CompilationUnitResourceImpl
 			e.printStackTrace();
 		} finally {
 			setLoading(false);
-			notifyResourceLoaded();
+			//notifyResourceLoaded();
 		}
 
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
