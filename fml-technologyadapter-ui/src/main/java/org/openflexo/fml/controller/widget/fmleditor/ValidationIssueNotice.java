@@ -89,7 +89,7 @@ public class ValidationIssueNotice extends FMLNotice {
 	}
 
 	public RawSourceFragment getFragment() {
-		if (issue != null && issue.getCause() != null && issue.getValidable() instanceof FMLPrettyPrintable) {
+		if (issue != null && issue.getCause() != null && issue.getValidable() instanceof FMLPrettyPrintable && ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate() != null) {
 			if (StringUtils.isNotEmpty(issue.getCause().getFragmentContext())) {
 				FragmentContext context = FragmentContext.valueOf(issue.getCause().getFragmentContext());
 				if (context != null) {
