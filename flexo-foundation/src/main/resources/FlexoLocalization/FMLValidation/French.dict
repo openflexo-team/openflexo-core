@@ -31,6 +31,7 @@ binding_'($binding.bindingName)'_is_recommanded_here=binding_'($binding.bindingN
 binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\:\ ($binding)=binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_value_is_invalid\:\ ($binding)=binding_'($binding.bindingName)'_is_required_but_value_is_invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_was_not_set=binding_'($binding.bindingName)'_is_required_but_was_not_set
+cannot_resolve_type_($validable.type)=cannot_resolve_type_($validable.type)
 consistency_check_ok=V\u00E9rification de consistence conforme
 control_graph_declared_for_abstract_behaviour=control_graph_declared_for_abstract_behaviour
 controlling_property_shadowing=controlling_property_shadowing

@@ -31,6 +31,7 @@ binding_'($binding.bindingName)'_is_recommanded_here=Binding '($binding.bindingN
 binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\:\ ($binding)=Binding '($binding.bindingName)' is required but set value is invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_value_is_invalid\:\ ($binding)=Binding '($binding.bindingName)' is required but value is invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_was_not_set=Binding '($binding.bindingName)' is required but was not set
+cannot_resolve_type_($validable.type)=Cannot resolve type ($validable.type)
 consistency_check_ok=Consistency check ok
 control_graph_declared_for_abstract_behaviour=Control graph declared for abstract behaviour
 controlling_property_shadowing=Controlling property shadowing
