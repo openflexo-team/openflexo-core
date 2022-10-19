@@ -4,7 +4,7 @@
 	borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
 	titleFont="SansSerif,0,11" layout="border" borderRight="0"
 	opaque="false"
-	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
+	controllerClassName="org.openflexo.fml.controller.widget.FMLValidationPanelFIBController">
 	font="SansSerif,0,12" name="main">
 		<Panel align="left" borderTop="0" borderLeft="0"
 			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
@@ -23,19 +23,12 @@
 					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 					font="SansSerif,2,11" name="Label" />
 				<Label id="90"
-					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;reparse&lt;/a&gt;&lt;/html&gt;"
 					align="left" localize="true"
-					clickAction="controller.setShowErrorsWarnings(true)"
+					clickAction="controller.parseImmediately()"
 					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					visible="(!(controller.showErrorsWarnings))" font="SansSerif,0,10"
+					font="SansSerif,0,10"
 					name="Label3" />
-				<Label id="91"
-					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;"
-					align="left" localize="true"
-					clickAction="controller.setShowErrorsWarnings(false)"
-					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					visible="controller.showErrorsWarnings" font="SansSerif,0,10"
-					name="Label4" />
 				<Label id="92"
 					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;"
 					align="left" localize="true"
@@ -70,23 +63,14 @@
 		</Panel>
 	<LocalizedDictionary id="96">
 		<Localized id="149" lang="English"
-			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
-			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Reparse&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;reparse&lt;/a&gt;&lt;/html&gt;" />
 		<Localized id="150" lang="Dutch"
-			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Voir les erreurs&lt;/a&gt;&lt;/html&gt;"
-			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Reparse&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;reparse&lt;/a&gt;&lt;/html&gt;" />
 		<Localized id="151" lang="French"
-			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
-			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="152" lang="English"
-			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
-			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="153" lang="Dutch"
-			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
-			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
-		<Localized id="154" lang="French"
-			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Cacher les erreurs&lt;/a&gt;&lt;/html&gt;"
-			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Reanalyser&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;reparse&lt;/a&gt;&lt;/html&gt;" />
 		<Localized id="155" lang="English"
 			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalidate&lt;/a&gt;&lt;/html&gt;"
 			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />

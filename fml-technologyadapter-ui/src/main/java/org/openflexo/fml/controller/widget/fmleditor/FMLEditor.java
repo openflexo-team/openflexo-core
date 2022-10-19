@@ -71,7 +71,7 @@ import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitDetailedBrowser;
-import org.openflexo.fml.controller.widget.ValidationPanel;
+import org.openflexo.fml.controller.widget.FMLValidationPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -80,17 +80,18 @@ import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.swing.layout.JXMultiSplitPane;
-import org.openflexo.swing.layout.MultiSplitLayout;
-import org.openflexo.swing.layout.MultiSplitLayoutFactory;
 import org.openflexo.swing.layout.JXMultiSplitPane.DividerPainter;
+import org.openflexo.swing.layout.MultiSplitLayout;
 import org.openflexo.swing.layout.MultiSplitLayout.Divider;
 import org.openflexo.swing.layout.MultiSplitLayout.Leaf;
 import org.openflexo.swing.layout.MultiSplitLayout.Split;
+import org.openflexo.swing.layout.MultiSplitLayoutFactory;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
@@ -128,7 +129,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 	private FlexoController flexoController;
 
 	FIBCompilationUnitDetailedBrowser browser;
-	ValidationPanel validationPanel;
+	FMLValidationPanel validationPanel;
 
 	public FMLEditor(CompilationUnitResource fmlResource, FlexoController flexoController) {
 		super(new BorderLayout());
@@ -242,7 +243,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		browser = new FIBCompilationUnitDetailedBrowser(fmlResource.getLoadedResourceData(), this, flexoController);
 		splitPanel.add(browser, LayoutPosition.RIGHT.name());
 
-		validationPanel = new ValidationPanel(getValidationReport(), flexoController);
+		validationPanel = new FMLValidationPanel(getValidationReport(), this, flexoController);
 		splitPanel.add(validationPanel, LayoutPosition.BOTTOM.name());
 		
 		// This call is a little bit brutal, because it triggers a new parsing
@@ -474,7 +475,24 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		}
 	}
 
-
-
-
+	public void highlightLine(int lineNb) {
+		//System.out.println("Highlighting line "+lineNb);
+		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode)getFMLResource().getCompilationUnit().getPrettyPrintDelegate();
+		if (cuNode != null) {
+			int index = cuNode.getRawSource().getIndex(cuNode.getRawSource().new RawSourcePosition(lineNb, 0));
+			//System.out.println("Index: "+index);
+			try {
+				Rectangle viewRect = textArea.modelToView(index);
+				viewRect.height = scrollPane.getBounds().height-20;
+				// Scroll to make the rectangle visible
+				textArea.scrollRectToVisible(viewRect);
+				textArea.setCaretPosition(index);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		}
+	}
+	
 }

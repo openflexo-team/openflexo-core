@@ -38,8 +38,11 @@
 
 package org.openflexo.fml.controller.widget;
 
+import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -47,18 +50,39 @@ import org.openflexo.view.SelectionSynchronizedFIBView;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Browser allowing to display a {@link ValidationReport}<br>
+ * Panel allowing to display a {@link ValidationReport}<br>
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class ValidationPanel extends SelectionSynchronizedFIBView {
-	private static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/ValidationPanel.fib");
+public class FMLValidationPanel extends SelectionSynchronizedFIBView {
+	private static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FMLValidationPanel.fib");
 
-	public ValidationPanel(FMLValidationReport validationReport, FlexoController controller) {
+	private final FMLEditor fmlEditor;
+
+	public FMLValidationPanel(FMLValidationReport validationReport, FMLEditor fmlEditor, FlexoController controller) {
 		super(validationReport, controller, FIB_FILE,
 				controller != null ? controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales() : null);
+		this.fmlEditor = fmlEditor;		
 	}
+	
+	public FMLEditor getFMLEditor() {
+		return fmlEditor;
+	}
+	
+	@Override
+	protected FMLValidationPanelFIBController createFibController(FIBComponent fibComponent, FlexoController controller,
+			LocalizedDelegate locales) {
+		FMLValidationPanelFIBController returned = (FMLValidationPanelFIBController)super.createFibController(fibComponent, controller, locales);
+		returned.setValidationPanel(this);
+		return returned;
+	}
+	
+	@Override
+	public FMLValidationReport getDataObject() {
+		return (FMLValidationReport)super.getDataObject();
+	}
+
 
 }
