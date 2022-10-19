@@ -57,6 +57,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour.FlexoBehaviourImpl;
 import org.openflexo.foundation.fml.md.ListMetaData;
@@ -64,6 +65,7 @@ import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -72,6 +74,9 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -83,6 +88,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoBehaviourParameter.FlexoBehaviourParameterImpl.class)
 @XMLElement(xmlTag = "GenericBehaviourParameter")
+@FMLMigration("Rename to FlexoBehaviourArgument")
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext, FMLPrettyPrintable {
 
 	public static enum WidgetType {
@@ -603,12 +609,12 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		/*private boolean isRequired = false;
-		
+
 		@Override
 		public boolean getIsRequired() {
 			return isRequired;
 		}
-		
+
 		@Override
 		public final void setIsRequired(boolean flag) {
 			isRequired = flag;
@@ -743,4 +749,35 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class TypeMustBeValid
+	extends ValidationRule<TypeMustBeValid, FlexoBehaviourParameter> {
+
+		public TypeMustBeValid() {
+			super(FlexoBehaviourParameter.class, "argument_type_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<TypeMustBeValid, FlexoBehaviourParameter> applyValidation(FlexoBehaviourParameter behaviourArgument) {
+			if (behaviourArgument.getType() == null) {
+				return new ValidationError<>(this, behaviourArgument, "argument_type_must_be_declared");
+			}
+			if (TypeUtils.isVoid(behaviourArgument.getType())) {
+				return new ValidationError<>(this, behaviourArgument, "argument_type_cannot_be_void");
+			}
+			if (behaviourArgument.getType() instanceof UnresolvedType) {
+				return new ValidationError<>(this, behaviourArgument, "unresolved_type_($validable.type)");
+			}
+			if (behaviourArgument.getType() instanceof CustomType) {
+				if (!((CustomType)behaviourArgument.getType()).isResolved()) {
+					return new ValidationError<>(this, behaviourArgument, "cannot_resolve_type_($validable.type)");
+				}
+			}
+			return null;
+		}
+
+	}
+
+
 }
