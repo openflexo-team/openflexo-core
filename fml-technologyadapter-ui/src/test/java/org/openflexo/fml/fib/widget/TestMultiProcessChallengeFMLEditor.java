@@ -200,6 +200,8 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 
 		log("testValidateAfterTextEditionTimeOut");
 
+		fmlEditor.getTextArea().setText(compilationUnit.getFMLPrettyPrint());
+		
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
