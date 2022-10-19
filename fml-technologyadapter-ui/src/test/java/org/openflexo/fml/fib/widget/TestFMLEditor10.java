@@ -56,7 +56,6 @@ import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -91,13 +90,6 @@ public class TestFMLEditor10 extends OpenflexoFIBTestCase {
 	private static CompilationUnitResource fmlResource;
 	private static FMLCompilationUnit compilationUnit;
 
-	static VirtualModel conceptualModel;
-	static FlexoConcept place;
-	static FlexoConcept transition;
-	static FlexoConcept placeToTransitionEdge;
-	static FlexoConcept transitionToPlaceEdge;
-	static FlexoConcept edge;
-
 	@BeforeClass
 	public static void setupClass() {
 		instanciateTestServiceManager();
@@ -118,7 +110,6 @@ public class TestFMLEditor10 extends OpenflexoFIBTestCase {
 		assertNotNull(fmlResource);
 
 		compilationUnit = fmlResource.getCompilationUnit();
-		conceptualModel = compilationUnit.getVirtualModel();
 
 	}
 
@@ -179,34 +170,7 @@ public class TestFMLEditor10 extends OpenflexoFIBTestCase {
 	public void performSomeChecks() {
 
 		log("performSomeChecks");
-
-		/*assertEquals(0, compilationUnit.getVirtualModel().getFlexoProperties().size());
-		assertEquals(0, compilationUnit.getVirtualModel().getFlexoBehaviours().size());
-		assertEquals(5, compilationUnit.getVirtualModel().getFlexoConcepts().size());
-
-		assertNotNull(place = compilationUnit.getVirtualModel().getFlexoConcept("Place"));
-		assertNotNull(transition = compilationUnit.getVirtualModel().getFlexoConcept("Transition"));
-		assertNotNull(placeToTransitionEdge = compilationUnit.getVirtualModel().getFlexoConcept("PlaceToTransitionEdge"));
-		assertNotNull(transitionToPlaceEdge = compilationUnit.getVirtualModel().getFlexoConcept("TransitionToPlaceEdge"));
-		assertNotNull(edge = compilationUnit.getVirtualModel().getFlexoConcept("Edge"));
-
-		assertTrue(edge.isAssignableFrom(placeToTransitionEdge));
-		assertTrue(edge.isAssignableFrom(transitionToPlaceEdge));
-
-		ActionScheme stepBehaviour = (ActionScheme) transition.getFlexoBehaviour("step");
-		assertNotNull(stepBehaviour);
-
-		ConditionalAction conditional = (ConditionalAction) stepBehaviour.getControlGraph();
-		Sequence sequence = (Sequence) conditional.getThenControlGraph();
-		IterationAction it1 = (IterationAction) sequence.getControlGraph1();
-		IterationAction it2 = (IterationAction) sequence.getControlGraph2();*/
-
-		/*System.out.println("Normalized : " + placeToTransitionEdge.getNormalizedFML());
 		
-		FlexoConceptNode fcNode = (FlexoConceptNode) placeToTransitionEdge.getPrettyPrintDelegate();
-		System.out.println(fcNode.debug());
-		System.out.println("FML : " + placeToTransitionEdge.getFMLPrettyPrint());*/
-
 		System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
 
 		ValidationReport validation = validate(compilationUnit);
