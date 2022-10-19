@@ -1,0 +1,31 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.util.List;
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestVirtualModelG.fml")
+@Version("0.1")
+model TestVirtualModelG {
+
+  Foo aFoo;
+
+  void test(Foo2 aFoo2) {
+    aFoo.testWithFoo2(parameters.aFoo2);
+  }
+  
+  concept Foo {
+    void testWithFoo2(Foo2 aFoo2) {
+      log "Hello "+parameters.aFoo2;
+      this.anOtherTestWithFoo2(parameters.aFoo2);
+    }
+    
+    void anOtherTestWithFoo2(Foo2 anOtherFoo2) {
+      log "Hello "+parameters.anOtherFoo2;
+    }
+
+  }
+  
+  concept Foo2 extends Foo {
+  }
+
+}
