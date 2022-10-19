@@ -133,7 +133,7 @@ public class FMLEditorParser extends AbstractParser {
 			// System.out.println(editor.getTextArea().getText());
 			// System.out.println("]");
 
-			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(), (modelSlotClasses) -> {
+			FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(), (modelSlotClasses) -> {
 				// System.out.println("Parsing: " + editor.getTextArea().getText());
 				// System.out.println("Uses model slot classes : " + modelSlotClasses);
 				return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
@@ -141,14 +141,15 @@ public class FMLEditorParser extends AbstractParser {
 
 			// System.out.println("Parsing succeeded");
 
-			for (ElementImportDeclaration elementImportDeclaration : returned.getElementImports()) {
+			for (ElementImportDeclaration elementImportDeclaration : parsedCompilationUnit.getElementImports()) {
 				elementImportDeclaration.clearReferencedObject();
 			}
 
 			// This is the update process
 			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
 			RequiresNewPrettyPrintListener pcListener = new RequiresNewPrettyPrintListener(existingData);
-			existingData.updateWith(returned);
+			existingData.updateWith(parsedCompilationUnit);
+			existingData.getTypingSpace().resolveUnresolvedTypes();
 
 			// There is a trick here: the update has nullified the resource
 			// (this is normal, just parsed FMLCompilationUnit does not knows the resource)

@@ -40,7 +40,10 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoServiceManager;
 
@@ -56,6 +59,8 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 
 	private final FMLCompilationUnit compilationUnit;
 
+	private List<CustomType> typesToResolve = new ArrayList<>();
+	
 	public FMLTypingSpace(FMLCompilationUnit compilationUnit) {
 		super(compilationUnit.getServiceManager());
 		this.compilationUnit = compilationUnit;
@@ -119,4 +124,14 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 		return "FMLTypingSpace";
 	}
 
+	public void addToTypesToResolve(CustomType typeToResolve) {
+		typesToResolve.add(typeToResolve);
+	}
+	
+	public void resolveUnresolvedTypes() {
+		for (CustomType typeToResolve : typesToResolve) {
+			typeToResolve.resolve();
+		}
+		typesToResolve.clear();
+	}
 }

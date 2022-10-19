@@ -62,7 +62,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	protected String conceptURI;
 
 	// factory stored for unresolved types
-	// should be nullified as quickly as possible (nullified when resolved)
 	protected CustomTypeFactory<?> customTypeFactory;
 
 	private final PropertyChangeSupport pcSupport;
@@ -149,6 +148,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 					.getFlexoConcept(typeToResolve.conceptURI);
 		}
 	}
+	
 
 	public FlexoConceptInstanceType(FlexoConcept aFlexoConcept) {
 		pcSupport = new PropertyChangeSupport(this);
@@ -161,7 +161,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		pcSupport = new PropertyChangeSupport(this);
 		this.conceptURI = flexoConceptURI;
 		this.customTypeFactory = customTypeFactory;
-
 		// System.out.println("Created: FlexoConceptInstanceType-[" + Integer.toHexString(super.hashCode()) + "] for " + flexoConceptURI);
 		// Thread.dumpStack();
 	}
@@ -288,7 +287,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public void resolve() {
-		if (customTypeFactory != null) {
+		if (flexoConcept == null && StringUtils.isNotEmpty(conceptURI) && customTypeFactory != null) {
 			resolve(customTypeFactory);
 		}
 	}
@@ -299,7 +298,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			FlexoConcept concept = ((FlexoConceptInstanceTypeFactory) factory).resolveFlexoConcept(this);
 			if (concept != null) {
 				setFlexoConcept(concept);
-				this.customTypeFactory = null;
+				// We dont nullify customTypeFactory anymore, since we need it for type translating
+				//this.customTypeFactory = null;
 				getPropertyChangeSupport().firePropertyChange(TYPE_CHANGED, false, true);
 			}
 			else {
@@ -371,12 +371,28 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			conceptName = getConceptURI();
 		}
 		Type returned = typingSpace.resolveType(conceptName);
+		
 		if (returned instanceof FlexoConceptInstanceType) {
 			// Type was found and looked up
-			return (FlexoConceptInstanceType) returned;
+			return (FlexoConceptInstanceType)returned;
 		}
-		// When not found, return a type which may be resolved later
-		return new FlexoConceptInstanceType(conceptName, getCustomTypeFactory());
+		
+		if (getCustomTypeFactory() != null) {
+			// When not found, return a type which may be resolved later
+			returned = new FlexoConceptInstanceType(conceptName, getCustomTypeFactory());
+		}
+		else if (typingSpace instanceof FMLTypingSpace) {
+			// No factory, create one using FMLCompilationUnit
+			returned = new FlexoConceptInstanceType(conceptName, new CompilationUnitFlexoConceptInstanceTypeFactory(((FMLTypingSpace)typingSpace).getFMLCompilationUnit()));
+		}
+		else {
+			logger.warning("Cannot translate type with such a TypingSpace: "+typingSpace);
+		}
+		
+		if (typingSpace instanceof FMLTypingSpace && returned instanceof FlexoConceptInstanceType && !((FlexoConceptInstanceType)returned).isResolved()) {
+			((FMLTypingSpace)typingSpace).addToTypesToResolve((FlexoConceptInstanceType)returned);
+		}
+		return (FlexoConceptInstanceType)returned;
 	}
 
 	@Override
