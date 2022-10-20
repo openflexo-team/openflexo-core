@@ -746,6 +746,7 @@ public class FMLFIBController extends FlexoFIBController {
 		if (issue != null) {
 			Validable objectToSelect = issue.getValidable();
 			if (getFlexoController() != null) {
+				System.out.println("Select and focus object "+objectToSelect);
 				getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
 			}
 		}

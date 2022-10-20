@@ -301,7 +301,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (displayNature != null) {
 			getModuleLoader().getActiveModule().getFlexoController().switchToPerspective(displayNature);
 		}
-		getModuleLoader().getActiveModule().getFlexoController().setCurrentEditedObjectAsModuleView(object);
+		getModuleLoader().getActiveModule().getFlexoController().setCurrentEditedObject(object);
 		getModuleLoader().getActiveModule().getFlexoController().getSelectionManager().setSelectedObject(object);
 	}
 

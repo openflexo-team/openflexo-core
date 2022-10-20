@@ -86,7 +86,6 @@ import org.openflexo.fml.controller.action.RenameFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.RenameVirtualModelInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
 import org.openflexo.fml.controller.view.StandardCompilationUnitView;
-import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
@@ -94,6 +93,7 @@ import org.openflexo.fml.controller.widget.FlexoConceptTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoEnumTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoResourceTypeEditor;
 import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -101,6 +101,7 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FMLValidationReport;
@@ -452,33 +453,47 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
 	}
 
-	@Override
-	public boolean hasModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
+	/*@Override
+	public boolean hasModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
+			FlexoPerspective perspective) {
 
 		if (object instanceof FMLCompilationUnit) {
 			return true;
 		}
-		if (object instanceof FlexoConcept) {
-			return true;
-		}
+		//if (object instanceof FlexoConcept) {
+		//	return true;
+		//}
 		// TODO not applicable
 		return false;
-	}
+	}*/
 
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
 		if (object instanceof FMLCompilationUnit) {
 			return ((FMLCompilationUnit) object).getVirtualModel().getName();
 		}
-		if (object instanceof FlexoConcept) {
+		/*if (object instanceof FlexoConcept) {
 			return ((FlexoConcept) object).getName();
-		}
+		}*/
 		if (object != null) {
 			return object.toString();
 		}
 		return "null";
 	}
 
+	@Override
+	public boolean isRepresentableInModuleView(TechnologyObject<FMLTechnologyAdapter> object) {
+		return (object instanceof FMLObject && ((FMLObject)object).getDeclaringCompilationUnit() != null);
+	}
+	
+	@Override
+	public FlexoObject getRepresentableMasterObject(TechnologyObject<FMLTechnologyAdapter> object) {
+		if (object instanceof FMLObject) {
+			return ((FMLObject)object).getDeclaringCompilationUnit();
+		}
+		return null;
+	}
+	
 	/**
 	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
 	 * rendering
@@ -487,15 +502,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 * @return newly created ModuleView for supplied technology object
 	 */
 	@Override
-	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
+	public ModuleView<?> createModuleViewForMasterObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 		if (object instanceof FMLCompilationUnit) {
 			return new StandardCompilationUnitView((FMLCompilationUnit) object, controller, perspective);
 		}
-		if (object instanceof FlexoConcept) {
+		/*if (object instanceof FlexoConcept) {
 			FlexoConcept ep = (FlexoConcept) object;
 			return new StandardFlexoConceptView(ep, controller, perspective);
-		}
+		}*/
 
 		return new EmptyPanel<>(controller, perspective, object);
 	}

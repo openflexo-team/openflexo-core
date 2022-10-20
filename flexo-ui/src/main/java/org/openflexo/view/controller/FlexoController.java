@@ -64,7 +64,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -198,9 +197,7 @@ import org.openflexo.view.controller.model.Location;
 import org.openflexo.view.menu.FlexoMenuBar;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Multimap;
 
 /**
  * General controller managing an application module (see {@link FlexoModule}).<br>
@@ -218,8 +215,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	private boolean disposed = false;
 
-	private final Map<Location, ModuleView<?>> viewsForLocation;
-	private final Multimap<ModuleView<?>, Location> locationsForView;
+	// This map stores ModuleViews associated to their perspective and master object
+	private final Map<FlexoPerspective,Map<FlexoObject, ModuleView<?>>> moduleViews = new HashMap<>();
+
+	//private final Map<Location, ModuleView<?>> viewsForLocation;
+	//private final Multimap<ModuleView<?>, Location> locationsForView;
 
 	private LocalizedEditor mainLocalizedEditor;
 	private ValidationWindow validationWindow;
@@ -247,8 +247,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("init_module_controller"));
 
 		this.module = module;
-		locationsForView = ArrayListMultimap.create();
-		viewsForLocation = new HashMap<>();
+		//locationsForView = ArrayListMultimap.create();
+		//viewsForLocation = new HashMap<>();
 		controllerModel = new ControllerModel(module.getApplicationContext(), module);
 		propertyChangeSupport = new PropertyChangeSupport(this);
 		manager.new PropertyChangeListenerRegistration(this, controllerModel);
@@ -702,7 +702,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (accelerator.getKeyCode() == FlexoCst.DELETE_KEY_CODE) {
 			int keyCode = FlexoCst.BACKSPACE_DELETE_KEY_CODE;
 			getFlexoFrame().getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-					.put(KeyStroke.getKeyStroke(keyCode, accelerator.getModifiers()), key);
+			.put(KeyStroke.getKeyStroke(keyCode, accelerator.getModifiers()), key);
 		}
 	}
 
@@ -1104,28 +1104,30 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			ModuleView<?> moduleView = lookupViewForLocation(location);
 
 			if (moduleView == null) {
-				if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject())) {
+				//if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject())) {
+				if (createViewIfRequired && location.getPerspective().isRepresentableInModuleView(location.getObject())) {
 					Progress.progress("load_module_view");
-					moduleView = createModuleViewForObjectAndPerspective(location.getObject(), location.getPerspective(),
+					moduleView = createModuleViewForMasterObjectAndPerspective(location.getMasterObject(), location.getPerspective(),
 							location.isEditable());
 					if (moduleView != null) {
-						viewsForLocation.put(location, moduleView);
-						locationsForView.put(moduleView, location);
-
-						FlexoObject representedObject = moduleView.getRepresentedObject();
-						if (representedObject == null) {
+						// Stores the newly created view
+						getModuleViewsForPerspective(location.getPerspective()).put(location.getMasterObject(), moduleView);
+						//viewsForLocation.put(location, moduleView);
+						//locationsForView.put(moduleView, location);
+						FlexoObject representedMasterObject = moduleView.getRepresentedObject();
+						if (representedMasterObject == null) {
 							if (logger.isLoggable(Level.WARNING)) {
 								logger.warning(
 										"Module view: " + moduleView.getClass().getName() + " does not return its represented object");
 							}
-							representedObject = location.getObject();
+							representedMasterObject = location.getObject();
 						}
-						manager.new PropertyChangeListenerRegistration(representedObject.getDeletedProperty(), this, representedObject);
-						if (representedObject instanceof FlexoProjectObject && ((FlexoProjectObject) representedObject).getProject() != null
+						manager.new PropertyChangeListenerRegistration(representedMasterObject.getDeletedProperty(), this, representedMasterObject);
+						if (representedMasterObject instanceof FlexoProjectObject && ((FlexoProjectObject) representedMasterObject).getProject() != null
 								&& !manager.hasListener(ProjectClosedNotification.CLOSE, this,
-										((FlexoProjectObject) representedObject).getProject())) {
+										((FlexoProjectObject) representedMasterObject).getProject())) {
 							manager.new PropertyChangeListenerRegistration(ProjectClosedNotification.CLOSE, this,
-									((FlexoProjectObject) representedObject).getProject());
+									((FlexoProjectObject) representedMasterObject).getProject());
 						}
 					}
 				}
@@ -1134,16 +1136,24 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 	}
 
-	private ModuleView<?> lookupViewForLocation(Location location) {
-		for (Entry<Location, ModuleView<?>> e : viewsForLocation.entrySet()) {
-			Location l = e.getKey();
-			if (l.getObject().equals(location.getObject()) && l.getPerspective().equals(location.getPerspective())
-					&& l.isEditable() == location.isEditable()) {
-				return e.getValue();
-			}
+	private Map<FlexoObject,ModuleView<?>> getModuleViewsForPerspective(FlexoPerspective perspective) {
+		Map<FlexoObject,ModuleView<?>> returned = moduleViews.get(perspective);
+		if (returned == null) {
+			returned = new HashMap<FlexoObject,ModuleView<?>>();
+			moduleViews.put(perspective, returned);
 		}
+		return returned;
+	}
 
-		return null;
+	/**
+	 * Return the {@link ModuleView} used to represent supplied location (a specific {@link FlexoObject} in a given {@link FlexoPerspective})
+	 * 
+	 * @param location
+	 * @return
+	 */
+	private ModuleView<?> lookupViewForLocation(Location location) {
+		Map<FlexoObject,ModuleView<?>> moduleViewsForPerspective = getModuleViewsForPerspective(location.getPerspective());
+		return moduleViewsForPerspective.get(location.getMasterObject());
 	}
 
 	/**
@@ -1155,8 +1165,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @return an initialized ModuleView instance
 	 */
 	public ModuleView<?> moduleViewForObject(FlexoObject object, boolean createViewIfRequired) {
-		return moduleViewForLocation(new Location(controllerModel.getCurrentEditor(), object, getCurrentPerspective()),
-				createViewIfRequired);
+		Map<FlexoObject,ModuleView<?>> moduleViewsForPerspective = getModuleViewsForPerspective(getCurrentPerspective());
+		return moduleViewsForPerspective.get(getCurrentPerspective().getRepresentableMasterObject(object));
 	}
 
 	/**
@@ -1178,7 +1188,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 *            TODO
 	 * @return a newly created and initialized ModuleView instance
 	 */
-	private static ModuleView<?> createModuleViewForObjectAndPerspective(FlexoObject object, FlexoPerspective perspective,
+	private static ModuleView<?> createModuleViewForMasterObjectAndPerspective(FlexoObject object, FlexoPerspective perspective,
 			boolean editable) {
 		if (perspective == null) {
 			return null;
@@ -1186,9 +1196,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		else {
 			if (logger.isLoggable(Level.INFO)) {
 				logger.info("Creating module view for " + object + " in perspective " + perspective.getName()
-						+ (editable ? " (editable)" : " (read-only)"));
+				+ (editable ? " (editable)" : " (read-only)"));
 			}
-			return perspective.createModuleViewForObject(object, editable);
+			return perspective.createModuleViewForMasterObject(object, editable);
 		}
 	}
 
@@ -1201,46 +1211,35 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	/**
-	 * Sets supplied object to be the main object represented as the current view for this module (for example the process for WKF module).
-	 * Does nothing if supplied object is not representable in this module
+	 * Sets supplied object to be the object beeing represented in current perspective
+	 * Switch to the {@link ModuleView} representing master object when required
+	 * 
+	 * Does nothing if supplied object is not representable in current perspective
 	 * 
 	 * @param object
-	 * @return an initialized ModuleView instance
 	 */
-	@Deprecated
-	public final void setObjectAsModuleView(Object object) {
-		// This hack is introduced to support double click in imported workflow
-		// tree.
-		// This should be removed and imported wofklow tree should be updated to
-		// support casting
-		if (object instanceof FlexoObject) {
-			setCurrentEditedObjectAsModuleView((FlexoObject) object);
-		}
-	}
-
-	/**
-	 * Sets supplied object to be the main object represented as the current view for this module (for example the process for WKF module).
-	 * Does nothing if supplied object is not representable in this module
-	 * 
-	 * @param object
-	 * @return an initialized ModuleView instance
-	 */
-	public void setCurrentEditedObjectAsModuleView(FlexoObject object) {
+	public void setCurrentEditedObject(FlexoObject object) {
 		getControllerModel().setCurrentObject(object);
 	}
 
 	/**
-	 * Sets supplied object to be the main object represented as the current view for this module (for example the process for WKF module)
-	 * and supplied perspective. Does nothing if supplied object is not representable in this module
+	 * Sets supplied object to be the object beeing represented in supplied perspective
+	 * Switch to the {@link ModuleView} representing master object when required
+	 * 
+	 * Does nothing if supplied object is not representable in current perspective
 	 * 
 	 * @param object
-	 * @return an initialized ModuleView instance
 	 */
-	public void setCurrentEditedObjectAsModuleView(FlexoObject object, FlexoPerspective perspective) {
+	public void setCurrentEditedObject(FlexoObject object, FlexoPerspective perspective) {
 		controllerModel.setCurrentPerspective(perspective);
 		controllerModel.setCurrentObject(object);
 	}
 
+	/**
+	 * Add perspective to this {@link FlexoController}
+	 * 
+	 * @param perspective
+	 */
 	public void addToPerspectives(FlexoPerspective perspective) {
 		controllerModel.addToPerspectives(perspective);
 	}
@@ -1288,15 +1287,20 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 *            the view to remove
 	 */
 	public void removeModuleView(ModuleView<?> aView) {
-		Collection<Location> locations = locationsForView.get(aView);
+
+		Map<FlexoObject, ModuleView<?>> moduleViewsForPerspective = getModuleViewsForPerspective(aView.getPerspective());
+		moduleViewsForPerspective.remove(aView.getRepresentedObject());
+
+		// What about the locations ???
+		/*Collection<Location> locations = locationsForView.get(aView);
 		if (locations != null) {
-			for (Location location : new ArrayList<>(locations)) {
-				viewsForLocation.remove(location);
-				// Do not forget to remove location from ControllerModel !!!
-				getControllerModel().removeFromLocations(location);
-			}
+		for (Location location : new ArrayList<>(locations)) {
+			viewsForLocation.remove(location);
+			// Do not forget to remove location from ControllerModel !!!
+			getControllerModel().removeFromLocations(location);
 		}
-		locationsForView.removeAll(aView);
+		}
+		locationsForView.removeAll(aView);*/
 	}
 
 	/**
@@ -1304,13 +1308,17 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * 
 	 * @return all the views currently loaded.
 	 */
-	protected Collection<ModuleView<?>> getViews() {
-		return viewsForLocation.values();
+	protected List<ModuleView<?>> getAllViews() {
+		List<ModuleView<?>> returned = new ArrayList<>();
+		for (FlexoPerspective flexoPerspective : moduleViews.keySet()) {
+			returned.addAll(getModuleViewsForPerspective(flexoPerspective).values());
+		}
+		return returned;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected <T extends ModuleView<?>> Collection<T> getViews(final Class<T> klass) {
-		return (Collection<T>) Collections2.filter(viewsForLocation.values(), new Predicate<ModuleView<?>>() {
+		return (Collection<T>) Collections2.filter(getAllViews(), new Predicate<ModuleView<?>>() {
 			@Override
 			public boolean apply(ModuleView<?> input) {
 				return klass.isAssignableFrom(input.getClass());
@@ -1398,7 +1406,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (mainInspectorController != null) {
 			mainInspectorController.delete();
 		}
-		for (ModuleView<?> view : new ArrayList<>(getViews())) {
+		for (ModuleView<?> view : new ArrayList<>(getAllViews())) {
 			try {
 				view.deleteModuleView();
 			} catch (Exception e) {
@@ -1420,8 +1428,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			((InteractiveFlexoEditor) getEditor()).unregisterControllerActionInitializer(getControllerActionInitializer());
 		}
 		controllerModel.delete();
-		viewsForLocation.clear();
-		locationsForView.clear();
+		moduleViews.clear();
 		disposed = true;
 		if (propertyChangeSupport != null) {
 			propertyChangeSupport.firePropertyChange(DISPOSED, false, true);
@@ -1502,7 +1509,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				}
 			}
 			}
-			*/
+		 */
 		if (e.getCause() instanceof ConnectException) {
 			return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("connection_error")
 					+ (e.getCause().getMessage() != null ? " (" + e.getCause().getMessage() + ")" : "") + "\n"
@@ -1531,13 +1538,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		else {
 			if (e.getMessage() != null && e.getMessage().indexOf("Content is not allowed in prolog") > -1) {
 				FlexoController
-						.notify("Check your connection url in FlexoPreferences > Advanced.\n It seems wrong.\nsee logs for details.");
+				.notify("Check your connection url in FlexoPreferences > Advanced.\n It seems wrong.\nsee logs for details.");
 				return false;
 			}
 			else {
 				return FlexoController.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("webservice_remote_error") + " \n"
 						+ (e.getMessage() == null || "java.lang.NullPointerException".equals(e.getMessage())
-								? "Check your connection parameters.\nThe service may be temporary unavailable."
+						? "Check your connection parameters.\nThe service may be temporary unavailable."
 								: e.getMessage())
 						+ "\n" + FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_try_again?"));
 			}
@@ -1618,7 +1625,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			}
 		}
 		if (getCurrentPerspective() != null) {
-			if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
+			if (object instanceof FlexoObject && getCurrentPerspective().isRepresentableInModuleView((FlexoObject)object)) {
 				// Try to display object in view
 				selectAndFocusObjectAsTask((FlexoObject) object);
 			}
@@ -1664,14 +1671,16 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				if (evt.getOldValue() != null) {
 					Location location = (Location) evt.getOldValue();
 					ModuleView<?> moduleViewForLocation = moduleViewForLocation(location, false);
-					if (moduleViewForLocation != null) {
+					// TODO: reimplement this
+					logger.warning("Un truc a faire ici ???");
+					/*if (moduleViewForLocation != null) {
 						if (locationsForView.get(moduleViewForLocation).size() < 2) {
 							moduleViewForLocation.deleteModuleView();
 						}
 						else {
 							locationsForView.remove(moduleViewForLocation, location);
 						}
-					}
+					}*/
 				}
 			}
 			else if (evt.getPropertyName().equals(ControllerModel.CURRENT_OBJECT)) {
@@ -1680,7 +1689,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (evt.getSource() instanceof FlexoProject && evt.getPropertyName().equals(ProjectClosedNotification.CLOSE)) {
 			FlexoProject<?> project = (FlexoProject<?>) evt.getSource();
-			for (ModuleView<?> view : new ArrayList<>(getViews())) {
+			for (ModuleView<?> view : new ArrayList<>(getAllViews())) {
 				if (view.getRepresentedObject() instanceof FlexoProjectObject) {
 					if (project.equals(((FlexoProjectObject) view.getRepresentedObject()).getProject())) {
 						view.deleteModuleView();
@@ -1716,7 +1725,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			getControllerModel().setCurrentProject((FlexoProject<?>) object);
 		}
 		else {
-			setCurrentEditedObjectAsModuleView(object);
+			setCurrentEditedObject(object);
 		}
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("selecting") + " " + object);
 		getSelectionManager().setSelectedObject(object);

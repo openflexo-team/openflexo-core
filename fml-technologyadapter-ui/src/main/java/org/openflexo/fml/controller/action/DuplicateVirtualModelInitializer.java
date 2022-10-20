@@ -71,7 +71,7 @@ public class DuplicateVirtualModelInitializer extends ActionInitializer<Duplicat
 	@Override
 	protected FlexoActionRunnable<DuplicateVirtualModel, VirtualModel, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			getController().setCurrentEditedObjectAsModuleView(action.getDuplicate());
+			getController().setCurrentEditedObject(action.getDuplicate());
 			return true;
 		};
 	}

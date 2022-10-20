@@ -79,7 +79,7 @@ public class CreateFlexoEventInitializer extends ActionInitializer<CreateFlexoEv
 	protected FlexoActionRunnable<CreateFlexoEvent, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			if (action.switchNewlyCreatedFlexoConcept) {
-				getController().setCurrentEditedObjectAsModuleView(action.getNewFlexoConcept());
+				getController().setCurrentEditedObject(action.getNewFlexoConcept());
 			}
 			return true;
 		};

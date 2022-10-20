@@ -288,12 +288,12 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 
 		if (this.moduleView != null && this.moduleView instanceof SelectionSynchronizedModuleView) {
 			controller.getSelectionManager()
-					.removeFromSelectionListeners(((SelectionSynchronizedModuleView<?>) this.moduleView).getSelectionListeners());
+			.removeFromSelectionListeners(((SelectionSynchronizedModuleView<?>) this.moduleView).getSelectionListeners());
 		}
 		this.moduleView = moduleView;
 		if (moduleView != null && moduleView instanceof SelectionSynchronizedModuleView) {
 			controller.getSelectionManager()
-					.addToSelectionListeners(((SelectionSynchronizedModuleView<?>) moduleView).getSelectionListeners());
+			.addToSelectionListeners(((SelectionSynchronizedModuleView<?>) moduleView).getSelectionListeners());
 		}
 
 		JComponent newCenterView = null;
@@ -659,15 +659,19 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 							perspective = newValue.getPerspective();
 							restoreLayout();
 						}
-						tabbedPane.addTab(newValue);
-						registrationManager.addListener("name", this, newValue.getObject());
+						if (newValue.isMasterLocation()) {
+							tabbedPane.addTab(newValue);
+							registrationManager.addListener("name", this, newValue.getObject());
+						}
 					}
 				}
 				else if (evt.getOldValue() != null) {
 					Location oldValue = (Location) evt.getOldValue();
 					if (oldValue.getObject() != null) {
-						tabbedPane.removeTab(oldValue);
-						registrationManager.addListener("name", this, oldValue.getObject());
+						if (oldValue.isMasterLocation()) {
+							tabbedPane.removeTab(oldValue);
+							registrationManager.removeListener("name", this, oldValue.getObject());
+						}
 					}
 				}
 			}

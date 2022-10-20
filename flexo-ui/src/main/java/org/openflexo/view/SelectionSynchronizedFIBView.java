@@ -40,6 +40,7 @@
 package org.openflexo.view;
 
 import java.io.FileNotFoundException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -57,8 +58,8 @@ import org.openflexo.gina.model.listener.FIBSelectionListener;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
-import org.openflexo.selection.SelectionListener;
 import org.openflexo.selection.SelectionManager;
+import org.openflexo.selection.SelectionSynchronizedComponent;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -68,7 +69,7 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class SelectionSynchronizedFIBView extends FlexoFIBView implements SelectionListener, GraphicalFlexoObserver, FIBSelectionListener {
+public class SelectionSynchronizedFIBView extends FlexoFIBView implements SelectionSynchronizedComponent, GraphicalFlexoObserver, FIBSelectionListener {
 	static final Logger logger = Logger.getLogger(SelectionSynchronizedFIBView.class.getPackage().getName());
 
 	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource,
@@ -171,6 +172,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 		}
 	}
 
+	@Override
 	public SelectionManager getSelectionManager() {
 		if (getFlexoController() != null) {
 			return getFlexoController().getSelectionManager();
@@ -220,5 +222,101 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 			}
 		}
 		return object;
+	}
+	
+	@Override
+	public Vector<FlexoObject> getSelection() {
+		if (getSelectionManager() != null) {
+			return getSelectionManager().getSelection();
+		}
+		return null;
+	}
+
+	@Override
+	public void resetSelection() {
+		if (getSelectionManager() != null) {
+			getSelectionManager().resetSelection();
+		}
+		else {
+			fireResetSelection();
+		}
+	}
+
+	@Override
+	public void addToSelected(FlexoObject object) {
+		if (mayRepresents(object)) {
+			if (getSelectionManager() != null) {
+				getSelectionManager().addToSelected(object);
+			}
+			else {
+				fireObjectSelected(object);
+			}
+		}
+	}
+
+	@Override
+	public void removeFromSelected(FlexoObject object) {
+		if (mayRepresents(object)) {
+			if (getSelectionManager() != null) {
+				getSelectionManager().removeFromSelected(object);
+			}
+			else {
+				fireObjectDeselected(object);
+			}
+		}
+	}
+
+	@Override
+	public void addToSelected(Vector<? extends FlexoObject> objects) {
+		if (getSelectionManager() != null) {
+			getSelectionManager().addToSelected(objects);
+		}
+		else {
+			fireBeginMultipleSelection();
+			for (Enumeration<?> en = objects.elements(); en.hasMoreElements();) {
+				FlexoObject next = (FlexoObject) en.nextElement();
+				fireObjectSelected(next);
+			}
+			fireEndMultipleSelection();
+		}
+	}
+
+	@Override
+	public void removeFromSelected(Vector<? extends FlexoObject> objects) {
+		if (getSelectionManager() != null) {
+			getSelectionManager().removeFromSelected(objects);
+		}
+		else {
+			fireBeginMultipleSelection();
+			for (Enumeration<?> en = objects.elements(); en.hasMoreElements();) {
+				FlexoObject next = (FlexoObject) en.nextElement();
+				fireObjectDeselected(next);
+			}
+			fireEndMultipleSelection();
+		}
+	}
+
+	@Override
+	public void setSelectedObjects(Vector<? extends FlexoObject> objects) {
+		if (getSelectionManager() != null) {
+			getSelectionManager().setSelectedObjects(objects);
+		}
+		else {
+			resetSelection();
+			addToSelected(objects);
+		}
+	}
+
+	@Override
+	public FlexoObject getFocusedObject() {
+		if (getSelectionManager() != null) {
+			return getSelectionManager().getFocusedObject();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean mayRepresents(FlexoObject anObject) {
+		return true;
 	}
 }

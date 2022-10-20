@@ -80,7 +80,7 @@ public class MoveVirtualModelToDirectoryInitializer extends ActionInitializer<Mo
 	@Override
 	protected FlexoActionRunnable<MoveVirtualModelToDirectory, VirtualModel, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
+			getController().setCurrentEditedObject(action.getFocusedObject());
 			return true;
 		};
 	}

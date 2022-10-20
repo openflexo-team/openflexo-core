@@ -49,12 +49,13 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.FlexoModule.WelcomePanel;
+import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
  * A perspective allowing to show and edit resources using loaded technology adapters<br>
  * 
- * Viewing and editing teehnology-specific resources is delegated to specific {@link TechnologyAdapterController}
+ * Viewing and editing technology-specific resources is delegated to specific {@link TechnologyAdapterController}
  * 
  * @author sylvain
  * 
@@ -115,6 +116,30 @@ public class GenericPerspective extends FlexoPerspective {
 	}
 
 	@Override
+	public FlexoObject getRepresentableMasterObject(FlexoObject object) {
+		if (object instanceof TechnologyObject) {
+			return getRepresentableMasterTechnologyObject((TechnologyObject<?>) object);
+		}
+		return super.getRepresentableMasterObject(object);
+	}
+	
+	@Override
+	public boolean isRepresentableInModuleView(FlexoObject object) {
+		if (object instanceof TechnologyObject) {
+			return isRepresentableAsTechnologyObjectInModuleView((TechnologyObject<?>) object);
+		}
+		return super.isRepresentableInModuleView(object);
+	}
+	
+	@Override
+	public ModuleView<?> createModuleViewForMasterObject(FlexoObject object) {
+		if (object instanceof TechnologyObject) {
+			return createModuleViewForMasterTechnologyObject((TechnologyObject<?>) object);
+		}
+		return super.createModuleViewForMasterObject(object);
+	}
+	
+	/*@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof WelcomePanel) {
@@ -127,9 +152,56 @@ public class GenericPerspective extends FlexoPerspective {
 			if (tac == null) {
 				return false;
 			}
-			return tac.hasModuleViewForObject((TechnologyObject) object, getController());
+			return tac.hasModuleViewForObject((TechnologyObject) object, getController(),this);
 		}
 		return super.hasModuleViewForObject(object);
+	}*/
+
+	/**
+	 * Implementation of {@link #createModuleViewForMasterObject(FlexoObject)} delegated to adequate {@link TechnologyAdapterController}
+	 * @param <TA>
+	 * @param object
+	 * @return
+	 */
+	public final <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForMasterTechnologyObject(TechnologyObject<TA> object) {
+		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
+		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
+		if (tac != null) {
+			return tac.createModuleViewForMasterObject(object, getController(), this);
+		}
+		return null;
+	}
+
+	/**
+	 * Implementation of {@link #getRepresentableMasterObject(FlexoObject)} delegated to adequate {@link TechnologyAdapterController}
+	 * 
+	 * @param <TA>
+	 * @param object
+	 * @return
+	 */
+	public final <TA extends TechnologyAdapter<TA>> FlexoObject getRepresentableMasterTechnologyObject(TechnologyObject<TA> object) {
+		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
+		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
+		if (tac != null) {
+			return tac.getRepresentableMasterObject(object);
+		}
+		return null;
+	}
+
+	/**
+	 * Implementation of {@link #isRepresentableInModuleView(FlexoObject)} delegated to adequate {@link TechnologyAdapterController}
+	 * 
+	 * @param <TA>
+	 * @param object
+	 * @return
+	 */
+	public final <TA extends TechnologyAdapter<TA>> boolean isRepresentableAsTechnologyObjectInModuleView(TechnologyObject<TA> object) {
+		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
+		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
+		if (tac != null) {
+			return tac.isRepresentableInModuleView(object);
+		}
+		return false;
 	}
 
 	/**

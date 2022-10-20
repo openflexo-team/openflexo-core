@@ -43,11 +43,17 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProjectObject;
 
+/**
+ * Represents an edited location in edition navigable history
+ * 
+ * A {@link Location} is mainly composed of an object (which is not necessary the master object) and perspective
+ * 
+ * @author sylvain
+ *
+ */
 public class Location extends ControllerModelObject {
 	private final FlexoObject object;
-
 	private final FlexoPerspective perspective;
-
 	private final FlexoEditor editor;
 
 	public Location(FlexoEditor context, FlexoObject object, FlexoPerspective perspective) {
@@ -115,6 +121,14 @@ public class Location extends ControllerModelObject {
 		return object;
 	}
 
+	public FlexoObject getMasterObject() {
+		return getPerspective().getRepresentableMasterObject(getObject());
+	}
+	
+	public boolean isMasterLocation() {
+		return getObject() == getMasterObject();
+	}
+	
 	public FlexoPerspective getPerspective() {
 		return perspective;
 	}

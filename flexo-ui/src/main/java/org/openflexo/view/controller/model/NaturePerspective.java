@@ -62,7 +62,7 @@ public abstract class NaturePerspective<N extends ProjectNature<N>> extends Flex
 	public abstract Class<N> getNatureClass();
 
 	@Override
-	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
+	public ModuleView<?> createModuleViewForMasterObject(FlexoObject object) {
 
 		if (object instanceof FlexoProject) {
 			FlexoProject<?> project = (FlexoProject<?>) object;
@@ -72,7 +72,7 @@ public abstract class NaturePerspective<N extends ProjectNature<N>> extends Flex
 			}
 			return getController().makeDefaultProjectView((FlexoProject<?>) object, this);
 		}
-		return super.createModuleViewForObject(object);
+		return super.createModuleViewForMasterObject(object);
 	}
 
 	public ModuleView<FlexoProject<?>> getModuleViewForProject(FlexoProject<?> project, N nature) {

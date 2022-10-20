@@ -57,6 +57,7 @@ import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitial
 import org.openflexo.fml.rt.controller.validation.FMLRTValidateActionizer;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
 import org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceRepositoriesBrowser;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -297,8 +298,9 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
 	}
 
-	@Override
-	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
+	/*@Override
+	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
+			FlexoPerspective perspective) {
 
 		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
 			if (plugin.hasModuleViewForObject(object)) {
@@ -310,8 +312,37 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 			return true;
 		}
 		return false;
-	}
+	}*/
 
+	@Override
+	public boolean isRepresentableInModuleView(TechnologyObject<FMLRTTechnologyAdapter> object) {
+		
+		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
+			if (plugin.isRepresentableInModuleView(object)) {
+				return true;
+			}
+		}
+
+		if (object instanceof FMLRTVirtualModelInstance) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public FlexoObject getRepresentableMasterObject(TechnologyObject<FMLRTTechnologyAdapter> object) {
+		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
+			if (plugin.isRepresentableInModuleView(object)) {
+				return getRepresentableMasterObject(object);
+			}
+		}
+
+		if (object instanceof FMLRTVirtualModelInstance) {
+			return object;
+		}
+		return null;
+	}
+	
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 		if (object instanceof FMLRTVirtualModelInstanceRepository) {
@@ -331,12 +362,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 * @return newly created ModuleView for supplied technology object
 	 */
 	@Override
-	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
+	public ModuleView<?> createModuleViewForMasterObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 
 		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
-			if (plugin.hasModuleViewForObject(object)) {
-				return plugin.createModuleViewForObject(object, controller, perspective);
+			if (plugin.isRepresentableInModuleView(object)) {
+				return plugin.createModuleViewForMasterObject(object, controller, perspective);
 			}
 		}
 

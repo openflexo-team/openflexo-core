@@ -70,7 +70,7 @@ public class RenameFlexoConceptInitializer extends ActionInitializer<RenameFlexo
 	@Override
 	protected FlexoActionRunnable<RenameFlexoConcept, FlexoConcept, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
+			getController().setCurrentEditedObject(action.getFocusedObject());
 			return true;
 		};
 	}

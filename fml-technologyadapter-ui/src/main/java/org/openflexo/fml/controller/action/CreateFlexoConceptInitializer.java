@@ -80,7 +80,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer<CreateFlexo
 		return (e, action) -> {
 			action.getNewFlexoConcept().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 			if (action.switchNewlyCreatedFlexoConcept) {
-				getController().setCurrentEditedObjectAsModuleView(action.getNewFlexoConcept());
+				getController().setCurrentEditedObject(action.getNewFlexoConcept());
 			}
 			return true;
 		};

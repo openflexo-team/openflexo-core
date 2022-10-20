@@ -64,7 +64,7 @@ public class OpenVirtualModelInstanceInitializer
 			/*TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
 					.getTechnologyPerspective(getController());
 			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);*/
-			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
+			getController().setCurrentEditedObject(action.getFocusedObject());
 			return true;
 		};
 	}

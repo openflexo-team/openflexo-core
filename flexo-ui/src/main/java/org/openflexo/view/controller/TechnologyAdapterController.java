@@ -53,6 +53,7 @@ import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -458,16 +459,34 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 	 * @param object
 	 * @return
 	 */
-	public abstract boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller);
+	//public abstract boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
+	//		FlexoPerspective perspective);
 
 	/**
-	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
+	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which 
+	 * supplied object is representable either as a master object or as an object representable in related view
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract boolean isRepresentableInModuleView(TechnologyObject<TA> object);
+	
+	/**
+	 * Return {@link FlexoObject} for which this perspective defines a {@link ModuleView} where supplied object is also representable
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract FlexoObject getRepresentableMasterObject(TechnologyObject<TA> object);
+	
+	/**
+	 * Return a newly created {@link ModuleView} for supplied technology object, when supported
 	 * rendering
 	 * 
 	 * @param object
 	 * @return
 	 */
-	public abstract ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
+	public abstract ModuleView<?> createModuleViewForMasterObject(TechnologyObject<TA> object, FlexoController controller,
 			FlexoPerspective perspective);
 
 	public Resource getFIBPanelForObject(Object anObject) {

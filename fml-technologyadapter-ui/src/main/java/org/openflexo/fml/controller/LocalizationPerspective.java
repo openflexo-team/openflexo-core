@@ -45,6 +45,7 @@ import javax.swing.ImageIcon;
 import org.openflexo.fml.controller.view.FMLLocalizedDictionaryView;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.ModuleView;
@@ -76,7 +77,7 @@ public class LocalizationPerspective extends GenericPerspective {
 		return FMLIconLibrary.LOCALIZATION_ICON;
 	}
 
-	@Override
+	/*@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof FMLCompilationUnit) {
@@ -86,17 +87,36 @@ public class LocalizationPerspective extends GenericPerspective {
 			return true;
 		}
 		return super.hasModuleViewForObject(object);
-	}
+	}*/
 
 	@Override
-	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
+	public boolean isRepresentableInModuleView(FlexoObject object) {
+		if (object instanceof FMLObject && ((FMLObject)object).getDeclaringCompilationUnit() != null) {
+			// TODO return true only for dictionaries and entries
+			return true;
+		}
+		return super.isRepresentableInModuleView(object);
+	}
+	
+	@Override
+	public FlexoObject getRepresentableMasterObject(FlexoObject object) {
+		if (object instanceof FMLObject && ((FMLObject)object).getDeclaringCompilationUnit() != null) {
+			// TODO return value only for dictionaries and entries
+			return ((FMLObject)object).getDeclaringCompilationUnit();
+		}
+		return super.getRepresentableMasterObject(object);
+	}
+
+
+	@Override
+	public ModuleView<?> createModuleViewForMasterObject(FlexoObject object) {
 		if (object instanceof FMLCompilationUnit) {
 			return new FMLLocalizedDictionaryView((FMLCompilationUnit) object, getController(), this);
 		}
-		if (object instanceof VirtualModel) {
+		/*if (object instanceof VirtualModel) {
 			return new FMLLocalizedDictionaryView(((VirtualModel) object).getCompilationUnit(), getController(), this);
-		}
-		return super.createModuleViewForObject(object);
+		}*/
+		return super.createModuleViewForMasterObject(object);
 	}
 
 	@Override

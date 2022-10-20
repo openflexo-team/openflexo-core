@@ -67,6 +67,14 @@ import org.openflexo.view.controller.FlexoController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * The {@link ControllerModel} represents the edition logic used by the {@link FlexoController}
+ * 
+ * Navigation history is managed here
+ * 
+ * @author sylvain
+ *
+ */
 public class ControllerModel extends ControllerModelObject implements PropertyChangeListener {
 
 	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
@@ -220,15 +228,10 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			defaultPerspective = currentPerspective;
 		}
 
-		if (currentPerspective == null) {
-			System.out.println("Qui me passe la current perspective a null ????");
-			Thread.dumpStack();
-		}
-
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
 			currentPerspective.willShow();
-			if (object == null || !currentPerspective.hasModuleViewForObject(object)) {
+			if (object == null || currentPerspective.getRepresentableMasterObject(object) == null) {
 				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
 			}
 		}
@@ -316,12 +319,13 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// Little block to change the currentPerspective if the
 		// current perspective can't handle this object
 		FlexoPerspective perspective = getCurrentPerspective();
-		if (object != null && !perspective.hasModuleViewForObject(object)) {
+		
+		if (object == null || perspective.getRepresentableMasterObject(object) == null) {
 			for (FlexoPerspective p : getPerspectives()) {
 				if (p == null) {
 					continue;
 				}
-				if (p.hasModuleViewForObject(object)) {
+				if (p.getRepresentableMasterObject(object) != null) {
 					perspective = p;
 					break;
 				}

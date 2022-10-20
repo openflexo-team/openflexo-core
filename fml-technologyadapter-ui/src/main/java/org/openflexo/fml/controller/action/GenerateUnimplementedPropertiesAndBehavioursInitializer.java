@@ -71,7 +71,7 @@ public class GenerateUnimplementedPropertiesAndBehavioursInitializer
 	@Override
 	protected FlexoActionRunnable<GenerateUnimplementedPropertiesAndBehaviours, FlexoConcept, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
+			getController().setCurrentEditedObject(action.getFocusedObject());
 			return true;
 		};
 	}

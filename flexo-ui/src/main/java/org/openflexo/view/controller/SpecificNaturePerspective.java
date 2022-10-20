@@ -133,11 +133,11 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 	}
 
 	@Override
-	public boolean hasModuleViewForObject(FlexoObject object) {
+	public boolean isRepresentableInModuleView(FlexoObject object) {
 
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
-			if (plugin.hasModuleViewForObject(object)) {
+			if (plugin.isRepresentableInModuleView(object)) {
 				return true;
 			}
 		}
@@ -156,17 +156,40 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 				&& flexoConceptInstanceNature.hasNature((FlexoConceptInstance) object)) {
 			return true;
 		}
-		return super.hasModuleViewForObject(object);
+		return super.isRepresentableInModuleView(object);
+	}
+	
+	@Override
+	public FlexoObject getRepresentableMasterObject(FlexoObject object) {
+		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
+		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
+			if (plugin.isRepresentableInModuleView(object)) {
+				return plugin.getRepresentableMasterObject(object);
+			}
+		}
+		if (object instanceof VirtualModel && virtualModelNature != null && virtualModelNature.hasNature((VirtualModel) object)) {
+			return object;
+		}
+		if (object instanceof FlexoConcept && flexoConceptNature != null && flexoConceptNature.hasNature((FlexoConcept) object)) {
+			return object;
+		}
+		if (object instanceof FMLRTVirtualModelInstance && virtualModelInstanceNature != null
+				&& virtualModelInstanceNature.hasNature((FMLRTVirtualModelInstance) object)) {
+			return object;
+		}
+		if (object instanceof FlexoConceptInstance && flexoConceptInstanceNature != null
+				&& flexoConceptInstanceNature.hasNature((FlexoConceptInstance) object)) {
+			return object;
+		}
+		return super.getRepresentableMasterObject(object);
 	}
 
 	@Override
-	public final ModuleView<?> createModuleViewForObject(FlexoObject object) {
+	public final ModuleView<?> createModuleViewForMasterObject(FlexoObject object) {
 
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
-			if (plugin.hasModuleViewForObject(object)) {
-				return plugin.createModuleViewForObject(object, getController(), this);
-			}
+			return plugin.createModuleViewForMasterObject(object, getController(), this);
 		}
 
 		if (object instanceof FMLCompilationUnit) {
@@ -181,7 +204,7 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 		if (object instanceof FlexoConceptInstance) {
 			return createModuleViewForFlexoConceptInstance((FlexoConceptInstance) object);
 		}
-		return super.createModuleViewForObject(object);
+		return super.createModuleViewForMasterObject(object);
 	}
 
 	protected abstract ModuleView<FMLCompilationUnit> createModuleViewForCompilationUnit(FMLCompilationUnit compilationUnit);

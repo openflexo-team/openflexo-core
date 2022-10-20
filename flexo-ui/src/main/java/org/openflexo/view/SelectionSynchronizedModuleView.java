@@ -43,6 +43,7 @@ import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.selection.SelectionListener;
+import org.openflexo.selection.SelectionSynchronizedComponent;
 
 /**
  * This interface is implemented by all the ModuleView requiring to be synchronized with a SelectionManager. Will act as a SelectionListener
@@ -50,7 +51,7 @@ import org.openflexo.selection.SelectionListener;
  * 
  * @author sguerin
  */
-public interface SelectionSynchronizedModuleView<O extends FlexoObject> extends ModuleView<O>, SelectionListener {
+public interface SelectionSynchronizedModuleView<O extends FlexoObject> extends ModuleView<O>, SelectionSynchronizedComponent/*SelectionListener*/ {
 
 	public List<SelectionListener> getSelectionListeners();
 }

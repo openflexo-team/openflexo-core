@@ -48,15 +48,11 @@ import javax.swing.JComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.module.FlexoModule.WelcomePanel;
 import org.openflexo.swing.layout.MultiSplitLayout.Node;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.TechnologyAdapterController;
-import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 public abstract class FlexoPerspective extends ControllerModelObject {
 
@@ -123,26 +119,73 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	public abstract ImageIcon getActiveIcon();
 
-	public final ModuleView<?> createModuleViewForObject(FlexoObject object, boolean editable) {
+	/**
+	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which 
+	 * supplied object is representable either as a master object or as an object representable in related view
+	 * 
+	 * This method should be overriden
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public boolean isRepresentableInModuleView(FlexoObject object) {
+		if (object instanceof WelcomePanel) {
+			return true;
+		}
+		if (object instanceof FlexoProject) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Return {@link FlexoObject} for which this perspective defines a {@link ModuleView} where supplied object is also representable
+	 * 
+	 * This method should be overriden
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public FlexoObject getRepresentableMasterObject(FlexoObject object) {
+		if (object instanceof WelcomePanel) {
+			return object;
+		}
+		if (object instanceof FlexoProject) {
+			return object;
+		}
+		return null;
+	}
+	
+	/**
+	 * Build a {@link ModuleView} for supplied object, considered as master object (main subject of the returned view)
+	 * 
+	 * @param object
+	 * @param editable
+	 * @return
+	 */
+	public final ModuleView<?> createModuleViewForMasterObject(FlexoObject object, boolean editable) {
 		if (!editable) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Perspective " + getName()
 						+ " does not override createModuleViewForObject(O object, FlexoController controller, boolean editable)");
 			}
 		}
-		return createModuleViewForObject(object);
+		return createModuleViewForMasterObject(object);
 	}
 
-	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
+	/**
+	 * Build a {@link ModuleView} for supplied object, considered as master object (main subject of the returned view)
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public ModuleView<?> createModuleViewForMasterObject(FlexoObject object) {
 
 		if (object instanceof WelcomePanel) {
 			return getController().makeWelcomePanel((WelcomePanel<?>) object, this);
 		}
 		if (object instanceof FlexoProject) {
 			return getController().makeDefaultProjectView((FlexoProject<?>) object, this);
-		}
-		if (object instanceof TechnologyObject) {
-			return getModuleViewForTechnologyObject((TechnologyObject<?>) object);
 		}
 		return new EmptyPanel<>(controller, this, object);
 	}
@@ -159,7 +202,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * @param object
 	 * @return
 	 */
-	public boolean hasModuleViewForObject(FlexoObject object) {
+	/*public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof FlexoProject) {
 			return true;
 		}
@@ -167,7 +210,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 			return hasModuleViewForTechnologyObject((TechnologyObject<?>) object);
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Return boolean indicating if this perspective handles supplied object (true if perspective may build and display a {@link ModuleView}
@@ -176,27 +219,11 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * @param object
 	 * @return
 	 */
-	public final <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForTechnologyObject(TechnologyObject<TA> object) {
+	/*public final <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForTechnologyObject(TechnologyObject<TA> object) {
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
-		return tac.hasModuleViewForObject(object, controller);
-	}
-
-	/**
-	 * Return boolean indicating if this perspective handles supplied object (true if perspective may build and display a {@link ModuleView}
-	 * representing supplied object)<br>
-	 * 
-	 * @param object
-	 * @return
-	 */
-	public final <TA extends TechnologyAdapter<TA>> ModuleView<?> getModuleViewForTechnologyObject(TechnologyObject<TA> object) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
-		if (tac != null) {
-			return tac.createModuleViewForObject(object, controller, this);
-		}
-		return null;
-	}
+		return tac.hasModuleViewForObject(object, controller,this);
+	}*/
 
 	/**
 	 * Return default object to be displayed, given supplied object (which might be null)
@@ -206,8 +233,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * @return
 	 */
 	public FlexoObject getDefaultObject(FlexoObject proposedObject) {
-		if (hasModuleViewForObject(proposedObject)) {
-			return proposedObject;
+		if (getRepresentableMasterObject(proposedObject) != null) {
+			return getRepresentableMasterObject(proposedObject);
 		}
 		return null;
 	}

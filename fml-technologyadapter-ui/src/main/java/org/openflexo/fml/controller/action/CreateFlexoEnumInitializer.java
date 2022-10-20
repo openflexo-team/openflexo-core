@@ -79,7 +79,7 @@ public class CreateFlexoEnumInitializer extends ActionInitializer<CreateFlexoEnu
 	protected FlexoActionRunnable<CreateFlexoEnum, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			if (action.switchNewlyCreatedFlexoConcept) {
-				getController().setCurrentEditedObjectAsModuleView(action.getNewFlexoConcept());
+				getController().setCurrentEditedObject(action.getNewFlexoConcept());
 			}
 			return true;
 		};

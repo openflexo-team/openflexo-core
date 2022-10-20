@@ -70,7 +70,7 @@ public class GenerateCreationSchemeInitializer extends ActionInitializer<Generat
 	@Override
 	protected FlexoActionRunnable<GenerateCreationScheme, FlexoConcept, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
+			getController().setCurrentEditedObject(action.getFocusedObject());
 			return true;
 		};
 	}

@@ -43,6 +43,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -98,7 +99,8 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param object
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller);
+	//public <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
+	//		FlexoPerspective perspective);
 
 	/**
 	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
@@ -107,9 +109,38 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param object
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object,
-			FlexoController controller, FlexoPerspective perspective);
+	//public <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object,
+	//		FlexoController controller, FlexoPerspective perspective);
 
+	/**
+	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which 
+	 * supplied object is representable either as a master object or as an object representable in related view
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract <TA extends TechnologyAdapter<TA>> boolean isRepresentableInModuleView(TechnologyObject<TA> object);
+	
+	/**
+	 * Return {@link FlexoObject} for which this perspective defines a {@link ModuleView} where supplied object is also representable
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract <TA extends TechnologyAdapter<TA>> FlexoObject getRepresentableMasterObject(TechnologyObject<TA> object);
+	
+	/**
+	 * Return a newly created {@link ModuleView} for supplied technology object, when supported
+	 * rendering
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForMasterObject(TechnologyObject<TA> object, FlexoController controller,
+			FlexoPerspective perspective);
+
+
+	
 	public Collection<TechnologyAdapterController<?>> getLoadedAdapterControllers();
 
 	/**

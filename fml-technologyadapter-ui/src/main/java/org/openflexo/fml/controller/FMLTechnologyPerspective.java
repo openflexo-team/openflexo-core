@@ -45,6 +45,7 @@ import javax.swing.ImageIcon;
 import org.openflexo.fml.controller.view.FMLCompilationUnitView;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.icon.FMLIconLibrary;
@@ -77,17 +78,33 @@ public class FMLTechnologyPerspective extends GenericPerspective {
 		return FMLIconLibrary.FML_ICON;
 	}
 
-	@Override
+	/*@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof FMLCompilationUnit) {
 			return true;
 		}
 		return super.hasModuleViewForObject(object);
+	}*/
+	
+	@Override
+	public boolean isRepresentableInModuleView(FlexoObject object) {
+		if (object instanceof FMLObject && ((FMLObject)object).getDeclaringCompilationUnit() != null) {
+			return true;
+		}
+		return super.isRepresentableInModuleView(object);
+	}
+	
+	@Override
+	public FlexoObject getRepresentableMasterObject(FlexoObject object) {
+		if (object instanceof FMLObject && ((FMLObject)object).getDeclaringCompilationUnit() != null) {
+			return ((FMLObject)object).getDeclaringCompilationUnit();
+		}
+		return super.getRepresentableMasterObject(object);
 	}
 
 	@Override
-	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
+	public ModuleView<?> createModuleViewForMasterObject(FlexoObject object) {
 		if (object instanceof FMLCompilationUnit) {
 			CompilationUnitResource resource = (CompilationUnitResource) ((FMLCompilationUnit) object).getResource();
 			return new FMLCompilationUnitView(resource, getController(), this);
@@ -96,7 +113,7 @@ public class FMLTechnologyPerspective extends GenericPerspective {
 			CompilationUnitResource resource = ((FMLObject) object).getDeclaringCompilationUnitResource();
 			return new FMLCompilationUnitView(resource, getController(), this);
 		}*/
-		return super.createModuleViewForObject(object);
+		return super.createModuleViewForMasterObject(object);
 	}
 
 }

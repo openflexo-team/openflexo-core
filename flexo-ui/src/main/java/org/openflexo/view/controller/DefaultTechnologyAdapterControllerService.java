@@ -50,6 +50,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
@@ -345,19 +346,34 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * @param object
 	 * @return
 	 */
-	@Override
-	public <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller) {
+	/*@Override
+	public <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
+			FlexoPerspective perspective) {
 		TA technologyAdapter = object.getTechnologyAdapter();
 		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
-		return taController.hasModuleViewForObject(object, controller);
+		return taController.hasModuleViewForObject(object, controller,perspective);
+	}*/
+	
+	@Override
+	public <TA extends TechnologyAdapter<TA>> boolean isRepresentableInModuleView(TechnologyObject<TA> object) {
+		TA technologyAdapter = object.getTechnologyAdapter();
+		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
+		return taController.isRepresentableInModuleView(object);
+	}
+	
+	@Override
+	public <TA extends TechnologyAdapter<TA>> FlexoObject getRepresentableMasterObject(TechnologyObject<TA> object) {
+		TA technologyAdapter = object.getTechnologyAdapter();
+		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
+		return taController.getRepresentableMasterObject(object);
 	}
 
 	@Override
-	public <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object,
+	public <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForMasterObject(TechnologyObject<TA> object,
 			FlexoController controller, FlexoPerspective perspective) {
 		TA technologyAdapter = object.getTechnologyAdapter();
 		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
-		return taController.createModuleViewForObject(object, controller, perspective);
+		return taController.createModuleViewForMasterObject(object, controller, perspective);
 	}
 
 	public <TA extends TechnologyAdapter<TA>> String getWindowTitleforObject(TechnologyObject<TA> object, FlexoController controller) {

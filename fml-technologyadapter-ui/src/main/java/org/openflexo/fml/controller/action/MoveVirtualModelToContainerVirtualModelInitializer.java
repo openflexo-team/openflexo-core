@@ -81,7 +81,7 @@ public class MoveVirtualModelToContainerVirtualModelInitializer
 	@Override
 	protected FlexoActionRunnable<MoveVirtualModelToContainerVirtualModel, VirtualModel, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
+			getController().setCurrentEditedObject(action.getFocusedObject());
 			return true;
 		};
 	}

@@ -134,23 +134,33 @@ public abstract class TechnologyAdapterPluginController<TA extends TechnologyAda
 	 * @return
 	 */
 	public abstract FlexoObject getRelevantObject(FlexoObject object);
-
+	
 	/**
-	 * Indicates if this {@link TechnologyAdapterPlugin} provides a {@link ModuleView} for supplied object
+	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which 
+	 * supplied object is representable either as a master object or as an object representable in related view
 	 * 
 	 * @param object
 	 * @return
 	 */
-	public abstract boolean hasModuleViewForObject(FlexoObject object);
-
+	public abstract boolean isRepresentableInModuleView(FlexoObject object);
+	
 	/**
-	 * Creates a plug-in specific {@link ModuleView} for supplied object, when relevant
+	 * Return {@link FlexoObject} for which this perspective defines a {@link ModuleView} where supplied object is also representable
 	 * 
 	 * @param object
-	 * @param controller
-	 * @param perspective
 	 * @return
 	 */
-	public abstract ModuleView<?> createModuleViewForObject(FlexoObject object, FlexoController controller, FlexoPerspective perspective);
+	public abstract FlexoObject getRepresentableMasterObject(FlexoObject object);
+	
+	/**
+	 * Return a newly created {@link ModuleView} for supplied technology object, when supported
+	 * rendering
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract ModuleView<?> createModuleViewForMasterObject(FlexoObject object, FlexoController controller,
+			FlexoPerspective perspective);
 
+	
 }

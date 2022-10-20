@@ -299,18 +299,18 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				if (defaultObjectToSelect == null) {
 					defaultObjectToSelect = makeWelcomePanel();
 				}
-				getFlexoController().setCurrentEditedObjectAsModuleView(defaultObjectToSelect);
+				getFlexoController().setCurrentEditedObject(defaultObjectToSelect);
 			}
 			else {
 				if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
-					getFlexoController().setCurrentEditedObjectAsModuleView(null);
+					getFlexoController().setCurrentEditedObject(null);
 				}
 			}
 			getFlexoController().getSelectionManager().fireUpdateSelection();
 
 		}
 		else if (getFlexoController().getEditor() == null || getFlexoController().getEditor().getProject() == null) {
-			getFlexoController().setCurrentEditedObjectAsModuleView(makeWelcomePanel());
+			getFlexoController().setCurrentEditedObject(makeWelcomePanel());
 		}
 
 		if (getFlexoController().getCurrentModuleView() != null) {
