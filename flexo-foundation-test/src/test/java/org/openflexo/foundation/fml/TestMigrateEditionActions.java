@@ -110,6 +110,9 @@ public class TestMigrateEditionActions extends OpenflexoTestCase {
 			System.out.println(" > " + compilationUnitResource + " URI=" + compilationUnitResource.getURI());
 		}
 
+		assertTrue(serviceManager.getResourceManager().getResource("http://openflexo.org/test/TestResourceCenter/MigrationVM.fml") != null);
+		assertTrue(serviceManager.getResourceManager().getResource("http://openflexo.org/test/TestResourceCenter/MigrationVM.fml/InsideVM.fml") != null);
+		
 		assertEquals(0, vpLib.getLoadedCompilationUnits().size());
 
 		CompilationUnitResource compilationUnitResource = vpLib
