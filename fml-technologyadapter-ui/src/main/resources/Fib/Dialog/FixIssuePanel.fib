@@ -1,71 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" controllerClassName="org.openflexo.fml.controller.FMLFIBController" opaque="true" name="FixIssuePanel">
-  <Panel id="1" align="left" borderTop="10" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="10" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="10" backgroundColor="255,255,255" opaque="true" constraints="border(location=north)" name="Header">
-    <Image id="2" imageWidth="64" sizeAdjustment="OriginalSize" imageFile="../../Icons/Validation/FixIssue_64x64.png" align="left" imageHeight="64" localize="true" constraints="border(location=east)" name="Image" />
-    <Panel id="3" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" constraints="border(location=center)" name="FIBPanel3">
-      <Label id="4" label="fix_issue" align="left" localize="true" constraints="border(location=north)" font="SansSerif,1,16" name="Label" />
-      <Panel id="5" align="left" borderTop="0" flowAlignment="LEFT" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="flow" borderRight="0" vGap="0" hGap="0" backgroundColor="255,255,255" opaque="true" constraints="border(location=south)" name="FIBPanel">
-        <Image id="6" imageWidth="16" sizeAdjustment="OriginalSize" align="right" imageHeight="16" localize="true" data="controller.iconForObject(data.issue).image" constraints="flow()" name="Image" />
-        <Label id="7" label="label" align="left" data="data.validationModel.localizedIssueMessage(data.issue)" constraints="flow()" font="SansSerif,0,11" name="Label" />
-      </Panel>
-    </Panel>
-  </Panel>
-  <Panel id="8" align="left" borderTop="5" flowAlignment="RIGHT" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="5" border="empty" sizeAdjustment="OriginalSize" layout="flow" borderRight="10" vGap="5" hGap="5" constraints="border(location=south)" name="ControlPanel">
-    <Button id="9" buttonType="Trigger" action="controller.cancelAndDispose()" label="cancel" localize="true" enable="" constraints="flow()" name="NextButton" />
-    <Button id="10" buttonType="Trigger" action="controller.chooseNoAndDispose()" label="ignore" localize="true" enable="data.isIgnorable" constraints="flow()" name="CancelButton" />
-    <Button id="11" buttonType="Trigger" action="controller.validateAndDispose()" label="fix" localize="true" enable="data.isFixable" constraints="flow()" name="FinishButton" />
-  </Panel>
-  <Panel id="12" align="left" borderTop="10" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" darkLevel="1" layout="twocols" borderRight="10" constraints="border(location=center)" name="ContentsPanel">
-    <Label id="13" label="label" align="center" data="data.validationModel.localizedRuleDescription(data.issue.cause)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=20;location=center)" font="SansSerif,2,12" name="Label3" />
-    <Label id="14" label="object" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" name="Label4" />
-    <Panel id="15" align="left" borderTop="0" borderTitle="Panel" flowAlignment="LEADING" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="flow" borderRight="0" vGap="0" hGap="0" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=5;insetsRight=0;insetsTop=0;location=right)" name="FIBPanel2">
-      <Image id="16" imageWidth="80" sizeAdjustment="OriginalSize" align="left" imageHeight="46" data="controller.iconForObject(data.issue.validable).image" constraints="flow()" name="Image2" />
-      <Label id="17" label="label" align="left" data="data.issue.validable.toString" constraints="flow()" name="Label6" />
-    </Panel>
-    <Label id="18" label="rule" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=left)" name="Label2" />
-    <TextField id="19" columns="7" readOnly="true" data="data.validationModel.localizedRuleName(data.issue.cause)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=right)" name="TextField" />
-    <Label id="20" label="details" align="left" localize="true" visible="(data.issue.detailedInformations != null)" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=left)" name="Label5" />
-    <TextArea id="21" rows="5" columns="8" validateOnReturn="true" text="TextArea" readOnly="true" data="data.validationModel.localizedIssueDetailedInformations(data.issue)" useScrollBar="true" visible="(data.issue.detailedInformations != null)" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=right)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" font="SansSerif,0,10" name="TextArea" />
-    <Label id="22" label="available fixes" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)" name="Label7" />
-    <Table id="23" visibleRowCount="3" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.pamela.validation.FixProposal&lt;? extends org.openflexo.pamela.validation.ValidationRule&lt;? extends org.openflexo.pamela.validation.ValidationRule&lt;?,?&gt;,? extends org.openflexo.pamela.validation.Validable&gt;,? extends org.openflexo.pamela.validation.Validable&gt;" backgroundSecondarySelectionColor="178,215,255" showFooter="false" autoSelectFirstRow="true" lookAndFeel="Classic" selectionMode="MultipleIntervalSelection" selected="data.fixProposal" rowHeight="18" localize="true" manageDynamicModel="true" data="data.issue.fixProposals" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=right)" name="FixProposalsTable">
-      <IconColumn id="24" data="controller.iconForObject(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
-      <LabelColumn id="25" data="data.validationModel.localizedFixProposal(iterator)" resizable="true" title="fix_proposals" displayTitle="true" columnWidth="100" showIcon="false" name="label" />
-    </Table>
-  </Panel>
-  <FIBVariable id="26" type="org.openflexo.fml.controller.validation.IssueFixing" name="data" />
-  <LocalizedDictionary id="27">
-    <Localized id="28" lang="English" value="Fix issue" key="fix_issue" />
-    <Localized id="29" lang="Dutch" value="Fix issue" key="fix_issue" />
-    <Localized id="30" lang="French" value="Résoudre le problème" key="fix_issue" />
-    <Localized id="31" lang="English" value="Label" key="label" />
-    <Localized id="32" lang="Dutch" value="Label" key="label" />
-    <Localized id="33" lang="French" value="Etiquette" key="label" />
-    <Localized id="34" lang="English" value="Cancel" key="cancel" />
-    <Localized id="35" lang="Dutch" value="Annuleren" key="cancel" />
-    <Localized id="36" lang="French" value="Annuler" key="cancel" />
-    <Localized id="37" lang="English" value="Ignore" key="ignore" />
-    <Localized id="38" lang="Dutch" value="Negeren" key="ignore" />
-    <Localized id="39" lang="French" value="Ignore" key="ignore" />
-    <Localized id="40" lang="English" value="Fix issue" key="fix" />
-    <Localized id="41" lang="Dutch" value="Los probleem op" key="fix" />
-    <Localized id="42" lang="French" value="Corriger" key="fix" />
-    <Localized id="43" lang="English" value="Object" key="object" />
-    <Localized id="44" lang="Dutch" value="Object" key="object" />
-    <Localized id="45" lang="French" value="Objet" key="object" />
-    <Localized id="46" lang="English" value="Rule" key="rule" />
-    <Localized id="47" lang="Dutch" value="Rule" key="rule" />
-    <Localized id="48" lang="French" value="Règle" key="rule" />
-    <Localized id="49" lang="English" value="Details" key="details" />
-    <Localized id="50" lang="Dutch" value="Details" key="details" />
-    <Localized id="51" lang="French" value="Détails" key="details" />
-    <Localized id="52" lang="English" value="Available fixes" key="available fixes" />
-    <Localized id="53" lang="Dutch" value="Available fixes" key="available fixes" />
-    <Localized id="54" lang="French" value="Solutions" key="available fixes" />
-    <Localized id="55" lang="English" value="Icon" key="icon" />
-    <Localized id="56" lang="Dutch" value="icoon" key="icon" />
-    <Localized id="57" lang="French" value="icône" key="icon" />
-    <Localized id="58" lang="English" value="Fix proposals" key="fix_proposals" />
-    <Localized id="59" lang="Dutch" value="Fix proposals" key="fix_proposals" />
-    <Localized id="60" lang="French" value="Propositions" key="fix_proposals" />
-  </LocalizedDictionary>
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize" layout="border"
+	borderRight="0"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
+	opaque="true" name="FixIssuePanel">
+	<Panel id="1" align="left" borderTop="10" borderLeft="10"
+		trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="10"
+		border="empty" sizeAdjustment="OriginalSize" layout="border"
+		borderRight="10" backgroundColor="255,255,255" opaque="true"
+		constraints="border(location=north)" name="Header">
+		<Image id="2" imageWidth="64" sizeAdjustment="OriginalSize"
+			imageFile="../../Icons/Validation/FixIssue_64x64.png" align="left"
+			imageHeight="64" localize="true" constraints="border(location=east)"
+			name="Image" />
+		<Panel id="3" align="left" borderTop="0" borderLeft="0"
+			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+			border="empty" sizeAdjustment="OriginalSize" layout="border"
+			borderRight="0" constraints="border(location=center)"
+			name="FIBPanel3">
+			<Label id="4" label="fix_issue" align="left" localize="true"
+				constraints="border(location=north)" font="SansSerif,1,16"
+				name="Label" />
+			<Panel id="5" align="left" borderTop="0" flowAlignment="LEFT"
+				borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
+				layout="flow" borderRight="0" vGap="0" hGap="0"
+				backgroundColor="255,255,255" opaque="true"
+				constraints="border(location=south)" name="FIBPanel">
+				<Image id="6" imageWidth="16" sizeAdjustment="OriginalSize"
+					align="right" imageHeight="16" localize="true"
+					data="controller.iconForObject(data.issue).image"
+					constraints="flow()" name="Image" />
+				<Label id="7" label="label" align="left"
+					data="data.validationModel.localizedIssueMessage(data.issue)"
+					constraints="flow()" font="SansSerif,0,11" name="Label" />
+			</Panel>
+		</Panel>
+	</Panel>
+	<Panel id="8" align="left" borderTop="5" flowAlignment="RIGHT"
+		borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true"
+		borderBottom="5" border="empty" sizeAdjustment="OriginalSize"
+		layout="flow" borderRight="10" vGap="5" hGap="5"
+		constraints="border(location=south)" name="ControlPanel">
+		<Button id="9" buttonType="Trigger"
+			action="controller.cancelAndDispose()" label="cancel" localize="true"
+			enable="" constraints="flow()" name="NextButton" />
+		<Button id="10" buttonType="Trigger"
+			action="controller.chooseNoAndDispose()" label="ignore"
+			localize="true" enable="data.isIgnorable" constraints="flow()"
+			name="CancelButton" />
+		<Button id="11" buttonType="Trigger"
+			action="controller.validateAndDispose()" label="fix" localize="true"
+			enable="data.isFixable" constraints="flow()" name="FinishButton" />
+	</Panel>
+	<Panel id="12" align="left" borderTop="10" borderLeft="10"
+		trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2"
+		border="empty" sizeAdjustment="OriginalSize" darkLevel="1"
+		layout="twocols" borderRight="10"
+		constraints="border(location=center)" name="ContentsPanel">
+		<Label id="13" label="label" align="center"
+			data="data.validationModel.localizedRuleDescription(data.issue.cause)"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=20;location=center)"
+			font="SansSerif,2,12" name="Label3" />
+		<Label id="14" label="object" align="left" localize="true"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+			name="Label4" />
+		<Panel id="15" align="left" borderTop="0" borderTitle="Panel"
+			flowAlignment="LEADING" borderLeft="0" trackViewPortHeight="true"
+			trackViewPortWidth="true" borderBottom="0" border="empty"
+			sizeAdjustment="OriginalSize" layout="flow" borderRight="0" vGap="0"
+			hGap="0"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=5;insetsRight=0;insetsTop=0;location=right)"
+			name="FIBPanel2">
+			<Image id="16" imageWidth="80" sizeAdjustment="OriginalSize"
+				align="left" imageHeight="46"
+				data="controller.iconForObject(data.issue.validable).image"
+				constraints="flow()" name="Image2" />
+			<Label id="17" label="label" align="left"
+				data="data.issue.validable.toString" constraints="flow()"
+				name="Label6" />
+		</Panel>
+		<Label id="18" label="rule" align="left" localize="true"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=left)"
+			name="Label2" />
+		<TextField id="19" columns="7" readOnly="true"
+			data="data.validationModel.localizedRuleName(data.issue.cause)"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=right)"
+			name="TextField" />
+		<Label id="20" label="details" align="left" localize="true"
+			visible="(data.issue.detailedInformations != null)"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=left)"
+			name="Label5" />
+		<TextArea id="21" rows="5" columns="8"
+			validateOnReturn="true" text="TextArea" readOnly="true"
+			data="data.validationModel.localizedIssueDetailedInformations(data.issue)"
+			useScrollBar="true"
+			visible="(data.issue.detailedInformations != null)"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=right)"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			font="SansSerif,0,10" name="TextArea" />
+		<Label id="22" label="available fixes" align="left"
+			localize="true"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=left)"
+			name="Label7" />
+		<Table id="23" visibleRowCount="3"
+			boundToSelectionManager="true"
+			backgroundNonSelectionColor="255,255,255"
+			iteratorClassName="org.openflexo.pamela.validation.FixProposal&lt;? extends org.openflexo.pamela.validation.ValidationRule&lt;? extends org.openflexo.pamela.validation.ValidationRule&lt;?,?&gt;,? extends org.openflexo.pamela.validation.Validable&gt;,? extends org.openflexo.pamela.validation.Validable&gt;"
+			backgroundSecondarySelectionColor="178,215,255" showFooter="false"
+			autoSelectFirstRow="true" lookAndFeel="Classic"
+			selectionMode="MultipleIntervalSelection" selected="data.fixProposal"
+			rowHeight="18" localize="true" manageDynamicModel="true"
+			data="data.issue.fixProposals"
+			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;location=right)"
+			name="FixProposalsTable">
+			<IconColumn id="24"
+				data="controller.iconForObject(iterator)" resizable="false"
+				title="icon" displayTitle="false" columnWidth="20" showIcon="false"
+				name="icon" />
+			<LabelColumn id="25"
+				data="data.validationModel.localizedFixProposal(iterator)"
+				resizable="true" title="fix_proposals" displayTitle="true"
+				columnWidth="100" showIcon="false" name="label" />
+		</Table>
+	</Panel>
+	<FIBVariable id="26"
+		type="org.openflexo.fml.controller.validation.IssueFixing" name="data" />
+	<LocalizedDictionary id="27">
+		<Localized id="28" lang="English" value="Fix issue"
+			key="fix_issue" />
+		<Localized id="29" lang="Dutch" value="Fix issue"
+			key="fix_issue" />
+		<Localized id="30" lang="French"
+			value="Résoudre le problème" key="fix_issue" />
+		<Localized id="31" lang="English" value="Label" key="label" />
+		<Localized id="32" lang="Dutch" value="Label" key="label" />
+		<Localized id="33" lang="French" value="Etiquette"
+			key="label" />
+		<Localized id="34" lang="English" value="Cancel"
+			key="cancel" />
+		<Localized id="35" lang="Dutch" value="Annuleren"
+			key="cancel" />
+		<Localized id="36" lang="French" value="Annuler"
+			key="cancel" />
+		<Localized id="37" lang="English" value="Ignore"
+			key="ignore" />
+		<Localized id="38" lang="Dutch" value="Negeren" key="ignore" />
+		<Localized id="39" lang="French" value="Ignore" key="ignore" />
+		<Localized id="40" lang="English" value="Fix issue"
+			key="fix" />
+		<Localized id="41" lang="Dutch" value="Los probleem op"
+			key="fix" />
+		<Localized id="42" lang="French" value="Corriger" key="fix" />
+		<Localized id="43" lang="English" value="Object"
+			key="object" />
+		<Localized id="44" lang="Dutch" value="Object" key="object" />
+		<Localized id="45" lang="French" value="Objet" key="object" />
+		<Localized id="46" lang="English" value="Rule" key="rule" />
+		<Localized id="47" lang="Dutch" value="Rule" key="rule" />
+		<Localized id="48" lang="French" value="Règle" key="rule" />
+		<Localized id="49" lang="English" value="Details"
+			key="details" />
+		<Localized id="50" lang="Dutch" value="Details"
+			key="details" />
+		<Localized id="51" lang="French" value="Détails"
+			key="details" />
+		<Localized id="52" lang="English" value="Available fixes"
+			key="available fixes" />
+		<Localized id="53" lang="Dutch" value="Available fixes"
+			key="available fixes" />
+		<Localized id="54" lang="French" value="Solutions"
+			key="available fixes" />
+		<Localized id="55" lang="English" value="Icon" key="icon" />
+		<Localized id="56" lang="Dutch" value="icoon" key="icon" />
+		<Localized id="57" lang="French" value="icône" key="icon" />
+		<Localized id="58" lang="English" value="Fix proposals"
+			key="fix_proposals" />
+		<Localized id="59" lang="Dutch" value="Fix proposals"
+			key="fix_proposals" />
+		<Localized id="60" lang="French" value="Propositions"
+			key="fix_proposals" />
+	</LocalizedDictionary>
 </Panel>
