@@ -257,6 +257,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	public void initialize() {
 		availableFlexoRoleTypes = new HashMap<>();
 		availableEditionActionTypes = new HashMap<>();
+		availableFMLObjectsTypes = new HashMap<>();
 		availableAbstractFetchRequestActionTypes = new HashMap<>();
 		availableFetchRequestActionTypes = new HashMap<>();
 		availableFlexoBehaviourTypes = new HashMap<>();
