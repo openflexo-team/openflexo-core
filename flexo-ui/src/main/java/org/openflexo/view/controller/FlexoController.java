@@ -218,9 +218,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	// This map stores ModuleViews associated to their perspective and master object
 	private final Map<FlexoPerspective,Map<FlexoObject, ModuleView<?>>> moduleViews = new HashMap<>();
 
-	//private final Map<Location, ModuleView<?>> viewsForLocation;
-	//private final Multimap<ModuleView<?>, Location> locationsForView;
-
 	private LocalizedEditor mainLocalizedEditor;
 	private ValidationWindow validationWindow;
 
@@ -247,8 +244,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("init_module_controller"));
 
 		this.module = module;
-		//locationsForView = ArrayListMultimap.create();
-		//viewsForLocation = new HashMap<>();
 		controllerModel = new ControllerModel(module.getApplicationContext(), module);
 		propertyChangeSupport = new PropertyChangeSupport(this);
 		manager.new PropertyChangeListenerRegistration(this, controllerModel);
