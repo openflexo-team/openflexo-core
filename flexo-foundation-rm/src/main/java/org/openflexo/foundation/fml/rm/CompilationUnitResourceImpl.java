@@ -733,7 +733,7 @@ public abstract class CompilationUnitResourceImpl
 	}
 
 	private FMLCompilationUnit loadFromFML() throws ParseException, IOException {
-		// System.out.println("Loading from FML " + getIODelegate().getSerializationArtefact());
+		System.out.println("Loading from FML " + getIODelegate().getSerializationArtefact());
 		InputStream inputStream = getInputStream();
 		try {
 			FMLCompilationUnit returned = getFMLParser().parse(inputStream, getFactory(), (modelSlotClasses) -> {
