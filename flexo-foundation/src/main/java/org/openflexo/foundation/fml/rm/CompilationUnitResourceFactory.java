@@ -29,6 +29,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
+import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -380,7 +381,7 @@ public class CompilationUnitResourceFactory
 			resourceCenter.getServiceManager().getVirtualModelLibrary().registerCompilationUnit(resource);
 		}
 
-		// Now look for virtual models
+		// Now look for contained virtual models
 		if (exploreVirtualModels) {
 			exploreVirtualModels(resource);
 		}
@@ -400,6 +401,11 @@ public class CompilationUnitResourceFactory
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) virtualModelResource.getResourceCenter();
 		I directory = resourceCenter.getContainer((I) virtualModelResource.getIODelegate().getSerializationArtefact());
 
+		// Fixed issue when no .fml is defined (only a .fml.xml)
+		if (directory == null && virtualModelResource.getIODelegate() instanceof DirectoryBasedJarIODelegate) {
+			directory = (I)((DirectoryBasedJarIODelegate)virtualModelResource.getIODelegate()).getDirectory();
+		}
+		
 		exploreResource(directory, virtualModelResource);
 	}
 
