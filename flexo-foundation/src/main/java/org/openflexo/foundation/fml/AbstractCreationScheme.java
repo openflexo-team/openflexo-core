@@ -50,6 +50,9 @@ public abstract interface AbstractCreationScheme extends FlexoBehaviour, Abstrac
 
 	public boolean isDefaultCreationScheme();
 
+	@Override
+	public Type getNewInstanceType();
+
 	public static abstract class AbstractCreationSchemeImpl extends FlexoBehaviourImpl implements AbstractCreationScheme {
 
 		@Override
@@ -58,8 +61,20 @@ public abstract interface AbstractCreationScheme extends FlexoBehaviour, Abstrac
 		}
 
 		@Override
+		public Type getAnalyzedReturnType() {
+			if (getFlexoConcept() != null)
+				return getFlexoConcept().getInstanceType();
+			return null;
+		}
+
+		@Override
 		public boolean isDefaultCreationScheme() {
 			return false;
+		}
+		
+		@Override
+		public Type getReturnType() {
+			return getNewInstanceType();
 		}
 	}
 }

@@ -755,10 +755,21 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	public <CSPE extends AbstractCreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(
 			Class<CSPE> abstractCreationSchemeClass, FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName,
 			List<DataBinding<?>> args, Bindable bindable) {
-		CSPE returned = (CSPE) newInstance(abstractCreationSchemeClass);
+		CSPE returned = newInstance(abstractCreationSchemeClass);
 		returned.setType(type);
 		returned.setParent(parent);
 		returned.setMethodName(constructorName);
+		returned.setArguments(args);
+		returned.setBindable(bindable);
+		return returned;
+	}
+
+	public <CS extends AbstractCreationScheme,CSPE extends AbstractCreationSchemePathElement<CS>> CSPE newAbstractCreationSchemePathElement(
+			Class<CSPE> abstractCreationSchemeClass, IBindingPathElement parent, CS creationScheme,
+			List<DataBinding<?>> args, Bindable bindable) {
+		CSPE returned = newInstance(abstractCreationSchemeClass);
+		returned.setParent(parent);
+		returned.setFunction(creationScheme);
 		returned.setArguments(args);
 		returned.setBindable(bindable);
 		return returned;
