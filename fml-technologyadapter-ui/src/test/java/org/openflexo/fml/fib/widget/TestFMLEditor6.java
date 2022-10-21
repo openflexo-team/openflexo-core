@@ -260,7 +260,7 @@ public class TestFMLEditor6 extends OpenflexoFIBTestCase {
 	@Category(UITest.class)
 	public void updateConcept2() {
 
-		log("createConcept2");
+		log("updateConcept2");
 
 		// @formatter:off
 		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
@@ -291,6 +291,10 @@ public class TestFMLEditor6 extends OpenflexoFIBTestCase {
 		assertSame(foo, cu.getVirtualModel().getFlexoConcept("Foo"));
 		assertSame(foo2, cu.getVirtualModel().getFlexoConcept("Foo2"));
 
+		System.out.println("FML: "+cu.getFMLPrettyPrint());
+		
+		System.out.println("parents: "+foo2.getParentFlexoConcepts());
+	
 		assertEquals(1, foo2.getParentFlexoConcepts().size());
 		assertTrue(foo2.getParentFlexoConcepts().contains(foo));
 		assertSame(foo, foo2.getParentFlexoConcepts().get(0));
