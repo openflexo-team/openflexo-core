@@ -65,6 +65,14 @@ public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 			protected PreferencesService createPreferencesService() {
 				return new PreferencesService();
 			}
+
+			@Override
+			protected void registerPreferencesService() {
+				if (getPreferencesService() == null) {
+					PreferencesService preferencesService = createPreferencesService();
+					registerService(preferencesService);
+				}
+			}
 		};
 		/*
 		 * for (FlexoResourceCenter<?> rc :
