@@ -311,6 +311,24 @@ public abstract class CompilationUnitResourceImpl
 	}
 
 	@Override
+	protected boolean doesIODelegateExist() {
+		if (getIODelegate() != null && !getIODelegate().exists()) {
+			// Special case for XML serialized VMs > no FML
+			try {
+				if (getXMLArtefactResource() != null && getXMLArtefactResource().exists()) {
+					return true;
+				}
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (LocatorNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return super.doesIODelegateExist();
+	}
+	
+	@Override
 	public boolean isLoading() {
 		return isLoading;
 	}

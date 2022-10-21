@@ -98,6 +98,10 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public boolean isLoadable() {
 		// By default, a resource is always loadable, then this method always
 		// returns true if IO delegate exists
+		return doesIODelegateExist();
+	}
+	
+	protected boolean doesIODelegateExist() {
 		return getIODelegate() != null && getIODelegate().exists();
 	}
 
