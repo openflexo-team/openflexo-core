@@ -51,8 +51,8 @@ public class TestFMLWidgetFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testValidationPanel() {
-		validateFIB("Fib/Widget/ValidationPanel.fib");
+	public void testFMLValidationPanel() {
+		validateFIB("Fib/Widget/FMLValidationPanel.fib");
 	}
 
 	@Test
