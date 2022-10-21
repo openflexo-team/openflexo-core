@@ -141,6 +141,7 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(5)
+	@Category(UITest.class)
 	public void validate() {
 		//System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
 
