@@ -145,7 +145,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 		}
 	}
 
-	private void registerPreferencesService() {
+	protected void registerPreferencesService() {
 		if (getPreferencesService() == null) {
 			PreferencesService preferencesService = createPreferencesService();
 			registerService(preferencesService);

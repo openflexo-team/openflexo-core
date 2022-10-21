@@ -115,6 +115,11 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	@Override
+	protected void registerPreferencesService() {
+		// PreferencesService is not activated in test context
+	}
+	
+	@Override
 	public ProjectLoadingHandler getProjectLoadingHandler(File projectDirectory) {
 		/*
 		 * if (UserType.isCustomerRelease() || UserType.isAnalystRelease()) {
