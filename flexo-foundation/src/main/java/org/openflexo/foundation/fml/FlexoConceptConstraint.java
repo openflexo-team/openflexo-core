@@ -128,6 +128,8 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 
 	public void setHasIteration(Boolean hasIteration);
 
+	public int getIndex();
+
 	public static abstract class FlexoConceptConstraintImpl extends FlexoConceptObjectImpl implements FlexoConceptConstraint {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptConstraint.class.getPackage().getName());
@@ -143,6 +145,14 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 		public FlexoConceptConstraintImpl() {
 			super();
 			constraintBindable = new ConstraintBindableImpl();
+		}
+
+		@Override
+		public int getIndex() {
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getFlexoConceptConstraints().indexOf(this);
+			}
+			return -1;
 		}
 
 		@Override

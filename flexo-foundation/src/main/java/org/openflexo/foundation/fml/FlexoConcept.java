@@ -608,6 +608,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(FLEXO_CONCEPT_CONSTRAINTS_KEY)
 	public void removeFromFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
 
+	@Reindexer(FLEXO_CONCEPT_CONSTRAINTS_KEY)
+	public void moveFlexoConstraintToIndex(FlexoConceptConstraint constraint, int index);
+
 	/**
 	 * Return boolean indicating whether this concept has a FlexoConcept for container (containment semantics)<br>
 	 * 

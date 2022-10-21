@@ -145,33 +145,33 @@
 					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
 					layout="box" name="ConstraintsOrderingPanel">
 					<Button
-						enable="(constraintsTable.selected != null) &amp; (constraintsTable.selected.index &gt; 0)"
+						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &gt; 0)"
 						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
-						action="data.entryFirst(constraintsTable.selected)" index="0"
+						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,0)" index="0"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
 						label="">
 					</Button>
 					<Button
-						enable="(constraintsTable.selected != null) &amp; (constraintsTable.selected.index &gt; 0)"
+						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &gt; 0)"
 						buttonIcon="controller.arrowUp" buttonType="Trigger" name="Button2"
-						action="data.entryUp(constraintsTable.selected)" index="1"
+						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,constraintsTable.selected.index-1)" index="1"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
 						label="">
 					</Button>
 					<Button
-						enable="(constraintsTable.selected != null) &amp; (constraintsTable.selected.index &lt; (data.entries.size - 1))"
+						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &lt; (data.flexoConceptConstraints.size - 1))"
 						buttonIcon="controller.arrowDown" buttonType="Trigger" name="Button3"
-						action="data.entryDown(constraintsTable.selected)" index="2"
+						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,constraintsTable.selected.index+1)" index="2"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
 						label="">
 					</Button>
 					<Button
-						enable="(constraintsTable.selected != null) &amp; (constraintsTable.selected.index &lt; (data.entries.size - 1))"
+						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &lt; (data.flexoConceptConstraints.size - 1))"
 						buttonIcon="controller.arrowBottom" buttonType="Trigger" name="Button4"
-						action="data.entryLast(constraintsTable.selected)" index="3"
+						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,data.flexoConceptConstraints.size - 1)" index="3"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
 						label="">
