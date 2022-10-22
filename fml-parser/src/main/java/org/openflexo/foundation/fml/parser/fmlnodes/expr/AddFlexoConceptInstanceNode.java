@@ -173,7 +173,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 					throwIssue("Cannot find any CreationScheme for FlexoConcept " + getModelObject().getType(), getTypeFragment());
 				}
 				else if (typeConcept.getCreationSchemes().size() == 1) {
-					getModelObject().setFunction(typeConcept.getCreationSchemes().get(0));
+					((CreationSchemePathElement)getModelObject()).setFunction(typeConcept.getCreationSchemes().get(0));
 					// System.out.println("Set constructor to " + getModelObject().getFunction());
 				}
 				else {

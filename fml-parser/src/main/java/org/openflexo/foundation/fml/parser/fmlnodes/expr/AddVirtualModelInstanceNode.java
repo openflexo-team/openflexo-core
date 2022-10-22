@@ -168,7 +168,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 					throwIssue("Cannot find any CreationScheme for VirtualModel " + getModelObject().getType(), getTypeFragment());
 				}
 				else if (typeVirtualModel.getCreationSchemes().size() == 1) {
-					getModelObject().setFunction(typeVirtualModel.getCreationSchemes().get(0));
+					((CreationSchemePathElement)getModelObject()).setFunction(typeVirtualModel.getCreationSchemes().get(0));
 					// System.out.println("Set constructor to " + getModelObject().getFunction());
 				}
 				else {
