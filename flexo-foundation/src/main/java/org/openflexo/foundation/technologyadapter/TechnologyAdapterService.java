@@ -209,7 +209,9 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> TechnologyAdapter getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?>> TechnologyAdapter<?> getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass);
+
+	public <B extends FlexoBehaviour> TechnologyAdapter<?> getTechnologyAdapterForBehaviourType(Class<B> behaviourClass);
 
 	/**
 	 * Return the list of {@link FlexoRole} class available for supplied modelSlotClass

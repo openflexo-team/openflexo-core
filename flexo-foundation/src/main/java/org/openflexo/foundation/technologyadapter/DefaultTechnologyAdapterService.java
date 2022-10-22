@@ -57,6 +57,9 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.ActionScheme;
+import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -441,6 +444,37 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				// System.out.println("msType=" + msType + " modelSlotClass=" + modelSlotClass);
 				if (msType != null && msType.isAssignableFrom(modelSlotClass)) {
 					return ta;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return {@link TechnologyAdapter} where supplied modelSlotClass has been declared
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <B extends FlexoBehaviour> TechnologyAdapter<?> getTechnologyAdapterForBehaviourType(Class<B> behaviourClass) {
+		if (behaviourClass == null) {
+			return null;
+		}
+		
+		if (CreationScheme.class.isAssignableFrom(behaviourClass)
+				|| ActionScheme.class.isAssignableFrom(behaviourClass)
+				|| DeletionScheme.class.isAssignableFrom(behaviourClass)) {
+			return getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+		}
+		
+		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
+			// System.out.println("ta: " + ta);
+			for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
+				for (Class<? extends FlexoBehaviour> behaviourType : getAvailableFlexoBehaviourTypes(msType)) {
+					if (behaviourType != null && behaviourType.isAssignableFrom(behaviourClass)) {
+						return ta;
+					}
 				}
 			}
 		}

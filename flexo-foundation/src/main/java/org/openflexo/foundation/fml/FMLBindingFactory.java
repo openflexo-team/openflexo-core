@@ -474,7 +474,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 					// In this case, we use default constructor
 					constructorName = concept.getCreationSchemes().get(0).getName();
 				}
-				CreationScheme returned = (CreationScheme) concept.getFlexoBehaviour(constructorName, buildArgumentList(arguments));
+				AbstractCreationScheme returned = (AbstractCreationScheme) concept.getFlexoBehaviour(constructorName, buildArgumentList(arguments));
 				return returned;
 			}
 			return null;

@@ -38,36 +38,57 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.Function.FunctionArgument;
+import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.NewInstancePathElement;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
- * Modelize a new instance of a given {@link FlexoConcept} using a {@link CreationScheme}
+ * Modelize a new instance of a given {@link FlexoConcept}
  * 
  * @author sylvain
  * 
@@ -75,13 +96,580 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ModelEntity
 @ImplementationClass(CreationSchemePathElement.CreationSchemePathElementImpl.class)
 @FML("CreationSchemePathElement")
-public interface CreationSchemePathElement extends AbstractCreationSchemePathElement<CreationScheme> {
+public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
+		extends FMLObject, NewInstancePathElement<CS>, PropertyChangeListener {
 
-	public abstract class CreationSchemePathElementImpl extends AbstractCreationSchemePathElementImpl<CreationScheme>
-			implements CreationSchemePathElement {
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
+	@Deprecated /* Will disappear */
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_TITLE_KEY = "virtualModelInstanceTitle";
+	// @PropertyIdentifier(type = DataBinding.class)
+	// public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String RESOURCE_URI_KEY = "resourceURI";
+	@PropertyIdentifier(type = FlexoResourceCenter.class)
+	public static final String RESOURCE_CENTER_KEY = "resourceCenter";
+	@PropertyIdentifier(type = String.class)
+	public static final String DYNAMIC_RELATIVE_PATH_KEY = "dynamicRelativePath";
+
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
+	@XMLAttribute
+	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, required = true)
+	public DataBinding<String> getVirtualModelInstanceName();
+
+	@Setter(VIRTUAL_MODEL_INSTANCE_NAME_KEY)
+	public void setVirtualModelInstanceName(DataBinding<String> virtualModelInstanceName);
+
+	@Deprecated /* Will disappear */
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, ignoreForEquality = true)
+	@XMLAttribute
+	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, required = false)
+	public DataBinding<String> getVirtualModelInstanceTitle();
+
+	@Deprecated /* Will disappear */
+	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
+	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
+
+	/*@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoConceptInstance> getContainer();
+	
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<FlexoConceptInstance> container);*/
+
+	@Getter(value = RESOURCE_URI_KEY)
+	@XMLAttribute
+	public DataBinding<String> getResourceURI();
+
+	@Setter(RESOURCE_URI_KEY)
+	public void setResourceURI(DataBinding<String> resourceURI);
+
+	@Getter(value = RESOURCE_CENTER_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoResourceCenter<?>> getResourceCenter();
+
+	@Setter(RESOURCE_CENTER_KEY)
+	public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter);
+
+	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
+	@XMLAttribute
+	public DataBinding<String> getDynamicRelativePath();
+
+	@Setter(DYNAMIC_RELATIVE_PATH_KEY)
+	public void setDynamicRelativePath(DataBinding<String> relativePath);
+
+	@Override
+	public FlexoConceptInstanceType getType();
+
+	public CS getCreationScheme();
+
+	public abstract class CreationSchemePathElementImpl<CS extends AbstractCreationScheme> extends FMLNewInstancePathElementImpl<CS>
+			implements CreationSchemePathElement<CS> {
 
 		static final Logger logger = Logger.getLogger(CreationSchemePathElement.class.getPackage().getName());
 
+		private Type lastKnownType = null;
+
+		private DataBinding<String> virtualModelInstanceName;
+		// private DataBinding<FlexoConceptInstance> container;
+
+		private DataBinding<String> dynamicRelativePath;
+		private DataBinding<String> resourceURI;
+		private DataBinding<FlexoResourceCenter<?>> resourceCenter;
+
+		@Override
+		public void activate() {
+			super.activate();
+			// Do not instanciate parameters now, we will do it later
+			// instanciateParameters(owner);
+			if (getCreationScheme() != null) {
+				if (getCreationScheme() != null && getCreationScheme().getPropertyChangeSupport() != null) {
+					getCreationScheme().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
+				for (FunctionArgument arg : getCreationScheme().getArguments()) {
+					DataBinding<?> argValue = getArgumentValue(arg);
+					if (argValue != null && arg != null) {
+						argValue.setDeclaredType(arg.getArgumentType());
+					}
+				}
+				lastKnownType = getCreationScheme().getReturnType();
+			}
+			else {
+				logger.warning("Inconsistent data: null CreationScheme");
+			}
+		}
+
+		@Override
+		public void desactivate() {
+			if (getCreationScheme() != null && getCreationScheme().getPropertyChangeSupport() != null) {
+				getCreationScheme().getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			super.desactivate();
+		}
+
+		@Override
+		public FlexoConceptInstanceType getType() {
+			if (getCreationScheme() != null) {
+				if (getCreationScheme().getNewInstanceType() instanceof FlexoConceptInstanceType) {
+					return (FlexoConceptInstanceType) getCreationScheme().getNewInstanceType();
+				}
+				return null;
+			}
+			return (FlexoConceptInstanceType) super.getType();
+		}
+
+		public FlexoConcept getFlexoConcept() {
+			if (getType() != null) {
+				return getType().getFlexoConcept();
+			}
+			return null;
+		}
+
+		@Override
+		public CS getCreationScheme() {
+			return getFunction();
+		}
+
+		@Override
+		public String getLabel() {
+			return getCreationScheme().getSignature();
+		}
+
+		@Override
+		public String getTooltipText(Type resultingType) {
+			return getCreationScheme().getDescription();
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getSource() == getCreationScheme()) {
+				if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
+					// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
+					// getFlexoBehaviour().getName());
+					clearSerializationRepresentation();
+					if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != null
+							&& getCreationScheme().getFlexoConcept().getBindingModel() != null
+							&& getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
+						getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
+								.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_NAME_CHANGED, null, this);
+					}
+				}
+				if (lastKnownType != getType()) {
+					lastKnownType = getType();
+					clearSerializationRepresentation();
+					if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != null
+							&& getCreationScheme().getFlexoConcept().getBindingModel() != null
+							&& getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
+						getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
+								.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_TYPE_CHANGED, null, this);
+					}
+				}
+
+			}
+		}
+
+		@Override
+		public DataBinding<String> getVirtualModelInstanceName() {
+			if (virtualModelInstanceName == null) {
+				virtualModelInstanceName = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				virtualModelInstanceName.setBindingName("virtualModelInstanceName");
+			}
+			return virtualModelInstanceName;
+		}
+
+		@Override
+		public void setVirtualModelInstanceName(DataBinding<String> aVirtualModelInstanceName) {
+			if (aVirtualModelInstanceName != null) {
+				aVirtualModelInstanceName.setOwner(this);
+				aVirtualModelInstanceName.setBindingName("virtualModelInstanceName");
+				aVirtualModelInstanceName.setDeclaredType(String.class);
+				aVirtualModelInstanceName.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.virtualModelInstanceName = aVirtualModelInstanceName;
+		}
+
+		/*@Override
+		public DataBinding<FlexoConceptInstance> getContainer() {
+			if (container == null) {
+				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
+				container.setBindingName("container");
+				container.setDeclaredType(getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null
+						? getFlexoConcept().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
+			}
+			return container;
+		}
+		
+		@Override
+		public void setContainer(DataBinding<FlexoConceptInstance> aContainer) {
+			if (aContainer != null) {
+				aContainer.setOwner(this);
+				aContainer.setBindingName("container");
+				aContainer.setDeclaredType(getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null
+						? getFlexoConcept().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
+				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.container = aContainer;
+		}*/
+
+		@Override
+		public DataBinding<String> getResourceURI() {
+			if (resourceURI == null) {
+				resourceURI = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				resourceURI.setBindingName("resourceURI");
+			}
+			return resourceURI;
+		}
+
+		@Override
+		public void setResourceURI(DataBinding<String> resourceURI) {
+			if (resourceURI != null) {
+				resourceURI.setOwner(this);
+				resourceURI.setDeclaredType(String.class);
+				resourceURI.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				resourceURI.setBindingName("resourceURI");
+			}
+			this.resourceURI = resourceURI;
+		}
+
+		@Override
+		public DataBinding<String> getDynamicRelativePath() {
+			if (dynamicRelativePath == null) {
+				dynamicRelativePath = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				dynamicRelativePath.setBindingName("dynamicRelativePath");
+			}
+			return dynamicRelativePath;
+		}
+
+		@Override
+		public void setDynamicRelativePath(DataBinding<String> dynamicRelativePath) {
+			if (dynamicRelativePath != null) {
+				dynamicRelativePath.setOwner(this);
+				dynamicRelativePath.setDeclaredType(String.class);
+				dynamicRelativePath.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				dynamicRelativePath.setBindingName("dynamicRelativePath");
+			}
+			this.dynamicRelativePath = dynamicRelativePath;
+		}
+
+		@Override
+		public DataBinding<FlexoResourceCenter<?>> getResourceCenter() {
+			if (resourceCenter == null) {
+				resourceCenter = new DataBinding<>(this, FlexoResourceCenter.class, DataBinding.BindingDefinitionType.GET);
+				resourceCenter.setBindingName("resourceCenter");
+			}
+			return resourceCenter;
+		}
+
+		@Override
+		public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter) {
+			if (resourceCenter != null) {
+				resourceCenter.setOwner(this);
+				resourceCenter.setDeclaredType(FlexoResourceCenter.class);
+				resourceCenter.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				resourceCenter.setBindingName("resourceCenter");
+			}
+			this.resourceCenter = resourceCenter;
+		}
+
+		/*@Override
+		public Object getBindingValue(Object target, BindingEvaluationContext evaluationContext)
+				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
+		
+			System.out.println("Executing CreationSchemePathElement: " + this);
+			System.out.println("target=" + target);
+			System.out.println("evaluationContext=" + evaluationContext);
+		
+			try {
+		
+				FlexoConceptInstance container = null;
+		
+				if (target == null && evaluationContext instanceof FlexoBehaviourAction) {
+					container = ((FlexoBehaviourAction) evaluationContext).getFlexoConceptInstance();
+				}
+		
+				if (target instanceof FlexoConceptInstance) {
+					container = (FlexoConceptInstance) target;
+				}
+		
+				if (container == null) {
+					throw new NullReferenceException("Unable to find executable context for " + this);
+				}
+		
+				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
+		
+					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
+		
+		
+					VirtualModel instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
+		
+					// TODO: manage container
+					logger.warning("What about the container ??? " + container);
+		
+					CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
+							.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+					createVMIAction.setSkipChoosePopup(true);
+					createVMIAction.setNewVirtualModelInstanceName(vmiName);
+					createVMIAction.setVirtualModel(instantiatedVirtualModel);
+					createVMIAction.setCreationScheme(getCreationScheme());
+		
+					for (FunctionArgument functionArgument : getFunctionArguments()) {
+						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
+						Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
+						// System.out.println("values:" + v);
+						createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
+					}
+		
+					createVMIAction.doAction();
+					FMLRTVirtualModelInstance returned = createVMIAction.getNewVirtualModelInstance();
+					// System.out.println("returned=" + returned);
+					return returned;
+				}
+				else {
+					FlexoConceptInstance newFCI = container.getVirtualModelInstance()
+							.makeNewFlexoConceptInstance(getCreationScheme().getFlexoConcept(), container);
+					if (getCreationScheme().getFlexoConcept().getContainerFlexoConcept() != null) {
+						container.addToEmbeddedFlexoConceptInstances(newFCI);
+					}
+		
+					if (performExecuteCreationScheme(newFCI, container.getVirtualModelInstance(), evaluationContext)) {
+						if (logger.isLoggable(Level.FINE)) {
+							logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+						}
+						return newFCI;
+					}
+					else {
+						logger.warning("Failing execution of creationScheme: " + getCreationScheme());
+					}
+				}
+		
+			} catch (IllegalArgumentException e) {
+				StringBuffer warningMessage = new StringBuffer(
+						"While evaluating edition scheme " + getCreationScheme() + " exception occured: " + e.getMessage());
+				warningMessage.append(", object = " + target);
+				logger.warning(warningMessage.toString());
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+				throw new InvocationTargetTransformException(e);
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
+				throw new InvocationTargetTransformException(e);
+			}
+			return null;
+		
+		}*/
+
+		@Override
+		public CreationSchemePathElement transform(ExpressionTransformer transformer) throws TransformException {
+			return this;
+		}
+
+		@Override
+		public String getSerializationRepresentation() {
+			// if (serializationRepresentation == null) {
+
+			StringBuffer returned = new StringBuffer();
+
+			if (isResolved()) {
+				if (getFunction().isDefaultCreationScheme()) {
+					returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+				}
+				else {
+					returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "::" + getFunction().getName() + "(");
+				}
+				boolean isFirst = true;
+				for (Function.FunctionArgument a : getFunction().getArguments()) {
+					returned.append((isFirst ? "" : ",") + getArgumentValue(a));
+					isFirst = false;
+				}
+				returned.append(")");
+				if (hasWithClause()) {
+					returned.append(" with (");
+					isFirst = true;
+					
+					System.out.println("Prout ici, getVirtualModelInstanceName()="+getVirtualModelInstanceName());
+					
+					if (getVirtualModelInstanceName() != null && getVirtualModelInstanceName().isSet()) {
+						returned.append((isFirst ? "" : ",") + "virtualModelInstanceName=" + getVirtualModelInstanceName());
+						isFirst = false;
+					}
+					/*if (getContainer() != null && getContainer().isSet()) {
+						returned.append((isFirst ? "" : ",") + "container=" + getContainer());
+						isFirst = false;
+					}*/
+					if (getResourceURI() != null && getResourceURI().isSet()) {
+						returned.append((isFirst ? "" : ",") + "uri=" + getResourceURI());
+						isFirst = false;
+					}
+					if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
+						returned.append((isFirst ? "" : ",") + "path=" + getDynamicRelativePath());
+						isFirst = false;
+					}
+					if (getResourceCenter() != null && getResourceCenter().isSet()) {
+						returned.append((isFirst ? "" : ",") + "rc=" + getResourceCenter());
+						isFirst = false;
+					}
+					returned.append(")");
+				}
+			}
+			else {
+				returned.append("unknown_new()");
+			}
+			// serializationRepresentation = returned.toString();
+			return returned.toString();
+			// }
+			// return serializationRepresentation;
+		}
+
+		private boolean hasWithClause() {
+			if (getType() instanceof VirtualModelInstanceType) {
+				return true;
+			}
+			if (getResourceURI() != null && getResourceURI().isSet()) {
+				return true;
+			}
+			if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
+				return true;
+			}
+			if (getResourceCenter() != null && getResourceCenter().isSet()) {
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public BindingPathCheck checkBindingPathIsValid(IBindingPathElement parentElement, Type parentType) {
+
+			BindingPathCheck check = super.checkBindingPathIsValid(parentElement, parentType);
+
+			if (parentType != null) {
+				if (getParent() == null) {
+					check.invalidBindingReason = "No parent for: " + this;
+					check.valid = false;
+					return check;
+				}
+
+				if (getParent() != parentElement) {
+					check.invalidBindingReason = "Inconsistent parent for: " + this;
+					check.valid = false;
+					return check;
+				}
+
+				if (!TypeUtils.isTypeAssignableFrom(parentElement.getType(), getParent().getType(), true)) {
+					check.invalidBindingReason = "Mismatched: " + parentElement.getType() + " and " + getParent().getType();
+					check.valid = false;
+					return check;
+				}
+
+				if (parentType instanceof FlexoConceptInstanceType) {
+
+					FlexoConcept parentContext = ((FlexoConceptInstanceType) parentType).getFlexoConcept();
+					if (parentContext instanceof VirtualModel) {
+						VirtualModel vm = (VirtualModel) parentContext;
+						if (getFlexoConcept() instanceof VirtualModel) {
+							// A VirtualModel inside another VirtualModel
+							if (!(((VirtualModel) getFlexoConcept()).getContainerVirtualModel()).isAssignableFrom(vm)) {
+								check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName()
+										+ " in " + parentContext.getName();
+								check.valid = false;
+								return check;
+							}
+						}
+						else {
+							// A simple FlexoConcept in a VirtualModel
+							if (!vm.getAllRootFlexoConcepts().contains(getCreationScheme().getFlexoConcept())) {
+								check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName()
+										+ " in " + parentContext.getName();
+								check.valid = false;
+								return check;
+							}
+						}
+					}
+					else if (parentContext instanceof FlexoConcept) {
+						if (!parentContext.getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer().contains(getCreationScheme().getFlexoConcept())) {
+							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
+									+ parentContext.getName();
+							check.valid = false;
+							return check;
+						}
+					}
+				}
+			}
+
+			check.returnedType = getType();
+			check.valid = true;
+			return check;
+		}
+
+		@Override
+		public boolean requiresContext() {
+			return false;
+		}
+
+		/*private boolean performExecuteCreationScheme(FlexoConceptInstance newInstance, VirtualModelInstance<?, ?> vmInstance,
+				BindingEvaluationContext evaluationContext)
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
+		
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
+						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
+		
+				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
+					DataBinding<?> param = getArgumentValue(p);
+					Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
+					System.out.println("For parameter " + param + " value is " + paramValue);
+					if (paramValue != null) {
+						creationSchemeAction.setParameterValue(p, paramValue);
+					}
+				}
+		
+				creationSchemeAction.doAction();
+		
+				return creationSchemeAction.hasActionExecutionSucceeded();
+		
+			}
+			logger.warning("Unexpected: " + evaluationContext);
+			Thread.dumpStack();
+			return false;
+		}*/
+
+		@Override
+		public boolean isResolved() {
+			return getCreationScheme() != null;
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public void resolve() {
+
+			System.out.println("On essaie de resoudre CreationSchemePathElement ");
+			System.out.println("type=" + getType());
+			System.out.println("resolved=" + getType().isResolved());
+			System.out.println("name=" + getParsed());
+			System.out.println("args=" + getArguments());
+			System.out.println("bindable=" + getBindable());
+			System.out.println("bindable.getBindingFactory()=" + getBindable().getBindingFactory());
+
+			CS function = (CS) ((FMLBindingFactory) getBindable().getBindingFactory()).retrieveConstructor(getType(),
+					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
+			setFunction(function);
+			if (function == null && getType().isResolved()) {
+				// Do not warn for unresolved type
+				logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments());
+				// System.out.println("type: " + getType() + " resolved=" + getType().isResolved());
+				// System.out.println("arguments: " + getArguments() + " size: " + getArguments().size());
+			}
+			/*else {
+				if (getType().toString().contains("Foo2")) {
+					System.out.println("C'est la que je resouds Foo2");
+					Thread.dumpStack();
+				}
+			}*/
+		}
+		
 		@Override
 		public Object getBindingValue(Object target, BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
@@ -116,7 +704,8 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 					throw new NullReferenceException("Unable to find executable context for " + this);
 				}
 
-				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
+				// Special case to create VirtualModelInstance
+				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel && (getCreationScheme() instanceof CreationScheme)) {
 
 					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
 					System.out.println("vmiName=" + vmiName);
@@ -145,7 +734,7 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 					createVMIAction.setSkipChoosePopup(true);
 					createVMIAction.setNewVirtualModelInstanceName(vmiName);
 					createVMIAction.setVirtualModel(instantiatedVirtualModel);
-					createVMIAction.setCreationScheme(getCreationScheme());
+					createVMIAction.setCreationScheme((CreationScheme)getCreationScheme());
 
 					for (FunctionArgument functionArgument : getFunctionArguments()) {
 						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
@@ -197,13 +786,35 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 
 		}
 
+		private AbstractCreationSchemeAction<?,CS,?>  makeCreationSchemeAction(CS behaviour, VirtualModelInstance<?, ?> vmInstance, BindingEvaluationContext evaluationContext) {
+			System.out.println("SM="+getServiceManager());
+			System.out.println("SM2="+behaviour.getServiceManager());
+			TechnologyAdapter<?> ta = behaviour.getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForBehaviourType(behaviour.getClass());
+			if (ta == null) {
+				logger.warning("Cannot find TechnologyAdapter for behaviour " + behaviour);
+				Thread.dumpStack();
+				return null;
+			}
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				return ta.makeCreationSchemeAction(behaviour, vmInstance, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+			}
+			else if (evaluationContext instanceof RunTimeEvaluationContext) {
+				return ta.makeCreationSchemeAction(behaviour, vmInstance, ((RunTimeEvaluationContext) evaluationContext).getEditor());
+			}
+			else {
+				logger.warning("Unexpected evaluation context : " + evaluationContext);
+				Thread.dumpStack();
+				return null;
+			}
+		}
+		
 		private boolean performExecuteCreationScheme(FlexoConceptInstance newInstance, VirtualModelInstance<?, ?> vmInstance,
 				BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
 
-			CreationSchemeAction creationSchemeAction = null;
+			AbstractCreationSchemeAction<?,CS,?> creationSchemeAction = makeCreationSchemeAction(getCreationScheme(), vmInstance,evaluationContext);
 
-			if (evaluationContext instanceof FlexoBehaviourAction) {
+			/*if (evaluationContext instanceof FlexoBehaviourAction) {
 				creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 			}
@@ -214,7 +825,7 @@ public interface CreationSchemePathElement extends AbstractCreationSchemePathEle
 			else {
 				logger.warning("Unexpected: " + evaluationContext);
 				Thread.dumpStack();
-			}
+			}*/
 
 			creationSchemeAction.initWithFlexoConceptInstance(newInstance);
 

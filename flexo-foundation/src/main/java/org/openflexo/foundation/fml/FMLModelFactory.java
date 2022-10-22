@@ -57,7 +57,6 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
-import org.openflexo.foundation.fml.binding.AbstractCreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
@@ -752,7 +751,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <CSPE extends AbstractCreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(
+	public <CSPE extends CreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(
 			Class<CSPE> abstractCreationSchemeClass, FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName,
 			List<DataBinding<?>> args, Bindable bindable) {
 		CSPE returned = newInstance(abstractCreationSchemeClass);
@@ -764,7 +763,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <CS extends AbstractCreationScheme,CSPE extends AbstractCreationSchemePathElement<CS>> CSPE newAbstractCreationSchemePathElement(
+	public <CS extends AbstractCreationScheme,CSPE extends CreationSchemePathElement<CS>> CSPE newAbstractCreationSchemePathElement(
 			Class<CSPE> abstractCreationSchemeClass, IBindingPathElement parent, CS creationScheme,
 			List<DataBinding<?>> args, Bindable bindable) {
 		CSPE returned = newInstance(abstractCreationSchemeClass);
@@ -802,9 +801,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue(FMLProperty<M, T> property, T value) {
+	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue(FMLProperty<M, T> property, M object, T value) {
 		FMLSimplePropertyValue<M, T> returned = newInstance(FMLSimplePropertyValue.class);
 		returned.setProperty(property);
+		returned.setObject(object);
 		returned.setValue(value);
 		return returned;
 	}
@@ -814,9 +814,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <M extends FMLObject, T extends FMLObject> FMLInstancePropertyValue<M, T> newInstancePropertyValue(FMLProperty<M, T> property) {
+	public <M extends FMLObject, T extends FMLObject> FMLInstancePropertyValue<M, T> newInstancePropertyValue(FMLProperty<M, T> property, M object) {
 		FMLInstancePropertyValue<M, T> returned = newInstance(FMLInstancePropertyValue.class);
 		returned.setProperty(property);
+		returned.setObject(object);
 		return returned;
 	}
 
@@ -826,9 +827,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	}
 
 	public <M extends FMLObject, T extends FMLObject> FMLInstancesListPropertyValue<M, T> newInstancesListPropertyValue(
-			FMLProperty<M, List<T>> property) {
+			FMLProperty<M, List<T>> property, M object) {
 		FMLInstancesListPropertyValue<M, T> returned = newInstance(FMLInstancesListPropertyValue.class);
 		returned.setProperty(property);
+		returned.setObject(object);
 		return returned;
 	}
 

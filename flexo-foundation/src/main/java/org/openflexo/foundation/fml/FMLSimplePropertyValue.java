@@ -74,6 +74,7 @@ public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPrope
 
 		@Override
 		public void applyPropertyValueToModelObject(M object) {
+			setObject(object);
 			getProperty().set(getValue(), object);
 		}
 

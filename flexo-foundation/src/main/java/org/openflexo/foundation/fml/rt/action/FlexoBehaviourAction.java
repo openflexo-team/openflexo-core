@@ -285,7 +285,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public boolean areRequiredParametersSetAndValid() {
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
-			if (!parameter.isValid(this, parameterValues.get(parameter))) {
+			if (!parameter.isValid(this, parameterValues.get(parameter.getName()))) {
 				return false;
 			}
 		}

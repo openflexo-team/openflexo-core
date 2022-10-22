@@ -64,8 +64,11 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.IOUtils;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.AbstractCreationScheme;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -74,7 +77,11 @@ import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
 import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
+import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -918,4 +925,21 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		return null;
 	}
 
+	
+	public <A extends AbstractCreationSchemeAction<A, FB, O>, FB extends AbstractCreationScheme, O extends VirtualModelInstance<?, ?>> AbstractCreationSchemeAction<A,FB,O> 
+	makeCreationSchemeAction(FB behaviour, O vmInstance, FlexoBehaviourAction<?, ?, ?> ownerAction) {
+		if (behaviour instanceof CreationScheme) {
+			return (AbstractCreationSchemeAction<A,FB,O>)new CreationSchemeAction((CreationScheme)behaviour, vmInstance, null,ownerAction);
+		}
+		return null;
+	}
+	
+	public <A extends AbstractCreationSchemeAction<A, FB, O>, FB extends AbstractCreationScheme, O extends VirtualModelInstance<?, ?>> AbstractCreationSchemeAction<A,FB,O> 
+	makeCreationSchemeAction(FB behaviour, O vmInstance, FlexoEditor editor) {
+		if (behaviour instanceof CreationScheme) {
+			return (AbstractCreationSchemeAction<A,FB,O>)new CreationSchemeAction((CreationScheme)behaviour, vmInstance, null,editor);
+		}
+		return null;
+	}
+	
 }

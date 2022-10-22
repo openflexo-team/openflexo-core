@@ -63,6 +63,8 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 
 	@PropertyIdentifier(type = FMLProperty.class)
 	public static final String PROPERTY_KEY = "property";
+	@PropertyIdentifier(type = FMLObject.class)
+	public static final String OBJECT_KEY = "object";
 
 	@Getter(value = PROPERTY_KEY, ignoreType = true)
 	public FMLProperty<? super M, T> getProperty();
@@ -70,6 +72,12 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 	@Setter(PROPERTY_KEY)
 	public void setProperty(FMLProperty<? super M, T> property);
 
+	@Getter(OBJECT_KEY)
+	public M getObject();
+	
+	@Setter(OBJECT_KEY)
+	public void setObject(M object);
+	
 	/**
 	 * Applies the property value to a {@link FMLObject}
 	 * 
@@ -106,12 +114,17 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 
 		@Override
 		public FMLCompilationUnit getResourceData() {
+			if (getObject() != null) {
+				return getObject().getResourceData();
+			}
 			return null;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			// TODO Auto-generated method stub
+			if (getObject() != null) {
+				return getObject().getBindingModel();
+			}
 			return null;
 		}
 
