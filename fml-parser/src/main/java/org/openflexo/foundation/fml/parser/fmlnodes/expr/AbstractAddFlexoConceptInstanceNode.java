@@ -61,7 +61,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBindingPathElementNode<Node, CreationSchemePathElement> {
+public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBindingPathElementNode<Node, CreationSchemePathElement<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstanceNode.class.getPackage().getName());
@@ -88,7 +88,7 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyzer,
+	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer,
 			Bindable bindable) {
 		super(bindingPathElement, analyzer, bindable);
 	}
