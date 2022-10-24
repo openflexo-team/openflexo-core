@@ -41,8 +41,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.URIExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AObjectInResourceReferenceByUri;
@@ -132,14 +132,22 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 		return false;
 	}
 
+	private boolean isComputingObjectReference = false;
+	
 	private boolean isObjectReference() {
 		if (getReference() instanceof AObjectInResourceReferenceByUri) {
 			return true;
 		}
+		if (isComputingObjectReference) {
+			return false;
+		}
+		isComputingObjectReference = true;
 		if (getModelObject() != null && getModelObject().getObjectReference() != null && getModelObject().getObjectReference().isSet()
 				&& getModelObject().getObjectReference().isValid()) {
+			isComputingObjectReference = false;
 			return true;
 		}
+		isComputingObjectReference = false;
 		return false;
 	}
 

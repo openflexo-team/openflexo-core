@@ -121,6 +121,13 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	public FlexoObject getReferencedObject();
 
 	/**
+	 * Programmatically set referenced object
+	 * 
+	 * @param referencedObject
+	 */
+	public void setReferencedObject(FlexoObject referencedObject);
+
+	/**
 	 * Clear referenced object
 	 */
 	public void clearReferencedObject();
@@ -236,6 +243,11 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 			}
 			return referencedObject;
 		}
+		
+		@Override
+		public void setReferencedObject(FlexoObject referencedObject) {
+			this.referencedObject = referencedObject;
+		}
 
 		private boolean isBuildingReferencedObject = false;
 
@@ -327,8 +339,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				isBuildingReferencedObject = false;
 			}
 
-			logger.warning("Cannot access FlexoServiceManager, resourceData=" + getResourceData());
-
+			//logger.warning("Cannot access FlexoServiceManager, resourceData=" + getResourceData());
+			
 			/*if (getResourceData() instanceof FMLCompilationUnit) {
 				FMLCompilationUnitImpl cu = (FMLCompilationUnitImpl) getResourceData();
 				System.out.println("vmlib=" + cu.getVirtualModelLibrary());

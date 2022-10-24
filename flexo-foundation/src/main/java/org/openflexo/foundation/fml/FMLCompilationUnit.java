@@ -1011,6 +1011,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return super.getFMLPrettyPrint();
 		}
 
+		private boolean isManagingImports = false;
+		
 		/**
 		 * Analyze the whole structure of the compilation unit, and declare required imports
 		 */
@@ -1019,6 +1021,12 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 			// System.out.println("--------------> manageImports() in " + this);
 
+			if (isManagingImports) {
+				return;
+			}
+			
+			isManagingImports = true;
+			
 			accept(new PAMELAVisitor() {
 
 				@Override
@@ -1029,6 +1037,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 					}
 				}
 			}, VisitingStrategy.Exhaustive);
+
+			isManagingImports = false;
+
 		}
 
 		private ElementImportDeclaration retrieveImportDeclaration(FlexoObject object) {
@@ -1135,6 +1146,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData) {
+
+			System.out.println("ensureResourceImport with "+resourceData);
+			
 			ElementImportDeclaration importDeclaration = retrieveImportDeclaration(resourceData);
 			if (getFMLModelFactory() == null) {
 				return importDeclaration;
@@ -1147,7 +1161,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
 				String uri = resourceData.getResource().getURI();
 				importDeclaration = getFMLModelFactory().newElementImportDeclaration();
-				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
+				// Don't force a deserializing now: set referenced object
+				importDeclaration.setReferencedObject(resourceData);
 				if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
 					String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
 					String rcAbbrev = ensureResourceCenterImport(resourceCenter).getAbbrev();
@@ -1159,6 +1174,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				}
 				String abbrev = findUniqueAbbrev(resourceData);
 				importDeclaration.setAbbrev(abbrev);
+				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
 				// Thread.dumpStack();
 			}
 			return importDeclaration;
@@ -1171,6 +1187,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			if (elementDeclaration == null) {
 				String resourceAbbrev = ensureResourceImport(element.getResourceData()).getAbbrev();
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
+				// Don't force a deserializing now: set referenced object
+				elementDeclaration.setReferencedObject(element);
 				elementDeclaration.setResourceReference(new DataBinding<>(resourceAbbrev));
 				elementDeclaration
 						.setObjectReference(new DataBinding<>("\"" + element.getUserIdentifier() + "-" + element.getFlexoID() + "\""));
