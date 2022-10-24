@@ -271,7 +271,6 @@ public abstract class CompilationUnitResourceImpl
 		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
 		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		for (Class<? extends ModelSlot<?>> msClass : getUsedModelSlots()) {
-			System.out.println("msClass:" + msClass);
 			TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
 			if (!requiredTAList.contains(requiredTA)) {
 				requiredTAList.add(requiredTA);
