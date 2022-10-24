@@ -57,6 +57,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -64,6 +65,9 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * 
@@ -376,6 +380,48 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		public void clearReferencedObject() {
 			referencedObject = null;
 		}
+		
+	}
+	
+	@DefineValidationRule
+	public static class ResourceReferenceBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<ElementImportDeclaration> {
+		public ResourceReferenceBindingIsRequiredAndMustBeValid() {
+			super("'resource_reference'_binding_is_not_valid", ElementImportDeclaration.class);
+		}
+
+		@Override
+		public DataBinding<String> getBinding(ElementImportDeclaration object) {
+			return object.getResourceReference();
+		}
+	}
+
+	@DefineValidationRule
+	public static class ObjectReferenceBindingMustBeValid extends BindingMustBeValid<ElementImportDeclaration> {
+		public ObjectReferenceBindingMustBeValid() {
+			super("'object_reference'_binding_is_not_valid", ElementImportDeclaration.class);
+		}
+
+		@Override
+		public DataBinding<String> getBinding(ElementImportDeclaration object) {
+			return object.getObjectReference();
+		}
+	}
+
+	@DefineValidationRule
+	public static class ImportDeclarationMustAddressValidReferencedObject
+			extends ValidationRule<ImportDeclarationMustAddressValidReferencedObject, ElementImportDeclaration> {
+		public ImportDeclarationMustAddressValidReferencedObject() {
+			super(ElementImportDeclaration.class, "import_declaration_must_reference_a_valid_object");
+		}
+
+		@Override
+		public ValidationIssue<ImportDeclarationMustAddressValidReferencedObject, ElementImportDeclaration> applyValidation(ElementImportDeclaration importDeclaration) {
+			if (importDeclaration.getReferencedObject() == null) {
+				return new ValidationError<>(this, importDeclaration, "import_declaration_must_reference_a_valid_object");
+			}
+			return null;
+		}
 
 	}
+
 }
