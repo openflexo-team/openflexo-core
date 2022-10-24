@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -63,7 +65,10 @@ import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -89,6 +94,10 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 
 		tree.apply(this);
 
+		// Some resources addressed in imports may be defined in a technology not load yet
+		// So it's time to activate all required technologies to get a chance to look up referenced objects in imports
+		activateRequiredTechnologies(info.getRequiredModelSlot());
+		
 		for (ElementImportDeclaration importDeclaration : compilationUnit.getElementImports()) {
 			try {
 				String importedResourceURI = importDeclaration.getResourceReference().getBindingValue(compilationUnit);
@@ -114,6 +123,36 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 		// System.out.println(analyzer.getRawSource().debug());
 	}
 
+	/**
+	 * Activate all required technologies, while exploring declared model slots
+	 */
+	protected void activateRequiredTechnologies(List<String> usedModelSlots) {
+		
+		logger.info("activateRequiredTechnologies() for " + this + " usedModelSlots: " + usedModelSlots);
+
+		TechnologyAdapterService taService = analyzer.getServiceManager().getTechnologyAdapterService();
+		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
+		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+		for (String msClassName : usedModelSlots) {
+			Class<? extends ModelSlot<?>> msClass;
+			try {
+				msClass = (Class<? extends ModelSlot<?>>) Class.forName(msClassName);
+				TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
+				if (!requiredTAList.contains(requiredTA)) {
+					requiredTAList.add(requiredTA);
+				}
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		for (TechnologyAdapter requiredTA : requiredTAList) {
+			logger.info("Activating " + requiredTA);
+			taService.activateTechnologyAdapter(requiredTA, true);
+		}
+	}
+
+
+	
 	public VirtualModelInfo getVirtualModelInfo() {
 		return info;
 	}
