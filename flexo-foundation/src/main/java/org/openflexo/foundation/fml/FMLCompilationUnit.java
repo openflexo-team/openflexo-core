@@ -124,6 +124,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 */
 	@Getter(value = JAVA_IMPORTS_KEY, cardinality = Cardinality.LIST, inverse = JavaImportDeclaration.COMPILATION_UNIT_KEY)
 	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
 	public List<JavaImportDeclaration> getJavaImports();
 
 	@Adder(JAVA_IMPORTS_KEY)
@@ -142,6 +143,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 */
 	@Getter(value = ELEMENT_IMPORTS_KEY, cardinality = Cardinality.LIST, inverse = ElementImportDeclaration.COMPILATION_UNIT_KEY)
 	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
 	public List<ElementImportDeclaration> getElementImports();
 
 	@Adder(ELEMENT_IMPORTS_KEY)
@@ -1183,8 +1185,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject, E extends InnerResourceData<RD> & FlexoObject> ElementImportDeclaration ensureElementImport(
 				E element) {
+			if (element == null) {
+				return null;
+			}
 			ElementImportDeclaration elementDeclaration = retrieveImportDeclaration(element);
-			if (elementDeclaration == null) {
+			if (elementDeclaration == null && getFMLModelFactory() != null) {
 				String resourceAbbrev = ensureResourceImport(element.getResourceData()).getAbbrev();
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				// Don't force a deserializing now: set referenced object
@@ -1300,7 +1305,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			logger.warning("Unexpected BindingVariable " + variable + " of " + variable.getClass());
 			return null;
 		}
-
+		
 	}
 
 }
