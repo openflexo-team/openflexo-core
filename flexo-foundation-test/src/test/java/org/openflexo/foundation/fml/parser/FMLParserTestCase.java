@@ -263,7 +263,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 		}
 	}
 
-	static FMLCompilationUnitNode rootNode;
+	public static FMLCompilationUnitNode rootNode;
 
 	protected <N extends P2PPNode, M> N checkNodeForObject(String expectedFragment, String expectedModelObjectValue, M object) {
 		return checkNodeForObject(expectedFragment, null, null, expectedModelObjectValue, object);
