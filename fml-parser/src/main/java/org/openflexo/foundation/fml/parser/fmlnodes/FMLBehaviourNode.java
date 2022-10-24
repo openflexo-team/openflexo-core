@@ -51,8 +51,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNod
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AFmlBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBehaviourDecl;
-import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
-import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
@@ -238,11 +236,11 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 	}
 
 	protected PFmlParameters getFMLParameters() {
-		if (getASTNode() instanceof AFmlInnerConceptDecl) {
-			return ((AFmlInnerConceptDecl) getASTNode()).getFmlParameters();
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return ((AFmlBehaviourDecl) getASTNode()).getFmlParameters();
 		}
-		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getFmlParameters();
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return ((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getFmlParameters();
 		}
 		return null;
 	}
