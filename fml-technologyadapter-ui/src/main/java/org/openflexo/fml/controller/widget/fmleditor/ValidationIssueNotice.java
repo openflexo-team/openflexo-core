@@ -103,27 +103,30 @@ public class ValidationIssueNotice extends FMLNotice {
 
 	@Override
 	public int getLine() {
-		if (getFragment() != null) {
+		RawSourceFragment fragment = getFragment();
+		if (fragment != null) {
 			// System.out.println("For " + issue.getMessage() + " line: " + getFragment().getStartPosition().getLine());
-			return getFragment().getStartPosition().getLine();
+			return fragment.getStartPosition().getLine();
 		}
 		return -1;
 	}
 
 	@Override
 	public int getOffset() {
-		if (getFragment() != null) {
+		RawSourceFragment fragment = getFragment();
+		if (fragment != null) {
 			// System.out.println("For " + issue.getMessage() + " offset: " + getFragment().getStartPosition().getOffset());
-			return getFragment().getStartPosition().getOffset();
+			return fragment.getStartPosition().getOffset();
 		}
 		return super.getOffset();
 	}
 
 	@Override
 	public int getLength() {
-		if (getFragment() != null) {
+		RawSourceFragment fragment = getFragment();
+		if (fragment != null) {
 			// System.out.println("For " + issue.getMessage() + " length: " + getFragment().getLength());
-			return getFragment().getLength();
+			return fragment.getLength();
 		}
 		return super.getLength();
 	}
