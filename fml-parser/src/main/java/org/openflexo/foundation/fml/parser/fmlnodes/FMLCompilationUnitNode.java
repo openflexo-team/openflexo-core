@@ -46,6 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
+import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -91,6 +92,9 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 
 		super.preparePrettyPrint(hasParsedVersion);
+
+		append(childrenContents("", "", () -> getModelObject().getNamespaces(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
+				Indentation.DoNotIndent, NamespaceDeclaration.class));
 
 		append(childrenContents("", "", () -> getModelObject().getUseDeclarations(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
 				Indentation.DoNotIndent, UseModelSlotDeclaration.class));
