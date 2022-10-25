@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingVariableNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.PlusExpressionNode;
+import org.openflexo.foundation.test.parser.FMLParserTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

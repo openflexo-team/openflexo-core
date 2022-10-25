@@ -43,8 +43,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
@@ -163,7 +161,8 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	@Override
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
-		if (getModelObject().getType() instanceof FlexoConceptInstanceType) {
+		// All of this must be handled in AddFlexoConceptInstance
+		/*if (getModelObject().getType() instanceof FlexoConceptInstanceType) {
 			FlexoConcept typeConcept = getModelObject().getType().getFlexoConcept();
 			if (typeConcept == null) {
 				throwIssue("Cannot find FlexoConcept " + getModelObject().getType(), getTypeFragment());
@@ -183,7 +182,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 		}
 		else {
 			throwIssue("Type does not address any FlexoConcept", getTypeFragment());
-		}
+		}*/
 	}
 
 	@Override

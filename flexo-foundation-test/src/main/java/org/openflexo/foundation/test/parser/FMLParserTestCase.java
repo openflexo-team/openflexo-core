@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.test.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -50,6 +50,8 @@ import java.util.List;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
+import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.p2pp.P2PPNode;

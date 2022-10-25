@@ -65,6 +65,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathEl
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.PlusExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SimplePathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
+import org.openflexo.foundation.test.parser.FMLParserTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

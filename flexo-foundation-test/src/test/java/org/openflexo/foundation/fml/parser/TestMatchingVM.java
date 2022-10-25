@@ -64,6 +64,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNod
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
+import org.openflexo.foundation.test.parser.FMLParserTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
