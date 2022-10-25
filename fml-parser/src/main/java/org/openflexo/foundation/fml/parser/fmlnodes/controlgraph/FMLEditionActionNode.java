@@ -123,7 +123,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		append(dynamicContents(() -> serializeEditionActionName(getModelObject())), getEditionActionFragment());
 		append(staticContents("("), getFMLParametersLParFragment());
 		when(() -> hasFMLProperties())
-		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
+		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ",","", Indentation.DoNotIndent,
 				FMLPropertyValue.class));
 		append(staticContents(")"), getFMLParametersRParFragment());
 
