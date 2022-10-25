@@ -697,6 +697,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 					if (fmlProperty.getName().equals(propertyName)) {
 						return fmlProperty;
 					}
+					if (fmlProperty.getLabel().equals(propertyName)) {
+						return fmlProperty;
+					}
 				}
 			}
 			return null;
