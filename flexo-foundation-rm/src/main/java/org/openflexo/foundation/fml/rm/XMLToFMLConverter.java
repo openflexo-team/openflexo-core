@@ -48,12 +48,14 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
 import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -71,6 +73,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstancePara
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.pamela.model.PAMELAVisitor;
+import org.openflexo.toolbox.JavaUtils;
 
 @Deprecated
 @FMLMigration
@@ -193,6 +196,24 @@ public class XMLToFMLConverter {
 			migrateCreateTopLevelVirtualModelInstanceAction(createTopLevelVirtualModelInstance);
 		}
 
+		compilationUnit.accept(new PAMELAVisitor() {
+			@Override
+			public void visit(Object object) {
+				System.out.println("> visit " + object);
+				if (object instanceof FlexoProperty) {
+					FlexoProperty property = (FlexoProperty) object;
+					String name = property.getName();
+					if (!name.startsWith("_")) {
+						try {
+							property.setName(JavaUtils.getVariableName(name));
+						} catch (InvalidNameException e) {
+							// Cannot happen
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
 	}
 
 	private void migrateAddClassInstance(AddClassInstance addClassInstance) {
@@ -370,12 +391,12 @@ public class XMLToFMLConverter {
 			if (addToListAction.getAssignableAction() instanceof ExpressionAction) {
 				// The most simple case
 				DataBinding<Object> objectToAdd = ((ExpressionAction) addToListAction.getAssignableAction()).getExpression();
-				
+
 				ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
 				objectToAdd.setOwner(expAction);
 				list.setOwner(expAction);
-				SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel()
-						.getBindingFactory().makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "add",
+				SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel().getBindingFactory()
+						.makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "add",
 								Collections.singletonList(objectToAdd), expAction);
 				// pathElement.setBindingPathElementOwner(this);
 
@@ -398,8 +419,8 @@ public class XMLToFMLConverter {
 				sequence.setControlGraph1(declarationAction);
 
 				ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
-				SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel()
-						.getBindingFactory().makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "add",
+				SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel().getBindingFactory()
+						.makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "add",
 								Collections.singletonList(new DataBinding("item")), expAction);
 				// pathElement.setBindingPathElementOwner(this);
 
@@ -425,7 +446,7 @@ public class XMLToFMLConverter {
 		}
 
 		if (replacingAction != null) {
-			addToListAction.replaceWith(replacingAction);	
+			addToListAction.replaceWith(replacingAction);
 		}
 
 	}
@@ -448,10 +469,9 @@ public class XMLToFMLConverter {
 			ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
 			objectToRemove.setOwner(expAction);
 			list.setOwner(expAction);
-			
-			SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel().getBindingFactory()
-					.makeSimpleMethodPathElement(listBindingValue.getLastBindingPathElement(), "remove",
-							Collections.singletonList(objectToRemove), expAction);
+
+			SimpleMethodPathElement<?> addPathElement = compilationUnit.getVirtualModel().getBindingFactory().makeSimpleMethodPathElement(
+					listBindingValue.getLastBindingPathElement(), "remove", Collections.singletonList(objectToRemove), expAction);
 			// pathElement.setBindingPathElementOwner(this);
 
 			listBindingValue.addBindingPathElement(addPathElement);
@@ -477,7 +497,7 @@ public class XMLToFMLConverter {
 		}
 
 	}
-	
+
 	private void convertConditionalDataBinding(DataBinding<Boolean> condition) {
 		if (!condition.isValid()) {
 			String oldExp = condition.toString();
@@ -517,7 +537,5 @@ public class XMLToFMLConverter {
 			}
 		}
 	}
-
-
 
 }
