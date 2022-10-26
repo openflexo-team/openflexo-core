@@ -211,7 +211,9 @@ public class FMLValidationReport extends ValidationReport {
 					return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment(context);
 				}
 			}
-			return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment();
+			if (((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate() != null) {
+				return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment();
+			}
 		}
 		return null;
 	}
