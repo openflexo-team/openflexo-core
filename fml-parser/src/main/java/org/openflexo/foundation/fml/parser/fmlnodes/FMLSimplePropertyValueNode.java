@@ -87,6 +87,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		// System.out.println("fmlProperty: " + fmlProperty);
 
 		if (fmlProperty == null) {
+			getModelObject().setUnresolvedPropertyName(propertyName);
 			logger.warning("Cannot find FML property " + propertyName + " in " + getParent().getModelObject());
 			// if (!getParent().getModelObject().toString().contains("WrappedFMLObject")) {
 			// System.out.println("Available properties");
@@ -94,7 +95,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			// System.out.println(" > " + p);
 			// }
 			// }
-			return this;
+			return (FMLSimplePropertyValueNode<M, T>) super.deserialize();
 		}
 
 		getModelObject().setProperty(fmlProperty);

@@ -77,8 +77,16 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 	public FMLInstancesListPropertyValueNode<M, T> deserialize() {
 
 		String propertyName = getASTNode().getArgName().getText();
+
 		FMLProperty fmlProperty = ((FMLObject) getParent().getModelObject()).getFMLProperty(propertyName, getFactory());
-		getModelObject().setProperty(fmlProperty);
+		if (fmlProperty == null) {
+			getModelObject().setUnresolvedPropertyName(propertyName);
+			logger.warning("Cannot find FML property " + propertyName + " in " + getParent().getModelObject());
+		}
+		else {
+			getModelObject().setProperty(fmlProperty);
+		}
+
 		return (FMLInstancesListPropertyValueNode<M, T>) super.deserialize();
 	}
 

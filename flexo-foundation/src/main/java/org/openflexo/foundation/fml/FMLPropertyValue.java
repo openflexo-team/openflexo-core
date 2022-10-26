@@ -43,16 +43,22 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * Abstraction used in the deserialization process, used to map a {@link FMLProperty} with some values in the context of a {@link FMLObject}
+ * Abstraction used in the serialisation/deserialization process, used to map a {@link FMLProperty} with some values in the context of a
+ * {@link FMLObject}
  *
+ * We maintain here the order of property values of their deserialization as well as unresolved properties
  *
  * @author sylvain
  *
@@ -63,38 +69,94 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 
 	@PropertyIdentifier(type = FMLProperty.class)
 	public static final String PROPERTY_KEY = "property";
+	@PropertyIdentifier(type = String.class)
+	public static final String UNRESOLVED_PROPERTY_NAME_KEY = "unresolvedPropertyName";
 	@PropertyIdentifier(type = FMLObject.class)
 	public static final String OBJECT_KEY = "object";
 
+	/**
+	 * Return the {@link FMLObject} on which this property value applies
+	 * 
+	 * @return
+	 */
+	@Getter(OBJECT_KEY)
+	public M getObject();
+
+	/**
+	 * Sets the {@link FMLObject} on which this property value applies
+	 * 
+	 * @param object
+	 */
+	@Setter(OBJECT_KEY)
+	public void setObject(M object);
+
+	/**
+	 * Return addressed property by this property value
+	 * 
+	 * @return
+	 */
 	@Getter(value = PROPERTY_KEY, ignoreType = true)
 	public FMLProperty<? super M, T> getProperty();
 
+	/**
+	 * Sets addressed property by this property value
+	 * 
+	 * @param property
+	 */
 	@Setter(PROPERTY_KEY)
 	public void setProperty(FMLProperty<? super M, T> property);
 
-	@Getter(OBJECT_KEY)
-	public M getObject();
-	
-	@Setter(OBJECT_KEY)
-	public void setObject(M object);
-	
+	/**
+	 * Return name of this property value in case of related property was not found
+	 * 
+	 * @return
+	 */
+	@Getter(UNRESOLVED_PROPERTY_NAME_KEY)
+	public String getUnresolvedPropertyName();
+
+	/**
+	 * Sets name of this property value in case of related property was not found
+	 * 
+	 * @param propertyName
+	 */
+	@Setter(UNRESOLVED_PROPERTY_NAME_KEY)
+	public void setUnresolvedPropertyName(String propertyName);
+
 	/**
 	 * Applies the property value to a {@link FMLObject}
 	 * 
 	 * @param object
 	 */
-	public void applyPropertyValueToModelObject(M object);
+	public void applyPropertyValueToModelObject();
 
 	/**
 	 * Retrieve property value from {@link FMLObject}
 	 * 
 	 * @param object
 	 */
-	public void retrievePropertyValueFromModelObject(M object);
+	public void retrievePropertyValueFromModelObject();
 
+	/**
+	 * Return the value of this property value
+	 * 
+	 * @return
+	 */
 	public T getValue();
 
+	/**
+	 * Return boolean indicating whether addressed property is required
+	 * 
+	 * @param factory
+	 * @return
+	 */
 	public boolean isRequired(FMLModelFactory factory);
+
+	/**
+	 * Return name of property, which is name of property when existing, or unresolved property name when non existant
+	 * 
+	 * @return
+	 */
+	public String getPropertyName();
 
 	public static abstract class FMLPropertyValueImpl<M extends FMLObject, T> extends FMLObjectImpl implements FMLPropertyValue<M, T> {
 
@@ -128,5 +190,51 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 			return null;
 		}
 
+		@Override
+		public String getPropertyName() {
+			if (getProperty() != null) {
+				return getProperty().getLabel();
+			}
+			else {
+				return getUnresolvedPropertyName();
+			}
+		}
+
 	}
+
+	@DefineValidationRule
+	class PropertyValueMustAddressAnExistingProperty
+			extends ValidationRule<PropertyValueMustAddressAnExistingProperty, FMLPropertyValue<?, ?>> {
+		public PropertyValueMustAddressAnExistingProperty() {
+			super(FMLPropertyValue.class, "property_value_must_address_an_existing_property");
+		}
+
+		@Override
+		public ValidationIssue<PropertyValueMustAddressAnExistingProperty, FMLPropertyValue<?, ?>> applyValidation(
+				FMLPropertyValue<?, ?> propertyValue) {
+			if (propertyValue.getProperty() == null) {
+				return new ValidationError<>(this, propertyValue,
+						"unknown_property_($validable.propertyName)_for_($validable.object.implementedInterface.simpleName)");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	class RequiredPropertyValueMustDefineAValue extends ValidationRule<RequiredPropertyValueMustDefineAValue, FMLPropertyValue<?, ?>> {
+		public RequiredPropertyValueMustDefineAValue() {
+			super(FMLPropertyValue.class, "required_property_must_define_a_value");
+		}
+
+		@Override
+		public ValidationIssue<RequiredPropertyValueMustDefineAValue, FMLPropertyValue<?, ?>> applyValidation(
+				FMLPropertyValue<?, ?> propertyValue) {
+			if (propertyValue.getProperty() != null && propertyValue.getProperty().isRequired() && propertyValue.getValue() == null) {
+				return new ValidationError<>(this, propertyValue,
+						"property_($validable.propertyName)_required_in_($validable.object.implementedInterface.simpleName)_is_not_defined");
+			}
+			return null;
+		}
+	}
+
 }

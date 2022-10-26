@@ -67,18 +67,22 @@ public interface FMLInstancePropertyValue<M extends FMLObject, T extends FMLObje
 	public void setInstance(WrappedFMLObject<T> value);
 
 	public static abstract class FMLInstancePropertyValueImpl<M extends FMLObject, T extends FMLObject> extends FMLPropertyValueImpl<M, T>
-			implements FMLInstancePropertyValue<M, T> {
+	implements FMLInstancePropertyValue<M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FMLInstancePropertyValue.class.getPackage().getName());
 
 		@Override
-		public void applyPropertyValueToModelObject(M object) {
-			getProperty().set(getValue(), object);
+		public void applyPropertyValueToModelObject() {
+			if (getProperty() != null && getObject() != null) {
+				getProperty().set(getValue(), getObject());
+			}
 		}
 
 		@Override
-		public void retrievePropertyValueFromModelObject(M object) {
-			setInstance(object.getFMLModelFactory().getWrappedFMLObject(getProperty().get(object)));
+		public void retrievePropertyValueFromModelObject() {
+			if (getProperty() != null && getObject() != null && getObject().getFMLModelFactory() != null) {
+				setInstance(getObject().getFMLModelFactory().getWrappedFMLObject(getProperty().get(getObject())));
+			}
 		}
 
 		@Override

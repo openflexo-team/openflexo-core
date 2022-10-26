@@ -43,8 +43,8 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.WrappedFMLObject;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -75,11 +75,13 @@ public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FML
 		if (getParent().getModelObject() instanceof WrappedFMLObject) {
 			WrappedFMLObject<M> wrappedObject = (WrappedFMLObject<M>) getParent().getModelObject();
 			wrappedObject.getObject().addToFMLPropertyValues(getModelObject());
-			getModelObject().applyPropertyValueToModelObject(wrappedObject.getObject());
+			getModelObject().setObject(wrappedObject.getObject());
+			getModelObject().applyPropertyValueToModelObject();
 		}
 		else {
 			((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
-			getModelObject().applyPropertyValueToModelObject((M) getParent().getModelObject());
+			getModelObject().setObject((M) getParent().getModelObject());
+			getModelObject().applyPropertyValueToModelObject();
 		}
 		// System.out.println("Tiens faudrait appliquer la propriete " + getModelObject() + " a " + getParent().getModelObject());
 		return this;

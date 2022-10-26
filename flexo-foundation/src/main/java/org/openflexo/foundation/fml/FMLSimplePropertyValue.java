@@ -73,14 +73,17 @@ public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPrope
 		protected static final Logger logger = FlexoLogger.getLogger(FMLSimplePropertyValue.class.getPackage().getName());
 
 		@Override
-		public void applyPropertyValueToModelObject(M object) {
-			setObject(object);
-			getProperty().set(getValue(), object);
+		public void applyPropertyValueToModelObject() {
+			if (getProperty() != null && getObject() != null) {
+				getProperty().set(getValue(), getObject());
+			}
 		}
 
 		@Override
-		public void retrievePropertyValueFromModelObject(M object) {
-			setValue(getProperty().get(object));
+		public void retrievePropertyValueFromModelObject() {
+			if (getProperty() != null && getObject() != null) {
+				setValue(getProperty().get(getObject()));
+			}
 		}
 
 		@Override

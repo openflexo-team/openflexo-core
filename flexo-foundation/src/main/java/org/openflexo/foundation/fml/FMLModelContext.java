@@ -276,8 +276,8 @@ public class FMLModelContext {
 					return object.getFMLModelFactory().newSimplePropertyValue(this, object, value);
 				case Instance:
 					if (value instanceof FMLObject) {
-						FMLInstancePropertyValue returnedInstance = object.getFMLModelFactory()
-								.newInstancePropertyValue((FMLProperty) this, object);
+						FMLInstancePropertyValue returnedInstance = object.getFMLModelFactory().newInstancePropertyValue((FMLProperty) this,
+								object);
 						returnedInstance.setInstance(object.getFMLModelFactory().getWrappedFMLObject((FMLObject) value));
 						return returnedInstance;
 					}
@@ -317,8 +317,8 @@ public class FMLModelContext {
 			}
 			FML fmlAnnotation = implementedInterface.getAnnotation(FML.class);
 			if (fmlAnnotation == null) {
-				//logger.warning("Cannot find @FML annotation in " + implementedInterface);
-				//Thread.dumpStack();
+				// logger.warning("Cannot find @FML annotation in " + implementedInterface);
+				// Thread.dumpStack();
 				return null;
 			}
 			ModelEntity<I> modelEntity = modelFactory.getModelContext().getModelEntity(implementedInterface);

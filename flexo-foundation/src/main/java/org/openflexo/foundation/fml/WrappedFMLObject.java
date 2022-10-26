@@ -114,9 +114,9 @@ public interface WrappedFMLObject<O extends FMLObject> extends FMLPrettyPrintabl
 		}
 
 		@Override
-		public final List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
+		public final List<FMLPropertyValue<?, ?>> getFMLPropertyValues() {
 			if (getObject() != null) {
-				return getObject().getFMLPropertyValues(modelFactory);
+				return getObject().getFMLPropertyValues();
 			}
 			return null;
 		}

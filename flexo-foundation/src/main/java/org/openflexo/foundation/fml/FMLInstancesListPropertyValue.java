@@ -79,40 +79,40 @@ public interface FMLInstancesListPropertyValue<M extends FMLObject, T extends FM
 	public void removeFromInstances(WrappedFMLObject<T> aValue);
 
 	public static abstract class FMLInstancesListPropertyValueImpl<M extends FMLObject, T extends FMLObject>
-			extends FMLPropertyValueImpl<M, List<T>> implements FMLInstancesListPropertyValue<M, T> {
+	extends FMLPropertyValueImpl<M, List<T>> implements FMLInstancesListPropertyValue<M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FMLInstancesListPropertyValue.class.getPackage().getName());
 
 		@Override
-		public void applyPropertyValueToModelObject(M object) {
-			for (T v : getValue()) {
-				((FMLProperty) getProperty()).addTo(v, object);
+		public void applyPropertyValueToModelObject() {
+			if (getProperty() != null && getObject() != null) {
+				for (T v : getValue()) {
+					((FMLProperty) getProperty()).addTo(v, getObject());
+				}
 			}
 		}
 
-		/*@Override
-		public void retrievePropertyValueFromModelObject(M object) {
-			setInstance(object.getWrappedFMLObject(getProperty().get(object)));
-		}*/
-
 		@Override
-		public void retrievePropertyValueFromModelObject(M object) {
+		public void retrievePropertyValueFromModelObject() {
 
-			List<WrappedFMLObject<T>> valuesToRemove = new ArrayList<>(getInstances());
+			if (getProperty() != null && getObject() != null && getObject().getFMLModelFactory() != null) {
 
-			List<T> valuesFromObject = getProperty().get(object);
-			for (T o : valuesFromObject) {
-				WrappedFMLObject<T> wo = object.getFMLModelFactory().getWrappedFMLObject(o);
-				if (getInstances().contains(wo)) {
-					// Already inside
-					valuesToRemove.remove(wo);
+				List<WrappedFMLObject<T>> valuesToRemove = new ArrayList<>(getInstances());
+
+				List<T> valuesFromObject = getProperty().get(getObject());
+				for (T o : valuesFromObject) {
+					WrappedFMLObject<T> wo = getObject().getFMLModelFactory().getWrappedFMLObject(o);
+					if (getInstances().contains(wo)) {
+						// Already inside
+						valuesToRemove.remove(wo);
+					}
+					else {
+						addToInstances(wo);
+					}
 				}
-				else {
-					addToInstances(wo);
+				for (WrappedFMLObject<T> wo : valuesToRemove) {
+					removeFromInstances(wo);
 				}
-			}
-			for (WrappedFMLObject<T> wo : valuesToRemove) {
-				removeFromInstances(wo);
 			}
 		}
 

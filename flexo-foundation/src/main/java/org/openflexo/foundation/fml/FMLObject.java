@@ -38,13 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -72,6 +66,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.DeserializationInitializer;
+import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.Getter.Cardinality;
@@ -121,6 +116,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	String AUTHOR_KEY = "author";
 	@PropertyIdentifier(type = FMLMetaData.class, cardinality = Cardinality.LIST)
 	public static final String META_DATA_KEY = "metaData";
+	@PropertyIdentifier(type = FMLPropertyValue.class, cardinality = Cardinality.LIST)
+	public static final String FML_PROPERTY_VALUES_KEY = "FMLPropertyValues";
 
 	@Getter(value = NAME_KEY)
 	@XMLAttribute
@@ -261,6 +258,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public Class<?> getImplementedInterface(FMLModelFactory modelFactory);
 
+	public FMLEntity<?> getFMLEntity();
+
 	public String getFMLKeyword(FMLModelFactory modelFactory);
 
 	public boolean hasFMLProperties(FMLModelFactory modelFactory);
@@ -269,15 +268,19 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public FMLProperty<?, ?> getFMLProperty(String propertyName, FMLModelFactory modelFactory);
 
+	public void updateFMLPropertyValues(FMLModelFactory modelFactory);
+
 	public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory);
 
+	@Getter(value = FML_PROPERTY_VALUES_KEY, cardinality = Cardinality.LIST)
+	@Embedded
+	public List<FMLPropertyValue<?, ?>> getFMLPropertyValues();
+
+	@Adder(FML_PROPERTY_VALUES_KEY)
 	public void addToFMLPropertyValues(FMLPropertyValue<?, ?> propertyValue);
 
-	// public String encodeFMLProperties(FMLModelFactory modelFactory);
-
-	// public void decodeFMLProperties(String serializedMap);
-
-	// public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object);
+	@Remover(FML_PROPERTY_VALUES_KEY)
+	public void removeFromFMLPropertyValues(FMLPropertyValue<?, ?> metaData);
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
@@ -661,7 +664,15 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return modelFactory.getModelEntityForInstance(this).getImplementedInterface();
 		}
 
+		@Override
+		public FMLEntity<?> getFMLEntity() {
+			return getFMLEntity(getFMLModelFactory());
+		}
+
 		protected FMLEntity<?> getFMLEntity(FMLModelFactory modelFactory) {
+			if (modelFactory == null) {
+				return null;
+			}
 			return FMLModelContext.getFMLEntity((Class) getImplementedInterface(modelFactory), modelFactory);
 		}
 
@@ -705,53 +716,94 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return null;
 		}
 
-		protected Map<FMLProperty, FMLPropertyValue> fmlPropertyValues = new HashMap<>();
+		private <I extends FMLObject, T> FMLPropertyValue<I, T> retrieveFMLPropertyValue(FMLProperty<I, T> property) {
+
+			for (FMLPropertyValue<?, ?> fmlPropertyValue : getFMLPropertyValues()) {
+				if (fmlPropertyValue.getProperty() == property) {
+					return (FMLPropertyValue<I, T>) fmlPropertyValue;
+				}
+			}
+			return null;
+		}
+
+		/*@Override
+		public List<FMLPropertyValue<?, ?>> getFMLPropertyValues() {
+			if (getFMLModelFactory() != null) {
+				updateFMLPropertyValues(getFMLModelFactory());
+			}
+			return (List<FMLPropertyValue<?, ?>>)performSuperGetter(FML_PROPERTY_VALUES_KEY);
+		}*/
 
 		@Override
 		public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
+			if (modelFactory != null) {
+				updateFMLPropertyValues(modelFactory);
+			}
+			return (List<FMLPropertyValue<?, ?>>) performSuperGetter(FML_PROPERTY_VALUES_KEY);
+		}
+
+		@Override
+		public void updateFMLPropertyValues(FMLModelFactory modelFactory) {
 			if (getFMLEntity(modelFactory) != null) {
 				for (FMLProperty fmlProperty : getFMLEntity(modelFactory).getProperties()) {
-					FMLPropertyValue pValue = fmlPropertyValues.get(fmlProperty);
+					FMLPropertyValue pValue = retrieveFMLPropertyValue(fmlProperty);
 					if (pValue == null) {
 						pValue = fmlProperty.makeFMLPropertyValue(this);
 						if (pValue != null && pValue.isRequired(modelFactory)) {
-							fmlPropertyValues.put(fmlProperty, pValue);
+							performSuperAdder(FML_PROPERTY_VALUES_KEY, pValue);
 						}
 					}
 					else {
 						// The property value is existing, but we have no guarantee that its value is up-to-date
-						pValue.retrievePropertyValueFromModelObject(this);
+						// Update related object and value
+						if (this instanceof WrappedFMLObject) {
+							pValue.setObject(((WrappedFMLObject) this).getObject());
+						}
+						else {
+							pValue.setObject(this);
+						}
+						pValue.retrievePropertyValueFromModelObject();
 					}
 				}
-				List<FMLPropertyValue<?, ?>> returned = new ArrayList<>();
+				/*List<FMLPropertyValue<?, ?>> returned = new ArrayList<>();
 				for (FMLPropertyValue fmlPropertyValue : fmlPropertyValues.values()) {
 					if (fmlPropertyValue != null) {
 						returned.add(fmlPropertyValue);
 					}
-				}
+				}*/
 
 				// Sort properties to get nice and persistent pretty print
-				Collections.sort(returned, new Comparator<FMLPropertyValue<?, ?>>() {
+				/*Collections.sort(returned, new Comparator<FMLPropertyValue<?, ?>>() {
 					@Override
 					public int compare(FMLPropertyValue<?, ?> o1, FMLPropertyValue<?, ?> o2) {
+						if (o1.getProperty() == null || o2.getProperty() == null) {
+							return 0;
+						}
 						if (o1.getProperty().getKind() != o2.getProperty().getKind()) {
 							return o2.getProperty().getKind().ordinal() - o1.getProperty().getKind().ordinal();
 						}
 						return Collator.getInstance().compare(o1.getProperty().getName(), o2.getProperty().getName());
 					}
-				});
+				});*/
 
 				// System.out.println("Returning " + returned);
-				return returned;
+				// return returned;
 				// return new ArrayList<>(fmlPropertyValues.values());
 			}
-			return null;
+			// return null;
 		}
 
-		@Override
+		/*@Override
 		public void addToFMLPropertyValues(FMLPropertyValue<?, ?> propertyValue) {
-			fmlPropertyValues.put(propertyValue.getProperty(), propertyValue);
-		}
+			System.out.println(">>>>>>>> addToFMLPropertyValues "+propertyValue);
+			if (propertyValue.getProperty() != null) {
+				fmlPropertyValues.put(propertyValue.getProperty(), propertyValue);
+			}
+			else {
+				undefinedPropertyValues.add(propertyValue);
+			}
+			getPropertyChangeSupport().firePropertyChange("FMLPropertyValues",null,propertyValue);
+		}*/
 
 		/*private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
 		
@@ -833,6 +885,39 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				String propertyValue = next.substring(next.indexOf("=") + 1);
 				System.out.println(propertyName + " = [" + propertyValue + "]");
 			}
+		}*/
+
+		/*@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			Collection returned = super.getEmbeddedValidableObjects();
+			if (getFMLModelFactory() == null) {
+				return returned;
+			}
+			else {
+				List<FMLPropertyValue<?,?>> propertyValues = getFMLPropertyValues(getFMLModelFactory());
+				if (propertyValues != null && propertyValues.size() > 0) {
+					if (returned == null) {
+						returned = new ArrayList<>();
+					}
+					returned.addAll(propertyValues);
+				}
+				if (undefinedPropertyValues != null && undefinedPropertyValues.size() > 0) {
+					if (returned == null) {
+						returned = new ArrayList<>();
+					}
+					returned.addAll(undefinedPropertyValues);
+				}
+				return returned;
+			}
+		}*/
+
+		/*@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			Collection<? extends Validable> returned = super.getEmbeddedValidableObjects();
+			if (this.getClass().getName().contains("LinkScheme")) {
+				System.out.println("Pour " + this + " j'ai " + returned);
+			}
+			return returned;
 		}*/
 
 	}
@@ -943,7 +1028,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 			@SafeVarargs
 			public InvalidBindingIssue(BindingMustBeValid<C> rule, C anObject, FixProposal<BindingMustBeValid<C>, C>... fixProposals) {
-				//super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
+				// super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
 				super(rule, anObject, "($reason)", fixProposals);
 			}
 
@@ -1086,7 +1171,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			@SafeVarargs
 			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
-				//super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_value_is_invalid: ($binding)", fixProposals);
+				// super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_value_is_invalid: ($binding)", fixProposals);
 				super(rule, anObject, "($reason)", fixProposals);
 
 				/*System.out.println("InvalidRequiredBindingIssue:");
@@ -1113,5 +1198,70 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 	}
+
+	/*@DefineValidationRule
+	class AllRequiredPropertiesMustBeSet extends ValidationRule<AllRequiredPropertiesMustBeSet, FMLObject> {
+		public AllRequiredPropertiesMustBeSet() {
+			super(FMLObject.class, "all_required_properties_must_be_set");
+		}
+	
+		@Override
+		public ValidationIssue<AllRequiredPropertiesMustBeSet, FMLObject> applyValidation(FMLObject object) {
+	
+			if (this.getClass().getName().contains("LinkScheme")) {
+				System.out.println("On regardes les AllRequiredPropertiesMustBeSet de " + object);
+			}
+	
+			if (object != null && object.getFMLEntity() != null) {
+				List<FMLProperty<?, ?>> missingProperties = new ArrayList<>();
+				for (FMLProperty fmlProperty : object.getFMLEntity().getProperties()) {
+					if (this.getClass().getName().contains("LinkScheme")) {
+						System.out.println(" >>> " + fmlProperty + " required: " + fmlProperty.isRequired());
+					}
+					FMLPropertyValue pValue = ((FMLObjectImpl) object).retrieveFMLPropertyValue(fmlProperty);
+					if (fmlProperty.isRequired() && (pValue == null || pValue.getValue() == null)) {
+						missingProperties.add(fmlProperty);
+					}
+				}
+				if (missingProperties.size() > 0) {
+					return new MissingPropertiesError(this, object, missingProperties);
+				}
+			}
+			return null;
+		}
+	
+		public static class MissingPropertiesError extends ValidationError<AllRequiredPropertiesMustBeSet, FMLObject> {
+	
+			private String requiredProperties;
+	
+			public MissingPropertiesError(AllRequiredPropertiesMustBeSet rule, FMLObject anObject, FMLProperty<?, ?> missingProperty) {
+				super(rule, anObject, "missing_required_property_($requiredProperties)_for_($typeName)");
+				requiredProperties = missingProperty.getLabel();
+	
+			}
+	
+			public MissingPropertiesError(AllRequiredPropertiesMustBeSet rule, FMLObject anObject,
+					List<FMLProperty<?, ?>> missingProperties) {
+				super(rule, anObject, "missing_required_properties_($requiredProperties)_for_($typeName)");
+				requiredProperties = null;
+				for (FMLProperty<?, ?> fmlProperty : missingProperties) {
+					requiredProperties = (requiredProperties == null ? fmlProperty.getLabel()
+							: requiredProperties + "," + fmlProperty.getLabel());
+				}
+	
+			}
+	
+			@Override
+			public String getTypeName() {
+				return getValidable().getImplementedInterface().getSimpleName();
+			}
+	
+			public String getRequiredProperties() {
+				return requiredProperties;
+			}
+	
+		}
+	
+	}*/
 
 }
