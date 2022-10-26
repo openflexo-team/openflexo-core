@@ -1,0 +1,88 @@
+@URI("http://openflexo.org/test/TestResourceCenter/Cocon.fml")
+@Author("sylvainguerin")
+public model Cocon {
+	concept Up {
+		create () { //constructeur
+		} 
+		cv(Top t) {
+			log "cv(Top) in Up";
+		}
+		inv(Middle m) {
+			log "inv(Middle) in Up";
+		}
+		ctv(Bottom b) {
+			log "ctv(Bottom) in Up";
+		}
+	}
+
+	concept Down extends Up {
+		create () { // constructeur
+		} 
+		cv(Middle m) {
+			log "cv(Middle) in Down";
+		}
+		inv(Middle m) {
+			log "inv(Middle) in Down";
+		}
+		ctv(Middle m) {
+			log "ctv(Middle) in Down";
+		}
+	}
+
+	concept Top {
+		create() { // constructeur
+		}
+	}
+	
+	concept Middle extends Top {
+		create() { // constructeur
+		}
+	}
+	
+	concept Bottom extends Middle {
+		create() { // constructeur
+		}
+	}
+
+	public void main () {
+		Up u = new Up();
+		Down d = new Down(); // ligne 47
+		Up ud = new Down(); // ligne 48
+
+		log "== Up ==";
+
+		u.cv(new Top());
+		u.cv(new Middle());
+		u.cv(new Bottom());
+		u.inv(new Top());
+		u.inv(new Middle());
+		u.inv(new Bottom());
+		u.ctv(new Top()); // ligne 58
+		u.ctv(new Middle());
+		u.ctv(new Bottom()); // ligne 60
+		
+		log "== Down ==";
+		d.cv(new Top());
+		d.cv(new Middle());
+		d.cv(new Bottom());
+		d.inv(new Top());
+		d.inv(new Middle());
+		d.inv(new Bottom());
+		d.ctv(new Top());
+		d.ctv(new Middle());
+		d.ctv(new Bottom());
+		
+		log "== Down in Up ==";
+		ud.cv(new Top());
+		ud.cv(new Middle());
+		ud.cv(new Bottom());
+		ud.inv(new Top());
+		ud.inv(new Middle());
+		ud.inv(new Bottom());
+		ud.ctv(new Top());
+		ud.ctv(new Middle());
+		ud.ctv(new Bottom());
+		
+	}
+
+}
