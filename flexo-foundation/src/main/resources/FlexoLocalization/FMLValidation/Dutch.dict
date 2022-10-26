@@ -81,6 +81,7 @@ overriden_properties_must_define_compatible_types_description=Overriden properti
 overriding_property_($object.propertyName)_does_not_define_compatible_type=Overriding property ($object.propertyName) does not define compatible type
 overriding_property_($validable.propertyName)_does_not_define_compatible_type=Overriding property ($validable.propertyName) does not define compatible type
 parse_exception_($parseExceptionMessage)=Parse exception ($parseExceptionMessage)
+property_($validable.propertyName)_required_in_($validable.object.implementedInterface.simpleName)_is_not_defined=Property ($validable.propertyName) required in ($validable.object.implementedInterface.simpleName) is not defined
 property_($validable.propertyName)_shadows_an_other_property=Property ($validable.propertyName) shadows an other property
 property_(object.propertyName)_shadows_an_other_property=Property (object.propertyName) shadows an other property
 property_(validable.propertyName)_shadows_an_other_property=Property (validable.propertyName) shadows an other property
@@ -105,6 +106,7 @@ types_are_not_compatible_in_declaration_\:_($expectedType)_is_not_assignable_fro
 types_are_not_compatible_in_get_control_graph_for_($validable.name)_\:_($expectedType)_is_not_assignable_from_($analyzedType)=Types are not compatible in get control graph for ($validable.name) \: ($expectedType) is not assignable from ($analyzedType)
 types_are_not_compatibles=Types are not compatibles
 unexpected_exception_($exceptionMessage)=Unexpected exception ($exceptionMessage)
+unknown_property_($validable.propertyName)_for_($validable.object.implementedInterface.simpleName)=Unknown property ($validable.propertyName) for ($validable.object.implementedInterface.simpleName)
 unresolved_type_($validable.type)=Unresolved type ($validable.type)
 validating=Validating
 virtual_model_has_no_uri=Virtual model has no uri
