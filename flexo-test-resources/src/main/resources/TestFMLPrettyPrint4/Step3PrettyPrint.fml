@@ -8,7 +8,7 @@ import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"] as MyVM;
 @URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
 @Version("0.1")
 model TestViewPointA {
-	MyVM myModel with ModelInstance(isReadOnly=false,isRequired=true);
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
 
 	create(required MyVM aModel, boolean aFlag) {
 		myModel = parameters.aModel;
