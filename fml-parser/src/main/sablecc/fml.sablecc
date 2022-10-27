@@ -947,6 +947,7 @@ Productions
 
    qualified_argument =
        {simple}         [arg_name]:lidentifier assign expression
+     | {type}           [arg_name]:lidentifier assign reference_type
      | {instance}       [arg_name]:lidentifier assign qualified_instance
      | {list_instances} [arg_name]:lidentifier assign l_brc qualified_argument_list_instances? r_brc
      ;
