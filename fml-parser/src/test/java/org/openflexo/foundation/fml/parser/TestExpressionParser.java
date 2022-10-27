@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.ConditionalExpression;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
@@ -380,12 +380,12 @@ public class TestExpressionParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testImbricatedCall() {
-		tryToParse("function1(function2(8+1,9,10-1))", "function1(function2(9,9,9))", BindingValue.class, null, serviceManager, false);
+		tryToParse("function1(function2(8+1,9,10-1))", "function1(function2(9,9,9))", BindingPath.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testEmptyCall() {
-		tryToParse("function1()", "function1()", BindingValue.class, null, serviceManager, false);
+		tryToParse("function1()", "function1()", BindingPath.class, null, serviceManager, false);
 	}
 
 	@Test
@@ -440,7 +440,7 @@ public class TestExpressionParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testIgnoredChars() {
-		tryToParse(" test  \n\n", "test", BindingValue.class, null, serviceManager, false);
+		tryToParse(" test  \n\n", "test", BindingPath.class, null, serviceManager, false);
 	}
 
 	// Test conditionals

@@ -44,7 +44,7 @@ import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionPrettyPrinter;
@@ -84,8 +84,8 @@ public class FMLBinaryOperatorExpression extends BinaryOperatorExpression {
 				}
 				else {
 					Object value = ((Constant<?>) returned).getValue();
-					if (getLeftArgument() instanceof BindingValue) {
-						((BindingValue) getLeftArgument()).setBindingValue(value, context);
+					if (getLeftArgument() instanceof BindingPath) {
+						((BindingPath) getLeftArgument()).setBindingValue(value, context);
 					}
 					else {
 						throw new NotSettableContextException(

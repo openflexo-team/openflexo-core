@@ -48,7 +48,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -184,8 +184,8 @@ public class TestAddFlexoConceptInstance extends FMLParserTestCase {
 		assertEquals(null, expressionActionNode.getPostlude());
 
 		DataBinding expression = expressionAction.getExpression();
-		assertTrue(expression.isBindingValue());
-		BindingValue bv = (BindingValue) expression.getExpression();
+		assertTrue(expression.isBindingPath());
+		BindingPath bv = (BindingPath) expression.getExpression();
 		assertTrue(bv.getBindingPath().get(0) instanceof CreationSchemePathElement);
 
 		AddFlexoConceptInstanceNode creationSchemePathNode = (AddFlexoConceptInstanceNode) (P2PPNode) rootNode

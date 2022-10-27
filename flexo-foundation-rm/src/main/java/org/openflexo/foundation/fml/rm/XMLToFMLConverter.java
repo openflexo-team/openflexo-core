@@ -47,7 +47,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -225,7 +225,7 @@ public class XMLToFMLConverter {
 				.makeNewInstancePathElement(addClassInstance.getType(), null, null, addClassInstance.getParameters(), expAction);
 
 		DataBinding expression = new DataBinding(expAction, addClassInstance.getType(), BindingDefinitionType.GET);
-		BindingValue bv = new BindingValue(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
+		BindingPath bv = new BindingPath(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
 		expression.setExpression(bv);
 
 		expAction.setExpression(expression);
@@ -259,16 +259,16 @@ public class XMLToFMLConverter {
 
 		if (addConceptInstance.getContainer() != null && addConceptInstance.getContainer().isSet()
 				&& addConceptInstance.getContainer().isValid()
-				&& addConceptInstance.getContainer().getExpression() instanceof BindingValue) {
+				&& addConceptInstance.getContainer().getExpression() instanceof BindingPath) {
 			// pathElement.setContainer(addConceptInstance.getContainer());
-			BindingValue containerBindingValue = (BindingValue) addConceptInstance.getContainer().getExpression();
+			BindingPath containerBindingValue = (BindingPath) addConceptInstance.getContainer().getExpression();
 			pathElement.setParent(containerBindingValue.getLastBindingPathElement());
 			containerBindingValue.setOwner(expAction);
 			containerBindingValue.addBindingPathElement(pathElement);
 			expression.setExpression(containerBindingValue);
 		}
 		else {
-			BindingValue bv = new BindingValue(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
+			BindingPath bv = new BindingPath(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
 			expression.setExpression(bv);
 		}
 
@@ -309,16 +309,16 @@ public class XMLToFMLConverter {
 
 		if (addVirtualModelInstance.getReceiver() != null && addVirtualModelInstance.getReceiver().isSet()
 				&& addVirtualModelInstance.getReceiver().isValid()
-				&& addVirtualModelInstance.getReceiver().getExpression() instanceof BindingValue) {
+				&& addVirtualModelInstance.getReceiver().getExpression() instanceof BindingPath) {
 			// pathElement.setContainer(addConceptInstance.getContainer());
-			BindingValue containerBindingValue = (BindingValue) addVirtualModelInstance.getReceiver().getExpression();
+			BindingPath containerBindingValue = (BindingPath) addVirtualModelInstance.getReceiver().getExpression();
 			pathElement.setParent(containerBindingValue.getLastBindingPathElement());
 			containerBindingValue.setOwner(expAction);
 			containerBindingValue.addBindingPathElement(pathElement);
 			expression.setExpression(containerBindingValue);
 		}
 		else {
-			BindingValue bv = new BindingValue(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
+			BindingPath bv = new BindingPath(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
 			expression.setExpression(bv);
 		}
 
@@ -368,7 +368,7 @@ public class XMLToFMLConverter {
 
 		DataBinding expression = new DataBinding(expAction, createTopLevelVirtualModelInstance.getFlexoConceptType().getInstanceType(),
 				BindingDefinitionType.GET);
-		BindingValue bv = new BindingValue(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
+		BindingPath bv = new BindingPath(Collections.singletonList(pathElement), expAction, FMLPrettyPrinter.getInstance());
 		expression.setExpression(bv);
 
 		expAction.setExpression(expression);
@@ -384,9 +384,9 @@ public class XMLToFMLConverter {
 
 		list.revalidate();
 
-		if (list.getExpression() instanceof BindingValue) {
+		if (list.getExpression() instanceof BindingPath) {
 
-			BindingValue listBindingValue = (BindingValue) list.getExpression();
+			BindingPath listBindingValue = (BindingPath) list.getExpression();
 
 			if (addToListAction.getAssignableAction() instanceof ExpressionAction) {
 				// The most simple case
@@ -459,9 +459,9 @@ public class XMLToFMLConverter {
 
 		list.revalidate();
 
-		if (list.getExpression() instanceof BindingValue) {
+		if (list.getExpression() instanceof BindingPath) {
 
-			BindingValue listBindingValue = (BindingValue) list.getExpression();
+			BindingPath listBindingValue = (BindingPath) list.getExpression();
 
 			// The most simple case
 			DataBinding<Object> objectToRemove = removeFromListAction.getValue();

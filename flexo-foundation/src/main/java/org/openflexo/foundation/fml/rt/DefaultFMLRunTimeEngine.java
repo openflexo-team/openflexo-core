@@ -50,7 +50,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.BindingValueChangeListener;
+import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.action.EventListenerAction;
@@ -169,7 +169,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		private EventListener listener;
 		private VirtualModelInstance<?, ?> listenedVMI;
 		private RunTimeEvaluationContext evaluationContext;
-		private BindingValueChangeListener<VirtualModelInstance<?, ?>> bvChangeListener;
+		private BindingPathChangeListener<VirtualModelInstance<?, ?>> bvChangeListener;
 
 		public EventInstanceListener(FlexoConceptInstance instanceBeeingListening, EventListener listener,
 				RunTimeEvaluationContext evaluationContext) {
@@ -196,7 +196,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 			DataBinding<VirtualModelInstance<?, ?>> vmiBinding = listener.getListenedVirtualModelInstance();
 
 			if (vmiBinding != null && vmiBinding.isValid()) {
-				bvChangeListener = new BindingValueChangeListener<VirtualModelInstance<?, ?>>(vmiBinding, evaluationContext, true) {
+				bvChangeListener = new BindingPathChangeListener<VirtualModelInstance<?, ?>>(vmiBinding, evaluationContext, true) {
 					@Override
 					public void bindingValueChanged(Object source, VirtualModelInstance<?, ?> newValue) {
 						// System.out.println(" **** bindingValueChanged() detected for fci=" + instanceBeeingListening + "vmi="

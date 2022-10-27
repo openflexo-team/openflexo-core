@@ -535,7 +535,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		DataBinding<?> db = makeBinding(actionScheme, "parameters.aFlag", true, Boolean.TYPE);
 
-		/*BindingValue bv = (BindingValue) db.getExpression();
+		/*BindingPath bv = (BindingPath) db.getExpression();
 		System.out.println("variable: " + bv.getBindingVariable());
 		for (BindingPathElement bindingPathElement : bv.getBindingPath()) {
 			System.out.println(" > " + bindingPathElement + " activated=" + bindingPathElement.isActivated());

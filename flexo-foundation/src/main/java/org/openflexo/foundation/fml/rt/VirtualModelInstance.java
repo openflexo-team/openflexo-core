@@ -55,7 +55,7 @@ import javax.swing.SwingUtilities;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.BindingValueChangeListener;
+import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
@@ -1200,7 +1200,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		public class FlexoConceptInstanceIndex<T> extends WeakHashMap<T, List<FlexoConceptInstance>> {
 
-			public class IndexedValueListener extends BindingValueChangeListener<T> {
+			public class IndexedValueListener extends BindingPathChangeListener<T> {
 
 				private FlexoConceptInstance fci;
 				private T currentValue;
@@ -1285,7 +1285,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Computing index for " + this + " type=" + type + " with indexable term " + indexableTerm);
 				}
-				for (BindingValueChangeListener<T> l : listeners.values()) {
+				for (BindingPathChangeListener<T> l : listeners.values()) {
 					l.stopObserving();
 					l.delete();
 				}

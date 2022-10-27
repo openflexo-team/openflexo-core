@@ -178,9 +178,9 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 					if (listObj == null) {
 						logger.warning("Null list for binding " + list + " cannot add " + objToAdd);
 						/*if (list.isBindingValue()) {
-							System.out.println("last path= " + ((BindingValue) list.getExpression()).getLastBindingPathElement());
+							System.out.println("last path= " + ((BindingPath) list.getExpression()).getLastBindingPathElement());
 							System.out.println(
-									"last path class = " + ((BindingValue) list.getExpression()).getLastBindingPathElement().getClass());
+									"last path class = " + ((BindingPath) list.getExpression()).getLastBindingPathElement().getClass());
 						}*/
 					}
 					else {

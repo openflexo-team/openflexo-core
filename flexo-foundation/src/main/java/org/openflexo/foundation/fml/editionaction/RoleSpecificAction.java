@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
@@ -110,9 +110,9 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 		 */
 		@Override
 		public R getInferedFlexoRole() {
-			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingValue()) {
-				BindingValue bindingValue = ((BindingValue) getReceiver().getExpression());
-				IBindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingPath()) {
+				BindingPath bindingPath = ((BindingPath) getReceiver().getExpression());
+				IBindingPathElement lastPathElement = bindingPath.getLastBindingPathElement();
 				if (lastPathElement instanceof FlexoRoleBindingVariable) {
 					return (R) ((FlexoRoleBindingVariable) lastPathElement).getFlexoRole();
 				}

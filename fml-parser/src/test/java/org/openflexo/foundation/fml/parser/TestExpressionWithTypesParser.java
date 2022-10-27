@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.CastExpression;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.expr.FMLCastExpression;
@@ -36,23 +36,23 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testNewInstance() {
-		tryToParse("new ArrayList()", "new ArrayList()", BindingValue.class, null, serviceManager, false);
+		tryToParse("new ArrayList()", "new ArrayList()", BindingPath.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testNewInstance2() {
-		tryToParse("new a.MyA()", "new a.MyA()", BindingValue.class, null, serviceManager, false);
+		tryToParse("new a.MyA()", "new a.MyA()", BindingPath.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testNewInstance3() {
-		tryToParse("new a.MyA(new a.MyB(),new a.MyC())", "new a.MyA(new a.MyB(),new a.MyC())", BindingValue.class, null, serviceManager,
+		tryToParse("new a.MyA(new a.MyB(),new a.MyC())", "new a.MyA(new a.MyB(),new a.MyC())", BindingPath.class, null, serviceManager,
 				false);
 	}
 
 	@Test
 	public void testNewInstance4() {
-		tryToParse("new java.util.Hashtable<String,java.util.List<String>>()", "new Hashtable<String,List<String>>()", BindingValue.class,
+		tryToParse("new java.util.Hashtable<String,java.util.List<String>>()", "new Hashtable<String,List<String>>()", BindingPath.class,
 				null, serviceManager, false);
 	}
 
@@ -63,12 +63,12 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testCombo() {
-		tryToParse("new Object().toString()", "new Object().toString()", BindingValue.class, null, serviceManager, false);
+		tryToParse("new Object().toString()", "new Object().toString()", BindingPath.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testInnerNewInstance() {
-		tryToParse("a.b.new c.d.MyE()", "a.b.new c.d.MyE()", BindingValue.class, null, serviceManager, false);
+		tryToParse("a.b.new c.d.MyE()", "a.b.new c.d.MyE()", BindingPath.class, null, serviceManager, false);
 	}
 
 	// Test cast
@@ -202,12 +202,12 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testClassMethod1() {
-		tryToParse("Class.forName(\"Foo\")", "Class.forName(\"Foo\")", BindingValue.class, null, serviceManager, false);
+		tryToParse("Class.forName(\"Foo\")", "Class.forName(\"Foo\")", BindingPath.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testClassMethod2() {
-		tryToParse("java.lang.Class.forName(\"Foo\")", "Class.forName(\"Foo\")", BindingValue.class, null, serviceManager, false);
+		tryToParse("java.lang.Class.forName(\"Foo\")", "Class.forName(\"Foo\")", BindingPath.class, null, serviceManager, false);
 	}
 
 }

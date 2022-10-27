@@ -56,7 +56,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.binding.BindingValueChangeListener;
+import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -2005,7 +2005,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return false;
 		}
 
-		private BindingValueChangeListener<String> rendererChangeListener = null;
+		private BindingPathChangeListener<String> rendererChangeListener = null;
 
 		private boolean isComputingRenderer = false;
 
@@ -2033,7 +2033,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					Object obj = getFlexoConcept().getApplicableRenderer().getBindingValue(this);
 
 					if (rendererChangeListener == null) {
-						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getApplicableRenderer(), this) {
+						rendererChangeListener = new BindingPathChangeListener<String>(getFlexoConcept().getApplicableRenderer(), this) {
 							@Override
 							public void bindingValueChanged(Object source, String newValue) {
 								/*System.out.println(" bindingValueChanged() detected for string representation of "

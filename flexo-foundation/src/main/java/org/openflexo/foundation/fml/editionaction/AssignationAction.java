@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -116,10 +116,10 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			if (assignation != null && assignation.isValid() && assignation.isBindingValue()) {
-				BindingValue bindingValue = (BindingValue) assignation.getExpression();
-				if (bindingValue.isValid() && bindingValue.getBindingPath().size() == 0) {
-					return (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(bindingValue.getVariableName());
+			if (assignation != null && assignation.isValid() && assignation.isBindingPath()) {
+				BindingPath bindingPath = (BindingPath) assignation.getExpression();
+				if (bindingPath.isValid() && bindingPath.getBindingPath().size() == 0) {
+					return (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(bindingPath.getVariableName());
 				}
 			}
 			return null;

@@ -51,7 +51,7 @@ import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.binding.StaticMethodPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
@@ -109,7 +109,7 @@ import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
- * This class implements the semantics analyzer for a parsed {@link BindingValue}<br>
+ * This class implements the semantics analyzer for a parsed {@link BindingPath}<br>
  * Its main purpose is to structurally build a binding from a parsed AST<br>
  * 
  * The goal is here to linearize the AST to obtain a chain of {@link BindingPathElement}
@@ -127,7 +127,7 @@ public class BindingPathFactory {
 	private final List<AbstractBindingPathElementNode<?, ?>> nodesPath;
 	private final Node rootNode;
 
-	public static BindingValue makeBindingPath(Node node, AbstractExpressionFactory expressionFactory, BindingPathNode bindingPathNode) {
+	public static BindingPath makeBindingPath(Node node, AbstractExpressionFactory expressionFactory, BindingPathNode bindingPathNode) {
 
 		BindingPathFactory bindingPathFactory = new BindingPathFactory(node, expressionFactory);
 
@@ -147,7 +147,7 @@ public class BindingPathFactory {
 		// System.out.println("bindingPathElements=" + bindingPathFactory.bindingPathElements);
 
 		// return bindingPathFactory.path;
-		return new BindingValue(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements,
+		return new BindingPath(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements,
 				bindingPathFactory.getBindable(), FMLPrettyPrinter.getInstance());
 	}
 

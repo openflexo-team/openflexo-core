@@ -47,7 +47,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
@@ -127,9 +127,9 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 		 */
 		@Override
 		public MS getInferedModelSlot() {
-			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingValue()) {
-				BindingValue bindingValue = ((BindingValue) getReceiver().getExpression());
-				IBindingPathElement lastPathElement = bindingValue.getLastBindingPathElement();
+			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingPath()) {
+				BindingPath bindingPath = ((BindingPath) getReceiver().getExpression());
+				IBindingPathElement lastPathElement = bindingPath.getLastBindingPathElement();
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
 					return (MS) ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}

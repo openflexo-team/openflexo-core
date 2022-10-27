@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.expr;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.exception.TransformException;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionEvaluator;
@@ -67,9 +67,9 @@ public class FMLExpressionEvaluator extends ExpressionEvaluator {
 	 */
 	@Override
 	public Expression performTransformation(Expression e) throws TransformException {
-		if (e instanceof BindingValue) {
-			if (((BindingValue) e).isValid()) {
-				Object o = ((BindingValue) e).getBindingValue(getContext());
+		if (e instanceof BindingPath) {
+			if (((BindingPath) e).isValid()) {
+				Object o = ((BindingPath) e).getBindingValue(getContext());
 				return FMLConstant.makeConstant(o);
 			}
 			return e;

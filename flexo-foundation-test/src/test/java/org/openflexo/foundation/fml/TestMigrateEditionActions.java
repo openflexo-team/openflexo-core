@@ -48,7 +48,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -149,7 +149,7 @@ public class TestMigrateEditionActions extends OpenflexoTestCase {
 
 		DeclarationAction<?> a1 = (DeclarationAction<?>) flattenedSequence.get(0);
 		ExpressionAction<?> e1 = (ExpressionAction<?>) a1.getAssignableAction();
-		BindingValue bv1 = (BindingValue) e1.getExpression().getExpression();
+		BindingPath bv1 = (BindingPath) e1.getExpression().getExpression();
 		assertEquals(null, bv1.getBindingVariable());
 		assertEquals(1, bv1.getBindingPath().size());
 		assertTrue(bv1.getBindingPath().get(0) instanceof CreationSchemePathElement);
@@ -157,7 +157,7 @@ public class TestMigrateEditionActions extends OpenflexoTestCase {
 		assertEquals(foo.getInstanceType(), a1.getAnalyzedType());
 
 		ExpressionAction<?> a2 = (ExpressionAction<?>) flattenedSequence.get(1);
-		BindingValue bv2 = (BindingValue) a2.getExpression().getExpression();
+		BindingPath bv2 = (BindingPath) a2.getExpression().getExpression();
 		assertEquals(null, bv2.getBindingVariable());
 		assertEquals(1, bv2.getBindingPath().size());
 		assertTrue(bv2.getBindingPath().get(0) instanceof CreationSchemePathElement);
@@ -166,7 +166,7 @@ public class TestMigrateEditionActions extends OpenflexoTestCase {
 
 		AssignationAction<?> a3 = (AssignationAction<?>) flattenedSequence.get(2);
 		ExpressionAction<?> e3 = (ExpressionAction<?>) a3.getAssignableAction();
-		BindingValue bv3 = (BindingValue) e3.getExpression().getExpression();
+		BindingPath bv3 = (BindingPath) e3.getExpression().getExpression();
 		assertEquals(null, bv3.getBindingVariable());
 		assertEquals(1, bv3.getBindingPath().size());
 		assertTrue(bv3.getBindingPath().get(0) instanceof CreationSchemePathElement);
@@ -175,7 +175,7 @@ public class TestMigrateEditionActions extends OpenflexoTestCase {
 
 		/*DeclarationAction<?> a4 = (DeclarationAction<?>) flattenedSequence.get(3);
 		ExpressionAction<?> e4 = (ExpressionAction<?>) a4.getAssignableAction();
-		BindingValue bv4 = (BindingValue) e4.getExpression().getExpression();
+		BindingPath bv4 = (BindingPath) e4.getExpression().getExpression();
 		assertEquals(migrationVM.getBindingModel().getBindingVariableNamed("aFoo"), bv4.getBindingVariable());
 		assertEquals(1, bv4.getBindingPath().size());
 		assertTrue(bv4.getBindingPath().get(0) instanceof CreationSchemePathElement);
@@ -199,7 +199,7 @@ public class TestMigrateEditionActions extends OpenflexoTestCase {
 
 		DeclarationAction<?> a4 = (DeclarationAction<?>) testNewEmbeddedInstance.getControlGraph();
 		ExpressionAction<?> e4 = (ExpressionAction<?>) a4.getAssignableAction();
-		BindingValue bv4 = (BindingValue) e4.getExpression().getExpression();
+		BindingPath bv4 = (BindingPath) e4.getExpression().getExpression();
 		assertEquals(migrationVM.getBindingModel().getBindingVariableNamed("aFoo"), bv4.getBindingVariable());
 		assertEquals(1, bv4.getBindingPath().size());
 		assertTrue(bv4.getBindingPath().get(0) instanceof CreationSchemePathElement);
@@ -216,7 +216,7 @@ public class TestMigrateEditionActions extends OpenflexoTestCase {
 
 		DeclarationAction<?> a4 = (DeclarationAction<?>) testNewEmbeddedVirtualModelInstance.getControlGraph();
 		ExpressionAction<?> e4 = (ExpressionAction<?>) a4.getAssignableAction();
-		BindingValue bv4 = (BindingValue) e4.getExpression().getExpression();
+		BindingPath bv4 = (BindingPath) e4.getExpression().getExpression();
 		assertEquals(migrationVM.getBindingModel().getBindingVariableNamed("this"), bv4.getBindingVariable());
 		assertEquals(1, bv4.getBindingPath().size());
 		assertTrue(bv4.getBindingPath().get(0) instanceof CreationSchemePathElement);

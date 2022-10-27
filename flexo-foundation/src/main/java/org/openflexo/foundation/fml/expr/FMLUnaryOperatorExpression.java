@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.expr;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.TransformException;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionPrettyPrinter;
@@ -79,8 +79,8 @@ public class FMLUnaryOperatorExpression extends UnaryOperatorExpression {
 				}
 				else {
 					Object value = ((Constant<?>) transformedArgument).getValue();
-					if (getArgument() instanceof BindingValue) {
-						((BindingValue) getArgument()).setBindingValue(value, context);
+					if (getArgument() instanceof BindingPath) {
+						((BindingPath) getArgument()).setBindingValue(value, context);
 					}
 					else {
 						throw new NotSettableContextException(
@@ -109,8 +109,8 @@ public class FMLUnaryOperatorExpression extends UnaryOperatorExpression {
 				}
 				else {
 					Object value = ((Constant<?>) postArgumentConstant).getValue();
-					if (getArgument() instanceof BindingValue) {
-						((BindingValue) getArgument()).setBindingValue(value, context);
+					if (getArgument() instanceof BindingPath) {
+						((BindingPath) getArgument()).setBindingValue(value, context);
 					}
 					else {
 						throw new NotSettableContextException(

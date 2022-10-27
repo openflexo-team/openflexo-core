@@ -44,7 +44,7 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.ContextualizedBindable;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.CastExpression;
 import org.openflexo.connie.expr.ConditionalExpression;
 import org.openflexo.connie.expr.Constant;
@@ -233,7 +233,7 @@ public class FMLPrettyPrinter extends ExpressionPrettyPrinter {
 	}
 
 	@Override
-	protected String makeStringRepresentation(BindingValue bv, Bindable context) {
+	protected String makeStringRepresentation(BindingPath bv, Bindable context) {
 		return bv.toString();
 	}
 

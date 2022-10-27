@@ -139,7 +139,7 @@ public interface FMLExpression extends FMLCommand<AExpressionFmlCommand> {
 					Object value = right.getBindingValue(getCommandInterpreter());
 					if (left.isValid()) {
 						if (left.isSettable()) {
-							// if (leftArg instanceof BindingValue && ((BindingValue) leftArg).getBindingPath().size() == 0) {
+							// if (leftArg instanceof BindingPath && ((BindingPath) leftArg).getBindingPath().size() == 0) {
 							// getCommandInterpreter().declareVariable(variableName, assignation.getAnalyzedType(), value);
 							// }
 							// else {

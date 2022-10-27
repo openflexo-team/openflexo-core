@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.BindingPathFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
+public class BindingPathNode extends ExpressionNode<Node, BindingPath> {
 
 	public BindingPathNode(Node astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
@@ -56,18 +56,18 @@ public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, AbstractExpressionFactory expressionFactory) {
+	public BindingPathNode(BindingPath bindingPath, AbstractExpressionFactory expressionFactory) {
 		super(bindingPath, expressionFactory);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
+	public BindingPath buildModelObjectFromAST(Node astNode) {
 
 		if (getExpressionFactory() != null) {
 			return BindingPathFactory.makeBindingPath(astNode, getExpressionFactory(), this);
 
 			// List<AbstractBindingPathElement> bindingPath = BindingPathFactory.makeBindingPath(astNode, getExpressionFactory(), this);
-			// return new BindingValue(bindingPath, getExpressionFactory().getBindable(), JavaPrettyPrinter.getInstance());
+			// return new BindingPath(bindingPath, getExpressionFactory().getBindable(), JavaPrettyPrinter.getInstance());
 		}
 		return null;
 	}

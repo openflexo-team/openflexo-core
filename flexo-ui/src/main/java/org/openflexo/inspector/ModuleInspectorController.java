@@ -57,7 +57,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.ParseException;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.exception.TransformException;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.expr.UnresolvedBindingVariable;
@@ -733,7 +733,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	/**
-	 * Normalized BindingPath so that all {@link BindingValue} starts with 'fci.' (name of FCI beeing represented)
+	 * Normalized BindingPath so that all {@link BindingPath} starts with 'fci.' (name of FCI beeing represented)
 	 * 
 	 * @param bindingPath
 	 * @return
@@ -747,8 +747,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 			expression = expression.transform(new ExpressionTransformer() {
 				@Override
 				public Expression performTransformation(Expression e) throws TransformException {
-					if (e instanceof BindingValue) {
-						BindingValue bindingPath = (BindingValue) e;
+					if (e instanceof BindingPath) {
+						BindingPath bindingPath = (BindingPath) e;
 						if (bindingPath.getBindingVariable() == null) {
 							UnresolvedBindingVariable objectBV = new UnresolvedBindingVariable("fci");
 							bindingPath.setBindingVariable(objectBV);

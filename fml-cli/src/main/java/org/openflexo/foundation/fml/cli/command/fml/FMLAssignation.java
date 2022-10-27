@@ -47,7 +47,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
@@ -201,7 +201,7 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 
 		public String getAssignationVariable() {
 			if (assignation.isSimpleVariable()) {
-				BindingValue bindingPath = (BindingValue) assignation.getExpression();
+				BindingPath bindingPath = (BindingPath) assignation.getExpression();
 				return bindingPath.getBindingVariable().getVariableName();
 			}
 			return null;
