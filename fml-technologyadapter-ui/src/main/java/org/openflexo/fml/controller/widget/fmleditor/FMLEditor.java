@@ -189,14 +189,16 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 				clearHighlights();
 			}
 		});*/
-		
+
 		textArea.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				clearHighlights();
+				if (e.getClickCount() == 1) {
+					clearHighlights();
+				}
 			}
 		});
-		
+
 		try {
 			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/dark.xml"));
 			Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/default.xml"));
@@ -224,10 +226,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		}
 
 		highlighter = textArea.getHighlighter();
-		painter = new DefaultHighlighter.DefaultHighlightPainter(new Color(206,235,255));
+		painter = new DefaultHighlighter.DefaultHighlightPainter(new Color(206, 235, 255));
 
-
-		//textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
+		// textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
 
 		fmlResource.getLoadedResourceData().getPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -261,7 +262,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 		validationPanel = new FMLValidationPanel(getValidationReport(), this, flexoController);
 		splitPanel.add(validationPanel, LayoutPosition.BOTTOM.name());
-		
+
 		// This call is a little bit brutal, because it triggers a new parsing
 		// But it has the advantage to recompute a full-valid FML pretty-print with FML code and internal representation synchronized
 		// Validation status is also updated during this call
@@ -471,20 +472,19 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		highlighter.removeAllHighlights();
 	}
 
-
 	public void highlightObject(FMLPrettyPrintable object) {
-		FMLObjectNode<?,?,?> node = (FMLObjectNode<?,?,?>)object.getPrettyPrintDelegate();
+		FMLObjectNode<?, ?, ?> node = (FMLObjectNode<?, ?, ?>) object.getPrettyPrintDelegate();
 		int beginIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getStartPosition());
 		int endIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getEndPosition());
-		//System.out.println("Fragment: "+node.getLastParsedFragment());
-		//System.out.println("On selectionne "+beginIndex+"-"+endIndex);
+		// System.out.println("Fragment: "+node.getLastParsedFragment());
+		// System.out.println("On selectionne "+beginIndex+"-"+endIndex);
 		try {
 			Rectangle viewRect = textArea.modelToView(beginIndex);
-			viewRect.height = scrollPane.getBounds().height-20;
+			viewRect.height = scrollPane.getBounds().height - 20;
 			// Scroll to make the rectangle visible
 			textArea.scrollRectToVisible(viewRect);
 			// And add highlight
-			highlighter.addHighlight(beginIndex, endIndex, painter );
+			highlighter.addHighlight(beginIndex, endIndex, painter);
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -492,14 +492,14 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 	}
 
 	public void highlightLine(int lineNb) {
-		//System.out.println("Highlighting line "+lineNb);
-		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode)getFMLResource().getCompilationUnit().getPrettyPrintDelegate();
+		// System.out.println("Highlighting line "+lineNb);
+		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getFMLResource().getCompilationUnit().getPrettyPrintDelegate();
 		if (cuNode != null) {
 			int index = cuNode.getRawSource().getIndex(cuNode.getRawSource().new RawSourcePosition(lineNb, 0));
-			//System.out.println("Index: "+index);
+			// System.out.println("Index: "+index);
 			try {
 				Rectangle viewRect = textArea.modelToView(index);
-				viewRect.height = scrollPane.getBounds().height-20;
+				viewRect.height = scrollPane.getBounds().height - 20;
 				// Scroll to make the rectangle visible
 				textArea.scrollRectToVisible(viewRect);
 				textArea.setCaretPosition(index);
@@ -507,8 +507,8 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+
 		}
 	}
-	
+
 }
