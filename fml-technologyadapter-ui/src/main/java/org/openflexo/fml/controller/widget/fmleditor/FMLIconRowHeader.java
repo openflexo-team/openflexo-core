@@ -2,6 +2,7 @@ package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.swing.JToolTip;
 import javax.swing.Popup;
@@ -23,6 +25,8 @@ import org.fife.ui.rsyntaxtextarea.FoldingAwareIconRowHeader;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 
 public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements MouseMotionListener {
+
+	static final Logger logger = Logger.getLogger(FMLIconRowHeader.class.getPackage().getName());
 
 	public FMLIconRowHeader(FMLRSyntaxTextArea textArea) {
 		super(textArea);
@@ -43,6 +47,16 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 			}
 		});
 
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		try {
+			super.paintComponent(g);
+		} catch (IndexOutOfBoundsException e) {
+			// May happen, proceed silently
+			logger.info("Silently handle exception : " + e);
+		}
 	}
 
 	public FMLRSyntaxTextArea getTextArea() {
