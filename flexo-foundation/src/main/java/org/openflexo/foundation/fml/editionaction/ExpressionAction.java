@@ -43,10 +43,12 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.UndefinedType;
-import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.binding.DataBindingPropertyImplementation;
+import org.openflexo.foundation.fml.binding.DataBindingPropertyImplementation.DataBindingProperty;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -54,7 +56,9 @@ import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.PropertyImplementation;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
@@ -73,11 +77,21 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 	public static final String EXPRESSION_KEY = "expression";
 
 	@Getter(value = EXPRESSION_KEY)
+	@PropertyImplementation(DataBindingPropertyImplementation.class)
+	@DataBindingProperty(
+			bindingName = EXPRESSION_KEY,
+			declaredType = Object.class,
+			owner = "this",
+			bindingDefinitionType = BindingDefinitionType.GET,
+			isMandatory = true)
 	@XMLAttribute
 	public DataBinding<T> getExpression();
 
 	@Setter(EXPRESSION_KEY)
 	public void setExpression(DataBinding<T> expression);
+
+	@Updater(EXPRESSION_KEY)
+	public void updateExpression(DataBinding<T> expression);
 
 	@Override
 	public Type getAssignableType();
@@ -86,8 +100,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
-
-		private DataBinding<T> expression;
 
 		// This is the last assignable type that was computed
 		// This value will be used to notify type changes
@@ -119,42 +131,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				return lastKnownAssignableType;
 			}
 
-			/*if (getExpression().toString().equals("container.completeProcess()")) {
-				System.out.println("Mon BM c'est " + getBindingModel());
-				System.out.println("root:" + getRootOwner());
-				if (getRootOwner() instanceof FlexoBehaviour) {
-					System.out.println("concept: " + ((FlexoBehaviour) getRootOwner()).getFlexoConcept());
-					if (((FlexoBehaviour) getRootOwner()).getFlexoConcept() != null) {
-						System.out.println("container: " + ((FlexoBehaviour) getRootOwner()).getFlexoConcept().getContainerFlexoConcept());
-					}
-				}
-				System.out.println("container: " + getBindingModel().getBindingVariableNamed("container"));
-			}*/
-
-			/*if (!getExpression().isValid() && getExpression().toString().equals("type.taskTypes") && getExpression().getOwner() != null
-					&& getExpression().getOwner().getBindingFactory() != null
-					&& !getExpression().invalidBindingReason().contains("infinite-loop")) {
-			
-				if (getExpression().isBindingValue()) {
-					System.out.println(
-							"******** Trop nul, c'est pas valide: " + getExpression() + " car " + getExpression().invalidBindingReason());
-					BindingValue bv = (BindingValue) getExpression().getExpression();
-					BindingVariable bindingVariable = bv.getBindingVariable();
-					System.out.println("bindingVariable=" + bindingVariable + " of " + bindingVariable.getType() + " of "
-							+ bindingVariable.getType().getClass());
-					System.out.println("BF: " + getExpression().getOwner().getBindingFactory());
-					if (bindingVariable.getType().toString().equals("ProcessType")) {
-						System.out.println("Type: " + bindingVariable.getType());
-						System.out.println("concept: " + ((FlexoConceptInstanceType) bindingVariable.getType()).getFlexoConcept());
-						FlexoConcept concept = ((FlexoConceptInstanceType) bindingVariable.getType()).getFlexoConcept();
-						System.out.println("properties:" + concept.getAccessibleProperties());
-						// Thread.dumpStack();
-						System.exit(-1);
-					}
-				}
-			
-			}*/
-
 			// TODO : je pense que ceci n'est plus utile et doit etre supprime
 			// Gros hack ici: le probleme est que la BindingFactory n'etait pas valide au moment de l'analyse
 			// Il faut donc ecouter les modifications de getBindingFactory()
@@ -169,27 +145,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 			return UndefinedType.INSTANCE;
 
-			/*if (assignableType == null && !isComputingAssignableType) {
-				isComputingAssignableType = true;
-				if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
-					assignableType = getExpression().getAnalyzedType();
-					System.out.println("Pour l'expression [" + getExpression() + "] le type c'est " + assignableType);
-				}
-				isComputingAssignableType = false;
-				// Hacking area - No time yet to fix this
-				// This case handles a CustomType which is not resolved yet
-				// Since, we have to way to know when this type will be resolved, we don't cache it
-				// TODO: handle this issue properly
-				if (assignableType instanceof CustomType && !((CustomType) assignableType).isResolved()) {
-					CustomType returned = (CustomType) assignableType;
-					assignableType = null;
-					return returned;
-				}
-			}
-			if (assignableType == null) {
-				return Object.class;
-			}
-			return assignableType;*/
 		}
 
 		@Override
@@ -224,30 +179,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			if (dataBinding == getExpression()) {
 				notifyAssignableTypeMightHaveChanged(lastKnownAssignableType, getExpression().getAnalyzedType());
 			}
-		}
-
-		@Override
-		public DataBinding<T> getExpression() {
-			if (expression == null) {
-				expression = new DataBinding<>(this, Object.class, DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName(EXPRESSION_KEY);
-				expression.setMandatory(true);
-			}
-			return expression;
-		}
-
-		@Override
-		public void setExpression(DataBinding<T> expression) {
-
-			if (expression != null) {
-				expression.setOwner(this);
-				expression.setDeclaredType(Object.class);
-				expression.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName(EXPRESSION_KEY);
-				expression.setMandatory(true);
-			}
-			this.expression = expression;
-			notifiedBindingChanged(expression);
 		}
 
 		@Override
