@@ -1,5 +1,6 @@
 **/target
 **/build
+**/bin
 *.ipr
 *.idea
 *.iws
@@ -12,3 +13,5 @@
 /target
 /.gradle/
 /infer-out/
+.metadata
+
