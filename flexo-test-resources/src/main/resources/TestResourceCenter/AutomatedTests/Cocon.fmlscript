@@ -1,0 +1,11 @@
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Cocon.fml"];
+context;
+assert virtualModel != null;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+service ResourceCenterService add_temp_rc;
+myVMI = new Cocon() with (virtualModelInstanceName="test");
+myVMI.testSignature();

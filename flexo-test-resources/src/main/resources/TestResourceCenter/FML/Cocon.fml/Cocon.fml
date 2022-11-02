@@ -2,7 +2,7 @@
 @Author("sylvainguerin")
 public model Cocon {
 	concept Up {
-		create () { //constructeur
+		create () { // constructor
 		} 
 		cv(Top t) {
 			log "cv(Top) in Up";
@@ -16,7 +16,7 @@ public model Cocon {
 	}
 
 	concept Down extends Up {
-		create () { // constructeur
+		create () { // constructor
 		} 
 		cv(Middle m) {
 			log "cv(Middle) in Down";
@@ -30,56 +30,59 @@ public model Cocon {
 	}
 
 	concept Top {
-		create() { // constructeur
+		create() { // constructor
 		}
 	}
 	
 	concept Middle extends Top {
-		create() { // constructeur
+		create() { // constructor
 		}
 	}
 	
 	concept Bottom extends Middle {
-		create() { // constructeur
+		create() { // constructor
 		}
 	}
 
-	public void main () {
+	create() { // constructor
+	}
+	
+	public void testSignature () {
 		Up u = new Up();
-		Down d = new Down(); // ligne 47
-		Up ud = new Down(); // ligne 48
+		Down d = new Down();
+		Up ud = new Down();
 
 		log "== Up ==";
 
 		u.cv(new Top());
 		u.cv(new Middle());
 		u.cv(new Bottom());
-		u.inv(new Top());
+		//u.inv(new Top());  --> does not compile as expected
 		u.inv(new Middle());
 		u.inv(new Bottom());
-		u.ctv(new Top()); // ligne 58
-		u.ctv(new Middle());
-		u.ctv(new Bottom()); // ligne 60
+		//u.ctv(new Top());  --> does not compile as expected
+		//u.ctv(new Middle()); --> does not compile as expected
+		u.ctv(new Bottom()); 
 		
 		log "== Down ==";
-		d.cv(new Top());
+		//d.cv(new Top()); --> does not compile as expected
 		d.cv(new Middle());
 		d.cv(new Bottom());
-		d.inv(new Top());
+		//d.inv(new Top()); --> does not compile as expected
 		d.inv(new Middle());
 		d.inv(new Bottom());
-		d.ctv(new Top());
+		//d.ctv(new Top()); --> does not compile as expected
 		d.ctv(new Middle());
 		d.ctv(new Bottom());
 		
 		log "== Down in Up ==";
-		ud.cv(new Top());
+		//ud.cv(new Top()); --> does not compile as expected
 		ud.cv(new Middle());
 		ud.cv(new Bottom());
-		ud.inv(new Top());
+		//ud.inv(new Top()); --> does not compile as expected
 		ud.inv(new Middle());
 		ud.inv(new Bottom());
-		ud.ctv(new Top());
+		//ud.ctv(new Top());--> does not compile as expected
 		ud.ctv(new Middle());
 		ud.ctv(new Bottom());
 		

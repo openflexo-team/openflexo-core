@@ -135,41 +135,12 @@ public class TestCoconFMLEditor extends OpenflexoFIBTestCase {
 		gcDelegate.addTab("FML Editor", fmlEditor);
 		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
 		assertNotNull(cu);
-		assertEquals(1, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(1, cu.getVirtualModel().getFlexoBehaviours().size());
 	}
 
 	@Test
 	@TestOrder(5)
 	@Category(UITest.class)
 	public void validate() {
-		// System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
-
-		/*FlexoConcept modelingElement = compilationUnit.getVirtualModel().getFlexoConcept("ModelingElement");
-		assertNotNull(modelingElement);
-		assertNotNull(modelingElement.getAccessibleProperty("name"));
-		
-		FlexoConcept typeElement = compilationUnit.getVirtualModel().getFlexoConcept("Type");
-		assertNotNull(typeElement);
-		assertTrue(typeElement.getParentFlexoConcepts().contains(modelingElement));
-		assertNotNull(typeElement.getAccessibleProperty("name"));
-		
-		FlexoConcept taskTypeElement = compilationUnit.getVirtualModel().getFlexoConcept("TaskType");
-		assertNotNull(taskTypeElement);
-		assertTrue(taskTypeElement.getParentFlexoConcepts().contains(typeElement));
-		assertNotNull(taskTypeElement.getAccessibleProperty("name"));*/
-
-		/*System.out.println("modelingElement="+modelingElement);
-		System.out.println("modelingElement.name="+modelingElement.getAccessibleProperty("name"));
-		
-		System.out.println("typeElement="+typeElement);
-		System.out.println("typeElement.parent="+typeElement.getParentFlexoConcepts());
-		System.out.println("typeElement.name="+typeElement.getAccessibleProperty("name"));
-		
-		System.out.println("taskTypeElement="+taskTypeElement);
-		System.out.println("taskTypeElement.parent="+taskTypeElement.getParentFlexoConcepts());
-		System.out.println("taskTypeElement.name="+taskTypeElement.getAccessibleProperty("name"));*/
-
 		ValidationReport report = validate(compilationUnit);
 		assertEquals(0, report.getAllErrors().size());
 
