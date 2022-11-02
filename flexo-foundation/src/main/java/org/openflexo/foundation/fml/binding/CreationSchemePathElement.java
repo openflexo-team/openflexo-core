@@ -488,9 +488,9 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				if (hasWithClause()) {
 					returned.append(" with (");
 					isFirst = true;
-					
-					System.out.println("Prout ici, getVirtualModelInstanceName()="+getVirtualModelInstanceName());
-					
+
+					//System.out.println("Prout ici, getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
+
 					if (getVirtualModelInstanceName() != null && getVirtualModelInstanceName().isSet()) {
 						returned.append((isFirst ? "" : ",") + "virtualModelInstanceName=" + getVirtualModelInstanceName());
 						isFirst = false;
@@ -588,7 +588,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						}
 					}
 					else if (parentContext instanceof FlexoConcept) {
-						if (!parentContext.getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer().contains(getCreationScheme().getFlexoConcept())) {
+						if (!parentContext.getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer()
+								.contains(getCreationScheme().getFlexoConcept())) {
 							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
 									+ parentContext.getName();
 							check.valid = false;
@@ -645,13 +646,13 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		@SuppressWarnings("unchecked")
 		public void resolve() {
 
-			//System.out.println("resolve() CreationSchemePathElement ");
-			//System.out.println("type=" + getType());
-			//System.out.println("resolved=" + getType().isResolved());
-			//System.out.println("name=" + getParsed());
-			//System.out.println("args=" + getArguments());
-			//System.out.println("bindable=" + getBindable());
-			//System.out.println("bindable.getBindingFactory()=" + getBindable().getBindingFactory());
+			// System.out.println("resolve() CreationSchemePathElement ");
+			// System.out.println("type=" + getType());
+			// System.out.println("resolved=" + getType().isResolved());
+			// System.out.println("name=" + getParsed());
+			// System.out.println("args=" + getArguments());
+			// System.out.println("bindable=" + getBindable());
+			// System.out.println("bindable.getBindingFactory()=" + getBindable().getBindingFactory());
 
 			CS function = (CS) ((FMLBindingFactory) getBindable().getBindingFactory()).retrieveConstructor(getType(),
 					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
@@ -669,14 +670,14 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 			}*/
 		}
-		
+
 		@Override
 		public Object getBindingValue(Object target, BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
-			System.out.println("Executing CreationSchemePathElement: " + this);
-			System.out.println("target=" + target);
-			System.out.println("evaluationContext=" + evaluationContext);
+			// System.out.println("Executing CreationSchemePathElement: " + this);
+			// System.out.println("target=" + target);
+			// System.out.println("evaluationContext=" + evaluationContext);
 
 			try {
 
@@ -698,7 +699,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						}
 					}
 				}
-				System.out.println("container=" + container);
+				// System.out.println("container=" + container);
 
 				if (container == null) {
 					throw new NullReferenceException("Unable to find executable context for " + this);
@@ -708,7 +709,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel && (getCreationScheme() instanceof CreationScheme)) {
 
 					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
-					System.out.println("vmiName=" + vmiName);
+					// System.out.println("vmiName=" + vmiName);
 
 					/*System.out.println("getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
 					System.out.println("valid=" + getVirtualModelInstanceName().isValid());
@@ -734,7 +735,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					createVMIAction.setSkipChoosePopup(true);
 					createVMIAction.setNewVirtualModelInstanceName(vmiName);
 					createVMIAction.setVirtualModel(instantiatedVirtualModel);
-					createVMIAction.setCreationScheme((CreationScheme)getCreationScheme());
+					createVMIAction.setCreationScheme((CreationScheme) getCreationScheme());
 
 					for (FunctionArgument functionArgument : getFunctionArguments()) {
 						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
@@ -786,10 +787,12 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		}
 
-		private AbstractCreationSchemeAction<?,CS,?>  makeCreationSchemeAction(CS behaviour, VirtualModelInstance<?, ?> vmInstance, BindingEvaluationContext evaluationContext) {
-			System.out.println("SM="+getServiceManager());
-			System.out.println("SM2="+behaviour.getServiceManager());
-			TechnologyAdapter<?> ta = behaviour.getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForBehaviourType(behaviour.getClass());
+		private AbstractCreationSchemeAction<?, CS, ?> makeCreationSchemeAction(CS behaviour, VirtualModelInstance<?, ?> vmInstance,
+				BindingEvaluationContext evaluationContext) {
+			// System.out.println("SM=" + getServiceManager());
+			// System.out.println("SM2=" + behaviour.getServiceManager());
+			TechnologyAdapter<?> ta = behaviour.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapterForBehaviourType(behaviour.getClass());
 			if (ta == null) {
 				logger.warning("Cannot find TechnologyAdapter for behaviour " + behaviour);
 				Thread.dumpStack();
@@ -807,12 +810,13 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				return null;
 			}
 		}
-		
+
 		private boolean performExecuteCreationScheme(FlexoConceptInstance newInstance, VirtualModelInstance<?, ?> vmInstance,
 				BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
 
-			AbstractCreationSchemeAction<?,CS,?> creationSchemeAction = makeCreationSchemeAction(getCreationScheme(), vmInstance,evaluationContext);
+			AbstractCreationSchemeAction<?, CS, ?> creationSchemeAction = makeCreationSchemeAction(getCreationScheme(), vmInstance,
+					evaluationContext);
 
 			/*if (evaluationContext instanceof FlexoBehaviourAction) {
 				creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
