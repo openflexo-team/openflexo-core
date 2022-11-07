@@ -9,3 +9,17 @@ log virtualModel.fMLPrettyPrint;
 service ResourceCenterService add_temp_rc;
 myVMI = new Cocon() with (virtualModelInstanceName="test");
 myVMI.testSignature();
+/*Up*/ u = myVMI.new Up();
+/*Down*/ d = myVMI.new Down();
+/*Up*/ ud = myVMI.new Down();
+log "== Up ==";
+u.cv(new Top());
+u.cv(new Middle());
+u.cv(new Bottom());
+//u.inv(new Top());  --> does not compile as expected
+u.inv(new Middle());
+u.inv(new Bottom());
+//u.ctv(new Top());  --> does not compile as expected
+//u.ctv(new Middle()); --> does not compile as expected
+u.ctv(new Bottom()); 
+
