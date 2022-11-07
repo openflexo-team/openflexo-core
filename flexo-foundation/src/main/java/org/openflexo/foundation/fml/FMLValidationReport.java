@@ -205,13 +205,13 @@ public class FMLValidationReport extends ValidationReport {
 
 	public RawSourceFragment getFragment(ValidationIssue<?, ?> issue) {
 		if (issue != null && issue.getCause() != null && issue.getValidable() instanceof FMLPrettyPrintable) {
-			if (StringUtils.isNotEmpty(issue.getCause().getFragmentContext())) {
-				FragmentContext context = FragmentContext.valueOf(issue.getCause().getFragmentContext());
-				if (context != null) {
-					return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment(context);
-				}
-			}
 			if (((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate() != null) {
+				if (StringUtils.isNotEmpty(issue.getCause().getFragmentContext())) {
+					FragmentContext context = FragmentContext.valueOf(issue.getCause().getFragmentContext());
+					if (context != null) {
+						return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment(context);
+					}
+				}
 				return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment();
 			}
 		}
