@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
@@ -54,6 +55,7 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
@@ -63,6 +65,7 @@ import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
@@ -124,7 +127,7 @@ public class XMLToFMLConverter {
 		compilationUnit.accept(new PAMELAVisitor() {
 			@Override
 			public void visit(Object object) {
-				System.out.println("> visit " + object);
+				// System.out.println("> visit " + object);
 				if (object instanceof FetchRequestCondition) {
 					FetchRequestCondition condition = (FetchRequestCondition) object;
 					convertConditionalDataBinding(condition.getCondition());
@@ -134,8 +137,11 @@ public class XMLToFMLConverter {
 					convertConditionalDataBinding(condition.getCondition());
 				}
 				if (object instanceof ExpressionAction) {
-					ExpressionAction condition = (ExpressionAction) object;
-					convertExpressionDataBinding(condition.getExpression());
+					ExpressionAction expression = (ExpressionAction) object;
+					convertExpressionDataBinding(expression.getExpression());
+				}
+				if (object instanceof AssignationAction) {
+					convertAssignationAction((AssignationAction) object);
 				}
 			}
 		});
@@ -143,7 +149,7 @@ public class XMLToFMLConverter {
 		compilationUnit.accept(new PAMELAVisitor() {
 			@Override
 			public void visit(Object object) {
-				System.out.println("> visit " + object);
+				// System.out.println("> visit " + object);
 				if (object instanceof AddClassInstance) {
 					addClassInstanceActions.add((AddClassInstance) object);
 				}
@@ -199,7 +205,7 @@ public class XMLToFMLConverter {
 		compilationUnit.accept(new PAMELAVisitor() {
 			@Override
 			public void visit(Object object) {
-				System.out.println("> visit " + object);
+				// System.out.println("> visit " + object);
 				if (object instanceof FlexoProperty) {
 					FlexoProperty property = (FlexoProperty) object;
 					String name = property.getName();
@@ -207,8 +213,34 @@ public class XMLToFMLConverter {
 						try {
 							property.setName(JavaUtils.getVariableName(name));
 						} catch (InvalidNameException e) {
-							// Cannot happen
+							// Should not happen
 							e.printStackTrace();
+						}
+					}
+				}
+				if (object instanceof FlexoBehaviour) {
+					FlexoBehaviour behaviour = (FlexoBehaviour) object;
+					if (StringUtils.isNotEmpty(behaviour.getName())) {
+						if (startsWithUpperCase(behaviour.getName())) {
+							try {
+								behaviour.setName(convertToLowerCase(behaviour.getName()));
+							} catch (InvalidNameException e) {
+								// Should not happen
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				if (object instanceof FlexoConcept) {
+					FlexoConcept concept = (FlexoConcept) object;
+					if (StringUtils.isNotEmpty(concept.getName())) {
+						if (startsWithLowerCase(concept.getName())) {
+							try {
+								concept.setName(convertToUpperCase(concept.getName()));
+							} catch (InvalidNameException e) {
+								// Should not happen
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -536,6 +568,48 @@ public class XMLToFMLConverter {
 						+ (!expression.isValid() ? " reason: " + expression.invalidBindingReason() : ""));
 			}
 		}
+	}
+
+	private void convertAssignationAction(AssignationAction<?> assignationAction) {
+		DataBinding<?> assignation = assignationAction.getAssignation();
+		convertAssignationActionDataBinding(assignation);
+	}
+
+	private void convertAssignationActionDataBinding(DataBinding<?> assignation) {
+		String initialValue = assignation.toString();
+		if (startsWithUpperCase(initialValue)) {
+			String newValue = convertToLowerCase(initialValue);
+			assignation.setUnparsedBinding(newValue);
+			assignation.revalidate();
+			System.out.println("Replaced " + initialValue + " by " + newValue + " valid: " + assignation.isValid()
+					+ (!assignation.isValid() ? " reason: " + assignation.invalidBindingReason() : ""));
+		}
+	}
+
+	private boolean startsWithUpperCase(String value) {
+		Character c = value.charAt(0);
+		return Character.isUpperCase(c);
+	}
+
+	private String convertToLowerCase(String initialValue) {
+		Character c = initialValue.charAt(0);
+		if (Character.isUpperCase(c)) {
+			return "" + Character.toLowerCase(c) + initialValue.substring(1);
+		}
+		return initialValue;
+	}
+
+	private boolean startsWithLowerCase(String value) {
+		Character c = value.charAt(0);
+		return Character.isLowerCase(c);
+	}
+
+	private String convertToUpperCase(String initialValue) {
+		Character c = initialValue.charAt(0);
+		if (Character.isLowerCase(c)) {
+			return "" + Character.toUpperCase(c) + initialValue.substring(1);
+		}
+		return initialValue;
 	}
 
 }
