@@ -445,7 +445,12 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			// System.out.println("On fait setWidget avec " + widget);
 			if (widget != null && widget != getWidget()) {
 				MultiValuedMetaData md = getParameterMetaData(true);
-				md.setKey(widget.getAnnotation());
+				if (md != null) {
+					md.setKey(widget.getAnnotation());
+				}
+				else {
+					logger.warning("Unexpected null MultiValuedMetaData for " + this);
+				}
 				// System.out.println("KEY: " + widget.getAnnotation());
 			}
 			// System.out.println("getWidget=" + widget);
@@ -609,12 +614,12 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		/*private boolean isRequired = false;
-
+		
 		@Override
 		public boolean getIsRequired() {
 			return isRequired;
 		}
-
+		
 		@Override
 		public final void setIsRequired(boolean flag) {
 			isRequired = flag;
@@ -751,8 +756,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	}
 
 	@DefineValidationRule
-	public static class TypeMustBeValid
-	extends ValidationRule<TypeMustBeValid, FlexoBehaviourParameter> {
+	public static class TypeMustBeValid extends ValidationRule<TypeMustBeValid, FlexoBehaviourParameter> {
 
 		public TypeMustBeValid() {
 			super(FlexoBehaviourParameter.class, "argument_type_must_be_valid");
@@ -770,7 +774,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 				return new ValidationError<>(this, behaviourArgument, "unresolved_type_($validable.type)");
 			}
 			if (behaviourArgument.getType() instanceof CustomType) {
-				if (!((CustomType)behaviourArgument.getType()).isResolved()) {
+				if (!((CustomType) behaviourArgument.getType()).isResolved()) {
 					return new ValidationError<>(this, behaviourArgument, "cannot_resolve_type_($validable.type)");
 				}
 			}
@@ -778,6 +782,5 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 	}
-
 
 }
