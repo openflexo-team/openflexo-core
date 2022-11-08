@@ -60,6 +60,8 @@ import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ListMetaDataNode;
@@ -79,6 +81,8 @@ import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AComplexAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AComplexFormalArgument;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AEnumDecl;
+import org.openflexo.foundation.fml.parser.node.AEnumValue;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
@@ -199,10 +203,10 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	public void debugASTNodes() {
 		for (Node node : nodesForAST.keySet()) {
-			System.out.println(node.getClass().getSimpleName()+" -> "+nodesForAST.get(node)+" ["+node+"]");
+			System.out.println(node.getClass().getSimpleName() + " -> " + nodesForAST.get(node) + " [" + node + "]");
 		}
 	}
-	
+
 	/*public Map<Node, FMLObjectNode> getNodesForAST() {
 		return nodesForAST;
 	}*/
@@ -433,6 +437,30 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAConceptDecl(AConceptDecl node) {
 		super.outAConceptDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inAEnumDecl(AEnumDecl node) {
+		super.inAEnumDecl(node);
+		push(retrieveFMLNode(node, n -> new FlexoEnumNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAEnumDecl(AEnumDecl node) {
+		super.outAEnumDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inAEnumValue(AEnumValue node) {
+		super.inAEnumValue(node);
+		push(retrieveFMLNode(node, n -> new FlexoEnumValueNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAEnumValue(AEnumValue node) {
+		super.outAEnumValue(node);
 		pop();
 	}
 

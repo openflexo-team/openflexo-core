@@ -1,0 +1,27 @@
+/**
+ * Testing abstract properties
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.List;
+import java.util.Map as MyJavaMap;
+
+model MyModel {
+
+	enum AnEnum {
+		FIRST_VALUE,
+		SECOND_VALUE,
+		THIRD_VALUE
+	}
+
+	concept AConcept {
+		enum AnOtherEnum {
+			FIRST_VALUE,
+			SECOND_VALUE,
+			THIRD_VALUE
+		}
+	}
+
+}

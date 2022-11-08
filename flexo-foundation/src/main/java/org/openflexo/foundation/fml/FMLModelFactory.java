@@ -573,6 +573,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(FlexoEnum.class);
 	}
 
+	public FlexoEnumValue newFlexoEnumValue() {
+		return newInstance(FlexoEnumValue.class);
+	}
+
 	public FlexoEnumValue newFlexoEnumValue(FlexoEnum flexoEnum) {
 		FlexoEnumValue returned = newInstance(FlexoEnumValue.class);
 		flexoEnum.addToValues(returned);
@@ -751,9 +755,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <CSPE extends CreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(
-			Class<CSPE> abstractCreationSchemeClass, FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName,
-			List<DataBinding<?>> args, Bindable bindable) {
+	public <CSPE extends CreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(Class<CSPE> abstractCreationSchemeClass,
+			FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName, List<DataBinding<?>> args,
+			Bindable bindable) {
 		CSPE returned = newInstance(abstractCreationSchemeClass);
 		returned.setType(type);
 		returned.setParent(parent);
@@ -763,9 +767,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <CS extends AbstractCreationScheme,CSPE extends CreationSchemePathElement<CS>> CSPE newAbstractCreationSchemePathElement(
-			Class<CSPE> abstractCreationSchemeClass, IBindingPathElement parent, CS creationScheme,
-			List<DataBinding<?>> args, Bindable bindable) {
+	public <CS extends AbstractCreationScheme, CSPE extends CreationSchemePathElement<CS>> CSPE newAbstractCreationSchemePathElement(
+			Class<CSPE> abstractCreationSchemeClass, IBindingPathElement parent, CS creationScheme, List<DataBinding<?>> args,
+			Bindable bindable) {
 		CSPE returned = newInstance(abstractCreationSchemeClass);
 		returned.setParent(parent);
 		returned.setFunction(creationScheme);
@@ -814,7 +818,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <M extends FMLObject, T extends FMLObject> FMLInstancePropertyValue<M, T> newInstancePropertyValue(FMLProperty<M, T> property, M object) {
+	public <M extends FMLObject, T extends FMLObject> FMLInstancePropertyValue<M, T> newInstancePropertyValue(FMLProperty<M, T> property,
+			M object) {
 		FMLInstancePropertyValue<M, T> returned = newInstance(FMLInstancePropertyValue.class);
 		returned.setProperty(property);
 		returned.setObject(object);

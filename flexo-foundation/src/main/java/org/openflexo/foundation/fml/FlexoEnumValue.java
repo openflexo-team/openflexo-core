@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -101,6 +102,12 @@ public interface FlexoEnumValue extends FlexoConcept {
 				return getFlexoEnum().getOwner();
 			}
 			return null;
+		}
+
+		@Override
+		public void setName(String name) throws InvalidNameException {
+			// TODO Auto-generated method stub
+			super.setName(name);
 		}
 
 	}

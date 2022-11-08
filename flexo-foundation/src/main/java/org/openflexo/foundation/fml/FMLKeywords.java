@@ -111,6 +111,12 @@ public enum FMLKeywords {
 			return "end";
 		}
 	},
+	Enum {
+		@Override
+		public String getKeyword() {
+			return "enum";
+		}
+	},
 	Extends {
 		@Override
 		public String getKeyword() {

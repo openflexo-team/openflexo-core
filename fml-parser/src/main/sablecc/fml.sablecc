@@ -256,6 +256,7 @@ Tokens
    {normal} kw_do = 'do';
    {normal} kw_else = 'else';
    {normal} kw_end = 'end';
+   {normal} kw_enum = 'enum';
    {normal,binding} kw_extends = 'extends';
    {normal} kw_for = 'for';
    {normal,binding} kw_from = 'from';
@@ -579,6 +580,15 @@ Productions
 
    concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept uidentifier super_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
 
+   enum_decl = [annotations]:annotation* visibility? kw_enum uidentifier l_brc enum_values_list r_brc;
+
+   enum_values_list =
+       {one}  enum_value
+     | {many} enum_values_list comma enum_value
+     ;
+
+   enum_value = cidentifier;
+
    inner_concept_decl =
       // basic role declaration
        {java} visibility? type cardinality? variable_declarator semi
@@ -591,6 +601,7 @@ Productions
      | {get_set_property}    visibility? type lidentifier l_brc get_decl set_decl ? r_brc semi
      | {behaviour_declaration} behaviour_decl
      | {concept_declaration} concept_decl
+     | {enum_declaration} enum_decl
      ;
 
    get_decl = type kw_get l_par r_par flexo_behaviour_body;
