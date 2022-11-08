@@ -73,7 +73,7 @@ public interface NamespaceDeclaration extends FlexoObject, FMLPrettyPrintable {
 	public String getValue();
 
 	@Setter(VALUE_KEY)
-	public void setValue(String modelSlotClass);
+	public void setValue(String nsValue);
 
 	@Getter(value = COMPILATION_UNIT_KEY, inverse = FMLCompilationUnit.NAMESPACES_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
