@@ -57,6 +57,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.binding.CompilationUnitBindingModel;
 import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
@@ -626,11 +627,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 			for (ElementImportDeclaration importDeclaration : getElementImports()) {
 
-				//System.out.println(" > Import " + importDeclaration);
+				// System.out.println(" > Import " + importDeclaration);
 				try {
 					String resourceURI = null;
 					Object resourceRef = importDeclaration.getResourceReference().getBindingValue(this);
-					//System.out.println("resourceRef=" + resourceRef);
+					// System.out.println("resourceRef=" + resourceRef);
 					if (resourceRef instanceof String) {
 						resourceURI = (String) resourceRef;
 					}
@@ -642,7 +643,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 						continue;
 					}
 					FlexoResource resource = getServiceManager().getResourceManager().getResource(resourceURI);
-					//System.out.println("resource: " + resource + " loaded: " + resource.isLoaded());
+					// System.out.println("resource: " + resource + " loaded: " + resource.isLoaded());
 					if (resource instanceof CompilationUnitResource && resource.isLoaded()) {
 						FMLCompilationUnit importedCompilationUnit = ((CompilationUnitResource) resource).getCompilationUnit();
 						returned = importedCompilationUnit.lookupFlexoConceptWithName(conceptName);
@@ -1014,7 +1015,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		private boolean isManagingImports = false;
-		
+
 		/**
 		 * Analyze the whole structure of the compilation unit, and declare required imports
 		 */
@@ -1026,9 +1027,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			if (isManagingImports) {
 				return;
 			}
-			
+
 			isManagingImports = true;
-			
+
 			accept(new PAMELAVisitor() {
 
 				@Override
@@ -1052,6 +1053,12 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				if (elementImportDeclaration.getReferencedObject() != null
 						&& elementImportDeclaration.getReferencedObject().equalsObject(object)) {
 					return elementImportDeclaration;
+				}
+				if (elementImportDeclaration.getReferencedObject() instanceof FlexoProject) {
+					if (((FlexoProject) elementImportDeclaration.getReferencedObject()).getDelegateResourceCenter() == object) {
+						// Special case for FlexoProject and delegate ResourceCenter
+						return elementImportDeclaration;
+					}
 				}
 				// For FMLCompilationUnit, look at URI
 				if (object instanceof FMLCompilationUnit && ((FMLCompilationUnit) object).getVirtualModel() != null
@@ -1141,16 +1148,22 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				rcDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				rcDeclaration.setResourceReference(new DataBinding<>('"' + rc.getDefaultBaseURI() + '"'));
 				rcDeclaration.setAbbrev(findUniqueRCAbbrev(rc));
-				getDeclaringCompilationUnit().addToElementImports(rcDeclaration);
+				addToElementImports(rcDeclaration);
 			}
 			return rcDeclaration;
 		}
 
+		private List<ResourceData> resourcesRequestedForImport = new ArrayList<>();
+
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData) {
 
-			System.out.println("ensureResourceImport with "+resourceData);
-			
+			if (resourcesRequestedForImport.contains(resourceData)) {
+				return null;
+			}
+
+			resourcesRequestedForImport.add(resourceData);
+
 			ElementImportDeclaration importDeclaration = retrieveImportDeclaration(resourceData);
 			if (getFMLModelFactory() == null) {
 				return importDeclaration;
@@ -1176,9 +1189,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				}
 				String abbrev = findUniqueAbbrev(resourceData);
 				importDeclaration.setAbbrev(abbrev);
-				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
-				// Thread.dumpStack();
+				addToElementImports(importDeclaration);
 			}
+
 			return importDeclaration;
 		}
 
@@ -1199,7 +1212,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 						.setObjectReference(new DataBinding<>("\"" + element.getUserIdentifier() + "-" + element.getFlexoID() + "\""));
 				String abbrev = findUniqueAbbrev(element);
 				elementDeclaration.setAbbrev(abbrev);
-				getDeclaringCompilationUnit().addToElementImports(elementDeclaration);
+				addToElementImports(elementDeclaration);
 
 				// System.out.println("resourceAbbrev: " + resourceAbbrev);
 				// System.out.println("resourceReference: " + elementDeclaration.getResourceReference());
@@ -1305,7 +1318,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			logger.warning("Unexpected BindingVariable " + variable + " of " + variable.getClass());
 			return null;
 		}
-		
+
 	}
 
 }
