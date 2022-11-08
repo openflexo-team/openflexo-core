@@ -361,6 +361,14 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public UseModelSlotDeclaration ensureUse(Class<? extends ModelSlot<?>> modelSlotClass);
 
 	/**
+	 * Ensure that supplied {@link FlexoResourceCenter} is refererenced in namespaces
+	 * 
+	 * @param rc
+	 * @return
+	 */
+	public NamespaceDeclaration ensureNamespaceDeclaration(FlexoResourceCenter<?> rc);
+
+	/**
 	 * Ensures that the supplied RC will be referenced in element import of this {@link FMLCompilationUnit}
 	 * 
 	 * @param rc
@@ -641,6 +649,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 					else {
 						logger.warning("Unexpected resourceRef: " + resourceRef + " for " + importDeclaration);
 						continue;
+					}
+					if (getServiceManager() == null || getServiceManager().getResourceManager() == null) {
+						logger.warning("Unexpected null ResourceManager");
+						return null;
 					}
 					FlexoResource resource = getServiceManager().getResourceManager().getResource(resourceURI);
 					// System.out.println("resource: " + resource + " loaded: " + resource.isLoaded());
@@ -1142,6 +1154,27 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		@Override
+		public NamespaceDeclaration ensureNamespaceDeclaration(FlexoResourceCenter<?> rc) {
+			NamespaceDeclaration nsDeclaration = retrieveNamespaceDeclaration(rc.getDefaultBaseURI());
+			if (nsDeclaration == null) {
+				nsDeclaration = getFMLModelFactory().newNamespaceDeclaration();
+				nsDeclaration.setValue(rc.getDefaultBaseURI());
+				nsDeclaration.setAbbrev(findUniqueRCAbbrev(rc));
+				addToNamespaces(nsDeclaration);
+			}
+			return nsDeclaration;
+		}
+
+		private NamespaceDeclaration retrieveNamespaceDeclaration(String value) {
+			for (NamespaceDeclaration namespaceDeclaration : getNamespaces()) {
+				if (value.equals(namespaceDeclaration.getValue())) {
+					return namespaceDeclaration;
+				}
+			}
+			return null;
+		}
+
+		@Override
 		public ElementImportDeclaration ensureResourceCenterImport(FlexoResourceCenter<?> rc) {
 			ElementImportDeclaration rcDeclaration = retrieveImportDeclaration(rc);
 			if (rcDeclaration == null) {
@@ -1173,15 +1206,15 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 			if (importDeclaration == null && resourceData.getResource() != null) {
 				FlexoResourceCenter<?> resourceCenter = resourceData.getResource().getResourceCenter();
-				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
 				String uri = resourceData.getResource().getURI();
 				importDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				// Don't force a deserializing now: set referenced object
 				importDeclaration.setReferencedObject(resourceData);
 				if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
+					NamespaceDeclaration rcNSDeclaration = ensureNamespaceDeclaration(resourceCenter);
 					String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
-					String rcAbbrev = ensureResourceCenterImport(resourceCenter).getAbbrev();
-					importDeclaration.setResourceReference(new DataBinding<>(rcAbbrev + "+\"" + remainingURI + "\"", importDeclaration));
+					importDeclaration.setResourceReference(
+							new DataBinding<>(rcNSDeclaration.getAbbrev() + "+\"" + remainingURI + "\"", importDeclaration));
 					// System.out.println("---" + rcAbbrev + "+\"" + remainingURI + "\"");
 				}
 				else {
