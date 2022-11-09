@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -242,6 +243,15 @@ public class XMLToFMLConverter {
 								e.printStackTrace();
 							}
 						}
+					}
+				}
+				if (object instanceof FlexoEnumValue) {
+					FlexoEnumValue enumValue = (FlexoEnumValue) object;
+					try {
+						enumValue.setName(JavaUtils.getConstantJavaName(enumValue.getName()));
+					} catch (InvalidNameException e) {
+						// Should not happen
+						e.printStackTrace();
 					}
 				}
 			}
