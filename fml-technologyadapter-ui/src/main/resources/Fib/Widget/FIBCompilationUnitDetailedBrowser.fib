@@ -326,6 +326,25 @@
 					name="remove_flexo_concept" />
 			</BrowserElement>
 			<BrowserElement id="80"
+				dataClassName="org.openflexo.foundation.fml.FlexoEnum"
+				icon="controller.iconForObject(flexoConcept)"
+				label="flexoConcept.name" editableLabel="flexoConcept.name"
+				isEditable="false" name="flexoConcept">
+				<Children data="flexoConcept.values" name="values" />
+				<BrowserAddAction id="81"
+					method="controller.createFlexoEnumValue(selected)"
+					name="add_flexo_enum_value" />
+				<BrowserRemoveAction id="82"
+					method="controller.deleteFlexoEnumValue(selected)"
+					name="remove_flexo_enum_value" />
+			</BrowserElement>
+			<BrowserElement id="83"
+				dataClassName="org.openflexo.foundation.fml.FlexoEnumValue"
+				icon="controller.iconForObject(flexoEnumValue)"
+				label="flexoEnumValue.name" editableLabel="flexoEnumValue.name"
+				isEditable="false" name="flexoEnumValue">
+			</BrowserElement>
+			<BrowserElement id="84"
 				dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 				icon="controller.iconForObject(flexoConcept)"
 				label="flexoConcept.name" editableLabel="flexoConcept.name"
@@ -338,10 +357,10 @@
 					name="behavioural" />
 				<Children data="flexoConcept.innerConceptsFacet"
 					name="innerConcepts" />
-				<BrowserAddAction id="82"
+				<BrowserAddAction id="85"
 					method="controller.createFlexoConcept(selected)"
 					name="add_flexo_concept" />
-				<BrowserRemoveAction id="83"
+				<BrowserRemoveAction id="86"
 					method="controller.deleteFlexoConcept(selected)"
 					name="remove_flexo_concept" />
 			</BrowserElement>
