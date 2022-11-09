@@ -596,6 +596,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 						logger.warning("Unexpected resourceRef: " + resourceRef + " for " + importDeclaration);
 						continue;
 					}
+					if (getServiceManager() == null || getServiceManager().getResourceManager() == null) {
+						logger.warning("Unexpected null ResourceManager");
+						return null;
+					}
 					FlexoResource resource = getServiceManager().getResourceManager().getResource(resourceURI);
 					if (resource instanceof CompilationUnitResource && resource.isLoaded()) {
 						FMLCompilationUnit importedCompilationUnit = ((CompilationUnitResource) resource).getCompilationUnit();
