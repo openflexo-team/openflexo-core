@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AEnumDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
@@ -97,7 +98,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 		// Some resources addressed in imports may be defined in a technology not load yet
 		// So it's time to activate all required technologies to get a chance to look up referenced objects in imports
 		activateRequiredTechnologies(info.getRequiredModelSlot());
-		
+
 		for (ElementImportDeclaration importDeclaration : compilationUnit.getElementImports()) {
 			try {
 				String importedResourceURI = importDeclaration.getResourceReference().getBindingValue(compilationUnit);
@@ -127,7 +128,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	 * Activate all required technologies, while exploring declared model slots
 	 */
 	protected void activateRequiredTechnologies(List<String> usedModelSlots) {
-		
+
 		logger.info("activateRequiredTechnologies() for " + this + " usedModelSlots: " + usedModelSlots);
 
 		TechnologyAdapterService taService = analyzer.getServiceManager().getTechnologyAdapterService();
@@ -151,8 +152,6 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 		}
 	}
 
-
-	
 	public VirtualModelInfo getVirtualModelInfo() {
 		return info;
 	}
@@ -187,6 +186,23 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void outAConceptDecl(AConceptDecl node) {
 		super.outAConceptDecl(node);
+		conceptsStack.pop();
+	}
+
+	@Override
+	public void inAEnumDecl(AEnumDecl node) {
+		super.inAEnumDecl(node);
+		String conceptName = node.getUidentifier().getText();
+		if (!conceptsStack.isEmpty()) {
+			conceptName = conceptsStack.peek() + "#" + conceptName;
+		}
+		conceptsStack.push(conceptName);
+		info.addToFlexoConcepts(conceptName);
+	}
+
+	@Override
+	public void outAEnumDecl(AEnumDecl node) {
+		super.outAEnumDecl(node);
 		conceptsStack.pop();
 	}
 

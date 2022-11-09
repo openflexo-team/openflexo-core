@@ -46,18 +46,19 @@ import org.openflexo.foundation.fml.rt.FlexoEnumInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.ModelFactory;
 
@@ -92,6 +93,9 @@ public interface FlexoEnum extends FlexoConcept {
 
 	@Remover(VALUES_KEY)
 	public void removeFromValues(FlexoEnumValue aValue);
+
+	@Reindexer(VALUES_KEY)
+	public void moveValueToIndex(FlexoEnumValue aValue, int index);
 
 	@Finder(collection = VALUES_KEY, attribute = FlexoEnumValue.NAME_KEY)
 	public FlexoEnumValue getValue(String name);

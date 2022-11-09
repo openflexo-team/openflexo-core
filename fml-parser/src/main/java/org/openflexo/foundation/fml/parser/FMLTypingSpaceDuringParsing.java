@@ -57,14 +57,18 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoEnum;
+import org.openflexo.foundation.fml.FlexoEnumType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AEnumDecl;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
@@ -89,10 +93,12 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	private final FMLCompilationUnitSemanticsAnalyzer analyzer;
 
 	private FlexoConceptInstanceTypeFactory FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY;
+	private FlexoConceptInstanceTypeFactory FLEXO_ENUM_TYPE_FACTORY;
 	private VirtualModelInstanceTypeFactory<VirtualModelInstanceType> VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY;
 
 	private Map<String, AModelDecl> foundVirtualModels;
 	private Map<String, AConceptDecl> foundConcepts;
+	private Map<String, AEnumDecl> foundEnums;
 	private List<CustomType> unresolvedTypes;
 
 	public FMLTypingSpaceDuringParsing(FMLCompilationUnitSemanticsAnalyzer analyzer) {
@@ -107,6 +113,22 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 				AConceptDecl node = foundConcepts.get(typeToResolve.getConceptURI());
 				if (node != null) {
 					FlexoConceptNode conceptNode = (FlexoConceptNode) analyzer.getFMLNode(node);
+					if (conceptNode != null) {
+						return conceptNode.getModelObject();
+					}
+				}
+				logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+				return null;
+			}
+		};
+		FLEXO_ENUM_TYPE_FACTORY = new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {
+			// TODO : handle concepts found in imported VirtualModel
+			@Override
+			public FlexoEnum resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
+				// System.out.println("Resolving FlexoConcept " + typeToResolve);
+				AEnumDecl node = foundEnums.get(typeToResolve.getConceptURI());
+				if (node != null) {
+					FlexoEnumNode conceptNode = (FlexoEnumNode) analyzer.getFMLNode(node);
 					if (conceptNode != null) {
 						return conceptNode.getModelObject();
 					}
@@ -133,6 +155,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 
 		foundVirtualModels = new HashMap<>();
 		foundConcepts = new HashMap<>();
+		foundEnums = new HashMap<>();
 		new ConceptTypesExplorer();
 	}
 
@@ -188,6 +211,12 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 			unresolvedTypes.add(fciType);
 			return fciType;
 		}
+		// Then look for a FlexoEnum in this ExecutionUnit
+		else if (foundEnums.get(typeAsString) != null) {
+			FlexoConceptInstanceType fciType = new FlexoEnumType(typeAsString, FLEXO_ENUM_TYPE_FACTORY);
+			unresolvedTypes.add(fciType);
+			return fciType;
+		}
 		// Not found
 		// Look in imported VirtualModels
 		if (analyzer.getCompilationUnit() != null) {
@@ -224,9 +253,9 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 								}
 
 								if (conceptLocalURI.equals(typeAsString) || conceptName.equals(typeAsString)) {
-									FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(
-											info.getURI() + "#" + conceptLocalURI, new FlexoConceptInImportedVirtualModelFactory(
-													getFMLTechnologyAdapter(), (CompilationUnitResource) resource));
+									FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(info.getURI() + "#" + conceptLocalURI,
+											new FlexoConceptInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
+													(CompilationUnitResource) resource));
 									unresolvedTypes.add(fciType);
 									return fciType;
 
@@ -306,6 +335,17 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		@Override
 		public void outAConceptDecl(AConceptDecl node) {
 			super.outAConceptDecl(node);
+		}
+
+		@Override
+		public void inAEnumDecl(AEnumDecl node) {
+			super.inAEnumDecl(node);
+			foundEnums.put(node.getUidentifier().getText(), node);
+		}
+
+		@Override
+		public void outAEnumDecl(AEnumDecl node) {
+			super.outAEnumDecl(node);
 		}
 
 	}
