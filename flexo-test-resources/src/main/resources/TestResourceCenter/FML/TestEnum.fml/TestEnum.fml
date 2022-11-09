@@ -1,0 +1,23 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestEnum.fml")
+public model TestEnum {
+
+	AnEnum myEnum1 with ConceptInstance(virtualModelInstance=this);
+	//AnOtherEnum myEnum2 with ConceptInstance(virtualModelInstance=this);
+	//AConcept$AnOtherEnum myEnum3 with ConceptInstance(virtualModelInstance=this);
+
+	enum AnEnum {
+		FIRST_VALUE,
+		SECOND_VALUE,
+		THIRD_VALUE
+	}
+
+	concept AConcept {
+		enum AnOtherEnum {
+			FIRST_VALUE,
+			SECOND_VALUE,
+			THIRD_VALUE
+		}
+	}
+}
