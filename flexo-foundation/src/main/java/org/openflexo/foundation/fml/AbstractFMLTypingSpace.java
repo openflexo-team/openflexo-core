@@ -94,6 +94,9 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
+		if (typeAsString == null) {
+			return null;
+		}
 		if (typeAsString.equals("ConceptInstance")) {
 			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}
