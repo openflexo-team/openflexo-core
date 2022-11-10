@@ -456,7 +456,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	/*@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
-
+	
 		if (object instanceof FMLCompilationUnit) {
 			return true;
 		}
@@ -472,9 +472,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (object instanceof FMLCompilationUnit) {
 			return ((FMLCompilationUnit) object).getVirtualModel().getName();
 		}
-		/*if (object instanceof FlexoConcept) {
+		if (object instanceof FlexoConcept) {
 			return ((FlexoConcept) object).getName();
-		}*/
+		}
 		if (object != null) {
 			return object.toString();
 		}
@@ -483,17 +483,17 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public boolean isRepresentableInModuleView(TechnologyObject<FMLTechnologyAdapter> object) {
-		return (object instanceof FMLObject && ((FMLObject)object).getDeclaringCompilationUnit() != null);
+		return (object instanceof FMLObject && ((FMLObject) object).getDeclaringCompilationUnit() != null);
 	}
-	
+
 	@Override
 	public FlexoObject getRepresentableMasterObject(TechnologyObject<FMLTechnologyAdapter> object) {
 		if (object instanceof FMLObject) {
-			return ((FMLObject)object).getDeclaringCompilationUnit();
+			return ((FMLObject) object).getDeclaringCompilationUnit();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
 	 * rendering
