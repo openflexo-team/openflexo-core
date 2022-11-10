@@ -132,12 +132,12 @@
 						showIcon="false" autoSelectFirstRow="true" name="dropdown"
 						list="parametersTable.selected.availableWidgetTypes" />
 					<Label id="32"
-						visible="(parametersTable.selected.widget == &quot;CUSTOM_WIDGET&quot;)"
+						visible="(parametersTable.selected.widget.name == &quot;CUSTOM_WIDGET&quot;)"
 						name="Label4" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="container" />
 					<Custom id="33"
-						visible="(parametersTable.selected.widget == &quot;CUSTOM_WIDGET&quot;)"
+						visible="(parametersTable.selected.widget.name == &quot;CUSTOM_WIDGET&quot;)"
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
 						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector" data="parametersTable.selected.container"
