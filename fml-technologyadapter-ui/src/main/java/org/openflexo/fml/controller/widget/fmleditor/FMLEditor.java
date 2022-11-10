@@ -378,6 +378,11 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 	 */
 	private void updateFMLAsText() {
 
+		if (!fmlResource.getCompilationUnit().isFMLPrettyPrintAvailable()) {
+			// In this case, we don't care
+			return;
+		}
+
 		String newFML = fmlResource.getCompilationUnit().getFMLPrettyPrint();
 
 		if (lastFML == null || !lastFML.equals(newFML)) {
@@ -474,6 +479,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 	public void highlightObject(FMLPrettyPrintable object) {
 		FMLObjectNode<?, ?, ?> node = (FMLObjectNode<?, ?, ?>) object.getPrettyPrintDelegate();
+		if (node.getRawSource() == null) {
+			// When no textual FML source, abort
+			return;
+		}
 		int beginIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getStartPosition());
 		int endIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getEndPosition());
 		// System.out.println("Fragment: "+node.getLastParsedFragment());
