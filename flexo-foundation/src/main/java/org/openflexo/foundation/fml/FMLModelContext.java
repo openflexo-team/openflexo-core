@@ -214,13 +214,16 @@ public class FMLModelContext {
 		}
 
 		public T get(I object) {
+			if (object instanceof WrappedFMLObject) {
+				object = (I) ((WrappedFMLObject) object).getObject();
+			}
 			try {
 				return (T) modelProperty.getGetterMethod().invoke(object, null);
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
+				logger.warning("IllegalArgumentException thrown while calling " + modelProperty.getGetterMethod() + " from " + object);
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				// TODO Auto-generated catch block
@@ -230,6 +233,9 @@ public class FMLModelContext {
 		}
 
 		public void set(T value, I object) {
+			if (object instanceof WrappedFMLObject) {
+				object = (I) ((WrappedFMLObject) object).getObject();
+			}
 			try {
 				modelProperty.getSetterMethod().invoke(object, value);
 			} catch (IllegalAccessException e) {
@@ -245,6 +251,9 @@ public class FMLModelContext {
 		}
 
 		public void addTo(T value, I object) {
+			if (object instanceof WrappedFMLObject) {
+				object = (I) ((WrappedFMLObject) object).getObject();
+			}
 			try {
 				modelProperty.getAdderMethod().invoke(object, value);
 			} catch (IllegalAccessException e) {
