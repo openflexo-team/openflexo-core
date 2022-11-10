@@ -158,7 +158,7 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 		}
 		return super.isRepresentableInModuleView(object);
 	}
-	
+
 	@Override
 	public FlexoObject getRepresentableMasterObject(FlexoObject object) {
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
@@ -189,7 +189,9 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
-			return plugin.createModuleViewForMasterObject(object, getController(), this);
+			if (plugin.handleObject(object)) {
+				return plugin.createModuleViewForMasterObject(object, getController(), this);
+			}
 		}
 
 		if (object instanceof FMLCompilationUnit) {
