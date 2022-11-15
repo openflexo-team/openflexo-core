@@ -1206,7 +1206,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData) {
 
 			if (resourcesRequestedForImport.contains(resourceData)) {
-				return null;
+				return retrieveImportDeclaration(resourceData);
 			}
 
 			resourcesRequestedForImport.add(resourceData);
