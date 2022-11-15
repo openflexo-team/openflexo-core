@@ -64,7 +64,8 @@ import org.openflexo.pamela.validation.ValidationRule;
  *
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FMLSimplePropertyValue.class), @Import(FMLInstancePropertyValue.class), @Import(FMLInstancesListPropertyValue.class) })
+@Imports({ @Import(FMLSimplePropertyValue.class), @Import(FMLTypePropertyValue.class), @Import(FMLInstancePropertyValue.class),
+		@Import(FMLInstancesListPropertyValue.class) })
 public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FMLProperty.class)

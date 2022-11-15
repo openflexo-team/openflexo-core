@@ -137,7 +137,7 @@ public class FMLModelContext {
 				Object value = fmlProperty.get(object);
 				FMLPropertyValue<? super I, ?> propertyValue = null;
 				switch (fmlProperty.getKind()) {
-					case PropertyValue:
+					case Value:
 						propertyValue = object.getFMLModelFactory().newSimplePropertyValue((FMLProperty) fmlProperty, value);
 						returned.add(propertyValue);
 					default:
@@ -281,8 +281,15 @@ public class FMLModelContext {
 			}
 			FMLPropertyValue<? super I, ?> propertyValue = null;
 			switch (getKind()) {
-				case PropertyValue:
+				case Value:
 					return object.getFMLModelFactory().newSimplePropertyValue(this, object, value);
+				case Type:
+					FMLTypePropertyValue returned = object.getFMLModelFactory().newTypePropertyValue();
+					returned.setProperty(this);
+					returned.setObject(object);
+					returned.setType((Type) value);
+					return returned;
+				// return object.getFMLModelFactory().newTypePropertyValue(this, object, value);
 				case Instance:
 					if (value instanceof FMLObject) {
 						FMLInstancePropertyValue returnedInstance = object.getFMLModelFactory().newInstancePropertyValue((FMLProperty) this,

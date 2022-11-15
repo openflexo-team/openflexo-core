@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -810,6 +811,20 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		returned.setProperty(property);
 		returned.setObject(object);
 		returned.setValue(value);
+		return returned;
+	}
+
+	public <M extends FMLObject, T extends Type> FMLTypePropertyValue<M, T> newTypePropertyValue() {
+		FMLTypePropertyValue<M, T> returned = newInstance(FMLTypePropertyValue.class);
+		return returned;
+	}
+
+	public <M extends FMLObject, T extends Type> FMLTypePropertyValue<M, T> newTypePropertyValue(FMLProperty<M, T> property, M object,
+			T value) {
+		FMLTypePropertyValue<M, T> returned = newInstance(FMLTypePropertyValue.class);
+		returned.setProperty(property);
+		returned.setObject(object);
+		returned.setType(value);
 		return returned;
 	}
 

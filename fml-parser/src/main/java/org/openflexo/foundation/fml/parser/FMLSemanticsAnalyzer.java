@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLTypePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.ACompositeCident;
 import org.openflexo.foundation.fml.parser.node.ACompositeCidentAnnotationTag;
@@ -70,6 +71,7 @@ import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
+import org.openflexo.foundation.fml.parser.node.ATypeQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.PCompositeCident;
@@ -436,6 +438,24 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public final void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
 		super.outASimpleQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			pop();
+			// System.out.println("EXIT from " + peek() + " with " + node);
+		}
+	}
+
+	@Override
+	public void inATypeQualifiedArgument(ATypeQualifiedArgument node) {
+		super.inATypeQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			// System.out.println("ENTER in " + peek() + " with " + node);
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLTypePropertyValueNode(n, getCompilationUnitAnalyzer())));
+		}
+	}
+
+	@Override
+	public void outATypeQualifiedArgument(ATypeQualifiedArgument node) {
+		super.outATypeQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			pop();
 			// System.out.println("EXIT from " + peek() + " with " + node);

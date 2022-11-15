@@ -67,21 +67,26 @@ public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FML
 
 	@Override
 	public AbstractFMLPropertyValueNode<N, P, M, T> deserialize() {
-		//System.out.println("J'arrive la avec " + getASTNode());
-		//System.out.println("getParent().getModelObject()=" + getParent().getModelObject());
-		//System.out.println("property:" + getModelObject().getProperty());
-		//System.out.println("class: " + getModelObject().getImplementedInterface());
+		// System.out.println("J'arrive la avec " + getASTNode());
+		// System.out.println("getParent().getModelObject()=" + getParent().getModelObject());
+		// System.out.println("property:" + getModelObject().getProperty());
+		// System.out.println("class: " + getModelObject().getImplementedInterface());
 
-		if (getParent().getModelObject() instanceof WrappedFMLObject) {
-			WrappedFMLObject<M> wrappedObject = (WrappedFMLObject<M>) getParent().getModelObject();
-			wrappedObject.getObject().addToFMLPropertyValues(getModelObject());
-			getModelObject().setObject(wrappedObject.getObject());
-			getModelObject().applyPropertyValueToModelObject();
+		if (getModelObject().getProperty() != null) {
+			if (getParent().getModelObject() instanceof WrappedFMLObject) {
+				WrappedFMLObject<M> wrappedObject = (WrappedFMLObject<M>) getParent().getModelObject();
+				wrappedObject.getObject().addToFMLPropertyValues(getModelObject());
+				getModelObject().setObject(wrappedObject.getObject());
+				getModelObject().applyPropertyValueToModelObject();
+			}
+			else {
+				((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
+				getModelObject().setObject((M) getParent().getModelObject());
+				getModelObject().applyPropertyValueToModelObject();
+			}
 		}
 		else {
-			((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
-			getModelObject().setObject((M) getParent().getModelObject());
-			getModelObject().applyPropertyValueToModelObject();
+			logger.warning("Ignore property " + getASTNode() + " since it cannot be mapped to any FMLProperty");
 		}
 		// System.out.println("Tiens faudrait appliquer la propriete " + getModelObject() + " a " + getParent().getModelObject());
 		return this;
