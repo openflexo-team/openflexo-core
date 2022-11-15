@@ -50,6 +50,7 @@ import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 
@@ -78,8 +79,11 @@ public interface FMLInstancesListPropertyValue<M extends FMLObject, T extends FM
 	@Remover(INSTANCES_KEY)
 	public void removeFromInstances(WrappedFMLObject<T> aValue);
 
+	@Reindexer(INSTANCES_KEY)
+	public void moveInstanceToIndex(WrappedFMLObject<T> aValue, int index);
+
 	public static abstract class FMLInstancesListPropertyValueImpl<M extends FMLObject, T extends FMLObject>
-	extends FMLPropertyValueImpl<M, List<T>> implements FMLInstancesListPropertyValue<M, T> {
+			extends FMLPropertyValueImpl<M, List<T>> implements FMLInstancesListPropertyValue<M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FMLInstancesListPropertyValue.class.getPackage().getName());
 
