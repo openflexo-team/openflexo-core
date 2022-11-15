@@ -184,6 +184,12 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 		assertEquals(null, modelSlotP2Node.getPrelude());
 		assertEquals(null, modelSlotP2Node.getPostlude());
 
+		System.out.println("------root node");
+		System.out.println(rootNode.debug());
+
+		System.out.println("------vm node");
+		System.out.println(vmNode.debug());
+
 	}
 
 	@Test
@@ -206,11 +212,10 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 
 		compilationUnit.manageImports();
 
-		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-
 		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
-
 		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint4/Step2Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
 		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint4/Step2PrettyPrint.fml");
 
 	}
