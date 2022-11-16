@@ -92,6 +92,7 @@ import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
+import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
@@ -136,6 +137,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BeginMatchActio
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourCallArgumentNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeleteActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
@@ -504,6 +506,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			}*/
 			if (object instanceof LogAction) {
 				return (P2PPNode<?, C>) new LogActionNode((LogAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof DeleteAction) {
+				return (P2PPNode<?, C>) new DeleteActionNode((DeleteAction) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof AbstractFetchRequest) {
 				return new FetchRequestNode((AbstractFetchRequest) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
