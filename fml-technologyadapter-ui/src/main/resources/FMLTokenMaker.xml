@@ -6,7 +6,7 @@
     <extendedClass>AbstractJFlexCTokenMaker</extendedClass>
     <classComment/>
     <ignoreCase>false</ignoreCase>
-    <booleanLiterals>false</booleanLiterals>
+    <booleanLiterals>true</booleanLiterals>
   </general>
   <comments>
     <lineComments enabled="true" start="//"/>
@@ -22,7 +22,7 @@
     <keyword>do</keyword>
     <keyword>else</keyword>
     <keyword>end</keyword>
-    <keyword>extends</keyword>
+    <keyword>enum</keyword>
     <keyword>extends</keyword>
     <keyword>for</keyword>
     <keyword>from</keyword>
