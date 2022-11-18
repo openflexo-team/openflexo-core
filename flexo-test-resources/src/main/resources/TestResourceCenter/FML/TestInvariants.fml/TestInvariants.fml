@@ -23,7 +23,7 @@ model TestInvariants {
 			assert c.aBoolean onfailure: c.aBoolean = true;
 			assert c.anOtherBoolean onfailure: {
 				log "This is a failure case";
-				this.recoverFromFailure();
+				c.recoverFromFailure();
 			}
 		}
 		
