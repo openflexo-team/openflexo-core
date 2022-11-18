@@ -114,6 +114,14 @@ public interface SimpleInvariant extends AbstractInvariant, FMLControlGraphOwner
 		}
 
 		@Override
+		public FlexoConcept getFlexoConcept() {
+			if (getParentIterationInvariant() != null) {
+				return getParentIterationInvariant().getFlexoConcept();
+			}
+			return super.getFlexoConcept();
+		}
+
+		@Override
 		public BindingModel getBindingModel() {
 			if (getParentIterationInvariant() != null) {
 				return getParentIterationInvariant().getIterationInvariantBindingModel();
