@@ -1,0 +1,44 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestInvariants.fml")
+model TestInvariants {
+	
+	concept AConcept {
+		
+		int a;
+		boolean h;
+		float i;
+		ASubConcept[0,*] subConcepts with ConceptInstance(container=this);
+		
+		assert (i != -1);
+		assert h onfailure: { 
+			h = true; 
+		}
+		assert (a > 1) onfailure: {
+			while (a <= 1) {
+				this.incrementA();
+			}
+		}
+		assert (ASubConcept c : subConcepts) {
+			assert c.aBoolean onfailure: c.aBoolean = true;
+			assert c.anOtherBoolean onfailure: {
+				log "This is a failure case";
+				this.recoverFromFailure();
+			}
+		}
+		
+		void incrementA() {
+			a=a+1;
+		}
+		
+		concept ASubConcept {
+			boolean aBoolean;
+			boolean anOtherBoolean;
+			
+			void recoverFromFailure() {
+				log "recoverFromFailure()";
+			}
+		}
+	}
+
+}

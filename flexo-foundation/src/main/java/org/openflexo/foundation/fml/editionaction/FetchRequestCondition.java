@@ -64,7 +64,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * An FlexoConceptConstraint represents a structural constraint attached to an FlexoConcept
+ * An AbstractInvariant represents a structural constraint attached to an FlexoConcept
  * 
  * @author sylvain
  * 

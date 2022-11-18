@@ -41,27 +41,28 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.fml.FlexoConceptConstraint;
+import org.openflexo.foundation.fml.AbstractInvariant;
+import org.openflexo.foundation.fml.IterationInvariant;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link matchCondition}<br>
+ * This is the {@link BindingModel} exposed by a {@link IterationInvariant}<br>
  * 
  * @author sylvain
  * 
  */
-public class ConstraintBindingModel extends BindingModel {
+public class IterationInvariantBindingModel extends BindingModel {
 
-	private ConstraintIteratorBindingVariable iteratorBindingVariable;
+	private IterationInvariantBindingVariable iteratorBindingVariable;
 
-	private final FlexoConceptConstraint constraint;
+	private final IterationInvariant iterationInvariant;
 
-	public ConstraintBindingModel(FlexoConceptConstraint constraint) {
-		super(constraint.getFlexoConcept() != null ? constraint.getFlexoConcept().getBindingModel() : null);
+	public IterationInvariantBindingModel(IterationInvariant invariant) {
+		super(invariant.getFlexoConcept() != null ? invariant.getFlexoConcept().getBindingModel() : null);
 
-		this.constraint = constraint;
+		this.iterationInvariant = invariant;
 
-		if (constraint.getPropertyChangeSupport() != null) {
-			constraint.getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (invariant.getPropertyChangeSupport() != null) {
+			invariant.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
 		updateIterator();
@@ -72,8 +73,8 @@ public class ConstraintBindingModel extends BindingModel {
 	 */
 	@Override
 	public void delete() {
-		if (constraint != null && constraint.getPropertyChangeSupport() != null) {
-			constraint.getPropertyChangeSupport().removePropertyChangeListener(this);
+		if (iterationInvariant != null && iterationInvariant.getPropertyChangeSupport() != null) {
+			iterationInvariant.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.delete();
 	}
@@ -81,43 +82,35 @@ public class ConstraintBindingModel extends BindingModel {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		if (evt.getSource() == constraint) {
-			if (evt.getPropertyName().equals(FlexoConceptConstraint.FLEXO_CONCEPT_KEY)) {
-				setBaseBindingModel(constraint.getFlexoConcept() != null ? constraint.getFlexoConcept().getBindingModel() : null);
+		if (evt.getSource() == iterationInvariant) {
+			if (evt.getPropertyName().equals(AbstractInvariant.FLEXO_CONCEPT_KEY)) {
+				setBaseBindingModel(
+						iterationInvariant.getFlexoConcept() != null ? iterationInvariant.getFlexoConcept().getBindingModel() : null);
 			}
-			else if (evt.getPropertyName().equals(FlexoConceptConstraint.HAS_ITERATION_KEY)
-					|| evt.getPropertyName().equals(FlexoConceptConstraint.ITERATOR_NAME_KEY)
-					|| evt.getPropertyName().equals(FlexoConceptConstraint.ITERATION_KEY)) {
+			else if (evt.getPropertyName().equals(IterationInvariant.ITERATOR_NAME_KEY)
+					|| evt.getPropertyName().equals(IterationInvariant.ITERATION_KEY)) {
 				updateIterator();
 			}
 		}
 	}
 
-	public FlexoConceptConstraint getConstraint() {
-		return constraint;
+	public AbstractInvariant getConstraint() {
+		return iterationInvariant;
 	}
 
-	public ConstraintIteratorBindingVariable getIteratorBindingVariable() {
+	public IterationInvariantBindingVariable getIteratorBindingVariable() {
 		return iteratorBindingVariable;
 	}
 
 	private void updateIterator() {
-		if (constraint.getHasIteration()) {
-			if (iteratorBindingVariable == null) {
-				iteratorBindingVariable = new ConstraintIteratorBindingVariable(constraint);
-				iteratorBindingVariable.setCacheable(false);
-				addToBindingVariables(iteratorBindingVariable);
-			}
-			else {
-				iteratorBindingVariable.setVariableName(constraint.getIteratorName());
-				iteratorBindingVariable.setType(constraint.getIteratorType());
-			}
+		if (iteratorBindingVariable == null) {
+			iteratorBindingVariable = new IterationInvariantBindingVariable(iterationInvariant);
+			iteratorBindingVariable.setCacheable(false);
+			addToBindingVariables(iteratorBindingVariable);
 		}
 		else {
-			if (iteratorBindingVariable != null) {
-				removeFromBindingVariables(iteratorBindingVariable);
-				iteratorBindingVariable = null;
-			}
+			iteratorBindingVariable.setVariableName(iterationInvariant.getIteratorName());
+			iteratorBindingVariable.setType(iterationInvariant.getIteratorType());
 		}
 	}
 }

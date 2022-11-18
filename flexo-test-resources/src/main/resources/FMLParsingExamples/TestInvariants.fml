@@ -1,0 +1,47 @@
+/**
+ * Testing types
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+import java.util.Date;
+
+model TestInvariants {
+	
+	concept AConcept {
+		
+		int a;
+		boolean h;
+		float i;
+		ASubConcept[0,*] subConcepts with ConceptInstance(container=this);
+		
+		assert (i != -1);
+		assert h onfailure: { 
+			h = true; 
+		}
+		assert (a > 1) onfailure: {
+			while (a <= 1) {
+				this.incrementA();
+			}
+		}
+		assert (ASubConcept c : subConcepts) {
+			assert c.aBoolean onfailure: c.aBoolean = true;
+			assert c.anOtherBoolean onfailure: {
+				log "This is a failure case";
+			}
+		}
+		
+		void incrementA() {
+			a=a+1;
+		}
+		
+		concept ASubConcept {
+			boolean aBoolean;
+			boolean anOtherBoolean;
+		}
+	}
+
+}

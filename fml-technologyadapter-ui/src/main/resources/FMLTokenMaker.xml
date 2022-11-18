@@ -16,6 +16,7 @@
   <keywords>
     <keyword>abstract</keyword>
     <keyword>as</keyword>
+    <keyword>assert</keyword>
     <keyword>begin</keyword>
     <keyword>concept</keyword>
     <keyword>define</keyword>
@@ -36,6 +37,7 @@
     <keyword>match</keyword>
     <keyword>model</keyword>
     <keyword>namespace</keyword>
+    <keyword>onfailure</keyword>
     <keyword>receive</keyword>
     <keyword>required</keyword>
     <keyword>return</keyword>

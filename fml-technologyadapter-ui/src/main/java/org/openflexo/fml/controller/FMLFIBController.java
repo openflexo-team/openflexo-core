@@ -51,6 +51,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
+import org.openflexo.foundation.fml.AbstractInvariant;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -63,7 +64,6 @@ import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoEnum;
@@ -215,16 +215,16 @@ public class FMLFIBController extends FlexoFIBController {
 		return aProperty;
 	}
 
-	public void createConstraint(FlexoConcept flexoConcept) throws InvalidNameException {
-		FlexoConceptConstraint constraint = flexoConcept.getFMLModelFactory().newFlexoConceptConstraint();
-		constraint.setName("New constraint");
-		flexoConcept.addToFlexoConceptConstraints(constraint);
+	public void createSimpleInvariant(FlexoConcept flexoConcept) throws InvalidNameException {
+		AbstractInvariant invariant = flexoConcept.getFMLModelFactory().newSimpleInvariant();
+		invariant.setName("New invariant");
+		flexoConcept.addToInvariants(invariant);
 	}
 
-	public FlexoConceptConstraint deleteConstraint(FlexoConcept flexoConcept, FlexoConceptConstraint constraint) {
-		flexoConcept.removeFromFlexoConceptConstraints(constraint);
-		constraint.delete();
-		return constraint;
+	public AbstractInvariant deleteInvariant(FlexoConcept flexoConcept, AbstractInvariant invariant) {
+		flexoConcept.removeFromInvariants(invariant);
+		invariant.delete();
+		return invariant;
 	}
 
 	public FlexoEnumValue createFlexoEnumValue(FlexoEnum flexoEnum) {
@@ -746,7 +746,7 @@ public class FMLFIBController extends FlexoFIBController {
 		if (issue != null) {
 			Validable objectToSelect = issue.getValidable();
 			if (getFlexoController() != null) {
-				System.out.println("Select and focus object "+objectToSelect);
+				System.out.println("Select and focus object " + objectToSelect);
 				getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
 			}
 		}

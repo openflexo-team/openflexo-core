@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.IterationAssertNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ListMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataKeyValueNode;
@@ -70,12 +71,14 @@ import org.openflexo.foundation.fml.parser.fmlnodes.ModelSlotPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MultiValuedMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.SimpleAssertNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AAnnotationKeyValuePair;
 import org.openflexo.foundation.fml.parser.node.ABasicAnnotationAnnotation;
+import org.openflexo.foundation.fml.parser.node.ABasicSimpleAssertDeclaration;
 import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AComplexAnnotationAnnotation;
@@ -87,8 +90,9 @@ import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptD
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
-import org.openflexo.foundation.fml.parser.node.AGetDecl;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AIterationAssertDecl;
+import org.openflexo.foundation.fml.parser.node.AIterationAssertDeclaration;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AListAnnotationAnnotation;
@@ -97,6 +101,7 @@ import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
+import org.openflexo.foundation.fml.parser.node.AProtectedSimpleAssertDeclaration;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
@@ -557,10 +562,54 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		pop();
 	}
 
+	/*@Override
+	public void inASimpleAssertDecl(ASimpleAssertDecl node) {
+		super.inASimpleAssertDecl(node);
+		push(retrieveFMLNode(node, n -> new SimpleAssertNode(n.getSimpleAssertDeclaration(), getCompilationUnitAnalyzer())));
+	}
+	
 	@Override
-	public void inAGetDecl(AGetDecl node) {
+	public void outASimpleAssertDecl(ASimpleAssertDecl node) {
+		super.outASimpleAssertDecl(node);
+		pop();
+	}*/
+
+	@Override
+	public void inAIterationAssertDecl(AIterationAssertDecl node) {
+		super.inAIterationAssertDecl(node);
+		push(retrieveFMLNode(node, n -> new IterationAssertNode((AIterationAssertDeclaration) n.getIterationAssertDeclaration(),
+				getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void inABasicSimpleAssertDeclaration(ABasicSimpleAssertDeclaration node) {
+		super.inABasicSimpleAssertDeclaration(node);
+		push(retrieveFMLNode(node, n -> new SimpleAssertNode(node, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outABasicSimpleAssertDeclaration(ABasicSimpleAssertDeclaration node) {
+		super.outABasicSimpleAssertDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void inAProtectedSimpleAssertDeclaration(AProtectedSimpleAssertDeclaration node) {
+		super.inAProtectedSimpleAssertDeclaration(node);
+		push(retrieveFMLNode(node, n -> new SimpleAssertNode(node, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAProtectedSimpleAssertDeclaration(AProtectedSimpleAssertDeclaration node) {
+		super.outAProtectedSimpleAssertDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void outAIterationAssertDecl(AIterationAssertDecl node) {
 		// TODO Auto-generated method stub
-		super.inAGetDecl(node);
+		super.outAIterationAssertDecl(node);
+		pop();
 	}
 
 	@Override

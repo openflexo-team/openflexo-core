@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.InvalidNameException;
+import org.openflexo.foundation.fml.AbstractInvariant;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -110,6 +111,8 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 				FlexoBehaviour.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class));
+		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getInvariants(), LINE_SEPARATOR, Indentation.Indent,
+				AbstractInvariant.class));
 		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
 
 		// @formatter:on

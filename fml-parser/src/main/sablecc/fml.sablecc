@@ -232,7 +232,6 @@ Tokens
    {command,script} exit = 'exit';
    {command,script} quit = 'quit';
    {command,script} context = 'context';
-   {command,script} assert = 'assert';
  
    // options
    {command,script} minus_rc = '-rc';
@@ -248,6 +247,7 @@ Tokens
    {normal} kw_abstract = 'abstract';
    {normal} kw_action = 'action';
    {normal} kw_as = 'as';
+   {command,script,normal} kw_assert = 'assert';
    {normal,binding} kw_begin = 'begin';
    {normal} kw_concept = 'concept';
    {normal} kw_create = 'create';
@@ -271,6 +271,7 @@ Tokens
    {normal} kw_model = 'model';
    {normal} kw_namespace = 'namespace';
    {normal,binding,command,script} kw_new = 'new';
+   {normal} kw_onfailure = 'onfailure';
    {normal} kw_private = 'private';
    {normal} kw_protected = 'protected';
    {normal} kw_public = 'public';
@@ -453,7 +454,7 @@ Productions
 
    fml_command =
      {context}    context |
-     {assert}     assert expression |
+     {assert}     kw_assert expression |
     // {validate} validate expression |
     // {log}      kw_log expression |
      {fml_action} command_assign? fml_action_exp |
@@ -602,6 +603,7 @@ Productions
      | {behaviour_declaration} behaviour_decl
      | {concept_declaration} concept_decl
      | {enum_declaration} enum_decl
+     | {assert_declaration} assert_decl
      ;
 
    get_decl = type kw_get l_par r_par flexo_behaviour_body;
@@ -613,6 +615,19 @@ Productions
      | {initializer_expression} lidentifier assign expression
      | {initializer_fml_action} lidentifier assign fml_action_exp
      ;
+
+   assert_decl = 
+       {simple}    simple_assert_declaration
+     | {iteration} iteration_assert_declaration
+     ;
+
+   simple_assert_declaration = 
+       {basic}     kw_assert expression semi
+     | {protected} kw_assert expression failure_clause;
+
+   iteration_assert_declaration = kw_assert l_par type lidentifier colon expression r_par l_brc [inner_assert_declarations]:simple_assert_declaration* r_brc;
+
+   failure_clause = kw_onfailure colon statement;
 
    // --------------------------------------------------------------------------------------
    // Behaviours

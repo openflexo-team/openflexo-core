@@ -63,6 +63,12 @@ public enum FMLKeywords {
 			return "as";
 		}
 	},
+	Assert {
+		@Override
+		public String getKeyword() {
+			return "assert";
+		}
+	},
 	Begin {
 		@Override
 		public String getKeyword() {
@@ -199,6 +205,12 @@ public enum FMLKeywords {
 		@Override
 		public String getKeyword() {
 			return "new";
+		}
+	},
+	OnFailure {
+		@Override
+		public String getKeyword() {
+			return "onfailure";
 		}
 	},
 	Private {

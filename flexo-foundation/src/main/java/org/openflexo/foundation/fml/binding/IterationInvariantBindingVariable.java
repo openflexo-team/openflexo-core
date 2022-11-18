@@ -44,35 +44,36 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.fml.FlexoConceptConstraint;
+import org.openflexo.foundation.fml.AbstractInvariant;
+import org.openflexo.foundation.fml.IterationInvariant;
 
 /**
- * BindingVariable associated to an {@link FlexoConceptConstraint} iterator
+ * {@link BindingVariable} associated to the iterator variable of a {@link IterationInvariant}
  * 
  * @author sylvain
  * 
  */
-public class ConstraintIteratorBindingVariable extends BindingVariable implements PropertyChangeListener {
-	static final Logger logger = Logger.getLogger(ConstraintIteratorBindingVariable.class.getPackage().getName());
+public class IterationInvariantBindingVariable extends BindingVariable implements PropertyChangeListener {
+	static final Logger logger = Logger.getLogger(IterationInvariantBindingVariable.class.getPackage().getName());
 
-	private final FlexoConceptConstraint constraint;
+	private final IterationInvariant invariant;
 	private Type lastKnownType = null;
 
-	public ConstraintIteratorBindingVariable(FlexoConceptConstraint constraint) {
-		super(constraint.getIteratorName(), constraint.getIteratorType() != null ? constraint.getIteratorType() : Object.class, false);
-		this.constraint = constraint;
-		if (constraint.getPropertyChangeSupport() != null) {
-			constraint.getPropertyChangeSupport().addPropertyChangeListener(this);
+	public IterationInvariantBindingVariable(IterationInvariant invariant) {
+		super(invariant.getIteratorName(), invariant.getIteratorType() != null ? invariant.getIteratorType() : Object.class, false);
+		this.invariant = invariant;
+		if (invariant.getPropertyChangeSupport() != null) {
+			invariant.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
-		lastKnownType = ((constraint != null && constraint.getIteratorType() != null) ? constraint.getIteratorType() : Object.class);
+		lastKnownType = ((invariant != null && invariant.getIteratorType() != null) ? invariant.getIteratorType() : Object.class);
 		setCacheable(false);
 	}
 
 	@Override
 	public void delete() {
-		if (constraint != null) {
-			if (constraint.getPropertyChangeSupport() != null) {
-				constraint.getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (invariant != null) {
+			if (invariant.getPropertyChangeSupport() != null) {
+				invariant.getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
 		}
 		super.delete();
@@ -80,19 +81,19 @@ public class ConstraintIteratorBindingVariable extends BindingVariable implement
 
 	@Override
 	public Type getType() {
-		if (constraint != null) {
-			return constraint.getIteratorType();
+		if (invariant != null) {
+			return invariant.getIteratorType();
 		}
 		return null;
 	}
 
-	public FlexoConceptConstraint getConstraint() {
-		return constraint;
+	public AbstractInvariant getConstraint() {
+		return invariant;
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == constraint) {
+		if (evt.getSource() == invariant) {
 			if (lastKnownType != getType()) {
 				// System.out.println("Notify type changing");
 				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());

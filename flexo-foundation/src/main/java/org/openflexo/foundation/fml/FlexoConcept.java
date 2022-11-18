@@ -148,8 +148,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String PARENT_FLEXO_CONCEPTS_KEY = "parentFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
 	public static final String CHILD_FLEXO_CONCEPTS_KEY = "childFlexoConcepts";
-	@PropertyIdentifier(type = List.class)
-	public static final String FLEXO_CONCEPT_CONSTRAINTS_KEY = "flexoConceptConstraints";
+	@PropertyIdentifier(type = AbstractInvariant.class, cardinality = Cardinality.LIST)
+	public static final String INVARIANTS_KEY = "invariants";
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
@@ -592,24 +592,28 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(CHILD_FLEXO_CONCEPTS_KEY)
 	public void removeFromChildFlexoConcepts(FlexoConcept childFlexoConcept);
 
-	@Getter(value = FLEXO_CONCEPT_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConceptConstraint.FLEXO_CONCEPT_KEY)
+	@Getter(value = INVARIANTS_KEY, cardinality = Cardinality.LIST, inverse = AbstractInvariant.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
-	public List<FlexoConceptConstraint> getFlexoConceptConstraints();
+	public List<AbstractInvariant> getInvariants();
 
-	@Setter(FLEXO_CONCEPT_CONSTRAINTS_KEY)
-	public void setFlexoConceptConstraints(List<FlexoConceptConstraint> flexoConceptConstraints);
+	@Setter(INVARIANTS_KEY)
+	public void setInvariants(List<AbstractInvariant> invariants);
 
-	@Adder(FLEXO_CONCEPT_CONSTRAINTS_KEY)
+	@Adder(INVARIANTS_KEY)
 	@PastingPoint
-	public void addToFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
+	public void addToInvariants(AbstractInvariant anInvariant);
 
-	@Remover(FLEXO_CONCEPT_CONSTRAINTS_KEY)
-	public void removeFromFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
+	@Remover(INVARIANTS_KEY)
+	public void removeFromInvariants(AbstractInvariant anInvariant);
 
-	@Reindexer(FLEXO_CONCEPT_CONSTRAINTS_KEY)
-	public void moveFlexoConstraintToIndex(FlexoConceptConstraint constraint, int index);
+	@Reindexer(INVARIANTS_KEY)
+	public void moveInvariantToIndex(AbstractInvariant constraint, int index);
+
+	public List<SimpleInvariant> getSimpleInvariants();
+
+	public List<IterationInvariant> getIterationInvariants();
 
 	/**
 	 * Return boolean indicating whether this concept has a FlexoConcept for container (containment semantics)<br>
@@ -1495,6 +1499,28 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
+		public List<SimpleInvariant> getSimpleInvariants() {
+			List<SimpleInvariant> returned = new ArrayList<>();
+			for (AbstractInvariant invariant : getInvariants()) {
+				if (invariant instanceof SimpleInvariant) {
+					returned.add((SimpleInvariant) invariant);
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public List<IterationInvariant> getIterationInvariants() {
+			List<IterationInvariant> returned = new ArrayList<>();
+			for (AbstractInvariant invariant : getInvariants()) {
+				if (invariant instanceof IterationInvariant) {
+					returned.add((IterationInvariant) invariant);
+				}
+			}
+			return returned;
+		}
+
+		@Override
 		public List<FlexoBehaviour> getDeclaredFlexoBehaviours() {
 			return getFlexoBehaviours();
 		}
@@ -1888,13 +1914,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public String _getParentFlexoConceptsList() {
 			if (parentFlexoConceptList == null && getParentFlexoConcepts().size() > 0) {
 				parentFlexoConceptList = computeParentFlexoConceptList();
-		}
+			}
 			return parentFlexoConceptList;
 		}
 
 		@FMLMigration
 		private boolean parentFlexoConceptListWasExplicitelySet = false;
-		
+
 		// Used for serialization, do not use as API
 		@Override
 		@FMLMigration
@@ -2033,12 +2059,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
 						owningVirtualModel.getAllSuperFlexoConcepts());
 			}
-			getPropertyChangeSupport().firePropertyChange(ACCESSIBLE_PROPERTIES_KEY, false,true);
-			getPropertyChangeSupport().firePropertyChange(ACCESSIBLE_BEHAVIOURS_KEY, false,true);
+			getPropertyChangeSupport().firePropertyChange(ACCESSIBLE_PROPERTIES_KEY, false, true);
+			getPropertyChangeSupport().firePropertyChange(ACCESSIBLE_BEHAVIOURS_KEY, false, true);
 			setIsModified();
-			
+
 		}
-		
+
 		/**
 		 * Return declared parent FlexoConcept for this {@link FlexoConcept}<br>
 		 * Declared parent FlexoConcept are those returned by getParentFlexoConcepts() method
@@ -2414,7 +2440,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				setSingleMetaData("Author", author, String.class);
 			}
 		}
-		
+
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)

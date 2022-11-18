@@ -376,8 +376,12 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(SynchronizationScheme.class);
 	}
 
-	public FlexoConceptConstraint newFlexoConceptConstraint() {
-		return newInstance(FlexoConceptConstraint.class);
+	public SimpleInvariant newSimpleInvariant() {
+		return newInstance(SimpleInvariant.class);
+	}
+
+	public IterationInvariant newIterationInvariant() {
+		return newInstance(IterationInvariant.class);
 	}
 
 	public CreationScheme newCreationScheme() {

@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.connie.java.util.JavaBindingEvaluator;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance.ConstraintsShouldNotBeViolated.ViolatedConstraint;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.ConstraintsShouldNotBeViolated.ViolatedInvariant;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.FlexoValidationModel;
@@ -120,10 +120,10 @@ public class FMLRTValidationModel extends FlexoValidationModel {
 
 	@Override
 	public String localizedIssueMessage(ValidationIssue<?, ?> issue) {
-		if (issue instanceof ViolatedConstraint) {
+		if (issue instanceof ViolatedInvariant) {
 			// Special case for that, we use the FML dictionary
-			ViolatedConstraint constraintIssue = (ViolatedConstraint) issue;
-			LocalizedDelegate locales = ((ViolatedConstraint) issue).getConstraint().getDeclaringCompilationUnit().getLocales();
+			ViolatedInvariant constraintIssue = (ViolatedInvariant) issue;
+			LocalizedDelegate locales = ((ViolatedInvariant) issue).getInvariant().getDeclaringCompilationUnit().getLocales();
 			String localized = locales.localizedForKeyAndLanguage(constraintIssue.getMessage(), FlexoLocalization.getCurrentLanguage(),
 					true);
 			String asBindingExpression = asBindingExpression(localized);

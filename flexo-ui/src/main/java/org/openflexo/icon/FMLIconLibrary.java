@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptConstraint;
+import org.openflexo.foundation.fml.AbstractInvariant;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumValue;
@@ -362,7 +362,7 @@ public class FMLIconLibrary extends IconLibrary {
 		else if (object instanceof FlexoConceptInspector) {
 			return INSPECT_ICON;
 		}
-		else if (object instanceof FlexoConceptConstraint) {
+		else if (object instanceof AbstractInvariant) {
 			return CONSTRAINT_ICON;
 		}
 		else if (object instanceof FetchRequestCondition) {
