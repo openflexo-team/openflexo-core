@@ -29,6 +29,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.WhileActionNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -319,7 +320,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 						builtSequenceNode = newSequenceNode;
 					}
 				}
-				//System.out.println("finalizeBlockStatements() DONE for "+currentBlockNode+" of "+currentBlockNode.getClass());
+				// System.out.println("finalizeBlockStatements() DONE for "+currentBlockNode+" of "+currentBlockNode.getClass());
 				getCompilationUnitAnalyzer().registerFMLNode(currentBlockNode, rootSequenceNode);
 				currentBlockNode = null;
 				push(rootSequenceNode);
@@ -509,6 +510,13 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAWhileStatement(AWhileStatement node) {
 		super.inAWhileStatement(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new WhileActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAWhileStatement(AWhileStatement node) {
+		super.outAWhileStatement(node);
+		pop();
 	}
 
 	@Override
