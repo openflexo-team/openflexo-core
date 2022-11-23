@@ -94,18 +94,18 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(childrenContents("", "", () -> getModelObject().getNamespaces(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
-				Indentation.DoNotIndent, NamespaceDeclaration.class));
+				Indentation.DoNotIndent, NamespaceDeclaration.class, "Namespaces"));
 
 		append(childrenContents("", "", () -> getModelObject().getUseDeclarations(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
-				Indentation.DoNotIndent, UseModelSlotDeclaration.class));
+				Indentation.DoNotIndent, UseModelSlotDeclaration.class, "UseDeclarations"));
 
 		append(childrenContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
-				Indentation.DoNotIndent, JavaImportDeclaration.class));
+				Indentation.DoNotIndent, JavaImportDeclaration.class, "JavaImports"));
 
 		append(childrenContents("", "", () -> getModelObject().getElementImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
-				Indentation.DoNotIndent, ElementImportDeclaration.class));
+				Indentation.DoNotIndent, ElementImportDeclaration.class, "ElementImports"));
 
-		append(childContents("", () -> getModelObject().getVirtualModel(), "", Indentation.DoNotIndent));
+		append(childContents("", () -> getModelObject().getVirtualModel(), "", Indentation.DoNotIndent, "VirtualModel"));
 
 		/*appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR,
 				LINE_SEPARATOR + LINE_SEPARATOR, Indentation.DoNotIndent, JavaImportDeclaration.class);

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.AbstractInvariant;
+import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -95,25 +96,25 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off
-		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class));
-		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		when(() -> isAbstract()).thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
-		append(staticContents("", "concept", SPACE), getConceptFragment());
-		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class, "MetaData"));
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment(),"Visibility");
+		when(() -> isAbstract(),"Abstract").thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
+		append(staticContents("", FMLKeywords.Concept.getKeyword(), SPACE), getConceptFragment(),"Concept");
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment(),"Name");
 
-		when(() -> getModelObject().getParentFlexoConcepts().size() > 0)
+		when(() -> getModelObject().getParentFlexoConcepts().size() > 0, "ParentConceptsDefinition")
 				.thenAppend(staticContents(SPACE, "extends", SPACE), getExtendsFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment());
 
-		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
-		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class));
+		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment(),"LBrc");
+		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class),"Properties");
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
-				FlexoBehaviour.class));
+				FlexoBehaviour.class),"Behaviours");
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer(), LINE_SEPARATOR, Indentation.Indent,
-				FlexoConcept.class));
+				FlexoConcept.class),"EmbeddedConcepts");
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getInvariants(), LINE_SEPARATOR, Indentation.Indent,
-				AbstractInvariant.class));
-		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
+				AbstractInvariant.class),"Invariants");
+		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment(),"RBrc");
 
 		// @formatter:on
 
