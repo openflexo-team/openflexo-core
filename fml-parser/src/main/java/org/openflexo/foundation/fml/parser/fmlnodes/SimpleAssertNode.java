@@ -145,7 +145,8 @@ public class SimpleAssertNode extends AbstractAssertNode<PSimpleAssertDeclaratio
 		if (cg instanceof ControlStructureAction || cg instanceof Sequence) {
 			return false;
 		}
-		return true;
+		// In this case, we use the last parsed AST node to know if we want embraced control graph
+		return getLBrcFragment() == null;
 	}
 
 	private TKwAssert getAssertKeyword() {
