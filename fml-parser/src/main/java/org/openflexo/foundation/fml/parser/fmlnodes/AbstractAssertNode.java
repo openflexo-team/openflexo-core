@@ -41,7 +41,13 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.AbstractInvariant;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.node.ABlockStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.ANoTrailStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PStatement;
+import org.openflexo.foundation.fml.parser.node.PStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.TLBrc;
+import org.openflexo.foundation.fml.parser.node.TRBrc;
 
 /**
  * Base class for {@link AbstractInvariant} object node
@@ -69,4 +75,39 @@ public abstract class AbstractAssertNode<N extends Node, T extends AbstractInvar
 
 		return this;
 	}
+
+	/**
+	 * Return LBrc token of supplied statement, if any
+	 * 
+	 * @param statement
+	 * @return
+	 */
+	protected TLBrc getLBrc(PStatement statement) {
+		if (statement instanceof ANoTrailStatement) {
+			PStatementWithoutTrailingSubstatement statementWithoutTrailingSubstatement = ((ANoTrailStatement) statement)
+					.getStatementWithoutTrailingSubstatement();
+			if (statementWithoutTrailingSubstatement instanceof ABlockStatementWithoutTrailingSubstatement) {
+				return ((ABlockStatementWithoutTrailingSubstatement) statementWithoutTrailingSubstatement).getLBrc();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return RBrc token of supplied statement, if any
+	 * 
+	 * @param statement
+	 * @return
+	 */
+	protected TRBrc getRBrc(PStatement statement) {
+		if (statement instanceof ANoTrailStatement) {
+			PStatementWithoutTrailingSubstatement statementWithoutTrailingSubstatement = ((ANoTrailStatement) statement)
+					.getStatementWithoutTrailingSubstatement();
+			if (statementWithoutTrailingSubstatement instanceof ABlockStatementWithoutTrailingSubstatement) {
+				return ((ABlockStatementWithoutTrailingSubstatement) statementWithoutTrailingSubstatement).getRBrc();
+			}
+		}
+		return null;
+	}
+
 }

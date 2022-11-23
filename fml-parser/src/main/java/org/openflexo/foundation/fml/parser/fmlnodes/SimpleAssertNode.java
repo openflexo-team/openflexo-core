@@ -42,6 +42,9 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.SimpleInvariant;
+import org.openflexo.foundation.fml.controlgraph.ControlStructureAction;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -118,13 +121,31 @@ public class SimpleAssertNode extends AbstractAssertNode<PSimpleAssertDeclaratio
 		// @formatter:off
 		append(staticContents("", FMLKeywords.Assert.getKeyword(), SPACE), getAssertFragment());
 		append(dynamicContents(() -> getModelObject().getConstraint().toString()), getExpressionFragment());
-		when(() -> getModelObject().hasFailureClause())
+
+		// With onfailure clause with single line violation control graph
+		when(() -> getModelObject().hasFailureClause() && isSingleLineControlGraph(getModelObject().getViolationControlGraph()))
 			.thenAppend(staticContents(SPACE,FMLKeywords.OnFailure.getKeyword(),""), getOnFailureFragment())
 			.thenAppend(staticContents("",":",SPACE), getColonFragment())
-			.thenAppend(childContents("",() -> getModelObject().getViolationControlGraph(),"", Indentation.DoNotIndent))
-			.elseAppend(staticContents(";"), getSemiFragment());
+			.thenAppend(childContents("",() -> getModelObject().getViolationControlGraph(),"", Indentation.DoNotIndent));
+		// With onfailure clause with violation control graph embraced with braces {...}
+		when(() -> getModelObject().hasFailureClause() && !isSingleLineControlGraph(getModelObject().getViolationControlGraph()))
+			.thenAppend(staticContents(SPACE,FMLKeywords.OnFailure.getKeyword(),""), getOnFailureFragment())
+			.thenAppend(staticContents("",":",SPACE), getColonFragment())
+			.thenAppend(staticContents("","{",LINE_SEPARATOR), getLBrcFragment())
+			.thenAppend(childContents("",() -> getModelObject().getViolationControlGraph(),"", Indentation.Indent))
+			.thenAppend(staticContents(LINE_SEPARATOR,"}",""), getRBrcFragment());
+		// Without onfailure clause
+		when(() -> !getModelObject().hasFailureClause())
+			.thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on
 
+	}
+
+	private boolean isSingleLineControlGraph(FMLControlGraph cg) {
+		if (cg instanceof ControlStructureAction || cg instanceof Sequence) {
+			return false;
+		}
+		return true;
 	}
 
 	private TKwAssert getAssertKeyword() {
@@ -185,6 +206,20 @@ public class SimpleAssertNode extends AbstractAssertNode<PSimpleAssertDeclaratio
 	private RawSourceFragment getSemiFragment() {
 		if (getASTNode() instanceof ABasicSimpleAssertDeclaration) {
 			return getFragment(((ABasicSimpleAssertDeclaration) getASTNode()).getSemi());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getLBrcFragment() {
+		if (getFailureClause() != null) {
+			return getFragment(getLBrc(getFailureClause().getStatement()));
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getRBrcFragment() {
+		if (getFailureClause() != null) {
+			return getFragment(getRBrc(getFailureClause().getStatement()));
 		}
 		return null;
 	}
