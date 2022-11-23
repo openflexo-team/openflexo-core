@@ -168,4 +168,32 @@ public class TestFMLPrettyPrint10 extends FMLParserTestCase {
 		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint10/Step3PrettyPrint.fml");
 
 	}
+
+	@Test
+	@TestOrder(5)
+	public void removeFailureClauseOnInvariant2() throws ParseException, ModelDefinitionException, IOException {
+		log("removeFailureClauseOnInvariant2()");
+		invariant2.setViolationControlGraph(null);
+
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint10/Step4Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint10/Step4PrettyPrint.fml");
+
+	}
+
+	@Test
+	@TestOrder(6)
+	public void removeFailureClauseOnInvariant3() throws ParseException, ModelDefinitionException, IOException {
+		log("removeFailureClauseOnInvariant3()");
+		invariant3.setViolationControlGraph(null);
+
+		System.out.println("Normalized=\n" + compilationUnit.getNormalizedFML());
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint10/Step5Normalized.fml");
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint10/Step5PrettyPrint.fml");
+
+	}
 }

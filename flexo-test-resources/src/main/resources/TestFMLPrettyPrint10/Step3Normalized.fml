@@ -9,7 +9,9 @@ model TestSimpleInvariants {
 			log "a is false!";
 			log "we must do something";
 		}
-		assert b onfailure: b = true;
+		assert b onfailure: {
+			b = true;
+		}
 		assert !b onfailure: b = false;
 		assert c onfailure: {
 			log "c is false";
