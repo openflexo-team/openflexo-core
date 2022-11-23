@@ -1,0 +1,16 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+
+	concept AConcept {
+		boolean a;
+		boolean b;
+		boolean c;
+		assert a onfailure: log "a is false!";
+		assert b onfailure: b = true;
+		assert !b onfailure: b = false;
+		assert c onfailure: {
+			log "c is false";
+			c = true;
+		}
+	}
+}
