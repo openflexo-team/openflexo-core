@@ -1,87 +1,216 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false" opaque="false" name="FlexoConceptPanel" layout="twocols" controllerClassName="org.openflexo.fml.controller.FMLFIBController" border="empty" trackViewPortWidth="true" font="SansSerif,0,12" dataClassName="org.openflexo.foundation.fml.FlexoConcept" titleFont="SansSerif,0,12" trackViewPortHeight="true">
-  <LocalizedDictionary id="1">
-    <Localized id="2" value="Constraint" lang="English" key="constraint" />
-    <Localized id="3" value="constraint" lang="French" key="constraint" />
-    <Localized id="4" value="constraint" lang="Dutch" key="constraint" />
-    <Localized id="5" value="Add constraint" lang="English" key="add_constraint" />
-    <Localized id="6" value="add_constraint" lang="French" key="add_constraint" />
-    <Localized id="7" value="add_constraint" lang="Dutch" key="add_constraint" />
-    <Localized id="8" value="Delete constraint" lang="English" key="delete_constraint" />
-    <Localized id="9" value="delete_constraint" lang="French" key="delete_constraint" />
-    <Localized id="10" value="delete_constraint" lang="Dutch" key="delete_constraint" />
-    <Localized id="11" value="Parent" lang="English" key="parent" />
-    <Localized id="12" value="Parent" lang="French" key="parent" />
-    <Localized id="13" value="Ouder" lang="Dutch" key="parent" />
-    <Localized id="14" value="Model Slot" lang="English" key="model_slot" />
-    <Localized id="15" value="Model Slot" lang="French" key="model_slot" />
-    <Localized id="16" value="Model Slot" lang="Dutch" key="model_slot" />
-    <Localized id="17" value="Type" lang="English" key="type" />
-    <Localized id="18" value="Type" lang="French" key="type" />
-    <Localized id="19" value="Type" lang="Dutch" key="type" />
-    <Localized id="20" value="Delete" lang="English" key="delete" />
-    <Localized id="21" value="Supprimer" lang="French" key="delete" />
-    <Localized id="22" value="Verwijder" lang="Dutch" key="delete" />
-    <Localized id="23" value="CreateFlexoRole" lang="English" key="createFlexoRole" />
-    <Localized id="24" value="createFlexoRole" lang="French" key="createFlexoRole" />
-    <Localized id="25" value="createFlexoRole" lang="Dutch" key="createFlexoRole" />
-    <Localized id="26" value="Constraints" lang="English" key="constraints" />
-    <Localized id="27" value="contraintes" lang="French" key="constraints" />
-    <Localized id="28" value="opgedragen" lang="Dutch" key="constraints" />
-    <Localized id="29" value="Parent concepts" lang="English" key="parent_concepts" />
-    <Localized id="30" value="parent_concepts" lang="Dutch" key="parent_concepts" />
-    <Localized id="31" value="parent_concepts" lang="French" key="parent_concepts" />
-    <Localized id="32" value="Icon" lang="English" key="icon" />
-    <Localized id="33" value="icoon" lang="Dutch" key="icon" />
-    <Localized id="34" value="icône" lang="French" key="icon" />
-    <Localized id="35" value="AddParentFlexoConcept" lang="English" key="addParentFlexoConcept" />
-    <Localized id="36" value="addParentFlexoConcept" lang="Dutch" key="addParentFlexoConcept" />
-    <Localized id="37" value="addParentFlexoConcept" lang="French" key="addParentFlexoConcept" />
-    <Localized id="38" value="Roles" lang="English" key="roles" />
-    <Localized id="39" value="Rollen" lang="Dutch" key="roles" />
-    <Localized id="40" value="Rôles" lang="French" key="roles" />
-    <Localized id="41" value="Concept" lang="English" key="flexo_concept" />
-    <Localized id="42" value="flexo_concept" lang="Dutch" key="flexo_concept" />
-    <Localized id="43" value="Concept" lang="French" key="flexo_concept" />
-    <Localized id="44" value="Flexo role" lang="English" key="flexo_role" />
-    <Localized id="45" value="flexo_role" lang="Dutch" key="flexo_role" />
-    <Localized id="46" value="flexo_role" lang="French" key="flexo_role" />
-    <Localized id="47" value="Parent concept" lang="English" key="parent_concept" />
-    <Localized id="48" value="parent_concept" lang="Dutch" key="parent_concept" />
-    <Localized id="49" value="parent_concept" lang="French" key="parent_concept" />
-  </LocalizedDictionary>
-  <Label id="50" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.gina.controller.FIBController" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="flexo_concept" readOnly="false" />
-  <TextField id="51" passwd="false" manageDynamicModel="false" useScrollBar="false" data="data.name" columns="7" controllerClassName="org.openflexo.gina.controller.FIBController" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="false" validateOnReturn="false" />
-  <Label id="52" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.gina.controller.FIBController" index="2" localize="true" align="left" constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="parent_concepts" readOnly="false" />
-  <Table id="53" showFooter="true" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" opaque="false" boundToSelectionManager="true" controllerClassName="org.openflexo.gina.controller.FIBController" index="5" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" createNewRowOnClick="false" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" useScrollBar="false" data="data.parentFlexoConcepts" autoSelectFirstRow="false" name="ParentFlexoConceptTable" readOnly="false">
-    <IconColumn id="54" data="controller.iconForObject(iterator)" displayTitle="false" title="icon" name="icon" columnWidth="25" resizable="false" />
-    <LabelColumn id="55" data="iterator.name" displayTitle="true" title="parent_concept" name="label" columnWidth="50" resizable="true" />
-    <RemoveAction id="56" name="delete" method="data.removeFromParentFlexoConcepts(selected)" />
-    <AddAction id="57" name="addParentFlexoConcept" method="controller.addParentFlexoConcept(data)" />
-  </Table>
-  <Label id="58" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.gina.controller.FIBController" index="4" localize="true" align="left" constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="roles" readOnly="false" />
-  <Table id="59" showFooter="true" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" opaque="false" rightClickAction="controller.rightClick(flexoRoleTable.selected,event)" boundToSelectionManager="true" controllerClassName="org.openflexo.gina.controller.FIBController" index="5" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" createNewRowOnClick="false" iteratorClassName="org.openflexo.foundation.fml.FlexoProperty" useScrollBar="false" data="data.flexoProperties" autoSelectFirstRow="true" name="flexoRoleTable" readOnly="false">
-    <IconColumn id="60" data="controller.iconForObject(iterator)" displayTitle="false" title="icon" name="icon" columnWidth="25" resizable="false" />
-    <TextFieldColumn id="61" data="iterator.propertyName" displayTitle="true" title="flexo_role" columnWidth="70" resizable="true" />
-    <!--  <LabelColumn id="62" data="iterator.modelSlot.name" displayTitle="true" title="model_slot" name="label" columnWidth="50" resizable="true" />-->
-    <LabelColumn id="63" data="iterator.typeDescription" displayTitle="true" title="type" name="label" columnWidth="70" resizable="true" />
-    <DropDownColumn data="iterator.cardinality" format="object.stringRepresentation" displayTitle="true" title="cardinality" name="cardinalityDropdown" columnWidth="50" resizable="true" />
- 	<AddAction name="new_technology_role" method="controller.createTechnologyRole(selected.flexoConcept)" />
-	<AddAction name="new_flexo_concept_instance_role" method="controller.createFlexoConceptInstanceRole(selected.flexoConcept)" />
-	<AddAction name="new_primitive_role" method="controller.createPrimitiveRole(selected.flexoConcept)" />
-	<AddAction name="new_abstract_property" method="controller.createAbstractProperty(selected.flexoConcept)" />
-	<AddAction name="new_expression_property" method="controller.createExpressionProperty(selected.flexoConcept)" />
-	<AddAction name="new_get_set_property" method="controller.createGetSetProperty(selected.flexoConcept)" />
-    <RemoveAction name="delete" method="controller.deleteFlexoProperty(data,selected)" />
-   </Table>
-  <Label id="66" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.gina.controller.FIBController" index="6" localize="true" align="left" constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="constraints" readOnly="false" />
-  <Table id="67" showFooter="true" manageDynamicModel="true" selectionMode="MultipleIntervalSelection" opaque="false" rightClickAction="controller.rightClick(constraintsTable.selected,event)" boundToSelectionManager="false" controllerClassName="org.openflexo.gina.controller.FIBController" index="5" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=true;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" createNewRowOnClick="false" textSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.fml.AbstractInvariant" backgroundSelectionColor="26,96,206" useScrollBar="false" backgroundNonSelectionColor="255,255,255" data="data.flexoConceptConstraints" autoSelectFirstRow="false" name="constraintsTable" textNonSelectionColor="0,0,0" readOnly="false" backgroundSecondarySelectionColor="173,215,255">
-    <IconColumn id="68" data="controller.iconForObject(iterator)" displayTitle="false" title="icon" name="icon" columnWidth="30" resizable="false" />
-    <CustomColumn id="69" customRendering="false" data="iterator.constraint" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector" displayTitle="true" disableTerminateEditOnFocusLost="false" title="constraint" name="value" columnWidth="80" resizable="true">
-      <ColumnAssignment id="70" mandatory="true" value="data" variable="component.bindable" />
-      <ColumnAssignment idref="70" />
-    </CustomColumn>
-    <AddAction id="71" name="add_constraint" method="controller.createConstraint(data)" />
-    <RemoveAction id="72" name="delete_constraint" method="controller.deleteConstraint(data,selected)" />
-  </Table>
+<Panel id="0" darkLevel="0" useScrollBar="false"
+	protectContent="false" opaque="false" name="FlexoConceptPanel"
+	layout="twocols"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
+	border="empty" trackViewPortWidth="true" font="SansSerif,0,12"
+	dataClassName="org.openflexo.foundation.fml.FlexoConcept"
+	titleFont="SansSerif,0,12" trackViewPortHeight="true">
+	<LocalizedDictionary id="1">
+		<Localized id="2" value="Constraint" lang="English"
+			key="constraint" />
+		<Localized id="3" value="constraint" lang="French"
+			key="constraint" />
+		<Localized id="4" value="constraint" lang="Dutch"
+			key="constraint" />
+		<Localized id="5" value="Add constraint" lang="English"
+			key="add_constraint" />
+		<Localized id="6" value="add_constraint" lang="French"
+			key="add_constraint" />
+		<Localized id="7" value="add_constraint" lang="Dutch"
+			key="add_constraint" />
+		<Localized id="8" value="Delete constraint" lang="English"
+			key="delete_constraint" />
+		<Localized id="9" value="delete_constraint" lang="French"
+			key="delete_constraint" />
+		<Localized id="10" value="delete_constraint" lang="Dutch"
+			key="delete_constraint" />
+		<Localized id="11" value="Parent" lang="English"
+			key="parent" />
+		<Localized id="12" value="Parent" lang="French" key="parent" />
+		<Localized id="13" value="Ouder" lang="Dutch" key="parent" />
+		<Localized id="14" value="Model Slot" lang="English"
+			key="model_slot" />
+		<Localized id="15" value="Model Slot" lang="French"
+			key="model_slot" />
+		<Localized id="16" value="Model Slot" lang="Dutch"
+			key="model_slot" />
+		<Localized id="17" value="Type" lang="English" key="type" />
+		<Localized id="18" value="Type" lang="French" key="type" />
+		<Localized id="19" value="Type" lang="Dutch" key="type" />
+		<Localized id="20" value="Delete" lang="English"
+			key="delete" />
+		<Localized id="21" value="Supprimer" lang="French"
+			key="delete" />
+		<Localized id="22" value="Verwijder" lang="Dutch"
+			key="delete" />
+		<Localized id="23" value="CreateFlexoRole" lang="English"
+			key="createFlexoRole" />
+		<Localized id="24" value="createFlexoRole" lang="French"
+			key="createFlexoRole" />
+		<Localized id="25" value="createFlexoRole" lang="Dutch"
+			key="createFlexoRole" />
+		<Localized id="26" value="Constraints" lang="English"
+			key="constraints" />
+		<Localized id="27" value="contraintes" lang="French"
+			key="constraints" />
+		<Localized id="28" value="opgedragen" lang="Dutch"
+			key="constraints" />
+		<Localized id="29" value="Parent concepts" lang="English"
+			key="parent_concepts" />
+		<Localized id="30" value="parent_concepts" lang="Dutch"
+			key="parent_concepts" />
+		<Localized id="31" value="parent_concepts" lang="French"
+			key="parent_concepts" />
+		<Localized id="32" value="Icon" lang="English" key="icon" />
+		<Localized id="33" value="icoon" lang="Dutch" key="icon" />
+		<Localized id="34" value="icône" lang="French" key="icon" />
+		<Localized id="35" value="AddParentFlexoConcept"
+			lang="English" key="addParentFlexoConcept" />
+		<Localized id="36" value="addParentFlexoConcept"
+			lang="Dutch" key="addParentFlexoConcept" />
+		<Localized id="37" value="addParentFlexoConcept"
+			lang="French" key="addParentFlexoConcept" />
+		<Localized id="38" value="Roles" lang="English" key="roles" />
+		<Localized id="39" value="Rollen" lang="Dutch" key="roles" />
+		<Localized id="40" value="Rôles" lang="French" key="roles" />
+		<Localized id="41" value="Concept" lang="English"
+			key="flexo_concept" />
+		<Localized id="42" value="flexo_concept" lang="Dutch"
+			key="flexo_concept" />
+		<Localized id="43" value="Concept" lang="French"
+			key="flexo_concept" />
+		<Localized id="44" value="Flexo role" lang="English"
+			key="flexo_role" />
+		<Localized id="45" value="flexo_role" lang="Dutch"
+			key="flexo_role" />
+		<Localized id="46" value="flexo_role" lang="French"
+			key="flexo_role" />
+		<Localized id="47" value="Parent concept" lang="English"
+			key="parent_concept" />
+		<Localized id="48" value="parent_concept" lang="Dutch"
+			key="parent_concept" />
+		<Localized id="49" value="parent_concept" lang="French"
+			key="parent_concept" />
+	</LocalizedDictionary>
+	<Label id="50" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		localize="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		label="flexo_concept" readOnly="false" />
+	<TextField id="51" passwd="false" manageDynamicModel="false"
+		useScrollBar="false" data="data.name" columns="7"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		text="TextField" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		readOnly="false" validateOnReturn="false" />
+	<Label id="52" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="2" localize="true" align="left"
+		constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		label="parent_concepts" readOnly="false" />
+	<Table id="53" showFooter="true" manageDynamicModel="true"
+		selectionMode="MultipleIntervalSelection" opaque="false"
+		boundToSelectionManager="true"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="5" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		createNewRowOnClick="false"
+		iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
+		useScrollBar="false" data="data.parentFlexoConcepts"
+		autoSelectFirstRow="false" name="ParentFlexoConceptTable"
+		readOnly="false">
+		<IconColumn id="54"
+			data="controller.iconForObject(iterator)" displayTitle="false"
+			title="icon" name="icon" columnWidth="25" resizable="false" />
+		<LabelColumn id="55" data="iterator.name"
+			displayTitle="true" title="parent_concept" name="label"
+			columnWidth="50" resizable="true" />
+		<RemoveAction id="56" name="delete"
+			method="data.removeFromParentFlexoConcepts(selected)" />
+		<AddAction id="57" name="addParentFlexoConcept"
+			method="controller.addParentFlexoConcept(data)" />
+	</Table>
+	<Label id="58" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="4" localize="true" align="left"
+		constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		label="roles" readOnly="false" />
+	<Table id="59" showFooter="true" manageDynamicModel="true"
+		selectionMode="MultipleIntervalSelection" opaque="false"
+		rightClickAction="controller.rightClick(flexoRoleTable.selected,event)"
+		boundToSelectionManager="true"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="5" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		createNewRowOnClick="false"
+		iteratorClassName="org.openflexo.foundation.fml.FlexoProperty"
+		useScrollBar="false" data="data.flexoProperties"
+		autoSelectFirstRow="true" name="flexoRoleTable" readOnly="false">
+		<IconColumn id="60"
+			data="controller.iconForObject(iterator)" displayTitle="false"
+			title="icon" name="icon" columnWidth="25" resizable="false" />
+		<TextFieldColumn id="61" data="iterator.propertyName"
+			displayTitle="true" title="flexo_role" columnWidth="70"
+			resizable="true" />
+		<!-- <LabelColumn id="62" data="iterator.modelSlot.name" displayTitle="true" 
+			title="model_slot" name="label" columnWidth="50" resizable="true" /> -->
+		<LabelColumn id="63" data="iterator.typeDescription"
+			displayTitle="true" title="type" name="label" columnWidth="70"
+			resizable="true" />
+		<DropDownColumn data="iterator.cardinality"
+			format="object.stringRepresentation" displayTitle="true"
+			title="cardinality" name="cardinalityDropdown" columnWidth="50"
+			resizable="true" />
+		<AddAction name="new_technology_role"
+			method="controller.createTechnologyRole(selected.flexoConcept)" />
+		<AddAction name="new_flexo_concept_instance_role"
+			method="controller.createFlexoConceptInstanceRole(selected.flexoConcept)" />
+		<AddAction name="new_primitive_role"
+			method="controller.createPrimitiveRole(selected.flexoConcept)" />
+		<AddAction name="new_abstract_property"
+			method="controller.createAbstractProperty(selected.flexoConcept)" />
+		<AddAction name="new_expression_property"
+			method="controller.createExpressionProperty(selected.flexoConcept)" />
+		<AddAction name="new_get_set_property"
+			method="controller.createGetSetProperty(selected.flexoConcept)" />
+		<RemoveAction name="delete"
+			method="controller.deleteFlexoProperty(data,selected)" />
+	</Table>
+	<Label id="66" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="6" localize="true" align="left"
+		constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		label="constraints" readOnly="false" />
+	<Table id="67" showFooter="true" manageDynamicModel="true"
+		selectionMode="MultipleIntervalSelection" opaque="false"
+		rightClickAction="controller.rightClick(invariantsTable.selected,event)"
+		boundToSelectionManager="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="5" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		createNewRowOnClick="false" textSelectionColor="255,255,255"
+		iteratorClassName="org.openflexo.foundation.fml.SimpleInvariant"
+		backgroundSelectionColor="26,96,206" useScrollBar="false"
+		backgroundNonSelectionColor="255,255,255"
+		data="data.simpleInvariants" autoSelectFirstRow="false"
+		name="invariantsTable" textNonSelectionColor="0,0,0" readOnly="false"
+		backgroundSecondarySelectionColor="173,215,255">
+		<IconColumn id="68"
+			data="controller.iconForObject(iterator)" displayTitle="false"
+			title="icon" name="icon" columnWidth="30" resizable="false" />
+		<CustomColumn id="69" customRendering="false"
+			data="iterator.constraint"
+			componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+			displayTitle="true" disableTerminateEditOnFocusLost="false"
+			title="constraint" name="value" columnWidth="80" resizable="true">
+			<ColumnAssignment id="70" mandatory="true"
+				value="data" variable="component.bindable" />
+			<ColumnAssignment idref="70" />
+		</CustomColumn>
+		<AddAction id="71" name="add_constraint"
+			method="controller.createSimpleInvariant(data)" />
+		<RemoveAction id="72" name="delete_constraint"
+			method="controller.deleteInvariant(data,selected)" />
+	</Table>
 </Panel>

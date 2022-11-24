@@ -77,7 +77,7 @@
 			<!--  <Label name="ConstraintsLabel" label="constraints" index="18"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
-			<Table name="constraintsTable" iteratorClassName="org.openflexo.foundation.fml.AbstractInvariant"
+			<Table name="invariantsTable" iteratorClassName="org.openflexo.foundation.fml.AbstractInvariant"
 			    lookAndFeel="FlatDesign" showHeader="false"
 				rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false"
 				boundToSelectionManager="false" showFooter="true"
@@ -114,13 +114,13 @@
 				trackViewPortHeight="true" layout="gridbag" name="ConstraintsPanel">
 				<Table showFooter="true" manageDynamicModel="true"
 					enable="data != null" selectionMode="MultipleIntervalSelection"
-					data="data.flexoConceptConstraints" rightClickAction="controller.rightClick(constraintsTable.selected,event)"
+					data="data.simpleInvariants" rightClickAction="controller.rightClick(invariantsTable.selected,event)"
 					boundToSelectionManager="true" index="0" localize="true"
 					font="SansSerif.plain,0,11"
 					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)"
-					iteratorClassName="org.openflexo.foundation.fml.AbstractInvariant"
+					iteratorClassName="org.openflexo.foundation.fml.SimpleInvariant"
 					backgroundNonSelectionColor="255,255,255" autoSelectFirstRow="true"
-					name="constraintsTable" backgroundSecondarySelectionColor="178,215,255">
+					name="invariantsTable" backgroundSecondarySelectionColor="178,215,255">
 					<IconColumn data="controller.iconForObject(iterator)"
 						displayTitle="false" title="icon" name="icon" columnWidth="20"
 						resizable="false" showIcon="false" />
@@ -131,9 +131,9 @@
 						/> <RemoveAction id="14" name="delete" method="controller.deleteParameter(data,selected)" 
 						/> -->
 
-					<AddAction method="controller.createConstraint(data)"
+					<AddAction method="controller.createSimpleInvariant(data)"
 						name="add_concept_constraint" />
-					<RemoveAction method="controller.deleteConstraint(data,selected)"
+					<RemoveAction method="controller.deleteInvariant(data,selected)"
 						name="delete" />
 
 				</Table>
@@ -145,33 +145,33 @@
 					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
 					layout="box" name="ConstraintsOrderingPanel">
 					<Button
-						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &gt; 0)"
+						enable="(invariantsTable.selected != null) &amp;&amp; (invariantsTable.selected.index &gt; 0)"
 						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
-						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,0)" index="0"
+						action="data.moveInvariantToIndex(invariantsTable.selected,0)" index="0"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
 						label="">
 					</Button>
 					<Button
-						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &gt; 0)"
+						enable="(invariantsTable.selected != null) &amp;&amp; (invariantsTable.selected.index &gt; 0)"
 						buttonIcon="controller.arrowUp" buttonType="Trigger" name="Button2"
-						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,constraintsTable.selected.index-1)" index="1"
+						action="data.moveInvariantToIndex(invariantsTable.selected,invariantsTable.selected.index-1)" index="1"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
 						label="">
 					</Button>
 					<Button
-						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &lt; (data.flexoConceptConstraints.size - 1))"
+						enable="(invariantsTable.selected != null) &amp;&amp; (invariantsTable.selected.index &lt; (data.invariants.size - 1))"
 						buttonIcon="controller.arrowDown" buttonType="Trigger" name="Button3"
-						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,constraintsTable.selected.index+1)" index="2"
+						action="data.moveInvariantToIndex(invariantsTable.selected,invariantsTable.selected.index+1)" index="2"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
 						label="">
 					</Button>
 					<Button
-						enable="(constraintsTable.selected != null) &amp;&amp; (constraintsTable.selected.index &lt; (data.flexoConceptConstraints.size - 1))"
+						enable="(invariantsTable.selected != null) &amp;&amp; (invariantsTable.selected.index &lt; (data.invariants.size - 1))"
 						buttonIcon="controller.arrowBottom" buttonType="Trigger" name="Button4"
-						action="data.moveFlexoConstraintToIndex(constraintsTable.selected,data.flexoConceptConstraints.size - 1)" index="3"
+						action="data.moveInvariantToIndex(invariantsTable.selected,data.invariants.size - 1)" index="3"
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
 						label="">
@@ -179,69 +179,68 @@
 				</Panel>
 				<Panel darkLevel="2" borderLeft="0" sizeAdjustment="OriginalSize"
 					border="rounded3d" borderRight="0" trackViewPortWidth="true"
-					index="2" align="left" enable="constraintsTable.selected != null"
+					index="2" align="left" enable="invariantsTable.selected != null"
 					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
 					borderBottom="5" titleFont="SansSerif,0,11" borderTop="5"
 					trackViewPortHeight="true" layout="twocols" name="DetailsPanel">
 					<Label name="Label" localize="true" align="left"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
-						label="constraint" enable="constraintsTable.selected != null" />
+						label="constraint" enable="invariantsTable.selected != null" />
 					<TextField columns="7" name="TextField"
-						data="constraintsTable.selected.name"
+						data="invariantsTable.selected.name"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" 
-						enable="constraintsTable.selected != null"/>
-					<Label name="Label7" localize="true" align="left" enable="constraintsTable.selected != null"
+						enable="invariantsTable.selected != null"/>
+					<!--  <Label name="Label7" localize="true" align="left" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="iterate" />
-					<CheckBox selected="true" name="checkbox" enable="constraintsTable.selected != null"
-						data="constraintsTable.selected.hasIteration"
+					<CheckBox selected="true" name="checkbox" enable="invariantsTable.selected != null"
+						data="invariantsTable.selected.hasIteration"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
-					<Label name="IteratorNameLabel" localize="true" align="left" enable="constraintsTable.selected != null"
+					<Label name="IteratorNameLabel" localize="true" align="left" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
-						label="iterator_name" visible="constraintsTable.selected.hasIteration"/>
-					<TextField columns="7" name="TextField" visible="constraintsTable.selected.hasIteration"
-						data="constraintsTable.selected.iteratorName" enable="constraintsTable.selected != null"
+						label="iterator_name" visible="invariantsTable.selected.hasIteration"/>
+					<TextField columns="7" name="TextField" visible="invariantsTable.selected.hasIteration"
+						data="invariantsTable.selected.iteratorName" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
-					<Label name="IterationLabel" localize="true" align="left" enable="constraintsTable.selected != null"
+					<Label name="IterationLabel" localize="true" align="left" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
-						label="iteration" visible="constraintsTable.selected.hasIteration"/>
-					<Custom manageDynamicModel="true" enable="constraintsTable.selected != null"
+						label="iteration" visible="invariantsTable.selected.hasIteration"/>
+					<Custom manageDynamicModel="true" enable="invariantsTable.selected != null"
 						dataClassForComponent="org.openflexo.connie.DataBinding"
 						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
-						name="CustomSelector2" data="constraintsTable.selected.iteration" visible="constraintsTable.selected.hasIteration"
+						name="CustomSelector2" data="invariantsTable.selected.iteration" visible="invariantsTable.selected.hasIteration"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="37" mandatory="true" variable="component.bindable" />
-					</Custom>
+					</Custom>-->
 					<Label
-						name="ConstraintLabel" localize="true" align="left" enable="constraintsTable.selected != null"
+						name="ConstraintLabel" localize="true" align="left" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="constraint" />
 					<Custom
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
 						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
-						name="CustomSelector" data="constraintsTable.selected.constraint" enable="constraintsTable.selected != null"
+						name="CustomSelector" data="invariantsTable.selected.constraint" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<!--  <Assignment mandatory="true" variable="component.bindable" /> -->
 					</Custom>
-					<Label
-						name="ViolationHookLabel" localize="true" align="left" enable="constraintsTable.selected != null"
+					<!--  <Label
+						name="ViolationHookLabel" localize="true" align="left" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="violation_hook" />
 					<Custom
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
 						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
-						name="CustomSelector" data="constraintsTable.selected.violationHook" enable="constraintsTable.selected != null"
+						name="CustomSelector" data="invariantsTable.selected.violationHook" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-						<!--  <Assignment mandatory="true" variable="component.bindable" /> -->
-					</Custom>
-					<Label name="DescriptionLabel" localize="true" align="left" enable="constraintsTable.selected != null"
+					</Custom> -->
+					<!--  <Label name="DescriptionLabel" localize="true" align="left" enable="invariantsTable.selected != null"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 						label="description" />
 					<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-						useScrollBar="true" columns="8" name="TextArea2" enable="constraintsTable.selected != null"
+						useScrollBar="true" columns="8" name="TextArea2" enable="invariantsTable.selected != null"
 						data="constraintsTable.selected.description" text="TextArea"
 						constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
-						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />-->
 				</Panel>
 			</Panel>
 
