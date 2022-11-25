@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -389,6 +391,15 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public FMLTypingSpace getTypingSpace();
 
 	public boolean isFMLPrettyPrintAvailable();
+
+	/**
+	 * Attempt to lookup Class from supplied name while exploring types exposed by underlying use declarations (model slot types beeing
+	 * used)
+	 * 
+	 * @param className
+	 * @return
+	 */
+	public Class<?> lookupClassInUseDeclarations(String className);
 
 	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
@@ -1364,6 +1375,38 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 
 			logger.warning("Unexpected BindingVariable " + variable + " of " + variable.getClass());
+			return null;
+		}
+
+		@Override
+		public Class<?> lookupClassInUseDeclarations(String className) {
+			if (getUseDeclarations() != null) {
+				Class<?> returned;
+				for (UseModelSlotDeclaration useModelSlotDeclaration : getUseDeclarations()) {
+					Class<? extends ModelSlot<?>> msClass = useModelSlotDeclaration.getModelSlotClass();
+					Type msType = TypeUtils.getTypeArgument(msClass, ModelSlot.class, 0);
+					returned = lookupClass(className, msType);
+					if (returned != null) {
+						return returned;
+					}
+					for (Class<? extends FlexoRole<?>> roleClass : getServiceManager().getTechnologyAdapterService()
+							.getAvailableFlexoRoleTypes(msClass)) {
+						Type roleType = TypeUtils.getTypeArgument(roleClass, FlexoRole.class, 0);
+						returned = lookupClass(className, roleType);
+						if (returned != null) {
+							return returned;
+						}
+					}
+				}
+			}
+			return null;
+		}
+
+		private Class<?> lookupClass(String className, Type potentialType) {
+			Class rawClass = TypeUtils.getRawType(potentialType);
+			if (className.equals(rawClass.getName()) || className.equals(rawClass.getSimpleName())) {
+				return rawClass;
+			}
 			return null;
 		}
 

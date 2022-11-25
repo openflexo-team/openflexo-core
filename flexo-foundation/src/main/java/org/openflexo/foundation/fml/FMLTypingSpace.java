@@ -60,7 +60,7 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 	private final FMLCompilationUnit compilationUnit;
 
 	private List<CustomType> typesToResolve = new ArrayList<>();
-	
+
 	public FMLTypingSpace(FMLCompilationUnit compilationUnit) {
 		super(compilationUnit.getServiceManager());
 		this.compilationUnit = compilationUnit;
@@ -113,6 +113,10 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 					// Yes ! a concept was found
 					return lookedUpConcept.getInstanceType();
 				}
+				returned = compilationUnit.lookupClassInUseDeclarations(typeAsString);
+				if (returned != null) {
+					return returned;
+				}
 			}
 		}
 		return returned;
@@ -127,7 +131,7 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 	public void addToTypesToResolve(CustomType typeToResolve) {
 		typesToResolve.add(typeToResolve);
 	}
-	
+
 	public void resolveUnresolvedTypes() {
 		for (CustomType typeToResolve : typesToResolve) {
 			typeToResolve.resolve();

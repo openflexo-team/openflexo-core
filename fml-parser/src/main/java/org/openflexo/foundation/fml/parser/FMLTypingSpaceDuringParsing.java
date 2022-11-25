@@ -274,6 +274,11 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 					e.printStackTrace();
 				}
 			}
+			Type returned = analyzer.getCompilationUnit().lookupClassInUseDeclarations(typeAsString);
+			if (returned != null) {
+				return returned;
+			}
+
 		}
 
 		// Still not found : delegate to the parent
