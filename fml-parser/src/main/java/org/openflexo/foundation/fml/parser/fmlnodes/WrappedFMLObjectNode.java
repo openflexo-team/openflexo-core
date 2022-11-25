@@ -86,7 +86,7 @@ public class WrappedFMLObjectNode<T extends FMLObject>
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public WrappedFMLObject<T> buildModelObjectFromAST(Node astNode) {
-		WrappedFMLObject<T> returned = getFactory().getWrappedFMLObject(null);
+		WrappedFMLObject<T> returned = (WrappedFMLObject<T>) getFactory().newWrappedFMLObject();
 
 		Class<T> objectClass = null;
 		if (astNode instanceof ASimpleQualifiedInstance) {

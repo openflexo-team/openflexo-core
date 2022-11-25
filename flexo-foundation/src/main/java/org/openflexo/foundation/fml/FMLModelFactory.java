@@ -858,6 +858,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
+	public WrappedFMLObject<?> newWrappedFMLObject() {
+		return newInstance(WrappedFMLObject.class);
+	}
+
 	private <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject(O object) {
 		WrappedFMLObject<O> returned = newInstance(WrappedFMLObject.class);
 		returned.setObject(object);
