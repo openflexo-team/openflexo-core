@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
@@ -213,7 +214,16 @@ public abstract class AbstractFMLFunctionPathElementImpl<F extends Function> ext
 	public void setArguments(List<DataBinding<?>> arguments) {
 		this.arguments.clear();
 		if (arguments != null) {
-			this.arguments.addAll(arguments);
+			for (DataBinding<?> arg : arguments) {
+				arg.setOwner(getBindable());
+				if (arg.getBindingDefinitionType() == null) {
+					arg.setBindingDefinitionType(BindingDefinitionType.GET);
+				}
+				if (arg.getDeclaredType() == null) {
+					arg.setDeclaredType(Object.class);
+				}
+				this.arguments.add(arg);
+			}
 		}
 	}
 
