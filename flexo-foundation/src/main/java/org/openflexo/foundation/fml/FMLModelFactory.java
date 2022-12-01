@@ -767,8 +767,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		returned.setType(type);
 		returned.setParent(parent);
 		returned.setMethodName(constructorName);
-		returned.setArguments(args);
 		returned.setBindable(bindable);
+		returned.setArguments(args);
 		return returned;
 	}
 
@@ -778,8 +778,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		CSPE returned = newInstance(abstractCreationSchemeClass);
 		returned.setParent(parent);
 		returned.setFunction(creationScheme);
-		returned.setArguments(args);
 		returned.setBindable(bindable);
+		returned.setArguments(args);
 		return returned;
 	}
 
@@ -789,8 +789,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		returned.setType(type);
 		returned.setParent(parent);
 		returned.setMethodName(constructorName);
-		returned.setArguments(args);
 		returned.setBindable(bindable);
+		returned.setArguments(args);
 		return returned;
 	}
 
@@ -800,8 +800,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		returned.setType(type);
 		returned.setParent(parent);
 		returned.setFunction(creationScheme);
-		returned.setArguments(args);
 		returned.setBindable(bindable);
+		returned.setArguments(args);
 		return returned;
 	}
 
