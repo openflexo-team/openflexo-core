@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.PrimitiveType;
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -137,7 +136,7 @@ public interface PrimitiveRole<T> extends BasicProperty<T> {
 			return returned;
 		}
 
-		@Override
+		/*@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
@@ -146,7 +145,7 @@ public interface PrimitiveRole<T> extends BasicProperty<T> {
 					compilationUnit.ensureJavaImport(rawType);
 				}
 			}
-		}
+		}*/
 
 	}
 }

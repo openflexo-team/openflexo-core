@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -120,7 +119,7 @@ public interface JavaRole<T> extends BasicProperty<T> {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
@@ -129,7 +128,7 @@ public interface JavaRole<T> extends BasicProperty<T> {
 					compilationUnit.ensureJavaImport(rawType);
 				}
 			}
-		}
+		}*/
 
 		/*@Override
 		public void handleTypeDeclarationInImports() {

@@ -51,6 +51,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
@@ -578,6 +579,17 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			}
 			else {
 				setType(type);
+			}
+		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (compilationUnit != null) {
+				Class<?> rawType = TypeUtils.getRawType(getType());
+				if (!TypeUtils.isPrimitive(rawType)) {
+					compilationUnit.ensureJavaImport(rawType);
+				}
 			}
 		}
 
