@@ -246,7 +246,7 @@ Tokens
    // FML Keywords
    {normal} kw_abstract = 'abstract';
    {normal} kw_action = 'action';
-   {normal} kw_as = 'as';
+   {normal,binding} kw_as = 'as';
    {command,script,normal} kw_assert = 'assert';
    {normal,binding} kw_begin = 'begin';
    {normal} kw_concept = 'concept';
@@ -262,7 +262,7 @@ Tokens
    {normal,binding} kw_from = 'from';
    {normal} kw_get = 'get';
    {normal} kw_if = 'if';
-   {normal} kw_import = 'import';
+   {normal -> binding} kw_import = 'import';
    {normal} kw_in = 'in';
    {normal,binding} kw_instanceof = 'instanceof';
    {normal} kw_listen = 'listen';
@@ -283,7 +283,7 @@ Tokens
    {normal} kw_super = 'super';
    {normal} kw_then = 'then';
    {normal,binding} kw_unique = 'unique';
-   {normal} kw_use = 'use';
+   {normal -> binding} kw_use = 'use';
    {normal -> binding} kw_values = 'values';
    {normal,binding} kw_where = 'where';
    {normal} kw_while = 'while';
