@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
@@ -49,6 +50,7 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
@@ -103,10 +105,23 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 			}
 		}
 		startDeserializing();
+
+		// Another chance to retrieve VirtualModel
+		if (getVirtualModelResource() == null && StringUtils.isNotEmpty(getVirtualModelURI())) {
+			CompilationUnitResource vmResource = getServiceManager().getVirtualModelLibrary()
+					.getCompilationUnitResource(getVirtualModelURI());
+			setVirtualModelResource(vmResource);
+		}
+
+		VirtualModel virtualModel = null;
+		if (getVirtualModelResource() != null) {
+			virtualModel = getVirtualModelResource().getCompilationUnit().getVirtualModel();
+		}
+
 		VMI returned = super.loadResourceData();
 
-		if (getVirtualModelResource() != null) {
-			returned.setVirtualModel(getVirtualModelResource().getCompilationUnit().getVirtualModel());
+		if (virtualModel != null) {
+			returned.setVirtualModel(virtualModel);
 		}
 
 		if (getContainer() != null && getContainer().getVirtualModelInstance() != null) {
