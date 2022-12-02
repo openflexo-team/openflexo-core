@@ -157,8 +157,12 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	public synchronized void registerResource(FlexoResource<?> resource) throws DuplicateURIException {
 
 		if (resource.getResourceCenter() == null) {
-			logger.warning("Resource belonging to no ResourceCenter: " + resource);
-			// Thread.dumpStack();
+			if (resource.getClass().getSimpleName().contains("FlexoPreferencesResource")) {
+				// Do not warn for FlexoPreferencesResource
+			}
+			else {
+				logger.warning("Resource belonging to no ResourceCenter: " + resource);
+			}
 		}
 
 		if (getResource(resource.getURI()) != null) {
