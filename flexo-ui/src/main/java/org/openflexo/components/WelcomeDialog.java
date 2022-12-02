@@ -55,6 +55,7 @@ import org.openflexo.view.FlexoFrame;
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public class WelcomeDialog extends JFIBDialog<ApplicationData> {
 
 	private static final Logger logger = FlexoLogger.getLogger(WelcomeDialog.class.getPackage().getName());
@@ -65,8 +66,7 @@ public class WelcomeDialog extends JFIBDialog<ApplicationData> {
 		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE), applicationContext.getApplicationData(),
 				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 
-		System.out.println("********** Main localizer = " + FlexoLocalization.getMainLocalizer());
-		System.out.println("new_project=" + FlexoLocalization.getMainLocalizer().localizedForKey("new_project"));
+		logger.info("Main localizer = " + FlexoLocalization.getMainLocalizer());
 
 		setResizable(false);
 	}
