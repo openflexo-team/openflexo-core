@@ -58,7 +58,8 @@ public class RemoveResourceCenterTask extends FlexoApplicationTask {
 	private final FlexoResourceCenter<?> removedResourceCenter;
 
 	public RemoveResourceCenterTask(FlexoResourceCenterService rcService, FlexoResourceCenter<?> removedResourceCenter) {
-		super(FlexoLocalization.getMainLocalizer().localizedForKey("removing_resource_center") + " " + removedResourceCenter.toString(),
+		super("RemoveResourceCenter",
+				FlexoLocalization.getMainLocalizer().localizedForKey("removing_resource_center") + " " + removedResourceCenter.toString(),
 				rcService.getServiceManager());
 		this.rcService = rcService;
 		this.removedResourceCenter = removedResourceCenter;

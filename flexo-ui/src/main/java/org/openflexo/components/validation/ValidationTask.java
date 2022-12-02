@@ -40,6 +40,7 @@ package org.openflexo.components.validation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.localization.FlexoLocalization;
@@ -63,7 +64,7 @@ public class ValidationTask extends FlexoApplicationTask implements PropertyChan
 	private final FlexoFIBValidationController controller;
 
 	public ValidationTask(ValidationModel validationModel, Validable objectToValidate, FlexoFIBValidationController controller) {
-		super(getLocales(validationModel).localizedForKey("validating") + " " + objectToValidate, null);
+		super("ValidationTask", getLocales(validationModel).localizedForKey("validating") + " " + objectToValidate, null);
 		this.validationModel = validationModel;
 		this.objectToValidate = objectToValidate;
 		this.controller = controller;
@@ -76,6 +77,7 @@ public class ValidationTask extends FlexoApplicationTask implements PropertyChan
 		return FlexoLocalization.getMainLocalizer();
 	}
 
+	@Override
 	public LocalizedDelegate getLocales() {
 		return getLocales(validationModel);
 	}

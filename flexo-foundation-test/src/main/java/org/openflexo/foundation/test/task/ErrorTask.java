@@ -48,7 +48,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class ErrorTask extends FlexoTask {
 
 	public ErrorTask(String name) {
-		super(name);
+		super("ERROR_TASK", name);
 	}
 
 	@SuppressWarnings(value = "RANGE_ARRAY_INDEX", justification = "The exception is intensional for test purpose")

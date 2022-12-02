@@ -366,7 +366,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	private class SelectDefaultObjectWhenRequired extends FlexoTask {
 
 		public SelectDefaultObjectWhenRequired() {
-			super(getLocales().localizedForKey("select_default_object"));
+			super("SelectDefaultObject", getLocales().localizedForKey("select_default_object"));
 		}
 
 		@Override
@@ -445,7 +445,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			if (quitIfNoModuleLeft) {
 				try {
 					getModuleLoader().quit(false);
-				} catch (OperationCancelledException e) {}
+				} catch (OperationCancelledException e) {
+				}
 			}
 		}
 

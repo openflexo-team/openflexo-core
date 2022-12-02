@@ -61,8 +61,8 @@ public abstract class CoreFlexoTask extends FlexoTask {
 
 	private final FlexoEditor editor;
 
-	public CoreFlexoTask(String title, FlexoEditor editor) {
-		super(title);
+	public CoreFlexoTask(String taskId, String title, FlexoEditor editor) {
+		super(taskId, title);
 		this.editor = editor;
 	}
 

@@ -54,7 +54,8 @@ public class ActivateBugReportServiceTask extends FlexoApplicationTask {
 	private BugReportService bugReportService;
 
 	public ActivateBugReportServiceTask(ApplicationContext applicationContext) {
-		super(FlexoLocalization.getMainLocalizer().localizedForKey("activate_bug_report_service"), applicationContext);
+		super("ActivateBugReportService", FlexoLocalization.getMainLocalizer().localizedForKey("activate_bug_report_service"),
+				applicationContext);
 
 		/*for (FlexoTask task : getServiceManager().getTaskManager().getScheduledTasks()) {
 			if (task instanceof AddResourceCenterTask) {

@@ -76,6 +76,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public static final String TASK_BAR_HIDE = "hideTaskBar";
 	public static final String TASK_BAR_FORCE_HIDE = "forceHideTaskBar";
 
+	private final String taskId;
 	private final String taskTitle;
 	private TaskStatus status;
 	private FlexoTaskThread thread;
@@ -137,12 +138,19 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 				return FlexoLocalization.getMainLocalizer().localizedForKey("unknown_task_status");
 			}
 		};
+
 		public abstract String getLocalizedName();
 	}
 
 	private final PropertyChangeSupport pcSupport = new PropertyChangeSupport(this);
 
-	public FlexoTask(String title) {
+	/**
+	 * 
+	 * @param taskId
+	 * @param title
+	 */
+	public FlexoTask(String taskId, String title) {
+		this.taskId = taskId;
 		this.taskTitle = title;
 		status = TaskStatus.WAITING;
 		dependantTasks = new ArrayList<>();
@@ -156,6 +164,10 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	@Override
 	public String getDeletedProperty() {
 		return null;
+	}
+
+	public String getTaskId() {
+		return taskId;
 	}
 
 	public String getTaskTitle() {

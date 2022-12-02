@@ -80,7 +80,7 @@ public class SendBugReportServiceTask extends FlexoApplicationTask {
 	JFIBDialog<JIRAIssueReportDialog> dialog;
 
 	public SendBugReportServiceTask(Exception e, FlexoModule<?> module, FlexoProject project, ApplicationContext applicationContext) {
-		super(FlexoLocalization.getMainLocalizer().localizedForKey("send_issue"), applicationContext);
+		super("SendBugReport", FlexoLocalization.getMainLocalizer().localizedForKey("send_issue"), applicationContext);
 		this.bugReportService = applicationContext.getBugReportService();
 		this.module = module;
 		this.project = project;

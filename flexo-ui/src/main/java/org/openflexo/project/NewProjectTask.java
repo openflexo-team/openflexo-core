@@ -69,7 +69,7 @@ public class NewProjectTask extends FlexoApplicationTask {
 
 	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory,
 			Class<? extends ProjectNature> projectNatureClass) {
-		super(FlexoLocalization.getMainLocalizer().localizedForKey("new_project") + " " + projectDirectory.getName(),
+		super("NewProject", FlexoLocalization.getMainLocalizer().localizedForKey("new_project") + " " + projectDirectory.getName(),
 				projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;

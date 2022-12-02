@@ -325,7 +325,7 @@ public class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends Fle
 		private ImageSelectorDetailsPanel panel;
 
 		public LoadEditor(T drawingRun) {
-			super(FlexoLocalization.getMainLocalizer().localizedForKey("opening_document_editor"));
+			super("DocImageSelector", FlexoLocalization.getMainLocalizer().localizedForKey("opening_document_editor"));
 			this.drawingRun = drawingRun;
 		}
 

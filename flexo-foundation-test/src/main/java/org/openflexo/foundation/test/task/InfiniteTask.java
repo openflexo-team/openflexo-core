@@ -50,7 +50,7 @@ public class InfiniteTask extends FlexoTask {
 	private final BlockingQueue<BigInteger> queue;
 
 	public InfiniteTask(String name) {
-		super(name);
+		super("INFINITE_TASK", name);
 		queue = new ArrayBlockingQueue<>(1000);
 	}
 

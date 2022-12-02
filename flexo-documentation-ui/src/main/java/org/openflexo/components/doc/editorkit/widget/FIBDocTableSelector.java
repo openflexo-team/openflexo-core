@@ -344,7 +344,7 @@ public class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends Flexo
 		private TableSelectorDetailsPanel panel;
 
 		public LoadEditor(T table) {
-			super(FlexoLocalization.getMainLocalizer().localizedForKey("opening_document_editor"));
+			super("DocTableSelector", FlexoLocalization.getMainLocalizer().localizedForKey("opening_document_editor"));
 			this.table = table;
 		}
 

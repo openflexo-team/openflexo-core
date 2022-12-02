@@ -61,7 +61,8 @@ public class RevalidationTask extends FlexoApplicationTask implements PropertyCh
 	private final ValidationReport validationReport;
 
 	public RevalidationTask(ValidationReport validationReport) {
-		super(getLocales(validationReport.getValidationModel()).localizedForKey("revalidating") + " " + validationReport.getRootObject(),
+		super("RevalidateTask",
+				getLocales(validationReport.getValidationModel()).localizedForKey("revalidating") + " " + validationReport.getRootObject(),
 				null);
 		this.validationReport = validationReport;
 	}

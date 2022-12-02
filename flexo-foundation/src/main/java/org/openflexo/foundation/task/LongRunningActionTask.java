@@ -52,7 +52,7 @@ public abstract class LongRunningActionTask extends FlexoTask {
 	private final LongRunningAction action;
 
 	public LongRunningActionTask(LongRunningAction action) {
-		super(action.getLocalizedName());
+		super(action.getClass().getSimpleName(), action.getLocalizedName());
 		this.action = action;
 	}
 

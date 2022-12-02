@@ -400,7 +400,7 @@ public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends
 		private FragmentSelectorDetailsPanel panel;
 
 		public LoadEditor(F fragment) {
-			super(FlexoLocalization.getMainLocalizer().localizedForKey("opening_document_editor"));
+			super("DocFragmentSelector", FlexoLocalization.getMainLocalizer().localizedForKey("opening_document_editor"));
 			this.fragment = fragment;
 		}
 

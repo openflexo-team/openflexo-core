@@ -46,7 +46,7 @@ import org.openflexo.foundation.task.Progress;
 public class ExampleTask extends FlexoTask {
 
 	public ExampleTask(String name) {
-		super(name);
+		super("EXAMPLE_TASK", name);
 	}
 
 	@Override

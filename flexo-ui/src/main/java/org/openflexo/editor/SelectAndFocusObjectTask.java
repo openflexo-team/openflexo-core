@@ -55,7 +55,8 @@ public class SelectAndFocusObjectTask extends FlexoApplicationTask {
 	private final FlexoObject objectToFocusOn;
 
 	public SelectAndFocusObjectTask(FlexoController controller, FlexoObject objectToFocusOn) {
-		super(controller.getModuleLocales().localizedForKey("opening_module_view_for_object") + " " + objectToFocusOn,
+		super("SelectAndFocusObject",
+				controller.getModuleLocales().localizedForKey("opening_module_view_for_object") + " " + objectToFocusOn,
 				controller.getApplicationContext());
 		this.controller = controller;
 		this.objectToFocusOn = objectToFocusOn;

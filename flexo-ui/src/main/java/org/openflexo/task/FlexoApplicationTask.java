@@ -58,8 +58,8 @@ public abstract class FlexoApplicationTask extends FlexoTask {
 
 	private final FlexoServiceManager serviceManager;
 
-	public FlexoApplicationTask(String title, FlexoServiceManager serviceManager) {
-		super(title);
+	public FlexoApplicationTask(String taskId, String title, FlexoServiceManager serviceManager) {
+		super(taskId, title);
 		this.serviceManager = serviceManager;
 	}
 
