@@ -587,7 +587,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
 				Class<?> rawType = TypeUtils.getRawType(getType());
-				if (!TypeUtils.isPrimitive(rawType)) {
+				if (rawType != null && !TypeUtils.isPrimitive(rawType)) {
 					compilationUnit.ensureJavaImport(rawType);
 				}
 			}
