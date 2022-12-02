@@ -65,8 +65,9 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 		// If we want to update locales, we have to retrieve source code dictionaries
 		if (isDev) {
 			// Get Localized from flexolocalization here because we need main Localized support to come from gina project
-			Resource sourceCodeResource = ResourceLocator.locateSourceCodeResource(getLocalizedDirectoryResource(),
-					".*flexolocalization.*");
+			Resource sourceCodeResource = ResourceLocator
+					.locateSourceCodeResource(getLocalizedDirectoryResource()/*,
+																				".*flexolocalization.*"*/);
 			if (sourceCodeResource != null) {
 				setLocalizedDirectoryResource(sourceCodeResource);
 			}
