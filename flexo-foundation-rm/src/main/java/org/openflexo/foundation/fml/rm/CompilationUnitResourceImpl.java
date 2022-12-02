@@ -217,12 +217,17 @@ public abstract class CompilationUnitResourceImpl
 			data.finalizeDeserialization();
 		}
 		if (data == null) {
-			logger.warning("INVESTIGATE: NO DATA has been derserialized from VirtualModelResource - " + this.getURI());
+			logger.warning("INVESTIGATE: NO DATA has been dereserialized from CompilationUnitResource - " + this.getURI());
 		}
 		else {
-			data.getVirtualModel().finalizeDeserialization();
-			for (FlexoConcept fc : data.getVirtualModel().getFlexoConcepts()) {
-				fc.finalizeDeserialization();
+			if (data.getVirtualModel() != null) {
+				data.getVirtualModel().finalizeDeserialization();
+				for (FlexoConcept fc : data.getVirtualModel().getFlexoConcepts()) {
+					fc.finalizeDeserialization();
+				}
+			}
+			else {
+				logger.warning("INVESTIGATE: NO VirtualModel in CompilationUnitResource - " + this.getURI());
 			}
 		}
 		super.stopDeserializing();
@@ -323,10 +328,10 @@ public abstract class CompilationUnitResourceImpl
 				e.printStackTrace();
 			}
 		}
-		
+
 		return super.doesIODelegateExist();
 	}
-	
+
 	@Override
 	public boolean isLoading() {
 		return isLoading;
@@ -391,7 +396,7 @@ public abstract class CompilationUnitResourceImpl
 			e.printStackTrace();
 		} finally {
 			setLoading(false);
-			//notifyResourceLoaded();
+			// notifyResourceLoaded();
 		}
 
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
