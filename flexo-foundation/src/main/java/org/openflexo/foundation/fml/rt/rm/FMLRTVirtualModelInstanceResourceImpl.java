@@ -70,6 +70,10 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 	 */
 	@Override
 	public String getDisplayName() {
+		// logger.info("VMI " + getName() + " isLoading=" + isLoading() + " isLoaded=" + isLoaded());
+		if (isLoading()) {
+			return super.getDisplayName() + "[Loading]";
+		}
 		if (isLoaded() && getLoadedResourceData().getFlexoConcept() != null
 				&& getLoadedResourceData().getFlexoConcept().getInspector() != null
 				&& getLoadedResourceData().getFlexoConcept().getInspector().getRenderer().isValid()) {
