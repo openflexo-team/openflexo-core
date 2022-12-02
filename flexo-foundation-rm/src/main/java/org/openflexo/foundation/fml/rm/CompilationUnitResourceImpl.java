@@ -755,7 +755,7 @@ public abstract class CompilationUnitResourceImpl
 	}
 
 	private FMLCompilationUnit loadFromFML() throws ParseException, IOException {
-		System.out.println("Loading from FML " + getIODelegate().getSerializationArtefact());
+		logger.info("Loading from FML " + getIODelegate().getSerializationArtefact());
 		InputStream inputStream = getInputStream();
 		try {
 			FMLCompilationUnit returned = getFMLParser().parse(inputStream, getFactory(), (modelSlotClasses) -> {
@@ -949,9 +949,9 @@ public abstract class CompilationUnitResourceImpl
 			willConvertFromXMLtoFML();
 		}
 
-		System.out.println("Loading from XML " + getXMLArtefact());
+		logger.info("Loading from XML " + getXMLArtefact());
 		try {
-			System.out.println("Resource " + getXMLArtefactResource());
+			logger.info("Resource " + getXMLArtefactResource());
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

@@ -319,7 +319,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// Little block to change the currentPerspective if the
 		// current perspective can't handle this object
 		FlexoPerspective perspective = getCurrentPerspective();
-		
+
 		if (object == null || perspective.getRepresentableMasterObject(object) == null) {
 			for (FlexoPerspective p : getPerspectives()) {
 				if (p == null) {
@@ -507,7 +507,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	}
 
 	private static FlexoObject getParent(FlexoObject object) {
-		logger.warning("Please reimplement this (getParent(FlexoObject)");
+		// Please reimplement this
 		return null;
 	}
 
@@ -556,9 +556,9 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				FlexoProject<?> project = (FlexoProject<?>) evt.getNewValue();
 				if (getCurrentPerspective() != null) {
 					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
-					System.out.println("Je veux afficher le project " + project);
-					System.out.println("Object " + object);
-					System.out.println("Editor: " + getProjectLoader().getEditorForProject(project));
+					logger.info("Displaying project " + project);
+					logger.info("Object " + object);
+					logger.info("Editor: " + getProjectLoader().getEditorForProject(project));
 					setCurrentLocation(getProjectLoader().getEditorForProject(project), object, getCurrentPerspective());
 				}
 				else {

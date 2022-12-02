@@ -38,16 +38,21 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.JavaImportDeclaration;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNode<N, JavaImportDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
+public abstract class AbstractJavaImportNode<N extends Node>
+		extends FMLObjectNode<N, JavaImportDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
+
+	private static final Logger logger = Logger.getLogger(AbstractJavaImportNode.class.getPackage().getName());
 
 	public AbstractJavaImportNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
@@ -65,7 +70,7 @@ public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNo
 	@Override
 	public AbstractJavaImportNode<N> deserialize() {
 		if (getParent() instanceof FMLCompilationUnitNode) {
-			System.out.println("Adding to import as " + getModelObject().getFullQualifiedClassName());
+			logger.info("Adding to import as " + getModelObject().getFullQualifiedClassName());
 			((FMLCompilationUnitNode) getParent()).getModelObject().addToJavaImports(getModelObject());
 		}
 
