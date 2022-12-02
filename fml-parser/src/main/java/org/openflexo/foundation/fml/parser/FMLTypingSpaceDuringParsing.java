@@ -374,7 +374,8 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		@Override
 		public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
 			// System.out.println("Resolving FlexoConcept " + typeToResolve + " in " + compilationUnitResource);
-			if (compilationUnitResource.getLoadedResourceData() != null) {
+			if (compilationUnitResource.getLoadedResourceData() != null
+					&& compilationUnitResource.getLoadedResourceData().getVirtualModel() != null) {
 				// System.out.println("Resolved " + typeToResolve);
 				return compilationUnitResource.getLoadedResourceData().getVirtualModel().getFlexoConcept(typeToResolve.getConceptURI());
 			}
