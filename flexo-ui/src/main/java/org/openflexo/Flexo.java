@@ -218,11 +218,14 @@ public class Flexo {
 			}
 		}
 
+		// Pre-initialization of logging
+		FlexoLoggingManager.initialize(-1, false, null, Level.INFO, null);
+
 		platform = Platform.determinePlatform();
-		System.out.println("Platform=" + platform);
+		logger.info("Platform=" + platform);
 
 		platformHook = Platform.determinePlatform().accept(PlatformHook.CONSTRUCT_FROM_PLATFORM);
-		System.out.println("platformHook=" + platformHook);
+		logger.info("platformHook=" + platformHook);
 
 		DefaultNativeOsCallback osCallback = new DefaultNativeOsCallback();
 
@@ -268,7 +271,7 @@ public class Flexo {
 
 		osCallback.setApplicationContext(applicationContext);
 
-		// FlexoProperties.load();
+		// Real initialization of logging
 		initializeLoggingManager(applicationContext);
 
 		/*final ApplicationContext applicationContext = new ApplicationContext() {
