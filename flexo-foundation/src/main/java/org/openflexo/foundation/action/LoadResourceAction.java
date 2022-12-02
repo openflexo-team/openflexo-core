@@ -95,8 +95,8 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 		if (getFocusedObject() instanceof FlexoResource) {
-
 			if (getFocusedObject() instanceof FlexoProjectResource) {
+				logger.info("Loading project " + getFocusedObject());
 				FlexoProjectResource<Object> prjResource = (FlexoProjectResource<Object>) getFocusedObject();
 				Object serializationArtefact = prjResource.getIODelegate().getSerializationArtefact();
 				Object projectDirectory = prjResource.getDelegateResourceCenter().getContainer(serializationArtefact);
@@ -107,6 +107,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 				}
 			}
 			else if (!((FlexoResource<?>) getFocusedObject()).isLoaded()) {
+				logger.info("Loading resource " + getFocusedObject());
 				// FlexoProgress progress = getEditor().getFlexoProgressFactory().makeFlexoProgress("loading_resource", 3);
 				Progress.progress("loading_resource");
 				try {
