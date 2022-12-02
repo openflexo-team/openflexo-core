@@ -56,6 +56,6 @@ public class FlexoTaskThread extends Thread {
 
 	@Override
 	public String toString() {
-		return "FlexoTaskThread " + super.toString();
+		return super.toString() + "[" + (getTask() != null ? getTask().getTaskTitle() : "null") + "]";
 	}
 }
