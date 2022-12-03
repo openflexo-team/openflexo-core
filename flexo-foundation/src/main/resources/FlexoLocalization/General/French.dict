@@ -303,6 +303,7 @@ type_variable=type_variable
 undo=D\u00E9faire
 undo_manager=Gestionnaire d'undo
 unexpected_exception_occured=OpenFlexo a d\u00E9tect\u00E9 une erreur interne. OpenFlexo continuera de fonctionner mais il est cependant recommand\u00E9 de le red\u00E9marrer.
+unnamed=unnamed
 uri=URI
 validate=validate
 validate_project=Valider le projet

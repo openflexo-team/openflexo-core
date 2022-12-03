@@ -303,6 +303,7 @@ type_variable=Type variable
 undo=Undo
 undo_manager=Undo manager
 unexpected_exception_occured=OpenFlexo has detected an internal error. OpenFlexo will continue to work but it is highly recommended to restart it.
+unnamed=Unnamed
 uri=URI
 validate=Validate
 validate_project=Validate Project

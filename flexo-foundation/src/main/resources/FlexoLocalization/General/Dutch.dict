@@ -303,6 +303,7 @@ type_variable=Type variable
 undo=Terug
 undo_manager=undo_manager
 unexpected_exception_occured=OpenFlexo heeft een interne fout opgespoord. OpenFlexo zal verder functioneren maar het is erg toegewezen om het te herstarten
+unnamed=Unnamed
 uri=URI
 validate=Validate
 validate_project=Validate Project
