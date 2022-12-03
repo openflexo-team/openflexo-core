@@ -762,6 +762,7 @@ public abstract class CompilationUnitResourceImpl
 				return updateFMLModelFactory(modelSlotClasses);
 			}, false); // In this case, don't perform deserialization now, this will be done later in a second pass
 			returned.setResource(this);
+			logger.info("DONE load from FML " + getIODelegate().getSerializationArtefact());
 			return returned;
 		} catch (ParseException e) {
 			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());

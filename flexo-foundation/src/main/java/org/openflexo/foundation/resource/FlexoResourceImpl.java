@@ -100,7 +100,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		// returns true if IO delegate exists
 		return doesIODelegateExist();
 	}
-	
+
 	protected boolean doesIODelegateExist() {
 		return getIODelegate() != null && getIODelegate().exists();
 	}
@@ -139,7 +139,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public RD getResourceData()
+	public final RD getResourceData()
 			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isDeleted()) {
@@ -152,6 +152,43 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			// Avoid stack overflow, but this should never happen
 			logger.warning("Preventing StackOverflow while loading resource " + this);
 			Thread.dumpStack();
+			return resourceData;
+		}
+
+		/*if (resourceData == null && isLoadable() && !isLoading()) {
+			// The resourceData is null, we try to load it
+		
+			// Now load the non cross-reference dependencies
+			for (FlexoResource<?> dependency : getNonCrossReferenceDependencies()) {
+				dependency.loadResourceData();
+			}
+		
+			// Then really load
+			setLoading(true);
+			resourceData = loadResourceData();
+			setLoading(false);
+		}
+		return resourceData;*/
+
+		return performLoadResourceData();
+
+	}
+
+	/**
+	 * Internally used to perform loading of this {@link FlexoResource}
+	 * 
+	 * This method is multi-thread safe and prevent loading from multiple threads (synchronized keyword)
+	 * 
+	 * @return
+	 * @throws ResourceLoadingCancelledException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
+	 * @throws FlexoException
+	 */
+	protected synchronized RD performLoadResourceData()
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+
+		if (resourceData != null || isLoading()) {
 			return resourceData;
 		}
 
@@ -169,6 +206,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			setLoading(false);
 		}
 		return resourceData;
+
 	}
 
 	/**
