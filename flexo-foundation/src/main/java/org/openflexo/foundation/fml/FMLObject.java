@@ -75,6 +75,7 @@ import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
@@ -280,7 +281,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public void addToFMLPropertyValues(FMLPropertyValue<?, ?> propertyValue);
 
 	@Remover(FML_PROPERTY_VALUES_KEY)
-	public void removeFromFMLPropertyValues(FMLPropertyValue<?, ?> metaData);
+	public void removeFromFMLPropertyValues(FMLPropertyValue<?, ?> propertyValue);
+
+	@Reindexer(FML_PROPERTY_VALUES_KEY)
+	public void moveFMLPropertyValueToIndex(FMLPropertyValue<?, ?> propertyValue, int index);
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
