@@ -936,6 +936,18 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return buildFMLValidationReport(null);
 	}
 
+	@Override
+	public ValidationReport getValidationReport(ResourceData<?> resourceData, boolean createWhenNotExistent) {
+		if (resourceData instanceof FMLCompilationUnit) {
+			ValidationReport returned = validationReports.get(resourceData);
+			if (returned == null && createWhenNotExistent) {
+				return buildFMLValidationReport((FMLCompilationUnit) resourceData);
+			}
+			return returned;
+		}
+		return null;
+	}
+
 	public FIBCompilationUnitBrowser getCompilationUnitBrowser() {
 		return compilationUnitBrowser;
 	}
