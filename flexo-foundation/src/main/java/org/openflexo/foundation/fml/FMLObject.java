@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -606,7 +607,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return deserializationFactory;
 		}
 
-		public String getFMLPrettyPrint() {
+		public synchronized String getFMLPrettyPrint() {
 			if (this instanceof FMLPrettyPrintable) {
 				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
 				if (ppDelegate == null) {
@@ -722,7 +723,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 		private <I extends FMLObject, T> FMLPropertyValue<I, T> retrieveFMLPropertyValue(FMLProperty<I, T> property) {
 
-			for (FMLPropertyValue<?, ?> fmlPropertyValue : getFMLPropertyValues()) {
+			for (FMLPropertyValue<?, ?> fmlPropertyValue : new ArrayList<>(getFMLPropertyValues())) {
 				if (fmlPropertyValue.getProperty() == property) {
 					return (FMLPropertyValue<I, T>) fmlPropertyValue;
 				}

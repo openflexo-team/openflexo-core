@@ -1046,7 +1046,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		@Override
-		public String getFMLPrettyPrint() {
+		public synchronized String getFMLPrettyPrint() {
 			manageImports();
 			return super.getFMLPrettyPrint();
 		}
