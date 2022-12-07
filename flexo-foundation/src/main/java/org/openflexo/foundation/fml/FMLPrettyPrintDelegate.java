@@ -72,6 +72,8 @@ public interface FMLPrettyPrintDelegate<T> extends PrettyPrintDelegate<T> {
 
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
 
+	public boolean hasSource();
+
 	public enum FragmentContext {
 		NAME, URI, HEADER
 	}

@@ -253,6 +253,11 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return semanticsAnalyzer.getModelFactory();
 	}
 
+	@Override
+	public boolean hasSource() {
+		return getASTNode() != null;
+	}
+
 	/**
 	 * Return fragment matching AST node
 	 * 
