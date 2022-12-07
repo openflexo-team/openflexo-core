@@ -73,6 +73,8 @@ public class FMLEditorParser extends AbstractParser {
 	private final FMLCompilationUnitParser fmlParser;
 	private FMLParseResult result;
 
+	private boolean isInitialized = false;
+
 	public FMLEditorParser(FMLEditor editor, FMLCompilationUnit compilationUnit) {
 		this.editor = editor;
 		fmlParser = new FMLCompilationUnitParser();
@@ -81,7 +83,7 @@ public class FMLEditorParser extends AbstractParser {
 			FMLValidationReport validationReport = validate(compilationUnit);
 			result.setValidationReport(validationReport);
 		}
-
+		isInitialized = true;
 	}
 
 	public FMLCompilationUnitParser getFMLParser() {
@@ -133,11 +135,12 @@ public class FMLEditorParser extends AbstractParser {
 			// System.out.println(editor.getTextArea().getText());
 			// System.out.println("]");
 
-			FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(), (modelSlotClasses) -> {
-				// System.out.println("Parsing: " + editor.getTextArea().getText());
-				// System.out.println("Uses model slot classes : " + modelSlotClasses);
-				return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
-			}, true); // Finalize deserialization now
+			FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(),
+					(modelSlotClasses) -> {
+						// System.out.println("Parsing: " + editor.getTextArea().getText());
+						// System.out.println("Uses model slot classes : " + modelSlotClasses);
+						return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
+					}, true); // Finalize deserialization now
 
 			// System.out.println("Parsing succeeded");
 
@@ -263,7 +266,7 @@ public class FMLEditorParser extends AbstractParser {
 		result.addNotice(new UnexpectedExceptionNotice(this, e));
 		result.addUnexpectedException(e);
 
-		//result.setParsedLines(0, 0);
+		// result.setParsedLines(0, 0);
 
 		updateEditorGutter();
 	}
@@ -314,7 +317,8 @@ public class FMLEditorParser extends AbstractParser {
 				if (parserNotice.getLine() > 0 && parserNotice.getLine() <= editor.getTextArea().getLineCount()) {
 					editor.getGutter().addLineTrackingIcon(parserNotice.getLine() - 1, ((FMLNotice) parserNotice).getIcon());
 				}
-				else {
+				else if (isInitialized) {
+					// We warn only if it is initialized
 					logger.warning("Unexpected notice at line:" + parserNotice.getLength() + " " + parserNotice);
 				}
 			} catch (BadLocationException e) {
