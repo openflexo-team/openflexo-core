@@ -142,6 +142,8 @@ public class FMLEditorParser extends AbstractParser {
 						return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
 					}, true); // Finalize deserialization now
 
+			parsedCompilationUnit.setResource(getFMLResource());
+
 			// System.out.println("Parsing succeeded");
 
 			for (ElementImportDeclaration elementImportDeclaration : parsedCompilationUnit.getElementImports()) {
