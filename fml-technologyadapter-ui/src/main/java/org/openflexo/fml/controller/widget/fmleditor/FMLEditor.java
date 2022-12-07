@@ -263,10 +263,29 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		validationPanel = new FMLValidationPanel(getValidationReport(), this, flexoController);
 		splitPanel.add(validationPanel, LayoutPosition.BOTTOM.name());
 
+		// boolean requiresNewParsing = !fmlResource.getLoadedResourceData().getPrettyPrintDelegate().hasSource();
+
 		// This call is a little bit brutal, because it triggers a new parsing
 		// But it has the advantage to recompute a full-valid FML pretty-print with FML code and internal representation synchronized
 		// Validation status is also updated during this call
-		textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
+		String fmlPrettyPrint = fmlResource.getLoadedResourceData().getFMLPrettyPrint();
+		textArea.setText(fmlPrettyPrint);
+
+		boolean requiresNewParsing = !fmlResource.getLoadedResourceData().getPrettyPrintDelegate().hasSource();
+		if (requiresNewParsing) {
+			// Special case for a FML which wasn't deserialized from text and not having textual FML representation
+			// Force parsing now
+			logger.info("No initial textual FML, reparse it now");
+			parseImmediately();
+
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					textArea.setText(fmlPrettyPrint);
+				}
+			});
+		}
 
 	}
 
