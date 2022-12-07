@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
@@ -2449,6 +2450,33 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					|| evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
 				notifyParentConceptsHaveChanged();
 			}
+		}
+
+		// Flag used to avoid stack overflow
+		private boolean isHandlingRequiredImports = false;
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			if (isHandlingRequiredImports) {
+				return;
+			}
+			isHandlingRequiredImports = true;
+			super.handleRequiredImports(compilationUnit);
+			for (FlexoConcept flexoConcept : getParentFlexoConcepts()) {
+				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
+				if (flexoConcept instanceof VirtualModel) {
+					if (((VirtualModel) flexoConcept).getCompilationUnit() != null) {
+						compilationUnit.ensureResourceImport(((VirtualModel) flexoConcept).getCompilationUnit());
+					}
+				}
+				else {
+					FMLCompilationUnit parentCU = flexoConcept.getDeclaringCompilationUnit();
+					if (parentCU != null && parentCU != this) {
+						compilationUnit.ensureResourceImport(parentCU);
+					}
+				}
+			}
+			isHandlingRequiredImports = false;
 		}
 
 	}
