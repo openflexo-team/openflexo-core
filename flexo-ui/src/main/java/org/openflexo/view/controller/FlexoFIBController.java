@@ -98,6 +98,7 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.pamela.validation.ConsistencySuccessfullyChecked;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.InformationIssue;
 import org.openflexo.pamela.validation.Validable;
@@ -383,6 +384,9 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			else {
 				return FIBUtilsIconLibrary.UNFIXABLE_WARNING_ICON;
 			}
+		}
+		else if (object instanceof ConsistencySuccessfullyChecked) {
+			return IconLibrary.VALID_ICON;
 		}
 		else if (object instanceof InformationIssue) {
 			return FIBUtilsIconLibrary.INFO_ISSUE_ICON;

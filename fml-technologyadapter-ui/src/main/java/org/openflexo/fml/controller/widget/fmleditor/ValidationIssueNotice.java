@@ -40,10 +40,14 @@ package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.util.logging.Logger;
 
+import javax.swing.Icon;
+
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.FragmentContext;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.pamela.validation.ConsistencySuccessfullyChecked;
 import org.openflexo.pamela.validation.InformationIssue;
 import org.openflexo.pamela.validation.ProblemIssue;
 import org.openflexo.pamela.validation.ValidationError;
@@ -61,7 +65,7 @@ public class ValidationIssueNotice extends FMLNotice {
 
 	static final Logger logger = Logger.getLogger(ValidationIssueNotice.class.getPackage().getName());
 
-	private ValidationIssue<?, ?> issue;
+	private final ValidationIssue<?, ?> issue;
 
 	public ValidationIssueNotice(FMLEditorParser parser, ValidationIssue<?, ?> issue) {
 		super(parser, issue.getValidationReport().getValidationModel().localizedIssueMessage(issue), -1, -1, -1);
@@ -84,12 +88,21 @@ public class ValidationIssueNotice extends FMLNotice {
 	}
 
 	@Override
+	public Icon getIcon() {
+		if (issue instanceof ConsistencySuccessfullyChecked) {
+			return IconLibrary.VALID_ICON;
+		}
+		return super.getIcon();
+	}
+
+	@Override
 	public boolean isFixable() {
 		return (issue instanceof ProblemIssue) && ((ProblemIssue) issue).isFixable();
 	}
 
 	public RawSourceFragment getFragment() {
-		if (issue != null && issue.getCause() != null && issue.getValidable() instanceof FMLPrettyPrintable && ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate() != null) {
+		if (issue != null && issue.getCause() != null && issue.getValidable() instanceof FMLPrettyPrintable
+				&& ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate() != null) {
 			if (StringUtils.isNotEmpty(issue.getCause().getFragmentContext())) {
 				FragmentContext context = FragmentContext.valueOf(issue.getCause().getFragmentContext());
 				if (context != null) {
@@ -103,6 +116,9 @@ public class ValidationIssueNotice extends FMLNotice {
 
 	@Override
 	public int getLine() {
+		if (issue instanceof InformationIssue) {
+			return 1;
+		}
 		if (getFragment() != null) {
 			// System.out.println("For " + issue.getMessage() + " line: " + getFragment().getStartPosition().getLine());
 			return getFragment().getStartPosition().getLine();

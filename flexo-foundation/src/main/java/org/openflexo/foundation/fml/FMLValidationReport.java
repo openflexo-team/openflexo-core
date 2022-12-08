@@ -182,6 +182,9 @@ public class FMLValidationReport extends ValidationReport {
 	// private Map<ValidationIssue<?, ?>, Integer> lineNumbers = new HashMap<>();
 
 	public int getLineNumber(ValidationIssue<?, ?> issue) {
+		if (issue instanceof InformationIssue) {
+			return 1;
+		}
 		if (issue instanceof ParseError) {
 			return ((ParseError) issue).getLine();
 		}

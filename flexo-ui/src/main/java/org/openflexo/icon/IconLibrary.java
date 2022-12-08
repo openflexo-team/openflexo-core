@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.pamela.validation.ConsistencySuccessfullyChecked;
 import org.openflexo.pamela.validation.InformationIssue;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -288,6 +289,9 @@ public class IconLibrary {
 		}
 		else if (issue instanceof ValidationError) {
 			return ((ValidationError<?, ?>) issue).isFixable() ? IconLibrary.FIXABLE_ERROR_ICON : IconLibrary.UNFIXABLE_ERROR_ICON;
+		}
+		else if (issue instanceof ConsistencySuccessfullyChecked) {
+			return IconLibrary.VALID_ICON;
 		}
 		else if (issue instanceof InformationIssue) {
 			return IconLibrary.INFO_ISSUE_ICON;
