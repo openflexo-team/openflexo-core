@@ -63,6 +63,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -307,11 +308,9 @@ public abstract class CompilationUnitResourceImpl
 		return FMLCompilationUnit.class;
 	}
 
-	private boolean hasParseErrors = false;
-
 	@Override
-	public boolean isLoadable() {
-		return super.isLoadable() && !hasParseErrors;
+	public boolean isUnparseable() {
+		return StringUtils.isNotEmpty(getUnparseableContents());
 	}
 
 	@Override
@@ -347,7 +346,9 @@ public abstract class CompilationUnitResourceImpl
 	@Override
 	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
-		cuNode.getSemanticsAnalyzer().finalizeDeserialization();
+		if (cuNode != null) {
+			cuNode.getSemanticsAnalyzer().finalizeDeserialization();
+		}
 		notifyResourceLoaded();
 	}
 
@@ -385,12 +386,11 @@ public abstract class CompilationUnitResourceImpl
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-			hasParseErrors = true;
-
+			/*} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				// hasParseErrors = true;
+			 */
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -661,6 +661,9 @@ public abstract class CompilationUnitResourceImpl
 
 	@Override
 	public String getRawSource() {
+		if (isUnparseable()) {
+			return getUnparseableContents();
+		}
 		if (getLoadedResourceData() != null) {
 			return getLoadedResourceData().getFMLPrettyPrint();
 		}
@@ -668,7 +671,7 @@ public abstract class CompilationUnitResourceImpl
 	}
 
 	@Override
-	protected FMLCompilationUnit performLoad() throws IOException, ParseException {
+	protected FMLCompilationUnit performLoad() throws IOException {
 		switch (getPersistencyStrategy()) {
 			case XML:
 				return loadFromXML();
@@ -701,14 +704,8 @@ public abstract class CompilationUnitResourceImpl
 						}
 						else {
 							// Loading using FML file
-							try {
-								System.out.println("Loading as FML " + fmlArtefactResource);
-								return loadFromFML();
-							} catch (ParseException e) {
-								logger.warning("ParseException raised while loading " + fmlArtefactResource);
-								logger.warning("Try to load using XML version: " + xmlArtefactResource);
-								return loadFromXML();
-							}
+							System.out.println("Loading as FML " + fmlArtefactResource);
+							return loadFromFML();
 						}
 					}
 					else {
@@ -744,7 +741,7 @@ public abstract class CompilationUnitResourceImpl
 			saveToXML(getLoadedResourceData());
 		}
 
-		saveToFML(getLoadedResourceData());
+		saveToFML();
 
 		// Save meta data
 		saveMetaData();
@@ -754,19 +751,31 @@ public abstract class CompilationUnitResourceImpl
 		}
 	}
 
-	private FMLCompilationUnit loadFromFML() throws ParseException, IOException {
+	private FMLCompilationUnit loadFromFML() throws /*ParseException,*/ IOException {
 		logger.info("Loading from FML " + getIODelegate().getSerializationArtefact());
 		InputStream inputStream = getInputStream();
 		try {
 			FMLCompilationUnit returned = getFMLParser().parse(inputStream, getFactory(), (modelSlotClasses) -> {
 				return updateFMLModelFactory(modelSlotClasses);
 			}, false); // In this case, don't perform deserialization now, this will be done later in a second pass
+			setUnparseableContents(null);
 			returned.setResource(this);
 			logger.info("DONE load from FML " + getIODelegate().getSerializationArtefact());
 			return returned;
 		} catch (ParseException e) {
+			setUnparseableContents(e.getRawSource().getRawText());
 			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());
-			throw e;
+			FMLCompilationUnit returned = getFactory().newCompilationUnit();
+			VirtualModel virtualModel = getFactory().newVirtualModel();
+			returned.setVirtualModel(virtualModel);
+			try {
+				returned.setName(getName());
+				virtualModel.setName(getName());
+			} catch (InvalidNameException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return returned;
 		} finally {
 			inputStream.close();
 		}
@@ -792,14 +801,17 @@ public abstract class CompilationUnitResourceImpl
 
 	}
 
-	private void saveToFML(FMLCompilationUnit toBeSaved) throws SaveResourceException {
+	private void saveToFML() throws SaveResourceException {
+
+		logger.info("Saving FML " + this);
+
 		if (getFlexoIOStreamDelegate() == null) {
 			throw new SaveResourceException(getIODelegate());
 		}
 
-		if (toBeSaved.getPrettyPrintDelegate() == null) {
-			toBeSaved.setResource(this);
-			getFMLParser().initPrettyPrint(toBeSaved);
+		if (getLoadedResourceData().getPrettyPrintDelegate() == null) {
+			getLoadedResourceData().setResource(this);
+			getFMLParser().initPrettyPrint(getLoadedResourceData());
 		}
 
 		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
@@ -820,7 +832,7 @@ public abstract class CompilationUnitResourceImpl
 					logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());
 				}
 				try (FileOutputStream fos = new FileOutputStream(temporaryFile)) {
-					write(toBeSaved, fos);
+					write(fos);
 				}
 				System.out.println("Renamed " + temporaryFile + " to " + fileToSave);
 				FileUtils.rename(temporaryFile, fileToSave);
@@ -837,7 +849,7 @@ public abstract class CompilationUnitResourceImpl
 			}
 		}
 		else {
-			write(toBeSaved, getOutputStream());
+			write(getOutputStream());
 		}
 
 		getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
@@ -848,11 +860,11 @@ public abstract class CompilationUnitResourceImpl
 	 * 
 	 * @throws IOException
 	 */
-	private void write(FMLCompilationUnit compilationUnit, OutputStream out) throws SaveResourceException {
+	private void write(OutputStream out) throws SaveResourceException {
 		logger.info("Writing " + getIODelegate().getSerializationArtefact());
 		try {
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
-			bw.write(compilationUnit.getFMLPrettyPrint());
+			bw.write(getRawSource());
 			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1018,6 +1030,9 @@ public abstract class CompilationUnitResourceImpl
 	}
 
 	private void saveToXML(FMLCompilationUnit toBeSaved) throws SaveResourceException {
+
+		logger.info("Saving XML " + this);
+
 		File temporaryFile = null;
 		// FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
 

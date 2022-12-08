@@ -80,6 +80,7 @@ public interface CompilationUnitResource
 	public static final String VIRTUAL_MODEL_LIBRARY = "virtualModelLibrary";
 	public static final String CONTAINED_VMI = "containedVMI";
 	public static final String VIRTUAL_MODEL_CLASS = "virtualModelClass";
+	public static final String UNPARSEABLE_CONTENTS = "unparseableContents";
 
 	String FACTORY = "factory";
 
@@ -178,6 +179,29 @@ public interface CompilationUnitResource
 
 	@Setter(VIRTUAL_MODEL_CLASS)
 	public void setVirtualModelClass(Class<? extends VirtualModel> virtualModelClass);
+
+	/**
+	 * Stores not parseable FML when parsing failed
+	 * 
+	 * @return
+	 */
+	@Getter(UNPARSEABLE_CONTENTS)
+	public String getUnparseableContents();
+
+	/**
+	 * Sets not parseable FML
+	 * 
+	 * @param contents
+	 */
+	@Setter(UNPARSEABLE_CONTENTS)
+	public void setUnparseableContents(String contents);
+
+	/**
+	 * Return true if original FML contents was not parseable (true if {@link #getUnparseableContents()} not null)
+	 * 
+	 * @return
+	 */
+	public boolean isUnparseable();
 
 	public String getRawSource();
 

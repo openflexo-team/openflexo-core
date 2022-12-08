@@ -268,10 +268,12 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		// This call is a little bit brutal, because it triggers a new parsing
 		// But it has the advantage to recompute a full-valid FML pretty-print with FML code and internal representation synchronized
 		// Validation status is also updated during this call
-		String fmlPrettyPrint = fmlResource.getLoadedResourceData().getFMLPrettyPrint();
+		// String fmlPrettyPrint = fmlResource.getLoadedResourceData().getFMLPrettyPrint();
+		String fmlPrettyPrint = fmlResource.getRawSource();
 		textArea.setText(fmlPrettyPrint);
 
-		boolean requiresNewParsing = !fmlResource.getLoadedResourceData().getPrettyPrintDelegate().hasSource();
+		boolean requiresNewParsing = fmlResource.getLoadedResourceData().getPrettyPrintDelegate() != null
+				&& (!fmlResource.getLoadedResourceData().getPrettyPrintDelegate().hasSource());
 		if (requiresNewParsing) {
 			// Special case for a FML which wasn't deserialized from text and not having textual FML representation
 			// Force parsing now

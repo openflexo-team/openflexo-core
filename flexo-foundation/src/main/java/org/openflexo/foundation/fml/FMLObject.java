@@ -611,13 +611,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			if (this instanceof FMLPrettyPrintable) {
 				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
 				if (ppDelegate == null) {
-					if (getDeclaringCompilationUnit() != null) {
+					if (getDeclaringCompilationUnit() != null && getDeclaringCompilationUnit() != this) {
 						// Will set all delegates
 						getDeclaringCompilationUnit().getFMLPrettyPrint();
 						ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
 					}
 					if (ppDelegate == null) {
-						return "Cannot compute FML pretty print: delegate not set";
+						// Cannot compute FML pretty print: delegate not set
+						return null;
 					}
 				}
 				return ppDelegate.getRepresentation(ppDelegate.makePrettyPrintContext());

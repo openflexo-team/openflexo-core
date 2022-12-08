@@ -142,6 +142,7 @@ public class FMLEditorParser extends AbstractParser {
 						return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
 					}, true); // Finalize deserialization now
 
+			getFMLResource().setUnparseableContents(null);
 			parsedCompilationUnit.setResource(getFMLResource());
 
 			// System.out.println("Parsing succeeded");
@@ -248,6 +249,9 @@ public class FMLEditorParser extends AbstractParser {
 	}
 
 	private void handleParseError(ParseException e) {
+
+		getFMLResource().setUnparseableContents(e.getRawSource().getRawText());
+
 		if (result.getValidationReport() != null) {
 			result.getValidationReport().clear();
 		}
@@ -289,9 +293,11 @@ public class FMLEditorParser extends AbstractParser {
 		}
 
 		// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
-		for (SemanticAnalysisIssue semanticAnalysisIssue : compilationUnit.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
-			result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
-			result.addSemanticAnalysisIssue(semanticAnalysisIssue);
+		if (compilationUnit.getPrettyPrintDelegate() != null) {
+			for (SemanticAnalysisIssue semanticAnalysisIssue : compilationUnit.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
+				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
+				result.addSemanticAnalysisIssue(semanticAnalysisIssue);
+			}
 		}
 
 		// Adding notices from validation

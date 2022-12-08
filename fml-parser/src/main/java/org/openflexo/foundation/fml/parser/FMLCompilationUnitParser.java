@@ -185,10 +185,13 @@ public class FMLCompilationUnitParser {
 	private FMLCompilationUnit parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
 			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
 			throws ParseException, IOException {
+
+		RawSource rawSource = readRawSource(rawSourceReader);
+
 		try {
 			// System.out.println("Parsing: " + anExpression);
 
-			RawSource rawSource = readRawSource(rawSourceReader);
+			// RawSource rawSource = readRawSource(rawSourceReader);
 
 			// System.out.println(rawSource.debug());
 
@@ -230,9 +233,11 @@ public class FMLCompilationUnitParser {
 			// e.printStackTrace();
 			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
 					+ e.getToken().getText().length());
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),
+					rawSource);
 		} catch (LexerException e) {
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),
+					rawSource);
 		} finally {
 			reader.close();
 			rawSourceReader.close();
@@ -259,10 +264,11 @@ public class FMLCompilationUnitParser {
 
 	private static VirtualModelInfo extractVirtualModelInfo(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory)
 			throws ParseException, IOException {
+
+		RawSource rawSource = readRawSource(rawSourceReader);
+
 		try {
 			// System.out.println("Parsing: " + anExpression);
-
-			RawSource rawSource = readRawSource(rawSourceReader);
 
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.CompilationUnit));
@@ -287,12 +293,24 @@ public class FMLCompilationUnitParser {
 			return e.getVirtualModelInfo();
 		} catch (ParserException e) {
 			// e.printStackTrace();
-			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
+			logger.info("New exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
 					+ e.getToken().getText().length());
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+			// throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),
+			// rawSource);
+			return attemptToRetrieveVirtualModelInfo(rawSource);
 		} catch (LexerException e) {
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+			// throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),
+			// rawSource);
+			return attemptToRetrieveVirtualModelInfo(rawSource);
 		}
+	}
+
+	private static VirtualModelInfo attemptToRetrieveVirtualModelInfo(RawSource rawSource) {
+		// TODO: on peut faire mieux !
+		VirtualModelInfo vmi = new VirtualModelInfo();
+		vmi.setName("Prout");
+		vmi.setURI("http://prout");
+		return vmi;
 	}
 
 	/**
