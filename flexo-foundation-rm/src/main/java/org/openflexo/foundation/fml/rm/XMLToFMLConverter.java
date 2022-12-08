@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -120,6 +121,25 @@ public class XMLToFMLConverter {
 					DeletionScheme ds = (DeletionScheme) object;
 					if (ds.getName().equals("_delete")) {
 						ds.setAnonymous(true);
+					}
+				}
+			}
+		});
+
+		compilationUnit.accept(new PAMELAVisitor() {
+			@Override
+			public void visit(Object object) {
+				if (object instanceof FlexoBehaviourParameter) {
+					FlexoBehaviourParameter behaviourParameter = (FlexoBehaviourParameter) object;
+					if (StringUtils.isNotEmpty(behaviourParameter.getName())) {
+						if (startsWithUpperCase(behaviourParameter.getName())) {
+							try {
+								behaviourParameter.setName(convertToLowerCase(behaviourParameter.getName()));
+							} catch (InvalidNameException e) {
+								// Should not happen
+								e.printStackTrace();
+							}
+						}
 					}
 				}
 			}
@@ -576,6 +596,16 @@ public class XMLToFMLConverter {
 				expression.revalidate();
 				System.out.println("Replaced " + oldExp + " by " + expression + " valid: " + expression.isValid()
 						+ (!expression.isValid() ? " reason: " + expression.invalidBindingReason() : ""));
+			}
+			if (oldExp.startsWith("parameters.")) {
+				String remaining = oldExp.substring(11);
+				if (startsWithUpperCase(remaining)) {
+					String newExpressionAsString = "parameters." + convertToLowerCase(remaining);
+					expression.setUnparsedBinding(newExpressionAsString);
+					expression.revalidate();
+					System.out.println("Replaced " + oldExp + " by " + expression + " valid: " + expression.isValid()
+							+ (!expression.isValid() ? " reason: " + expression.invalidBindingReason() : ""));
+				}
 			}
 		}
 	}
