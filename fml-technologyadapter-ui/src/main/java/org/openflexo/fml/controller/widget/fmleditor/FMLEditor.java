@@ -502,6 +502,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 			// When no textual FML source, abort
 			return;
 		}
+		if (node.getLastParsedFragment() == null) {
+			// When no parsed fragment, abort
+			return;
+		}
 		int beginIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getStartPosition());
 		int endIndex = node.getRawSource().getIndex(node.getLastParsedFragment().getEndPosition());
 		// System.out.println("Fragment: "+node.getLastParsedFragment());
