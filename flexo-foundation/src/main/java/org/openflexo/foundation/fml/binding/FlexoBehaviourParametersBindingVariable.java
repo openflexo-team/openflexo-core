@@ -61,6 +61,10 @@ public class FlexoBehaviourParametersBindingVariable extends BindingVariable {
 		return FlexoBehaviourBindingModel.PARAMETERS_PROPERTY;
 	}
 
+	public FlexoBehaviour getFlexoBehaviour() {
+		return flexoBehaviour;
+	}
+
 	@Override
 	public Type getType() {
 		if (flexoBehaviour != null) {
