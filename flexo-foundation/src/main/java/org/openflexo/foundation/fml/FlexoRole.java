@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -587,7 +588,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
 				Class<?> rawType = TypeUtils.getRawType(getType());
-				if (rawType != null && !TypeUtils.isPrimitive(rawType)) {
+				if (rawType != null && !TypeUtils.isPrimitive(rawType) && !(rawType.equals(FMLRTVirtualModelInstance.class))) {
 					compilationUnit.ensureJavaImport(rawType);
 				}
 			}
