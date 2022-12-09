@@ -113,9 +113,9 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 					// Yes ! a concept was found
 					return lookedUpConcept.getInstanceType();
 				}
-				returned = compilationUnit.lookupClassInUseDeclarations(typeAsString);
-				if (returned != null) {
-					return returned;
+				Type foundInUseDeclarations = compilationUnit.lookupClassInUseDeclarations(typeAsString);
+				if (foundInUseDeclarations != null) {
+					return foundInUseDeclarations;
 				}
 			}
 		}
