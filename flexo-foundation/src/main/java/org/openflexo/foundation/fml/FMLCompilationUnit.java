@@ -1384,17 +1384,19 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				Class<?> returned;
 				for (UseModelSlotDeclaration useModelSlotDeclaration : getUseDeclarations()) {
 					Class<? extends ModelSlot<?>> msClass = useModelSlotDeclaration.getModelSlotClass();
-					Type msType = TypeUtils.getTypeArgument(msClass, ModelSlot.class, 0);
-					returned = lookupClass(className, msType);
-					if (returned != null) {
-						return returned;
-					}
-					for (Class<? extends FlexoRole<?>> roleClass : getServiceManager().getTechnologyAdapterService()
-							.getAvailableFlexoRoleTypes(msClass)) {
-						Type roleType = TypeUtils.getTypeArgument(roleClass, FlexoRole.class, 0);
-						returned = lookupClass(className, roleType);
+					if (msClass != null) {
+						Type msType = TypeUtils.getTypeArgument(msClass, ModelSlot.class, 0);
+						returned = lookupClass(className, msType);
 						if (returned != null) {
 							return returned;
+						}
+						for (Class<? extends FlexoRole<?>> roleClass : getServiceManager().getTechnologyAdapterService()
+								.getAvailableFlexoRoleTypes(msClass)) {
+							Type roleType = TypeUtils.getTypeArgument(roleClass, FlexoRole.class, 0);
+							returned = lookupClass(className, roleType);
+							if (returned != null) {
+								return returned;
+							}
 						}
 					}
 				}
