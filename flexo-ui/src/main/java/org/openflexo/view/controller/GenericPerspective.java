@@ -122,7 +122,7 @@ public class GenericPerspective extends FlexoPerspective {
 		}
 		return super.getRepresentableMasterObject(object);
 	}
-	
+
 	@Override
 	public boolean isRepresentableInModuleView(FlexoObject object) {
 		if (object instanceof TechnologyObject) {
@@ -130,7 +130,7 @@ public class GenericPerspective extends FlexoPerspective {
 		}
 		return super.isRepresentableInModuleView(object);
 	}
-	
+
 	@Override
 	public ModuleView<?> createModuleViewForMasterObject(FlexoObject object) {
 		if (object instanceof TechnologyObject) {
@@ -138,7 +138,7 @@ public class GenericPerspective extends FlexoPerspective {
 		}
 		return super.createModuleViewForMasterObject(object);
 	}
-	
+
 	/*@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean hasModuleViewForObject(FlexoObject object) {
@@ -159,6 +159,7 @@ public class GenericPerspective extends FlexoPerspective {
 
 	/**
 	 * Implementation of {@link #createModuleViewForMasterObject(FlexoObject)} delegated to adequate {@link TechnologyAdapterController}
+	 * 
 	 * @param <TA>
 	 * @param object
 	 * @return
@@ -209,7 +210,7 @@ public class GenericPerspective extends FlexoPerspective {
 	 */
 	@Override
 	public void willShow() {
-		System.out.println("GenericPerspective will be activated");
+		// System.out.println("GenericPerspective will be activated");
 		super.willShow();
 	}
 

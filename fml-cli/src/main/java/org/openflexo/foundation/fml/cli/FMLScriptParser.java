@@ -120,7 +120,7 @@ public class FMLScriptParser {
 
 		} catch (ParserException e) {
 			e.printStackTrace();
-			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
+			logger.info("ParserException token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
 					+ e.getToken().getText().length());
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		} catch (LexerException e) {

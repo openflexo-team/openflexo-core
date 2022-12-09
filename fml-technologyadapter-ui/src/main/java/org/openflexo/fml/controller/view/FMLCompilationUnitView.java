@@ -122,13 +122,13 @@ public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLComp
 
 	@Override
 	public void willHide() {
-		System.out.println("FMLCompilationUnitView WILL HIDE !!!!!!");
+		// System.out.println("FMLCompilationUnitView WILL HIDE !!!!!!");
 	}
 
 	@Override
 	public void willShow() {
 
-		System.out.println("FMLCompilationUnitView WILL SHOW !!!!!!");
+		// System.out.println("FMLCompilationUnitView WILL SHOW !!!!!!");
 		getPerspective().focusOnObject(getRepresentedObject());
 	}
 

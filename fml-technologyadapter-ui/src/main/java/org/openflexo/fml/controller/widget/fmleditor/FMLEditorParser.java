@@ -116,8 +116,8 @@ public class FMLEditorParser extends AbstractParser {
 			return result;
 		}*/
 
-		// We keep this log unless debug of 2.1.x is performed, because a parsing is really impacting and should be tracked
-		System.out.println("---------> Parsing FML document......");
+		// We keep this log unless debug of 2.99 is performed, because a parsing is really impacting and should be tracked
+		logger.info("Parsing FML document......");
 		// Thread.dumpStack();
 
 		result.clearNotices();

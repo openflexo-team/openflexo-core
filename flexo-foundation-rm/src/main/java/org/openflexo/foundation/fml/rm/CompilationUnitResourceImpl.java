@@ -764,7 +764,7 @@ public abstract class CompilationUnitResourceImpl
 			return returned;
 		} catch (ParseException e) {
 			setUnparseableContents(e.getRawSource().getRawText());
-			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());
+			logger.info("ParseException while reading " + getIODelegate().getSerializationArtefact());
 			FMLCompilationUnit returned = getFactory().newCompilationUnit();
 			VirtualModel virtualModel = getFactory().newVirtualModel();
 			returned.setVirtualModel(virtualModel);
@@ -1272,7 +1272,7 @@ public abstract class CompilationUnitResourceImpl
 			return getFMLParser().findVirtualModelInfo(inputStream, getFactory());
 		} catch (ParseException e) {
 			e.printStackTrace();
-			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());
+			logger.info("ParseException while reading " + getIODelegate().getSerializationArtefact());
 			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
