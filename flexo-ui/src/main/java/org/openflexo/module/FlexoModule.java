@@ -77,7 +77,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
@@ -266,7 +266,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	private WelcomePanel<M> makeWelcomePanel() {
 		try {
-			ModelFactory factory = new ModelFactory(WelcomePanel.class);
+			PamelaModelFactory factory = new PamelaModelFactory(WelcomePanel.class);
 			WelcomePanel<M> returned = factory.newInstance(WelcomePanel.class);
 			returned.setModule((M) this);
 			return returned;

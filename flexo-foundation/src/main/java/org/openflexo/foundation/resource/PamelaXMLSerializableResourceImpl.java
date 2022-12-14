@@ -55,7 +55,7 @@ import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.pamela.AccessibleProxyObject;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 
@@ -67,7 +67,7 @@ import org.openflexo.toolbox.FlexoVersion;
  * @author Sylvain
  * 
  */
-public abstract class PamelaXMLSerializableResourceImpl<RD extends ResourceData<RD> & AccessibleProxyObject, F extends ModelFactory & PamelaResourceModelFactory>
+public abstract class PamelaXMLSerializableResourceImpl<RD extends ResourceData<RD> & AccessibleProxyObject, F extends PamelaModelFactory & PamelaResourceModelFactory>
 		extends PamelaResourceImpl<RD, F> implements PamelaXMLSerializableResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaXMLSerializableResourceImpl.class.getPackage().getName());

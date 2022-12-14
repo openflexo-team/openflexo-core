@@ -73,7 +73,7 @@ import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotif
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -94,7 +94,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 */
 	public static FlexoResourceCenterService getNewInstance(boolean enableDirectoryWatching, boolean isDev) {
 		try {
-			ModelFactory factory = new ModelFactory(FlexoResourceCenterService.class);
+			PamelaModelFactory factory = new PamelaModelFactory(FlexoResourceCenterService.class);
 			factory.setImplementingClassForInterface(DefaultResourceCenterService.class, FlexoResourceCenterService.class);
 			DefaultResourceCenterService returned = (DefaultResourceCenterService) factory.newInstance(FlexoResourceCenterService.class);
 			returned.setDirectoryWatchingEnabled(enableDirectoryWatching);

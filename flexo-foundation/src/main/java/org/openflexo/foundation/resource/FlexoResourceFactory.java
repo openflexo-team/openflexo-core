@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Abstract implementation a factory that manages the life-cycle of a given type of {@link FlexoResource}
@@ -40,7 +40,7 @@ import org.openflexo.pamela.factory.ModelFactory;
  * @param <RD>
  *            type of {@link ResourceData} managed by resources (contents of resources)
  */
-public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD extends ResourceData<RD>> extends ModelFactory
+public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD extends ResourceData<RD>> extends PamelaModelFactory
 		implements IFlexoResourceFactory<R, RD> {
 
 	private static final Logger logger = Logger.getLogger(FlexoResourceFactory.class.getPackage().getName());
@@ -54,7 +54,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @throws ModelDefinitionException
 	 */
 	protected FlexoResourceFactory(Class<R> resourceClass) throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(resourceClass, FlexoIODelegate.class));
+		super(PamelaMetaModelLibrary.getCompoundModelContext(resourceClass, FlexoIODelegate.class));
 		this.resourceClass = resourceClass;
 	}
 
@@ -65,7 +65,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @throws ModelDefinitionException
 	 */
 	protected FlexoResourceFactory(Class<R> resourceClass, Class<?>... requiredClasses) throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(resourceClass, requiredClasses));
+		super(PamelaMetaModelLibrary.getCompoundModelContext(resourceClass, requiredClasses));
 		this.resourceClass = resourceClass;
 	}
 

@@ -69,7 +69,7 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.factory.EmbeddingType;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.pamela.validation.Validable;
 
 /**
@@ -846,14 +846,14 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		@Override
 		public Class<?> getImplementedInterface() {
 			if (this instanceof ResourceData && ((ResourceData<?>) this).getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource<?, ?>) ((ResourceData<?>) this).getResource()).getFactory();
+				PamelaModelFactory f = ((PamelaResource<?, ?>) ((ResourceData<?>) this).getResource()).getFactory();
 				if (f != null) {
 					return f.getModelEntityForInstance(this).getImplementedInterface();
 				}
 			}
 			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
 					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource<?, ?>) ((InnerResourceData<?>) this).getResourceData().getResource()).getFactory();
+				PamelaModelFactory f = ((PamelaResource<?, ?>) ((InnerResourceData<?>) this).getResourceData().getResource()).getFactory();
 				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
 			return getClass();

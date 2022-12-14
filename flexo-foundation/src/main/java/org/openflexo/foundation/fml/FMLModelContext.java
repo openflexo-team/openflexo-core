@@ -59,7 +59,7 @@ import org.openflexo.foundation.fml.annotations.FMLAttribute.AttributeKind;
 import org.openflexo.foundation.fml.annotations.UsageExample;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.pamela.model.ModelEntity;
 import org.openflexo.pamela.model.ModelProperty;
 
@@ -204,7 +204,7 @@ public class FMLModelContext {
 			return getLabel() + "_path";
 		}
 
-		public T getDefaultValue(ModelFactory factory) {
+		public T getDefaultValue(PamelaModelFactory factory) {
 			try {
 				return (T) getModelProperty().getDefaultValue(factory);
 			} catch (InvalidDataException e) {

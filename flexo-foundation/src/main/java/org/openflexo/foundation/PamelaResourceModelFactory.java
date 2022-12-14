@@ -39,10 +39,10 @@
 package org.openflexo.foundation;
 
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * Interface implemented by any {@link ModelFactory} managed by a {@link PamelaResource}<br>
+ * Interface implemented by any {@link PamelaModelFactory} managed by a {@link PamelaResource}<br>
  * 
  * This interface gives access to the {@link PamelaResource} and provides hooks for deserialization starting and stopping
  * 

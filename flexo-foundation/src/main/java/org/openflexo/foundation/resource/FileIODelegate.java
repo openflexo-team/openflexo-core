@@ -58,7 +58,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
@@ -101,7 +101,7 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 
 		private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
 
-		public static FileIODelegate makeFileFlexoIODelegate(File file, ModelFactory factory) {
+		public static FileIODelegate makeFileFlexoIODelegate(File file, PamelaModelFactory factory) {
 			FileIODelegate fileIODelegate = factory.newInstance(FileIODelegate.class);
 			fileIODelegate.setFile(file);
 			return fileIODelegate;

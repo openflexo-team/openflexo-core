@@ -40,7 +40,7 @@ package org.openflexo.foundation.resource;
 
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * A {@link PamelaXMLSerializableResource} is a {@link PamelaResource} whose serialization is performed in XML
@@ -50,7 +50,7 @@ import org.openflexo.pamela.factory.ModelFactory;
  * @param <RD>
  */
 @ModelEntity(isAbstract = true)
-public interface PamelaXMLSerializableResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+public interface PamelaXMLSerializableResource<RD extends ResourceData<RD>, F extends PamelaModelFactory & PamelaResourceModelFactory>
 		extends PamelaResource<RD, F> {
 
 }

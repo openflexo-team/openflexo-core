@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.junit.Test;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.PamelaMetaModel;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.model.ModelEntity;
 
@@ -65,8 +65,8 @@ public class FMLRTVirtualModelInstanceModelFactoryTest extends OpenflexoTestCase
 			System.out.println("Instanciating FMLRTVirtualModelInstanceModelFactory");
 			FMLRTVirtualModelInstanceModelFactory factory = new FMLRTVirtualModelInstanceModelFactory(null, null,
 					serviceManager.getTechnologyAdapterService());
-			ModelContext modelContext = factory.getModelContext();
-			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
+			PamelaMetaModel pamelaMetaModel = factory.getModelContext();
+			for (Iterator<ModelEntity> it = pamelaMetaModel.getEntities(); it.hasNext();) {
 				System.out.println("> Found " + it.next().getImplementedInterface());
 			}
 		} catch (ModelDefinitionException e) {

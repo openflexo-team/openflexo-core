@@ -65,7 +65,7 @@ import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -209,7 +209,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
 		try {
-			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
+			PamelaModelFactory factory = new PamelaModelFactory(FSBasedResourceCenterEntry.class);
 			FSBasedResourceCenterEntry<?> entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();

@@ -48,7 +48,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.view.controller.FlexoServerAddressBook;
 import org.openflexo.view.controller.FlexoServerInstance;
 
@@ -63,9 +63,9 @@ public class TestFlexoServerAddressBook {
 
     @Test
     public void testAddressBookModel() {
-        ModelFactory factory = null;
+        PamelaModelFactory factory = null;
         try {
-            factory = new ModelFactory(FlexoServerAddressBook.class);
+            factory = new PamelaModelFactory(FlexoServerAddressBook.class);
         } catch (ModelDefinitionException e) {
             e.printStackTrace();
             Assert.fail("Model definition exception: " + e.getMessage());

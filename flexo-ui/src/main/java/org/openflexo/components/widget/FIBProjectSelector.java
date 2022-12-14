@@ -110,9 +110,9 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 				Mockito.when(subProject2.getProjectName()).thenReturn("Sub project 2");
 				ProjectData projectData = Mockito.mock(ProjectData.class);
 				Mockito.when(project.getProjectData()).thenReturn(projectData);
-				ModelFactory factory;
+				PamelaModelFactory factory;
 				try {
-					factory = new ModelFactory(FlexoProjectReference.class);
+					factory = new PamelaModelFactory(FlexoProjectReference.class);
 					FlexoProjectReference ref1 = factory.newInstance(FlexoProjectReference.class);
 					ref1.init(subProject1);
 					FlexoProjectReference ref2 = factory.newInstance(FlexoProjectReference.class);

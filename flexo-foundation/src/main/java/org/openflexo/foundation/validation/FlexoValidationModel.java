@@ -44,7 +44,7 @@ import org.openflexo.connie.java.util.JavaBindingEvaluator;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.PamelaMetaModel;
 import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationModel;
@@ -59,8 +59,8 @@ public class FlexoValidationModel extends ValidationModel {
 
 	private final LocalizedDelegate validationLocalization;
 
-	public FlexoValidationModel(ModelContext modelContext, LocalizedDelegate validationLocalization) {
-		super(modelContext);
+	public FlexoValidationModel(PamelaMetaModel pamelaMetaModel, LocalizedDelegate validationLocalization) {
+		super(pamelaMetaModel);
 		this.validationLocalization = validationLocalization;
 	}
 

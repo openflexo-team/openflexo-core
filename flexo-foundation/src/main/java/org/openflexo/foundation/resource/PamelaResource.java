@@ -45,7 +45,7 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -56,7 +56,7 @@ import org.openflexo.toolbox.FlexoVersion;
  * @param <RD>
  */
 @ModelEntity(isAbstract = true)
-public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+public interface PamelaResource<RD extends ResourceData<RD>, F extends PamelaModelFactory & PamelaResourceModelFactory>
 		extends FlexoResource<RD> {
 
 	String MODEL_VERSION = "modelVersion";

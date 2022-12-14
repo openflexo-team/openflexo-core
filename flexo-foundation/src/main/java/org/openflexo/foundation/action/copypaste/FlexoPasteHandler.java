@@ -40,7 +40,7 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 		// System.out.println("pastingPointHolderEntity=" + pastingPointHolderEntity);
 
 		if (pastingPointHolderEntity != null) {
-			// Entity was found in this ModelFactory, we can proceed
+			// Entity was found in this PamelaModelFactory, we can proceed
 
 			// System.out.println("Found entity " + pastingPointHolderEntity);
 

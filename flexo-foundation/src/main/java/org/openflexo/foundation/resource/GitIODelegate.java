@@ -14,7 +14,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 @ModelEntity
 @Imports({ @Import(DirectoryBasedGitIODelegate.class) })
@@ -43,7 +43,7 @@ public interface GitIODelegate extends FileIODelegate {
 		private Repository repository;
 		// private Git git;
 
-		public static GitIODelegate makeFlexoIOGitDelegate(File file, ModelFactory factory, /*File workTree, */ Repository repository) {
+		public static GitIODelegate makeFlexoIOGitDelegate(File file, PamelaModelFactory factory, /*File workTree, */ Repository repository) {
 			GitIODelegate fileIODelegate = factory.newInstance(GitIODelegate.class);
 			// Set the gitRepository linked to this file
 			fileIODelegate.setRepository(repository);

@@ -92,8 +92,8 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.model.PAMELAVisitor;
-import org.openflexo.pamela.model.PAMELAVisitor.VisitingStrategy;
+import org.openflexo.pamela.model.PamelaVisitor;
+import org.openflexo.pamela.model.PamelaVisitor.VisitingStrategy;
 import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
@@ -1067,7 +1067,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 			isManagingImports = true;
 
-			accept(new PAMELAVisitor() {
+			accept(new PamelaVisitor() {
 
 				@Override
 				public void visit(Object object) {

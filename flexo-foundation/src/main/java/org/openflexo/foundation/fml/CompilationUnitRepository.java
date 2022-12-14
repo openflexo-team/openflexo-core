@@ -49,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepos
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * A {@link CompilationUnitRepository} references {@link CompilationUnitResource} stored in a given {@link FlexoResourceCenter}
@@ -66,9 +66,9 @@ public interface CompilationUnitRepository<I>
 
 	public static <I> CompilationUnitRepository<I> instanciateNewRepository(FMLTechnologyAdapter technologyAdapter,
 			FlexoResourceCenter<I> resourceCenter) {
-		ModelFactory factory;
+		PamelaModelFactory factory;
 		try {
-			factory = new ModelFactory(CompilationUnitRepository.class);
+			factory = new PamelaModelFactory(CompilationUnitRepository.class);
 			CompilationUnitRepository<I> newRepository = factory.newInstance(CompilationUnitRepository.class);
 			newRepository.setTechnologyAdapter(technologyAdapter);
 			newRepository.setResourceCenter(resourceCenter);

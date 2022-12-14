@@ -50,7 +50,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -111,7 +111,7 @@ public interface DirectoryBasedGitIODelegate extends GitIODelegate {
 		private File directory;
 
 		public static DirectoryBasedGitIODelegate makeDirectoryBasedFlexoIOGitDelegate(File containerDir, String baseName,
-				String directoryExtension, String fileExtension, ModelFactory factory) {
+				String directoryExtension, String fileExtension, PamelaModelFactory factory) {
 			DirectoryBasedGitIODelegate fileIODelegate = factory.newInstance(DirectoryBasedGitIODelegate.class);
 			fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);

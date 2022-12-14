@@ -48,7 +48,7 @@ import org.openflexo.foundation.project.FlexoProjectFactory;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.PamelaMetaModel;
 import org.openflexo.pamela.exceptions.MissingImplementationException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.model.ModelEntity;
@@ -67,8 +67,8 @@ public class FlexoProjectResourceFactoryTest extends OpenflexoTestCase {
 			instanciateTestServiceManager();
 			System.out.println("Instanciating FlexoProjectFactory");
 			FlexoProjectResourceFactory factory = new FlexoProjectResourceFactory(serviceManager);
-			ModelContext modelContext = factory.getModelContext();
-			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
+			PamelaMetaModel pamelaMetaModel = factory.getModelContext();
+			for (Iterator<ModelEntity> it = pamelaMetaModel.getEntities(); it.hasNext();) {
 				System.out.println("> Found " + it.next().getImplementedInterface());
 			}
 			factory.checkMethodImplementations();

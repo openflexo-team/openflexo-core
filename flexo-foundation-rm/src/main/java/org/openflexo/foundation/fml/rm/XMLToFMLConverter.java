@@ -77,7 +77,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
-import org.openflexo.pamela.model.PAMELAVisitor;
+import org.openflexo.pamela.model.PamelaVisitor;
 import org.openflexo.toolbox.JavaUtils;
 
 @Deprecated
@@ -108,7 +108,7 @@ public class XMLToFMLConverter {
 		}
 		// System.exit(-1);
 
-		compilationUnit.accept(new PAMELAVisitor() {
+		compilationUnit.accept(new PamelaVisitor() {
 			@Override
 			public void visit(Object object) {
 				if (object instanceof CreationScheme) {
@@ -126,7 +126,7 @@ public class XMLToFMLConverter {
 			}
 		});
 
-		compilationUnit.accept(new PAMELAVisitor() {
+		compilationUnit.accept(new PamelaVisitor() {
 			@Override
 			public void visit(Object object) {
 				if (object instanceof FlexoBehaviourParameter) {
@@ -145,7 +145,7 @@ public class XMLToFMLConverter {
 			}
 		});
 
-		compilationUnit.accept(new PAMELAVisitor() {
+		compilationUnit.accept(new PamelaVisitor() {
 			@Override
 			public void visit(Object object) {
 				// System.out.println("> visit " + object);
@@ -167,7 +167,7 @@ public class XMLToFMLConverter {
 			}
 		});
 
-		compilationUnit.accept(new PAMELAVisitor() {
+		compilationUnit.accept(new PamelaVisitor() {
 			@Override
 			public void visit(Object object) {
 				// System.out.println("> visit " + object);
@@ -223,7 +223,7 @@ public class XMLToFMLConverter {
 			migrateCreateTopLevelVirtualModelInstanceAction(createTopLevelVirtualModelInstance);
 		}
 
-		compilationUnit.accept(new PAMELAVisitor() {
+		compilationUnit.accept(new PamelaVisitor() {
 			@Override
 			public void visit(Object object) {
 				// System.out.println("> visit " + object);

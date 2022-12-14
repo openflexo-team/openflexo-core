@@ -46,7 +46,7 @@ import org.openflexo.pamela.annotations.Implementation;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.toolbox.JarClassLoader;
 
@@ -111,7 +111,7 @@ public interface DirectoryBasedJarIODelegate extends InJarIODelegate {
 
 		private InJarResourceImpl directory;
 
-		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File directory, File file, ModelFactory factory) {
+		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File directory, File file, PamelaModelFactory factory) {
 			DirectoryBasedIODelegate fileIODelegate = factory.newInstance(DirectoryBasedIODelegate.class);
 			/*fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);
@@ -123,7 +123,7 @@ public interface DirectoryBasedJarIODelegate extends InJarIODelegate {
 		}
 
 		public static DirectoryBasedJarIODelegate makeDirectoryBasedFlexoIODelegate(InJarResourceImpl directory, InJarResourceImpl file,
-				ModelFactory factory) {
+				PamelaModelFactory factory) {
 			DirectoryBasedJarIODelegate fileIODelegate = factory.newInstance(DirectoryBasedJarIODelegate.class);
 			// fileIODelegate.setDirectoryExtension(directoryExtension);
 			// fileIODelegate.setFileExtension(fileExtension);

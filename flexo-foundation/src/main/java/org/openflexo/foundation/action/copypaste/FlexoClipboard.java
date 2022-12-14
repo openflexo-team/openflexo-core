@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.pamela.factory.Clipboard;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Clipboard used in the context Openflexo infrastructure.<br>
@@ -168,7 +168,7 @@ public class FlexoClipboard {
 		for (PamelaResource<?, ?> pamelaResource : extendedObjectsToBeCopied.keySet()) {
 
 			Clipboard clipboard;
-			ModelFactory modelFactory = pamelaResource.getFactory();
+			PamelaModelFactory pamelaModelFactory = pamelaResource.getFactory();
 
 			/*System.out.println("COPY");
 			System.out.println("pamelaResource=" + pamelaResource);
@@ -201,7 +201,7 @@ public class FlexoClipboard {
 					}
 				}*/
 
-				clipboard = modelFactory.copy(objectsToCopyInThisResource.toArray(new Object[objectsToCopyInThisResource.size()]));
+				clipboard = pamelaModelFactory.copy(objectsToCopyInThisResource.toArray(new Object[objectsToCopyInThisResource.size()]));
 				clipboard.setCopyContext(copyContext);
 
 				returned.clipboards.put(pamelaResource, clipboard);
@@ -234,7 +234,7 @@ public class FlexoClipboard {
 		for (PamelaResource<?, ?> pamelaResource : extendedObjectsToBeCut.keySet()) {
 
 			Clipboard clipboard;
-			ModelFactory modelFactory = pamelaResource.getFactory();
+			PamelaModelFactory pamelaModelFactory = pamelaResource.getFactory();
 
 			/*System.out.println("CUT");
 			System.out.println("pamelaResource=" + pamelaResource);
@@ -247,7 +247,7 @@ public class FlexoClipboard {
 				// System.out.println("--------- START CUT");
 
 				List<FlexoObject> objects = extendedObjectsToBeCut.get(pamelaResource);
-				clipboard = modelFactory.cut(objects.toArray(new Object[objects.size()]));
+				clipboard = pamelaModelFactory.cut(objects.toArray(new Object[objects.size()]));
 				clipboard.setCopyContext(copyContext);
 				// System.out.println(clipboard.debug());
 				// System.out.println("copyContext=" + copyContext);

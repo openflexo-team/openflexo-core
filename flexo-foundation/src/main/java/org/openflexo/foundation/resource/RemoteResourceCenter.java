@@ -49,7 +49,7 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Implementation for a {@link FlexoResourceCenter} accessed via an URL
@@ -85,7 +85,7 @@ public interface RemoteResourceCenter extends FlexoResourceCenter<Object> {
 		public RemoteResourceCenterEntry getResourceCenterEntry() {
 			if (entry == null) {
 				try {
-					ModelFactory factory = new ModelFactory(RemoteResourceCenterEntry.class);
+					PamelaModelFactory factory = new PamelaModelFactory(RemoteResourceCenterEntry.class);
 					entry = factory.newInstance(RemoteResourceCenterEntry.class);
 					entry.setURL(getURL());
 				} catch (ModelDefinitionException e) {

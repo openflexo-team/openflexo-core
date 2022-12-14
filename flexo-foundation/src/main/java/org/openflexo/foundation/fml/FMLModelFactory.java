@@ -116,23 +116,23 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.converter.DataBindingConverter;
 import org.openflexo.pamela.converter.FlexoVersionConverter;
 import org.openflexo.pamela.converter.RelativePathResourceConverter;
 import org.openflexo.pamela.converter.TypeConverter;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link ModelFactory} used to handle VirtualModel models<br>
+ * {@link PamelaModelFactory} used to handle VirtualModel models<br>
  * One instance is declared for a {@link CompilationUnitResource}
  * 
  * @author sylvain
  * 
  */
-public class FMLModelFactory extends ModelFactory implements PamelaResourceModelFactory<CompilationUnitResource> {
+public class FMLModelFactory extends PamelaModelFactory implements PamelaResourceModelFactory<CompilationUnitResource> {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
@@ -157,7 +157,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public FMLModelFactory(CompilationUnitResource compilationUnitResource, FlexoServiceManager serviceManager,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(compilationUnitResource != null
+		super(PamelaMetaModelLibrary.getCompoundModelContext(compilationUnitResource != null
 				? retrieveTechnologySpecificClasses(compilationUnitResource.getVirtualModelClass(),
 						compilationUnitResource.getUsedModelSlots())
 				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService())));

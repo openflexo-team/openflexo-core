@@ -50,7 +50,7 @@ import org.openflexo.foundation.resource.GitIODelegate.GitIODelegateImpl;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 
@@ -61,9 +61,9 @@ public interface GitResourceCenter extends FileSystemBasedResourceCenter {
 	public static GitResourceCenter instanciateNewGitResourceCenter(File resourceCenterDirectory, File gitRepository,
 			FlexoResourceCenterService rcService) throws IllegalStateException, IOException, GitAPIException {
 		GitResourceCenterImpl.logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
-		ModelFactory factory;
+		PamelaModelFactory factory;
 		try {
-			factory = new ModelFactory(GitResourceCenter.class);
+			factory = new PamelaModelFactory(GitResourceCenter.class);
 			GitResourceCenter gitResourceCenter = factory.newInstance(GitResourceCenter.class);
 			gitResourceCenter.setBaseArtefact(resourceCenterDirectory);
 			gitResourceCenter.setFlexoResourceCenterService(rcService);

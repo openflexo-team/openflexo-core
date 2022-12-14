@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rt;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.pamela.exceptions.InvalidDataException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.pamela.model.StringConverterLibrary.Converter;
 
 public class FlexoEnumValueConverter extends Converter<FlexoEnumInstance> {
@@ -51,7 +51,7 @@ public class FlexoEnumValueConverter extends Converter<FlexoEnumInstance> {
 	}
 
 	@Override
-	public FlexoEnumInstance convertFromString(String value, ModelFactory factory) throws InvalidDataException {
+	public FlexoEnumInstance convertFromString(String value, PamelaModelFactory factory) throws InvalidDataException {
 		if (factory instanceof AbstractVirtualModelInstanceModelFactory) {
 			FlexoServiceManager sm = ((AbstractVirtualModelInstanceModelFactory) factory).getResource().getServiceManager();
 			String enumURI = value.substring(0, value.lastIndexOf("#"));

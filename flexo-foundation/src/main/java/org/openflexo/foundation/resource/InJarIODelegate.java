@@ -54,7 +54,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 
@@ -77,7 +77,7 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 
 		protected static final Logger logger = Logger.getLogger(InJarIODelegateImpl.class.getPackage().getName());
 
-		public static InJarIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, ModelFactory factory) {
+		public static InJarIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, PamelaModelFactory factory) {
 			InJarIODelegate delegate = factory.newInstance(InJarIODelegate.class);
 			delegate.setInJarResource(inJarResource);
 			return delegate;

@@ -46,11 +46,11 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
-import org.openflexo.pamela.ModelContext;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModel;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Default implementation for {@link PamelaResourceModelFactory} A {@link DefaultPamelaResourceModelFactory} provides automatic FlexoId
@@ -59,7 +59,7 @@ import org.openflexo.pamela.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> extends ModelFactory
+public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> extends PamelaModelFactory
 		implements PamelaResourceModelFactory<R> {
 
 	protected static final Logger logger = Logger.getLogger(DefaultPamelaResourceModelFactory.class.getPackage().getName());
@@ -73,13 +73,13 @@ public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> e
 		this.resource = resource;
 	}
 
-	public DefaultPamelaResourceModelFactory(R resource, ModelContext modelContext) {
-		super(modelContext);
+	public DefaultPamelaResourceModelFactory(R resource, PamelaMetaModel pamelaMetaModel) {
+		super(pamelaMetaModel);
 		this.resource = resource;
 	}
 
 	public DefaultPamelaResourceModelFactory(R resource, Collection<Class<?>> classes) throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(appendGRClasses(classes)));
+		super(PamelaMetaModelLibrary.getCompoundModelContext(appendGRClasses(classes)));
 		this.resource = resource;
 	}
 

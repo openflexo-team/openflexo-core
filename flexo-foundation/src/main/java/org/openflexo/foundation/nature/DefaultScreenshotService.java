@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Default implementation for {@link ScreenshotService}
@@ -61,7 +61,7 @@ public abstract class DefaultScreenshotService extends FlexoServiceImpl implemen
 
 	public static ScreenshotService createInstance() {
 		try {
-			ModelFactory factory = new ModelFactory(ScreenshotService.class);
+			PamelaModelFactory factory = new PamelaModelFactory(ScreenshotService.class);
 			factory.setImplementingClassForInterface(DefaultScreenshotService.class, ScreenshotService.class);
 			ScreenshotService returned = factory.newInstance(ScreenshotService.class);
 			return returned;

@@ -71,7 +71,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.controller.CustomTypeEditor;
 import org.openflexo.module.ModuleLoader.ModuleLoaded;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
@@ -89,7 +89,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 
 	public static TechnologyAdapterControllerService getNewInstance() {
 		try {
-			ModelFactory factory = new ModelFactory(TechnologyAdapterControllerService.class);
+			PamelaModelFactory factory = new PamelaModelFactory(TechnologyAdapterControllerService.class);
 			factory.setImplementingClassForInterface(DefaultTechnologyAdapterControllerService.class,
 					TechnologyAdapterControllerService.class);
 			return factory.newInstance(TechnologyAdapterControllerService.class);

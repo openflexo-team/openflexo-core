@@ -81,14 +81,14 @@ import org.openflexo.foundation.fml.parser.node.AResourcesDirective;
 import org.openflexo.foundation.fml.parser.node.AServiceDirective;
 import org.openflexo.foundation.fml.parser.node.AServicesDirective;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
-public class FMLScriptModelFactory extends ModelFactory {
+public class FMLScriptModelFactory extends PamelaModelFactory {
 
 	public FMLScriptModelFactory() throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(FMLScript.class));
+		super(PamelaMetaModelLibrary.getModelContext(FMLScript.class));
 	}
 
 	public FMLScript newFMLScript(Node node, ScriptSemanticsAnalyzer scriptSemanticsAnalyzer) {

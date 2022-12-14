@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.pamela.AccessibleProxyObject;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Default implementation for a {@link PamelaResource} implementing {@link ResourceWithPotentialCrossReferences} (a resource potentially
@@ -55,7 +55,7 @@ import org.openflexo.pamela.factory.ModelFactory;
  * @author Sylvain
  * 
  */
-public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends ResourceData<RD> & AccessibleProxyObject, F extends ModelFactory & PamelaResourceModelFactory>
+public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends ResourceData<RD> & AccessibleProxyObject, F extends PamelaModelFactory & PamelaResourceModelFactory>
 		extends PamelaResourceImpl<RD, F> implements ResourceWithPotentialCrossReferences<RD> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceWithPotentialCrossReferencesImpl.class.getPackage().getName());

@@ -60,7 +60,7 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * An {@link FlexoEnum} represent an enumeration reflected by a {@link FlexoConcept}
@@ -140,11 +140,11 @@ public interface FlexoEnum extends FlexoConcept {
 		 */
 		private List<FlexoEnumInstance> instances = new ArrayList<>();
 
-		static ModelFactory RT_FACTORY;
+		static PamelaModelFactory RT_FACTORY;
 
 		static {
 			try {
-				RT_FACTORY = new ModelFactory(FlexoEnumInstance.class);
+				RT_FACTORY = new PamelaModelFactory(FlexoEnumInstance.class);
 			} catch (ModelDefinitionException e) {
 				e.printStackTrace();
 			}

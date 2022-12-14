@@ -59,10 +59,10 @@ import org.openflexo.foundation.doc.TextSelection.TextMarker;
 import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.PamelaMetaModel;
 import org.openflexo.pamela.converter.RelativePathResourceConverter;
 import org.openflexo.pamela.factory.EditingContext;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * DocX factory for managing {@link DocXDocument}<br>
@@ -71,7 +71,7 @@ import org.openflexo.pamela.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends ModelFactory
+public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends PamelaModelFactory
 		implements PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
 
 	private static final Logger logger = Logger.getLogger(DocumentFactory.class.getPackage().getName());
@@ -82,8 +82,8 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 
 	private RelativePathResourceConverter relativePathResourceConverter;
 
-	public DocumentFactory(ModelContext modelContext, FlexoDocumentResource<D, TA, ?> resource, EditingContext editingContext) {
-		super(modelContext);
+	public DocumentFactory(PamelaMetaModel pamelaMetaModel, FlexoDocumentResource<D, TA, ?> resource, EditingContext editingContext) {
+		super(pamelaMetaModel);
 		this.resource = resource;
 		setEditingContext(editingContext);
 		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));

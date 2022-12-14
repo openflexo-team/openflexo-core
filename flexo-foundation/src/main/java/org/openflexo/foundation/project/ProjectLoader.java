@@ -97,7 +97,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 	private Map<Object, FlexoProjectResource<?>> projectResourcesForSerializationArtefacts = new HashMap<>();
 
 	private final List<FlexoProject<?>> rootProjects;
-	// private ModelFactory modelFactory;
+	// private PamelaModelFactory modelFactory;
 
 	/**
 	 * Build new {@link ProjectLoader}
@@ -106,7 +106,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 		this.rootProjects = new ArrayList<>();
 		this.editors = new LinkedHashMap<>();
 		/*try {
-			modelFactory = new ModelFactory(FlexoProjectReference.class);
+			modelFactory = new PamelaModelFactory(FlexoProjectReference.class);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -631,7 +631,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 		status = Status.Started;
 	}
 
-	/*public ModelFactory getModelFactory() {
+	/*public PamelaModelFactory getModelFactory() {
 		return modelFactory;
 	}*/
 

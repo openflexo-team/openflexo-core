@@ -60,7 +60,7 @@ import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.pamela.factory.Clipboard;
 import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.EditingContextImpl;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.pamela.factory.ProxyMethodHandler;
 import org.openflexo.pamela.model.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
@@ -238,7 +238,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 		Clipboard masterClipboard = clipboard.getLeaderClipboard();
 
-		ModelFactory factory = masterClipboard.getModelFactory();
+		PamelaModelFactory factory = masterClipboard.getModelFactory();
 
 		// Iterate on all available handlers
 		for (List<PasteHandler<?>> hList : pasteHandlers.values()) {
@@ -304,7 +304,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 		ModelEntity<?> pastingPointHolderEntity = factory.getModelContext().getModelEntity(focusedObject.getImplementedInterface());
 		if (pastingPointHolderEntity != null) {
-			// Entity was found in this ModelFactory, we can proceed
+			// Entity was found in this PamelaModelFactory, we can proceed
 			if (ProxyMethodHandler.isPastable(masterClipboard, pastingPointHolderEntity)) {
 				Object potentialPastingContext = defaultPasteHandler.retrievePastingContext(focusedObject, globalSelection, getClipboard());
 				if (potentialPastingContext != null) {

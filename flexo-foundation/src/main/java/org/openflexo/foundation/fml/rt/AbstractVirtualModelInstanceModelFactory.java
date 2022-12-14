@@ -53,10 +53,10 @@ import org.openflexo.pamela.converter.FlexoVersionConverter;
 import org.openflexo.pamela.converter.RelativePathResourceConverter;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link ModelFactory} used to handle {@link VirtualModelInstance} models<br>
+ * {@link PamelaModelFactory} used to handle {@link VirtualModelInstance} models<br>
  * 
  * @author sylvain
  * 
@@ -88,7 +88,7 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 
 	/**
 	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
-	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
+	 * parts, and return a newly created PamelaMetaModel dedicated to {@link VirtualModel} manipulations
 	 * 
 	 * @param taService
 	 * @return

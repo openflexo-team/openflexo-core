@@ -86,10 +86,10 @@ import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.pamela.ModelContext;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModel;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.pamela.model.ModelEntity;
 import org.openflexo.pamela.model.ModelProperty;
 import org.openflexo.toolbox.StringUtils;
@@ -123,7 +123,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	public static TechnologyAdapterService getNewInstance(FlexoResourceCenterService resourceCenterService) {
 		try {
-			ModelFactory factory = new ModelFactory(TechnologyAdapterService.class);
+			PamelaModelFactory factory = new PamelaModelFactory(TechnologyAdapterService.class);
 			factory.setImplementingClassForInterface(DefaultTechnologyAdapterService.class, TechnologyAdapterService.class);
 			TechnologyAdapterService returned = factory.newInstance(TechnologyAdapterService.class);
 			returned.setFlexoResourceCenterService(resourceCenterService);
@@ -557,10 +557,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		List<Class<? extends FMLObject>> returned = availableFMLObjectsTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
-			ModelContext modelContext;
+			PamelaMetaModel pamelaMetaModel;
 			try {
-				modelContext = ModelContextLibrary.getModelContext(modelSlotClass);
-				appendFMLObjectsTypes(returned, modelSlotClass, modelContext);
+				pamelaMetaModel = PamelaMetaModelLibrary.getModelContext(modelSlotClass);
+				appendFMLObjectsTypes(returned, modelSlotClass, pamelaMetaModel);
 				availableFMLObjectsTypes.put(modelSlotClass, returned);
 				for (Class<? extends FMLObject> objectClass : returned) {
 					FML annotation = objectClass.getAnnotation(FML.class);
@@ -713,9 +713,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	private static void appendFMLObjectsTypes(List<Class<? extends FMLObject>> aList, Class<? extends FMLObject> cl,
-			ModelContext modelContext) throws ModelDefinitionException {
+			PamelaMetaModel pamelaMetaModel) throws ModelDefinitionException {
 
-		ModelEntity<?> modelEntity = modelContext.getModelEntity(cl);
+		ModelEntity<?> modelEntity = pamelaMetaModel.getModelEntity(cl);
 
 		if (cl.isAnnotationPresent(FML.class) && !FlexoRole.class.isAssignableFrom(cl) && !FlexoBehaviour.class.isAssignableFrom(cl)
 				&& !EditionAction.class.isAssignableFrom(cl)) {
@@ -729,7 +729,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			Method getterMethod = property.getGetterMethod();
 			if (getterMethod != null && getterMethod.isAnnotationPresent(FMLAttribute.class)
 					&& FMLObject.class.isAssignableFrom(property.getType())) {
-				appendFMLObjectsTypes(aList, (Class<? extends FMLObject>) property.getType(), modelContext);
+				appendFMLObjectsTypes(aList, (Class<? extends FMLObject>) property.getType(), pamelaMetaModel);
 			}
 
 		}

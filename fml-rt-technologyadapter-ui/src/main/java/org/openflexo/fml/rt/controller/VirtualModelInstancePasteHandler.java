@@ -61,7 +61,7 @@ import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.exceptions.ModelExecutionException;
 import org.openflexo.pamela.factory.Clipboard;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -187,7 +187,7 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 				for (ModelSlotInstance<?, ?> msi : getPastingPointHolder().getModelSlotInstances()) {
 					if (msi.getAccessedResourceData() != null && msi.getAccessedResourceData().getResource() instanceof PamelaResource) {
 						PamelaResource<?, ?> modelSlotInstanceResource = (PamelaResource<?, ?>) msi.getAccessedResourceData().getResource();
-						ModelFactory factory = modelSlotInstanceResource.getFactory();
+						PamelaModelFactory factory = modelSlotInstanceResource.getFactory();
 
 						Clipboard modelSlotInstanceClipboard = clipboard.getClipboard(modelSlotInstanceResource);
 

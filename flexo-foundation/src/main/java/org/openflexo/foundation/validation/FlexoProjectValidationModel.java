@@ -40,7 +40,7 @@
 package org.openflexo.foundation.validation;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.Validable;
 
@@ -56,7 +56,7 @@ public class FlexoProjectValidationModel extends FlexoValidationModel {
 	// true, true);
 
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class), null/*VALIDATION_LOCALIZATION*/);
+		super(PamelaMetaModelLibrary.getCompoundModelContext(FlexoProject.class), null/*VALIDATION_LOCALIZATION*/);
 		// registerRule(new FlexoProject.AllResourcesMustBeDefinedInProject());
 		// registerRule(new FlexoProject.FlexoIDMustBeUnique());
 		// registerRule(new FlexoProject.NameOfResourceMustBeKeyOfHashtableEntry());

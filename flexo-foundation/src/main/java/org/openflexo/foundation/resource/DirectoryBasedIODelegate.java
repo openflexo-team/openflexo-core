@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.JarInDirClassLoader;
 
@@ -113,7 +113,7 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 
 		private File directory;
 
-		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File directory, File file, ModelFactory factory) {
+		public static DirectoryBasedIODelegate makeDirectoryBasedFlexoIODelegate(File directory, File file, PamelaModelFactory factory) {
 			DirectoryBasedIODelegate fileIODelegate = factory.newInstance(DirectoryBasedIODelegate.class);
 			/*fileIODelegate.setDirectoryExtension(directoryExtension);
 			fileIODelegate.setFileExtension(fileExtension);

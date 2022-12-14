@@ -52,7 +52,7 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.exceptions.ModelExecutionException;
 import org.openflexo.pamela.factory.Clipboard;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObject> {
 
@@ -130,7 +130,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 			return handler.isPastable(editingContext.getClipboard(), pastingContext);
 
-			/*ModelFactory factory = editingContext.getClipboard().getLeaderClipboard().getModelFactory();
+			/*PamelaModelFactory factory = editingContext.getClipboard().getLeaderClipboard().getModelFactory();
 			
 			// System.out.println("returning: " + factory.isPastable(editingContext.getClipboard(), pastingContext));
 			
@@ -214,10 +214,10 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		}
 
 		Clipboard leaderClipboard = editingContext.getClipboard().getLeaderClipboard();
-		ModelFactory factory = leaderClipboard.getModelFactory();
+		PamelaModelFactory factory = leaderClipboard.getModelFactory();
 
 		if (factory == null) {
-			throw new PasteException("Unexpected null ModelFactory in PASTE", null);
+			throw new PasteException("Unexpected null PamelaModelFactory in PASTE", null);
 		}
 
 		if (getFocusedObject() == null) {

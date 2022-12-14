@@ -31,7 +31,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Abstract implementation a factory that manages the creation of a given type of {@link FlexoResource} and a given
@@ -49,7 +49,7 @@ import org.openflexo.pamela.factory.ModelFactory;
  * @param <F>
  *            type of {@link PamelaResourceModelFactory} managing contents of resources
  */
-public abstract class TechnologySpecificPamelaResourceFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, F>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, F extends ModelFactory & PamelaResourceModelFactory>
+public abstract class TechnologySpecificPamelaResourceFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, F>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, F extends PamelaModelFactory & PamelaResourceModelFactory>
 		extends PamelaResourceFactory<R, RD, F> implements ITechnologySpecificFlexoResourceFactory<R, RD, TA> {
 
 	@SuppressWarnings("unused")

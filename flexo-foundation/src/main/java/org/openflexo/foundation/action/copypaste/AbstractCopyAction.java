@@ -116,7 +116,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 
 			objectsToBeCopied.clear();
 
-			// ModelFactory modelFactory = null;
+			// PamelaModelFactory modelFactory = null;
 
 			for (FlexoObject o : effectiveSelection) {
 				if (o instanceof InnerResourceData) {

@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Default implementation for {@link ProjectNatureService}
@@ -63,7 +63,7 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 
 	public static ProjectNatureService getNewInstance() {
 		try {
-			ModelFactory factory = new ModelFactory(ProjectNatureService.class);
+			PamelaModelFactory factory = new PamelaModelFactory(ProjectNatureService.class);
 			factory.setImplementingClassForInterface(DefaultProjectNatureService.class, ProjectNatureService.class);
 			ProjectNatureService returned = factory.newInstance(ProjectNatureService.class);
 			return returned;

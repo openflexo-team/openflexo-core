@@ -41,7 +41,7 @@ package org.openflexo.foundation.technologyadapter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * The global resource repository for a Technology Adapter
@@ -54,9 +54,9 @@ public interface TechnologyAdapterGlobalRepository<TA extends TechnologyAdapter<
 
 	public static <TA extends TechnologyAdapter<TA>, I> TechnologyAdapterGlobalRepository<TA, I> instanciateNewRepository(
 			TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
-		ModelFactory factory;
+		PamelaModelFactory factory;
 		try {
-			factory = new ModelFactory(TechnologyAdapterGlobalRepository.class);
+			factory = new PamelaModelFactory(TechnologyAdapterGlobalRepository.class);
 			TechnologyAdapterGlobalRepository<TA, I> newRepository = factory.newInstance(TechnologyAdapterGlobalRepository.class);
 			newRepository.setTechnologyAdapter(technologyAdapter);
 			newRepository.setResourceCenter(resourceCenter);

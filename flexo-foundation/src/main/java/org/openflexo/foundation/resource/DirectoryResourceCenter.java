@@ -48,7 +48,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -64,9 +64,9 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 	public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory,
 			FlexoResourceCenterService rcService) throws IOException {
 		DirectoryResourceCenterImpl.logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
-		ModelFactory factory;
+		PamelaModelFactory factory;
 		try {
-			factory = new ModelFactory(DirectoryResourceCenter.class);
+			factory = new PamelaModelFactory(DirectoryResourceCenter.class);
 			DirectoryResourceCenter directoryResourceCenter = factory.newInstance(DirectoryResourceCenter.class);
 			directoryResourceCenter.setBaseArtefact(resourceCenterDirectory);
 			directoryResourceCenter.setFlexoResourceCenterService(rcService);
@@ -125,7 +125,7 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 		public ResourceCenterEntry<?> getResourceCenterEntry() {
 			if (entry == null) {
 				try {
-					ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
+					PamelaModelFactory factory = new PamelaModelFactory(DirectoryResourceCenterEntry.class);
 					entry = factory.newInstance(DirectoryResourceCenterEntry.class);
 					entry.setDirectory(getDirectory());
 				} catch (ModelDefinitionException e) {

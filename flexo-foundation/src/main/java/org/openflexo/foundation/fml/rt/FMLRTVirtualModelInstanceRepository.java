@@ -49,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepos
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * A repository storing {@link FMLRTVirtualModelInstanceResource} for a resource center
@@ -64,9 +64,9 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 
 	public static <I> FMLRTVirtualModelInstanceRepository<I> instanciateNewRepository(FMLRTTechnologyAdapter technologyAdapter,
 			FlexoResourceCenter<I> resourceCenter) {
-		ModelFactory factory;
+		PamelaModelFactory factory;
 		try {
-			factory = new ModelFactory(FMLRTVirtualModelInstanceRepository.class);
+			factory = new PamelaModelFactory(FMLRTVirtualModelInstanceRepository.class);
 			FMLRTVirtualModelInstanceRepository<I> newRepository = factory.newInstance(FMLRTVirtualModelInstanceRepository.class);
 			newRepository.setTechnologyAdapter(technologyAdapter);
 			newRepository.setResourceCenter(resourceCenter);

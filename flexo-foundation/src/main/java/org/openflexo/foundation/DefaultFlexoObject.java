@@ -45,8 +45,8 @@ import java.util.function.Function;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.pamela.AccessibleProxyObject;
 import org.openflexo.pamela.model.ModelProperty;
-import org.openflexo.pamela.model.PAMELAVisitor;
-import org.openflexo.pamela.model.PAMELAVisitor.VisitingStrategy;
+import org.openflexo.pamela.model.PamelaVisitor;
+import org.openflexo.pamela.model.PamelaVisitor.VisitingStrategy;
 
 /**
  * This is the default non-abstract implementation of {@link FlexoObject}.<br>
@@ -273,13 +273,13 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
-	public void accept(PAMELAVisitor visitor) {
+	public void accept(PamelaVisitor visitor) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void accept(PAMELAVisitor visitor, VisitingStrategy strategy) {
+	public void accept(PamelaVisitor visitor, VisitingStrategy strategy) {
 		// TODO Auto-generated method stub
 
 	}

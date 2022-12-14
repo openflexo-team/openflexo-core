@@ -59,7 +59,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -225,7 +225,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			throws ModelDefinitionException {
 		List<Class<?>> classes = buildClassesListForPreferenceFactory(applicationContext);
 		return new FlexoPreferencesFactory(resource,
-				ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
+				PamelaMetaModelLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
 	}
 
 	protected List<Class<?>> buildClassesListForPreferenceFactory(ApplicationContext applicationContext) {

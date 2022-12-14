@@ -26,7 +26,7 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * Abstract implementation a factory that manages the creation of a given type of {@link FlexoResource} in PAMELA context
@@ -43,7 +43,7 @@ import org.openflexo.pamela.factory.ModelFactory;
  * @param <F>
  *            type of {@link PamelaResourceModelFactory} managing contents of resources
  */
-public abstract class PamelaResourceFactory<R extends FlexoResource<RD>, RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+public abstract class PamelaResourceFactory<R extends FlexoResource<RD>, RD extends ResourceData<RD>, F extends PamelaModelFactory & PamelaResourceModelFactory>
 		extends FlexoResourceFactory<R, RD> {
 
 	@SuppressWarnings("unused")

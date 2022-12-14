@@ -42,10 +42,10 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link ModelFactory} used to handle View models<br>
+ * {@link PamelaModelFactory} used to handle View models<br>
  * Only one instance of this class should be used in a session
  * 
  * @author sylvain

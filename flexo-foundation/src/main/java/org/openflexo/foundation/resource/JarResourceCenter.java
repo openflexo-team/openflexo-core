@@ -75,7 +75,7 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.JarResourceImpl;
@@ -99,9 +99,9 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 	public static JarResourceCenter instanciateNewJarResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService)
 			throws IOException {
 		JarResourceCenterImpl.logger.info("Instanciate JarResourceCenter from " + jarFile);
-		ModelFactory factory;
+		PamelaModelFactory factory;
 		try {
-			factory = new ModelFactory(JarResourceCenter.class);
+			factory = new PamelaModelFactory(JarResourceCenter.class);
 			JarResourceCenter jarResourceCenter = factory.newInstance(JarResourceCenter.class);
 			jarResourceCenter.setFlexoResourceCenterService(rcService);
 			jarResourceCenter.setJarFile(jarFile);
@@ -531,7 +531,7 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		public ResourceCenterEntry<?> getResourceCenterEntry() {
 			if (entry == null) {
 				try {
-					ModelFactory factory = new ModelFactory(JarResourceCenterEntry.class);
+					PamelaModelFactory factory = new PamelaModelFactory(JarResourceCenterEntry.class);
 					entry = factory.newInstance(JarResourceCenterEntry.class);
 					entry.setFile(new File(getJarResourceImpl().getRelativePath()));
 				} catch (ModelDefinitionException e) {

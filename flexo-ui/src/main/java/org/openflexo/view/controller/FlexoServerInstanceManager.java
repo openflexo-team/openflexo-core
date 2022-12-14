@@ -51,18 +51,18 @@ import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 public class FlexoServerInstanceManager extends FlexoServiceImpl {
 
 	private FlexoServerAddressBook addressBook;
 
-	private ModelFactory factory;
+	private PamelaModelFactory factory;
 
 	public FlexoServerInstanceManager() {
 		try {
-			factory = new ModelFactory(FlexoServerAddressBook.class);
+			factory = new PamelaModelFactory(FlexoServerAddressBook.class);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
@@ -91,9 +91,9 @@ public class FlexoServerInstanceManager extends FlexoServiceImpl {
 	}
 
 	public static FlexoServerAddressBook getDefaultAddressBook() {
-		ModelFactory factory;
+		PamelaModelFactory factory;
 		try {
-			factory = new ModelFactory(FlexoServerAddressBook.class);
+			factory = new PamelaModelFactory(FlexoServerAddressBook.class);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 			throw new Error("FlexoServerAddressBook model is not properly configured", e);

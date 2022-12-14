@@ -48,10 +48,10 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceImpl;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.PamelaMetaModel;
 import org.openflexo.pamela.exceptions.MissingImplementationException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.pamela.model.ModelEntity;
 
 /**
@@ -65,12 +65,12 @@ public class ResourceModelFactoryTest {
 	@Test
 	public void testInstantiateVirtualModelResourceFactory() {
 		try {
-			System.out.println("Instanciating VirtualModelResource ModelFactory");
+			System.out.println("Instanciating VirtualModelResource PamelaModelFactory");
 
-			ModelFactory factory = new ModelFactory(CompilationUnitResource.class);
+			PamelaModelFactory factory = new PamelaModelFactory(CompilationUnitResource.class);
 			factory.setImplementingClassForInterface(CompilationUnitResourceImpl.class, CompilationUnitResource.class);
-			ModelContext modelContext = factory.getModelContext();
-			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
+			PamelaMetaModel pamelaMetaModel = factory.getModelContext();
+			for (Iterator<ModelEntity> it = pamelaMetaModel.getEntities(); it.hasNext();) {
 				// FD unused ModelEntity e =
 				it.next();
 			}
@@ -87,11 +87,11 @@ public class ResourceModelFactoryTest {
 	@Test
 	public void testInstantiateVirtualModelInstanceResourceModelFactory() {
 		try {
-			System.out.println("Instanciating VirtualModelInstanceResource ModelFactory");
+			System.out.println("Instanciating VirtualModelInstanceResource PamelaModelFactory");
 
-			ModelFactory factory = new ModelFactory(FMLRTVirtualModelInstanceResource.class);
-			ModelContext modelContext = factory.getModelContext();
-			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
+			PamelaModelFactory factory = new PamelaModelFactory(FMLRTVirtualModelInstanceResource.class);
+			PamelaMetaModel pamelaMetaModel = factory.getModelContext();
+			for (Iterator<ModelEntity> it = pamelaMetaModel.getEntities(); it.hasNext();) {
 				// FD unused ModelEntity e =
 				it.next();
 			}

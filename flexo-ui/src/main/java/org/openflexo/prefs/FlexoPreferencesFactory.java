@@ -40,14 +40,14 @@ package org.openflexo.prefs;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.localization.converter.LanguageConverter;
-import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.PamelaMetaModel;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.swing.converter.FlexoFontConverter;
 import org.openflexo.swing.converter.LookAndFeelConverter;
 
 public class FlexoPreferencesFactory extends DefaultPamelaResourceModelFactory<FlexoPreferencesResource> {
 
-	public FlexoPreferencesFactory(FlexoPreferencesResource resource, ModelContext context) throws ModelDefinitionException {
+	public FlexoPreferencesFactory(FlexoPreferencesResource resource, PamelaMetaModel context) throws ModelDefinitionException {
 		super(resource, context);
 		addConverter(new LanguageConverter());
 		addConverter(new FlexoFontConverter());

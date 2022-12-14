@@ -53,12 +53,12 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaXMLSerializableResource;
 import org.openflexo.foundation.resource.PamelaXMLSerializableResourceImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -88,8 +88,8 @@ public interface FlexoPreferencesResource extends PamelaXMLSerializableResource<
 
 		public static FlexoPreferencesResource makePreferencesResource(ApplicationContext applicationContext) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(
-						ModelContextLibrary.getCompoundModelContext(FileIODelegate.class, FlexoPreferencesResource.class));
+				PamelaModelFactory resourceFactory = new PamelaModelFactory(
+						PamelaMetaModelLibrary.getCompoundModelContext(FileIODelegate.class, FlexoPreferencesResource.class));
 				FlexoPreferencesResourceImpl returned = (FlexoPreferencesResourceImpl) resourceFactory
 						.newInstance(FlexoPreferencesResource.class);
 

@@ -49,8 +49,8 @@ import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
-import org.openflexo.pamela.ModelContext;
-import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.PamelaMetaModel;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -71,17 +71,17 @@ public class FMLRTValidationModel extends FlexoValidationModel {
 
 	/**
 	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as
-	 * VirtualModelInstance parts, and return a newly created ModelContext dedicated to FMLModel@runtime validation
+	 * VirtualModelInstance parts, and return a newly created PamelaMetaModel dedicated to FMLModel@runtime validation
 	 * 
 	 * @param taService
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+	private static PamelaMetaModel computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = (taService != null
 				? FMLRTVirtualModelInstanceModelFactory.allClassesForModelContext(FMLRTVirtualModelInstance.class, taService)
 				: new ArrayList<>());
-		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
+		return PamelaMetaModelLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
 	}
 
 	public FMLRTValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {
