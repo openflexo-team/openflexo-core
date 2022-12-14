@@ -81,7 +81,7 @@ public class FMLRTValidationModel extends FlexoValidationModel {
 		List<Class<?>> classes = (taService != null
 				? FMLRTVirtualModelInstanceModelFactory.allClassesForModelContext(FMLRTVirtualModelInstance.class, taService)
 				: new ArrayList<>());
-		return PamelaMetaModelLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
+		return PamelaMetaModelLibrary.retrieveMetaModel(classes.toArray(new Class<?>[classes.size()]));
 	}
 
 	public FMLRTValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {

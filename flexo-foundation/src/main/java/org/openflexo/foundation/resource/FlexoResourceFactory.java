@@ -54,7 +54,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @throws ModelDefinitionException
 	 */
 	protected FlexoResourceFactory(Class<R> resourceClass) throws ModelDefinitionException {
-		super(PamelaMetaModelLibrary.getCompoundModelContext(resourceClass, FlexoIODelegate.class));
+		super(PamelaMetaModelLibrary.retrieveMetaModel(resourceClass, FlexoIODelegate.class));
 		this.resourceClass = resourceClass;
 	}
 
@@ -65,7 +65,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @throws ModelDefinitionException
 	 */
 	protected FlexoResourceFactory(Class<R> resourceClass, Class<?>... requiredClasses) throws ModelDefinitionException {
-		super(PamelaMetaModelLibrary.getCompoundModelContext(resourceClass, requiredClasses));
+		super(PamelaMetaModelLibrary.retrieveMetaModel(resourceClass, requiredClasses));
 		this.resourceClass = resourceClass;
 	}
 

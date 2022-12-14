@@ -157,7 +157,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 	public FMLModelFactory(CompilationUnitResource compilationUnitResource, FlexoServiceManager serviceManager,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(PamelaMetaModelLibrary.getCompoundModelContext(compilationUnitResource != null
+		super(PamelaMetaModelLibrary.retrieveMetaModel(compilationUnitResource != null
 				? retrieveTechnologySpecificClasses(compilationUnitResource.getVirtualModelClass(),
 						compilationUnitResource.getUsedModelSlots())
 				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService())));

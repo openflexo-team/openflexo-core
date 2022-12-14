@@ -56,7 +56,7 @@ public class FlexoProjectValidationModel extends FlexoValidationModel {
 	// true, true);
 
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
-		super(PamelaMetaModelLibrary.getCompoundModelContext(FlexoProject.class), null/*VALIDATION_LOCALIZATION*/);
+		super(PamelaMetaModelLibrary.retrieveMetaModel(FlexoProject.class), null/*VALIDATION_LOCALIZATION*/);
 		// registerRule(new FlexoProject.AllResourcesMustBeDefinedInProject());
 		// registerRule(new FlexoProject.FlexoIDMustBeUnique());
 		// registerRule(new FlexoProject.NameOfResourceMustBeKeyOfHashtableEntry());

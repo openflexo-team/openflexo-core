@@ -225,7 +225,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			throws ModelDefinitionException {
 		List<Class<?>> classes = buildClassesListForPreferenceFactory(applicationContext);
 		return new FlexoPreferencesFactory(resource,
-				PamelaMetaModelLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
+				PamelaMetaModelLibrary.retrieveMetaModel(classes.toArray(new Class<?>[classes.size()])));
 	}
 
 	protected List<Class<?>> buildClassesListForPreferenceFactory(ApplicationContext applicationContext) {

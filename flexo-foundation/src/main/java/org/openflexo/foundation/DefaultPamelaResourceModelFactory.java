@@ -79,7 +79,7 @@ public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> e
 	}
 
 	public DefaultPamelaResourceModelFactory(R resource, Collection<Class<?>> classes) throws ModelDefinitionException {
-		super(PamelaMetaModelLibrary.getCompoundModelContext(appendGRClasses(classes)));
+		super(PamelaMetaModelLibrary.retrieveMetaModel(appendGRClasses(classes)));
 		this.resource = resource;
 	}
 

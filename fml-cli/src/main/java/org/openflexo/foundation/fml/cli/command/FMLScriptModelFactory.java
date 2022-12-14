@@ -88,7 +88,7 @@ import org.openflexo.pamela.factory.PamelaModelFactory;
 public class FMLScriptModelFactory extends PamelaModelFactory {
 
 	public FMLScriptModelFactory() throws ModelDefinitionException {
-		super(PamelaMetaModelLibrary.getModelContext(FMLScript.class));
+		super(PamelaMetaModelLibrary.retrieveMetaModel(FMLScript.class));
 	}
 
 	public FMLScript newFMLScript(Node node, ScriptSemanticsAnalyzer scriptSemanticsAnalyzer) {

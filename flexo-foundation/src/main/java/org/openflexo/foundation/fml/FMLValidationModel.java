@@ -76,7 +76,7 @@ public class FMLValidationModel extends FlexoValidationModel {
 	private static PamelaMetaModel computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = (taService != null ? FMLModelFactory.retrieveTechnologySpecificClasses(taService) : new ArrayList<>());
 		classes.add(VirtualModel.class);
-		return PamelaMetaModelLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
+		return PamelaMetaModelLibrary.retrieveMetaModel(classes.toArray(new Class<?>[classes.size()]));
 	}
 
 	public FMLValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {

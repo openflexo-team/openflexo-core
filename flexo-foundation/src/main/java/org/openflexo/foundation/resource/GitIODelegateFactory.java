@@ -13,7 +13,7 @@ public class GitIODelegateFactory implements IODelegateFactory<File> {
 		PamelaModelFactory factory;
 		GitIODelegate gitIODelegate = null;
 		try {
-			factory = new PamelaModelFactory(PamelaMetaModelLibrary.getCompoundModelContext(GitIODelegate.class));
+			factory = new PamelaModelFactory(PamelaMetaModelLibrary.retrieveMetaModel(GitIODelegate.class));
 			gitIODelegate = factory.newInstance(GitIODelegate.class);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();

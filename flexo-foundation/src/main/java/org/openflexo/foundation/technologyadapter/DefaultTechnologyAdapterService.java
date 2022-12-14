@@ -559,7 +559,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			returned = new ArrayList<>();
 			PamelaMetaModel pamelaMetaModel;
 			try {
-				pamelaMetaModel = PamelaMetaModelLibrary.getModelContext(modelSlotClass);
+				pamelaMetaModel = PamelaMetaModelLibrary.retrieveMetaModel(modelSlotClass);
 				appendFMLObjectsTypes(returned, modelSlotClass, pamelaMetaModel);
 				availableFMLObjectsTypes.put(modelSlotClass, returned);
 				for (Class<? extends FMLObject> objectClass : returned) {

@@ -89,7 +89,7 @@ public interface FlexoPreferencesResource extends PamelaXMLSerializableResource<
 		public static FlexoPreferencesResource makePreferencesResource(ApplicationContext applicationContext) {
 			try {
 				PamelaModelFactory resourceFactory = new PamelaModelFactory(
-						PamelaMetaModelLibrary.getCompoundModelContext(FileIODelegate.class, FlexoPreferencesResource.class));
+						PamelaMetaModelLibrary.retrieveMetaModel(FileIODelegate.class, FlexoPreferencesResource.class));
 				FlexoPreferencesResourceImpl returned = (FlexoPreferencesResourceImpl) resourceFactory
 						.newInstance(FlexoPreferencesResource.class);
 
