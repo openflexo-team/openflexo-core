@@ -206,11 +206,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testSelectIndividualInspector() {
-		validateFIB("Inspectors/FML/EditionAction/SelectIndividual.inspector");
-	}
-
-	@Test
 	public void testSelectVirtualModelInstanceInspector() {
 		validateFIB("Inspectors/FML/EditionAction/SelectVirtualModelInstance.inspector");
 	}

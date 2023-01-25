@@ -144,7 +144,7 @@
 					borderBottom="0" borderTitle="Panel" boxLayoutAxis="Y_AXIS"
 					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
 					layout="box" name="ConstraintsOrderingPanel">
-					<Button
+					<!--  <Button
 						enable="(ConstraintsTable.selected != null) &amp; (ConstraintsTable.selected.index &gt; 0)"
 						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
 						action="data.entryFirst(ConstraintsTable.selected)" index="0"
@@ -175,7 +175,7 @@
 						localize="true"
 						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
 						label="">
-					</Button>
+					</Button>-->
 				</Panel>
 				<Panel darkLevel="2" borderLeft="0" sizeAdjustment="OriginalSize"
 					border="rounded3d" borderRight="0" trackViewPortWidth="true"
