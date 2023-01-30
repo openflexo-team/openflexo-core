@@ -126,6 +126,7 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.ta.CreateContainedVirtualModel;
+import org.openflexo.foundation.fml.ta.CreateExpressionProperty;
 import org.openflexo.foundation.fml.ta.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
 import org.openflexo.foundation.fml.ta.CreateFlexoConceptInstanceRole;
@@ -419,6 +420,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (CreateFlexoConceptInstanceRole.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
+		if (CreateExpressionProperty.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.EXPRESSION_PROPERTY_ICON, IconLibrary.DUPLICATE);
+		}
 		if (CreateFlexoBehaviour.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON, IconLibrary.DUPLICATE);
 		}
@@ -701,19 +705,19 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		//fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.bindable"),
-		//		new DataBinding<>("controller.editor.project"), true));
+		// fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.bindable"),
+		// new DataBinding<>("controller.editor.project"), true));
 
 		String containerBinding = getContainerBinding(widgetContext, variableName);
 		DataBinding<?> container = widgetContext.getContainer();
-		System.out.println("widgetContext : "+widgetContext);
-		System.out.println("containerBinding : "+containerBinding);
-		System.out.println("container : "+container);
+		System.out.println("widgetContext : " + widgetContext);
+		System.out.println("containerBinding : " + containerBinding);
+		System.out.println("container : " + container);
 		if (container != null && container.isSet() && container.isValid()) {
 			Type containerType = container.getAnalyzedType();
-			System.out.println("containerType : "+containerType);
-			fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
-					new DataBinding<>("component.bindable"), new DataBinding<>(containerBinding), true));
+			System.out.println("containerType : " + containerType);
+			fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.bindable"),
+					new DataBinding<>(containerBinding), true));
 			if (containerType instanceof VirtualModelInstanceType) {
 				fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector,
 						new DataBinding<>("component.virtualModel"), new DataBinding<>(containerBinding), true));
@@ -724,14 +728,14 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			}
 		}
 		/*else {
-
+		
 			// No container defined, set service manager
 			fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.serviceManager"),
 					new DataBinding<>("controller.flexoController.applicationContext"), true));
 		}*/
 
-		//fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.expectedType"),
-		//		new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
+		// fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.expectedType"),
+		// new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
 
 		return fciSelector;
 
