@@ -370,7 +370,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		// unload resources from resource center
-		for (FlexoResource<?> resource : resourceCenter.getAllResources()) {
+		for (FlexoResource<?> resource : new ArrayList<>(resourceCenter.getAllResources())) {
 			if (resource.isLoaded()) {
 				resource.unloadResourceData(true);
 			}
