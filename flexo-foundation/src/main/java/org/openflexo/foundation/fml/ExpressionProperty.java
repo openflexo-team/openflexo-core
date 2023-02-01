@@ -216,6 +216,14 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 			return true;
 		}
 
+		@Override
+		public String toString() {
+			if (getExpression() != null) {
+				return getExpression().toString();
+			}
+			return super.toString();
+		}
+
 	}
 
 	@DefineValidationRule

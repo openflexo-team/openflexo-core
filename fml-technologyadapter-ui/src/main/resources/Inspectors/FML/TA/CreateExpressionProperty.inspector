@@ -13,7 +13,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
 			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-				localize="true" name="ConceptNameBS" index="7" data="data.roleName"
+				localize="true" name="PropertyNameBS" index="7" data="data.propertyName"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
 				<Assignment variable="component.bindable" value="data" />

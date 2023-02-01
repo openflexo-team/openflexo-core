@@ -92,10 +92,10 @@ public interface CreateExpressionProperty
 
 	@Getter(value = EXPRESSION_KEY)
 	@XMLAttribute
-	public DataBinding<Object> getExpression();
+	public DataBinding<DataBinding<Object>> getExpression();
 
 	@Setter(EXPRESSION_KEY)
-	public void setExpression(DataBinding<Object> expression);
+	public void setExpression(DataBinding<DataBinding<Object>> expression);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -112,7 +112,7 @@ public interface CreateExpressionProperty
 
 		private DataBinding<String> propertyName;
 		private DataBinding<FlexoConcept> container;
-		private DataBinding<Object> expression;
+		private DataBinding<DataBinding<Object>> expression;
 
 		private String getPropertyName(RunTimeEvaluationContext evaluationContext) {
 			try {
@@ -140,6 +140,19 @@ public interface CreateExpressionProperty
 			return null;
 		}
 
+		private DataBinding<Object> getExpression(RunTimeEvaluationContext evaluationContext) {
+			try {
+				return getExpression().getBindingValue(evaluationContext);
+			} catch (TypeMismatchException e) {
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
 		@Override
 		public DataBinding<String> getPropertyName() {
 			if (propertyName == null) {
@@ -150,14 +163,14 @@ public interface CreateExpressionProperty
 		}
 
 		@Override
-		public void setPropertyName(DataBinding<String> roleName) {
-			if (roleName != null) {
-				roleName.setOwner(this);
-				roleName.setBindingName("propertyName");
-				roleName.setDeclaredType(String.class);
-				roleName.setBindingDefinitionType(BindingDefinitionType.GET);
+		public void setPropertyName(DataBinding<String> propertyName) {
+			if (propertyName != null) {
+				propertyName.setOwner(this);
+				propertyName.setBindingName("propertyName");
+				propertyName.setDeclaredType(String.class);
+				propertyName.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
-			this.propertyName = roleName;
+			this.propertyName = propertyName;
 		}
 
 		@Override
@@ -181,22 +194,22 @@ public interface CreateExpressionProperty
 		}
 
 		@Override
-		public DataBinding<Object> getExpression() {
-			/*if (expression == null) {
-				expression = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
-				expression.setBindingName("flexoConceptType");
-			}*/
+		public DataBinding<DataBinding<Object>> getExpression() {
+			if (expression == null) {
+				expression = new DataBinding<>(this, DataBinding.class, BindingDefinitionType.GET);
+				expression.setBindingName("expression");
+			}
 			return expression;
 		}
 
 		@Override
-		public void setExpression(DataBinding<Object> expression) {
-			/*if (expression != null) {
+		public void setExpression(DataBinding<DataBinding<Object>> expression) {
+			if (expression != null) {
 				expression.setOwner(this);
-				expression.setBindingName("flexoConceptType");
-				expression.setDeclaredType(Object.class);
+				expression.setBindingName("expression");
+				expression.setDeclaredType(DataBinding.class);
 				expression.setBindingDefinitionType(BindingDefinitionType.GET);
-			}*/
+			}
 			this.expression = expression;
 		}
 
@@ -212,14 +225,15 @@ public interface CreateExpressionProperty
 
 				String propertyName = getPropertyName(evaluationContext);
 				FlexoConcept container = getContainer(evaluationContext);
+				DataBinding<Object> expression = getExpression(evaluationContext);
 
-				logger.info("on cree une ExpressionProperty " + propertyName + " dans " + container + " avec " + getExpression());
+				logger.info("on cree une ExpressionProperty " + propertyName + " dans " + container + " avec " + expression);
 				logger.info("container=" + container);
 
 				org.openflexo.foundation.fml.action.CreateExpressionProperty action = org.openflexo.foundation.fml.action.CreateExpressionProperty.actionType
 						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				action.setPropertyName(propertyName);
-				action.setExpression(getExpression());
+				action.setExpression(expression);
 				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();
 
