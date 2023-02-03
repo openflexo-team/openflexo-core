@@ -63,6 +63,7 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationIssue;
 
 @ModelEntity
 @ImplementationClass(CreatePrimitiveRole.CreatePrimitiveRoleImpl.class)
@@ -75,6 +76,8 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 	public static final String CONTAINER_KEY = "container";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String PRIMITIVE_TYPE_KEY = "primitiveType";
+	@PropertyIdentifier(type = PrimitiveType.class)
+	public static final String STATIC_PRIMITIVE_TYPE_KEY = "staticPrimitiveType";
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
@@ -98,6 +101,13 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 
 	@Setter(PRIMITIVE_TYPE_KEY)
 	public void setPrimitiveType(DataBinding<PrimitiveType> primitiveType);
+
+	@Getter(value = STATIC_PRIMITIVE_TYPE_KEY)
+	@XMLAttribute
+	public PrimitiveType getStaticPrimitiveType();
+
+	@Setter(STATIC_PRIMITIVE_TYPE_KEY)
+	public void setStaticPrimitiveType(PrimitiveType primitiveType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -225,8 +235,15 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
 				String roleName = getRoleName(evaluationContext);
-				PrimitiveType primitiveType = getPrimitiveType(evaluationContext);
+				PrimitiveType primitiveType;
 				FlexoConcept container = getContainer(evaluationContext);
+
+				if (getStaticPrimitiveType() != null) {
+					primitiveType = getStaticPrimitiveType();
+				}
+				else {
+					primitiveType = getPrimitiveType(evaluationContext);
+				}
 
 				logger.info("on cree une property " + roleName + " dans " + container);
 
@@ -284,6 +301,15 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 		@Override
 		public DataBinding<?> getBinding(CreatePrimitiveRole object) {
 			return object.getPrimitiveType();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<CreatePrimitiveRole>, CreatePrimitiveRole> applyValidation(
+				CreatePrimitiveRole object) {
+			if (object.getStaticPrimitiveType() == null) {
+				return super.applyValidation(object);
+			}
+			return null;
 		}
 	}
 
