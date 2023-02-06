@@ -87,6 +87,9 @@ public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FML
 		}
 		else {
 			logger.warning("Ignore property " + getASTNode() + " since it cannot be mapped to any FMLProperty");
+			// We add it anyway to notify the developer
+			((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
+			getModelObject().setObject((M) getParent().getModelObject());
 		}
 		// System.out.println("Tiens faudrait appliquer la propriete " + getModelObject() + " a " + getParent().getModelObject());
 		return this;
