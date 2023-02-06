@@ -1,3 +1,5 @@
+'resource_name'_binding_is_required_and_must_be_valid='resource name' binding is required and must be valid
+'resource_name'_binding_is_required_and_must_be_valid_description='resource name' binding is required and must be valid description
 ($reason)=($reason)
 CreateResource_need_a_rc=CreateResource need a rc
 CreateResource_need_a_rc_description=CreateResource need a rc description
