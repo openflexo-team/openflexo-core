@@ -47,7 +47,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -239,13 +238,6 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 				dynamicRelativePath.setBindingName("dynamicRelativePath");
 			}
 			return dynamicRelativePath;
-		}
-
-		@Override
-		public List<FMLPropertyValue<?, ?>> getFMLPropertyValues() {
-			List<FMLPropertyValue<?, ?>> returned = (List<FMLPropertyValue<?, ?>>) performSuperGetter(FML_PROPERTY_VALUES_KEY);
-			System.err.println("----------> Bon on retourne les property values: " + returned);
-			return returned;
 		}
 
 		@Override
