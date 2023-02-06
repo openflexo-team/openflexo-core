@@ -39,12 +39,15 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -64,10 +67,8 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
-import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * Abstract edition action allowing to create an empty resource in a {@link FlexoResourceCenter}, at a specified relative path<br>
@@ -241,6 +242,13 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 		}
 
 		@Override
+		public List<FMLPropertyValue<?, ?>> getFMLPropertyValues() {
+			List<FMLPropertyValue<?, ?>> returned = (List<FMLPropertyValue<?, ?>>) performSuperGetter(FML_PROPERTY_VALUES_KEY);
+			System.err.println("----------> Bon on retourne les property values: " + returned);
+			return returned;
+		}
+
+		@Override
 		public void setDynamicRelativePath(DataBinding<String> dynamicRelativePath) {
 			if (dynamicRelativePath != null) {
 				dynamicRelativePath.setOwner(this);
@@ -333,44 +341,40 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	}
 
-	/* Validation Rule to avoid ResourceCenter to be Null/Empty */
-
 	@DefineValidationRule
-	public static class ResourceCenterShouldNotBeNull
-			extends ValidationRule<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
-
-		public ResourceCenterShouldNotBeNull() {
-			super(TechnologySpecificAction.class, "CreateResource_need_a_rc");
+	public static class ResourceCenterShouldBeValidAndNotBeNull extends BindingIsRequiredAndMustBeValid<AbstractCreateResource> {
+		public ResourceCenterShouldBeValidAndNotBeNull() {
+			super("'resource_name'_binding_is_required_and_must_be_valid", AbstractCreateResource.class);
 		}
 
 		@Override
-		public ValidationIssue<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> applyValidation(
-				TechnologySpecificAction<?, ?> anAction) {
-			DataBinding<?> rcbinding = ((AbstractCreateResource<?, ?, ?>) anAction).getResourceCenter();
+		public DataBinding<Object> getBinding(AbstractCreateResource anAction) {
+			return anAction.getResourceCenter();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractCreateResource>, AbstractCreateResource> applyValidation(
+				AbstractCreateResource anAction) {
+			ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractCreateResource>, AbstractCreateResource> returned = super.applyValidation(
+					anAction);
+			if (returned != null) {
+				return returned;
+			}
+			DataBinding<?> rcbinding = getBinding(anAction);
 			if (rcbinding == null || rcbinding.isNull() || rcbinding.getExpression() == null) {
-				SetResourceCenterBeingCurrentResourceCenterByDefault fixProposal = new SetResourceCenterBeingCurrentResourceCenterByDefault(
-						anAction);
-				return new ValidationError<>(this, anAction, "CreateResource_should_not_have_null_resource_center", fixProposal);
+				return new ValidationError(this, anAction, "CreateResource_should_not_have_null_resource_center",
+						new UseProposedBinding<>(rcbinding, "this.resourceCenter"));
 
 			}
 			return null;
+
 		}
 
-		protected static class SetResourceCenterBeingCurrentResourceCenterByDefault
-				extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
-
-			private final TechnologySpecificAction<?, ?> action;
-
-			public SetResourceCenterBeingCurrentResourceCenterByDefault(TechnologySpecificAction<?, ?> anAction) {
-				super("set_resource_center_to_'this.resourceCenter'");
-				this.action = anAction;
-			}
-
-			@Override
-			protected void fixAction() {
-				((AbstractCreateResource<?, ?, ?>) action).getResourceCenter().setUnparsedBinding("this.resourceCenter");
-			}
+		@Override
+		public List<UseProposedBinding<AbstractCreateResource>> findProposals(DataBinding<?> b, AbstractCreateResource object) {
+			return Collections.singletonList(new UseProposedBinding<>(b, "this.resourceCenter"));
 		}
 
 	}
+
 }
