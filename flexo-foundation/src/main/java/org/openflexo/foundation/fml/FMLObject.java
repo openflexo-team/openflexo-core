@@ -1091,27 +1091,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<>(this, object);
 
-				if (object instanceof FlexoConceptObject) {
-					String proposal = b.toString();
-					if (((FlexoConceptObject) object).getFlexoConcept() instanceof VirtualModel) {
-						FMLObjectImpl.logger
-								.info("Not valid for VirtualModel " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
-						proposal = proposal.replace("virtualModelInstance.virtualModelDefinition", "this.virtualModel");
-						proposal = proposal.replace("virtualModelInstance", "this");
-					}
-					else {
-						FMLObjectImpl.logger.info("Not valid for Concept " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
-						proposal = proposal.replace("virtualModelInstance", "container");
-						proposal = proposal.replace("flexoConceptInstance", "this");
-					}
-					if (!proposal.equals(b.toString())) {
-						FMLObjectImpl.logger.info("DataBinding validation: providing proposal " + proposal + " instead of " + b.toString());
-						returned.addToFixProposals(new UseProposedBinding<>(b, proposal));
-					}
-					else {
-						FMLObjectImpl.logger
-								.info("DataBinding validation: cannot find any proposal " + proposal + " instead of " + b.toString());
-					}
+				List<UseProposedBinding<C>> proposals = findProposals(b, object);
+				for (UseProposedBinding<C> proposedBinding : proposals) {
+					returned.addToFixProposals(proposedBinding);
 				}
 
 				return returned;
@@ -1120,6 +1102,32 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				// + getBinding(object).invalidBindingReason());
 			}
 			return null;
+		}
+
+		public List<UseProposedBinding<C>> findProposals(DataBinding<?> b, C object) {
+			List<UseProposedBinding<C>> returned = new ArrayList<>();
+			if (object instanceof FlexoConceptObject) {
+				String proposal = b.toString();
+				if (((FlexoConceptObject) object).getFlexoConcept() instanceof VirtualModel) {
+					FMLObjectImpl.logger.info("Not valid for VirtualModel " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
+					proposal = proposal.replace("virtualModelInstance.virtualModelDefinition", "this.virtualModel");
+					proposal = proposal.replace("virtualModelInstance", "this");
+				}
+				else {
+					FMLObjectImpl.logger.info("Not valid for Concept " + ((FlexoConceptObject) object).getFlexoConcept() + " " + b);
+					proposal = proposal.replace("virtualModelInstance", "container");
+					proposal = proposal.replace("flexoConceptInstance", "this");
+				}
+				if (!proposal.equals(b.toString())) {
+					FMLObjectImpl.logger.info("DataBinding validation: providing proposal " + proposal + " instead of " + b.toString());
+					returned.add(new UseProposedBinding<>(b, proposal));
+				}
+				else {
+					FMLObjectImpl.logger
+							.info("DataBinding validation: cannot find any proposal " + proposal + " instead of " + b.toString());
+				}
+			}
+			return returned;
 		}
 
 		protected static class UseProposedBinding<C extends FMLObject> extends FixProposal<BindingIsRequiredAndMustBeValid<C>, C> {
