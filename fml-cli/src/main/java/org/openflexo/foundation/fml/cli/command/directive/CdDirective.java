@@ -126,12 +126,18 @@ public interface CdDirective extends Directive<ACdDirective> {
 		@Override
 		public File execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+
 			if (isValidInThatContext()) {
 				File newDirectory = getNewDirectory();
 				getCommandInterpreter().setWorkingDirectory(newDirectory);
 				return newDirectory;
 			}
-			throw new FMLCommandExecutionException(invalidCommandReason());
+
+			String cmdOutput = invalidCommandReason();
+
+			output.add(cmdOutput);
+			throw new FMLCommandExecutionException(cmdOutput);
 		}
 	}
 }

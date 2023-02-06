@@ -503,11 +503,13 @@ public class FMLTerminal extends JFrame {
 		textPane.setEnabled(false);
 	}
 
-	private void executeCommand(String commandString) {
+	private List<String> executeCommand(String commandString) {
 		String commandWithoutLineSeparator = commandString.substring(0, commandString.indexOf(LINE_SEPARATOR));
+		List<String> output = null;
 		try {
 			boolean hadFocusedObject = (commandInterpreter.getFocusedObject() != null);
 			AbstractCommand executeCommand = commandInterpreter.executeCommand(commandWithoutLineSeparator);
+			output = commandInterpreter.getOutput();
 			if (executeCommand instanceof QuitDirective) {
 				close();
 			}
@@ -523,6 +525,8 @@ public class FMLTerminal extends JFrame {
 			history.add(commandWithoutLineSeparator);
 			historyIndex = history.size();
 		}
+
+		return output;
 	}
 
 	private String extractCommand() {

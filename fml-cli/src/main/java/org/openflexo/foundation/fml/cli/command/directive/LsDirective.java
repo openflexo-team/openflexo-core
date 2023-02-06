@@ -76,6 +76,9 @@ public interface LsDirective extends Directive<ALsDirective> {
 		@Override
 		public File execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+			String cmdOutput;
+
 			if (getCommandInterpreter().getWorkingDirectory() != null) {
 				if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
 					int maxLength = 0;
@@ -89,7 +92,10 @@ public interface LsDirective extends Directive<ALsDirective> {
 					int i = 0;
 					for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
 						String name = getFileName(f);
-						getOutStream().print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
+						cmdOutput 	= name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1);
+
+						output.add(cmdOutput);
+						getOutStream().print(cmdOutput);
 						i++;
 						if (i % cols == 0) {
 							getOutStream().println();
@@ -100,7 +106,10 @@ public interface LsDirective extends Directive<ALsDirective> {
 					}
 				}
 				else {
-					throw new FMLCommandExecutionException("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
+					cmdOutput = "" + getCommandInterpreter().getWorkingDirectory() + " is not a directory";
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput);
 				}
 			}
 

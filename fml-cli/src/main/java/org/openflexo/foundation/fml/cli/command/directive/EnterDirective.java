@@ -178,15 +178,23 @@ public interface EnterDirective extends Directive<AEnterDirective> {
 		@Override
 		public FlexoObject execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+			String cmdOutput;
 
 			Object object = getAddressedObject();
 			if (object instanceof FlexoObject) {
-				getOutStream().println("Entering in context " + CLIUtils.denoteObject(object));
+				cmdOutput = "Entering in context " + CLIUtils.denoteObject(object);
+
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 				getCommandInterpreter().enterFocusedObject((FlexoObject) object);
 				return (FlexoObject) object;
 			}
 			else {
-				throw new FMLCommandExecutionException("Cannot enter into " + path + " : not a FlexoObject");
+				cmdOutput = "Cannot enter into " + path + " : not a FlexoObject";
+
+				output.add(cmdOutput);
+				throw new FMLCommandExecutionException(cmdOutput);
 			}
 		}
 	}

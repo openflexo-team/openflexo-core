@@ -80,6 +80,8 @@ public interface ExitDirective extends Directive<AExitDirective> {
 		@Override
 		public FlexoObject execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+
 			// FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
 			if (getCommandInterpreter().getFocusedObjects().isEmpty()) {
 				getCommandInterpreter().stop();

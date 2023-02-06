@@ -84,9 +84,14 @@ public interface FMLContextCommand extends FMLCommand<AContextFmlCommand> {
 		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
+			output.clear();
+			String cmdOutput;
 
 			if (getCommandInterpreter().getFocusedObject() != null) {
-				getOutStream().println(CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject()));
+				cmdOutput = CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject());
+
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 			}
 
 			int maxTypeCols = -1;
@@ -106,10 +111,12 @@ public interface FMLContextCommand extends FMLCommand<AContextFmlCommand> {
 			for (BindingVariable bv : getCommandInterpreter().getValues().keySet()) {
 				String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
 				String name = bv.getVariableName();
-
-				getOutStream().println(type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
+				cmdOutput 	= type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
 						+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
-						+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv)));
+						+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv));
+
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 			}
 
 			return null;

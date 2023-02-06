@@ -104,22 +104,39 @@ public interface FMLExpression extends FMLCommand<AExpressionFmlCommand> {
 		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
+			output.clear();
+			String cmdOutput;
 
 			if (expression.isValid()) {
 				try {
 					Object value = expression.getBindingValue(getCommandInterpreter());
-					getOutStream().println("Executed " + expression + " <- " + value);
+					cmdOutput = "Executed " + expression + " <- " + value;
+
+					output.add(cmdOutput);
+					getOutStream().println(cmdOutput);
 					return value;
 				} catch (TypeMismatchException e) {
-					throw new FMLCommandExecutionException("TypeMismatchException for " + expression, e);
+					cmdOutput = "TypeMismatchException for " + expression;
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e);
 				} catch (NullReferenceException e) {
-					throw new FMLCommandExecutionException("NullReference for " + expression, e);
+					cmdOutput = "NullReference for " + expression;
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e);
 				} catch (ReflectiveOperationException e) {
-					throw new FMLCommandExecutionException("Cannot execute " + expression, e.getCause());
+					cmdOutput = "Cannot execute " + expression;
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e.getCause());
 				}
 			}
 			else {
-				throw new FMLCommandExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+				cmdOutput = "Cannot execute " + expression + " : " + expression.invalidBindingReason();
+
+				output.add(cmdOutput);
+				throw new FMLCommandExecutionException(cmdOutput);
 			}
 
 			/*

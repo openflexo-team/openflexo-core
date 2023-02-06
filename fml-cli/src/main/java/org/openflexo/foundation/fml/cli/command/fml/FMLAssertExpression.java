@@ -116,26 +116,43 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
+			output.clear();
+			String cmdOutput;
 
 			if (isSyntaxicallyValid()) {
 				Boolean value;
 				try {
-					value = (Boolean) expression.getBindingValue(getCommandInterpreter());
-					getOutStream().println("Executed " + expression + " <- " + value);
+					value 		= (Boolean) expression.getBindingValue(getCommandInterpreter());
+					cmdOutput 	= "Executed " + expression + " <- " + value;
+
+					output.add(cmdOutput);
+					getOutStream().println(cmdOutput);
 					if (value) {
 						return true;
 					}
 					throw new FMLAssertException(getLine(), expression, getCommandInterpreter());
 				} catch (TypeMismatchException e) {
+					cmdOutput = "Type Mismatch Exception";
+
+					output.add(cmdOutput);
 					throw new FMLCommandExecutionException(e);
 				} catch (NullReferenceException e) {
+					cmdOutput = "Null Reference Exception";
+
+					output.add(cmdOutput);
 					throw new FMLCommandExecutionException(e);
 				} catch (ReflectiveOperationException e) {
+					cmdOutput = "Reflective Operation Exception";
+
+					output.add(cmdOutput);
 					throw new FMLCommandExecutionException(e);
 				}
 			}
 			else {
-				throw new FMLCommandExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+				cmdOutput = "Cannot execute " + expression + " : " + expression.invalidBindingReason();
+
+				output.add(cmdOutput);
+				throw new FMLCommandExecutionException(cmdOutput);
 			}
 
 		}

@@ -156,6 +156,7 @@ public interface ResourcesDirective extends Directive<AResourcesDirective> {
 		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
+			output.clear();
 
 			Collection<? extends FlexoResource<?>> resourcesToDisplay = null;
 
@@ -218,10 +219,13 @@ public interface ResourcesDirective extends Directive<AResourcesDirective> {
 				if (resource instanceof TechnologyAdapterResource) {
 					ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
 				}
-				getOutStream().println(name + StringUtils.buildWhiteSpaceIndentation(nameMaxLength - name.length() + 1) + type
+				String cmdOutput = name + StringUtils.buildWhiteSpaceIndentation(nameMaxLength - name.length() + 1) + type
 						+ StringUtils.buildWhiteSpaceIndentation(typeMaxLength - type.length() + 1) + ta
 						+ StringUtils.buildWhiteSpaceIndentation(taMaxLength - ta.length() + 1)
-						+ (resource.isLoaded() ? "[LOADED]   " : "[UNLOADED] ") + uri);
+						+ (resource.isLoaded() ? "[LOADED]   " : "[UNLOADED] ") + uri;
+
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 			}
 
 			return null;

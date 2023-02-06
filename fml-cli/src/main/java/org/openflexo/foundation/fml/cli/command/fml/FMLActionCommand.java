@@ -131,6 +131,7 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 		public Object execute() throws FMLCommandExecutionException {
 
 			super.execute();
+			output.clear();
 
 			try {
 				return editionAction.execute(getCommandInterpreter());

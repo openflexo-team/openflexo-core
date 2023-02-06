@@ -137,14 +137,23 @@ public interface LoadResource extends AssignableDirective<ALoadDirective> {
 
 		@Override
 		public Object performExecute() throws FMLCommandExecutionException {
+			output.clear();
+			String cmdOutput;
 
 			logger.info("Load resource " + getResultingResource() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
 			if (getResultingResource() == null) {
-				throw new FMLCommandExecutionException("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
+				cmdOutput =  "Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath;
+
+				output.add(cmdOutput);
+				throw new FMLCommandExecutionException(cmdOutput);
 			}
 
 			if (getResultingResource().isLoaded()) {
-				getOutStream().println("Resource " + resource.getURI() + " already loaded");
+				cmdOutput =  "Resource " + resource.getURI() + " already loaded";
+
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
+
 				Object returned = getResultingResource().getLoadedResourceData();
 				if (returned instanceof FMLCompilationUnit) {
 					return ((FMLCompilationUnit) returned).getVirtualModel();
@@ -154,17 +163,29 @@ public interface LoadResource extends AssignableDirective<ALoadDirective> {
 			else {
 				try {
 					Object returned = getResultingResource().getResourceData();
-					getOutStream().println("Loaded " + getResultingResource().getURI());
+					cmdOutput 		= "Loaded " + getResultingResource().getURI();
+
+					output.add(cmdOutput);
+					getOutStream().println(cmdOutput);
 					if (returned instanceof FMLCompilationUnit) {
 						return ((FMLCompilationUnit) returned).getVirtualModel();
 					}
 					return returned;
 				} catch (FileNotFoundException e) {
-					throw new FMLCommandExecutionException("Cannot find resource", e);
+					cmdOutput = "Cannot find resource";
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e);
 				} catch (ResourceLoadingCancelledException e) {
+					cmdOutput = "Operation cancelled";
+
+					output.add(cmdOutput);
 					throw new FMLCommandExecutionException(e);
 				} catch (FlexoException e) {
-					throw new FMLCommandExecutionException("Cannot load resource", e);
+					cmdOutput = "Cannot load resource";
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e);
 				}
 			}
 		}

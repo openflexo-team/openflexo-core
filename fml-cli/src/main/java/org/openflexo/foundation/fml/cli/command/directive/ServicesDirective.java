@@ -83,11 +83,16 @@ public interface ServicesDirective extends Directive<AServicesDirective> {
 		@Override
 		public FlexoServiceManager execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+			String cmdOutput = "Active services:";
 
-			getOutStream().println("Active services:");
+			output.add(cmdOutput);
+			getOutStream().println(cmdOutput);
 			for (FlexoService service : getCommandInterpreter().getServiceManager().getRegisteredServices()) {
-				getOutStream().println(service.getServiceName()
-						+ StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length()) + service.getStatus());
+				cmdOutput = service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length()) + service.getStatus();
+
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 			}
 
 			return getCommandInterpreter().getServiceManager();

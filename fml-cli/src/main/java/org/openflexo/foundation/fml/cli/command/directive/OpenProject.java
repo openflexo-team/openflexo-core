@@ -163,13 +163,18 @@ public interface OpenProject extends Directive<AOpenDirective> {
 		public FlexoProject<?> execute() throws FMLCommandExecutionException {
 
 			super.execute();
+			output.clear();
+			String cmdOutput;
 
 			if (isSyntaxicallyValid()) {
 
 				for (FlexoResourceCenter<?> rc : getCommandInterpreter().getServiceManager().getResourceCenterService()
 						.getResourceCenters()) {
 					if (rc instanceof FlexoProject && ((FlexoProject<?>) rc).getProjectDirectory().equals(getProjectDirectory())) {
-						getOutStream().println("This project is already opened");
+						cmdOutput = "This project is already opened";
+
+						output.add(cmdOutput);
+						getOutStream().println(cmdOutput);
 						return (FlexoProject<?>) rc;
 					}
 				}
@@ -183,11 +188,19 @@ public interface OpenProject extends Directive<AOpenDirective> {
 					FlexoProject<?> project = editor.getProject();
 					getCommandInterpreter().setWorkingDirectory(getProjectDirectory());
 					getCommandInterpreter().enterProject(project, editor);
-					getOutStream().println("Project " + project.getName() + " successfully opened.");
+
+					cmdOutput = "Project " + project.getName() + " successfully opened.";
+
+					output.add(cmdOutput);
+					getOutStream().println(cmdOutput);
 					return project;
 				} catch (ProjectInitializerException e) {
-					throw new FMLCommandExecutionException("Project initializing exception", e);
+					cmdOutput = "Project initializing exception";
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e);
 				} catch (ProjectLoadingCancelledException e) {
+					output.add("Operation cancelled");
 					throw new FMLCommandExecutionException(e);
 				}
 			}

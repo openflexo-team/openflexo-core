@@ -107,13 +107,21 @@ public interface ActivateTA extends Directive<AActivateTaDirective> {
 		@Override
 		public TechnologyAdapter<?> execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+			String cmdOutput;
+
 			if (!getTechnologyAdapter().isActivated()) {
 				getCommandInterpreter().getServiceManager().getTechnologyAdapterService()
 						.activateTechnologyAdapter((TechnologyAdapter) getTechnologyAdapter(), true);
-				getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " has been activated");
+
+				cmdOutput = "Technology adapter " + getTechnologyAdapter().getIdentifier() + " has been activated";
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 			}
 			else {
-				getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated");
+				cmdOutput = "Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated";
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 			}
 			return getTechnologyAdapter();
 		}
