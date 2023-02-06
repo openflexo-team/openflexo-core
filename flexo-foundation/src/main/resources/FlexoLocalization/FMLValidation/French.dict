@@ -107,7 +107,7 @@ types_are_not_compatible_in_declaration_\:_($expectedType)_is_not_assignable_fro
 types_are_not_compatible_in_get_control_graph_for_($validable.name)_\:_($expectedType)_is_not_assignable_from_($analyzedType)=Types incompatibles pour le 'get' de la propri\u00E9t\u00E9 ($validable.name)_\:_($expectedType) ne peut pas \u00EAtre assign\u00E9 avec ($analyzedType)
 types_are_not_compatibles=Les types ne sont pas compatibles
 unexpected_exception_($exceptionMessage)=unexpected_exception_($exceptionMessage)
-unknown_property_($validable.propertyName)_for_($validable.object.implementedInterface.simpleName)=unknown_property_($validable.propertyName)_for_($validable.object.implementedInterface.simpleName)
+unknown_property_($validable.propertyName)_for_($validable.object.implementedInterface.simpleName)=La propri\u00E9t\u00E9 ($validable.propertyName) n'est pas d\u00E9finie pour ($validable.object.implementedInterface.simpleName)
 unresolved_type_($validable.type)=Type non resolu \: ($validable.type)
 validating=validating
 virtual_model_has_no_uri=virtual_model_has_no_uri
