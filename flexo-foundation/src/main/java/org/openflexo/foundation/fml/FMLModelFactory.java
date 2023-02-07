@@ -760,7 +760,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public <CSPE extends CreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(Class<CSPE> abstractCreationSchemeClass,
+	/*public <CSPE extends CreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(Class<CSPE> abstractCreationSchemeClass,
 			FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName, List<DataBinding<?>> args,
 			Bindable bindable) {
 		CSPE returned = newInstance(abstractCreationSchemeClass);
@@ -771,7 +771,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		returned.setArguments(args);
 		return returned;
 	}
-
+	
 	public <CS extends AbstractCreationScheme, CSPE extends CreationSchemePathElement<CS>> CSPE newAbstractCreationSchemePathElement(
 			Class<CSPE> abstractCreationSchemeClass, IBindingPathElement parent, CS creationScheme, List<DataBinding<?>> args,
 			Bindable bindable) {
@@ -781,7 +781,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		returned.setBindable(bindable);
 		returned.setArguments(args);
 		return returned;
-	}
+	}*/
 
 	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
 			String constructorName, List<DataBinding<?>> args, Bindable bindable) {
@@ -794,10 +794,10 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
-			CreationScheme creationScheme, List<DataBinding<?>> args, Bindable bindable) {
+	public CreationSchemePathElement newCreationSchemePathElement(IBindingPathElement parent, AbstractCreationScheme creationScheme,
+			List<DataBinding<?>> args, Bindable bindable) {
 		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
-		returned.setType(type);
+		returned.setType(creationScheme.getFlexoConcept().getInstanceType());
 		returned.setParent(parent);
 		returned.setFunction(creationScheme);
 		returned.setBindable(bindable);
