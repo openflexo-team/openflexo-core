@@ -277,7 +277,7 @@ public class FMLEditorParser extends AbstractParser {
 		updateEditorGutter();
 	}
 
-	private FMLValidationReport validate(FMLCompilationUnit compilationUnit) {
+	public FMLValidationReport validate(FMLCompilationUnit compilationUnit) {
 
 		result.clearNotices();
 		editor.getGutter().removeAllTrackingIcons();
