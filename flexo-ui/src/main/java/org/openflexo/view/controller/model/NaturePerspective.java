@@ -55,8 +55,8 @@ public abstract class NaturePerspective<N extends ProjectNature<N>> extends Flex
 
 	static final Logger logger = Logger.getLogger(NaturePerspective.class.getPackage().getName());
 
-	public NaturePerspective(String name, FlexoController controller) {
-		super(name, controller);
+	public NaturePerspective(FlexoController controller) {
+		super(controller);
 	}
 
 	public abstract Class<N> getNatureClass();

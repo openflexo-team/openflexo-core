@@ -219,6 +219,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 	public void setCurrentPerspective(FlexoPerspective currentPerspective) {
 
+		logger.info("setCurrentPerspective with " + currentPerspective);
+
 		// System.out.println("currentLocation=" + currentLocation);
 		// System.out.println("currentPerspective=" + currentLocation.getPerspective());
 		// System.out.println("currentObject=" + getCurrentObject());
@@ -231,9 +233,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
 			currentPerspective.willShow();
-			if (object == null || currentPerspective.getRepresentableMasterObject(object) == null) {
-				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
-			}
+			object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
 		}
 		setCurrentLocation(getCurrentEditor(), object, currentPerspective);
 	}

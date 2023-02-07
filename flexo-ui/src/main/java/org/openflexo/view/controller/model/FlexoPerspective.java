@@ -58,8 +58,6 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	private static final Logger logger = Logger.getLogger(FlexoPerspective.class.getPackage().getName());
 
-	private final String name;
-
 	public static final String HEADER = "header";
 	public static final String FOOTER = "footer";
 
@@ -91,15 +89,17 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	private final FlexoController controller;
 
-	public FlexoPerspective(String name, FlexoController controller) {
+	public FlexoPerspective(FlexoController controller) {
 		super();
-		this.name = name;
 		this.controller = controller;
 	}
 
-	public String getName() {
-		return name;
-	}
+	/**
+	 * Unlocalized name
+	 * 
+	 * @return
+	 */
+	public abstract String getName();
 
 	public String getLocalizedName() {
 		return getController().getModuleLocales().localizedForKey(getName());
@@ -120,7 +120,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	public abstract ImageIcon getActiveIcon();
 
 	/**
-	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which 
+	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which
 	 * supplied object is representable either as a master object or as an object representable in related view
 	 * 
 	 * This method should be overriden
@@ -137,7 +137,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Return {@link FlexoObject} for which this perspective defines a {@link ModuleView} where supplied object is also representable
 	 * 
@@ -155,7 +155,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Build a {@link ModuleView} for supplied object, considered as master object (main subject of the returned view)
 	 * 

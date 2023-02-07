@@ -40,14 +40,11 @@ package org.openflexo.view.controller;
 
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
-
 import org.openflexo.components.widget.FIBResourceManagerBrowser;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.FlexoModule.WelcomePanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -60,7 +57,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sylvain
  * 
  */
-public class GenericPerspective extends FlexoPerspective {
+public abstract class GenericPerspective extends FlexoPerspective {
 
 	static final Logger logger = Logger.getLogger(GenericPerspective.class.getPackage().getName());
 
@@ -71,7 +68,7 @@ public class GenericPerspective extends FlexoPerspective {
 	 * @param name
 	 */
 	public GenericPerspective(FlexoController controller) {
-		super("Generic", controller);
+		super(controller);
 		browser = controller.getSharedBrowser();
 		setTopLeftView(browser);
 
@@ -82,10 +79,10 @@ public class GenericPerspective extends FlexoPerspective {
 	 * 
 	 * @see org.openflexo.view.controller.model.FlexoPerspective#getActiveIcon()
 	 */
-	@Override
+	/*@Override
 	public ImageIcon getActiveIcon() {
 		return IconLibrary.OPENFLEXO_NOTEXT_16;
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
 	@Override
