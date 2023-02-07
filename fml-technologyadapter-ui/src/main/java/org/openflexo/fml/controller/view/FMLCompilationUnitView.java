@@ -47,8 +47,10 @@ import javax.swing.JPanel;
 
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.FMLTechnologyPerspective;
+import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
@@ -120,18 +122,6 @@ public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLComp
 		return true;
 	}
 
-	@Override
-	public void willHide() {
-		// System.out.println("FMLCompilationUnitView WILL HIDE !!!!!!");
-	}
-
-	@Override
-	public void willShow() {
-
-		// System.out.println("FMLCompilationUnitView WILL SHOW !!!!!!");
-		getPerspective().focusOnObject(getRepresentedObject());
-	}
-
 	public FMLTechnologyAdapterController getDiagramTechnologyAdapterController(FlexoController controller) {
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		return tacService.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
@@ -147,4 +137,41 @@ public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLComp
 			deleteModuleView();
 		}
 	}
+
+	public FIBCompilationUnitBrowser getCompilationUnitBrowser() {
+		FMLTechnologyAdapterController technologyAdapterController = (FMLTechnologyAdapterController) getFlexoController()
+				.getTechnologyAdapterController(FMLTechnologyAdapter.class);
+		return technologyAdapterController.getCompilationUnitBrowser();
+	}
+
+	/*public FIBView<?, ?> getFIBView(String componentName) {
+		if (fibController != null) {
+			return fibController.viewForComponent(componentName);
+		}
+		return null;
+	}*/
+
+	@Override
+	public void willShow() {
+		getCompilationUnitBrowser().setCompilationUnit(getRepresentedObject().getDeclaringCompilationUnit());
+		getPerspective().setBottomLeftView(getCompilationUnitBrowser());
+		/*SwingUtilities.invokeLater(() -> {
+			if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
+				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
+				browser.performExpand(getRepresentedObject().getStructuralFacet());
+				browser.performExpand(getRepresentedObject().getBehaviouralFacet());
+				browser.performExpand(getRepresentedObject().getInnerConceptsFacet());
+			}
+		});*/
+
+		// getPerspective().focusOnObject(getRepresentedObject());
+
+	}
+
+	@Override
+	public void willHide() {
+		// super.willHide();
+		getPerspective().setBottomLeftView(null);
+	}
+
 }
