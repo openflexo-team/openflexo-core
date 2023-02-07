@@ -203,9 +203,16 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 
 		FlexoConcept conceptualLevel = null;
 
-		if (isSuperConstructorCall && context instanceof CreationSchemeAction) {
-			conceptualLevel = ((CreationSchemeAction) context).getCreationScheme().getFlexoConcept().getParentFlexoConcepts().get(0);
-			target = ((CreationSchemeAction) context).getFlexoConceptInstance();
+		if (isSuperConstructorCall) {
+			if (context instanceof CreationSchemeAction) {
+				conceptualLevel = ((CreationSchemeAction) context).getCreationScheme().getFlexoConcept().getParentFlexoConcepts().get(0);
+				target = ((CreationSchemeAction) context).getFlexoConceptInstance();
+			}
+			else if (context instanceof SuperCreationSchemeAction) {
+				conceptualLevel = ((SuperCreationSchemeAction) context).getApplicableCreationScheme().getFlexoConcept()
+						.getParentFlexoConcepts().get(0);
+				target = ((SuperCreationSchemeAction) context).getFlexoConceptInstance();
+			}
 		}
 
 		try {
