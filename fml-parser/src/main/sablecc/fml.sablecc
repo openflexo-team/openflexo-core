@@ -264,6 +264,7 @@ Tokens
    {normal} kw_if = 'if';
    {normal -> binding} kw_import = 'import';
    {normal} kw_in = 'in';
+   {normal} kw_inside = 'inside';
    {normal,binding} kw_instanceof = 'instanceof';
    {normal} kw_listen = 'listen';
    {normal -> binding,command,script} kw_log = 'log';
@@ -570,7 +571,7 @@ Productions
    // --------------------------------------------------------------------------------------
    // Model declaration
    // --------------------------------------------------------------------------------------
-   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model uidentifier super_clause? l_brc  [inner_model_declaration]:inner_concept_decl* r_brc;
+   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model uidentifier super_clause? inside_clause? l_brc  [inner_model_declaration]:inner_concept_decl* r_brc;
 
    super_clause = kw_extends super_type_list;
 
@@ -579,7 +580,9 @@ Productions
      | {many} super_type_list comma [identifier]:composite_tident
      ;
 
-   concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept uidentifier super_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
+   inside_clause = kw_inside composite_tident;
+
+   concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept uidentifier super_clause? inside_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
 
    enum_decl = [annotations]:annotation* visibility? kw_enum uidentifier l_brc enum_values_list r_brc;
 

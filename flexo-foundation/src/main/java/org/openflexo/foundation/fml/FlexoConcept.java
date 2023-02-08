@@ -233,6 +233,20 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setApplicableContainerFlexoConcept(FlexoConcept concept);
 
 	/**
+	 * Return boolean indicating if container FlexoConcept is located out of the scope of declaring compilation unit
+	 * 
+	 * @return
+	 */
+	public boolean hasExternalContainer();
+
+	/**
+	 * Return boolean indicating if FlexoConcept requires external container declaration
+	 * 
+	 * @return
+	 */
+	public boolean requiresExternalContainerDeclaration();
+
+	/**
 	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
 	 * 
 	 * @return
@@ -1962,7 +1976,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@FMLMigration
 		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
 			if (parentFlexoConceptListWasExplicitelySet && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList
-					&& !PREVENT_PARENT_CONCEPTS_DECODING) {
+					&& !PREVENT_PARENT_CONCEPTS_DECODING && parentFlexoConceptList != null) {
 				isDecodingParentFlexoConceptList = true;
 				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
 				List<FlexoConcept> parentConcepts = new ArrayList<>();
@@ -2416,6 +2430,30 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				}
 				notifyContainerChanges();
 			}
+		}
+
+		/**
+		 * Return boolean indicating if container FlexoConcept is located out of the scope of declaring compilation unit
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean hasExternalContainer() {
+			if (getApplicableContainerFlexoConcept() != null) {
+				return getApplicableContainerFlexoConcept().getDeclaringCompilationUnit() != getDeclaringCompilationUnit();
+			}
+			return false;
+		}
+
+		/**
+		 * Return boolean indicating if FlexoConcept requires external container declaration
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean requiresExternalContainerDeclaration() {
+			return hasExternalContainer() && getContainerFlexoConcept() != null
+					&& getContainerFlexoConcept().getDeclaringCompilationUnit() != getDeclaringCompilationUnit();
 		}
 
 		private void notifyContainerChanges() {

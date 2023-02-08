@@ -38,15 +38,20 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.AbstractInvariant;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AInsideClause;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -76,6 +81,15 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		buildParentConcepts(returned, astNode.getSuperClause());
+
+		if (astNode.getInsideClause() != null) {
+			AInsideClause insideClause = (AInsideClause) astNode.getInsideClause();
+			Type insideType = TypeFactory.makeType(insideClause.getCompositeTident(), getSemanticsAnalyzer().getTypingSpace());
+			if (insideType instanceof FlexoConceptInstanceType) {
+				containerType = (FlexoConceptInstanceType) insideType;
+			}
+		}
+
 		return returned;
 	}
 
@@ -103,9 +117,13 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment(),"Name");
 
 		when(() -> getModelObject().getParentFlexoConcepts().size() > 0, "ParentConceptsDefinition")
-				.thenAppend(staticContents(SPACE, "extends", SPACE), getExtendsFragment())
+				.thenAppend(staticContents(SPACE, FMLKeywords.Extends.getKeyword(), SPACE), getExtendsFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment());
 
+		when(() -> getModelObject().requiresExternalContainerDeclaration(),"ExternalContainer")
+			.thenAppend(staticContents(SPACE, FMLKeywords.Inside.getKeyword(), SPACE), getInsideFragment())
+			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getContainerFlexoConcept())), getInsideTypeFragment());	
+		
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment(),"LBrc");
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class),"Properties");
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
@@ -212,6 +230,32 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
 			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
 			return getFragment(superClause.getSuperTypeList());
+		}
+		return null;
+	}
+
+	@Override
+	protected RawSourceFragment getInsideClauseFragment() {
+		if (getASTNode() != null && getASTNode().getInsideClause() != null) {
+			return getFragment(getASTNode().getInsideClause());
+		}
+		return null;
+	}
+
+	@Override
+	protected RawSourceFragment getInsideFragment() {
+		if (getASTNode() != null && getASTNode().getInsideClause() != null) {
+			AInsideClause insideClause = (AInsideClause) getASTNode().getInsideClause();
+			return getFragment(insideClause.getKwInside());
+		}
+		return null;
+	}
+
+	@Override
+	protected RawSourceFragment getInsideTypeFragment() {
+		if (getASTNode() != null && getASTNode().getInsideClause() != null) {
+			AInsideClause insideClause = (AInsideClause) getASTNode().getInsideClause();
+			return getFragment(insideClause.getCompositeTident());
 		}
 		return null;
 	}

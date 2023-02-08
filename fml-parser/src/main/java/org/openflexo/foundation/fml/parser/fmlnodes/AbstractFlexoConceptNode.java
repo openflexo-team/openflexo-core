@@ -102,7 +102,17 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 				}
 			}
 		}
+		if (containerType != null) {
+			if (containerType.isResolved()) {
+				getModelObject().setContainerFlexoConcept(containerType.getFlexoConcept());
+			}
+			else {
+				throwIssue("Container concept " + containerType.getSerializationRepresentation() + " not found", getInsideTypeFragment());
+			}
+		}
 	}
+
+	protected FlexoConceptInstanceType containerType;
 
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
@@ -148,6 +158,12 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	protected abstract RawSourceFragment getExtendsFragment();
 
 	protected abstract RawSourceFragment getSuperTypeListFragment();
+
+	protected abstract RawSourceFragment getInsideClauseFragment();
+
+	protected abstract RawSourceFragment getInsideFragment();
+
+	protected abstract RawSourceFragment getInsideTypeFragment();
 
 	@Override
 	public RawSourceFragment getFragment(FragmentContext context) {

@@ -754,9 +754,13 @@ public interface VirtualModel extends FlexoConcept {
 		public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts) {
 
 			Vector<FlexoConcept> returned = new Vector<>();
-			for (FlexoConcept ep : getFlexoConcepts()) {
-				if (ep.isRoot() && ep.getApplicableContainerFlexoConcept() == null && (includeAbstractConcepts || (!ep.isAbstract()))) {
-					returned.add(ep);
+			for (FlexoConcept concept : getFlexoConcepts()) {
+				if (concept.isRoot() && concept.getApplicableContainerFlexoConcept() == null
+						&& (includeAbstractConcepts || (!concept.isAbstract()))) {
+					returned.add(concept);
+				}
+				if (concept.hasExternalContainer()) {
+					returned.add(concept);
 				}
 			}
 			if (includeParents) {

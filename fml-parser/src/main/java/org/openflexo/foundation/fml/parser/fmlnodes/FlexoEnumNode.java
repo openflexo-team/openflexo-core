@@ -175,4 +175,22 @@ public class FlexoEnumNode extends AbstractFlexoConceptNode<AEnumDecl, FlexoEnum
 		return null;
 	}
 
+	@Override
+	protected RawSourceFragment getInsideClauseFragment() {
+		// Not applicable
+		return null;
+	}
+
+	@Override
+	protected RawSourceFragment getInsideFragment() {
+		// Not applicable
+		return null;
+	}
+
+	@Override
+	protected RawSourceFragment getInsideTypeFragment() {
+		// Not applicable
+		return null;
+	}
+
 }
