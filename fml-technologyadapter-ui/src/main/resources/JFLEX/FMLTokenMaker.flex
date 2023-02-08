@@ -1,5 +1,5 @@
 /*
- * Generated on 12/9/22, 3:21 PM
+ * Generated on 2/8/23, 12:14 PM
  */
 package org.openflexo.fml.controller.view;
 
@@ -261,6 +261,7 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
 "if" |
 "import" |
 "in" |
+"inside" |
 "instanceof" |
 "listen" |
 "log" |
