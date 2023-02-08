@@ -144,8 +144,8 @@ public abstract class FlexoConceptView extends FIBModuleView<FlexoConcept> {
 		getCompilationUnitBrowser().setCompilationUnit(getRepresentedObject().getDeclaringCompilationUnit());
 		getPerspective().setBottomLeftView(getCompilationUnitBrowser());
 		SwingUtilities.invokeLater(() -> {
-			if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
-				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
+			if (getFIBView("flexoConceptBrowser") instanceof JFIBBrowserWidget) {
+				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("flexoConceptBrowser");
 				browser.performExpand(getRepresentedObject().getStructuralFacet());
 				browser.performExpand(getRepresentedObject().getBehaviouralFacet());
 				browser.performExpand(getRepresentedObject().getInnerConceptsFacet());
