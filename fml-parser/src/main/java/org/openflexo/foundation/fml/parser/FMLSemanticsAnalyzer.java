@@ -43,7 +43,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLBindingFactory;
@@ -104,12 +106,19 @@ import org.openflexo.toolbox.ChainedCollection;
  */
 public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
+	private static final Logger logger = Logger.getLogger(FMLSemanticsAnalyzer.class.getPackage().getName());
+
 	private FMLModelFactory factory;
 
 	// Stack of FMLObjectNode beeing build during semantics analyzing
 	protected Stack<ObjectNode<?, ?, ?>> fmlNodes = new Stack<>();
 
 	private Node rootNode;
+
+	// This list of DataBinding is built during semantics analysing process, and is completed with DataBinding which are not valid
+	// Since many structural modifications can happen till the end of deserialization, we keep this list to try a final revalidate at the
+	// end of semantics analyzing
+	private List<DataBinding<?>> invalidBindings = new ArrayList<>();
 
 	public FMLSemanticsAnalyzer(FMLModelFactory factory, Node rootNode) {
 		this.factory = factory;
@@ -166,6 +175,42 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	 * @return
 	 */
 	public abstract <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function);
+
+	/**
+	 * Add supplied binding to the list of {@link DataBinding} which are flagged as invalid.
+	 * 
+	 * This list of {@link DataBinding} is built during semantics analysing process, and is completed with {@link DataBinding} which are not
+	 * valid
+	 * 
+	 * Since many structural modifications can happen till the end of deserialization, we keep this list to try a final revalidate at the
+	 * end of semantics analyzing
+	 * 
+	 * @param binding
+	 */
+	public void addToInvalidBindings(DataBinding<?> binding) {
+		invalidBindings.add(binding);
+	}
+
+	/**
+	 * Attempt to fix all invalid bindings
+	 */
+	protected void attemptToFixInvalidBindings() {
+		for (DataBinding<?> dataBinding : new ArrayList<>(invalidBindings)) {
+			if (dataBinding.revalidate()) {
+				logger.info("DataBinding " + dataBinding + " has been finally successfully revalidated at the end of process");
+				invalidBindings.remove(dataBinding);
+			}
+			else {
+				logger.warning("DataBinding " + dataBinding + " still invalid at the end of process, reason: "
+						+ dataBinding.invalidBindingReason());
+			}
+		}
+
+	}
+
+	protected void clearInvalidBindings() {
+		invalidBindings.clear();
+	}
 
 	/**
 	 * Called when an issue was found, handled by the adequate FMLSemanticsManager implementation

@@ -307,6 +307,9 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			finalizeDeserialization(compilationUnitNode);
 		}
 
+		// Try to ddfix invalid bindings now
+		attemptToFixInvalidBindings();
+
 	}
 
 	/*@Override

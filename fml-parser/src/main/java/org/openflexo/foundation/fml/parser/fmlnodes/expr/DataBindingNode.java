@@ -90,8 +90,9 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompila
 	public void finalizeDeserialization() {
 		if (getModelObject() != null) {
 			if (!getModelObject().isValid()) {
-				// No reason to throw from now, this will be detected later during model validation
-				// throwIssue(getModelObject().invalidBindingReason(), getFragment());
+				// No reason to trigger a final error now, since some structural modifications may not have been performed yet.
+				// We put it to the list of DataBinding to be validated at the end of semantics analyzing
+				getSemanticsAnalyzer().addToInvalidBindings(getModelObject());
 			}
 		}
 	}
