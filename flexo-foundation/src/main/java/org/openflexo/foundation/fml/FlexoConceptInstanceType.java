@@ -56,7 +56,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechnologyAdapter>,PropertyChangeListener {
+public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechnologyAdapter>, PropertyChangeListener {
 
 	protected FlexoConcept flexoConcept;
 	protected String conceptURI;
@@ -65,7 +65,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	protected CustomTypeFactory<?> customTypeFactory;
 
 	private final PropertyChangeSupport pcSupport;
-	
+
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
 	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType((FlexoConcept) null);
@@ -81,7 +81,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	 * 
 	 */
 	public static class DefaultFlexoConceptInstanceTypeFactory extends
-	TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> implements FlexoConceptInstanceTypeFactory {
+			TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> implements FlexoConceptInstanceTypeFactory {
 
 		@Override
 		public Class<FlexoConceptInstanceType> getCustomType() {
@@ -148,7 +148,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 					.getFlexoConcept(typeToResolve.conceptURI);
 		}
 	}
-	
 
 	public FlexoConceptInstanceType(FlexoConcept aFlexoConcept) {
 		pcSupport = new PropertyChangeSupport(this);
@@ -175,7 +174,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public CustomTypeFactory<?> getCustomTypeFactory() {
 		return customTypeFactory;
 	}
@@ -197,7 +196,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
-	
+
 	@Override
 	public FMLTechnologyAdapter getSpecificTechnologyAdapter() {
 		if (flexoConcept != null) {
@@ -299,7 +298,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			if (concept != null) {
 				setFlexoConcept(concept);
 				// We dont nullify customTypeFactory anymore, since we need it for type translating
-				//this.customTypeFactory = null;
+				// this.customTypeFactory = null;
 				getPropertyChangeSupport().firePropertyChange(TYPE_CHANGED, false, true);
 			}
 			else {
@@ -371,28 +370,30 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			conceptName = getConceptURI();
 		}
 		Type returned = typingSpace.resolveType(conceptName);
-		
+
 		if (returned instanceof FlexoConceptInstanceType) {
 			// Type was found and looked up
-			return (FlexoConceptInstanceType)returned;
+			return (FlexoConceptInstanceType) returned;
 		}
-		
+
 		if (getCustomTypeFactory() != null) {
 			// When not found, return a type which may be resolved later
 			returned = new FlexoConceptInstanceType(conceptName, getCustomTypeFactory());
 		}
 		else if (typingSpace instanceof FMLTypingSpace) {
 			// No factory, create one using FMLCompilationUnit
-			returned = new FlexoConceptInstanceType(conceptName, new CompilationUnitFlexoConceptInstanceTypeFactory(((FMLTypingSpace)typingSpace).getFMLCompilationUnit()));
+			returned = new FlexoConceptInstanceType(conceptName,
+					new CompilationUnitFlexoConceptInstanceTypeFactory(((FMLTypingSpace) typingSpace).getFMLCompilationUnit()));
 		}
 		else {
-			logger.warning("Cannot translate type with such a TypingSpace: "+typingSpace);
+			logger.warning("Cannot translate type with such a TypingSpace: " + typingSpace);
 		}
-		
-		if (typingSpace instanceof FMLTypingSpace && returned instanceof FlexoConceptInstanceType && !((FlexoConceptInstanceType)returned).isResolved()) {
-			((FMLTypingSpace)typingSpace).addToTypesToResolve((FlexoConceptInstanceType)returned);
+
+		if (typingSpace instanceof FMLTypingSpace && returned instanceof FlexoConceptInstanceType
+				&& !((FlexoConceptInstanceType) returned).isResolved()) {
+			((FMLTypingSpace) typingSpace).addToTypesToResolve((FlexoConceptInstanceType) returned);
 		}
-		return (FlexoConceptInstanceType)returned;
+		return (FlexoConceptInstanceType) returned;
 	}
 
 	@Override
@@ -409,5 +410,5 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			}
 		}
 	}
-	
+
 }
