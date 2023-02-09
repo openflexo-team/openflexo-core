@@ -43,8 +43,8 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.AAnnotationKeyValuePair;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -65,8 +65,8 @@ public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair,
 	@Override
 	public MetaDataKeyValueNode deserialize() {
 		if (getParent() instanceof MultiValuedMetaDataNode) {
-			System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
-					+ getModelObject());
+			// System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
+			// + getModelObject());
 			((MultiValuedMetaDataNode) getParent()).getModelObject().addToKeyValues(getModelObject());
 		}
 
