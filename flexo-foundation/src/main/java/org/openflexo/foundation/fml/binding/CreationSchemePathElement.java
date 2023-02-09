@@ -489,7 +489,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					returned.append(" with (");
 					isFirst = true;
 
-					//System.out.println("Prout ici, getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
+					// System.out.println("Prout ici, getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
 
 					if (getVirtualModelInstanceName() != null && getVirtualModelInstanceName().isSet()) {
 						returned.append((isFirst ? "" : ",") + "virtualModelInstanceName=" + getVirtualModelInstanceName());
@@ -515,7 +515,15 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 			}
 			else {
-				returned.append("unknown_new()");
+				returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+				boolean isFirst = true;
+				if (getArguments() != null) {
+					for (DataBinding<?> arg : getArguments()) {
+						returned.append((isFirst ? "" : ",") + arg);
+						isFirst = false;
+					}
+				}
+				returned.append(")");
 			}
 			// serializationRepresentation = returned.toString();
 			return returned.toString();
@@ -588,9 +596,18 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						}
 					}
 					else if (parentContext instanceof FlexoConcept) {
-						if (!parentContext.getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer()
-								.contains(getCreationScheme().getFlexoConcept())) {
+
+						FlexoConcept applicableContainer = getCreationScheme().getFlexoConcept().getApplicableContainerFlexoConcept();
+
+						if (applicableContainer == null) {
 							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
+									+ parentContext.getName() + " because no applicable container declared for this constructor";
+							check.valid = false;
+							return check;
+						}
+						else if (!applicableContainer.isAssignableFrom(parentContext)) {
+							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
+									+ parentContext.getName() + " because no applicable container is not assignable from "
 									+ parentContext.getName();
 							check.valid = false;
 							return check;
@@ -659,7 +676,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			setFunction(function);
 			if (function == null && getType().isResolved()) {
 				// Do not warn for unresolved type
-				logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments());
+				logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments()
+						+ (getParent() != null ? " and parent " + getParent().getType() : ""));
 				// System.out.println("type: " + getType() + " resolved=" + getType().isResolved());
 				// System.out.println("arguments: " + getArguments() + " size: " + getArguments().size());
 			}
