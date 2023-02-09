@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.io.PrintStream;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -118,6 +120,8 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 	@PropertyIdentifier(type = Integer.class)
 	public static final String LINE_KEY = "line";
 
+	List<String> output = new ArrayList<>();
+
 	@Initializer
 	void create(@Parameter(NODE_KEY) N node,
 			@Parameter(COMMAND_SEMANTICS_ANALYZER_KEY) AbstractCommandSemanticsAnalyzer scriptSemanticsAnalyzer);
@@ -178,6 +182,8 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 	 */
 	public abstract String invalidCommandReason();
 
+	List<String> getOutput();
+
 	public static abstract class AbstractCommandImpl<N extends Node> extends FlexoObjectImpl implements AbstractCommand<N> {
 
 		@SuppressWarnings("unused")
@@ -210,12 +216,18 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 		 */
 		@Override
 		public Object execute() throws FMLCommandExecutionException {
+			output.clear();
+
 			if (!wasInitialized) {
 				init();
 			}
 			if (!isValidInThatContext()) {
-				throw new FMLCommandExecutionException(invalidCommandReason());
+				String cmdOutput = invalidCommandReason();
+
+				output.add(cmdOutput);
+				throw new FMLCommandExecutionException(cmdOutput);
 			}
+
 			getCommandInterpreter().willExecute(this);
 			return null;
 		}
@@ -307,5 +319,8 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
 		}
 
+		public List<String> getOutput(){
+			return output;
+		}
 	}
 }

@@ -200,6 +200,7 @@ public interface MoreDirective extends Directive<AMoreDirective> {
 		@Override
 		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
 
 			Object object = getAddressedObject();
 			if (object instanceof FlexoObject) {
@@ -207,12 +208,18 @@ public interface MoreDirective extends Directive<AMoreDirective> {
 				return getAddressedObject();
 			}
 			else {
-				throw new FMLCommandExecutionException("No textual renderer for such data.");
+				String cmdOutput = "No textual renderer for such data.";
+
+				output.add(cmdOutput);
+				throw new FMLCommandExecutionException(cmdOutput);
 			}
 		}
 
 		private void renderObject(FlexoObject object) {
-			getOutStream().println(object.render().trim());
+			String cmdOutput = object.render().trim();
+
+			output.add(cmdOutput);
+			getOutStream().println(cmdOutput);
 		}
 	}
 }

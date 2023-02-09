@@ -195,6 +195,7 @@ public interface ServiceDirective<S extends FlexoService> extends Directive<ASer
 		@Override
 		public S execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
 
 			if (isSyntaxicallyValid()) {
 				optionValues.put("commandInterpreter", getCommandInterpreter());
@@ -202,7 +203,10 @@ public interface ServiceDirective<S extends FlexoService> extends Directive<ASer
 				return service;
 			}
 
-			throw new FMLCommandExecutionException(invalidCommandReason());
+			String cmdOutput = invalidCommandReason();
+
+			output.add(cmdOutput);
+			throw new FMLCommandExecutionException(cmdOutput);
 		}
 	}
 }

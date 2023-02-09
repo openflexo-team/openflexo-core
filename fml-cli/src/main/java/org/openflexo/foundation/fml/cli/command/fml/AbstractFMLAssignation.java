@@ -140,6 +140,8 @@ public interface AbstractFMLAssignation<N extends Node> extends FMLCommand<N> {
 		@Override
 		public final Object execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+			String cmdOutput;
 
 			Object assignedValue = performExecute();
 
@@ -147,15 +149,30 @@ public interface AbstractFMLAssignation<N extends Node> extends FMLCommand<N> {
 				if (assignation.isValid()) {
 					try {
 						assignation.setBindingValue(assignedValue, getCommandInterpreter());
-						getOutStream().println("Assigned " + assignedValue + " to " + assignation);
+						cmdOutput = "Assigned " + assignedValue + " to " + assignation;
+
+						output.add(cmdOutput);
+						getOutStream().println(cmdOutput);
 					} catch (TypeMismatchException e) {
-						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+						cmdOutput = "Cannot execute " + assignation;
+
+						output.add(cmdOutput);
+						throw new FMLCommandExecutionException(cmdOutput, e);
 					} catch (NullReferenceException e) {
-						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+						cmdOutput = "Cannot execute " + assignation;
+
+						output.add(cmdOutput);
+						throw new FMLCommandExecutionException(cmdOutput, e);
 					} catch (ReflectiveOperationException e) {
-						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+						cmdOutput = "Cannot execute " + assignation;
+
+						output.add(cmdOutput);
+						throw new FMLCommandExecutionException(cmdOutput, e);
 					} catch (NotSettableContextException e) {
-						throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+						cmdOutput = "Cannot execute " + assignation;
+
+						output.add(cmdOutput);
+						throw new FMLCommandExecutionException(cmdOutput, e);
 					}
 				}
 				else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {
@@ -163,7 +180,10 @@ public interface AbstractFMLAssignation<N extends Node> extends FMLCommand<N> {
 						localDeclarationVariable = getCommandInterpreter().declareVariable(getAssignationVariable(), getAssignableType());
 					}
 					getCommandInterpreter().setVariableValue(localDeclarationVariable, assignedValue);
-					getOutStream().println("Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue);
+					cmdOutput = "Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue;
+
+					output.add(cmdOutput);
+					getOutStream().println(cmdOutput);
 				}
 			}
 			return assignedValue;

@@ -78,6 +78,8 @@ public interface HelpDirective extends Directive<AHelpDirective> {
 		@Override
 		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
+
 			for (Class<? extends Directive<?>> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
 				String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();
 				String description = directiveClass.getAnnotation(DirectiveDeclaration.class).description();
@@ -92,11 +94,17 @@ public interface HelpDirective extends Directive<AHelpDirective> {
 		}
 
 		private static void displayDirectiveHelp(String usage, String description, PrintStream outStream) {
-			outStream.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
+			String cmdOutput = usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description;
+
+			output.add(cmdOutput);
+			outStream.println(cmdOutput);
 		}
 
 		private static void displayFMLCommandHelp(String usage, String description, PrintStream outStream) {
-			outStream.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
+			String cmdOutput = usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description;
+
+			output.add(cmdOutput);
+			outStream.println(cmdOutput);
 		}
 	}
 }

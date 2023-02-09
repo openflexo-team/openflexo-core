@@ -72,6 +72,7 @@ public interface HistoryDirective extends Directive<AHistoryDirective> {
 
 		@Override
 		public Object execute() {
+			output.clear();
 			getCommandInterpreter().displayHistory();
 			return null;
 		}

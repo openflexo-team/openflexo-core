@@ -75,7 +75,12 @@ public interface PwdDirective extends Directive<APwdDirective> {
 		@Override
 		public File execute() throws FMLCommandExecutionException {
 			super.execute();
-			getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
+			output.clear();
+
+			String cmdOutput = getCommandInterpreter().getWorkingDirectory().getAbsolutePath();
+
+			output.add(cmdOutput);
+			getOutStream().println(cmdOutput);
 			return getCommandInterpreter().getWorkingDirectory();
 		}
 	}

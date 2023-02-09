@@ -74,6 +74,7 @@ public interface QuitDirective extends Directive<AQuitDirective> {
 		@Override
 		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
 			getCommandInterpreter().stop();
 			return null;
 		}

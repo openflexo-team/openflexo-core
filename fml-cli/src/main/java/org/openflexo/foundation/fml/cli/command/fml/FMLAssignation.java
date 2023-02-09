@@ -157,7 +157,9 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 		@Override
 		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
+			output.clear();
 
+			String cmdOutput;
 			Object assignedValue = null;
 
 			if (expression.isValid()) {
@@ -165,25 +167,31 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 					assignedValue = expression.getBindingValue(getCommandInterpreter());
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new FMLCommandExecutionException("Cannot execute " + expression, e);
+					cmdOutput = "Cannot execute " + expression;
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e);
 				}
 			}
 			else {
-				throw new FMLCommandExecutionException("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+				cmdOutput = "Cannot execute " + expression + " : " + expression.invalidBindingReason();
+
+				output.add(cmdOutput);
+				throw new FMLCommandExecutionException(cmdOutput);
 			}
 
 			if (assignation.isValid()) {
 				try {
 					assignation.setBindingValue(assignedValue, getCommandInterpreter());
-					getOutStream().println("Assigned " + assignedValue + " to " + assignation);
-				} catch (TypeMismatchException e) {
-					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
-				} catch (NullReferenceException e) {
-					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
-				} catch (ReflectiveOperationException e) {
-					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
-				} catch (NotSettableContextException e) {
-					throw new FMLCommandExecutionException("Cannot execute " + assignation, e);
+					cmdOutput = "Assigned " + assignedValue + " to " + assignation;
+
+					output.add(cmdOutput);
+					getOutStream().println(cmdOutput);
+				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException | NotSettableContextException e) {
+					cmdOutput = "Cannot execute " + assignation;
+
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput, e);
 				}
 			}
 			else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {
@@ -192,7 +200,11 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 							expression.getAnalyzedType());
 				}
 				getCommandInterpreter().setVariableValue(localDeclarationVariable, assignedValue);
-				getOutStream().println("Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue);
+
+				cmdOutput = "Declared new variable " + localDeclarationVariable.getVariableName() + "=" + assignedValue;
+
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
 			}
 
 			return assignedValue;

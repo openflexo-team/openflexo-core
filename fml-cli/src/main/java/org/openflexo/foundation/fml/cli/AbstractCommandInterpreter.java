@@ -23,13 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -110,6 +104,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private List<AbstractCommand> history;
 
 	private Map<BindingVariable, Object> values = new HashMap<>();
+	private List<String> output;
+
 
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
@@ -265,9 +261,11 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		// System.out.println("Typed: " + commandString + " command=" + command);
 		if (command != null) {
 			if (command.isSyntaxicallyValid()) {
+				output = command.getOutput();
 				command.execute();
 			}
 			else {
+				output = Arrays.asList(command.invalidCommandReason());
 				getErrStream().println(command.invalidCommandReason());
 			}
 			return command;
@@ -936,6 +934,10 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	@Override
 	public void logErr(String message, LogLevel logLevel) {
 		getErrStream().println(message);
+	}
+
+	public List<String> getOutput(){
+		return output;
 	}
 
 }
