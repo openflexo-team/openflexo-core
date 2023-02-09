@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.type.CustomTypeFactory;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEnumInstance;
 
 /**
@@ -74,14 +73,13 @@ public class FlexoEnumType extends FlexoConceptInstanceType {
 		if (aType instanceof FlexoEnumType) {
 			return (flexoConcept == null) || (flexoConcept.isAssignableFrom(((FlexoEnumType) aType).getFlexoConcept()));
 		}
-		
+
 		if (permissive && aType.equals(FlexoEnumInstance.class)) {
 			return true;
 		}
-		
+
 		return false;
 	}
-
 
 	@Override
 	public FlexoEnum getFlexoConcept() {
@@ -101,83 +99,19 @@ public class FlexoEnumType extends FlexoConceptInstanceType {
 
 	@Override
 	public void resolve(CustomTypeFactory<?> factory) {
-		if (factory instanceof FlexoEnumTypeFactory) {
-			FlexoConcept concept = ((FlexoEnumTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService().getServiceManager()
-					.getVirtualModelLibrary().getFlexoConcept(conceptURI);
-			if (concept != null) {
-				flexoConcept = concept;
-				this.customTypeFactory = null;
+		// We use the FlexoConceptInstanceTypeFactory (no FlexoEnumTypeFactory is required)
+		if (factory instanceof FlexoConceptInstanceTypeFactory) {
+			FlexoConcept concept = ((FlexoConceptInstanceTypeFactory) factory).resolveFlexoConcept(this);
+			if (concept instanceof FlexoEnum) {
+				setFlexoConcept(concept);
+				// We dont nullify customTypeFactory anymore, since we need it for type translating
+				// this.customTypeFactory = null;
+				getPropertyChangeSupport().firePropertyChange(TYPE_CHANGED, false, true);
 			}
 			else {
 				this.customTypeFactory = factory;
 			}
 		}
+
 	}
-
-	/**
-	 * Factory for FlexoConceptInstanceType instances
-	 * 
-	 * @author sylvain
-	 * 
-	 */
-	public static class FlexoEnumTypeFactory extends TechnologyAdapterTypeFactory<FlexoEnumType, FMLTechnologyAdapter> {
-
-		@Override
-		public Class<FlexoEnumType> getCustomType() {
-			return FlexoEnumType.class;
-		}
-
-		public FlexoEnumTypeFactory(FMLTechnologyAdapter technologyAdapter) {
-			super(technologyAdapter);
-		}
-
-		@Override
-		public FlexoEnumType makeCustomType(String configuration) {
-
-			FlexoEnum concept = null;
-
-			if (configuration != null) {
-				concept = (FlexoEnum) getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getVirtualModelLibrary()
-						.getFlexoConcept(configuration, false);
-
-				// Do not load virtual models for that reason, resolving will be performed later
-			}
-			else {
-				concept = getFlexoEnum();
-			}
-
-			if (concept != null)
-				return getFlexoEnumType(concept);
-			// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
-			// if FlexoConcept might be resolved later
-			return new FlexoEnumType(configuration, this);
-		}
-
-		private FlexoEnum flexoEnum;
-
-		public FlexoEnum getFlexoEnum() {
-			return flexoEnum;
-		}
-
-		public void setFlexoEnum(FlexoEnum flexoEnum) {
-			if (flexoEnum != this.flexoEnum) {
-				FlexoConcept oldFlexoConceptType = this.flexoEnum;
-				this.flexoEnum = flexoEnum;
-				getPropertyChangeSupport().firePropertyChange("flexoEnum", oldFlexoConceptType, flexoEnum);
-			}
-		}
-
-		@Override
-		public String toString() {
-			return "Flexo enumeration";
-		}
-
-		@Override
-		public void configureFactory(FlexoEnumType type) {
-			if (type != null) {
-				setFlexoEnum(type.getFlexoEnum());
-			}
-		}
-	}
-
 }
