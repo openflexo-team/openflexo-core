@@ -158,8 +158,8 @@ public class FIBCompilationUnitBrowserFIBController extends FMLFIBController {
 		public ButtonMouseAdapter(JFIBImageWidget imageWidget) {
 			this.imageWidget = imageWidget;
 
-			System.out.println("selectionColor: " + selectionColor.toString());
-			System.out.println("focusColor: " + focusColor.toString());
+			// System.out.println("selectionColor: " + selectionColor.toString());
+			// System.out.println("focusColor: " + focusColor.toString());
 		}
 
 		@Override

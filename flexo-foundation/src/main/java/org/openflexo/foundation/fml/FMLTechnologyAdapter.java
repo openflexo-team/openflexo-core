@@ -45,7 +45,6 @@ import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoConceptType.DefaultFlexoConceptTypeFactory;
-import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
@@ -113,7 +112,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 
 	private FlexoResourceTypeFactory resourceTypeFactory;
 	private DefaultFlexoConceptInstanceTypeFactory fciFactory;
-	private FlexoEnumTypeFactory enumFactory;
+	// private FlexoEnumTypeFactory enumFactory;
 	private DefaultVirtualModelInstanceTypeFactory vmiFactory;
 	private DefaultFlexoConceptTypeFactory conceptFactory;
 
@@ -121,7 +120,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 		taService.registerTypeClass(FlexoResourceType.class, getFlexoResourceTypeFactory());
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
-		taService.registerTypeClass(FlexoEnumType.class, getFlexoEnumTypeFactory());
+		// taService.registerTypeClass(FlexoEnumType.class, getFlexoEnumTypeFactory());
 		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
 		taService.registerTypeClass(FlexoConceptType.class, getFlexoConceptTypeFactory());
 	}
@@ -133,12 +132,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		return resourceTypeFactory;
 	}
 
-	public FlexoEnumTypeFactory getFlexoEnumTypeFactory() {
+	/*public FlexoEnumTypeFactory getFlexoEnumTypeFactory() {
 		if (enumFactory == null) {
 			enumFactory = new FlexoEnumTypeFactory(this);
 		}
 		return enumFactory;
-	}
+	}*/
 
 	public DefaultFlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
 		if (fciFactory == null) {
