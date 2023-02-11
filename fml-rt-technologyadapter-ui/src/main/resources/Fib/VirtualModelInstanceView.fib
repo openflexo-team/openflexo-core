@@ -27,13 +27,15 @@
 	</Panel>
 	<SplitPanel id="5" constraints="border(location=center)"
 		name="FIBSplitPanel">
-		<RowSplit id="6" name="RowSplit" weight="0.0">
-			<Leaf id="7" name="left" weight="0.0" />
-			<Divider id="8" />
-			<ColSplit id="9" name="ColSplit" weight="0.0">
-				<Leaf id="10" name="top" weight="0.0" />
-				<Divider id="11" />
-				<Leaf id="12" name="bottom" weight="0.0" />
+		<RowSplit name="RowSplit" weight="0.0">
+			<Leaf name="left" weight="0.0" />
+			<Divider />
+			<ColSplit name="ColSplit" weight="0.0">
+				<Leaf name="top" weight="0.0" />
+				<Divider/>
+				<Leaf name="middle" weight="0.0" />
+				<Divider/>
+				<Leaf name="bottom" weight="0.0" />
 			</ColSplit>
 		</RowSplit>
 		<Browser id="13" backgroundSelectionColor="9,80,208"
@@ -82,9 +84,9 @@
 		<FIBReferencedComponent id="21"
 			dynamicComponent="controller.inspectorForFlexoConceptInstance(flexoConceptInstanceBrowser.selected)"
 			localize="true" manageDynamicModel="true"
-			data="flexoConceptInstanceBrowser.selected" opaque="false" index="15"
-			constraints="split(splitIdentifier=top)" width="200" height="200"
-			name="FCIInspector">
+			data="flexoConceptInstanceBrowser.selected.inspectedObject"
+			opaque="false" index="15" constraints="split(splitIdentifier=top)"
+			width="200" height="200" name="FCIInspector">
 			<ReferenceAssignment id="22"
 				variable="controller.flexoController"
 				value="controller.flexoController" mandatory="true" />
@@ -94,7 +96,7 @@
 			borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
 			layout="border" borderRight="0"
 			data="flexoConceptInstanceBrowser.selected" index="1"
-			constraints="split(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0;weightY=1.0)"
+			constraints="split(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=middle;weightX=1.0;weightY=1.0)"
 			name="FlexoConceptInstanceDetails">
 			<Table id="24" backgroundSelectionColor="41,90,209"
 				visibleRowCount="5" backgroundNonSelectionColor="255,255,255"
@@ -105,9 +107,14 @@
 				selectionMode="MultipleIntervalSelection" rowHeight="18"
 				localize="true" manageDynamicModel="true"
 				data="flexoConceptInstanceBrowser.selected.actors" opaque="false"
+				boundToSelectionManager="true"
+				rightClickAction="controller.rightClick(table.selected,event)"
+				doubleClickAction="controller.doubleClick(table.selected)"
+				clickAction="controller.singleClick(table.selected)"
 				index="1"
-				constraints="border( weightY=1.0;anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0)"
-				width="200" height="200" name="Table">
+				constraints="border( weightY=1.0;anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=middle;weightX=1.0)"
+				width="200" height="200" name="table">
+    			<RemoveAction name="delete" method="controller.deleteActorReference(data, selected)" />
 				<IconColumn id="25"
 					data="controller.iconForObject(iterator.flexoRole)"
 					resizable="false" title="icon" displayTitle="false"
@@ -115,7 +122,7 @@
 				<LabelColumn id="26" data="iterator.roleName"
 					resizable="true" title="property" displayTitle="true"
 					columnWidth="100" showIcon="false" name="property" />
-				<LabelColumn id="27" data="iterator.modellingElement"
+				<LabelColumn id="27" data="iterator.stringRepresentation"
 					resizable="true" title="value" displayTitle="true"
 					columnWidth="300" showIcon="false" name="value" />
 				<LocalizedDictionary id="28" />
@@ -130,6 +137,62 @@
 			<FIBVariable id="32"
 				type="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
 				value="flexoConceptInstanceBrowser.selected" name="data" />
+		</Panel>
+		<Panel align="left" borderTop="0" borderLeft="0"
+			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+			border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,12"
+			layout="twocols" borderRight="0"
+			constraints="split(index=0;location=north;splitIdentifier=bottom)"
+			index="0" name="MainValidationPanel">
+			<Label id="87" label="" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				name="Label2" />
+			<Panel id="88" align="right" borderTop="0" borderLeft="0"
+				trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+				border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,12"
+				layout="gridbag" borderRight="0"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="validationPanel">
+	<FIBVariable type="org.openflexo.pamela.validation.Validable" name="focusedValidable" value="flexoConceptInstanceBrowser.selected != null ? flexoConceptInstanceBrowser.selected : data" />
+				<Label id="89" label="label" align="left"
+					data="((((&quot;&quot; + controller.getValidationReport(data).errorIssuesRegarding(focusedValidable).size) + &quot; errors, &quot;) + controller.getValidationReport(data).warningIssuesRegarding(focusedValidable).size) + &quot; warnings&quot;)"
+					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+					font="SansSerif,2,11" name="Label" />
+				<Label id="90"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;"
+					align="left" localize="true" clickAction="controller.setShowErrorsWarnings(true)"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					visible="(!(controller.showErrorsWarnings))" font="SansSerif,0,10"
+					name="Label3" />
+				<Label id="91"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;"
+					align="left" localize="true" clickAction="controller.setShowErrorsWarnings(false)"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					visible="controller.showErrorsWarnings" font="SansSerif,0,10" name="Label4" />
+				<Label id="92"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;"
+					align="left" localize="true" clickAction="controller.revalidate(data)"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					font="SansSerif,0,10" name="Label5" />
+			</Panel>
+			<Table id="93" visibleRowCount="5" backgroundNonSelectionColor="255,255,255"
+				iteratorClassName="org.openflexo.pamela.validation.ValidationIssue"
+				backgroundSecondarySelectionColor="178,215,255" showFooter="false"
+				lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
+				rowHeight="18" manageDynamicModel="true"
+				doubleClickAction="controller.fixIssue(issuesTable.selected)"
+				data="controller.getValidationReport(data).issuesRegarding(validationPanel.focusedValidable)"
+				clickAction="controller.showIssue(issuesTable.selected)"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right)"
+				visible="controller.showErrorsWarnings" name="issuesTable">
+				<IconColumn id="94" data="controller.iconForObject(iterator)"
+					resizable="false" title="icon" displayTitle="false" columnWidth="20"
+					showIcon="false" name="icon" />
+				<LabelColumn id="95"
+					data="controller.getValidationModel(data).localizedIssueMessage(iterator)"
+					resizable="true" title="errors/warnings" displayTitle="true"
+					columnWidth="250" showIcon="false" name="label" />
+			</Table>
 		</Panel>
 	</SplitPanel>
 	<FIBVariable id="33"
@@ -157,12 +220,6 @@
 		<Localized id="44" lang="English" value="Id" key="id" />
 		<Localized id="45" lang="French" value="Id" key="id" />
 		<Localized id="46" lang="Dutch" value="Id" key="id" />
-		<Localized id="47" lang="English" value="Pattern Role"
-			key="pattern_role" />
-		<Localized id="48" lang="French" value="Pattern Role"
-			key="pattern_role" />
-		<Localized id="49" lang="Dutch" value="Pattern Role"
-			key="pattern_role" />
 		<Localized id="50" lang="English" value="Actor" key="actor" />
 		<Localized id="51" lang="French" value="Acteur" key="actor" />
 		<Localized id="52" lang="Dutch" value="actor" key="actor" />
