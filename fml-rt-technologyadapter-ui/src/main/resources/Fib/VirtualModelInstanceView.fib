@@ -1,66 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" controllerClassName="org.openflexo.fml.rt.controller.FMLRTFIBController" name="VirtualModelInstanceView">
-  <Panel id="1" align="left" borderTop="0" flowAlignment="LEADING" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" vGap="5" hGap="5" constraints="border(location=north)" name="FIBPanel">
-    <Label id="2" label="virtual_model" align="left" localize="true" constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=west)" name="VirtualModelLabel" />
-    <TextField id="3" columns="7" text="TextField" data="data.name" constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="TextField" />
-    <Button id="4" buttonIcon="controller.iconForObject(data.virtualModel.getSynchronizationScheme())" buttonType="Trigger" label="synchronize" localize="true" enable="data.virtualModel.hasSynchronizationScheme" clickAction="controller.synchronizeVirtualModelInstance(data)" opaque="false" constraints="border(location=east)" name="SynchronizeButton" />
-  </Panel>
-  <SplitPanel id="5" constraints="border(location=center)" name="FIBSplitPanel">
-    <RowSplit id="6" name="RowSplit" weight="0.0">
-      <Leaf id="7" name="left" weight="0.0" />
-      <Divider id="8" />
-      <ColSplit id="9" name="ColSplit" weight="0.0">
-        <Leaf id="10" name="top" weight="0.0" />
-        <Divider id="11" />
-        <Leaf id="12" name="bottom" weight="0.0" />
-      </ColSplit>
-    </RowSplit>
-    <Browser id="13" backgroundSelectionColor="9,80,208" visibleRowCount="3" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" iteratorClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data" deepExploration="true" selectionMode="DiscontiguousTreeSelection" rootVisible="true" rowHeight="18" manageDynamicModel="true" rightClickAction="controller.rightClick(flexoConceptInstanceBrowser.selected,event)" doubleClickAction="controller.doubleClick(flexoConceptInstanceBrowser.selected)" clickAction="controller.singleClick(flexoConceptInstanceBrowser.selected)" constraints="split(splitIdentifier=left)" width="300" height="200" name="flexoConceptInstanceBrowser">
-      <BrowserElement id="14" dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance" icon="controller.iconForObject(virtualModelInstance)" label="virtualModelInstance.stringRepresentation" isEditable="false" name="virtualModelInstance">
-        <Children id="15" data="virtualModelInstance.allRootFlexoConceptInstances" name="FCIInVMI" />
-        <BrowserAddAction id="16" method="controller.createFlexoConceptInstance(selected)" name="add_action" />
-      </BrowserElement>
-      <BrowserElement id="17" dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance" icon="controller.iconForObject(flexoConceptInstance)" label="flexoConceptInstance.stringRepresentation" isEditable="false" name="flexoConceptInstance">
-        <Children id="18" data="flexoConceptInstance.embeddedFlexoConceptInstances" name="children" />
-        <BrowserAddAction id="19" method="controller.createFlexoConceptInstance(selected)" name="add_action" />
-        <BrowserRemoveAction id="20" method="controller.deleteFlexoConceptInstance(selected)" name="delete_action" />
-      </BrowserElement>
-    </Browser>
-    <FIBReferencedComponent id="21" dynamicComponent="controller.inspectorForFlexoConceptInstance(flexoConceptInstanceBrowser.selected)" localize="true" manageDynamicModel="true" data="flexoConceptInstanceBrowser.selected" opaque="false" index="15" constraints="split(splitIdentifier=top)" width="200" height="200" name="FCIInspector">
-      <ReferenceAssignment id="22" variable="controller.flexoController" value="controller.flexoController" mandatory="true" />
-    </FIBReferencedComponent>
-    <Panel id="23" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" data="flexoConceptInstanceBrowser.selected" index="1" constraints="split(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0;weightY=1.0)" name="FlexoConceptInstanceDetails">
-      <Table id="24" backgroundSelectionColor="41,90,209" visibleRowCount="5" backgroundNonSelectionColor="255,255,255" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255" iteratorClassName="org.openflexo.foundation.fml.rt.ActorReference" showFooter="true" textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection" rowHeight="18" localize="true" manageDynamicModel="true" data="flexoConceptInstanceBrowser.selected.actors" opaque="false" index="1" constraints="border( weightY=1.0;anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0)" width="200" height="200" name="Table">
-        <IconColumn id="25" data="controller.iconForObject(iterator.flexoRole)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
-        <LabelColumn id="26" data="iterator.roleName" resizable="true" title="property" displayTitle="true" columnWidth="100" showIcon="false" name="property" />
-        <LabelColumn id="27" data="iterator.modellingElement" resizable="true" title="value" displayTitle="true" columnWidth="300" showIcon="false" name="value" />
-        <LocalizedDictionary id="28" />
-        <Dependancy id="29" componentName="FlexoConceptInstancesTable" />
-        <Dependancy id="30" componentName="FlexoConceptInstanceDetails" />
-      </Table>
-      <Label id="31" label="label" align="left" data="(flexoConceptInstanceBrowser.selected.flexoConcept.name + ((&quot; [ID=&quot; + flexoConceptInstanceBrowser.selected.flexoID) + &quot;]&quot;))" index="1" constraints="border(location=north)" name="Label" />
-      <FIBVariable id="32" type="org.openflexo.foundation.fml.rt.FlexoConceptInstance" value="flexoConceptInstanceBrowser.selected" name="data" />
-    </Panel>
-  </SplitPanel>
-  <FIBVariable id="33" type="org.openflexo.foundation.fml.rt.VirtualModelInstance" name="data" />
-  <LocalizedDictionary id="34">
-    <Localized id="35" lang="English" value="FlexoConcept instances" key="flexo_concept_instances" />
-    <Localized id="36" lang="French" value="FlexoConcept instances" key="flexo_concept_instances" />
-    <Localized id="37" lang="Dutch" value="flexo_concept_instances" key="flexo_concept_instances" />
-    <Localized id="38" lang="English" value="Virtual Model" key="virtual_model" />
-    <Localized id="39" lang="French" value="Virtual Model" key="virtual_model" />
-    <Localized id="40" lang="Dutch" value="virtual_model" key="virtual_model" />
-    <Localized id="41" lang="English" value="Synchronize..." key="synchronize" />
-    <Localized id="42" lang="French" value="Synchroniser..." key="synchronize" />
-    <Localized id="43" lang="Dutch" value="Synchronize..." key="synchronize" />
-    <Localized id="44" lang="English" value="Id" key="id" />
-    <Localized id="45" lang="French" value="Id" key="id" />
-    <Localized id="46" lang="Dutch" value="Id" key="id" />
-    <Localized id="47" lang="English" value="Pattern Role" key="pattern_role" />
-    <Localized id="48" lang="French" value="Pattern Role" key="pattern_role" />
-    <Localized id="49" lang="Dutch" value="Pattern Role" key="pattern_role" />
-    <Localized id="50" lang="English" value="Actor" key="actor" />
-    <Localized id="51" lang="French" value="Acteur" key="actor" />
-    <Localized id="52" lang="Dutch" value="actor" key="actor" />
-  </LocalizedDictionary>
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize"
+	titleFont="Lucida Grande,0,13" layout="border" borderRight="0"
+	controllerClassName="org.openflexo.fml.rt.controller.FMLRTFIBController"
+	name="VirtualModelInstanceView">
+	<Panel id="1" align="left" borderTop="0" flowAlignment="LEADING"
+		borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+		borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
+		layout="border" borderRight="0" vGap="5" hGap="5"
+		constraints="border(location=north)" name="FIBPanel">
+		<Label id="2" label="virtual_model" align="left" localize="true"
+			constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=west)"
+			name="VirtualModelLabel" />
+		<TextField id="3" columns="7" text="TextField"
+			data="data.name"
+			constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			name="TextField" />
+		<Button id="4"
+			buttonIcon="controller.iconForObject(data.virtualModel.getSynchronizationScheme())"
+			buttonType="Trigger" label="synchronize" localize="true"
+			enable="data.virtualModel.hasSynchronizationScheme"
+			clickAction="controller.synchronizeVirtualModelInstance(data)"
+			opaque="false" constraints="border(location=east)"
+			name="SynchronizeButton" />
+	</Panel>
+	<SplitPanel id="5" constraints="border(location=center)"
+		name="FIBSplitPanel">
+		<RowSplit id="6" name="RowSplit" weight="0.0">
+			<Leaf id="7" name="left" weight="0.0" />
+			<Divider id="8" />
+			<ColSplit id="9" name="ColSplit" weight="0.0">
+				<Leaf id="10" name="top" weight="0.0" />
+				<Divider id="11" />
+				<Leaf id="12" name="bottom" weight="0.0" />
+			</ColSplit>
+		</RowSplit>
+		<Browser id="13" backgroundSelectionColor="9,80,208"
+			visibleRowCount="3" boundToSelectionManager="true"
+			backgroundNonSelectionColor="255,255,255"
+			textSelectionColor="255,255,255"
+			backgroundSecondarySelectionColor="178,215,255"
+			iteratorClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+			showRootsHandle="true" showFooter="true"
+			textNonSelectionColor="0,0,0" root="data" deepExploration="true"
+			selectionMode="DiscontiguousTreeSelection" rootVisible="true"
+			rowHeight="18" manageDynamicModel="true"
+			rightClickAction="controller.rightClick(flexoConceptInstanceBrowser.selected,event)"
+			doubleClickAction="controller.doubleClick(flexoConceptInstanceBrowser.selected)"
+			clickAction="controller.singleClick(flexoConceptInstanceBrowser.selected)"
+			constraints="split(splitIdentifier=left)" width="300" height="200"
+			name="flexoConceptInstanceBrowser">
+			<BrowserElement id="14"
+				dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance"
+				icon="controller.iconForObject(virtualModelInstance)"
+				label="virtualModelInstance.stringRepresentation" isEditable="false"
+				name="virtualModelInstance">
+				<Children id="15"
+					data="virtualModelInstance.allRootFlexoConceptInstances"
+					name="FCIInVMI" />
+				<BrowserAddAction id="16"
+					method="controller.createFlexoConceptInstance(selected)"
+					name="add_action" />
+			</BrowserElement>
+			<BrowserElement id="17"
+				dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+				icon="controller.iconForObject(flexoConceptInstance)"
+				label="flexoConceptInstance.stringRepresentation" isEditable="false"
+				name="flexoConceptInstance">
+				<Children id="18"
+					data="flexoConceptInstance.embeddedFlexoConceptInstances"
+					name="children" />
+				<BrowserAddAction id="19"
+					method="controller.createFlexoConceptInstance(selected)"
+					name="add_action" />
+				<BrowserRemoveAction id="20"
+					method="controller.deleteFlexoConceptInstance(selected)"
+					name="delete_action" />
+			</BrowserElement>
+		</Browser>
+		<FIBReferencedComponent id="21"
+			dynamicComponent="controller.inspectorForFlexoConceptInstance(flexoConceptInstanceBrowser.selected)"
+			localize="true" manageDynamicModel="true"
+			data="flexoConceptInstanceBrowser.selected" opaque="false" index="15"
+			constraints="split(splitIdentifier=top)" width="200" height="200"
+			name="FCIInspector">
+			<ReferenceAssignment id="22"
+				variable="controller.flexoController"
+				value="controller.flexoController" mandatory="true" />
+		</FIBReferencedComponent>
+		<Panel id="23" align="left" borderTop="0" borderTitle="Panel"
+			borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+			borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
+			layout="border" borderRight="0"
+			data="flexoConceptInstanceBrowser.selected" index="1"
+			constraints="split(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0;weightY=1.0)"
+			name="FlexoConceptInstanceDetails">
+			<Table id="24" backgroundSelectionColor="41,90,209"
+				visibleRowCount="5" backgroundNonSelectionColor="255,255,255"
+				textSelectionColor="255,255,255"
+				backgroundSecondarySelectionColor="173,215,255"
+				iteratorClassName="org.openflexo.foundation.fml.rt.ActorReference"
+				showFooter="true" textNonSelectionColor="0,0,0"
+				selectionMode="MultipleIntervalSelection" rowHeight="18"
+				localize="true" manageDynamicModel="true"
+				data="flexoConceptInstanceBrowser.selected.actors" opaque="false"
+				index="1"
+				constraints="border( weightY=1.0;anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0)"
+				width="200" height="200" name="Table">
+				<IconColumn id="25"
+					data="controller.iconForObject(iterator.flexoRole)"
+					resizable="false" title="icon" displayTitle="false"
+					columnWidth="20" showIcon="false" name="icon" />
+				<LabelColumn id="26" data="iterator.roleName"
+					resizable="true" title="property" displayTitle="true"
+					columnWidth="100" showIcon="false" name="property" />
+				<LabelColumn id="27" data="iterator.modellingElement"
+					resizable="true" title="value" displayTitle="true"
+					columnWidth="300" showIcon="false" name="value" />
+				<LocalizedDictionary id="28" />
+				<Dependancy id="29"
+					componentName="FlexoConceptInstancesTable" />
+				<Dependancy id="30"
+					componentName="FlexoConceptInstanceDetails" />
+			</Table>
+			<Label id="31" label="label" align="left"
+				data="(flexoConceptInstanceBrowser.selected.flexoConcept.name + ((&quot; [ID=&quot; + flexoConceptInstanceBrowser.selected.flexoID) + &quot;]&quot;))"
+				index="1" constraints="border(location=north)" name="Label" />
+			<FIBVariable id="32"
+				type="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+				value="flexoConceptInstanceBrowser.selected" name="data" />
+		</Panel>
+	</SplitPanel>
+	<FIBVariable id="33"
+		type="org.openflexo.foundation.fml.rt.VirtualModelInstance"
+		name="data" />
+	<LocalizedDictionary id="34">
+		<Localized id="35" lang="English"
+			value="FlexoConcept instances" key="flexo_concept_instances" />
+		<Localized id="36" lang="French"
+			value="FlexoConcept instances" key="flexo_concept_instances" />
+		<Localized id="37" lang="Dutch"
+			value="flexo_concept_instances" key="flexo_concept_instances" />
+		<Localized id="38" lang="English" value="Virtual Model"
+			key="virtual_model" />
+		<Localized id="39" lang="French" value="Virtual Model"
+			key="virtual_model" />
+		<Localized id="40" lang="Dutch" value="virtual_model"
+			key="virtual_model" />
+		<Localized id="41" lang="English" value="Synchronize..."
+			key="synchronize" />
+		<Localized id="42" lang="French" value="Synchroniser..."
+			key="synchronize" />
+		<Localized id="43" lang="Dutch" value="Synchronize..."
+			key="synchronize" />
+		<Localized id="44" lang="English" value="Id" key="id" />
+		<Localized id="45" lang="French" value="Id" key="id" />
+		<Localized id="46" lang="Dutch" value="Id" key="id" />
+		<Localized id="47" lang="English" value="Pattern Role"
+			key="pattern_role" />
+		<Localized id="48" lang="French" value="Pattern Role"
+			key="pattern_role" />
+		<Localized id="49" lang="Dutch" value="Pattern Role"
+			key="pattern_role" />
+		<Localized id="50" lang="English" value="Actor" key="actor" />
+		<Localized id="51" lang="French" value="Acteur" key="actor" />
+		<Localized id="52" lang="Dutch" value="actor" key="actor" />
+	</LocalizedDictionary>
 </Panel>
