@@ -88,9 +88,11 @@ public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBContro
 	@Override
 	public void singleClick(Object object) {
 		super.singleClick(object);
-		browser.getFMLEditor().clearHighlights();
-		if (object instanceof FMLPrettyPrintable) {
-			browser.getFMLEditor().highlightObject((FMLPrettyPrintable) object);
+		if (getFlexoController() == null) {
+			browser.getFMLEditor().clearHighlights();
+			if (object instanceof FMLPrettyPrintable) {
+				browser.getFMLEditor().highlightObject((FMLPrettyPrintable) object);
+			}
 		}
 	}
 

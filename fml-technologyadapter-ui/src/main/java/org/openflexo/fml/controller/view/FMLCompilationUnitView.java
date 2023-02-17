@@ -41,6 +41,9 @@ package org.openflexo.fml.controller.view;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
@@ -49,16 +52,20 @@ import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.FMLTechnologyPerspective;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.view.ModuleView;
+import org.openflexo.selection.SelectionListener;
+import org.openflexo.selection.SelectionManager;
+import org.openflexo.view.SelectionSynchronizedModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 @SuppressWarnings("serial")
-public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLCompilationUnit>, PropertyChangeListener {
+public class FMLCompilationUnitView extends JPanel implements SelectionSynchronizedModuleView<FMLCompilationUnit>, PropertyChangeListener {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLCompilationUnitView.class.getPackage().getName());
@@ -90,6 +97,11 @@ public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLComp
 		validate();
 
 		getRepresentedObject().getPropertyChangeSupport().addPropertyChangeListener(getRepresentedObject().getDeletedProperty(), this);
+
+		if (flexoController != null && flexoController.getSelectionManager() != null) {
+			flexoController.getSelectionManager().addToSelectionListeners(this);
+		}
+
 	}
 
 	public FMLEditor getEditor() {
@@ -108,7 +120,12 @@ public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLComp
 	@Override
 	public void deleteModuleView() {
 		getRepresentedObject().getPropertyChangeSupport().removePropertyChangeListener(getRepresentedObject().getDeletedProperty(), this);
-		getFlexoController().removeModuleView(this);
+		if (getFlexoController() != null) {
+			getFlexoController().removeModuleView(this);
+			if (getFlexoController().getSelectionManager() != null) {
+				getFlexoController().getSelectionManager().removeFromSelectionListeners(this);
+			}
+		}
 		getEditor().delete();
 	}
 
@@ -172,6 +189,94 @@ public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLComp
 	public void willHide() {
 		// super.willHide();
 		getPerspective().setBottomLeftView(null);
+	}
+
+	@Override
+	public SelectionManager getSelectionManager() {
+		if (getFlexoController() != null) {
+			return getFlexoController().getSelectionManager();
+		}
+		return null;
+	}
+
+	@Override
+	public Vector<FlexoObject> getSelection() {
+		return getSelectionManager().getSelection();
+	}
+
+	@Override
+	public void resetSelection() {
+		getSelectionManager().resetSelection();
+	}
+
+	@Override
+	public void addToSelected(FlexoObject object) {
+		getSelectionManager().addToSelected(object);
+	}
+
+	@Override
+	public void removeFromSelected(FlexoObject object) {
+		getSelectionManager().removeFromSelected(object);
+	}
+
+	@Override
+	public void addToSelected(Vector<? extends FlexoObject> objects) {
+		getSelectionManager().addToSelected(objects);
+	}
+
+	@Override
+	public void removeFromSelected(Vector<? extends FlexoObject> objects) {
+		getSelectionManager().removeFromSelected(objects);
+	}
+
+	@Override
+	public void setSelectedObjects(Vector<? extends FlexoObject> objects) {
+		getSelectionManager().setSelectedObjects(objects);
+	}
+
+	@Override
+	public FlexoObject getFocusedObject() {
+		return getSelectionManager().getFocusedObject();
+	}
+
+	@Override
+	public boolean mayRepresents(FlexoObject anObject) {
+		return false;
+	}
+
+	@Override
+	public List<SelectionListener> getSelectionListeners() {
+		return Arrays.asList((SelectionListener) this);
+	}
+
+	@Override
+	public void fireObjectSelected(FlexoObject object) {
+		if (object instanceof FMLPrettyPrintable) {
+			getEditor().clearHighlights();
+			getEditor().highlightObject((FMLPrettyPrintable) object);
+		}
+	}
+
+	@Override
+	public void fireObjectDeselected(FlexoObject object) {
+		if (object instanceof FMLPrettyPrintable) {
+			getEditor().clearHighlights();
+		}
+	}
+
+	@Override
+	public void fireResetSelection() {
+		getEditor().clearHighlights();
+	}
+
+	@Override
+	public void fireBeginMultipleSelection() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void fireEndMultipleSelection() {
+		// TODO Auto-generated method stub
 	}
 
 }
