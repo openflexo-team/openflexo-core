@@ -2592,7 +2592,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			if (!(flexoConcept.isAbstract()) && !(flexoConcept instanceof VirtualModel) && !(flexoConcept instanceof FlexoEvent)
 					&& !(flexoConcept instanceof FlexoEnum) && !(flexoConcept instanceof FlexoEnumValue)
 					&& flexoConcept.getDeclaredProperties().size() == 0) {
-				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_does_not_define_any_property");
+				return new ValidationWarning<>(this, flexoConcept,
+						"non_abstract_flexo_concept_($validable.name)_does_not_define_any_property");
 			}
 			return null;
 		}
@@ -2611,7 +2612,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (!flexoConcept.isAbstract() && !(flexoConcept instanceof FlexoEnum) && flexoConcept.getFlexoBehaviours().size() == 0) {
+			if (!flexoConcept.isAbstract() && !(flexoConcept instanceof FlexoEnum) && !(flexoConcept instanceof FlexoEnumValue)
+					&& flexoConcept.getFlexoBehaviours().size() == 0) {
 				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_behaviours");
 			}
 			return null;
@@ -2632,7 +2634,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (!flexoConcept.isAbstract() && !(flexoConcept instanceof FlexoEnum) && flexoConcept.getDeletionSchemes().size() == 0) {
+			if (!flexoConcept.isAbstract() && !(flexoConcept instanceof FlexoEnum) && !(flexoConcept instanceof FlexoEnumValue)
+					&& flexoConcept.getDeletionSchemes().size() == 0) {
 				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
 				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_deletion_scheme",
 						fixProposal);
