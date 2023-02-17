@@ -39,6 +39,8 @@
 package org.openflexo.foundation.resource;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
@@ -89,40 +91,40 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 	
 			if (resourceData == null && isLoadable() && !isLoading()) {
 				// The resourceData is null, we try to load it
-			
+	
 				// Make sure all the dependencies are up-to-date
 				forceUpdateDependencies(getResourceCenter());
-			
+	
 				// Now load the non cross-reference dependencies
 				for (FlexoResource<?> dependency : getNonCrossReferenceDependencies()) {
 					// System.out.println("While loaading " + this + " load non cross-referenced dependency " + dependency);
 					dependency.loadResourceData();
 				}
-			
+	
 				logger.info("Bon j'arrive la pour charger " + this + " isLoading=" + isLoading());
-			
+	
 				// Then really load
 				setLoading(true);
-			
+	
 				// Applies the two-passes algorithm
-			
+	
 				// First pass on this resource
 				resourceData = ((ResourceWithPotentialCrossReferences<RD>) this).initializeLoadResourceData();
-			
+	
 				// Now first pass on cross-reference dependencies
 				for (ResourceWithPotentialCrossReferences<?> dependency : getCrossReferenceDependencies()) {
 					// System.out.println("While loading " + this + " load cross-referenced dependency " + dependency);
 					dependency.initializeLoadResourceData();
 				}
-			
+	
 				// Now second pass on cross-reference dependencies
 				for (ResourceWithPotentialCrossReferences<?> dependency : getCrossReferenceDependencies()) {
 					dependency.finalizeLoadResourceData();
 				}
-			
+	
 				// Second pass on this resource
 				((ResourceWithPotentialCrossReferences<RD>) this).finalizeLoadResourceData();
-			
+	
 				setLoading(false);
 			}
 			return resourceData;
@@ -160,7 +162,7 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 
 			// Now load the non cross-reference dependencies
 			for (FlexoResource<?> dependency : getNonCrossReferenceDependencies()) {
-				// System.out.println("While loaading " + this + " load non cross-referenced dependency " + dependency);
+				logger.fine("While loading " + this + " load non cross-referenced dependency " + dependency);
 				dependency.loadResourceData();
 			}
 
@@ -172,14 +174,19 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 			// First pass on this resource
 			resourceData = ((ResourceWithPotentialCrossReferences<RD>) this).initializeLoadResourceData();
 
+			List<ResourceWithPotentialCrossReferences<?>> unloadedDependencies = new ArrayList<>();
+
 			// Now first pass on cross-reference dependencies
 			for (ResourceWithPotentialCrossReferences<?> dependency : getCrossReferenceDependencies()) {
-				// System.out.println("While loading " + this + " load cross-referenced dependency " + dependency);
-				dependency.initializeLoadResourceData();
+				if (!dependency.isLoaded()) {
+					logger.fine("While loading " + this + " load cross-referenced dependency " + dependency);
+					dependency.initializeLoadResourceData();
+					unloadedDependencies.add(dependency);
+				}
 			}
 
 			// Now second pass on cross-reference dependencies
-			for (ResourceWithPotentialCrossReferences<?> dependency : getCrossReferenceDependencies()) {
+			for (ResourceWithPotentialCrossReferences<?> dependency : unloadedDependencies) {
 				dependency.finalizeLoadResourceData();
 			}
 
