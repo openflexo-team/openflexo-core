@@ -31,17 +31,17 @@
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.UseModelSlotDeclaration"
-				label="useDeclaration.abbrev" 
+				label="&quot;use &quot;+useDeclaration.abbrev" 
 				icon="controller.iconForObject(useDeclaration)"
 				isEditable="false" name="useDeclaration" />
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.JavaImportDeclaration"
-				label="javaImport.fullQualifiedClassName" 
+				label="&quot;import &quot;+javaImport.fullQualifiedClassName" 
 				icon="controller.iconForObject(javaImport)"
 				isEditable="false" name="javaImport" />
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.ElementImportDeclaration"
-				label="elementImport.abbrev" 
+				label="&quot;import &quot;+elementImport.abbrev" 
 				icon="controller.iconForObject(elementImport)"
 				isEditable="false" name="elementImport" />
 			<BrowserElement id="7"
