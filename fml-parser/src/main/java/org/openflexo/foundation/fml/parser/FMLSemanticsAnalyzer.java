@@ -254,7 +254,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	protected final void finalizeDeserialization(ObjectNode<?, ?, ?> node) {
 		node.finalizeDeserialization();
-		for (P2PPNode<?, ?> child : node.getChildren()) {
+		for (P2PPNode<?, ?> child : new ArrayList<>(node.getChildren())) {
 			finalizeDeserialization((ObjectNode<?, ?, ?>) child);
 		}
 	}
