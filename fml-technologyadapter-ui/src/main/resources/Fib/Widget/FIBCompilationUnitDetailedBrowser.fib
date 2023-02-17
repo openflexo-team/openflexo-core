@@ -49,14 +49,7 @@
 				icon="controller.iconForObject(virtualModel)"
 				label="virtualModel.name" editableLabel="virtualModel.name"
 				isEditable="false" name="virtualModel">
-				<Children id="8" data="virtualModel.inspector"
-					name="inspector" />
-				<Children id="9" data="virtualModel.structuralFacet"
-					name="structural" />
-				<Children id="10" data="virtualModel.behaviouralFacet"
-					name="behavioural" />
-				<Children id="11" data="virtualModel.innerConceptsFacet"
-					name="innerConcepts" />
+				<Children data="controller.getContents(virtualModel)" name="contents" />
 			</BrowserElement>
 			<BrowserElement id="12"
 				dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
@@ -266,71 +259,12 @@
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
 				icon="controller.iconForObject(controlStructureAction)"
 				isEditable="false" name="controlStructureAction" />
-			<BrowserElement id="63"
-				dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet"
-				icon="controller.iconForObject(flexoConceptStructuralFacet)"
-				label="&quot;Structural&quot;" isEditable="false"
-				name="flexoConceptStructuralFacet">
-				<Children id="64"
-					data="flexoConceptStructuralFacet.properties"
-					name="flexoProperties" />
-				<BrowserAddAction id="65"
-					method="controller.createModelSlot(selected.flexoConcept)"
-					name="new_model_slot" />
-				<BrowserAddAction id="66"
-					method="controller.createTechnologyRole(selected.flexoConcept)"
-					name="new_technology_role" />
-				<BrowserAddAction id="67"
-					method="controller.createFlexoConceptInstanceRole(selected.flexoConcept)"
-					name="new_flexo_concept_instance_role" />
-				<BrowserAddAction id="68"
-					method="controller.createPrimitiveRole(selected.flexoConcept)"
-					name="new_primitive_role" />
-				<BrowserAddAction id="69"
-					method="controller.createAbstractProperty(selected.flexoConcept)"
-					name="new_abstract_property" />
-				<BrowserAddAction id="70"
-					method="controller.createExpressionProperty(selected.flexoConcept)"
-					name="new_expression_property" />
-				<BrowserAddAction id="71"
-					method="controller.createGetSetProperty(selected.flexoConcept)"
-					name="new_get_set_property" />
-			</BrowserElement>
-			<BrowserElement id="73"
-				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"
-				icon="controller.iconForObject(flexoConceptBehaviouralFacet)"
-				label="&quot;Behavioural&quot;" isEditable="false"
-				name="flexoConceptBehaviouralFacet">
-				<Children id="74"
-					data="flexoConceptBehaviouralFacet.behaviours"
-					name="flexoBehaviours" />
-				<BrowserAddAction id="75"
-					method="controller.createAdvancedScheme(selected.flexoConcept)"
-					name="new_behaviour" />
-			</BrowserElement>
-			<BrowserElement id="76"
-				dataClassName="org.openflexo.foundation.fml.InnerConceptsFacet"
-				icon="controller.iconForObject(innerConceptsFacet)"
-				label="&quot;Inner concepts&quot;" isEditable="false"
-				name="innerConceptsFacet">
-				<Children data="innerConceptsFacet.containedVirtualModels"
-					name="containedVirtualModels" />
-				<Children id="77"
-					data="innerConceptsFacet.embeddingRootFlexoConcepts"
-					name="children" />
-				<BrowserAddAction id="78"
-					method="controller.createFlexoConcept(selected.flexoConcept)"
-					name="add_flexo_concept" />
-				<BrowserRemoveAction id="79"
-					method="controller.deleteFlexoConcept(selected.flexoConcept)"
-					name="remove_flexo_concept" />
-			</BrowserElement>
 			<BrowserElement id="80"
 				dataClassName="org.openflexo.foundation.fml.FlexoEnum"
-				icon="controller.iconForObject(flexoConcept)"
-				label="flexoConcept.name" editableLabel="flexoConcept.name"
-				isEditable="false" name="flexoConcept">
-				<Children data="flexoConcept.values" name="values" />
+				icon="controller.iconForObject(flexoEnum)"
+				label="flexoEnum.name" editableLabel="flexoEnum.name"
+				isEditable="false" name="flexoEnum">
+				<Children data="flexoEnum.values" name="values" />
 				<BrowserAddAction id="81"
 					method="controller.createFlexoEnumValue(selected)"
 					name="add_flexo_enum_value" />
@@ -349,14 +283,7 @@
 				icon="controller.iconForObject(flexoConcept)"
 				label="flexoConcept.name" editableLabel="flexoConcept.name"
 				isEditable="false" name="flexoConcept">
-				<Children data="flexoConcept.inspector"
-					name="inspector" />
-				<Children data="flexoConcept.structuralFacet"
-					name="structural" />
-				<Children data="flexoConcept.behaviouralFacet"
-					name="behavioural" />
-				<Children data="flexoConcept.innerConceptsFacet"
-					name="innerConcepts" />
+				<Children data="controller.getContents(flexoConcept)" name="contents" />
 				<BrowserAddAction id="85"
 					method="controller.createFlexoConcept(selected)"
 					name="add_flexo_concept" />

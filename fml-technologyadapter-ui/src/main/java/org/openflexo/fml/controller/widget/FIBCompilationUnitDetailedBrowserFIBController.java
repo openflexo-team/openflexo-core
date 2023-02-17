@@ -38,10 +38,17 @@
 
 package org.openflexo.fml.controller.widget;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.fml.controller.FMLFIBController;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
@@ -55,7 +62,8 @@ import org.openflexo.view.controller.FlexoController;
  */
 public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBController {
 
-	protected static final Logger logger = FlexoLogger.getLogger(FIBCompilationUnitDetailedBrowserFIBController.class.getPackage().getName());
+	protected static final Logger logger = FlexoLogger
+			.getLogger(FIBCompilationUnitDetailedBrowserFIBController.class.getPackage().getName());
 
 	private FIBCompilationUnitDetailedBrowser browser;
 
@@ -64,7 +72,8 @@ public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBContro
 
 	}
 
-	public FIBCompilationUnitDetailedBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
+	public FIBCompilationUnitDetailedBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory,
+			FlexoController controller) {
 		super(component, viewFactory, controller);
 	}
 
@@ -81,9 +90,30 @@ public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBContro
 		super.singleClick(object);
 		browser.getFMLEditor().clearHighlights();
 		if (object instanceof FMLPrettyPrintable) {
-			browser.getFMLEditor().highlightObject((FMLPrettyPrintable)object);
+			browser.getFMLEditor().highlightObject((FMLPrettyPrintable) object);
 		}
-
-
 	}
+
+	public List<FMLPrettyPrintable> getContents(FMLObject container) {
+		List<FMLPrettyPrintable> returned = new ArrayList<>();
+		if (container instanceof FlexoConcept) {
+			FlexoConcept concept = (FlexoConcept) container;
+			if (container instanceof VirtualModel) {
+				returned.addAll(((VirtualModel) concept).getFlexoConcepts());
+			}
+			else {
+				returned.addAll(concept.getEmbeddedFlexoConcepts());
+			}
+			returned.addAll(concept.getDeclaredProperties());
+			returned.addAll(concept.getDeclaredFlexoBehaviours());
+		}
+		Collections.sort(returned, new Comparator<FMLPrettyPrintable>() {
+			@Override
+			public int compare(FMLPrettyPrintable o1, FMLPrettyPrintable o2) {
+				return o1.getPrettyPrintDelegate().getStartLocation().compareTo(o2.getPrettyPrintDelegate().getStartLocation());
+			}
+		});
+		return returned;
+	}
+
 }

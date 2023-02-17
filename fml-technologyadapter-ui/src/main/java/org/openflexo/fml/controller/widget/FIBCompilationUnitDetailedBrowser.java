@@ -53,7 +53,7 @@ import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Browser allowing to browse details of a {@link FMLCompilationUnit}<br>
+ * Browser allowing to browse source of a {@link FMLCompilationUnit} with line number semantics<br>
  * 
  * @author sguerin
  * 
@@ -63,7 +63,7 @@ public class FIBCompilationUnitDetailedBrowser extends FIBBrowserView<FMLCompila
 	private static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBCompilationUnitDetailedBrowser.fib");
 
 	private final FMLEditor fmlEditor;
-	
+
 	public FIBCompilationUnitDetailedBrowser(FMLCompilationUnit compilationUnit, FMLEditor fmlEditor, FlexoController controller) {
 		super(compilationUnit, controller, FIB_FILE,
 				controller != null ? controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales() : null);
@@ -82,30 +82,19 @@ public class FIBCompilationUnitDetailedBrowser extends FIBBrowserView<FMLCompila
 	public FMLEditor getFMLEditor() {
 		return fmlEditor;
 	}
-	
+
 	@Override
 	public FIBCompilationUnitDetailedBrowserFIBController getFIBController() {
 		return (FIBCompilationUnitDetailedBrowserFIBController) super.getFIBController();
 	}
 
-	
 	@Override
 	protected FIBCompilationUnitDetailedBrowserFIBController createFibController(FIBComponent fibComponent, FlexoController controller,
 			LocalizedDelegate locales) {
-		FIBCompilationUnitDetailedBrowserFIBController returned = (FIBCompilationUnitDetailedBrowserFIBController)super.createFibController(fibComponent, controller, locales);
+		FIBCompilationUnitDetailedBrowserFIBController returned = (FIBCompilationUnitDetailedBrowserFIBController) super.createFibController(
+				fibComponent, controller, locales);
 		returned.setBrowser(this);
 		return returned;
 	}
-	
-	/*@Override
-	public void fireObjectSelected(FlexoObject object) {
-		// System.out.println("FIBVirtualModelLibraryBrowser / fireObjectSelected: " + object);
-		if (object instanceof VirtualModel) {
-			getFIBView().getController().objectAddedToSelection(((VirtualModel) object).getResource());
-		}
-		else {
-			super.fireObjectSelected(object);
-		}
-	}*/
 
 }
