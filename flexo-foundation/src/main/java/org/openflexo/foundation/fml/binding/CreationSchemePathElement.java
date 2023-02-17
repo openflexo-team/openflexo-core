@@ -676,17 +676,11 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			setFunction(function);
 			if (function == null && getType().isResolved()) {
 				// Do not warn for unresolved type
-				logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments()
-						+ (getParent() != null ? " and parent " + getParent().getType() : ""));
+				// logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments()
+				// + (getParent() != null ? " and parent " + getParent().getType() : ""));
 				// System.out.println("type: " + getType() + " resolved=" + getType().isResolved());
 				// System.out.println("arguments: " + getArguments() + " size: " + getArguments().size());
 			}
-			/*else {
-				if (getType().toString().contains("Foo2")) {
-					System.out.println("C'est la que je resouds Foo2");
-					Thread.dumpStack();
-				}
-			}*/
 		}
 
 		@Override
