@@ -517,11 +517,13 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		// System.out.println("On selectionne "+beginIndex+"-"+endIndex);
 		try {
 			Rectangle viewRect = textArea.modelToView(beginIndex);
-			viewRect.height = scrollPane.getBounds().height - 20;
-			// Scroll to make the rectangle visible
-			textArea.scrollRectToVisible(viewRect);
-			// And add highlight
-			highlighter.addHighlight(beginIndex, endIndex, painter);
+			if (viewRect != null && scrollPane != null && scrollPane.getBounds() != null) {
+				viewRect.height = scrollPane.getBounds().height - 20;
+				// Scroll to make the rectangle visible
+				textArea.scrollRectToVisible(viewRect);
+				// And add highlight
+				highlighter.addHighlight(beginIndex, endIndex, painter);
+			}
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
