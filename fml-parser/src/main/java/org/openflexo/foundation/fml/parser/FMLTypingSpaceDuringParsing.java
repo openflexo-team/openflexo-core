@@ -117,7 +117,9 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 						return conceptNode.getModelObject();
 					}
 				}
-				logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+				else {
+					logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+				}
 				return null;
 			}
 		};
@@ -133,7 +135,9 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 						return conceptNode.getModelObject();
 					}
 				}
-				logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+				else {
+					logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+				}
 				return null;
 			}
 		};
@@ -148,7 +152,9 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 						return virtualModelNode.getModelObject();
 					}
 				}
-				logger.warning("Cannot lookup virtual model " + typeToResolve.getConceptURI());
+				else {
+					logger.warning("Cannot lookup virtual model " + typeToResolve.getConceptURI());
+				}
 				return null;
 			}
 		};
