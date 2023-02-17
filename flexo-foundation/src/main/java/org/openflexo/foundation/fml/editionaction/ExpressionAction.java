@@ -157,12 +157,14 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		 * Notify assignableType changes
 		 */
 		private void notifyAssignableTypeMightHaveChanged(Type lastKnown, Type newAssignableType) {
-			getPropertyChangeSupport().firePropertyChange("assignableType", lastKnown, newAssignableType);
-			lastKnownAssignableType = newAssignableType;
 
-			// TODO : virer ces deux lignes qui me semblent inutiles
-			getPropertyChangeSupport().firePropertyChange("iteratorType", null, getIteratorType());
-			getPropertyChangeSupport().firePropertyChange("isIterable", null, isIterable());
+			if ((lastKnown == null && newAssignableType != null) || (lastKnown != null && !lastKnown.equals(newAssignableType))) {
+				getPropertyChangeSupport().firePropertyChange("assignableType", lastKnown, newAssignableType);
+				lastKnownAssignableType = newAssignableType;
+				// TODO : virer ces deux lignes qui me semblent inutiles
+				getPropertyChangeSupport().firePropertyChange("iteratorType", null, getIteratorType());
+				getPropertyChangeSupport().firePropertyChange("isIterable", null, isIterable());
+			}
 		}
 
 		@Override
