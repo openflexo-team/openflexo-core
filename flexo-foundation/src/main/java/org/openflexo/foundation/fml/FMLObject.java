@@ -588,7 +588,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 		@Override
 		public String getStringRepresentation() {
-			return getFMLModelFactory().stringRepresentation(this);
+			if (getFMLModelFactory() != null) {
+				return getFMLModelFactory().stringRepresentation(this);
+			}
+			else {
+				return "<No factory>";
+			}
 		}
 
 		private FMLModelFactory deserializationFactory;
