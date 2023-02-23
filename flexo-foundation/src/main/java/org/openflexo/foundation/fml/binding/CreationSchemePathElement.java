@@ -671,6 +671,10 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			// System.out.println("bindable=" + getBindable());
 			// System.out.println("bindable.getBindingFactory()=" + getBindable().getBindingFactory());
 
+			if (getBindable() == null || getBindable().getBindingFactory() == null) {
+				return;
+			}
+
 			CS function = (CS) ((FMLBindingFactory) getBindable().getBindingFactory()).retrieveConstructor(getType(),
 					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
 			setFunction(function);
