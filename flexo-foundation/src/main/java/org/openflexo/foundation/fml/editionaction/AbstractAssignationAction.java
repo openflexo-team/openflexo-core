@@ -94,6 +94,10 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 					return getAssignableAction().execute(evaluationContext);
 				} catch (ReturnException e) {
 					return (T) e.getReturnedValue();
+				} catch (Exception e) {
+					logger.warning("Unexpected issue while, computing assignable action " + getAssignableAction() + ", exception: " + e);
+					e.printStackTrace();
+					throw new FMLExecutionException(e);
 				}
 			}
 			return null;
