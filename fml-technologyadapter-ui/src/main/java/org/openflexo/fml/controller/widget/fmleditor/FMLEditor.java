@@ -417,7 +417,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 			getTextArea().setTextNoParsingAnalysis(newFML);
 
 			// FML has changed, so we update validation decoration
-			parser.validate(fmlResource.getCompilationUnit());
+			if (parser != null) {
+				parser.validate(fmlResource.getCompilationUnit());
+			}
 		}
 
 		updateFMLAsTextRequested = false;
