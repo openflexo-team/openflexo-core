@@ -503,7 +503,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 	public void highlightObject(FMLPrettyPrintable object) {
 		FMLObjectNode<?, ?, ?> node = (FMLObjectNode<?, ?, ?>) object.getPrettyPrintDelegate();
-		if (node.getRawSource() == null) {
+		if (node == null || node.getRawSource() == null) {
 			// When no textual FML source, abort
 			return;
 		}
