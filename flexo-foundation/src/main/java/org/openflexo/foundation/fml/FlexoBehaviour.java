@@ -403,18 +403,20 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		public Type getDeclaredType() {
 			Type returned = (Type) performSuperGetter(DECLARED_TYPE_KEY);
 			if (returned == null) {
-				if (getAnalyzedReturnType() instanceof Class) {
-					return TypeUtils.toPrimitive((Class)getAnalyzedReturnType());
+				Type analyzedType = getAnalyzedReturnType();
+				if (analyzedType instanceof Class) {
+					return TypeUtils.toPrimitive((Class) analyzedType);
 				}
-				return getAnalyzedReturnType();
+				return analyzedType;
 			}
 			return returned;
 		}
 
 		@Override
 		public Type getReturnType() {
-			if (getDeclaredType() != null) {
-				return getDeclaredType();
+			Type declaredType = getDeclaredType();
+			if (declaredType != null) {
+				return declaredType;
 			}
 			if (getControlGraph() != null) {
 				return getAnalyzedReturnType();
@@ -722,7 +724,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			}
 			return behaviourSignature;
 		}
-		
+
 		// Name to display in signature
 		protected String getDisplayName() {
 			return getName();
