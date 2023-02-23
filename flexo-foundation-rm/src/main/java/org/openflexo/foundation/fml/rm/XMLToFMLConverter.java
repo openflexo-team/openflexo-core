@@ -302,6 +302,15 @@ public class XMLToFMLConverter {
 		System.out.println("container: " + addConceptInstance.getContainer());
 		System.out.println("creationScheme: " + addConceptInstance.getCreationScheme());
 
+		if (addConceptInstance.getCreationScheme() == null) {
+			if (addConceptInstance.getFlexoConceptType() != null
+					&& addConceptInstance.getFlexoConceptType().getCreationSchemes().size() > 0) {
+				CreationScheme cs = addConceptInstance.getFlexoConceptType().getCreationSchemes().get(0);
+				// Choose first CreationScheme found
+				addConceptInstance.setCreationScheme(cs);
+			}
+		}
+
 		ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
 
 		List<DataBinding<?>> args = new ArrayList<>();
@@ -346,6 +355,15 @@ public class XMLToFMLConverter {
 		System.out.println("container: " + addVirtualModelInstance.getContainer());
 		System.out.println("receiver: " + addVirtualModelInstance.getReceiver());
 		System.out.println("creationScheme: " + addVirtualModelInstance.getCreationScheme());
+
+		if (addVirtualModelInstance.getCreationScheme() == null) {
+			if (addVirtualModelInstance.getFlexoConceptType() != null
+					&& addVirtualModelInstance.getFlexoConceptType().getCreationSchemes().size() > 0) {
+				CreationScheme cs = addVirtualModelInstance.getFlexoConceptType().getCreationSchemes().get(0);
+				// Choose first CreationScheme found
+				addVirtualModelInstance.setCreationScheme(cs);
+			}
+		}
 
 		ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
 
@@ -397,6 +415,15 @@ public class XMLToFMLConverter {
 		System.out.println("relativePath: " + createTopLevelVirtualModelInstance.getDynamicRelativePath());
 		System.out.println("resourceCenter: " + createTopLevelVirtualModelInstance.getResourceCenter());
 		System.out.println("creationScheme: " + createTopLevelVirtualModelInstance.getCreationScheme());
+
+		if (createTopLevelVirtualModelInstance.getCreationScheme() == null) {
+			if (createTopLevelVirtualModelInstance.getFlexoConceptType() != null
+					&& createTopLevelVirtualModelInstance.getFlexoConceptType().getCreationSchemes().size() > 0) {
+				CreationScheme cs = createTopLevelVirtualModelInstance.getFlexoConceptType().getCreationSchemes().get(0);
+				// Choose first CreationScheme found
+				createTopLevelVirtualModelInstance.setCreationScheme(cs);
+			}
+		}
 
 		ExpressionAction<?> expAction = compilationUnit.getFMLModelFactory().newExpressionAction();
 
