@@ -797,7 +797,9 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 	public CreationSchemePathElement newCreationSchemePathElement(IBindingPathElement parent, AbstractCreationScheme creationScheme,
 			List<DataBinding<?>> args, Bindable bindable) {
 		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
-		returned.setType(creationScheme.getFlexoConcept().getInstanceType());
+		if (creationScheme != null && creationScheme.getFlexoConcept() != null) {
+			returned.setType(creationScheme.getFlexoConcept().getInstanceType());
+		}
 		returned.setParent(parent);
 		returned.setFunction(creationScheme);
 		returned.setBindable(bindable);
