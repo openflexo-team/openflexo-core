@@ -112,6 +112,12 @@ public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBContro
 		Collections.sort(returned, new Comparator<FMLPrettyPrintable>() {
 			@Override
 			public int compare(FMLPrettyPrintable o1, FMLPrettyPrintable o2) {
+				if (o1.getPrettyPrintDelegate() == null || o2.getPrettyPrintDelegate() == null) {
+					return 0;
+				}
+				if (o1.getPrettyPrintDelegate().getStartLocation() == null || o2.getPrettyPrintDelegate().getStartLocation() == null) {
+					return 0;
+				}
 				return o1.getPrettyPrintDelegate().getStartLocation().compareTo(o2.getPrettyPrintDelegate().getStartLocation());
 			}
 		});
