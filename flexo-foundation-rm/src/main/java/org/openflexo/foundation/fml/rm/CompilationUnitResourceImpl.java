@@ -375,11 +375,17 @@ public abstract class CompilationUnitResourceImpl
 		// Now we have to activate all required technologies
 		activateRequiredTechnologies();
 
-		startDeserializing();
-
-		notifyResourceWillLoad();
-
 		try {
+			// Now load the non cross-reference dependencies
+			for (FlexoResource<?> dependency : getNonCrossReferenceDependencies()) {
+				logger.fine("While loading " + this + " load non cross-referenced dependency " + dependency);
+				dependency.loadResourceData();
+			}
+
+			startDeserializing();
+
+			notifyResourceWillLoad();
+
 			resourceData = performLoad();
 			resourceData.setResource(this);
 			resourceData.clearIsModified();
