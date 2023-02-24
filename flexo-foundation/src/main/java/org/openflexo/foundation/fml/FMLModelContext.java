@@ -233,8 +233,16 @@ public class FMLModelContext {
 		}
 
 		public void set(T value, I object) {
+			if (object == null) {
+				logger.warning("Cannnot set value " + value + " for property " + modelProperty + " with null object");
+				return;
+			}
 			if (object instanceof WrappedFMLObject) {
 				object = (I) ((WrappedFMLObject) object).getObject();
+			}
+			if (modelProperty.getSetterMethod() == null) {
+				logger.warning("Cannnot set value " + value + ": no setter method for property " + modelProperty);
+				return;
 			}
 			try {
 				modelProperty.getSetterMethod().invoke(object, value);
