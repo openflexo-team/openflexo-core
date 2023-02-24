@@ -256,18 +256,13 @@ public class FMLPrettyPrinter extends ExpressionPrettyPrinter {
 	}
 
 	@Override
-	protected String makeStringRepresentation(Type type, Bindable context) {
-		/*System.out.println("makeStringRepresentation for " + type);
-		if (context instanceof DefaultContextualizedBindable) {
-			System.out.println("TypingSpace=" + ((DefaultContextualizedBindable) context).getTypingSpace());
-		}*/
-
-		if (context instanceof ContextualizedBindable) {
-			if (((ContextualizedBindable) context).isTypeImported(type)) {
-				return TypeUtils.simpleRepresentation(type);
+	protected String makeStringRepresentation(Type type, Bindable aContext) {
+		if (aContext instanceof ContextualizedBindable) {
+			ContextualizedBindable context = (ContextualizedBindable) aContext;
+			if (!context.isTypeImported(type)) {
+				context.importType(type);
 			}
 		}
-
-		return TypeUtils.fullQualifiedRepresentation(type);
+		return TypeUtils.simpleRepresentation(type);
 	}
 }
