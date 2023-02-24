@@ -49,7 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.connie.java.JavaTypingSpace;
-import org.openflexo.connie.java.expr.JavaExpressionEvaluator;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 
 /**
  * Utility class allowing to compute binding value over an expression and a given object in the context of FML expression language.<br>
@@ -79,7 +79,7 @@ final public class FMLBindingEvaluator extends BindingEvaluator {
 
 	@Override
 	public ExpressionEvaluator getEvaluator() {
-		return new JavaExpressionEvaluator(this);
+		return new FMLExpressionEvaluator(this);
 	}
 
 	public static Object evaluateBinding(String bindingPath, Object object, Type objectType, BindingFactory bindingFactory)
