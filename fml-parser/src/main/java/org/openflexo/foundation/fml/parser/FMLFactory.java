@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -75,10 +76,10 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 	}
 
 	public Class<? extends FlexoRole<?>> getRoleClass(TUidentifier roleIdentifier) {
-		if (roleIdentifier.getText().equals("ModelInstance")) {
+		if (roleIdentifier.getText().equals(AbstractFMLTypingSpace.MODEL_INSTANCE)) {
 			return FMLRTVirtualModelInstanceModelSlot.class;
 		}
-		if (roleIdentifier.getText().equals("ConceptInstance")) {
+		if (roleIdentifier.getText().equals(AbstractFMLTypingSpace.CONCEPT_INSTANCE)) {
 			return FlexoConceptInstanceRole.class;
 		}
 		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {

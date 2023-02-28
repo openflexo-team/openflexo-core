@@ -39,6 +39,7 @@
 package org.openflexo.fml.controller.widget;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEnum;
@@ -62,7 +63,7 @@ public class FlexoEnumTypeEditor extends FMLCustomTypeEditor<FlexoEnumType> {
 
 	@Override
 	public String getPresentationName() {
-		return "FML enum";
+		return AbstractFMLTypingSpace.ENUM_INSTANCE;
 	}
 
 	@Override

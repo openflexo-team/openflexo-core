@@ -51,6 +51,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -896,7 +897,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				}
 				return uri;
 			}
-			return "ModelInstance";
+			return AbstractFMLTypingSpace.MODEL_INSTANCE;
 		}
 
 		if (type instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) type).getFlexoConcept() == null) {
@@ -907,7 +908,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				}
 				return uri;
 			}
-			return "ConceptInstance";
+			return AbstractFMLTypingSpace.CONCEPT_INSTANCE;
 		}
 
 		String returned = TypeUtils.simpleRepresentation(type);
