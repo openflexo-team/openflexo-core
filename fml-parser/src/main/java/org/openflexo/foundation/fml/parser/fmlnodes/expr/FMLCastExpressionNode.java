@@ -66,9 +66,7 @@ public class FMLCastExpressionNode extends ExpressionNode<ACastUnaryExpNotPlusMi
 
 	@Override
 	public FMLCastExpressionNode deserialize() {
-		System.out.println("Je cherche le type: " + getASTNode().getType());
 		Type type = TypeFactory.makeType(getASTNode().getType(), getExpressionFactory().getTypingSpace());
-		System.out.println("Found " + type);
 		getModelObject().setCastType(type);
 		getModelObject().setArgument(getExpressionFactory().getExpression(getASTNode().getUnaryExp()));
 		super.deserialize();
