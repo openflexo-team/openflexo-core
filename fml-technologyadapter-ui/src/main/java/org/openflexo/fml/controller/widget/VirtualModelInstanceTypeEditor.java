@@ -39,6 +39,7 @@
 package org.openflexo.fml.controller.widget;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -60,7 +61,7 @@ public class VirtualModelInstanceTypeEditor extends FMLCustomTypeEditor<VirtualM
 
 	@Override
 	public String getPresentationName() {
-		return "Model instance";
+		return AbstractFMLTypingSpace.MODEL_INSTANCE;
 	}
 
 	@Override

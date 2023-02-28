@@ -39,6 +39,7 @@
 package org.openflexo.fml.controller.widget;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,9 +48,10 @@ import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptType;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -68,8 +70,9 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	public FIBFlexoConceptSelector(FlexoConcept editedObject) {
 		super(editedObject);
-		defaultExpectedType = editedObject != null ? FlexoConceptType.retrieveFlexoConceptType(editedObject.getFlexoConcept())
-				: FlexoConceptType.UNDEFINED_FLEXO_CONCEPT_TYPE;
+		// defaultExpectedType = editedObject != null ? FMLType.retrieveFlexoConceptType(editedObject.getFlexoConcept())
+		// : FMLType.UNDEFINED_FLEXO_CONCEPT_TYPE;
+		defaultExpectedType = editedObject != null ? editedObject.getConceptType() : FlexoConceptType.UNDEFINED_FLEXO_CONCEPT_TYPE;
 	}
 
 	@Override
@@ -214,8 +217,17 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		if (getExpectedFlexoConceptType() != null) {
 			return getExpectedFlexoConceptType();
 		}
-		if (getExpectedType() instanceof FlexoConceptType && ((FlexoConceptType) getExpectedType()).getFlexoConcept() != null) {
-			return ((FlexoConceptType) getExpectedType()).getFlexoConcept();
+		if (getExpectedType() instanceof FlexoConceptType) {
+			Type t = ((FlexoConceptType) getExpectedType()).getType();
+			if (t instanceof FlexoConceptInstanceType) {
+				return ((FlexoConceptInstanceType) t).getFlexoConcept();
+			}
+			if (t instanceof WildcardType && ((WildcardType) t).getUpperBounds().length == 1) {
+				Type t2 = ((WildcardType) t).getUpperBounds()[0];
+				if (t2 instanceof FlexoConceptInstanceType) {
+					return ((FlexoConceptInstanceType) t2).getFlexoConcept();
+				}
+			}
 		}
 		if (getInheritingContext() != null) {
 			return getInheritingContextRoot();

@@ -70,4 +70,9 @@ public class TestCustomTypeFibs extends GenericFIBTestCase {
 		validateFIB("Fib/CustomType/VirtualModelInstanceTypeEditor.fib");
 	}
 
+	@Test
+	public void testFlexoConceptTypeEditor() {
+		validateFIB("Fib/CustomType/FlexoConceptTypeEditor.fib");
+	}
+
 }
