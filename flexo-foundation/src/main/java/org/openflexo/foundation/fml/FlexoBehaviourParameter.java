@@ -54,6 +54,7 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
@@ -773,8 +774,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			if (behaviourArgument.getType() instanceof UnresolvedType) {
 				return new ValidationError<>(this, behaviourArgument, "unresolved_type_($validable.type)");
 			}
-			if (behaviourArgument.getType() instanceof CustomType) {
-				if (!((CustomType) behaviourArgument.getType()).isResolved()) {
+			if (behaviourArgument.getType() instanceof ConnieType) {
+				if (!((ConnieType) behaviourArgument.getType()).isResolved()) {
 					return new ValidationError<>(this, behaviourArgument, "cannot_resolve_type_($validable.type)");
 				}
 			}

@@ -41,8 +41,10 @@ package org.openflexo.foundation.fml.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
@@ -220,6 +222,34 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			}
 			return "null";
 		}
+	}
+
+	@DefineValidationRule
+	public static class TypeMustBeValid extends ValidationRule<TypeMustBeValid, DeclarationAction<?>> {
+
+		public TypeMustBeValid() {
+			super(DeclarationAction.class, "declared_type_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<TypeMustBeValid, DeclarationAction<?>> applyValidation(DeclarationAction<?> declaration) {
+			if (declaration.getDeclaredType() == null) {
+				return new ValidationError<>(this, declaration, "type_must_be_declared");
+			}
+			if (TypeUtils.isVoid(declaration.getDeclaredType())) {
+				return new ValidationError<>(this, declaration, "declared_type_cannot_be_void");
+			}
+			if (declaration.getDeclaredType() instanceof UnresolvedType) {
+				return new ValidationError<>(this, declaration, "unresolved_type_($validable.type)");
+			}
+			if (declaration.getDeclaredType() instanceof ConnieType) {
+				if (!((ConnieType) declaration.getDeclaredType()).isResolved()) {
+					return new ValidationError<>(this, declaration, "cannot_resolve_type_($validable.type)");
+				}
+			}
+			return null;
+		}
+
 	}
 
 	@DefineValidationRule
