@@ -44,14 +44,16 @@ import java.util.List;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
-import org.openflexo.foundation.fml.FlexoConceptType.DefaultFlexoConceptTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
+import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.foundation.fml.ta.FMLTechnologyContextManager;
+import org.openflexo.foundation.fml.ta.FlexoConceptType;
+import org.openflexo.foundation.fml.ta.FlexoConceptType.DefaultFlexoConceptTypeFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceType;
@@ -69,6 +71,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  */
 @DeclareModelSlots({ FMLModelSlot.class })
 @DeclareResourceFactories({ CompilationUnitResourceFactory.class })
+@DeclareTechnologySpecificTypes({ FlexoConceptType.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter> {
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}
@@ -114,7 +117,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	private DefaultFlexoConceptInstanceTypeFactory fciFactory;
 	// private FlexoEnumTypeFactory enumFactory;
 	private DefaultVirtualModelInstanceTypeFactory vmiFactory;
-	private DefaultFlexoConceptTypeFactory conceptFactory;
+	private DefaultFlexoConceptTypeFactory fmlTypeFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
@@ -154,10 +157,10 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	}
 
 	public DefaultFlexoConceptTypeFactory getFlexoConceptTypeFactory() {
-		if (conceptFactory == null) {
-			conceptFactory = new DefaultFlexoConceptTypeFactory(this);
+		if (fmlTypeFactory == null) {
+			fmlTypeFactory = new DefaultFlexoConceptTypeFactory(this);
 		}
-		return conceptFactory;
+		return fmlTypeFactory;
 	}
 
 	public VirtualModelLibrary getVirtualModelLibrary() {

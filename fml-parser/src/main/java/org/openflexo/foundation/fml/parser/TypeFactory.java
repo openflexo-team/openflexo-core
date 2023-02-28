@@ -317,6 +317,14 @@ public class TypeFactory extends DepthFirstAdapter {
 		return null;
 	}
 
+	private Type makeParameterizedType(Type baseType, List<Type> typeArguments) {
+		if (baseType instanceof UnresolvedType) {
+			return getTypingSpace().attemptToResolveType((UnresolvedType) baseType, typeArguments);
+		}
+		return new ParameterizedTypeImpl(baseType, typeArguments.toArray(new Type[typeArguments.size()]));
+
+	}
+
 	private Type makeType(PReferenceType referenceType) {
 		if (referenceType instanceof AReferenceType) {
 			if (((AReferenceType) referenceType).getArgs() == null) {
@@ -324,7 +332,7 @@ public class TypeFactory extends DepthFirstAdapter {
 			}
 			Type baseType = makeType(((AReferenceType) referenceType).getIdentifier());
 			List<Type> typeArguments = makeTypeArguments(((AReferenceType) referenceType).getArgs());
-			return new ParameterizedTypeImpl(baseType, typeArguments.toArray(new Type[typeArguments.size()]));
+			return makeParameterizedType(baseType, typeArguments);
 		}
 		System.err.println("Unexpected " + referenceType + " of " + referenceType.getClass());
 		return null;
@@ -386,7 +394,7 @@ public class TypeFactory extends DepthFirstAdapter {
 		returned.addAll(makeTypeArguments(argumentListHead));
 		Type baseType = makeType(identifier);
 		List<Type> typeArguments = makeTypeArguments(someArgs);
-		returned.add(new ParameterizedTypeImpl(baseType, typeArguments.toArray(new Type[typeArguments.size()])));
+		returned.add(makeParameterizedType(baseType, typeArguments));
 		return returned;
 	}
 
@@ -397,10 +405,9 @@ public class TypeFactory extends DepthFirstAdapter {
 			PCompositeTident specifier2, PTypeArgumentList someArgs) {
 		List<Type> returned = new ArrayList<Type>();
 		returned.addAll(makeTypeArguments(head1));
-
 		Type baseType = makeType(specifier1);
 		List<Type> typeArguments = makeTypeArguments(head2, specifier2, someArgs);
-		returned.add(new ParameterizedTypeImpl(baseType, typeArguments.toArray(new Type[typeArguments.size()])));
+		returned.add(makeParameterizedType(baseType, typeArguments));
 		return returned;
 	}
 

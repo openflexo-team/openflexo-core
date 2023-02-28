@@ -40,10 +40,14 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.connie.java.JavaTypingSpace;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
+import org.openflexo.foundation.fml.ta.FlexoConceptType;
 
 /**
  * FML typing space, build on top of {@link JavaTypingSpace}
@@ -54,6 +58,12 @@ import org.openflexo.foundation.fml.rt.action.MatchingSet;
  *
  */
 public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
+
+	public static final String CONCEPT = "Concept";
+	public static final String CONCEPT_INSTANCE = "ConceptInstance";
+	public static final String ENUM_INSTANCE = "EnumInstance";
+	public static final String MODEL_INSTANCE = "ModelInstance";
+	public static final String MATCHING_SET = "MatchingSet";
 
 	private FlexoServiceManager serviceManager;
 
@@ -97,13 +107,29 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 		if (typeAsString == null) {
 			return null;
 		}
-		if (typeAsString.equals("ConceptInstance")) {
+		if (typeAsString.equals(CONCEPT_INSTANCE)) {
 			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}
-		if (typeAsString.equals("MatchingSet")) {
+		if (typeAsString.equals(MATCHING_SET)) {
 			return MatchingSet.class;
 		}
 		return super.resolveType(typeAsString);
+	}
+
+	/**
+	 * Attempt to resolve unresolved parameterized types
+	 * 
+	 * @param baseType
+	 * @param typeArguments
+	 * @return
+	 */
+	public Type attemptToResolveType(UnresolvedType unresolvedBaseType, List<Type> typeArguments) {
+		if (unresolvedBaseType.getUnresolvedTypeName().equals(CONCEPT) && typeArguments.size() == 1) {
+			// This matches a FlexoConceptType signature
+			Type type = typeArguments.get(0);
+			return new FlexoConceptType(type);
+		}
+		return new ParameterizedTypeImpl(unresolvedBaseType, typeArguments.toArray(new Type[typeArguments.size()]));
 	}
 
 }

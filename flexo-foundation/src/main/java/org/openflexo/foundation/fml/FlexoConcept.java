@@ -71,6 +71,7 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
@@ -879,7 +880,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private InnerConceptsFacet innerConceptsFacet;
 
 		private final FlexoConceptInstanceType instanceType = new FlexoConceptInstanceType(this);
-		private final FlexoConceptType conceptType = new FlexoConceptType(this);
+		private final FlexoConceptType conceptType = new FlexoConceptType(instanceType);
 
 		private FlexoConceptBindingModel bindingModel;
 
