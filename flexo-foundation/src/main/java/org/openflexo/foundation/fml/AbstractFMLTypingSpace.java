@@ -124,10 +124,10 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 	 * @return
 	 */
 	public Type attemptToResolveType(UnresolvedType unresolvedBaseType, List<Type> typeArguments) {
-		if (unresolvedBaseType.getUnresolvedTypeName().equals(CONCEPT) && typeArguments.size() == 1) {
+		if (unresolvedBaseType.getUnresolvedTypeName().equals(CONCEPT) && typeArguments.size() == 1
+				&& typeArguments.get(0) instanceof FMLRTType) {
 			// This matches a FlexoConceptType signature
-			Type type = typeArguments.get(0);
-			return new FlexoConceptType(type);
+			return new FlexoConceptType((FMLRTType) typeArguments.get(0));
 		}
 		return new ParameterizedTypeImpl(unresolvedBaseType, typeArguments.toArray(new Type[typeArguments.size()]));
 	}

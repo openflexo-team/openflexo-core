@@ -50,7 +50,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.connie.type.WildcardTypeImpl;
+import org.openflexo.connie.type.WildcardTypeImpl.DefaultWildcardType;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
@@ -143,7 +143,8 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		public DataBinding<? extends List<T>> getList() {
 
 			if (list == null) {
-				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, WildcardTypeImpl.makeUpperBoundWilcard(Object.class)),
+				list = new DataBinding<>(this,
+						new ParameterizedTypeImpl(List.class, DefaultWildcardType.makeUpperBoundWilcard(Object.class)),
 						BindingDefinitionType.GET);
 				list.setBindingName("list");
 			}
@@ -156,7 +157,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 			if (list != null) {
 				list.setOwner(this);
 				list.setBindingName("list");
-				list.setDeclaredType(new ParameterizedTypeImpl(List.class, WildcardTypeImpl.makeUpperBoundWilcard(Object.class)));
+				list.setDeclaredType(new ParameterizedTypeImpl(List.class, DefaultWildcardType.makeUpperBoundWilcard(Object.class)));
 				list.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.list = list;

@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.TypingSpace;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.toolbox.StringUtils;
@@ -56,7 +57,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechnologyAdapter>, PropertyChangeListener {
+public class FlexoConceptInstanceType implements FMLRTType, TechnologySpecificType<FMLRTTechnologyAdapter>, PropertyChangeListener {
 
 	protected FlexoConcept flexoConcept;
 	protected String conceptURI;
@@ -198,9 +199,9 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	}
 
 	@Override
-	public FMLTechnologyAdapter getSpecificTechnologyAdapter() {
+	public FMLRTTechnologyAdapter getSpecificTechnologyAdapter() {
 		if (flexoConcept != null) {
-			return flexoConcept.getTechnologyAdapter();
+			return flexoConcept.getFMLRTTechnologyAdapter();
 		}
 		return null;
 	}

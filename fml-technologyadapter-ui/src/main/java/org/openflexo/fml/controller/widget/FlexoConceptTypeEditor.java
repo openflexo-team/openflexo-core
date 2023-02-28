@@ -56,9 +56,10 @@ import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.CustomTypeManager;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.connie.type.WildcardTypeImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLRTType;
+import org.openflexo.foundation.fml.FMLRTWildcardType;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -236,7 +237,7 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 
 				getCurrentCustomTypeEditor().getPropertyChangeSupport().addPropertyChangeListener(this);
 
-				Type newType = factory.makeCustomType(null);
+				FMLRTType newType = (FMLRTType) factory.makeCustomType(null);
 				// System.out.println("Bon, un truc a faire avec: " + newType + " of " + newType.getClass());
 
 				if (getEditedType() instanceof CustomType) {
@@ -333,7 +334,7 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 	}
 
 	public GenericBound createUpperBound() {
-		GenericBound returned = new GenericBound(Object.class);
+		GenericBound returned = new GenericBound(null);
 		upperBounds.add(returned);
 		getPropertyChangeSupport().firePropertyChange("upperBounds", null, returned);
 		makeWildcardType();
@@ -352,7 +353,7 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 	}
 
 	public GenericBound createLowerBound() {
-		GenericBound returned = new GenericBound(Object.class);
+		GenericBound returned = new GenericBound(null);
 		lowerBounds.add(returned);
 		getPropertyChangeSupport().firePropertyChange("lowerBounds", null, returned);
 		makeWildcardType();
@@ -367,14 +368,14 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 	}
 
 	private void makeWildcardType() {
-		Type[] upper = new Type[upperBounds.size()];
+		FMLRTType[] upper = new FMLRTType[upperBounds.size()];
 		for (int i = 0; i < upperBounds.size(); i++)
 			upper[i] = upperBounds.get(i).getType();
-		Type[] lower = new Type[lowerBounds.size()];
+		FMLRTType[] lower = new FMLRTType[lowerBounds.size()];
 		for (int i = 0; i < lowerBounds.size(); i++)
 			lower[i] = lowerBounds.get(i).getType();
 
-		WildcardType wildcard = new WildcardTypeImpl(upper, lower);
+		FMLRTWildcardType wildcard = new FMLRTWildcardType(upper, lower);
 		FlexoConceptType newType = new FlexoConceptType(wildcard);
 		setEditedType(newType);
 	}
@@ -382,7 +383,7 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getCurrentCustomTypeEditor()) {
-			setEditedType(new FlexoConceptType(getCurrentCustomTypeEditor().getEditedType()));
+			setEditedType(new FlexoConceptType((FMLRTType) getCurrentCustomTypeEditor().getEditedType()));
 		}
 	}
 
@@ -402,7 +403,8 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 			super(component, viewFactory);
 		}
 
-		public FlexoConceptTypeEditorFIBController(FIBComponent component, DefaultCustomTypeEditorImpl<?> editor, FlexoController controller) {
+		public FlexoConceptTypeEditorFIBController(FIBComponent component, DefaultCustomTypeEditorImpl<?> editor,
+				FlexoController controller) {
 			super(component, SwingViewFactory.INSTANCE);
 			// Unused this.editor = editor;
 			setFlexoController(controller);
@@ -508,9 +510,9 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 	}
 
 	public class GenericBound extends PropertyChangedSupportDefaultImplementation {
-		private Type type;
+		private FMLRTType type;
 
-		public GenericBound(Type type) {
+		public GenericBound(FMLRTType type) {
 			super();
 			this.type = type;
 		}
@@ -523,11 +525,11 @@ public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType
 			this.type = null;
 		}
 
-		public Type getType() {
+		public FMLRTType getType() {
 			return type;
 		}
 
-		public void setType(Type type) {
+		public void setType(FMLRTType type) {
 
 			if ((type == null && this.type != null) || (type != null && !type.equals(this.type))) {
 				Type oldValue = this.type;

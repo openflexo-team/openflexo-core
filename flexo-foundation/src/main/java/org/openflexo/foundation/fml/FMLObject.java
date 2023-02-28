@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.md.ListMetaData;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -287,6 +288,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	@Reindexer(FML_PROPERTY_VALUES_KEY)
 	public void moveFMLPropertyValueToIndex(FMLPropertyValue<?, ?> propertyValue, int index);
 
+	public FMLRTTechnologyAdapter getFMLRTTechnologyAdapter();
+
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
 		@FMLMigration("Can be removed in 3.0.0")
@@ -458,6 +461,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public FMLTechnologyAdapter getTechnologyAdapter() {
 			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
 				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+			}
+			return null;
+		}
+
+		@Override
+		public FMLRTTechnologyAdapter getFMLRTTechnologyAdapter() {
+			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 			}
 			return null;
 		}

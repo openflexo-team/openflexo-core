@@ -48,7 +48,9 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.WildcardTypeImpl;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLRTType;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
@@ -64,11 +66,11 @@ import org.openflexo.logging.FlexoLogger;
  * @author sylvain
  * 
  */
-public class FlexoConceptType implements TechnologySpecificType<FMLTechnologyAdapter> {
+public class FlexoConceptType implements FMLType, TechnologySpecificType<FMLTechnologyAdapter> {
 
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptType.class.getPackage().getName());
 
-	private Type type;
+	private FMLRTType type;
 
 	private final PropertyChangeSupport pcSupport;
 
@@ -111,12 +113,12 @@ public class FlexoConceptType implements TechnologySpecificType<FMLTechnologyAda
 
 	}
 
-	public FlexoConceptType(Type type) {
+	public FlexoConceptType(FMLRTType type) {
 		pcSupport = new PropertyChangeSupport(this);
 		this.type = type;
 	}
 
-	public Type getType() {
+	public FMLRTType getType() {
 		return type;
 	}
 

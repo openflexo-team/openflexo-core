@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.UnresolvedType;
-import org.openflexo.connie.type.WildcardTypeImpl;
+import org.openflexo.connie.type.WildcardTypeImpl.DefaultWildcardType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
@@ -256,16 +256,16 @@ public class TypeFactory extends DepthFirstAdapter {
 		if (node.getWildcardBounds() != null) {
 			if (node.getWildcardBounds() instanceof AExtendsWildcardBounds) {
 				Type upperBound = getType(((AExtendsWildcardBounds) node.getWildcardBounds()).getReferenceType());
-				registerTypeNode(node, WildcardTypeImpl.makeUpperBoundWilcard(upperBound));
+				registerTypeNode(node, DefaultWildcardType.makeUpperBoundWilcard(upperBound));
 			}
 			else if (node.getWildcardBounds() instanceof ASuperWildcardBounds) {
 				Type lowerBound = getType(((ASuperWildcardBounds) node.getWildcardBounds()).getReferenceType());
-				registerTypeNode(node, WildcardTypeImpl.makeLowerBoundWilcard(lowerBound));
+				registerTypeNode(node, DefaultWildcardType.makeLowerBoundWilcard(lowerBound));
 			}
 			// registerTypeNode(node, getType(node.getWildcardBounds()));
 		}
 		else {
-			registerTypeNode(node, new WildcardTypeImpl());
+			registerTypeNode(node, new DefaultWildcardType());
 		}
 	}
 
