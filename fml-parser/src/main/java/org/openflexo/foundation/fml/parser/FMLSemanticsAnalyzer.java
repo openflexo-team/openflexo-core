@@ -260,8 +260,8 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	protected void push(ObjectNode<?, ?, ?> fmlNode) {
-		if (!fmlNodes.isEmpty()) {
-			ObjectNode<?, ?, ?> current = fmlNodes.peek();
+		ObjectNode<?, ?, ?> current = peek();
+		if (current != null) {
 			current.addToChildren(fmlNode);
 		}
 		fmlNodes.push(fmlNode);
@@ -484,8 +484,8 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public final void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
 		super.outASimpleQualifiedArgument(node);
 		if (handleFMLArgument()) {
-			pop();
 			// System.out.println("EXIT from " + peek() + " with " + node);
+			pop();
 		}
 	}
 
