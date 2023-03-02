@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.editionaction.UnresolvedTechnologySpecificAction;
 import org.openflexo.foundation.fml.parser.node.TCidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
@@ -152,6 +153,9 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 	}
 
 	public String serializeTAId(TechnologySpecificAction<?, ?> editionAction) {
+		if (editionAction instanceof UnresolvedTechnologySpecificAction) {
+			return ((UnresolvedTechnologySpecificAction) editionAction).getTAId();
+		}
 		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(editionAction);
 		return serializeTAId(modelSlotClass);
 
@@ -229,35 +233,40 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 		return getServiceManager().getTechnologyAdapterService().getFlexoBehaviour(modelSlotClass, behaviourIdentifier.getText());
 	}
 
-	public Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TCidentifier taIdentifier, TUidentifier roleIdentifier) {
+	/**
+	 * Lookup the {@link TechnologySpecificAction} class referenced by supplied taIdentifier and editionActionIdentifier
+	 * 
+	 * @param taIdentifier
+	 *            identify TechnologyAdapter
+	 * @param editionActionIdentifier
+	 *            identify TechnologySpecificAction by its FML keyword as defined in @FML tag
+	 * @return
+	 */
+	public Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TCidentifier taIdentifier,
+			TUidentifier editionActionIdentifier) {
 		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
 		if (modelSlotClass != null) {
-			return getEditionActionClass(roleIdentifier, modelSlotClass);
+			Class<? extends TechnologySpecificAction<?, ?>> returned = getEditionActionClass(editionActionIdentifier, modelSlotClass);
+			if (returned != null) {
+				return returned;
+			}
 		}
-		return null;
+		return UnresolvedTechnologySpecificAction.class;
 	}
 
+	/**
+	 * Lookup the {@link TechnologySpecificAction} class referenced by supplied editionActionIdentifier
+	 * 
+	 * @param editionActionIdentifier
+	 *            identify TechnologySpecificAction by its FML keyword as defined in @FML tag
+	 * @param modelSlotClass
+	 *            class of addressed model slot
+	 * @return
+	 */
 	private Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TUidentifier editionActionIdentifier,
 			Class<? extends ModelSlot<?>> modelSlotClass) {
 		return getServiceManager().getTechnologyAdapterService().getEditionAction(modelSlotClass, editionActionIdentifier.getText());
 	}
-
-	/*public <O extends FMLObject> Class<O> getFMLObjectClass(FMLObject modelObject, String instanceType) {
-		if (modelObject.getFMLModelFactory() != null) {
-			Iterator<ModelEntity> entities = modelObject.getFMLModelFactory().getModelContext().getEntities();
-			while (entities.hasNext()) {
-				ModelEntity entity = entities.next();
-				Class implementedInterface = entity.getImplementedInterface();
-				if (implement)
-			}
-		}
-		return null;
-	}
-	
-	public <O extends FMLObject> Class<O> getFMLObjectClass(FMLObject modelObject, String taID, String instanceType) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
 
 	public Class<? extends FMLObject> getFMLObjectClass(TUidentifier objectIdentifier) {
 		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {

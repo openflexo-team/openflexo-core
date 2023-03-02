@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
+import org.openflexo.foundation.fml.editionaction.UnresolvedTechnologySpecificAction;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
@@ -83,6 +84,11 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		Class<EA> editionActionClass = null;
 		editionActionClass = (Class<EA>) getFMLFactory().getEditionActionClass(astNode.getTaId(), astNode.getEditionAction());
 		EA returned = getFactory().newInstance(editionActionClass);
+		if (editionActionClass.equals(UnresolvedTechnologySpecificAction.class)) {
+			UnresolvedTechnologySpecificAction unresolved = (UnresolvedTechnologySpecificAction) returned;
+			unresolved.setTAId(astNode.getTaId().getText());
+			unresolved.setEditionActionName(astNode.getEditionAction().getText());
+		}
 		// decodeFMLProperties(astNode.getFmlParameters(), returned);
 
 		/*
@@ -148,6 +154,9 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 	}
 
 	protected String serializeEditionActionName(EA editionAction) {
+		if (editionAction instanceof UnresolvedTechnologySpecificAction) {
+			return ((UnresolvedTechnologySpecificAction) editionAction).getEditionActionName();
+		}
 		return editionAction.getFMLKeyword(getFactory());
 	}
 
