@@ -41,15 +41,21 @@ package org.openflexo.foundation.fml.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * 
@@ -83,11 +89,26 @@ public abstract interface UnresolvedTechnologySpecificAction extends TechnologyS
 	@Setter(EDITION_ACTION_NAME_KEY)
 	public void setEditionActionName(String editionActionName);
 
+	public UseModelSlotDeclaration getUseModelSlotDeclaration();
+
 	public static abstract class UnresolvedTechnologySpecificActionImpl extends TechnologySpecificActionImpl<ModelSlot<?>, Object>
 			implements UnresolvedTechnologySpecificAction {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(UnresolvedTechnologySpecificAction.class.getPackage().getName());
+
+		@Override
+		public UseModelSlotDeclaration getUseModelSlotDeclaration() {
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+			if (compilationUnit != null) {
+				for (UseModelSlotDeclaration useModelSlotDeclaration : compilationUnit.getUseDeclarations()) {
+					if (getTAId().equals(useModelSlotDeclaration.getAbbrev())) {
+						return useModelSlotDeclaration;
+					}
+				}
+			}
+			return null;
+		}
 
 		@Override
 		public Type getAssignableType() {
@@ -108,14 +129,24 @@ public abstract interface UnresolvedTechnologySpecificAction extends TechnologyS
 			return getHeaderContext() + getImplementedInterface().getSimpleName() + getParametersStringRepresentation();
 		}
 
-		/*@Override
-		protected final String getTechnologyAdapterIdentifier() {
-			if (getModelSlotTechnologyAdapter() != null) {
-				return getModelSlotTechnologyAdapter().getIdentifier();
-			}
-			return "FML";
-		}*/
+	}
 
+	@DefineValidationRule
+	public static class EditionActionMustBeResolved
+			extends ValidationRule<EditionActionMustBeResolved, UnresolvedTechnologySpecificAction> {
+
+		public EditionActionMustBeResolved() {
+			super(UnresolvedTechnologySpecificAction.class, "edition_action_must_be_resolved");
+		}
+
+		@Override
+		public ValidationIssue<EditionActionMustBeResolved, UnresolvedTechnologySpecificAction> applyValidation(
+				UnresolvedTechnologySpecificAction action) {
+			if (action.getUseModelSlotDeclaration() == null) {
+				return new ValidationError<>(this, action, "cannot_resolve_technology_adapter_($validable.tAId)");
+			}
+			return new ValidationError<>(this, action, "cannot_resolve_action_($validable.editionActionName)");
+		}
 	}
 
 }

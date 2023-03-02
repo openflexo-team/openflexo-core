@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
+import org.openflexo.foundation.fml.editionaction.UnresolvedTechnologySpecificAction;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -213,9 +214,11 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 		@Override
 		public ValidationIssue<PropertyValueMustAddressAnExistingProperty, FMLPropertyValue<?, ?>> applyValidation(
 				FMLPropertyValue<?, ?> propertyValue) {
-			if (propertyValue.getProperty() == null) {
-				return new ValidationError<>(this, propertyValue,
-						"unknown_property_($validable.propertyName)_for_($validable.object.implementedInterface.simpleName)");
+			if (!(propertyValue.getObject() instanceof UnresolvedTechnologySpecificAction)) {
+				if (propertyValue.getProperty() == null) {
+					return new ValidationError<>(this, propertyValue,
+							"unknown_property_($validable.propertyName)_for_($validable.object.implementedInterface.simpleName)");
+				}
 			}
 			return null;
 		}
