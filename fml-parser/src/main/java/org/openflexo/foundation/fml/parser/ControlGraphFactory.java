@@ -401,24 +401,24 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		}
 	}
 
+	// Stores current ControlGraphNode beeing deserialized
+	// It is a little bit tricky :
+	// If we are deserializing a sequence, nodes stack is not consistent
+	// and peek() may return null value for children nodes.
+	// To be able to reference parent node, we use that variable
+	// TODO: may be we should use a stack instead ????
+	private ControlGraphNode currentCGNode;
+
 	@Override
 	protected void push(ObjectNode<?, ?, ?> fmlNode) {
-		// System.out.println("PUSH avec " + fmlNode);
+		// System.out.println("PUSH " + fmlNode);
 		if (fmlNode instanceof ControlGraphNode) {
 
 			if (!blocks.isEmpty()) {
 				BlockSequenceInfo bsInfo = blocks.peek();
 				bsInfo.handleNode((ControlGraphNode<?, ?>) fmlNode);
+				currentCGNode = (ControlGraphNode) fmlNode;
 			}
-
-			/*if (currentBlockNode != null) {
-				System.out.println("*************** Tiens on cree " + fmlNode.getASTNode() + " dans " + currentBlockNode + " current="
-						+ getCurrentNode());
-				if (isInExpectedBlockStatements(fmlNode.getASTNode())) {
-					System.out.println("C'est un que je cherche !");
-					currentSequenceNodes.add((ControlGraphNode<?, ?>) fmlNode);
-				}
-			}*/
 			else {
 				if (rootControlGraphNode == null) {
 					rootControlGraphNode = (ControlGraphNode<?, ?>) fmlNode;
@@ -426,9 +426,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 					// Thread.dumpStack();
 				}
 				super.push(fmlNode);
+				currentCGNode = null;
 			}
+
 		}
 		else {
+			if (peek() == null && currentCGNode != null) {
+				currentCGNode.addToChildren(fmlNode);
+			}
 			super.push(fmlNode);
 		}
 	}
@@ -440,7 +445,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			return super.pop();
 		}
 		if (blocks.isEmpty()) {
-			// if (currentBlockNode == null) {
 			return super.pop();
 		}
 		return null;
@@ -696,12 +700,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inATaEditionActionFmlActionExp(ATaEditionActionFmlActionExp node) {
 		super.inATaEditionActionFmlActionExp(node);
+		// System.out.println(">>>>> FMLEditionActionNode - ENTER in " + peek() + " with " + node);
 		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLEditionActionNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
 	public void outATaEditionActionFmlActionExp(ATaEditionActionFmlActionExp node) {
 		super.outATaEditionActionFmlActionExp(node);
+		// System.out.println("<<<<< FMLEditionActionNode - EXIT from " + peek() + " with " + node);
 		pop();
 	}
 
