@@ -101,7 +101,7 @@ public class FMLTypePropertyValueNode<M extends FMLObject, T extends Type>
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getLabel()), getArgNameFragment());
+		append(dynamicContents(() -> getModelObject().getPropertyName()), getArgNameFragment());
 		append(staticContents("="), getAssignFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 	}

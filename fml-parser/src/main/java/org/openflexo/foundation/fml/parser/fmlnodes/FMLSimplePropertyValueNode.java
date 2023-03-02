@@ -82,7 +82,8 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		String propertyName = getASTNode().getArgName().getText();
 		// System.out.println("Node: " + getASTNode());
 		// System.out.println("Pour la propriete: " + propertyName);
-		// System.out.println("parent: " + getParent().getModelObject());
+		// System.out.println("parent: " + getParent());
+		// System.out.println("parent model: " + getParent().getModelObject());
 		FMLProperty fmlProperty = ((FMLObject) getParent().getModelObject()).getFMLProperty(propertyName, getFactory());
 		// System.out.println("fmlProperty: " + fmlProperty);
 
@@ -159,7 +160,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getLabel()), getArgNameFragment());
+		append(dynamicContents(() -> getModelObject().getPropertyName()), getArgNameFragment());
 		append(staticContents("="), getAssignFragment());
 		append(dynamicContents(() -> encodeFMLProperty(getModelObject().getValue())), getValueFragment());
 	}

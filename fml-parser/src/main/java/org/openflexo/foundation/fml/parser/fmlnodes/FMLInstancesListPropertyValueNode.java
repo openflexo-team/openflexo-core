@@ -101,7 +101,7 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getLabel()), getArgNameFragment());
+		append(dynamicContents(() -> getModelObject().getPropertyName()), getArgNameFragment());
 		append(staticContents("="), getAssignFragment());
 		append(staticContents("{"), getLBrcFragment());
 		append(childrenContents("", "", () -> getModelObject().getInstances(), "," + SPACE, "", Indentation.DoNotIndent,
