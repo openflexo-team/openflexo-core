@@ -1,0 +1,27 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestFMLReflection.fml")
+model TestFMLReflection {
+	
+	Concept<TestFMLReflection> vmConcept = this.conceptType;
+	Foo existingFoo;
+	Foo aFoo;
+	Concept<Foo> fooConcept = aFoo.conceptType;
+
+	create() {
+		existingFoo = new Foo();
+		fooConcept = existingFoo.conceptType;
+	}
+	
+	test() {
+		aFoo = FMLRT::NewInstance(conceptType=fooConcept, container=this);
+	}
+
+	concept Foo {
+		create() {
+		}
+	}
+
+}

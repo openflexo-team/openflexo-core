@@ -1,0 +1,17 @@
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestFMLReflection.fml"];
+context;
+assert virtualModel != null;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+//validate virtualModel;
+service ResourceCenterService add_temp_rc;
+myVMI = new TestFMLReflection() with (virtualModelInstanceName="test1");
+context;
+assert myVMI != null;
+assert myVMI.existingFoo != null;
+assert myVMI.fooConcept != null;
+myVMI.test();
+assert myVMI.aFoo != null;
