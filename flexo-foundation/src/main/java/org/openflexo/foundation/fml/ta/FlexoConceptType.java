@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.FMLType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -136,7 +137,10 @@ public class FlexoConceptType implements FMLType, TechnologySpecificType<FMLTech
 	@Override
 	public FMLTechnologyAdapter getSpecificTechnologyAdapter() {
 		if (type instanceof TechnologySpecificType) {
-			return (FMLTechnologyAdapter) ((TechnologySpecificType) type).getSpecificTechnologyAdapter();
+			TechnologyAdapter<?> ta = ((TechnologySpecificType) type).getSpecificTechnologyAdapter();
+			if (ta != null && ta.getServiceManager() != null && ta.getServiceManager().getTechnologyAdapterService() != null) {
+				return ta.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+			}
 		}
 		return null;
 	}
