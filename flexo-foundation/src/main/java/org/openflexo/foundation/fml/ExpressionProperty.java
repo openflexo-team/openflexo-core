@@ -267,4 +267,17 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
 	}
 
+	@DefineValidationRule
+	public static class DefaultValueMustBeValid extends BindingMustBeValid<ExpressionProperty> {
+		public DefaultValueMustBeValid() {
+			super("'expression'_binding_must_be_valid", ExpressionProperty.class);
+		}
+
+		@Override
+		public DataBinding<String> getBinding(ExpressionProperty object) {
+			return object.getExpression();
+		}
+
+	}
+
 }

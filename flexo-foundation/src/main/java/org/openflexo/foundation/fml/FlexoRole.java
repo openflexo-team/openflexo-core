@@ -652,4 +652,17 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	}
 
+	@DefineValidationRule
+	public static class DefaultValueMustBeValid extends BindingMustBeValid<FlexoRole> {
+		public DefaultValueMustBeValid() {
+			super("'default_value'_binding_must_be_valid", FlexoRole.class);
+		}
+
+		@Override
+		public DataBinding<String> getBinding(FlexoRole object) {
+			return object.getDefaultValue();
+		}
+
+	}
+
 }
