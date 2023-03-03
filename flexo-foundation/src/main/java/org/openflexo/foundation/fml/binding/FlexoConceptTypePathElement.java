@@ -62,6 +62,7 @@ public class FlexoConceptTypePathElement extends SimplePathElementImpl<FMLNative
 				concept != null ? concept.getConceptType() : (concept instanceof VirtualModel ? VirtualModel.class : FlexoConcept.class),
 				bindable);
 		setProperty(FMLBindingFactory.FLEXO_CONCEPT_PROPERTY);
+		setType(concept != null ? concept.getConceptType() : (concept instanceof VirtualModel ? VirtualModel.class : FlexoConcept.class));
 	}
 
 	@Override
