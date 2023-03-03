@@ -42,9 +42,13 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.UnresolvedType;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.JavaActorReference;
+import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -67,7 +71,7 @@ import org.openflexo.pamela.validation.ValidationRule;
  *
  * @param <T>
  */
-// TODO: rename to JavaProperty
+@FMLMigration("TODO: rename to FMLVariable")
 @ModelEntity
 @ImplementationClass(JavaRole.JavaRoleImpl.class)
 @XMLElement(xmlTag = "JavaRole")
@@ -115,8 +119,22 @@ public interface JavaRole<T> extends BasicProperty<T> {
 
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
-			// Never serialized
-			return null;
+
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+
+			if (object instanceof FlexoObject) {
+				ModelObjectActorReference returned = factory.newInstance(ModelObjectActorReference.class);
+				returned.setFlexoRole(this);
+				returned.setFlexoConceptInstance(fci);
+				returned.setModellingElement(object);
+				return returned;
+			}
+			else {
+				JavaActorReference<T> returned = factory.newInstance(JavaActorReference.class);
+				returned.setFlexoRole(this);
+				returned.setModellingElement(object);
+				return returned;
+			}
 		}
 
 		/*@Override

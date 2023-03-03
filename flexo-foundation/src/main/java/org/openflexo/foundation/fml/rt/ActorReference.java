@@ -64,8 +64,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActorReference.ActorReferenceImpl.class)
-@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(FlexoEnumValueActorReference.class),
-		@Import(ModelSlotInstance.class) })
+@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(JavaActorReference.class),
+		@Import(FlexoEnumValueActorReference.class), @Import(ModelSlotInstance.class) })
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = FlexoConceptInstance.class)
