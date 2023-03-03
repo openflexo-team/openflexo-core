@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.rt.editionaction.NewFlexoConceptInstance"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label name="containerLabel" label="container" align="right" index="12"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
+				localize="true" visible="data.requiresContainer"/>
+			<Custom name="containerBS" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+				localize="true" manageDynamicModel="true" opaque="false" index="13"
+				data="data.container" visible="data.requiresContainer"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			<Label name="conceptLabel" label="type" index="14" 
+				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
+				localize="true"
+				manageDynamicModel="true" opaque="false"
+				name="AddFlexoConceptActionPanel" index="15" data="data.flexoConceptType"
+				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				minWidth="200" minHeight="25">
+				<Assignment variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
+				<Assignment variable="component.restrictToContext" value="true" />
+				<Assignment variable="component.inheritingContext" value="data.ownerVirtualModelType" />
+			</Custom>
+			<Label label="flexo_concept" align="right" index="16" visible="data.dynamicInstantiation"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector" visible="data.dynamicInstantiation"
+				localize="true" manageDynamicModel="true" opaque="false" index="17"
+				data="data.dynamicFlexoConceptType"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+		</Tab>
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="AddFlexoConceptInstance action" />
+</Panel>

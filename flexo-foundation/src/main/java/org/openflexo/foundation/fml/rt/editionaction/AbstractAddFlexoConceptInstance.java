@@ -632,6 +632,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
 
+			logger.info("instantiatedFlexoConcept=" + instantiatedFlexoConcept);
+
 			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {

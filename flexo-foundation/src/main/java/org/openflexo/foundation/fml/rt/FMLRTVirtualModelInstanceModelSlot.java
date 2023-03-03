@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteFML;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteFlexoBehaviour;
+import org.openflexo.foundation.fml.rt.editionaction.NewFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
@@ -70,7 +71,7 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
 @DeclareEditionActions({ AddFlexoConceptInstance.class, CreateTopLevelVirtualModelInstance.class, AddVirtualModelInstance.class,
-		ExecuteFlexoBehaviour.class, ExecuteFML.class })
+		ExecuteFlexoBehaviour.class, ExecuteFML.class, NewFlexoConceptInstance.class })
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class, SelectUniqueFlexoConceptInstance.class,
 		SelectUniqueVirtualModelInstance.class })
 @ModelEntity
