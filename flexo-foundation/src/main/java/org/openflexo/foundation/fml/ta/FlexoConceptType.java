@@ -46,6 +46,7 @@ import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.TypingSpace;
 import org.openflexo.connie.type.WildcardTypeImpl;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLRTType;
@@ -215,6 +216,18 @@ public class FlexoConceptType implements FMLType, TechnologySpecificType<FMLTech
 		if (type instanceof WildcardTypeImpl) {
 			((WildcardTypeImpl) type).resolve();
 		}
+	}
+
+	/**
+	 * Return a new {@link FlexoConceptType} by translating current {@link FlexoConceptType} into the typing context denoted by supplied
+	 * {@link TypingSpace}.<br>
+	 * 
+	 * @param typingSpace
+	 * @return
+	 */
+	@Override
+	public FlexoConceptType translateTo(TypingSpace typingSpace) {
+		return new FlexoConceptType(type.translateTo(typingSpace));
 	}
 
 	@Override
