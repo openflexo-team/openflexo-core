@@ -39,9 +39,16 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
@@ -50,6 +57,9 @@ import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -80,6 +90,8 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 	public static final String CONCEPT_TYPE_KEY = "conceptType";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String ARGUMENTS_KEY = "args";
 
 	@Override
 	@Getter(value = CONTAINER_KEY)
@@ -99,10 +111,40 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 	@Setter(CONCEPT_TYPE_KEY)
 	public void setDynamicFlexoConceptType(DataBinding<FlexoConcept> dynamicFlexoConceptType);
 
+	@Getter(value = ARGUMENTS_KEY)
+	@FMLAttribute(value = ARGUMENTS_KEY, required = false, description = "<html>list of arguments</html>")
+	public DataBinding<List> getArguments();
+
+	@Setter(ARGUMENTS_KEY)
+	public void setArguments(DataBinding<List> args);
+
 	public static abstract class NewFlexoConceptInstanceImpl extends
 			AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, FMLRTVirtualModelInstance> implements NewFlexoConceptInstance {
 
 		private static final Logger logger = Logger.getLogger(NewFlexoConceptInstance.class.getPackage().getName());
+
+		private DataBinding<List> arguments;
+
+		@Override
+		public DataBinding<List> getArguments() {
+			if (arguments == null) {
+				arguments = new DataBinding<>(this, List.class, DataBinding.BindingDefinitionType.GET);
+				arguments.setBindingName(ARGUMENTS_KEY);
+				arguments.setDeclaredType(List.class);
+			}
+			return arguments;
+		}
+
+		@Override
+		public void setArguments(DataBinding<List> arguments) {
+			if (arguments != null) {
+				arguments.setOwner(this);
+				arguments.setBindingName(ARGUMENTS_KEY);
+				arguments.setDeclaredType(List.class);
+				arguments.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.arguments = arguments;
+		}
 
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
@@ -144,9 +186,12 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 
 		@Override
 		public Type getAssignableType() {
+			//System.out.println("On me demande l'AssignableType avec getDynamicFlexoConceptType()=" + getDynamicFlexoConceptType());
 			if (getDynamicFlexoConceptType() != null) {
 				// getFlexoConcept().clearBindingModel();
 				// clearBindingModel();
+				// System.out.println("valid: " + getDynamicFlexoConceptType().isValid());
+				// System.out.println("reason: " + getDynamicFlexoConceptType().invalidBindingReason());
 				Type conceptType = getDynamicFlexoConceptType().getAnalyzedType();
 				/*System.out.println(
 						"Concept was: " + ((FlexoConceptInstanceType) (((FlexoConceptType) conceptType).getType())).getFlexoConcept());
@@ -158,11 +203,27 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 				conceptType = getDynamicFlexoConceptType().getAnalyzedType();
 				System.out.println(
 						"Concept now: " + ((FlexoConceptInstanceType) (((FlexoConceptType) conceptType).getType())).getFlexoConcept());
-				*/
+				 */
+				// System.out.println("Analyzed type=" + getDynamicFlexoConceptType().getAnalyzedType() + " of "
+				// + getDynamicFlexoConceptType().getAnalyzedType().getClass());
 				if (conceptType instanceof FlexoConceptType) {
 					return ((FlexoConceptType) conceptType).getType();
+					/*if (type instanceof FlexoConceptInstanceType) {
+						System.out.println("On retourne-1 AssignableType=" + type);
+						return type;
+					}
+					if (type instanceof FMLRTWildcardType) {
+						FMLRTWildcardType wt = (FMLRTWildcardType) type;
+						if (wt.getUpperBounds().length > 0) {
+							System.out.println("On retourne-2 AssignableType=" + wt.getLowerBounds()[0]);
+							return wt.getLowerBounds()[0];
+						}
+					}
+					System.out.println("On retourne-3 AssignableType=" + type);*/
+					// return type;
 				}
 			}
+			System.out.println("On retourne le super AssignableType=" + super.getAssignableType());
 			return super.getAssignableType();
 		}
 
@@ -181,6 +242,68 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 			}
 
 			return vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container);
+		}
+
+		@Override
+		protected CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
+
+			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+			List<?> arguments;
+			try {
+				arguments = getArguments().getBindingValue(evaluationContext);
+			} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
+				e.printStackTrace();
+				throw new FMLExecutionException(e);
+			}
+			if (arguments == null) {
+				arguments = Collections.emptyList();
+			}
+
+			if (instantiatedFlexoConcept != null) {
+				for (CreationScheme creationScheme : instantiatedFlexoConcept.getAccessibleCreationSchemes()) {
+					if (creationScheme.getParameters().size() == arguments.size()) {
+						boolean allParametersMatch = true;
+						for (int i = 0; i < creationScheme.getParameters().size(); i++) {
+							FlexoBehaviourParameter p = creationScheme.getParameters().get(i);
+							if (!TypeUtils.isOfType(arguments.get(i), p.getArgumentType())) {
+								allParametersMatch = false;
+							}
+						}
+						if (allParametersMatch) {
+							return creationScheme;
+						}
+					}
+				}
+			}
+
+			return super.findBestCreationSchemeForDynamicInstantiation(evaluationContext);
+		}
+
+		@Override
+		protected boolean _performExecuteCreationScheme(CreationScheme creationScheme, FlexoConceptInstance newInstance,
+				VirtualModelInstance<?, ?> vmInstance, RunTimeEvaluationContext evaluationContext) {
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
+						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
+				try {
+					List<?> arguments = getArguments().getBindingValue(evaluationContext);
+					for (int i = 0; i < creationScheme.getParameters().size(); i++) {
+						FlexoBehaviourParameter p = creationScheme.getParameters().get(i);
+						creationSchemeAction.setParameterValue(p, arguments.get(i));
+					}
+					creationSchemeAction.doAction();
+
+					return creationSchemeAction.hasActionExecutionSucceeded();
+				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			logger.warning("Unexpected: " + evaluationContext);
+			Thread.dumpStack();
+			return false;
 		}
 
 	}
