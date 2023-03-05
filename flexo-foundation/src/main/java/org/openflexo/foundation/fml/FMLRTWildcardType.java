@@ -39,6 +39,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,22 @@ public class FMLRTWildcardType extends WildcardTypeImpl<FMLRTType> implements FM
 		FMLRTWildcardType returned = new FMLRTWildcardType();
 		returned.addLowerBound(lowerBound);
 		return returned;
+	}
+
+	public static FMLRTWildcardType fromWilcard(WildcardType wt) {
+		List<FMLRTType> upper = new ArrayList<>();
+		for (Type t : wt.getUpperBounds()) {
+			if (t instanceof FMLRTType) {
+				upper.add((FMLRTType) t);
+			}
+		}
+		List<FMLRTType> lower = new ArrayList<>();
+		for (Type t : wt.getLowerBounds()) {
+			if (t instanceof FMLRTType) {
+				lower.add((FMLRTType) t);
+			}
+		}
+		return new FMLRTWildcardType(upper, lower);
 	}
 
 	public FMLRTWildcardType() {
