@@ -42,6 +42,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomTypeFactory;
@@ -221,6 +222,10 @@ public class FlexoConceptInstanceType implements FMLRTType, TechnologySpecificTy
 
 		if (permissive && aType.equals(FlexoConceptInstance.class)) {
 			return true;
+		}
+
+		if (aType instanceof FMLRTWildcardType && ((FMLRTWildcardType) aType).getUpperBounds().length == 1) {
+			return isTypeAssignableFrom(((WildcardType) aType).getUpperBounds()[0], permissive);
 		}
 
 		return false;
