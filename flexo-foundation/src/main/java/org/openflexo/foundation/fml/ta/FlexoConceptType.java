@@ -158,6 +158,11 @@ public class FlexoConceptType implements FMLType, TechnologySpecificType<FMLTech
 		if (aType instanceof FlexoConceptType) {
 			return (type == null) || (TypeUtils.isTypeAssignableFrom(type, ((FlexoConceptType) aType).getType()));
 		}
+
+		if (permissive && aType.equals(FlexoConcept.class)) {
+			return true;
+		}
+
 		return false;
 	}
 
