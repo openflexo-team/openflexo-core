@@ -323,6 +323,24 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public FlexoBehaviour getFlexoBehaviour(String behaviourName);
 
 	/**
+	 * Return most specialized anonymous {@link AbstractCreationScheme} matching supplied signature (expressed with types)<br>
+	 * 
+	 * @param behaviourName
+	 * @param arguments
+	 * @return
+	 */
+	public AbstractCreationScheme getAnonymousCreationScheme(Type... arguments);
+
+	/**
+	 * Return most specialized {@link AbstractCreationScheme} matching supplied name and signature (expressed with types)<br>
+	 * 
+	 * @param behaviourName
+	 * @param arguments
+	 * @return
+	 */
+	public AbstractCreationScheme getCreationScheme(String behaviourName, Type... arguments);
+
+	/**
 	 * Return {@link FlexoBehaviour} matching supplied name and signature (expressed with types)<br>
 	 * Search is perform in entire scope, and includes parent concept behaviours (inherited behaviours included)
 	 * 
@@ -1454,6 +1472,42 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				index++;
 			}
 			return testName;
+		}
+
+		@Override
+		public AbstractCreationScheme getAnonymousCreationScheme(Type... arguments) {
+			return getCreationScheme(null, arguments);
+		}
+
+		@Override
+		public AbstractCreationScheme getCreationScheme(String behaviourName, Type... arguments) {
+			for (FlexoBehaviour b : getDeclaredFlexoBehaviours()) {
+				if (b instanceof AbstractCreationScheme) {
+					AbstractCreationScheme cs = (AbstractCreationScheme) b;
+					if ((cs instanceof CreationScheme && ((CreationScheme) cs).isAnonymous() && behaviourName == null)
+							|| (cs.getName().equals(behaviourName))) {
+						if (cs.getParameters().size() == arguments.length) {
+							boolean allParametersMatch = true;
+							for (int i = 0; i < cs.getParameters().size(); i++) {
+								if (!TypeUtils.isTypeAssignableFrom(cs.getParameters().get(i).getType(), arguments[i], true)) {
+									allParametersMatch = false;
+									break;
+								}
+							}
+							if (allParametersMatch) {
+								return cs;
+							}
+						}
+					}
+				}
+			}
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				AbstractCreationScheme returned = parentConcept.getCreationScheme(behaviourName, arguments);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			return null;
 		}
 
 		@Override
