@@ -19,8 +19,20 @@ model TestFMLReflection {
 		aFoo = FMLRT::NewInstance(conceptType=fooConcept, container=this);
 	}
 
+	Foo test2(String aString) {
+		List<?> arguments = new ArrayList();
+		arguments.add(parameters.aString);
+		return FMLRT::NewInstance(conceptType=fooConcept, container=this, args=arguments);
+	}
+
 	concept Foo {
+		String name;
+		
 		create() {
+		}
+		create(String name) {
+			log "Creating Foo with "+parameters.name;
+			name = parameters.name;
 		}
 	}
 

@@ -15,3 +15,7 @@ assert myVMI.existingFoo != null;
 assert myVMI.fooConcept != null;
 myVMI.test();
 assert myVMI.aFoo != null;
+foo2 = myVMI.test2("MyFoo");
+assert foo2 != null;
+assert foo2.name == "MyFoo";
+
