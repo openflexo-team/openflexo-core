@@ -40,6 +40,7 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.List;
 
 import org.openflexo.connie.java.JavaTypingSpace;
@@ -128,6 +129,11 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 				&& typeArguments.get(0) instanceof FMLRTType) {
 			// This matches a FlexoConceptType signature
 			return new FlexoConceptType((FMLRTType) typeArguments.get(0));
+		}
+		if (unresolvedBaseType.getUnresolvedTypeName().equals(CONCEPT) && typeArguments.size() == 1
+				&& typeArguments.get(0) instanceof WildcardType) {
+			// This matches a FlexoConceptType signature
+			return new FlexoConceptType(FMLRTWildcardType.fromWilcard((WildcardType) typeArguments.get(0)));
 		}
 		return new ParameterizedTypeImpl(unresolvedBaseType, typeArguments.toArray(new Type[typeArguments.size()]));
 	}
