@@ -186,44 +186,12 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 
 		@Override
 		public Type getAssignableType() {
-			//System.out.println("On me demande l'AssignableType avec getDynamicFlexoConceptType()=" + getDynamicFlexoConceptType());
 			if (getDynamicFlexoConceptType() != null) {
-				// getFlexoConcept().clearBindingModel();
-				// clearBindingModel();
-				// System.out.println("valid: " + getDynamicFlexoConceptType().isValid());
-				// System.out.println("reason: " + getDynamicFlexoConceptType().invalidBindingReason());
 				Type conceptType = getDynamicFlexoConceptType().getAnalyzedType();
-				/*System.out.println(
-						"Concept was: " + ((FlexoConceptInstanceType) (((FlexoConceptType) conceptType).getType())).getFlexoConcept());
-				System.out.println("BM: " + getBindingModel());
-				getFlexoConcept().clearBindingModel();
-				clearBindingModel();
-				System.out.println("BM2: " + getBindingModel());
-				getDynamicFlexoConceptType().revalidate();
-				conceptType = getDynamicFlexoConceptType().getAnalyzedType();
-				System.out.println(
-						"Concept now: " + ((FlexoConceptInstanceType) (((FlexoConceptType) conceptType).getType())).getFlexoConcept());
-				 */
-				// System.out.println("Analyzed type=" + getDynamicFlexoConceptType().getAnalyzedType() + " of "
-				// + getDynamicFlexoConceptType().getAnalyzedType().getClass());
 				if (conceptType instanceof FlexoConceptType) {
 					return ((FlexoConceptType) conceptType).getType();
-					/*if (type instanceof FlexoConceptInstanceType) {
-						System.out.println("On retourne-1 AssignableType=" + type);
-						return type;
-					}
-					if (type instanceof FMLRTWildcardType) {
-						FMLRTWildcardType wt = (FMLRTWildcardType) type;
-						if (wt.getUpperBounds().length > 0) {
-							System.out.println("On retourne-2 AssignableType=" + wt.getLowerBounds()[0]);
-							return wt.getLowerBounds()[0];
-						}
-					}
-					System.out.println("On retourne-3 AssignableType=" + type);*/
-					// return type;
 				}
 			}
-			System.out.println("On retourne le super AssignableType=" + super.getAssignableType());
 			return super.getAssignableType();
 		}
 
@@ -307,22 +275,5 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 		}
 
 	}
-
-	/*@DefineValidationRule
-	public static class CoucouLaValidation extends ValidationRule<CoucouLaValidation, NewFlexoConceptInstance> {
-	
-		public CoucouLaValidation() {
-			super(NewFlexoConceptInstance.class, "juste pour regarder");
-		}
-	
-		@Override
-		public ValidationIssue<CoucouLaValidation, NewFlexoConceptInstance> applyValidation(NewFlexoConceptInstance action) {
-			System.out.println(
-					"conceptType: " + action.getDynamicFlexoConceptType() + " valid=" + action.getDynamicFlexoConceptType().isValid());
-			System.out.println("container: " + action.getContainer() + " valid=" + action.getContainer().isValid());
-			System.out.println("type: " + action.getAssignableType());
-			return null;
-		}
-	}*/
 
 }
