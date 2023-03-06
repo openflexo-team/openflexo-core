@@ -322,9 +322,6 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	@CustomComponentParameter(name = "expectedType", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setExpectedType(Type expectedType) {
-
-		System.out.println("hop on sette expectedType=" + expectedType);
-
 		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
 			Type oldValue = this.expectedType;
 			this.expectedType = expectedType;
