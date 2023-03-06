@@ -100,18 +100,20 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		extends FMLObject, NewInstancePathElement<CS>, PropertyChangeListener {
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
+	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "name";
 	@Deprecated /* Will disappear */
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_TITLE_KEY = "virtualModelInstanceTitle";
 	// @PropertyIdentifier(type = DataBinding.class)
 	// public static final String CONTAINER_KEY = "container";
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String RESOURCE_URI_KEY = "resourceURI";
-	@PropertyIdentifier(type = FlexoResourceCenter.class)
-	public static final String RESOURCE_CENTER_KEY = "resourceCenter";
-	@PropertyIdentifier(type = String.class)
-	public static final String DYNAMIC_RELATIVE_PATH_KEY = "dynamicRelativePath";
+	public static final String RESOURCE_URI_KEY = "uri";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String RESOURCE_CENTER_KEY = "rc";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String DYNAMIC_RELATIVE_PATH_KEY = "path";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String REPOSITORY_FOLDER_KEY = "folder";
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
 	@XMLAttribute
@@ -131,15 +133,9 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
 	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
 
-	/*@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
-	public DataBinding<FlexoConceptInstance> getContainer();
-	
-	@Setter(CONTAINER_KEY)
-	public void setContainer(DataBinding<FlexoConceptInstance> container);*/
-
 	@Getter(value = RESOURCE_URI_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = RESOURCE_URI_KEY, required = false)
 	public DataBinding<String> getResourceURI();
 
 	@Setter(RESOURCE_URI_KEY)
@@ -147,6 +143,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 	@Getter(value = RESOURCE_CENTER_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = RESOURCE_CENTER_KEY, required = false)
 	public DataBinding<FlexoResourceCenter<?>> getResourceCenter();
 
 	@Setter(RESOURCE_CENTER_KEY)
@@ -154,10 +151,19 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = DYNAMIC_RELATIVE_PATH_KEY, required = false)
 	public DataBinding<String> getDynamicRelativePath();
 
 	@Setter(DYNAMIC_RELATIVE_PATH_KEY)
 	public void setDynamicRelativePath(DataBinding<String> relativePath);
+
+	@Getter(value = REPOSITORY_FOLDER_KEY)
+	@XMLAttribute
+	@FMLAttribute(value = REPOSITORY_FOLDER_KEY, required = false)
+	public DataBinding<RepositoryFolder> getRepositoryFolder();
+
+	@Setter(REPOSITORY_FOLDER_KEY)
+	public void setRepositoryFolder(DataBinding<RepositoryFolder> folder);
 
 	@Override
 	public FlexoConceptInstanceType getType();
@@ -177,6 +183,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		private DataBinding<String> dynamicRelativePath;
 		private DataBinding<String> resourceURI;
 		private DataBinding<FlexoResourceCenter<?>> resourceCenter;
+		private DataBinding<RepositoryFolder> repositoryFolder;
 
 		@Override
 		public void activate() {
@@ -289,31 +296,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			this.virtualModelInstanceName = aVirtualModelInstanceName;
 		}
 
-		/*@Override
-		public DataBinding<FlexoConceptInstance> getContainer() {
-			if (container == null) {
-				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
-				container.setBindingName("container");
-				container.setDeclaredType(getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null
-						? getFlexoConcept().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
-			}
-			return container;
-		}
-		
-		@Override
-		public void setContainer(DataBinding<FlexoConceptInstance> aContainer) {
-			if (aContainer != null) {
-				aContainer.setOwner(this);
-				aContainer.setBindingName("container");
-				aContainer.setDeclaredType(getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null
-						? getFlexoConcept().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
-				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-			}
-			this.container = aContainer;
-		}*/
-
 		@Override
 		public DataBinding<String> getResourceURI() {
 			if (resourceURI == null) {
@@ -372,6 +354,26 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				resourceCenter.setBindingName("resourceCenter");
 			}
 			this.resourceCenter = resourceCenter;
+		}
+
+		@Override
+		public DataBinding<RepositoryFolder> getRepositoryFolder() {
+			if (repositoryFolder == null) {
+				repositoryFolder = new DataBinding<>(this, RepositoryFolder.class, DataBinding.BindingDefinitionType.GET);
+				repositoryFolder.setBindingName("repositoryFolder");
+			}
+			return repositoryFolder;
+		}
+
+		@Override
+		public void setRepositoryFolder(DataBinding<RepositoryFolder> repositoryFolder) {
+			if (repositoryFolder != null) {
+				repositoryFolder.setOwner(this);
+				repositoryFolder.setDeclaredType(RepositoryFolder.class);
+				repositoryFolder.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				repositoryFolder.setBindingName("repositoryFolder");
+			}
+			this.repositoryFolder = repositoryFolder;
 		}
 
 		/*@Override
@@ -473,7 +475,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			StringBuffer returned = new StringBuffer();
 
 			if (isResolved()) {
-				if (getFunction().isDefaultCreationScheme()) {
+				if ((getFunction() instanceof CreationScheme && ((CreationScheme) getFunction()).isAnonymous())
+						|| getFunction().isDefaultCreationScheme()) {
 					returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
 				}
 				else {
@@ -489,26 +492,24 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					returned.append(" with (");
 					isFirst = true;
 
-					// System.out.println("Prout ici, getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
-
 					if (getVirtualModelInstanceName() != null && getVirtualModelInstanceName().isSet()) {
-						returned.append((isFirst ? "" : ",") + "virtualModelInstanceName=" + getVirtualModelInstanceName());
+						returned.append((isFirst ? "" : ",") + VIRTUAL_MODEL_INSTANCE_NAME_KEY + "=" + getVirtualModelInstanceName());
 						isFirst = false;
 					}
-					/*if (getContainer() != null && getContainer().isSet()) {
-						returned.append((isFirst ? "" : ",") + "container=" + getContainer());
-						isFirst = false;
-					}*/
 					if (getResourceURI() != null && getResourceURI().isSet()) {
-						returned.append((isFirst ? "" : ",") + "uri=" + getResourceURI());
+						returned.append((isFirst ? "" : ",") + RESOURCE_URI_KEY + "=" + getResourceURI());
 						isFirst = false;
 					}
 					if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
-						returned.append((isFirst ? "" : ",") + "path=" + getDynamicRelativePath());
+						returned.append((isFirst ? "" : ",") + DYNAMIC_RELATIVE_PATH_KEY + "=" + getDynamicRelativePath());
 						isFirst = false;
 					}
 					if (getResourceCenter() != null && getResourceCenter().isSet()) {
-						returned.append((isFirst ? "" : ",") + "rc=" + getResourceCenter());
+						returned.append((isFirst ? "" : ",") + RESOURCE_CENTER_KEY + "=" + getResourceCenter());
+						isFirst = false;
+					}
+					if (getRepositoryFolder() != null && getRepositoryFolder().isSet()) {
+						returned.append((isFirst ? "" : ",") + REPOSITORY_FOLDER_KEY + "=" + getRepositoryFolder());
 						isFirst = false;
 					}
 					returned.append(")");
@@ -525,6 +526,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 				returned.append(")");
 			}
+
 			// serializationRepresentation = returned.toString();
 			return returned.toString();
 			// }
@@ -691,9 +693,9 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		public Object getBindingValue(Object target, BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
-			// System.out.println("Executing CreationSchemePathElement: " + this);
-			// System.out.println("target=" + target);
-			// System.out.println("evaluationContext=" + evaluationContext);
+			System.out.println("Executing CreationSchemePathElement: " + this);
+			System.out.println("target=" + target);
+			System.out.println("evaluationContext=" + evaluationContext);
 
 			try {
 
@@ -710,12 +712,13 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				if (container == null) {
 					if (evaluationContext instanceof RunTimeEvaluationContext) {
 						FlexoObject focusedObject = ((RunTimeEvaluationContext) evaluationContext).getFocusedObject();
+						System.out.println("focusedObject=" + focusedObject);
 						if (focusedObject instanceof RepositoryFolder || focusedObject instanceof FlexoConceptInstance) {
 							container = focusedObject;
 						}
 					}
 				}
-				// System.out.println("container=" + container);
+				System.out.println("container=" + container);
 
 				if (container == null) {
 					throw new NullReferenceException("Unable to find executable context for " + this);
@@ -725,7 +728,13 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel && (getCreationScheme() instanceof CreationScheme)) {
 
 					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
-					// System.out.println("vmiName=" + vmiName);
+
+					System.out.println("Creating new VMI");
+					System.out.println("VM=" + getCreationScheme().getFlexoConcept());
+					System.out.println("vmiName=" + vmiName);
+
+					System.out.println("RC-expression=" + getResourceCenter());
+					System.out.println("RC=" + getResourceCenter().getBindingValue(evaluationContext));
 
 					/*System.out.println("getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
 					System.out.println("valid=" + getVirtualModelInstanceName().isValid());
@@ -734,6 +743,18 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					System.out.println("vmiName=" + vmiName);*/
 
 					VirtualModel instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
+
+					// We have to instantiate a VirtualModel
+					// At this point, 3 cases may happen:
+					// 1. The VirtualModel has a container VirtualModel : in this case the container MUST match the type
+					// 2. We should supply the RepositoryFolder
+					// 3. We should supply the ResourceCenter AND the relative path
+					// Otherwise, we choose a default repository folder where the focused FCI resides
+					// We may supply an URI if no container VirtualModel
+
+					if (instantiatedVirtualModel.getContainerVirtualModel() != null) {
+
+					}
 
 					CreateBasicVirtualModelInstance createVMIAction;
 					if (evaluationContext instanceof FlexoBehaviourAction) {
@@ -754,15 +775,16 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					createVMIAction.setCreationScheme((CreationScheme) getCreationScheme());
 
 					for (FunctionArgument functionArgument : getFunctionArguments()) {
-						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
+						System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
 						Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
-						// System.out.println("values:" + v);
+						System.out.println("values:" + v);
 						createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
 					}
 
+					System.out.println("Doing the action...");
 					createVMIAction.doAction();
 					FMLRTVirtualModelInstance returned = createVMIAction.getNewVirtualModelInstance();
-					// System.out.println("returned=" + returned);
+					System.out.println("returned=" + returned);
 					return returned;
 				}
 				else if (container instanceof FlexoConceptInstance) {

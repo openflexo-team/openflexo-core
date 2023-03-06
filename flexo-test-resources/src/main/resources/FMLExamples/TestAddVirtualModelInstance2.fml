@@ -11,7 +11,7 @@ model MyModel {
 	}
 
 	testNewInstance() {
-		myModel = new MyModel("test",3) with (virtualModelInstanceName="foo");
+		myModel = new MyModel("test",3) with (name="foo");
 	}
 	
 	

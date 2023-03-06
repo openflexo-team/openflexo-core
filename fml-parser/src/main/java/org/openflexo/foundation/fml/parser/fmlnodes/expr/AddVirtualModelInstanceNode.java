@@ -168,7 +168,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 					throwIssue("Cannot find any CreationScheme for VirtualModel " + getModelObject().getType(), getTypeFragment());
 				}
 				else if (typeVirtualModel.getCreationSchemes().size() == 1) {
-					((CreationSchemePathElement)getModelObject()).setFunction(typeVirtualModel.getCreationSchemes().get(0));
+					((CreationSchemePathElement) getModelObject()).setFunction(typeVirtualModel.getCreationSchemes().get(0));
 					// System.out.println("Set constructor to " + getModelObject().getFunction());
 				}
 				else {
@@ -197,7 +197,8 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 			}
 			else if (astNode instanceof AFullQualifiedNewInstance) {
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
-				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getSemanticsAnalyzer().getTypingSpace());
+				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(),
+						getSemanticsAnalyzer().getTypingSpace());
 			}
 
 			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,

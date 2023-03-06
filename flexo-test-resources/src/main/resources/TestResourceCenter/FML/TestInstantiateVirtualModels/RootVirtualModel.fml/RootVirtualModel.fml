@@ -1,0 +1,18 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels/RootVirtualModel.fml")
+@Author("sylvainguerin")
+public model RootVirtualModel {
+
+	String name;
+
+	create(String name) {
+		log "Default constructor of RootVirtualModel with " + parameters.name;
+		name = "Default" + parameters.name;
+	}
+
+	create::init(String name) {
+		log "Named constructor of RootVirtualModel with " + parameters.name;
+		name = parameters.name;
+	}
+}

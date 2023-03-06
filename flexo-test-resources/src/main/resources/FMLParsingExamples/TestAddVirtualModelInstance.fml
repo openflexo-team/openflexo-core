@@ -11,10 +11,10 @@ model MyModel {
 	MyVM myModel with ModelInstance();
 
 	testInstanciateVirtualModel() {
-		myModel = new MyVM() with (virtualModelInstanceName="toto");
-		myModel = new MyVM::constructor1(1,"foo") with (virtualModelInstanceName="tutu");
-		myModel = this.new MyVM() with (virtualModelInstanceName="toto");
-		myModel = this.new MyVM::constructor1(1,"foo") with (virtualModelInstanceName="tutu");
+		myModel = new MyVM() with (name="toto");
+		myModel = new MyVM::constructor1(1,"foo") with (name="tutu");
+		myModel = this.new MyVM() with (name="toto");
+		myModel = this.new MyVM::constructor1(1,"foo") with (name="tutu");
 	}
 
 }
