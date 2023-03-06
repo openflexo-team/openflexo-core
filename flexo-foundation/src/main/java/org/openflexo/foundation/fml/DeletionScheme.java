@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.pamela.annotations.Getter;
@@ -58,14 +59,30 @@ public interface DeletionScheme extends AbstractActionScheme {
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_ANONYMOUS_KEY = "isAnonymous";
 
-	@Getter(value = IS_ANONYMOUS_KEY, defaultValue = "false")
+	@Getter(value = IS_ANONYMOUS_KEY)
 	@XMLAttribute
-	public boolean isAnonymous();
+	public Boolean isAnonymous();
 
 	@Setter(IS_ANONYMOUS_KEY)
-	public void setAnonymous(boolean isAnonymous);
+	public void setAnonymous(Boolean isAnonymous);
 
 	public static abstract class DeletionSchemeImpl extends AbstractActionSchemeImpl implements DeletionScheme {
+
+		private Boolean isAnonymous;
+
+		@Override
+		public Boolean isAnonymous() {
+			if (isAnonymous == null) {
+				String name = (String) performSuperGetter(FMLObject.NAME_KEY);
+				isAnonymous = (name == null || name.equals(DEFAULT_DELETION_SCHEME_NAME));
+			}
+			return isAnonymous;
+		}
+
+		@Override
+		public void setAnonymous(Boolean isAnonymous) {
+			this.isAnonymous = isAnonymous;
+		}
 
 		@Override
 		public String getName() {
@@ -74,7 +91,15 @@ public interface DeletionScheme extends AbstractActionScheme {
 			}
 			return super.getName();
 		}
-		
+
+		@Override
+		public void setName(String name) throws InvalidNameException {
+			super.setName(name);
+			if (name != null && name.equals(DEFAULT_DELETION_SCHEME_NAME)) {
+				isAnonymous = true;
+			}
+		}
+
 		@Override
 		protected String getDisplayName() {
 			if (isAnonymous()) {
