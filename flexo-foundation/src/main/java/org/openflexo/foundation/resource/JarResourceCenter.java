@@ -654,6 +654,22 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 			return true;
 		}
 
+		public InJarResourceImpl getDirectoryWithRelativePath(String relativePath) {
+			InJarResourceImpl serializationArtefact = getBaseArtefact();
+
+			if (relativePath != null) {
+				StringTokenizer st = new StringTokenizer(relativePath, "/\\");
+				while (st.hasMoreElements()) {
+					String pathName = st.nextToken();
+					serializationArtefact = getDirectory(pathName, serializationArtefact);
+					if (serializationArtefact == null) {
+						serializationArtefact = createDirectory(pathName, serializationArtefact);
+					}
+				}
+			}
+			return serializationArtefact;
+		}
+
 		@Override
 		public InJarResourceImpl createDirectory(String name, InJarResourceImpl parentDirectory) {
 			// Not applicable
@@ -732,7 +748,7 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 			}
 			XMLRootElementReader reader = new XMLRootElementReader(parseFirstLevelElements, firstLevelElementName);
 			try {
-				System.out.println("Load "+serializationArtefact+" in "+jarFile+" resource: "+getJarResourceImpl());
+				System.out.println("Load " + serializationArtefact + " in " + jarFile + " resource: " + getJarResourceImpl());
 				return reader.readRootElement(serializationArtefact);
 			} catch (IOException e) {
 				e.printStackTrace();

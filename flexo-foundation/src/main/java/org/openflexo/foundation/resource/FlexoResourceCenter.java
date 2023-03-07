@@ -452,6 +452,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	<R extends FlexoResource<?>> RepositoryFolder<R, I> getRepositoryFolder(FlexoIODelegate<I> ioDelegate,
 			ResourceRepository<R, I> resourceRepository);
 
+	public I getDirectoryWithRelativePath(String relativePath);
+
 	/**
 	 * Create container serialization artefact, with supplied name and parent serialization artefact
 	 * 

@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -956,6 +957,23 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		}
 
 		@Override
+		public File getDirectoryWithRelativePath(String relativePath) {
+			File serializationArtefact = getBaseArtefact();
+
+			if (relativePath != null) {
+				StringTokenizer st = new StringTokenizer(relativePath, "/\\");
+				while (st.hasMoreElements()) {
+					String pathName = st.nextToken();
+					serializationArtefact = getDirectory(pathName, serializationArtefact);
+					if (serializationArtefact == null) {
+						serializationArtefact = createDirectory(pathName, serializationArtefact);
+					}
+				}
+			}
+			return serializationArtefact;
+		}
+
+		@Override
 		public File createDirectory(String name, File parentDirectory) {
 			File returned = new File(parentDirectory, name);
 			getServiceManager().notify(null, new WillWriteFileOnDiskNotification(returned));
@@ -1117,7 +1135,7 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		@Override
 		public List<String> getPathTo(File aFile) throws IOException {
 			File rootFolder = getRootFolder().getSerializationArtefact().getCanonicalFile();
-			if (FileUtils.directoryContainsFile(rootFolder, aFile, true)) {
+			if (FileUtils.directoryContainsFile(rootFolder, aFile.getCanonicalFile(), true)) {
 				List<String> pathTo = new ArrayList<>();
 				File f = aFile.getParentFile().getCanonicalFile();
 				while (f != null && !f.equals(rootFolder)) {
