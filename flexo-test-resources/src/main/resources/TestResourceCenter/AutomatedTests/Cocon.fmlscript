@@ -7,7 +7,7 @@ assert virtualModel != null;
 log "Pretty-print of "+virtualModel;
 log virtualModel.fMLPrettyPrint;
 service ResourceCenterService add_temp_rc;
-myVMI = new Cocon() with (virtualModelInstanceName="test");
+myVMI = new Cocon() with (name="test");
 myVMI.testSignature();
 /*Up*/ u = myVMI.new Up();
 /*Down*/ d = myVMI.new Down();

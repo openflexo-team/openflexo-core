@@ -15,7 +15,7 @@ context;
 assert conceptA.isSuperConceptOf(conceptB);
 resources;
 service ResourceCenterService add_temp_rc;
-myVMI = new TestSingleInheritance() with (virtualModelInstanceName="test1");
+myVMI = new TestSingleInheritance() with (name="test1");
 context;
 assert myVMI != null;
 a = myVMI.new ConceptA::init();

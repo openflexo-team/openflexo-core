@@ -3,7 +3,7 @@ virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/HelloWorld
 context;
 log virtualModel.fMLPrettyPrint;
 service ResourceCenterService add_temp_rc;
-myVMI = new HelloWorld() with (virtualModelInstanceName="test1");
+myVMI = new HelloWorld() with (name="test1");
 myVMI.printHello();
 assert myVMI.myString=="Hello world with Ihab !";
 

@@ -8,7 +8,7 @@ log "Pretty-print of "+virtualModel;
 log virtualModel.fMLPrettyPrint;
 //validate virtualModel;
 service ResourceCenterService add_temp_rc;
-myVMI = new TestFMLReflection() with (virtualModelInstanceName="test1");
+myVMI = new TestFMLReflection() with (name="test1");
 context;
 assert myVMI != null;
 assert myVMI.existingFoo != null;
