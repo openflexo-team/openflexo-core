@@ -39,12 +39,12 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
@@ -158,7 +158,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 	@Override
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
-		if (getModelObject().getType() instanceof VirtualModelInstanceType) {
+		/*if (getModelObject().getType() instanceof VirtualModelInstanceType) {
 			VirtualModel typeVirtualModel = ((VirtualModelInstanceType) getModelObject().getType()).getVirtualModel();
 			if (typeVirtualModel == null) {
 				throwIssue("Cannot find VirtualModel " + getModelObject().getType(), getTypeFragment());
@@ -178,7 +178,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 		}
 		else {
 			throwIssue("Type does not address any FlexoConcept", getTypeFragment());
-		}
+		}*/
 
 	}
 
@@ -190,21 +190,28 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 			// System.out.println("astNode = " + astNode);
 			// System.exit(-1);
 
+			CreationSchemePathElement pathElement = null;
 			Type type = null;
 			if (astNode instanceof ASimpleNewInstance) {
 				handleArguments(((ASimpleNewInstance) astNode).getArgumentList());
 				type = TypeFactory.makeType(((ASimpleNewInstance) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
+				pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type, getParentPathElement(), null,
+						getArguments(), getBindable());
 			}
 			else if (astNode instanceof AFullQualifiedNewInstance) {
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
 				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(),
 						getSemanticsAnalyzer().getTypingSpace());
+				pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type, getParentPathElement(),
+						((AFullQualifiedNewInstance) astNode).getConstructorName().getText(), getArguments(), getBindable());
 			}
 
-			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
-					getParentPathElement(), null, getArguments(), getBindable());
-
-			decodeFMLProperties(getFMLParameters(), pathElement);
+			List<FMLPropertyValue> fmlPropertyValues = decodeFMLProperties(getFMLParameters(), pathElement);
+			if (fmlPropertyValues != null) {
+				for (FMLPropertyValue fmlPropertyValue : fmlPropertyValues) {
+					pathElement.addToFMLPropertyValues(fmlPropertyValue);
+				}
+			}
 
 			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
@@ -271,13 +278,13 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
 				AddFlexoConceptInstanceParameter.class));
 		append(staticContents(")"), getRParFragment());
-		
+
 		when(() -> hasFMLProperties()).thenAppend(staticContents(SPACE, "with", SPACE), getFMLParametersWithFragment())
 				.thenAppend(staticContents("("), getFMLParametersLParFragment())
 				.thenAppend(childrenContents("", "", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "",
 						Indentation.DoNotIndent, FMLPropertyValue.class))
 				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
-		
+
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());*/
 		// @formatter:on

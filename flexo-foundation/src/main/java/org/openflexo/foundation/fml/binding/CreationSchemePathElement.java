@@ -45,6 +45,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -63,11 +64,11 @@ import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -492,26 +493,11 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					returned.append(" with (");
 					isFirst = true;
 
-					if (getVirtualModelInstanceName() != null && getVirtualModelInstanceName().isSet()) {
-						returned.append((isFirst ? "" : ",") + VIRTUAL_MODEL_INSTANCE_NAME_KEY + "=" + getVirtualModelInstanceName());
+					for (FMLPropertyValue<?, ?> propertyValue : getFMLPropertyValues()) {
+						returned.append((isFirst ? "" : ",") + propertyValue.getPropertyName() + "=" + propertyValue.getValue());
 						isFirst = false;
 					}
-					if (getResourceURI() != null && getResourceURI().isSet()) {
-						returned.append((isFirst ? "" : ",") + RESOURCE_URI_KEY + "=" + getResourceURI());
-						isFirst = false;
-					}
-					if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
-						returned.append((isFirst ? "" : ",") + DYNAMIC_RELATIVE_PATH_KEY + "=" + getDynamicRelativePath());
-						isFirst = false;
-					}
-					if (getResourceCenter() != null && getResourceCenter().isSet()) {
-						returned.append((isFirst ? "" : ",") + RESOURCE_CENTER_KEY + "=" + getResourceCenter());
-						isFirst = false;
-					}
-					if (getRepositoryFolder() != null && getRepositoryFolder().isSet()) {
-						returned.append((isFirst ? "" : ",") + REPOSITORY_FOLDER_KEY + "=" + getRepositoryFolder());
-						isFirst = false;
-					}
+
 					returned.append(")");
 				}
 			}
@@ -534,19 +520,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		}
 
 		private boolean hasWithClause() {
-			if (getType() instanceof VirtualModelInstanceType) {
-				return true;
-			}
-			if (getResourceURI() != null && getResourceURI().isSet()) {
-				return true;
-			}
-			if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
-				return true;
-			}
-			if (getResourceCenter() != null && getResourceCenter().isSet()) {
-				return true;
-			}
-			return false;
+			return getFMLPropertyValues() != null && getFMLPropertyValues().size() > 0;
 		}
 
 		@Override
@@ -615,6 +589,58 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 							return check;
 						}
 					}
+				}
+			}
+
+			for (FMLPropertyValue<?, ?> pValue : getFMLPropertyValues()) {
+				if (pValue.getProperty() == null && StringUtils.isNotEmpty(pValue.getUnresolvedPropertyName())) {
+					check.invalidBindingReason = "unresolved property " + pValue.getUnresolvedPropertyName();
+					check.valid = false;
+					return check;
+				}
+			}
+
+			if (getVirtualModelInstanceName() != null && getVirtualModelInstanceName().isSet()) {
+				if (!getVirtualModelInstanceName().isValid()) {
+					check.invalidBindingReason = "unresolved property " + getVirtualModelInstanceName().invalidBindingReason();
+					check.valid = false;
+					return check;
+				}
+			}
+			if (getResourceURI() != null && getResourceURI().isSet()) {
+				if (!getResourceURI().isValid()) {
+					check.invalidBindingReason = "unresolved property " + getResourceURI().invalidBindingReason();
+					check.valid = false;
+					return check;
+				}
+			}
+			if (getDynamicRelativePath() != null && getDynamicRelativePath().isSet()) {
+				if (!getDynamicRelativePath().isValid()) {
+					check.invalidBindingReason = "unresolved property " + getDynamicRelativePath().invalidBindingReason();
+					check.valid = false;
+					return check;
+				}
+			}
+			if (getResourceCenter() != null && getResourceCenter().isSet()) {
+				if (!getResourceCenter().isValid()) {
+					check.invalidBindingReason = "unresolved property " + getResourceCenter().invalidBindingReason();
+					check.valid = false;
+					return check;
+				}
+			}
+			if (getRepositoryFolder() != null && getRepositoryFolder().isSet()) {
+				if (!getRepositoryFolder().isValid()) {
+					check.invalidBindingReason = "unresolved property " + getRepositoryFolder().invalidBindingReason();
+					check.valid = false;
+					return check;
+				}
+			}
+			if (getFlexoConcept() instanceof VirtualModel) {
+				if (!getVirtualModelInstanceName().isSet()) {
+					check.invalidBindingReason = "cannot instantiate " + getFlexoConcept().getName()
+							+ " because new VirtualModelInstance name was not set. Use [with(name=...)]";
+					check.valid = false;
+					return check;
 				}
 			}
 

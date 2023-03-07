@@ -39,10 +39,12 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
@@ -203,6 +205,13 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 						getSemanticsAnalyzer().getTypingSpace());
 				pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type, getParentPathElement(),
 						((AFullQualifiedNewInstance) astNode).getConstructorName().getText(), getArguments(), getBindable());
+			}
+
+			List<FMLPropertyValue> fmlPropertyValues = decodeFMLProperties(getFMLParameters(), pathElement);
+			if (fmlPropertyValues != null) {
+				for (FMLPropertyValue fmlPropertyValue : fmlPropertyValues) {
+					pathElement.addToFMLPropertyValues(fmlPropertyValue);
+				}
 			}
 
 			pathElement.setBindingPathElementOwner(this);

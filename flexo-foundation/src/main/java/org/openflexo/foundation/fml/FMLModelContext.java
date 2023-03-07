@@ -277,22 +277,26 @@ public class FMLModelContext {
 		}
 
 		public FMLPropertyValue<I, T> makeFMLPropertyValue(I object) {
+			return makeFMLPropertyValue(object, object.getFMLModelFactory());
+		}
+
+		public FMLPropertyValue<I, T> makeFMLPropertyValue(I object, FMLModelFactory modelFactory) {
 
 			T value = get(object);
 			if (value instanceof DataBinding && !((DataBinding) value).isSet()) {
 				// Prevent empty DataBinding to be serialized
 				return null;
 			}
-			if (object.getFMLModelFactory() == null) {
+			if (modelFactory == null) {
 				logger.warning("No FMLModelFactory for " + object);
 				return null;
 			}
 			FMLPropertyValue<? super I, ?> propertyValue = null;
 			switch (getKind()) {
 				case Value:
-					return object.getFMLModelFactory().newSimplePropertyValue(this, object, value);
+					return modelFactory.newSimplePropertyValue(this, object, value);
 				case Type:
-					FMLTypePropertyValue returned = object.getFMLModelFactory().newTypePropertyValue();
+					FMLTypePropertyValue returned = modelFactory.newTypePropertyValue();
 					returned.setProperty(this);
 					returned.setObject(object);
 					returned.setType((Type) value);
@@ -300,9 +304,8 @@ public class FMLModelContext {
 				// return object.getFMLModelFactory().newTypePropertyValue(this, object, value);
 				case Instance:
 					if (value instanceof FMLObject) {
-						FMLInstancePropertyValue returnedInstance = object.getFMLModelFactory().newInstancePropertyValue((FMLProperty) this,
-								object);
-						returnedInstance.setInstance(object.getFMLModelFactory().getWrappedFMLObject((FMLObject) value));
+						FMLInstancePropertyValue returnedInstance = modelFactory.newInstancePropertyValue((FMLProperty) this, object);
+						returnedInstance.setInstance(modelFactory.getWrappedFMLObject((FMLObject) value));
 						return returnedInstance;
 					}
 					else {
@@ -311,10 +314,10 @@ public class FMLModelContext {
 					}
 				case InstancesList:
 					if (value instanceof List) {
-						FMLInstancesListPropertyValue returnedInstancesList = object.getFMLModelFactory()
-								.newInstancesListPropertyValue((FMLProperty) this, object);
+						FMLInstancesListPropertyValue returnedInstancesList = modelFactory.newInstancesListPropertyValue((FMLProperty) this,
+								object);
 						for (FMLObject o : ((List<FMLObject>) value)) {
-							returnedInstancesList.addToInstances(object.getFMLModelFactory().getWrappedFMLObject(o));
+							returnedInstancesList.addToInstances(modelFactory.getWrappedFMLObject(o));
 						}
 						return returnedInstancesList;
 					}

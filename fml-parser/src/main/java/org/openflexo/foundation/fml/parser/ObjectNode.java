@@ -39,10 +39,9 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -65,6 +64,7 @@ import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FMLSimplePropertyValue;
 import org.openflexo.foundation.fml.FMLTypePropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -983,23 +983,25 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return getFragment();
 	}
 
-	protected void decodeFMLProperties(PFmlParameters properties, FMLObject modelObject) {
+	protected List<FMLPropertyValue> decodeFMLProperties(PFmlParameters properties, FMLObject modelObject) {
 		if (properties == null) {
-			return;
+			return null;
 		}
 		if (!modelObject.hasFMLProperties(getFactory())) {
-			return;
+			return null;
 		}
 		if (properties instanceof AFullQualifiedFmlParameters) {
-			Map<FMLProperty<?, ?>, Object> propertyValues = new HashMap<>();
+			List<FMLPropertyValue> propertyValues = new ArrayList<>();
 			PQualifiedArgumentList qualifiedArgumentList = ((AFullQualifiedFmlParameters) properties).getQualifiedArgumentList();
 			decodeFMLProperties(qualifiedArgumentList, modelObject, propertyValues);
 			// modelObject.decodeFMLProperties(serializedMap);
+			return propertyValues;
 		}
+		return null;
 
 	}
 
-	private void decodeFMLProperties(PQualifiedArgumentList argList, FMLObject modelObject, Map<FMLProperty<?, ?>, Object> propertyValues) {
+	private void decodeFMLProperties(PQualifiedArgumentList argList, FMLObject modelObject, List<FMLPropertyValue> propertyValues) {
 		if (argList instanceof AOneQualifiedArgumentList) {
 			AOneQualifiedArgumentList one = (AOneQualifiedArgumentList) argList;
 			// decodeFMLProperty(one.getArgName(), one.getExpression(), modelObject, propertyValues);
@@ -1013,7 +1015,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		}
 	}
 
-	private void decodeFMLProperty(PQualifiedArgument qualifiedArg, FMLObject modelObject, Map<FMLProperty<?, ?>, Object> propertyValues) {
+	private void decodeFMLProperty(PQualifiedArgument qualifiedArg, FMLObject modelObject, List<FMLPropertyValue> propertyValues) {
 		if (qualifiedArg instanceof ASimpleQualifiedArgument) {
 			decodeSimpleFMLProperty(((ASimpleQualifiedArgument) qualifiedArg).getArgName(),
 					((ASimpleQualifiedArgument) qualifiedArg).getExpression(), modelObject, propertyValues);
@@ -1028,27 +1030,33 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	private void decodeSimpleFMLProperty(TLidentifier propertyName, PExpression expressionValue, FMLObject modelObject,
-			Map<FMLProperty<?, ?>, Object> propertyValues) {
+			List<FMLPropertyValue> propertyValues) {
 
-		logger.info("Decoding " + propertyName.getText() + "=" + expressionValue);
+		//logger.info("Decoding " + propertyName.getText() + "=" + expressionValue);
+		DataBinding<?> value = makeDataBinding(expressionValue, modelObject).getModelObject();
 		FMLProperty fmlProperty = modelObject.getFMLProperty(propertyName.getText(), getFactory());
 		if (fmlProperty == null) {
 			logger.warning("Cannot retrieve FMLProperty " + propertyName + " for " + modelObject);
+			FMLSimplePropertyValue newSimplePropertyValue = getFactory().newSimplePropertyValue();
+			newSimplePropertyValue.setUnresolvedPropertyName(propertyName.getText());
+			newSimplePropertyValue.setValue(value);
+			propertyValues.add(0, newSimplePropertyValue);
 			return;
 		}
 
-		DataBinding<?> value = makeDataBinding(expressionValue, modelObject).getModelObject();
-		System.out.println("FMLProperty=" + fmlProperty + " type=" + fmlProperty.getType());
+		//System.out.println("FMLProperty=" + fmlProperty + " type=" + fmlProperty.getType());
 		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
-			logger.info("Set " + fmlProperty.getName() + " = " + value);
+			//logger.info("Set " + fmlProperty.getName() + " = " + value);
 			fmlProperty.set(value, modelObject);
+			propertyValues.add(0, fmlProperty.makeFMLPropertyValue(modelObject, getFactory()));
 		}
 		else if (value.isConstant()) {
 			Object constantValue = ((Constant) value.getExpression()).getValue();
 			if (constantValue != null) {
 				if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
-					logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
+					//logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
 					fmlProperty.set(constantValue, modelObject);
+					propertyValues.add(0, fmlProperty.makeFMLPropertyValue(modelObject, getFactory()));
 				}
 				else {
 					logger.warning("Invalid value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
@@ -1065,6 +1073,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 					if (elementImportDeclaration.getAbbrev().equals(value.toString())) {
 						// System.out.println("Trouve !!!");
 						fmlProperty.set(elementImportDeclaration.getReferencedObject(), modelObject);
+						propertyValues.add(0, fmlProperty.makeFMLPropertyValue(modelObject, getFactory()));
 						break;
 					}
 				}
@@ -1077,7 +1086,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	private <O extends FMLObject> O decodeInstanceFMLProperty(TLidentifier propertyName, PQualifiedInstance qualifiedInstance,
-			FMLObject modelObject, Map<FMLProperty<?, ?>, Object> propertyValues) {
+			FMLObject modelObject, List<FMLPropertyValue> propertyValues) {
 		Class<O> objectClass = null;
 		if (qualifiedInstance instanceof ASimpleQualifiedInstance) {
 			TUidentifier instanceType = ((ASimpleQualifiedInstance) qualifiedInstance).getArgType();
