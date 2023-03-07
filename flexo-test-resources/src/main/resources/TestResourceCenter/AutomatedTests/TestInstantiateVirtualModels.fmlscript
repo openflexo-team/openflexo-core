@@ -1,0 +1,43 @@
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels/TestInstantiate.fml"];
+context;
+assert virtualModel != null;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+//validate virtualModel;
+service ResourceCenterService add_temp_rc;
+myVMI = new TestInstantiate() with (name="test1");
+context;
+assert myVMI != null;
+// --------- Instantiate VMI1
+vmi1 = myVMI.instantiation2("instantiation2");
+assert vmi1 != null;
+assert vmi1.name == "DefaultName";
+assert vmi1 == myVMI.vmi1;
+rc = vmi1.resource.resourceCenter;
+assert rc.getRepositoryFolder(vmi1.resource) == rc.rootFolder;
+assert vmi1.containerVirtualModelInstance == null;
+// --------- Instantiate VMI2
+vmi2 = myVMI.instantiation5("instantiation5");
+assert vmi2 != null;
+assert vmi2.name == "Foo";
+assert vmi2 == myVMI.vmi2;
+assert rc.getRepositoryFolder(vmi2.resource) == rc.rootFolder;
+assert vmi2.containerVirtualModelInstance == null;
+// --------- Instantiate VMI3
+vmi3 = myVMI.instantiation7("instantiation7");
+assert vmi3 != null;
+assert vmi3.name == "Foo";
+assert vmi3 == myVMI.vmi3;
+assert rc.getRepositoryFolder(vmi3.resource).name == "AFolder";
+assert rc.getRepositoryFolder(vmi3.resource).parentFolder == rc.rootFolder;
+assert vmi3.containerVirtualModelInstance == null;
+// --------- Instantiate VMI3
+vmi4 = myVMI.instantiation9("instantiation9");
+assert vmi4 != null;
+assert vmi4.name == "Foo";
+assert vmi4 == myVMI.vmi4;
+assert rc.getRepositoryFolder(vmi4.resource) == rc.rootFolder;
+assert vmi4.containerVirtualModelInstance == null;

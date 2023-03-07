@@ -6,10 +6,10 @@ import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtual
 @Author("sylvainguerin")
 public model TestInstantiate {
 
-	RootVirtualModel vm1 with ModelInstance();
-	RootVirtualModel vm2 with ModelInstance();
-	RootVirtualModel vm3 with ModelInstance();
-	RootVirtualModel vm4 with ModelInstance();
+	RootVirtualModel vmi1 with ModelInstance();
+	RootVirtualModel vmi2 with ModelInstance();
+	RootVirtualModel vmi3 with ModelInstance();
+	RootVirtualModel vmi4 with ModelInstance();
 
 	create() {
 	}
@@ -21,8 +21,8 @@ public model TestInstantiate {
 
 	// Success
 	RootVirtualModel instantiation2(String aName) {
-		vm1 = new RootVirtualModel() with (name=parameters.aName);
-		return vm1;
+		vmi1 = new RootVirtualModel() with (name=parameters.aName);
+		return vmi1;
 	}
 
 	// This should fail because default anonymous constructor does not define String parameter
@@ -37,8 +37,8 @@ public model TestInstantiate {
 
 	// Success
 	RootVirtualModel instantiation5(String aName) {
-		vm2 = new RootVirtualModel::init("Foo") with (name=parameters.aName);
-		return vm2;
+		vmi2 = new RootVirtualModel::init("Foo") with (name=parameters.aName);
+		return vmi2;
 	}
 
 	// This should fail because foo is not known
@@ -48,8 +48,8 @@ public model TestInstantiate {
 
 	// Success
 	RootVirtualModel instantiation7(String aName) {
-		vm3 = new RootVirtualModel::init("Foo") with (name=parameters.aName,path="AFolder",rc=this.resourceCenter);
-		return vm3;
+		vmi3 = new RootVirtualModel::init("Foo") with (name=parameters.aName,path="AFolder",rc=this.resourceCenter);
+		return vmi3;
 	}
 
 	// This should fail because folder is not of right type
@@ -59,8 +59,8 @@ public model TestInstantiate {
 
 	// Success
 	RootVirtualModel instantiation9(String aName) {
-		vm4 = new RootVirtualModel::init("Foo") with (name=parameters.aName,folder=this.resourceCenter.getRepositoryFolder(this.resource));
-		return vm4;
+		vmi4 = new RootVirtualModel::init("Foo") with (name=parameters.aName,folder=this.resourceCenter.getRepositoryFolder(this.resource));
+		return vmi4;
 	}
 
 
