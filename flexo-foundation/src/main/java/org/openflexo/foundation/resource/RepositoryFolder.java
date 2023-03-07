@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DefaultFlexoObject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -331,6 +332,15 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 			}
 		}
 		return getResources().size() > 0;
+	}
+
+	@Override
+	public FlexoServiceManager getServiceManager() {
+		if (getResourceRepository() != null && getResourceRepository().getResourceCenter() != null
+				&& getResourceRepository().getResourceCenter().getServiceManager() != null) {
+			return getResourceRepository().getResourceCenter().getServiceManager();
+		}
+		return super.getServiceManager();
 	}
 
 }
