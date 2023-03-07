@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Level;
@@ -705,6 +706,11 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 			CS function = (CS) ((FMLBindingFactory) getBindable().getBindingFactory()).retrieveConstructor(getType(),
 					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
+			/*System.out.println("########## Je cherche le constructeur " + getParsed() + " pour " + getType());
+			System.out.println("Je retourne: " + function);
+			if (function != null) {
+				System.out.println(function.getFMLPrettyPrint());
+			}*/
 			setFunction(function);
 			if (function == null && getType().isResolved()) {
 				// Do not warn for unresolved type
@@ -719,9 +725,9 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		public Object getBindingValue(Object target, BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
-			System.out.println("Executing CreationSchemePathElement: " + this);
-			System.out.println("target=" + target);
-			System.out.println("evaluationContext=" + evaluationContext);
+			// System.out.println("Executing CreationSchemePathElement: " + this);
+			// System.out.println("target=" + target);
+			// System.out.println("evaluationContext=" + evaluationContext);
 
 			try {
 
@@ -738,13 +744,13 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				if (container == null) {
 					if (evaluationContext instanceof RunTimeEvaluationContext) {
 						FlexoObject focusedObject = ((RunTimeEvaluationContext) evaluationContext).getFocusedObject();
-						System.out.println("focusedObject=" + focusedObject);
+						// System.out.println("focusedObject=" + focusedObject);
 						if (focusedObject instanceof RepositoryFolder || focusedObject instanceof FlexoConceptInstance) {
 							container = focusedObject;
 						}
 					}
 				}
-				System.out.println("container=" + container);
+				// System.out.println("container=" + container);
 
 				if (container == null) {
 					throw new NullReferenceException("Unable to find executable context for " + this);
@@ -755,12 +761,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
 
-					System.out.println("Creating new VMI");
-					System.out.println("VM=" + getCreationScheme().getFlexoConcept());
-					System.out.println("vmiName=" + vmiName);
-
-					System.out.println("RC-expression=" + getResourceCenter());
-					System.out.println("RC=" + getResourceCenter().getBindingValue(evaluationContext));
+					// System.out.println("Creating new VMI VM=" + getCreationScheme().getFlexoConcept());
+					// System.out.println("vmiName=" + vmiName);
 
 					/*System.out.println("getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
 					System.out.println("valid=" + getVirtualModelInstanceName().isValid());
@@ -779,7 +781,30 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					// We may supply an URI if no container VirtualModel
 
 					if (instantiatedVirtualModel.getContainerVirtualModel() != null) {
-
+						// TODO: check that container matches expected container VirtualModel
+					}
+					else {
+						// We should find the adequate folder where to instantiate the VMI
+						if (getResourceCenter().isSet() && getResourceCenter().isValid() && getDynamicRelativePath().isSet()
+								&& getDynamicRelativePath().isValid()) {
+							FlexoResourceCenter rc = getResourceCenter().getBindingValue(evaluationContext);
+							String relativePath = getDynamicRelativePath().getBindingValue(evaluationContext);
+							Object serializationArtefact = rc.getDirectoryWithRelativePath(relativePath);
+							container = rc.getRepositoryFolder(serializationArtefact, true);
+						}
+						else if (getRepositoryFolder().isSet() && getRepositoryFolder().isValid()) {
+							container = getRepositoryFolder().getBindingValue(evaluationContext);
+						}
+						else {
+							// In this case, find the folder in which root current VMI is defined
+							if (container instanceof FlexoConceptInstance) {
+								VirtualModelInstance<?, ?> currentVMI = ((FlexoConceptInstance) container).getVirtualModelInstance();
+								while (currentVMI.getContainerVirtualModelInstance() != null) {
+									currentVMI = currentVMI.getContainerVirtualModelInstance();
+								}
+								container = currentVMI.getResourceCenter().getRepositoryFolder(currentVMI.getResource());
+							}
+						}
 					}
 
 					CreateBasicVirtualModelInstance createVMIAction;
@@ -795,22 +820,26 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						logger.warning("Invalid evaluation context " + evaluationContext);
 						return null;
 					}
+
 					createVMIAction.setSkipChoosePopup(true);
 					createVMIAction.setNewVirtualModelInstanceName(vmiName);
 					createVMIAction.setVirtualModel(instantiatedVirtualModel);
 					createVMIAction.setCreationScheme((CreationScheme) getCreationScheme());
 
+					// System.out.println("On execute le CS: " + getCreationScheme());
+					// System.out.println("FML: " + getCreationScheme().getFMLPrettyPrint());
+
 					for (FunctionArgument functionArgument : getFunctionArguments()) {
-						System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
+						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
 						Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
-						System.out.println("values:" + v);
+						// System.out.println("values:" + v);
 						createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
 					}
 
-					System.out.println("Doing the action...");
+					// System.out.println("Doing the action...");
 					createVMIAction.doAction();
 					FMLRTVirtualModelInstance returned = createVMIAction.getNewVirtualModelInstance();
-					System.out.println("returned=" + returned);
+					// System.out.println("returned=" + returned);
 					return returned;
 				}
 				else if (container instanceof FlexoConceptInstance) {
@@ -846,6 +875,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 				throw new InvocationTargetTransformException(e);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 			return null;
 
