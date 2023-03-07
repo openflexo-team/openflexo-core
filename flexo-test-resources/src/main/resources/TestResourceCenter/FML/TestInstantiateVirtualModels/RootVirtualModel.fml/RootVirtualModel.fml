@@ -6,9 +6,9 @@ public model RootVirtualModel {
 
 	String name;
 
-	create(String name) {
-		log "Default constructor of RootVirtualModel with " + parameters.name;
-		name = "Default" + parameters.name;
+	create() {
+		log "Default constructor of RootVirtualModel";
+		name = "DefaultName";
 	}
 
 	create::init(String name) {

@@ -1,0 +1,67 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels/RootVirtualModel.fml"] as RootVirtualModel;
+
+@URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels/TestInstantiate.fml")
+@Author("sylvainguerin")
+public model TestInstantiate {
+
+	RootVirtualModel vm1 with ModelInstance();
+	RootVirtualModel vm2 with ModelInstance();
+	RootVirtualModel vm3 with ModelInstance();
+	RootVirtualModel vm4 with ModelInstance();
+
+	create() {
+	}
+
+	// This should fail because no name provided
+	RootVirtualModel instantiation1() {
+		return new RootVirtualModel();
+	}
+
+	// Success
+	RootVirtualModel instantiation2(String aName) {
+		vm1 = new RootVirtualModel() with (name=parameters.aName);
+		return vm1;
+	}
+
+	// This should fail because default anonymous constructor does not define String parameter
+	RootVirtualModel instantiation3() {
+		return new RootVirtualModel("Foo");
+	}
+
+	// This should fail because no name provided
+	RootVirtualModel instantiation4() {
+		return new RootVirtualModel::init("Foo");
+	}
+
+	// Success
+	RootVirtualModel instantiation5(String aName) {
+		vm2 = new RootVirtualModel::init("Foo") with (name=parameters.aName);
+		return vm2;
+	}
+
+	// This should fail because foo is not known
+	RootVirtualModel instantiation6() {
+		return new RootVirtualModel::init("Foo") with (name=parameters.aName,foo=null);
+	}
+
+	// Success
+	RootVirtualModel instantiation7(String aName) {
+		vm3 = new RootVirtualModel::init("Foo") with (name=parameters.aName,path="AFolder",rc=this.resourceCenter);
+		return vm3;
+	}
+
+	// This should fail because folder is not of right type
+	RootVirtualModel instantiation8(String aName) {
+		return new RootVirtualModel::init("Foo") with (name=parameters.aName,folder="AFolder");
+	}
+
+	// Success
+	RootVirtualModel instantiation9(String aName) {
+		vm4 = new RootVirtualModel::init("Foo") with (name=parameters.aName,folder=this.resourceCenter.getRepositoryFolder(this.resource));
+		return vm4;
+	}
+
+
+}
