@@ -505,6 +505,10 @@ public abstract class OpenflexoTestCase {
 		assertEquals(0, validate(object).getErrorsCount());
 	}
 
+	protected void assertObjectIsNotValid(FMLObject object) {
+		assertTrue(validate(object).getErrorsCount() > 0);
+	}
+
 	protected ValidationReport validate(FMLObject object) {
 
 		try {
