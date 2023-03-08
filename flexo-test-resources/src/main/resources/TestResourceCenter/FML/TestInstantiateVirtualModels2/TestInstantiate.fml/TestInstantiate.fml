@@ -1,0 +1,17 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/VirtualModelToInstantiate.fml"] as RootVirtualModel;
+
+@URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/TestInstantiate.fml")
+@Author("sylvainguerin")
+public model TestInstantiate {
+
+	concept Foo {
+		public VirtualModelToInstantiate newProcess(required String vmiName) {
+			VirtualModelToInstantiate newVMI = 
+				new VirtualModelToInstantiate::init(container) with (name=parameters.vmiName);
+			return newVMI;
+		}
+	}
+
+}

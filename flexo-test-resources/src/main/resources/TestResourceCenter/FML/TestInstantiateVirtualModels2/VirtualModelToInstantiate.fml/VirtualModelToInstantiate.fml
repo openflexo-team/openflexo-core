@@ -1,0 +1,12 @@
+import java.lang.String;
+
+import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/TestInstantiate.fml"] as TestInstantiate;
+
+@URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/VirtualModelToInstantiate.fml")
+@Author("sylvainguerin")
+public model VirtualModelToInstantiate {
+
+	create::init(TestInstantiate vm) {
+		log "Constructor of RootVirtualModel with reference " + parameters.vm;
+	}
+}
