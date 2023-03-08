@@ -275,7 +275,7 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	/**
 	 * Perform second pass: at this stage all dependencies are resolved and parsed as first pass
 	 */
-	public final void finalizeDeserialization() {
+	public final void finalizeDeserialization(boolean warnOnInvalidBinding) {
 
 		/*System.out.println("Bon, on resout maintenant les types a resoudre");
 		for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
@@ -307,8 +307,8 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			finalizeDeserialization(compilationUnitNode);
 		}
 
-		// Try to ddfix invalid bindings now
-		attemptToFixInvalidBindings();
+		// Try tofix invalid bindings now
+		attemptToFixInvalidBindings(warnOnInvalidBinding);
 
 	}
 

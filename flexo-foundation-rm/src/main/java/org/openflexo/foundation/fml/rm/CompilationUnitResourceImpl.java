@@ -347,7 +347,7 @@ public abstract class CompilationUnitResourceImpl
 	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
 		if (cuNode != null) {
-			cuNode.getSemanticsAnalyzer().finalizeDeserialization();
+			cuNode.getSemanticsAnalyzer().finalizeDeserialization(true);
 		}
 		notifyResourceLoaded();
 	}

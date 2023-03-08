@@ -223,7 +223,8 @@ public class FMLCompilationUnitParser {
 				semanticsAnalyzer.initializePrettyPrint();
 				if (finalizeDeserialization) {
 					// When deserialization required, do it now
-					semanticsAnalyzer.finalizeDeserialization();
+					// but do not warn on invalid binding
+					semanticsAnalyzer.finalizeDeserialization(false);
 				}
 				// Otherwise, do it in a future second pass
 			}

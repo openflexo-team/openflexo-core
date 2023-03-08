@@ -194,13 +194,13 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	/**
 	 * Attempt to fix all invalid bindings
 	 */
-	protected void attemptToFixInvalidBindings() {
+	protected void attemptToFixInvalidBindings(boolean warnOnInvalidBinding) {
 		for (DataBinding<?> dataBinding : new ArrayList<>(invalidBindings)) {
 			if (dataBinding.revalidate()) {
 				logger.info("DataBinding " + dataBinding + " has been finally successfully revalidated at the end of process");
 				invalidBindings.remove(dataBinding);
 			}
-			else {
+			else if (warnOnInvalidBinding) {
 				logger.warning("DataBinding " + dataBinding + " still invalid at the end of process, reason: "
 						+ dataBinding.invalidBindingReason());
 			}
