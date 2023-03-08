@@ -490,20 +490,9 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					isFirst = false;
 				}
 				returned.append(")");
-				if (hasWithClause()) {
-					returned.append(" with (");
-					isFirst = true;
-
-					for (FMLPropertyValue<?, ?> propertyValue : getFMLPropertyValues()) {
-						returned.append((isFirst ? "" : ",") + propertyValue.getPropertyName() + "=" + propertyValue.getValue());
-						isFirst = false;
-					}
-
-					returned.append(")");
-				}
 			}
 			else {
-				returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+				returned.append("new " + TypeUtils.simpleRepresentation(getType()) + (getParsed() != null ? "::" + getParsed() : "") + "(");
 				boolean isFirst = true;
 				if (getArguments() != null) {
 					for (DataBinding<?> arg : getArguments()) {
@@ -511,6 +500,21 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						isFirst = false;
 					}
 				}
+				returned.append(")");
+			}
+
+			if (hasWithClause()) {
+				returned.append(" with (");
+				boolean isFirst = true;
+
+				// System.out.println(">>>> properties");
+				for (FMLPropertyValue<?, ?> propertyValue : getFMLPropertyValues()) {
+					// System.out.println("> " + propertyValue + " " + propertyValue.getPropertyName() + "=" + propertyValue.getValue());
+					returned.append((isFirst ? "" : ",") + propertyValue.getPropertyName() + "=" + propertyValue.getValue());
+					isFirst = false;
+				}
+				// System.out.println("<<<< done");
+
 				returned.append(")");
 			}
 
