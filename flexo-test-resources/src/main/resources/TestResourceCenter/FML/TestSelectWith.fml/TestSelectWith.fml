@@ -1,0 +1,38 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestSelectWith.fml")
+@Author("sylvainguerin")
+public model TestSelectWith {
+
+	create() {
+		Person john = new Person("John","Doe",42);
+		Person mary = new Person("Mary","Doe",44);
+		Person riri = new Person("Riri","Doe",12);
+		Person fifi = new Person("Fifi","Doe",12);
+		Person loulou = new Person("Loulou","Doe",12);
+	}
+
+	Person retrieveJohn() {
+		return select unique Person from this where(selected.firstName == "John",selected.lastName == "Doe");
+	}
+
+	Person retrieveMary() {
+		return select unique Person from this where(selected.firstName == "Mary");
+	}
+
+	List<Person> retrieveChildrenAged12() {
+		return select Person from this where(selected.age == 12);
+	}
+
+	concept Person {
+		String firstName;
+		String lastName;
+		int age;
+
+		create(String firstName,String lastName,int age) {
+			firstName = parameters.firstName;
+			lastName = parameters.lastName;
+			age = parameters.age;
+		}
+	}
+}

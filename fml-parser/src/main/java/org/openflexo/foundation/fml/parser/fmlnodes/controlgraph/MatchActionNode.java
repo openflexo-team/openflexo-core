@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -269,7 +270,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
 		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
 		//append(staticContents(")"), getRParFromFragment());
-		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, "where", ""), getWhereFragment())
+		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, FMLKeywords.Where.getKeyword(), ""), getWhereFragment())
 				.thenAppend(staticContents(SPACE, "(", ""), getLParWhereFragment())
 				.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereCriteriasFragment())
 				.thenAppend(staticContents(")"), getRParWhereFragment());

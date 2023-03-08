@@ -43,16 +43,23 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
+import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
+import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AWhereClause;
+import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
+import org.openflexo.foundation.fml.parser.node.PWhereClause;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance;
@@ -147,8 +154,34 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			// TODO...
 			returned = null;
 		}
+
+		if (astNode.getWhereClause() != null) {
+			handleConditions(((AWhereClause) astNode.getWhereClause()).getArgumentList(), returned);
+		}
+
 		return returned;
 
+	}
+
+	private void handleConditions(PArgumentList argumentList, FR modelObject) {
+		if (argumentList instanceof AManyArgumentList) {
+			AManyArgumentList l = (AManyArgumentList) argumentList;
+			handleConditions(l.getArgumentList(), modelObject);
+			handleCondition(l.getExpression(), modelObject);
+		}
+		else if (argumentList instanceof AOneArgumentList) {
+			handleCondition(((AOneArgumentList) argumentList).getExpression(), modelObject);
+		}
+	}
+
+	private void handleCondition(PExpression expression, FR modelObject) {
+
+		DataBinding<Boolean> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Boolean.class,
+				getSemanticsAnalyzer(), this);
+
+		FetchRequestCondition newCondition = getFactory().newFetchRequestCondition();
+		newCondition.setCondition(argValue);
+		modelObject.addToConditions(newCondition);
 	}
 
 	/*
@@ -172,6 +205,12 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		append(staticContents(SPACE, "from", ""), getFromFragment());
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
 		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+
+		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, FMLKeywords.Where.getKeyword(), ""), getWhereFragment())
+		.thenAppend(staticContents(SPACE, "(", ""), getLParWhereFragment())
+		.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereConditionsFragment())
+		.thenAppend(staticContents(")"), getRParWhereFragment());
+
 		//append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
 		// final to true is here a little hack to prevent semi to be removed at pretty-print
@@ -194,6 +233,21 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		}
 		if (getModelObject() != null) {
 			return getModelObject().getReceiver().toString();
+		}
+		return null;
+	}
+
+	private String getWhereAsString() {
+		if (getModelObject() != null) {
+			StringBuffer sb = new StringBuffer();
+			boolean isFirst = true;
+			for (FetchRequestCondition condition : getModelObject().getConditions()) {
+				if (condition.getCondition().isSet()) {
+					sb.append((isFirst ? "" : ",") + condition.getCondition());
+					isFirst = false;
+				}
+			}
+			return sb.toString();
 		}
 		return null;
 	}
@@ -265,6 +319,55 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			PFromClause fromClause = getASTNode().getFromClause();
 			if (fromClause instanceof AFromClause) {
 				return getFragment(((AFromClause) fromClause).getExpression());
+			}
+		}
+		return null;
+	}
+
+	private boolean hasWhereClause() {
+		if (getModelObject() != null) {
+			return getModelObject().getConditions().size() > 0;
+		}
+		else {
+			return getASTNode() != null && getASTNode().getWhereClause() != null;
+		}
+	}
+
+	private RawSourceFragment getWhereFragment() {
+		if (getASTNode() != null) {
+			PWhereClause whereClause = getASTNode().getWhereClause();
+			if (whereClause instanceof AWhereClause) {
+				return getFragment(((AWhereClause) whereClause).getKwWhere());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLParWhereFragment() {
+		if (getASTNode() != null) {
+			PWhereClause whereClause = getASTNode().getWhereClause();
+			if (whereClause instanceof AWhereClause) {
+				return getFragment(((AWhereClause) whereClause).getLPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRParWhereFragment() {
+		if (getASTNode() != null) {
+			PWhereClause whereClause = getASTNode().getWhereClause();
+			if (whereClause instanceof AWhereClause) {
+				return getFragment(((AWhereClause) whereClause).getRPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getWhereConditionsFragment() {
+		if (getASTNode() != null) {
+			PWhereClause whereClause = getASTNode().getWhereClause();
+			if (whereClause instanceof AWhereClause) {
+				return getFragment(((AWhereClause) whereClause).getArgumentList());
 			}
 		}
 		return null;

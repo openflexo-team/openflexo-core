@@ -1,0 +1,26 @@
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestSelectWith.fml"];
+context;
+assert virtualModel != null;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+//validate virtualModel;
+service ResourceCenterService add_temp_rc;
+myVMI = new TestSelectWith() with (name="test1");
+context;
+assert myVMI != null;
+john = myVMI.retrieveJohn();
+assert john != null;
+assert john.firstName == "John";
+mary = myVMI.retrieveMary();
+assert mary != null;
+assert mary.firstName == "Mary";
+theChildren = myVMI.retrieveChildrenAged12();
+assert theChildren != null;
+assert theChildren.size == 3;
+assert theChildren.get(0).firstName == "Riri";
+assert theChildren.get(1).firstName == "Fifi";
+assert theChildren.get(2).firstName == "Loulou";
+
