@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.expr.FMLConstant.ArithmeticConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.ByteConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.CharConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.DoubleConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.FloatConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.IntegerConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.LongConstant;
@@ -98,6 +99,9 @@ public abstract class FMLArithmeticBinaryOperator extends FMLBinaryOperator {
 				}
 				else if (rightArg instanceof FloatConstant) {
 					return new StringConstant(((StringConstant) leftArg).getValue() + ((FloatConstant) rightArg).getValue());
+				}
+				else if (rightArg instanceof DoubleConstant) {
+					return new StringConstant(((StringConstant) leftArg).getValue() + ((DoubleConstant) rightArg).getValue());
 				}
 				else if (rightArg instanceof BooleanConstant) {
 					return new StringConstant(((StringConstant) leftArg).getValue() + ((BooleanConstant) rightArg).getValue());
