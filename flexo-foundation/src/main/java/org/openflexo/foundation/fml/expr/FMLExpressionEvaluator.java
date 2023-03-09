@@ -40,6 +40,7 @@
 package org.openflexo.foundation.fml.expr;
 
 import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.exception.InvalidCastException;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.Constant;
@@ -80,6 +81,9 @@ public class FMLExpressionEvaluator extends ExpressionEvaluator {
 		else if (e instanceof FMLInstanceOfExpression) {
 			return transformInstanceOfExpression((FMLInstanceOfExpression) e);
 		}
+		else if (e instanceof FMLCastExpression) {
+			return transformCastExpression((FMLCastExpression) e);
+		}
 		return super.performTransformation(e);
 	}
 
@@ -105,6 +109,23 @@ public class FMLExpressionEvaluator extends ExpressionEvaluator {
 			}
 			else {
 				return BooleanConstant.FALSE;
+			}
+		}
+		return e;
+	}
+
+	private static Expression transformCastExpression(FMLCastExpression e) throws InvalidCastException {
+
+		if (e.getArgument() == ObjectSymbolicConstant.NULL) {
+			return ObjectSymbolicConstant.NULL;
+		}
+
+		if (e.getArgument() instanceof Constant) {
+			if (TypeUtils.isOfType(((Constant<?>) e.getArgument()).getValue(), e.getCastType())) {
+				return e.getArgument();
+			}
+			else {
+				throw new InvalidCastException(e.getCastType(), ((Constant<?>) e.getArgument()).getValue().getClass());
 			}
 		}
 		return e;
