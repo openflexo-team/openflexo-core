@@ -1393,6 +1393,14 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
+	public I getDirectoryWithRelativePath(String relativePath) {
+		if (getDelegateResourceCenter() == null) {
+			return null;
+		}
+		return getDelegateResourceCenter().getDirectoryWithRelativePath(relativePath);
+	}
+
+	@Override
 	public I createDirectory(String name, I parentDirectory) {
 		if (getDelegateResourceCenter() == null) {
 			return null;
