@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -459,14 +460,85 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	/**
-	 * Return applicable
+	 * Implements FML dynamic binding
+	 * 
+	 * Return applicable FlexoBehaviour to execute according to the one beeing identified at compile-time.
+	 * 
+	 * We manage here containment by looking up container
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public final FB getApplicableFlexoBehaviour() {
-		return (FB) getFlexoBehaviour().getMostSpecializedBehaviour(
+		return getApplicableFlexoBehaviour(
 				getDeclaredConceptualLevel() == null ? getFlexoConceptInstance().getFlexoConcept() : getDeclaredConceptualLevel());
+	}
+
+	/**
+	 * Internally used for {@link #getApplicableFlexoBehaviour()}
+	 * 
+	 * @param concept
+	 * @return
+	 */
+	private FB getApplicableFlexoBehaviour(FlexoConcept concept) {
+		// System.out.println("Looking " + getFlexoBehaviour().getSignature() + " in " + concept);
+		FB returned = (FB) getFlexoBehaviour().getMostSpecializedBehaviour(concept);
+		if (returned == null) {
+			if (concept.getContainerFlexoConcept() != null) {
+				return getApplicableFlexoBehaviour(concept.getContainerFlexoConcept());
+			}
+			else if (concept instanceof VirtualModel && ((VirtualModel) concept).getContainerVirtualModel() != null) {
+				return getApplicableFlexoBehaviour(((VirtualModel) concept).getContainerVirtualModel());
+			}
+			else {
+				return getApplicableFlexoBehaviour(concept.getOwner());
+			}
+		}
+		else {
+			// System.out.println("Found " + getFlexoBehaviour().getSignature() + " in " + concept);
+			return returned;
+		}
+	}
+
+	/**
+	 * Implements FML dynamic binding
+	 * 
+	 * Return applicable FlexoConceptInstance to consider when executing applicable FlexoBehaviour
+	 * 
+	 * We manage here containment by looking up container
+	 * 
+	 * @return
+	 */
+	protected FlexoConceptInstance getApplicableFlexoConceptInstance() {
+		return getApplicableFlexoConceptInstance(getFlexoConceptInstance());
+	}
+
+	/**
+	 * Internally used for {@link #getApplicableFlexoConceptInstance()}
+	 * 
+	 * @param fci
+	 * @return
+	 */
+	private FlexoConceptInstance getApplicableFlexoConceptInstance(FlexoConceptInstance fci) {
+		if (fci == null) {
+			return null;
+		}
+		FB applicablebehaviour = getApplicableFlexoBehaviour();
+		if (applicablebehaviour.getFlexoConcept().isAssignableFrom(fci.getFlexoConcept())) {
+			return fci;
+		}
+		else {
+			if (fci.getFlexoConcept().getContainerFlexoConcept() != null) {
+				return getApplicableFlexoConceptInstance(fci.getContainerFlexoConceptInstance());
+			}
+			else if (fci.getFlexoConcept() instanceof VirtualModel
+					&& ((VirtualModel) fci.getFlexoConcept()).getContainerVirtualModel() != null) {
+				return getApplicableFlexoConceptInstance(fci.getVirtualModelInstance().getContainerVirtualModelInstance());
+			}
+			else {
+				return getApplicableFlexoConceptInstance(fci.getVirtualModelInstance());
+			}
+		}
+
 	}
 
 	@Override
@@ -494,8 +566,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}
 
 		// Not found at this level, delegate it to the FlexoConceptInstance
-		if (getFlexoConceptInstance() != null) {
-			return getFlexoConceptInstance().getValue(variable);
+		if (getApplicableFlexoConceptInstance() != null) {
+			return getApplicableFlexoConceptInstance().getValue(variable);
 		}
 
 		// Maybe to the FMLRTVirtualModelInstance ?

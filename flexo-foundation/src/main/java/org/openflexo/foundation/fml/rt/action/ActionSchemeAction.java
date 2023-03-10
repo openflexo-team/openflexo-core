@@ -120,17 +120,42 @@ public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeA
 				throw new InvalidParametersException(
 						"Inconsistent data: ActionScheme is not defined in any FlexoConcept: " + applicableActionScheme);
 			}
-			if (applicableActionScheme.getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
+
+			executeControlGraph();
+
+			/*if (applicableActionScheme.getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
 				if (applicableActionScheme != null && applicableActionScheme.evaluateCondition(getFlexoConceptInstance())) {
 					executeControlGraph();
 				}
 			}
+			else if (applicableActionScheme.getFlexoConcept().isAssignableFrom(getVirtualModelInstance().getVirtualModel())) {
+				System.out.println("On tente de rattrapper le coup pour executer " + applicableActionScheme.getSignature());
+				System.out.println("On a besoin d'acceder a " + applicableActionScheme.getFlexoConcept());
+				System.out.println("Mais on a FCI=" + getFlexoConceptInstance());
+				System.out.println("Mais on a VMI=" + getVirtualModelInstance());
+				if (applicableActionScheme != null && applicableActionScheme.evaluateCondition(getVirtualModelInstance())) {
+					System.out.println("On execute bien le truc: ");
+					prout = getVirtualModelInstance();
+					System.out.println(applicableActionScheme.getFMLPrettyPrint());
+					executeControlGraph();
+					System.out.println("Et on retourne: " + returnedValue);
+				}
+			}
 			else {
+				System.out.println("On a un probleme ici pour executer " + applicableActionScheme.getSignature());
+				System.out.println("On a besoin d'acceder a " + applicableActionScheme.getFlexoConcept());
+				System.out.println("Mais on a FCI=" + getFlexoConceptInstance());
+				System.out.println("Mais on a VMI=" + getVirtualModelInstance());
 				throw new InvalidParametersException("ActionScheme " + applicableActionScheme + " is not a behaviour defined for "
 						+ getFlexoConceptInstance().getFlexoConcept());
-			}
+			}*/
 		}
 		else {
+
+			// System.out.println("Pour le FCI: " + getFlexoConceptInstance());
+			// System.out.println("Et le behaviour " + getFlexoBehaviour());
+			// System.out.println("J'obtiens: " + applicableActionScheme);
+
 			throw new InvalidParametersException("Cannot execute a null ActionScheme for " + getFlexoConceptInstance());
 		}
 
