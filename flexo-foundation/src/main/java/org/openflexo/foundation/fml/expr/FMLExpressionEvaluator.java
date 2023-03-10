@@ -120,8 +120,52 @@ public class FMLExpressionEvaluator extends ExpressionEvaluator {
 			return ObjectSymbolicConstant.NULL;
 		}
 
-		if (e.getArgument() instanceof Constant) {
+		if (e.getArgument() instanceof Constant && TypeUtils.isResolved(e.getCastType())) {
+
+			if (TypeUtils.isOfType(((Constant<?>) e.getArgument()).getValue(), Number.class)) {
+				if (TypeUtils.isDouble(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(n.doubleValue() /*Double.valueOf(n.toString())*/);
+				}
+				if (TypeUtils.isFloat(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(n.floatValue() /*Float.valueOf(n.toString())*/);
+				}
+				if (TypeUtils.isLong(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(n.longValue());
+				}
+				if (TypeUtils.isInteger(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(n.intValue());
+				}
+				if (TypeUtils.isShort(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(n.shortValue());
+				}
+			}
+
 			if (TypeUtils.isOfType(((Constant<?>) e.getArgument()).getValue(), e.getCastType())) {
+				/*if (TypeUtils.isDouble(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(Double.valueOf(n.toString()));
+				}
+				if (TypeUtils.isFloat(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(Float.valueOf(n.toString()));
+				}
+				if (TypeUtils.isLong(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(Long.valueOf(n.toString()));
+				}
+				if (TypeUtils.isInteger(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(Integer.valueOf(n.toString()));
+				}
+				if (TypeUtils.isShort(e.getCastType())) {
+					Number n = (Number) ((Constant<?>) e.getArgument()).getValue();
+					return FMLConstant.makeConstant(Short.valueOf(n.toString()));
+				}*/
 				return e.getArgument();
 			}
 			else {

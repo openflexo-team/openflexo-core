@@ -74,43 +74,38 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 	// Test cast
 
 	@Test
-	public void testVoidCast() {
-		tryToParse("(void)2", "(void)2", FMLCastExpression.class, null, serviceManager, false);
-	}
-
-	@Test
 	public void testIntCast() {
-		tryToParse("(int)2", "(int)2", FMLCastExpression.class, null, serviceManager, false);
+		tryToParse("(int)2", "2", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testShortCast() {
-		tryToParse("(short)2", "(short)2", FMLCastExpression.class, null, serviceManager, false);
+		tryToParse("(short)2", "2", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testByteCast() {
-		tryToParse("(byte)2", "(byte)2", FMLCastExpression.class, null, serviceManager, false);
+		tryToParse("(byte)2", "2", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testLongCast() {
-		tryToParse("(long)2", "(long)2", FMLCastExpression.class, null, serviceManager, false);
+		tryToParse("(long)2", "2", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testFloatCast() {
-		tryToParse("(float)2", "(float)2", FMLCastExpression.class, null, serviceManager, false);
+		tryToParse("(float)2", "2.0", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testDoubleCast() {
-		tryToParse("(double)2", "(double)2", FMLCastExpression.class, null, serviceManager, false);
+		tryToParse("(double)2", "2.0", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testCharCast() {
-		tryToParse("(char)2", "(char)2", FMLCastExpression.class, null, serviceManager, false);
+		tryToParse("(char)2", "2", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
@@ -125,13 +120,12 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testCast2() {
-		tryToParse("(java.lang.Integer)2", "(Integer)2", CastExpression.class, null, serviceManager, false);
+		tryToParse("(java.lang.Integer)2", "2", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testCast3() {
-		tryToParse("(int)2+((float)2+(double)2)", "(int)2 + ((float)2 + (double)2)", BinaryOperatorExpression.class, null, serviceManager,
-				false);
+		tryToParse("(int)2+((float)2+(double)2)", "6.0", BinaryOperatorExpression.class, null, serviceManager, false);
 	}
 
 	@Test
@@ -208,6 +202,23 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 	@Test
 	public void testClassMethod2() {
 		tryToParse("java.lang.Class.forName(\"Foo\")", "Class.forName(\"Foo\")", BindingPath.class, null, serviceManager, false);
+	}
+
+	// Primitive conversions
+
+	@Test
+	public void testIntToDoubleCast() {
+		tryToParse("(double)2", "2.0", FMLCastExpression.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testIntToFloatCast() {
+		tryToParse("(float)2", "2.0", FMLCastExpression.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testDoubleToIntegerCast() {
+		tryToParse("(int)3.14", "3", FMLCastExpression.class, null, serviceManager, false);
 	}
 
 }
