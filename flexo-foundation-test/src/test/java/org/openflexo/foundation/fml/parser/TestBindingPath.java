@@ -165,7 +165,7 @@ public class TestBindingPath extends FMLParserTestCase {
 		BindingPathNode assignBPNode = checkNode("(16:2)-(16:5)", "a.b", (BindingPathNode) assignNode.getChildren().get(0));
 		BindingVariableNode assignPathElementNode1 = checkNode("(16:2)-(16:3)", "a",
 				(BindingVariableNode) assignBPNode.getChildren().get(0));
-		SimplePathElementNode assignPathElementNode2 = checkNode("(16:4)-(16:5)", "JavaPropertyPathElement:b",
+		SimplePathElementNode assignPathElementNode2 = checkNode("(16:4)-(16:5)", "UnresolvedSimplePathElement:b",
 				(SimplePathElementNode) assignBPNode.getChildren().get(1));
 
 		ExpressionActionNode expressionNode = checkNodeForObject("(16:8)-(16:12)", null, assignationAction.getAssignableAction());
@@ -208,7 +208,7 @@ public class TestBindingPath extends FMLParserTestCase {
 		DataBindingNode expressionValueNode = checkNode("(20:6)-(20:9)", "b.c", (DataBindingNode) expressionNode.getChildren().get(0));
 		BindingPathNode valueNode = checkNode("(20:6)-(20:9)", "b.c", (BindingPathNode) expressionValueNode.getChildren().get(0));
 		BindingVariableNode value1PathElementNode = checkNode("(20:6)-(20:7)", "b", (BindingVariableNode) valueNode.getChildren().get(0));
-		SimplePathElementNode value2PathElementNode = checkNode("(20:8)-(20:9)", "JavaPropertyPathElement:c",
+		SimplePathElementNode value2PathElementNode = checkNode("(20:8)-(20:9)", "UnresolvedSimplePathElement:c",
 				(SimplePathElementNode) valueNode.getChildren().get(1));
 	}
 
@@ -265,7 +265,7 @@ public class TestBindingPath extends FMLParserTestCase {
 		DataBindingNode expressionValueNode = checkNode("(28:6)-(28:13)", "b.c.d()", (DataBindingNode) expressionNode.getChildren().get(0));
 		BindingPathNode valueNode = checkNode("(28:6)-(28:13)", "b.c.d()", (BindingPathNode) expressionValueNode.getChildren().get(0));
 		BindingVariableNode value1PathElementNode = checkNode("(28:6)-(28:7)", "b", (BindingVariableNode) valueNode.getChildren().get(0));
-		SimplePathElementNode value2PathElementNode = checkNode("(28:8)-(28:9)", "JavaPropertyPathElement:c",
+		SimplePathElementNode value2PathElementNode = checkNode("(28:8)-(28:9)", "UnresolvedSimplePathElement:c",
 				(SimplePathElementNode) valueNode.getChildren().get(1));
 		MethodCallBindingPathElementNode methodPathElementNode = checkNode("(28:10)-(28:13)", "JavaInstanceMethodPathElement:d()",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
@@ -302,7 +302,7 @@ public class TestBindingPath extends FMLParserTestCase {
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(1));
 		MethodCallBindingPathElementNode pathElementNode3 = checkNode("(32:12)-(32:15)", "JavaInstanceMethodPathElement:d()",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
-		SimplePathElementNode pathElementNode4 = checkNode("(32:16)-(32:17)", "JavaPropertyPathElement:e",
+		SimplePathElementNode pathElementNode4 = checkNode("(32:16)-(32:17)", "UnresolvedSimplePathElement:e",
 				(SimplePathElementNode) valueNode.getChildren().get(3));
 	}
 
