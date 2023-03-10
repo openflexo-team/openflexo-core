@@ -38,8 +38,12 @@
 
 package org.openflexo.fml.controller.view;
 
+import javax.swing.SwingUtilities;
+
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -54,17 +58,31 @@ public class StandardCompilationUnitView extends CompilationUnitView {
 
 	public StandardCompilationUnitView(FMLCompilationUnit compilationUnit, FlexoController controller, FlexoPerspective perspective) {
 		super(compilationUnit, CommonFIB.COMPILATION_UNIT_VIEW_FIB, controller, perspective);
+		// prout();
 	}
 
 	public StandardCompilationUnitView(FMLCompilationUnit compilationUnit, Resource fibFile, FlexoController controller,
 			FlexoPerspective perspective) {
 		super(compilationUnit, fibFile, controller, perspective);
+		// prout();
 	}
 
 	@Override
 	public void willShow() {
 		super.willShow();
 		getFlexoController().getControllerModel().setRightViewVisible(false);
-	}
 
+		SwingUtilities.invokeLater(() -> {
+			if (getFIBView("flexoConceptBrowser") instanceof JFIBBrowserWidget) {
+				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("flexoConceptBrowser");
+				if (getDataObject() instanceof FMLCompilationUnit) {
+					FMLCompilationUnit cu = (FMLCompilationUnit) getDataObject();
+					browser.performExpand(cu.getVirtualModel());
+					browser.performExpand(cu.getVirtualModel().getStructuralFacet());
+					browser.performExpand(cu.getVirtualModel().getBehaviouralFacet());
+					browser.performExpand(cu.getVirtualModel().getInnerConceptsFacet());
+				}
+			}
+		});
+	}
 }
