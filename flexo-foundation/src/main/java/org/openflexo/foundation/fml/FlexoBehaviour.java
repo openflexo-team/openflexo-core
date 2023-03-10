@@ -833,6 +833,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		 */
 		@Override
 		public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context) {
+			if (context == null) {
+				return null;
+			}
 			return context.getFlexoBehaviour(getName(), getParameterTypes());
 
 		}

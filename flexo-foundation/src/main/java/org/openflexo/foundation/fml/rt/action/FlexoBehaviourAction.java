@@ -481,6 +481,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	private FB getApplicableFlexoBehaviour(FlexoConcept concept) {
 		// System.out.println("Looking " + getFlexoBehaviour().getSignature() + " in " + concept);
+		if (concept == null) {
+			return null;
+		}
 		FB returned = (FB) getFlexoBehaviour().getMostSpecializedBehaviour(concept);
 		if (returned == null) {
 			if (concept.getContainerFlexoConcept() != null) {
@@ -523,6 +526,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return null;
 		}
 		FB applicablebehaviour = getApplicableFlexoBehaviour();
+		if (applicablebehaviour == null || applicablebehaviour.getFlexoConcept() == null) {
+			return null;
+		}
 		if (applicablebehaviour.getFlexoConcept().isAssignableFrom(fci.getFlexoConcept())) {
 			return fci;
 		}
