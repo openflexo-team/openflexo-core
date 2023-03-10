@@ -20,9 +20,11 @@
 			<Label label="property_name" align="right" index="4"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<TextField index="5" data="data.propertyName"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				localize="true" columns="6" text="TextField" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+				localize="true" name="PropertyNameBS" index="5" data="data.propertyName"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
 			
 		</Tab>
 	</TabPanel>
