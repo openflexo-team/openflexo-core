@@ -54,6 +54,7 @@ import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.InvalidNameException;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
@@ -165,6 +166,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = CONTAINER_KEY, required = false)
 	DataBinding<?> getContainer();
 
 	@Setter(CONTAINER_KEY)
