@@ -179,7 +179,7 @@ public class TestFMLEditor14 extends OpenflexoFIBTestCase {
 		log("performSomeChecks");
 
 		ValidationReport validation = validate(compilationUnit);
-		// assertEquals(0, validation.getErrorsCount());
+		assertEquals(0, validation.getErrorsCount());
 
 		concept = compilationUnit.getVirtualModel().getFlexoConcept("AConcept");
 		subConcept = compilationUnit.getVirtualModel().getFlexoConcept("ASubConcept");
