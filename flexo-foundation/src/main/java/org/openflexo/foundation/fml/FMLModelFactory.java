@@ -667,12 +667,12 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(LogAction.class);
 	}
 
-	public NotifyProgressAction newNotifyProgressAction() {
-		return newInstance(NotifyProgressAction.class);
-	}
-
 	public NotifyPropertyChangedAction newNotifyPropertyChangedAction() {
 		return newInstance(NotifyPropertyChangedAction.class);
+	}
+
+	public NotifyProgressAction newNotifyProgressAction() {
+		return newInstance(NotifyProgressAction.class);
 	}
 
 	public FireEventAction newFireEventAction() {

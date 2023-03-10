@@ -96,6 +96,7 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.LogAction;
+import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.md.BasicMetaData;
@@ -147,6 +148,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNod
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.NotifyActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
@@ -512,6 +514,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			}*/
 			if (object instanceof LogAction) {
 				return (P2PPNode<?, C>) new LogActionNode((LogAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof NotifyPropertyChangedAction) {
+				return (P2PPNode<?, C>) new NotifyActionNode((NotifyPropertyChangedAction) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof DeleteAction) {
 				return (P2PPNode<?, C>) new DeleteActionNode((DeleteAction) object,
@@ -1032,7 +1038,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	private void decodeSimpleFMLProperty(TLidentifier propertyName, PExpression expressionValue, FMLObject modelObject,
 			List<FMLPropertyValue> propertyValues) {
 
-		//logger.info("Decoding " + propertyName.getText() + "=" + expressionValue);
+		// logger.info("Decoding " + propertyName.getText() + "=" + expressionValue);
 		DataBinding<?> value = makeDataBinding(expressionValue, modelObject).getModelObject();
 		FMLProperty fmlProperty = modelObject.getFMLProperty(propertyName.getText(), getFactory());
 		if (fmlProperty == null) {
@@ -1044,9 +1050,9 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			return;
 		}
 
-		//System.out.println("FMLProperty=" + fmlProperty + " type=" + fmlProperty.getType());
+		// System.out.println("FMLProperty=" + fmlProperty + " type=" + fmlProperty.getType());
 		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
-			//logger.info("Set " + fmlProperty.getName() + " = " + value);
+			// logger.info("Set " + fmlProperty.getName() + " = " + value);
 			fmlProperty.set(value, modelObject);
 			propertyValues.add(0, fmlProperty.makeFMLPropertyValue(modelObject, getFactory()));
 		}
@@ -1054,7 +1060,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			Object constantValue = ((Constant) value.getExpression()).getValue();
 			if (constantValue != null) {
 				if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
-					//logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
+					// logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
 					fmlProperty.set(constantValue, modelObject);
 					propertyValues.add(0, fmlProperty.makeFMLPropertyValue(modelObject, getFactory()));
 				}

@@ -213,6 +213,12 @@ public enum FMLKeywords {
 			return "new";
 		}
 	},
+	Notify {
+		@Override
+		public String getKeyword() {
+			return "notify";
+		}
+	},
 	OnFailure {
 		@Override
 		public String getKeyword() {

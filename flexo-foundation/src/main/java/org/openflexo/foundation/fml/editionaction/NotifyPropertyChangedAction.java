@@ -67,17 +67,27 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
 @XMLElement
 public interface NotifyPropertyChangedAction extends EditionAction {
 
-	@PropertyIdentifier(type = String.class)
+	@PropertyIdentifier(type = DataBinding.class)
 	public static final String PROPERTY_NAME_KEY = "propertyName";
+	@PropertyIdentifier(type = String.class)
+	public static final String STATIC_PROPERTY_NAME_KEY = "staticPropertyName";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
 
-	@Getter(value = PROPERTY_NAME_KEY)
+	@Getter(value = STATIC_PROPERTY_NAME_KEY)
 	@XMLAttribute
-	public String getPropertyName();
+	@Deprecated
+	public String getStaticPropertyName();
+
+	@Setter(STATIC_PROPERTY_NAME_KEY)
+	@Deprecated
+	public void setStaticPropertyName(String propertyName);
+
+	@Getter(value = PROPERTY_NAME_KEY)
+	public DataBinding<String> getPropertyName();
 
 	@Setter(PROPERTY_NAME_KEY)
-	public void setPropertyName(String propertyName);
+	public void setPropertyName(DataBinding<String> propertyName);
 
 	@Getter(value = OBJECT_KEY)
 	@XMLAttribute
@@ -91,6 +101,28 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 		private static final Logger logger = Logger.getLogger(NotifyPropertyChangedAction.class.getPackage().getName());
 
 		private DataBinding<HasPropertyChangeSupport> object;
+		private DataBinding<String> propertyName;
+
+		@Override
+		public DataBinding<String> getPropertyName() {
+			if (propertyName == null) {
+				propertyName = new DataBinding<>(this, String.class, BindingDefinitionType.GET);
+				propertyName.setBindingName("propertyName");
+			}
+			return propertyName;
+		}
+
+		@Override
+		public void setPropertyName(DataBinding<String> propertyName) {
+			if (propertyName != null) {
+				propertyName.setOwner(this);
+				propertyName.setBindingName("propertyName");
+				propertyName.setDeclaredType(String.class);
+				propertyName.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.propertyName = propertyName;
+			notifiedBindingChanged(propertyName);
+		}
 
 		@Override
 		public DataBinding<HasPropertyChangeSupport> getObject() {
@@ -121,8 +153,15 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) {
 			HasPropertyChangeSupport hasPCSupport = null;
+			String propertyName = null;
 			try {
-				hasPCSupport = getObject().getBindingValue(evaluationContext);
+				propertyName = getPropertyName().getBindingValue(evaluationContext);
+				if (getObject().isSet()) {
+					hasPCSupport = getObject().getBindingValue(evaluationContext);
+				}
+				else {
+					hasPCSupport = evaluationContext.getFlexoConceptInstance();
+				}
 			} catch (TypeMismatchException e1) {
 				e1.printStackTrace();
 			} catch (NullReferenceException e1) {
@@ -133,10 +172,10 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 				e.printStackTrace();
 			}
 
-			// System.out.println("FirePropertyChangeSupport for " + hasPCSupport + " propertyName=" + getPropertyName());
+			System.out.println("FirePropertyChangeSupport for " + hasPCSupport + " propertyName=" + getPropertyName());
 
 			if (hasPCSupport != null) {
-				hasPCSupport.getPropertyChangeSupport().firePropertyChange(getPropertyName(), false, true);
+				hasPCSupport.getPropertyChangeSupport().firePropertyChange(propertyName, false, true);
 			}
 
 			return null;
@@ -150,7 +189,20 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 	}
 
 	@DefineValidationRule
-	public static class ObjectBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<NotifyPropertyChangedAction> {
+	public static class PropertyNameBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<NotifyPropertyChangedAction> {
+		public PropertyNameBindingIsRequiredAndMustBeValid() {
+			super("'property_name'_binding_is_not_valid", NotifyPropertyChangedAction.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(NotifyPropertyChangedAction object) {
+			return object.getPropertyName();
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class ObjectBindingIsRequiredAndMustBeValid extends BindingMustBeValid<NotifyPropertyChangedAction> {
 		public ObjectBindingIsRequiredAndMustBeValid() {
 			super("'object'_binding_is_not_valid", NotifyPropertyChangedAction.class);
 		}

@@ -271,6 +271,7 @@ Tokens
    {normal,binding} kw_match = 'match';
    {normal} kw_model = 'model';
    {normal} kw_namespace = 'namespace';
+   {normal} kw_notify = 'notify';
    {normal,binding,command,script} kw_new = 'new';
    {normal} kw_onfailure = 'onfailure';
    {normal} kw_private = 'private';
@@ -913,9 +914,10 @@ Productions
 //       {java_instance_creation}              new_containment_clause? kw_new [type]:reference_type l_par argument_list? r_par precise_fml_parameters_clause?
 //     | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:uidentifier colon_colon [constructor_name]:lidentifier l_par argument_list? r_par precise_fml_parameters_clause?
        {ta_edition_action}                     [ta_id]:cidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
-     | {delete_action}                         kw_delete /*l_par*/ expression /*r_par*/ from_clause?
+     | {delete_action}                         kw_delete expression from_clause?
      | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident from_clause where_clause?
-     | {log_action}                            kw_log /*l_par*/ expression /*r_par*/
+     | {log_action}                            kw_log expression
+     | {notify_action}                         kw_notify expression in_clause?
      | {begin_match_action}                    kw_begin kw_match [concept_name]:uidentifier from_clause where_clause?
      | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? create_clause
      | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause abstract_action_clause
@@ -986,8 +988,8 @@ Productions
 //     | {unqualified} l_par argument_list? r_par
       ;
 
-   in_clause    = kw_in /*l_par*/ expression /*r_par*/;
-   from_clause  = kw_from /*l_par*/ expression /*r_par*/;
+   in_clause    = kw_in expression;
+   from_clause  = kw_from  expression;
    where_clause = kw_where l_par argument_list? r_par;
    qualified_where_clause = kw_where l_par qualified_argument_list? r_par;
 
