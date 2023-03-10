@@ -38,18 +38,24 @@
 
 package org.openflexo.fml.controller.widget;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import org.openflexo.fml.controller.FMLFIBController;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.FlexoController;
@@ -60,12 +66,14 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @author sylvain
  */
-public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBController {
+public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBController implements PropertyChangeListener {
 
 	protected static final Logger logger = FlexoLogger
 			.getLogger(FIBCompilationUnitDetailedBrowserFIBController.class.getPackage().getName());
 
 	private FIBCompilationUnitDetailedBrowser browser;
+
+	private List<FlexoConcept> listenedConcepts = new ArrayList<>();
 
 	public FIBCompilationUnitDetailedBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);
@@ -79,6 +87,107 @@ public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBContro
 
 	public FIBCompilationUnitDetailedBrowser getBrowser() {
 		return browser;
+	}
+
+	@Override
+	public void setDataObject(Object anObject) {
+		if (anObject instanceof FMLCompilationUnit) {
+			listenTo(((FMLCompilationUnit) anObject).getVirtualModel());
+		}
+		super.setDataObject(anObject);
+	}
+
+	private void listenTo(FlexoConcept concept) {
+		if (concept == null) {
+			return;
+		}
+		if (!listenedConcepts.contains(concept)) {
+			listenedConcepts.add(concept);
+			concept.getPropertyChangeSupport().addPropertyChangeListener(this);
+			if (concept instanceof VirtualModel) {
+				for (FlexoConcept c : ((VirtualModel) concept).getFlexoConcepts()) {
+					listenTo(c);
+				}
+			}
+			else {
+				for (FlexoConcept c : concept.getEmbeddedFlexoConcepts()) {
+					listenTo(c);
+				}
+			}
+		}
+	}
+
+	private void stopListenTo(FlexoConcept concept) {
+		if (concept == null) {
+			return;
+		}
+		if (listenedConcepts.contains(concept)) {
+			listenedConcepts.remove(concept);
+			concept.getPropertyChangeSupport().removePropertyChangeListener(this);
+			if (concept instanceof VirtualModel) {
+				for (FlexoConcept c : ((VirtualModel) concept).getFlexoConcepts()) {
+					stopListenTo(c);
+				}
+			}
+			else {
+				for (FlexoConcept c : concept.getEmbeddedFlexoConcepts()) {
+					stopListenTo(c);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void delete() {
+		for (FlexoConcept concept : listenedConcepts) {
+			if (concept.getPropertyChangeSupport() != null) {
+				concept.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+		}
+		super.delete();
+	}
+
+	// TODO: this does not work -> investigate
+	private void tryToExpand(FlexoConcept concept) {
+		SwingUtilities.invokeLater(() -> {
+			if (viewForComponent("browser") instanceof JFIBBrowserWidget) {
+				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) viewForComponent("browser");
+				browser.performExpand(concept);
+			}
+		});
+
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() instanceof FlexoConcept) {
+			if (evt.getPropertyName().equals(FlexoConcept.EMBEDDED_FLEXO_CONCEPT_KEY)
+					|| evt.getPropertyName().equals(VirtualModel.FLEXO_CONCEPTS_KEY)) {
+				if (evt.getOldValue() instanceof FlexoConcept) {
+					stopListenTo((FlexoConcept) evt.getOldValue());
+				}
+				if (evt.getNewValue() instanceof FlexoConcept) {
+					listenTo((FlexoConcept) evt.getNewValue());
+				}
+			}
+
+			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.FLEXO_BEHAVIOURS_KEY)
+					|| evt.getPropertyName().equals(FlexoConcept.EMBEDDED_FLEXO_CONCEPT_KEY)
+					|| evt.getPropertyName().equals(VirtualModel.FLEXO_CONCEPTS_KEY)) {
+				FIBCompilationUnitDetailedBrowserFIBController.this.getPropertyChangeSupport().firePropertyChange("getContents(FMLObject)",
+						false, true);
+			}
+
+			if (evt.getPropertyName().equals(FlexoConcept.EMBEDDED_FLEXO_CONCEPT_KEY)
+					|| evt.getPropertyName().equals(VirtualModel.FLEXO_CONCEPTS_KEY)) {
+				if (evt.getNewValue() instanceof FlexoConcept) {
+					tryToExpand(((FlexoConcept) evt.getNewValue()).getOwningVirtualModel());
+					tryToExpand((FlexoConcept) evt.getNewValue());
+				}
+			}
+
+		}
 	}
 
 	public void setBrowser(FIBCompilationUnitDetailedBrowser browser) {
@@ -101,7 +210,7 @@ public class FIBCompilationUnitDetailedBrowserFIBController extends FMLFIBContro
 		if (container instanceof FlexoConcept) {
 			FlexoConcept concept = (FlexoConcept) container;
 			if (container instanceof VirtualModel) {
-				returned.addAll(((VirtualModel) concept).getFlexoConcepts());
+				returned.addAll(((VirtualModel) concept).getAllRootFlexoConcepts());
 			}
 			else {
 				returned.addAll(concept.getEmbeddedFlexoConcepts());
