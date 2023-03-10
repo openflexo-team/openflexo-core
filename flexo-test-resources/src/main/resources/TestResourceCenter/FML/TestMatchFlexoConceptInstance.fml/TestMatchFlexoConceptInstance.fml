@@ -7,12 +7,12 @@ import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInsta
 @Version("0.1")
 model TestMatchFlexoConceptInstance {
 
-	create::_create () {
-		log("on cree le model");
-		MyVM aModel = new MyVM() with (name = "model");
-		log("On a cree le modele");
-		MatchingVM matchingModel = new MatchingVM(aModel) with (name = "matchingModel");
-		MyVM2 model2 = new MyVM2() with (name = "model2");
-		MatchingVM2 matchingModel2 = new MatchingVM2(model2) with (name = "matchingModel2");
+	create () {
+		log"on cree le model";
+		MyVM aModel = new MyVM() with (name="model");
+		log"On a cree le modele";
+		MatchingVM matchingModel = new MatchingVM(aModel) with (name="matchingModel");
+		MyVM2 model2 = new MyVM2() with (name="model2");
+		MatchingVM2 matchingModel2 = new MatchingVM2(model2) with (name="matchingModel2");
 	}
 }

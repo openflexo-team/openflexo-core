@@ -9,17 +9,17 @@ import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInsta
 model MatchingVM2 {
 	MyVM2 _model with ModelInstance(isRequired = true);
 
-	create::_create (required MyVM2 _model) {
+	create(required MyVM2 _model) {
 		_model = parameters._model;
 	}
 
 	synchronize () {
-		MatchingSet matchingSet = begin match MatchedConceptA from (this);
-		for (ConceptA conceptA : select ConceptA from (_model)) {
-			MatchedConceptA matchedA = match MatchedConceptA in (matchingSet) from (this) where (conceptA=conceptA) create::_create((conceptA.nameA + "-matched"),conceptA);
+		MatchingSet matchingSet = begin match MatchedConceptA from this;
+		for (ConceptA conceptA : select ConceptA from _model) {
+			MatchedConceptA matchedA = match MatchedConceptA in matchingSet from this where (conceptA=conceptA) create::_create(conceptA.nameA + "-matched",conceptA);
 			matchedA.synchronize();
 		}
-		end match MatchedConceptA in (matchingSet) delete::_delete();
+		end match MatchedConceptA in matchingSet delete::_delete();
 	}
 
 	concept MatchedConceptA {
@@ -35,11 +35,11 @@ model MatchingVM2 {
 		delete::_delete () {
 		}
 		synchronize () {
-			MatchingSet matchingSet = begin match MatchedConceptB from (this);
-			for (ConceptB conceptB : select ConceptB from (conceptA)) {
-				MatchedConceptB matchedConceptB = match MatchedConceptB in (matchingSet) from (this) where (conceptB=conceptB) create::_create((conceptB.nameB + "-matched"),conceptB);
+			MatchingSet matchingSet = begin match MatchedConceptB from this;
+			for (ConceptB conceptB : select ConceptB from conceptA) {
+				MatchedConceptB matchedConceptB = match MatchedConceptB in matchingSet from this where (conceptB=conceptB) create::_create(conceptB.nameB + "-matched",conceptB);
 			}
-			end match MatchedConceptB in (matchingSet) delete::_delete();
+			end match MatchedConceptB in matchingSet delete::_delete();
 		}
 		concept MatchedConceptB {
 			ConceptB conceptB with ConceptInstance(virtualModelInstance = _model);

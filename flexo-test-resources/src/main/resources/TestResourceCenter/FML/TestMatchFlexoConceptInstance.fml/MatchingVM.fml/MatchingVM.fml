@@ -9,34 +9,34 @@ import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInsta
 model MatchingVM {
 	MyVM _model with ModelInstance(isRequired = true);
 
-	create::_create (required MyVM _model) {
+	create(required MyVM _model) {
 		_model = parameters._model;
-		log((">>>> Parametre model : " + parameters._model));
+		log">>>> Parametre model : " + parameters._model;
 	}
 
 	synchronizeUsingMatchingSet () {
-		MatchingSet matchingSet = begin match MatchedConcept from (this);
-		for (Concept _concept : select Concept from (_model)) {
-			match MatchedConcept in (matchingSet) from (this) where (_concept=_concept) create::_create((_concept.p + "-matched"),_concept);
+		MatchingSet matchingSet = begin match MatchedConcept from this;
+		for (Concept aConcept : select Concept from _model) {
+			match MatchedConcept in matchingSet from this where (c=aConcept) create::init(aConcept.p + "-matched",aConcept);
 		}
-		end match MatchedConcept in (matchingSet) delete::_delete();
+		end match MatchedConcept in matchingSet delete::performDelete();
 	}
 
 	defaultSynchronize () {
-		for (Concept _concept : select Concept from (_model)) {
-			match MatchedConcept from (this) where (_concept=_concept) create::_create((_concept.p + "-default"),_concept);
+		for (Concept aConcept : select Concept from _model) {
+			match MatchedConcept from this where (c=aConcept) create::init(aConcept.p + "-default",aConcept);
 		}
 	}
 
 	concept MatchedConcept {
-		Concept _concept with ConceptInstance();
+		Concept c with ConceptInstance();
 		String p2;
 
-		create::_create (required String aP2,required Concept aConcept) {
-			_concept = parameters.aConcept;
+		create::init (required String aP2,required Concept aConcept) {
+			c = parameters.aConcept;
 			p2 = parameters.aP2;
 		}
-		delete::_delete () {
+		delete::performDelete() {
 		}
 	}
 }
