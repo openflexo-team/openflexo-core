@@ -935,7 +935,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
 				DataBinding<?> param = getArgumentValue(p);
 				Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
-				System.out.println("For parameter " + param + " value is " + paramValue);
+				// System.out.println("For parameter " + param + " value is " + paramValue);
 				if (paramValue != null) {
 					creationSchemeAction.setParameterValue(p, paramValue);
 				}
