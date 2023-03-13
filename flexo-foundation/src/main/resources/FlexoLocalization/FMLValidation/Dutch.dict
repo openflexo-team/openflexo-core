@@ -69,6 +69,7 @@ fml_rt_model_slot_does_not_define_a_valid_virtual_model=Fml rt model slot does n
 incompatible_virtual_model_type=Incompatible virtual model type
 individual_role_does_not_define_any_concept_class=Individual role does not define any concept class
 infered_types_must_be_compatible_in_a_sequence_description=Infered types must be compatible in a sequence description
+invalid_value_'($binding.bindingName)'\:\ ($reason)=Invalid value '($binding.bindingName)'\: ($reason)
 iteration_action_is_not_iterable=Iteration action is not iterable
 match_flexo_concept_action_doesn't_define_any_flexo_concept=Match flexo concept action doesn't define any flexo concept
 missing_control_graph_(first_statement)=Missing control graph (first statement)
