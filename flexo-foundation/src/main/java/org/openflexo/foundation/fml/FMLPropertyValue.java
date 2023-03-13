@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.editionaction.UnresolvedTechnologySpecificAction;
 import org.openflexo.logging.FlexoLogger;
@@ -225,17 +226,31 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 	}
 
 	@DefineValidationRule
-	class RequiredPropertyValueMustDefineAValue extends ValidationRule<RequiredPropertyValueMustDefineAValue, FMLPropertyValue<?, ?>> {
-		public RequiredPropertyValueMustDefineAValue() {
+	class PropertyValueMustDefineAValue extends ValidationRule<PropertyValueMustDefineAValue, FMLPropertyValue<?, ?>> {
+		public PropertyValueMustDefineAValue() {
 			super(FMLPropertyValue.class, "required_property_must_define_a_value");
 		}
 
 		@Override
-		public ValidationIssue<RequiredPropertyValueMustDefineAValue, FMLPropertyValue<?, ?>> applyValidation(
+		public ValidationIssue<PropertyValueMustDefineAValue, FMLPropertyValue<?, ?>> applyValidation(
 				FMLPropertyValue<?, ?> propertyValue) {
-			if (propertyValue.getProperty() != null && propertyValue.getProperty().isRequired() && propertyValue.getValue() == null) {
-				return new ValidationError<>(this, propertyValue,
-						"property_($validable.propertyName)_required_in_($validable.object.implementedInterface.simpleName)_is_not_defined");
+			if (propertyValue.getProperty() != null && propertyValue.getProperty().isRequired()) {
+				if (propertyValue.getValue() == null) {
+					return new ValidationError<>(this, propertyValue,
+							"property_($validable.propertyName)_required_in_($validable.object.implementedInterface.simpleName)_is_not_defined");
+
+				}
+				if (propertyValue.getValue() instanceof DataBinding) {
+					DataBinding<?> db = (DataBinding<?>) propertyValue.getValue();
+					if (!db.isSet()) {
+						return new ValidationError<>(this, propertyValue,
+								"property_($validable.propertyName)_required_in_($validable.object.implementedInterface.simpleName)_is_not_defined");
+					}
+					if (!db.isValid()) {
+						return new ValidationError<>(this, propertyValue, db.invalidBindingReason());
+
+					}
+				}
 			}
 			return null;
 		}
