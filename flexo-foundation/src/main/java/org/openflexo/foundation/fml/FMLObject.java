@@ -1051,7 +1051,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			@SafeVarargs
 			public InvalidBindingIssue(BindingMustBeValid<C> rule, C anObject, FixProposal<BindingMustBeValid<C>, C>... fixProposals) {
 				// super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
-				super(rule, anObject, "($reason)", fixProposals);
+				super(rule, anObject, "invalid_value_'($binding.bindingName)': ($reason)", fixProposals);
 			}
 
 			public DataBinding<?> getBinding() {
