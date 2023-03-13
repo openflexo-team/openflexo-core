@@ -643,9 +643,6 @@ public model MultiProcessChallengeMetaModel {
 			boolean isStartable() {
 				return performingActors.size > 0;
 			}
-			void addToPerformingActor(required Actor actor) {
-				performingActors.add(parameters.actor);
-			}
 		}
 		public concept BeginTask extends Task {
 			delete() {
