@@ -2559,10 +2559,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				try {
 					List<?> iterationObjects = iterationInvariant.getIteration().getBindingValue(flexoConceptInstance);
 					for (Object item : iterationObjects) {
-						// System.out.println("invariant = " + invariant);
-						// System.out.println("invariant.getConstraint() = " + invariant.getConstraint());
-						// System.out.println("valid : " + invariant.getConstraint().isValid());
-						// System.out.println("reason: " + invariant.getConstraint().invalidBindingReason());
 
 						for (SimpleInvariant simpleInvariant : iterationInvariant.getSimpleInvariants()) {
 							try {
@@ -2581,7 +2577,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 												return new FMLExpressionEvaluator(this);
 											}
 										});
-								// System.out.println("evaluateConstraint : " + evaluateConstraint);
 								if (!evaluateConstraint) {
 									issues.add(new ViolatedInvariant(simpleInvariant, flexoConceptInstance));
 								}
@@ -2627,7 +2622,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			private Object item;
 
 			public ViolatedInvariant(SimpleInvariant constraint, FlexoConceptInstance flexoConceptInstance) {
-				super(ConstraintsShouldNotBeViolated.this, flexoConceptInstance, constraint.getName());
+				super(ConstraintsShouldNotBeViolated.this, flexoConceptInstance, "violated_constraint_'($constraint)'");
 				this.invariant = constraint;
 				this.flexoConceptInstance = flexoConceptInstance;
 			}
@@ -2647,6 +2642,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			public Object getItem() {
 				return item;
+			}
+
+			public String getConstraint() {
+				return getInvariant().getConstraint().toString();
 			}
 
 		}
