@@ -401,6 +401,13 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 */
 	public Class<?> lookupClassInUseDeclarations(String className);
 
+	/**
+	 * Perform a full revalidation on all {@link DataBinding} declared in this {@link FMLCompilationUnit}
+	 * 
+	 * Recursively call
+	 */
+	public void revalidateAllBindings();
+
 	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
 		private static final Logger logger = Logger.getLogger(FMLCompilationUnitImpl.class.getPackage().getName());
@@ -1049,6 +1056,25 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		public synchronized String getFMLPrettyPrint() {
 			manageImports();
 			return super.getFMLPrettyPrint();
+		}
+
+		/**
+		 * Perform a full revalidation on all {@link DataBinding} declared in this {@link FMLCompilationUnit}
+		 * 
+		 * Recursively call
+		 */
+		@Override
+		public void revalidateAllBindings() {
+			accept(new PamelaVisitor() {
+
+				@Override
+				public void visit(Object object) {
+					if (object instanceof FMLObject && ((FMLObject) object).getDeclaringCompilationUnit() == FMLCompilationUnitImpl.this) {
+						((FMLObject) object).revalidateBindings();
+					}
+				}
+			}, VisitingStrategy.Exhaustive);
+
 		}
 
 		private boolean isManagingImports = false;

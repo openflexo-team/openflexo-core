@@ -274,6 +274,14 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 			return false;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().invalidate(getDeclaringCompilationUnit().getTypingSpace());
+			getDynamicFlexoConceptType().invalidate(getDeclaringCompilationUnit().getTypingSpace());
+			getArguments().invalidate(getDeclaringCompilationUnit().getTypingSpace());
+		}
+
 	}
 
 }

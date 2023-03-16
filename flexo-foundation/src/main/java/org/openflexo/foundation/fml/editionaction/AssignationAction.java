@@ -144,6 +144,12 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "<no_assignable_action>");
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getAssignation().invalidate(getDeclaringCompilationUnit().getTypingSpace());
+		}
+
 	}
 
 	@DefineValidationRule

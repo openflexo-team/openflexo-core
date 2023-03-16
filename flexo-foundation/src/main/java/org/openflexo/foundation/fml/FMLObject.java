@@ -290,6 +290,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public FMLRTTechnologyAdapter getFMLRTTechnologyAdapter();
 
+	/**
+	 * Invoking this method causes revalidation of {@link DataBinding} declared in this {@link FMLObject}<br>
+	 * This might be required to invalidate and translate into right TypingSpace all bindings declared in this object
+	 */
+	public void revalidateBindings();
+
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
 		@FMLMigration("Can be removed in 3.0.0")
@@ -941,6 +947,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			}
 			return returned;
 		}*/
+
+		@Override
+		public void revalidateBindings() {
+			// System.out.println("> revalidateBindings for " + this);
+		}
 
 	}
 

@@ -169,6 +169,9 @@ public class FMLEditorParser extends AbstractParser {
 			existingData.getPropertyChangeSupport().removePropertyChangeListener(pcListener);
 			requiresNewPrettyPrint = pcListener.requiresNewPrettyPrint();
 
+			// Now revalidate all bindings
+			existingData.revalidateAllBindings();
+
 			// We perform a full validation to detect validation issues
 			validate(existingData);
 
