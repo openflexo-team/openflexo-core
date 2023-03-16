@@ -180,9 +180,9 @@ public abstract class FMLSimplePathElementImpl<P extends Property> extends Abstr
 		return false;
 	}
 
-	public String getBindingPath() {
+	public String getBindingPathAsString() {
 		if (getParent() instanceof FMLSimplePathElementImpl) {
-			return ((FMLSimplePathElementImpl) getParent()).getBindingPath() + "." + getLabel();
+			return ((FMLSimplePathElementImpl) getParent()).getBindingPathAsString() + "." + getLabel();
 		}
 		if (getParent() instanceof BindingVariable) {
 			return ((BindingVariable) getParent()).getVariableName() + "." + getLabel();

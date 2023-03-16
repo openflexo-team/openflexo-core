@@ -46,6 +46,7 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject.FMLObjectImpl;
@@ -62,6 +63,7 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 	private IBindingPathElement parent;
 	private boolean activated = false;
 	private Bindable bindable;
+	private BindingPath bindingPath;
 
 	private String parsed;
 
@@ -129,8 +131,9 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 	 * Activate this {@link BindingPathElement} by starting observing relevant objects when required
 	 */
 	@Override
-	public void activate() {
+	public void activate(BindingPath bindingPath) {
 		this.activated = true;
+		this.bindingPath = bindingPath;
 	}
 
 	/**
@@ -139,6 +142,7 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 	@Override
 	public void desactivate() {
 		this.activated = false;
+		this.bindingPath = null;
 	}
 
 	/**
@@ -149,6 +153,16 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 	@Override
 	public boolean isActivated() {
 		return activated;
+	}
+
+	@Override
+	public BindingPath getBindingPath() {
+		return bindingPath;
+	}
+
+	@Override
+	public void setBindingPath(BindingPath bindingPath) {
+		this.bindingPath = bindingPath;
 	}
 
 	/**

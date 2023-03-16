@@ -50,6 +50,7 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction.ParameterValues;
 
@@ -69,8 +70,8 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 	}
 
 	@Override
-	public void activate() {
-		super.activate();
+	public void activate(BindingPath bindingPath) {
+		super.activate(bindingPath);
 		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
 			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}

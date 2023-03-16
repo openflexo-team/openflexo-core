@@ -58,8 +58,10 @@ import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.TypingSpace;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -188,8 +190,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		private DataBinding<RepositoryFolder> repositoryFolder;
 
 		@Override
-		public void activate() {
-			super.activate();
+		public void activate(BindingPath bindingPath) {
+			super.activate(bindingPath);
 			// Do not instanciate parameters now, we will do it later
 			// instanciateParameters(owner);
 			if (getCreationScheme() != null) {
@@ -690,6 +692,20 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		@Override
 		public boolean isResolved() {
 			return getCreationScheme() != null;
+		}
+
+		@Override
+		public void invalidate() {
+			invalidate(null);
+		}
+
+		@Override
+		public void invalidate(TypingSpace typingSpace) {
+			if (getType() != null && typingSpace != null) {
+				FlexoConceptInstanceType translatedType = getType().translateTo(typingSpace);
+				setFunction(null);
+				setType(translatedType);
+			}
 		}
 
 		@Override

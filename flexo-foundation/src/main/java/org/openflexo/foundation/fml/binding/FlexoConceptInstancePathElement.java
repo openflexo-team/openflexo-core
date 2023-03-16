@@ -49,6 +49,7 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -76,8 +77,8 @@ public class FlexoConceptInstancePathElement extends SimplePathElementImpl imple
 	}
 
 	@Override
-	public void activate() {
-		super.activate();
+	public void activate(BindingPath bindingPath) {
+		super.activate(bindingPath);
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}

@@ -57,8 +57,10 @@ import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.TypingSpace;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
@@ -90,16 +92,12 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 
 	private Type lastKnownType = null;
 
-	// private FMLBindingFactory bindingFactory;
-
 	public FlexoBehaviourPathElement(IBindingPathElement parent, String methodName, List<DataBinding<?>> args, Bindable bindable) {
 		super(parent, methodName, args, bindable);
-		// this.bindingFactory = (FMLBindingFactory) bindable.getBindingFactory();
 	}
 
 	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour behaviour, List<DataBinding<?>> args, Bindable bindable) {
 		super(parent, behaviour, args, bindable);
-		// this.bindingFactory = (FMLBindingFactory) bindable.getBindingFactory();
 	}
 
 	public FMLBindingFactory getBindingFactory() {
@@ -113,8 +111,8 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	}
 
 	@Override
-	public void activate() {
-		super.activate();
+	public void activate(BindingPath bindingPath) {
+		super.activate(bindingPath);
 		startListenToBehaviour();
 		// Do not instanciate parameters now, we will do it later
 		// instanciateParameters(owner);
@@ -172,10 +170,9 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getFlexoBehaviour()) {
-			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
-				// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
-				// getFlexoBehaviour().getName());
+			if (evt.getPropertyName().equals(FlexoBehaviour.NAME_KEY)) {
 				clearSerializationRepresentation();
+				setParsed(getFlexoBehaviour().getName());
 				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
@@ -458,6 +455,12 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	@Override
 	public boolean supportsNullValues() {
 		return isSuperConstructorCall;
+	}
+
+	@Override
+	public void invalidate(TypingSpace typingSpace) {
+		super.invalidate(typingSpace);
+		setFunction(null);
 	}
 
 }

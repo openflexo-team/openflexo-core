@@ -50,6 +50,8 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingPath;
+import org.openflexo.connie.type.TypingSpace;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -99,8 +101,8 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 		}
 
 		@Override
-		public void activate() {
-			super.activate();
+		public void activate(BindingPath bindingPath) {
+			super.activate(bindingPath);
 			if (getProperty() != null && getProperty().getPropertyChangeSupport() != null) {
 				getProperty().getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
@@ -247,6 +249,7 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 			if (evt.getSource() == getFlexoProperty()) {
 				if (evt.getPropertyName().equals(FlexoProperty.NAME_KEY) || evt.getPropertyName().equals(FlexoProperty.PROPERTY_NAME_KEY)) {
 					// System.out.println("Notify name changing for " + getFlexoProperty() + " new=" + getVariableName());
+					setParsed(getFlexoProperty().getName());
 					getPropertyChangeSupport().firePropertyChange(NAME_PROPERTY, evt.getOldValue(), getLabel());
 				}
 				if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoProperty.RESULTING_TYPE_PROPERTY)) {
@@ -323,6 +326,21 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 
 		@Override
 		public void resolve() {
+			// TODO
+		}
+
+		@Override
+		public void invalidate() {
+			invalidate(null);
+		}
+
+		@Override
+		public void invalidate(TypingSpace typingSpace) {
+			/*if (getType() != null && typingSpace != null) {
+				FlexoConceptInstanceType translatedType = getType().translateTo(typingSpace);
+				setFunction(null);
+				setType(translatedType);
+			}*/
 			// TODO
 		}
 	}

@@ -80,6 +80,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.CompoundIssue;
@@ -213,6 +214,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	@Setter(DYNAMIC_FLEXO_CONCEPT_TYPE_KEY)
 	public void setDynamicFlexoConceptType(DataBinding<FlexoConcept> dynamicFlexoConceptType);
+
+	/**
+	 * We define an updater for DYNAMIC_FLEXO_CONCEPT_TYPE_KEY property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(DYNAMIC_FLEXO_CONCEPT_TYPE_KEY)
+	public void updateDynamicFlexoConceptType(DataBinding<FlexoConcept> dynamicFlexoConceptType);
 
 	public boolean requiresContainer();
 
@@ -787,6 +796,12 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit());
 				}
 			}
+		}
+
+		@Override
+		public void updateDynamicFlexoConceptType(DataBinding<FlexoConcept> dynamicFlexoConceptType) {
+			// System.out.println("--------> Tiens je me demande si y'aurait pas un truc a faire....");
+			setDynamicFlexoConceptType(dynamicFlexoConceptType);
 		}
 
 	}
