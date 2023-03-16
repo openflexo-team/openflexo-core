@@ -77,7 +77,7 @@ public interface CreationScheme extends AbstractCreationScheme {
 		@Override
 		public Boolean isAnonymous() {
 			if (isAnonymous == null) {
-				String name = (String) performSuperGetter(FMLObject.NAME_KEY);
+				String name = super.getName();
 				isAnonymous = (name == null || name.equals(DEFAULT_CREATION_SCHEME_NAME));
 			}
 			return isAnonymous;
@@ -99,9 +99,7 @@ public interface CreationScheme extends AbstractCreationScheme {
 		@Override
 		public void setName(String name) throws InvalidNameException {
 			super.setName(name);
-			if (name != null && name.equals(DEFAULT_CREATION_SCHEME_NAME)) {
-				isAnonymous = true;
-			}
+			isAnonymous = null;
 		}
 
 		@Override
