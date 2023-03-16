@@ -411,6 +411,17 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 		}
 	}
 
+	@Override
+	public void setMethodName(String methodName) {
+
+		if (getParsed().equals(FMLKeywords.Super.getKeyword()) && methodName.equals(CreationScheme.DEFAULT_CREATION_SCHEME_NAME)) {
+			// Special case : do not set method name !
+		}
+		else {
+			super.setMethodName(methodName);
+		}
+	}
+
 	private boolean isSuperConstructorCall = false;
 
 	@Override
