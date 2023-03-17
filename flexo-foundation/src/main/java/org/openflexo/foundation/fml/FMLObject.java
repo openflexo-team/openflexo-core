@@ -1150,8 +1150,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 					returned.add(new UseProposedBinding<>(b, proposal));
 				}
 				else {
-					FMLObjectImpl.logger
-							.info("DataBinding validation: cannot find any proposal " + proposal + " instead of " + b.toString());
+					// FMLObjectImpl.logger
+					// .info("DataBinding validation: cannot find any proposal " + proposal + " instead of " + b.toString());
 				}
 			}
 			return returned;
