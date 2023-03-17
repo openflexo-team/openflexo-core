@@ -39,11 +39,11 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 
-public class CompilationUnitFlexoConceptInstanceTypeFactory extends
-TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> implements FlexoConceptInstanceTypeFactory {
+public class CompilationUnitFlexoConceptInstanceTypeFactory
+		extends TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> implements FlexoConceptInstanceTypeFactory {
 
 	private FMLCompilationUnit compilationUnit;
-	
+
 	@Override
 	public Class<FlexoConceptInstanceType> getCustomType() {
 		return FlexoConceptInstanceType.class;
@@ -80,7 +80,7 @@ TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> imp
 
 	@Override
 	public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
-		return compilationUnit.getVirtualModel().getFlexoConcept(typeToResolve.conceptURI);
+		return compilationUnit.lookupFlexoConceptWithName(typeToResolve.conceptURI);
 	}
 
 }
