@@ -724,6 +724,12 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				return;
 			}
 
+			if (getType() != null && !getType().isResolved()) {
+				// This is a good idea to resolve type now
+				getType().resolve();
+				//System.out.println("Attempted to resolve type: " + getType() + " resolved=" + getType().isResolved());
+			}
+
 			CS function = (CS) ((FMLBindingFactory) getBindable().getBindingFactory()).retrieveConstructor(getType(),
 					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
 			/*System.out.println("########## Je cherche le constructeur " + getParsed() + " pour " + getType());
