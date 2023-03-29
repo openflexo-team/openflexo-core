@@ -4,10 +4,10 @@ buildscript {
     }
     dependencies {
         classpath group: 'org.openflexo', name: 'buildplugin', version: '0.2'
-        classpath group: 'org.openflexo', name: 'buildconfig', version: '2.0.1'
+        classpath group: 'org.openflexo', name: 'buildconfig', version: '2.0.2'
         classpath 'org.anarres.gradle:gradle-sablecc-plugin:1.0.5'
     }
 }
 
-version = "2.0.1"
+version = "2.0.2"
 apply plugin: 'org.openflexo.buildconfig'
