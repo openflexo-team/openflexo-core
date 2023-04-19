@@ -39,6 +39,8 @@
 package org.openflexo.foundation.fml.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -52,6 +54,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -125,6 +128,13 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 			if (getVirtualModel() != null && !getVirtualModel().uses(getModelSlotClass())) {
 				getVirtualModel().declareUse(getModelSlotClass());
 			}
+
+			// Add required uses declaration
+			List<Class<? extends ModelSlot<?>>> msClasses = new ArrayList<>();
+			for (UseModelSlotDeclaration useDecl : getVirtualModel().getCompilationUnit().getUseDeclarations()) {
+				msClasses.add(useDecl.getModelSlotClass());
+			}
+			((CompilationUnitResource) getVirtualModel().getCompilationUnit().getResource()).updateFMLModelFactory(msClasses);
 
 			newModelSlot = technologyAdapter.makeModelSlot(getModelSlotClass(), getFlexoConcept());
 			newModelSlot.setName(modelSlotName);

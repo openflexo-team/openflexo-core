@@ -701,6 +701,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			if (modelFactory == null) {
 				return null;
 			}
+			Class<?> implementedInterface = getImplementedInterface(modelFactory);
+			if (modelFactory.getModelContext().getModelEntity(implementedInterface) == null) {
+				return getFMLEntity();
+			}
 			return FMLModelContext.getFMLEntity((Class) getImplementedInterface(modelFactory), modelFactory);
 		}
 
