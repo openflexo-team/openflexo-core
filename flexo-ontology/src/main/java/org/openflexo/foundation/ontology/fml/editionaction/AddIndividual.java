@@ -44,6 +44,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
@@ -96,6 +97,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	@Getter(value = INDIVIDUAL_NAME_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = INDIVIDUAL_NAME_KEY, required = false, description = "<html>name of the individual</html>")
 	public DataBinding<String> getIndividualName();
 
 	@Setter(INDIVIDUAL_NAME_KEY)
@@ -103,6 +105,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	@Getter(value = DYNAMIC_TYPE_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = DYNAMIC_TYPE_KEY, required = false, description = "<html>dynamic type</html>")
 	public DataBinding<IFlexoOntologyClass<?>> getDynamicType();
 
 	@Setter(DYNAMIC_TYPE_KEY)
@@ -112,6 +115,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 	@XMLElement(xmlTag = "DataPropertyAssertion")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
+	@FMLAttribute(value = DATA_ASSERTIONS_KEY, required = false, description = "<html>data property assertions</html>")
 	public List<DataPropertyAssertion> getDataAssertions();
 
 	@Setter(DATA_ASSERTIONS_KEY)
@@ -127,6 +131,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 	@XMLElement(xmlTag = "ObjectPropertyAssertion")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
+	@FMLAttribute(value = OBJECT_ASSERTIONS_KEY, required = false, description = "<html>object property assertions</html>")
 	public List<ObjectPropertyAssertion> getObjectAssertions();
 
 	@Setter(OBJECT_ASSERTIONS_KEY)
@@ -140,6 +145,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = ONTOLOGY_CLASS_URI_KEY, required = false, description = "<html>reference of the class</html>")
 	public String _getOntologyClassURI();
 
 	@Setter(ONTOLOGY_CLASS_URI_KEY)
