@@ -55,6 +55,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -114,6 +115,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	public String generateUniqueURIName(M model, String proposedName);
 
 	public String generateUniqueURIName(M model, String proposedName, String uriPrefix);
+
+	public boolean isMetaModelRequired();
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
 			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
@@ -284,6 +287,12 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		public String getModelSlotDescription() {
 			return "Model conform to " + getMetaModelURI();
 		}
+
+		@Override
+		public boolean isMetaModelRequired() {
+			return true;
+		}
+
 	}
 
 	@DefineValidationRule
@@ -299,7 +308,12 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 				TypeAwareModelSlot modelSlot) {
 
 			if (modelSlot.getMetaModelResource() == null) {
-				return new ValidationError<>(this, modelSlot, "ModelSlot_($validable.name)_doesn't_define_any_meta_model");
+				if (modelSlot.isMetaModelRequired()) {
+					return new ValidationError<>(this, modelSlot, "ModelSlot_($validable.name)_doesn't_define_any_meta_model");
+				}
+				else {
+					return new ValidationWarning<>(this, modelSlot, "ModelSlot_($validable.name)_doesn't_define_any_meta_model");
+				}
 			}
 
 			return null;
