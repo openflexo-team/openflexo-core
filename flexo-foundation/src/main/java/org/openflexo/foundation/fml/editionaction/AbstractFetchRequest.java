@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -93,6 +94,19 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String CONDITIONS_KEY = "conditions";
+
+	@PropertyIdentifier(type = DataBinding.class)
+	String RECEIVER_KEY = "receiver";
+
+	// No more deprecated here, but part of AbstractFetchRequest
+	@Override
+	@Getter(value = RECEIVER_KEY, ignoreForEquality = true)
+	DataBinding<RD> getReceiver();
+
+	// No more deprecated here, but part of AbstractFetchRequest
+	@Override
+	@Setter(RECEIVER_KEY)
+	void setReceiver(DataBinding<RD> receiver);
 
 	@Getter(value = CONDITIONS_KEY, cardinality = Cardinality.LIST, inverse = FetchRequestCondition.ACTION_KEY)
 	@XMLElement
