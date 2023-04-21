@@ -41,6 +41,7 @@ package org.openflexo.foundation.ontology.fml.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -79,6 +80,7 @@ public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot
 
 	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = ONTOLOGY_CLASS_URI_KEY, required = false, description = "<html>reference of the class</html>")
 	public String _getOntologyClassURI();
 
 	@Setter(ONTOLOGY_CLASS_URI_KEY)

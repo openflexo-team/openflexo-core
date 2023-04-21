@@ -40,6 +40,7 @@ package org.openflexo.foundation.ontology.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
@@ -71,6 +72,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 
 	@Getter(value = CONCEPT_URI_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>URI of the concept</html>")
 	public String getConceptURI();
 
 	@Setter(CONCEPT_URI_KEY)

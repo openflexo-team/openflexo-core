@@ -41,6 +41,7 @@ package org.openflexo.foundation.ontology.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -69,6 +70,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	@Getter(value = CONCEPT_URI_KEY)
 	@XMLAttribute(xmlTag = "ontologicType")
+	@FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>ontologic type</html>")
 	public String _getConceptURI();
 
 	@Setter(CONCEPT_URI_KEY)

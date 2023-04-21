@@ -45,6 +45,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -97,6 +98,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
+	@FMLAttribute(value = CONDITIONS_KEY, required = false, description = "<html>condition of the request</html>")
 	public List<FetchRequestCondition> getConditions();
 
 	@Setter(CONDITIONS_KEY)
