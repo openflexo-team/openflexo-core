@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.JavaCustomType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -179,6 +180,14 @@ public class FlexoResourceType implements JavaCustomType {
 		return getBaseClass();
 	}
 
+	public Type getResourceDataClass() {
+		if (FlexoResource.class.isAssignableFrom(getBaseClass())) {
+			Type returned = TypeUtils.getTypeArgument(getBaseClass(), FlexoResource.class, 0);
+			return returned;
+		}
+		return ResourceData.class;
+	}
+
 	@Override
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
@@ -198,15 +207,12 @@ public class FlexoResourceType implements JavaCustomType {
 
 	@Override
 	public String simpleRepresentation() {
-		return TypeUtils.simpleRepresentation(getJavaType());
-		/*return "FlexoResource" + "<"
-				+ (resourceFactory != null ? resourceFactory.getResourceDataClass().getSimpleName() : "NotFound:" + resourceDataClassName)
-				+ ">";*/
+		return AbstractFMLTypingSpace.RESOURCE + "<" + TypeUtils.simpleRepresentation(getResourceDataClass()) + ">";
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return getClass().getName() + "<" + getSerializationRepresentation() + ">";
+		return AbstractFMLTypingSpace.RESOURCE + "<" + TypeUtils.fullQualifiedRepresentation(getResourceDataClass()) + ">";
 	}
 
 	@Override

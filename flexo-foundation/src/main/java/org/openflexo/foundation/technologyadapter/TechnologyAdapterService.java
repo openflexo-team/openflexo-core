@@ -57,6 +57,8 @@ import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
@@ -202,6 +204,10 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param technologyAdapter
 	 */
 	public <TA extends TechnologyAdapter<TA>> FlexoTask disactivateTechnologyAdapter(TA technologyAdapter);
+
+	public FlexoResourceType getResourceTypeForDataClass(Class<?> resourceDataClass);
+
+	public ITechnologySpecificFlexoResourceFactory<?, ?, ?> getResourceFactoryForDataClass(Class<?> resourceDataClass);
 
 	/**
 	 * Return {@link TechnologyAdapter} where supplied modelSlotClass has been declared

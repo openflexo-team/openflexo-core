@@ -81,6 +81,8 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCe
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
@@ -427,6 +429,28 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return getServiceManager().disactivateTechnologyAdapter(technologyAdapter);
 	}
 
+	@Override
+	public FlexoResourceType getResourceTypeForDataClass(Class<?> resourceDataClass) {
+		return FlexoResourceType.getFlexoResourceType(getResourceFactoryForDataClass(resourceDataClass));
+	}
+
+	@Override
+	public ITechnologySpecificFlexoResourceFactory<?, ?, ?> getResourceFactoryForDataClass(Class<?> resourceDataClass) {
+		if (resourceDataClass == null) {
+			return null;
+		}
+		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
+			for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> f : ta.getResourceFactories()) {
+				// System.out.println("f=" + f + " of " + f.getClass() + " rd=" + f.getResourceDataClass());
+				if (f.getResourceDataClass().equals(resourceDataClass)) {
+					// System.out.println("Found " + f.getResourceClass());
+					return f;
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Return {@link TechnologyAdapter} where supplied modelSlotClass has been declared
 	 * 
@@ -461,13 +485,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (behaviourClass == null) {
 			return null;
 		}
-		
-		if (CreationScheme.class.isAssignableFrom(behaviourClass)
-				|| ActionScheme.class.isAssignableFrom(behaviourClass)
+
+		if (CreationScheme.class.isAssignableFrom(behaviourClass) || ActionScheme.class.isAssignableFrom(behaviourClass)
 				|| DeletionScheme.class.isAssignableFrom(behaviourClass)) {
 			return getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 		}
-		
+
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
 			// System.out.println("ta: " + ta);
 			for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {

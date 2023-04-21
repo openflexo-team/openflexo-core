@@ -42,6 +42,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.java.JavaTypingSpace;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
@@ -49,6 +50,7 @@ import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
+import org.openflexo.foundation.resource.ResourceData;
 
 /**
  * FML typing space, build on top of {@link JavaTypingSpace}
@@ -60,11 +62,14 @@ import org.openflexo.foundation.fml.ta.FlexoConceptType;
  */
 public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 
+	private static final Logger logger = Logger.getLogger(AbstractFMLTypingSpace.class.getPackage().getName());
+
 	public static final String CONCEPT = "Concept";
 	public static final String CONCEPT_INSTANCE = "ConceptInstance";
 	public static final String ENUM_INSTANCE = "EnumInstance";
 	public static final String MODEL_INSTANCE = "ModelInstance";
 	public static final String MATCHING_SET = "MatchingSet";
+	public static final String RESOURCE = "Resource";
 
 	private FlexoServiceManager serviceManager;
 
@@ -125,6 +130,16 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 	 * @return
 	 */
 	public Type attemptToResolveType(UnresolvedType unresolvedBaseType, List<Type> typeArguments) {
+		if (unresolvedBaseType.getUnresolvedTypeName().equals(RESOURCE) && typeArguments.size() == 1) {
+			if (typeArguments.get(0) instanceof Class && ResourceData.class.isAssignableFrom((Class) typeArguments.get(0))) {
+				// This matches a Resource<..> signature
+				return getServiceManager().getTechnologyAdapterService().getResourceTypeForDataClass((Class<?>) typeArguments.get(0));
+			}
+			else {
+				logger.warning("Not handled: " + typeArguments.get(0));
+			}
+
+		}
 		if (unresolvedBaseType.getUnresolvedTypeName().equals(CONCEPT) && typeArguments.size() == 1
 				&& typeArguments.get(0) instanceof FMLRTType) {
 			// This matches a FlexoConceptType signature
