@@ -43,10 +43,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -88,21 +91,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	public FR buildModelObjectFromAST(ASelectActionFmlActionExp astNode) {
 		FR returned = null;
 
-		// FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getSelectedTypeName());
-
-		FlexoConceptInstanceType selectType = null;
-
 		Type type = TypeFactory.makeType(astNode.getSelectedTypeName(), getSemanticsAnalyzer().getTypingSpace());
-		if (type instanceof FlexoConceptInstanceType) {
-			selectType = (FlexoConceptInstanceType) type;
-		}
-		else {
-			throwIssue("Unexpected fetch request type " + getText(astNode.getSelectedTypeName()), getTypeFragment());
-		}
-
-		// FlexoConceptInstanceType type = getTypeFactory().makeFlexoConceptType(astNode.getSelectedTypeName());
-
-		// System.out.println("Found type: " + type);
 
 		if (type instanceof VirtualModelInstanceType) {
 			AbstractSelectVirtualModelInstance selectAction = null;
@@ -138,7 +127,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			if (concept != null && selectAction != null) {
 				selectAction.setFlexoConceptType(concept);
 			}*/
-			selectAction.setType(selectType);
+			selectAction.setType((FlexoConceptInstanceType) type);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
@@ -151,8 +140,37 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		}
 		else {
-			// TODO...
-			returned = null;
+			FetchRequest<?, ?, ?> selectAction = null;
+			for (UseModelSlotDeclaration useDecl : getCompilationUnit().getUseDeclarations()) {
+				// We iterate on all use declarations
+				for (Class<? extends FetchRequest<?, ?, ?>> frClass : getSemanticsAnalyzer().getServiceManager()
+						.getTechnologyAdapterService().getAvailableFetchRequestActionTypes(useDecl.getModelSlotClass())) {
+					if (FetchRequest.class.isAssignableFrom(frClass)) {
+						Type accessedType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 2);
+						Type resourceDataType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 1);
+						// System.out.println("accessedType=" + accessedType);
+						// System.out.println("resourceDataType=" + resourceDataType);
+						if (accessedType.equals(type)) {
+							// System.out.println("Looked up " + frClass);
+							selectAction = getFactory().newInstance(frClass);
+							if (astNode.getFromClause() instanceof AFromClause) {
+								PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+								DataBinding receiver = ExpressionFactory.makeDataBinding(fromExpression, selectAction,
+										BindingDefinitionType.GET, resourceDataType, getSemanticsAnalyzer(), this);
+								selectAction.setReceiver(receiver);
+
+							}
+							returned = (FR) selectAction;
+						}
+					}
+
+				}
+			}
+			if (selectAction == null) {
+				throwIssue("Unexpected fetch request for type " + getText(astNode.getSelectedTypeName()), getTypeFragment());
+			}
+
+			// returned = null;
 		}
 
 		if (astNode.getWhereClause() != null) {
