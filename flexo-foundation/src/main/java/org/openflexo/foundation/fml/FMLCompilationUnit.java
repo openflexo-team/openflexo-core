@@ -68,8 +68,10 @@ import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -387,6 +389,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			E element);
 
 	public void ensureJavaImport(Class<?> javaClass);
+
+	public void ensureJavaImportForType(Type type);
 
 	public FMLTypingSpace getTypingSpace();
 
@@ -1317,6 +1321,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public void ensureJavaImport(Class<?> javaClass) {
+			if (javaClass.equals(Object.class)) {
+				// Bof
+				return;
+			}
 			boolean typeWasFound = false;
 			for (JavaImportDeclaration importDeclaration : getJavaImports()) {
 				if (importDeclaration.getFullQualifiedClassName().equals(javaClass.getName())) {
@@ -1329,6 +1337,20 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				JavaImportDeclaration newJavaImportDeclaration = getFMLModelFactory().newJavaImportDeclaration();
 				newJavaImportDeclaration.setFullQualifiedClassName(javaClass.getName());
 				addToJavaImports(newJavaImportDeclaration);
+			}
+		}
+
+		@Override
+		public void ensureJavaImportForType(Type type) {
+			boolean typeWasFound = false;
+			if (type instanceof FlexoResourceType) {
+				ensureJavaImportForType(((FlexoResourceType) type).getResourceDataClass());
+			}
+			else {
+				Class<?> rawType = TypeUtils.getRawType(type);
+				if (rawType != null && !TypeUtils.isPrimitive(rawType) && !(rawType.equals(FMLRTVirtualModelInstance.class))) {
+					ensureJavaImport(rawType);
+				}
 			}
 		}
 

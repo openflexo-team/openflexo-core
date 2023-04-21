@@ -51,7 +51,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
@@ -60,7 +59,6 @@ import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -589,10 +587,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
-				Class<?> rawType = TypeUtils.getRawType(getType());
-				if (rawType != null && !TypeUtils.isPrimitive(rawType) && !(rawType.equals(FMLRTVirtualModelInstance.class))) {
-					compilationUnit.ensureJavaImport(rawType);
-				}
+				compilationUnit.ensureJavaImportForType(getType());
 			}
 		}
 

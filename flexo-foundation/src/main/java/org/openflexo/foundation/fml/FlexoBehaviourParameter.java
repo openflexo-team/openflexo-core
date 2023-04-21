@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -752,6 +753,14 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 				return ((FlexoEnumType) getType()).getFlexoEnum().getInstances();
 			}
 			return null;
+		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (compilationUnit != null) {
+				compilationUnit.ensureJavaImportForType(getType());
+			}
 		}
 
 	}
