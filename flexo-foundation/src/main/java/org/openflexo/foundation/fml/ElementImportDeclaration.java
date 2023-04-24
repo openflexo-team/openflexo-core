@@ -359,8 +359,17 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		private FlexoObject findObjectInResource(FlexoResource<?> resource, String identifier) {
-			String userIdentifier = identifier.substring(0, identifier.indexOf("-"));
-			String objectIdentifier = identifier.substring(identifier.indexOf("-") + 1);
+
+			String userIdentifier = null;
+			String objectIdentifier;
+
+			if (identifier.contains("-")) {
+				userIdentifier = identifier.substring(0, identifier.indexOf("-"));
+				objectIdentifier = identifier.substring(identifier.indexOf("-") + 1);
+			}
+			else {
+				objectIdentifier = identifier;
+			}
 			try {
 				// Ensure the resource is loaded
 				resource.getResourceData();
