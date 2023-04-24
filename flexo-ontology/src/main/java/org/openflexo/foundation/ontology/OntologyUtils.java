@@ -153,10 +153,10 @@ public class OntologyUtils {
 		if (ontology == null) {
 			return;
 		}
-		if (!s.contains(ontology)) {
-			s.add(ontology);
-			if (ontology.getImportedOntologies() != null) {
-				for (IFlexoOntology<?> imported : ontology.getImportedOntologies()) {
+		if (ontology.getImportedOntologies() != null) {
+			for (IFlexoOntology<?> imported : ontology.getImportedOntologies()) {
+				if (!s.contains(imported)) {
+					s.add((O) imported);
 					appendImportedOntologies(imported, (Set) s);
 				}
 			}
