@@ -81,6 +81,7 @@ import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
@@ -97,6 +98,9 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.model.PamelaVisitor;
 import org.openflexo.pamela.model.PamelaVisitor.VisitingStrategy;
 import org.openflexo.pamela.undo.CompoundEdit;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -1460,6 +1464,23 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return null;
 		}
 
+	}
+
+	@DefineValidationRule
+	public static class CompilationUnitMustDeclareAVirtualModel
+			extends ValidationRule<CompilationUnitMustDeclareAVirtualModel, FMLCompilationUnit> {
+		public CompilationUnitMustDeclareAVirtualModel() {
+			super(FMLCompilationUnit.class, "compilation_unit_must_declare_a_virtual_model");
+		}
+
+		@Override
+		public ValidationIssue<CompilationUnitMustDeclareAVirtualModel, FMLCompilationUnit> applyValidation(
+				FMLCompilationUnit compilationUnit) {
+			if (compilationUnit.getVirtualModel() == null) {
+				return new ValidationError<>(this, compilationUnit, "compilation_unit_must_declare_a_virtual_model");
+			}
+			return null;
+		}
 	}
 
 }
