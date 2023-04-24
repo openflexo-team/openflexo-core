@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
@@ -142,15 +143,16 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		}
 		else {
-			FetchRequest<?, ?, ?> selectAction = null;
+			AbstractFetchRequest<?, ?, ?, ?> selectAction = null;
 
-			Class<? extends FetchRequest<?, ?, ?>> frClass = getFetchRequestClass(type, astNode.getWithClause());
+			Class<? extends AbstractFetchRequest<?, ?, ?, ?>> frClass = getFetchRequestClass(type, astNode.getKwUnique() != null,
+					astNode.getWithClause());
 
 			if (frClass != null) {
 				selectAction = getFactory().newInstance(frClass);
 				if (astNode.getFromClause() instanceof AFromClause) {
 					PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-					Type resourceDataType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 1);
+					Type resourceDataType = TypeUtils.getTypeArgument(frClass, AbstractFetchRequest.class, 1);
 					DataBinding receiver = ExpressionFactory.makeDataBinding(fromExpression, selectAction, BindingDefinitionType.GET,
 							resourceDataType, getSemanticsAnalyzer(), this);
 					selectAction.setReceiver(receiver);
@@ -172,27 +174,30 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 	}
 
-	private Class<? extends FetchRequest<?, ?, ?>> getFetchRequestClass(Type type, PWithClause withClause) {
+	private Class<? extends AbstractFetchRequest<?, ?, ?, ?>> getFetchRequestClass(Type type, boolean isUnique, PWithClause withClause) {
 		String identifier = null;
 		if (withClause instanceof AWithClause) {
 			identifier = ((AWithClause) withClause).getUidentifier().getText();
 		}
 
-		Class<? extends FetchRequest<?, ?, ?>> bestMatch = null;
+		Class<? extends AbstractFetchRequest<?, ?, ?, ?>> bestMatch = null;
 		for (UseModelSlotDeclaration useDecl : getCompilationUnit().getUseDeclarations()) {
 			// We iterate on all use declarations
-			for (Class<? extends FetchRequest<?, ?, ?>> frClass : getSemanticsAnalyzer().getServiceManager().getTechnologyAdapterService()
-					.getAvailableFetchRequestActionTypes(useDecl.getModelSlotClass())) {
-				if (FetchRequest.class.isAssignableFrom(frClass)) {
-					Type accessedType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 2);
-					if (accessedType.equals(type)) {
-						// System.out.println("Looked up " + frClass);
-						if (identifier == null || identifier.equals(frClass.getSimpleName())) {
-							return frClass;
-						}
-						else {
-							// Type is right but identifier does not match
-							bestMatch = frClass;
+			for (Class<? extends AbstractFetchRequest<?, ?, ?, ?>> frClass : getSemanticsAnalyzer().getServiceManager()
+					.getTechnologyAdapterService().getAvailableAbstractFetchRequestActionTypes(useDecl.getModelSlotClass())) {
+				if (AbstractFetchRequest.class.isAssignableFrom(frClass)) {
+					if ((isUnique && UniqueFetchRequest.class.isAssignableFrom(frClass))
+							|| ((!isUnique) && FetchRequest.class.isAssignableFrom(frClass))) {
+						Type accessedType = TypeUtils.getTypeArgument(frClass, AbstractFetchRequest.class, 2);
+						if (accessedType.equals(type)) {
+							// System.out.println("Looked up " + frClass);
+							if (identifier == null || identifier.equals(frClass.getSimpleName())) {
+								return frClass;
+							}
+							else {
+								// Type is right but identifier does not match
+								bestMatch = frClass;
+							}
 						}
 					}
 				}
