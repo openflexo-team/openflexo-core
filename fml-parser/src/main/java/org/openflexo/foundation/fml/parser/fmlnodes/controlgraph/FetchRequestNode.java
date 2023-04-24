@@ -59,10 +59,12 @@ import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AWhereClause;
+import org.openflexo.foundation.fml.parser.node.AWithClause;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
 import org.openflexo.foundation.fml.parser.node.PWhereClause;
+import org.openflexo.foundation.fml.parser.node.PWithClause;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance;
@@ -141,36 +143,25 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		}
 		else {
 			FetchRequest<?, ?, ?> selectAction = null;
-			for (UseModelSlotDeclaration useDecl : getCompilationUnit().getUseDeclarations()) {
-				// We iterate on all use declarations
-				for (Class<? extends FetchRequest<?, ?, ?>> frClass : getSemanticsAnalyzer().getServiceManager()
-						.getTechnologyAdapterService().getAvailableFetchRequestActionTypes(useDecl.getModelSlotClass())) {
-					if (FetchRequest.class.isAssignableFrom(frClass)) {
-						Type accessedType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 2);
-						Type resourceDataType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 1);
-						// System.out.println("accessedType=" + accessedType);
-						// System.out.println("resourceDataType=" + resourceDataType);
-						if (accessedType.equals(type)) {
-							// System.out.println("Looked up " + frClass);
-							selectAction = getFactory().newInstance(frClass);
-							if (astNode.getFromClause() instanceof AFromClause) {
-								PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-								DataBinding receiver = ExpressionFactory.makeDataBinding(fromExpression, selectAction,
-										BindingDefinitionType.GET, resourceDataType, getSemanticsAnalyzer(), this);
-								selectAction.setReceiver(receiver);
 
-							}
-							returned = (FR) selectAction;
-						}
-					}
+			Class<? extends FetchRequest<?, ?, ?>> frClass = getFetchRequestClass(type, astNode.getWithClause());
+
+			if (frClass != null) {
+				selectAction = getFactory().newInstance(frClass);
+				if (astNode.getFromClause() instanceof AFromClause) {
+					PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+					Type resourceDataType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 1);
+					DataBinding receiver = ExpressionFactory.makeDataBinding(fromExpression, selectAction, BindingDefinitionType.GET,
+							resourceDataType, getSemanticsAnalyzer(), this);
+					selectAction.setReceiver(receiver);
 
 				}
+				returned = (FR) selectAction;
 			}
+
 			if (selectAction == null) {
 				throwIssue("Unexpected fetch request for type " + getText(astNode.getSelectedTypeName()), getTypeFragment());
 			}
-
-			// returned = null;
 		}
 
 		if (astNode.getWhereClause() != null) {
@@ -179,6 +170,40 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		return returned;
 
+	}
+
+	private Class<? extends FetchRequest<?, ?, ?>> getFetchRequestClass(Type type, PWithClause withClause) {
+		String identifier = null;
+		if (withClause instanceof AWithClause) {
+			identifier = ((AWithClause) withClause).getUidentifier().getText();
+		}
+
+		Class<? extends FetchRequest<?, ?, ?>> bestMatch = null;
+		for (UseModelSlotDeclaration useDecl : getCompilationUnit().getUseDeclarations()) {
+			// We iterate on all use declarations
+			for (Class<? extends FetchRequest<?, ?, ?>> frClass : getSemanticsAnalyzer().getServiceManager().getTechnologyAdapterService()
+					.getAvailableFetchRequestActionTypes(useDecl.getModelSlotClass())) {
+				if (FetchRequest.class.isAssignableFrom(frClass)) {
+					Type accessedType = TypeUtils.getTypeArgument(frClass, FetchRequest.class, 2);
+					if (accessedType.equals(type)) {
+						// System.out.println("Looked up " + frClass);
+						if (identifier == null || identifier.equals(frClass.getSimpleName())) {
+							return frClass;
+						}
+						else {
+							// Type is right but identifier does not match
+							bestMatch = frClass;
+						}
+					}
+				}
+			}
+		}
+		if (identifier != null) {
+			throwIssue("Unexpected fetch request " + identifier, getWithFragment());
+			// Return best match
+			return bestMatch;
+		}
+		return null;
 	}
 
 	private void handleConditions(PArgumentList argumentList, FR modelObject) {
@@ -349,6 +374,16 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		else {
 			return getASTNode() != null && getASTNode().getWhereClause() != null;
 		}
+	}
+
+	private RawSourceFragment getWithFragment() {
+		if (getASTNode() != null) {
+			PWithClause withClause = getASTNode().getWithClause();
+			if (withClause != null) {
+				return getFragment(withClause);
+			}
+		}
+		return null;
 	}
 
 	private RawSourceFragment getWhereFragment() {

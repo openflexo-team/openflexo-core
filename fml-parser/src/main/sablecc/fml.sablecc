@@ -289,8 +289,8 @@ Tokens
    {normal -> binding} kw_values = 'values';
    {normal,binding} kw_where = 'where';
    {normal} kw_while = 'while';
-   {normal,command,script} kw_with = 'with';
-
+   {normal,binding,command,script} kw_with = 'with';
+ 
    // Types
    ty_boolean = 'boolean';
    ty_char = 'char';
@@ -915,7 +915,7 @@ Productions
 //     | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:uidentifier colon_colon [constructor_name]:lidentifier l_par argument_list? r_par precise_fml_parameters_clause?
        {ta_edition_action}                     [ta_id]:cidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}                         kw_delete expression from_clause?
-     | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident from_clause where_clause?
+     | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident with_clause? from_clause where_clause?
      | {log_action}                            kw_log expression
      | {notify_action}                         kw_notify expression in_clause?
      | {begin_match_action}                    kw_begin kw_match [concept_name]:uidentifier from_clause where_clause?
@@ -925,6 +925,10 @@ Productions
      ;
        
    precise_fml_parameters_clause = kw_with fml_parameters;
+    
+   with_clause = kw_with uidentifier fml_parameters;
+    // | {simple}  		 kw_with [identifier]:uidentifier fml_parameters
+    // | {fully_qualified} kw_with [ta_id]:cidentifier colon_colon [identifier]:uidentifier fml_parameters; 
     
    create_clause = kw_create colon_colon [constructor_name]:lidentifier l_par argument_list? r_par;
 
