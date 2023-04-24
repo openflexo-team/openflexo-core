@@ -63,6 +63,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -495,6 +496,10 @@ public abstract class OpenflexoTestCase {
 	@After
 	public void tearDown() throws Exception {
 		KeyValueLibrary.clearCache();
+	}
+
+	protected void assertCompilationUnitIsValid(FMLCompilationUnit cu) {
+		assertObjectIsValid(cu);
 	}
 
 	protected void assertVirtualModelIsValid(VirtualModel vm) {
