@@ -81,6 +81,7 @@ import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.TypeDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
@@ -131,6 +132,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.MultiValuedMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.TypeDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
@@ -383,6 +385,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			}
 			if (object instanceof ElementImportDeclaration) {
 				return (P2PPNode<?, C>) new ElementImportNode((ElementImportDeclaration) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof TypeDeclaration) {
+				return (P2PPNode<?, C>) new TypeDeclarationNode((TypeDeclaration) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof BasicMetaData) {
@@ -872,14 +878,18 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return null;
 	}
 
-	protected final String serializeType(Type type, boolean escapeVoid) {
+	protected final String serializeTypeEscapeVoid(Type type, boolean escapeVoid) {
 		if (escapeVoid && ((Void.class.equals(type)) || (Void.TYPE.equals(type)))) {
 			return "";
 		}
 		return serializeType(type);
 	}
 
-	protected final String serializeType(Type type) {
+	/*protected final String serializeType(Type type) {
+		return serializeType(type, true);
+	}*/
+
+	protected final String serializeType(Type type/*, boolean abbrevWhenPossible*/) {
 		// TODO: generate required imports !
 		/*if (type != null) {
 			if (type.equals(Boolean.class)) {
@@ -891,6 +901,14 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				((CustomType) type).resolve();
 			}
 		}
+
+		/*if (abbrevWhenPossible && semanticsAnalyzer.getCompilationUnit() != null) {
+			for (TypeDeclaration typeDeclaration : semanticsAnalyzer.getCompilationUnit().getTypeDeclarations()) {
+				if (typeDeclaration.getReferencedType() == type) {
+					return typeDeclaration.getAbbrev();
+				}
+			}
+		}*/
 
 		if (type instanceof VirtualModelInstanceType && ((VirtualModelInstanceType) type).getVirtualModel() == null) {
 			String uri = ((VirtualModelInstanceType) type).getConceptURI();

@@ -305,6 +305,10 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(ElementImportDeclaration.class);
 	}
 
+	public TypeDeclaration newTypeDeclaration() {
+		return newInstance(TypeDeclaration.class);
+	}
+
 	public VirtualModel newVirtualModel() {
 		VirtualModel returned = newInstance(VirtualModel.class);
 		returned.initializeDeserialization(this);

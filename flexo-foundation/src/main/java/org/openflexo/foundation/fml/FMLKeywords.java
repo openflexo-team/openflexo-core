@@ -285,6 +285,12 @@ public enum FMLKeywords {
 			return "then";
 		}
 	},
+	Type {
+		@Override
+		public String getKeyword() {
+			return "type";
+		}
+	},
 	Unique {
 		@Override
 		public String getKeyword() {

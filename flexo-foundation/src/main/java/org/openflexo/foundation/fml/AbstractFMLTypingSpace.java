@@ -119,6 +119,13 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 		if (typeAsString.equals(MATCHING_SET)) {
 			return MatchingSet.class;
 		}
+		if (getFMLCompilationUnit() != null) {
+			for (TypeDeclaration typeDeclaration : getFMLCompilationUnit().getTypeDeclarations()) {
+				if (typeAsString.equals(typeDeclaration.getAbbrev())) {
+					return typeDeclaration.getReferencedType();
+				}
+			}
+		}
 		return super.resolveType(typeAsString);
 	}
 

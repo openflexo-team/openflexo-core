@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.SimpleAssertNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.TypeDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
@@ -103,6 +104,7 @@ import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
 import org.openflexo.foundation.fml.parser.node.AProtectedSimpleAssertDeclaration;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
+import org.openflexo.foundation.fml.parser.node.ATypeDecl;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -425,6 +427,18 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
+	public void inATypeDecl(ATypeDecl node) {
+		super.inATypeDecl(node);
+		push(retrieveFMLNode(node, n -> new TypeDeclarationNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outATypeDecl(ATypeDecl node) {
+		super.outATypeDecl(node);
+		pop();
+	}
+
+	@Override
 	public void inAModelDecl(AModelDecl node) {
 		super.inAModelDecl(node);
 		push(retrieveFMLNode(node, n -> new VirtualModelNode(n, getCompilationUnitAnalyzer())));
@@ -726,7 +740,7 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	@Override
 	protected boolean handleFMLArgument() {
-		return !insideBehaviourBody && !insideMatchAction;
+		return !insideBehaviourBody && !insideMatchAction && !insideTechnologySpecificType;
 	}
 
 }

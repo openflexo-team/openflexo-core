@@ -124,6 +124,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public static final String NAMESPACES_KEY = "namespaces";
 	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
+	@PropertyIdentifier(type = TypeDeclaration.class, cardinality = Cardinality.LIST)
+	public static final String TYPE_DECLARATIONS_KEY = "typeDeclarations";
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
 
@@ -167,6 +169,28 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	@Reindexer(ELEMENT_IMPORTS_KEY)
 	public void moveElementImportDeclarationToIndex(ElementImportDeclaration elementImportDeclaration, int index);
+
+	/**
+	 * Return list of {@link TypeDeclaration} explicitely declared in this {@link FMLCompilationUnit}
+	 * 
+	 * @return
+	 */
+	@Getter(value = TYPE_DECLARATIONS_KEY, cardinality = Cardinality.LIST, inverse = TypeDeclaration.COMPILATION_UNIT_KEY)
+	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
+	public List<TypeDeclaration> getTypeDeclarations();
+
+	@Adder(TYPE_DECLARATIONS_KEY)
+	public void addToTypeDeclarations(TypeDeclaration typeDeclaration);
+
+	@Remover(TYPE_DECLARATIONS_KEY)
+	public void removeFromTypeDeclarations(TypeDeclaration typeDeclaration);
+
+	@Finder(collection = TYPE_DECLARATIONS_KEY, attribute = TypeDeclaration.ABBREV_KEY)
+	public TypeDeclaration getTypeDeclaration(String abbrev);
+
+	@Reindexer(TYPE_DECLARATIONS_KEY)
+	public void moveTypeDeclarationToIndex(TypeDeclaration typeDeclaration, int index);
 
 	/**
 	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
