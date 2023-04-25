@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
@@ -1326,6 +1327,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public void ensureJavaImport(Class<?> javaClass) {
 			if (javaClass.equals(Object.class)) {
+				// Bof
+				return;
+			}
+			if (javaClass.equals(FlexoConceptInstance.class)) {
 				// Bof
 				return;
 			}
