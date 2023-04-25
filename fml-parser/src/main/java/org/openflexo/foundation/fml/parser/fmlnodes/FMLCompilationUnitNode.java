@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.TypeDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
@@ -104,6 +105,9 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		append(childrenContents("", "", () -> getModelObject().getElementImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
 				Indentation.DoNotIndent, ElementImportDeclaration.class, "ElementImports"));
+
+		append(childrenContents("", "", () -> getModelObject().getTypeDeclarations(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
+				Indentation.DoNotIndent, TypeDeclaration.class, "TypeDeclarations"));
 
 		append(childContents("", () -> getModelObject().getVirtualModel(), "", Indentation.DoNotIndent, "VirtualModel"));
 

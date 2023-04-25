@@ -125,7 +125,11 @@ public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot
 
 		@Override
 		public Type getFetchedType() {
-			return IndividualOfClass.getIndividualOfClass(getType());
+			Type returned = super.getFetchedType();
+			if (returned == null) {
+				return IndividualOfClass.getIndividualOfClass(getType());
+			}
+			return returned;
 		}
 
 		@Override

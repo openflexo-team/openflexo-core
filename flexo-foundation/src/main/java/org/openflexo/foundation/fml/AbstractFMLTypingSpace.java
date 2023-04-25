@@ -45,7 +45,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.java.JavaTypingSpace;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.ProxyType;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
@@ -122,7 +124,7 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 		if (getFMLCompilationUnit() != null) {
 			for (TypeDeclaration typeDeclaration : getFMLCompilationUnit().getTypeDeclarations()) {
 				if (typeAsString.equals(typeDeclaration.getAbbrev())) {
-					return typeDeclaration.getReferencedType();
+					return new ProxyType(typeDeclaration.getAbbrev(), (CustomType) typeDeclaration.getReferencedType());
 				}
 			}
 		}
