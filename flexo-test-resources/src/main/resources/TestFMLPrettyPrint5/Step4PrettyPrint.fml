@@ -1,5 +1,7 @@
 use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
+import java.lang.String;
+
 import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"] as MyVM;
 
 @URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
