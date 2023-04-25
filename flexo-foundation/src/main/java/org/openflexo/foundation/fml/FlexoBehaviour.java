@@ -1008,4 +1008,25 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	}
 
+	@DefineValidationRule
+	public static class BehaviourSignatureMustBeUnique extends ValidationRule<BehaviourSignatureMustBeUnique, FlexoBehaviour> {
+		public BehaviourSignatureMustBeUnique() {
+			super(FlexoBehaviour.class, "behaviour_signature_must_be_unique");
+		}
+
+		@Override
+		public ValidationIssue<BehaviourSignatureMustBeUnique, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+
+			if (behaviour != null && behaviour.getFlexoConcept() != null) {
+				for (FlexoBehaviour b2 : behaviour.getFlexoConcept().getDeclaredFlexoBehaviours()) {
+					if (b2 != behaviour && b2.getSignature().equals(behaviour.getSignature())) {
+						return new ValidationError<>(this, behaviour, "duplicate_behaviour_($validable.signature)");
+					}
+				}
+			}
+			return null;
+		}
+
+	}
+
 }
