@@ -614,4 +614,25 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 
 	}
 
+	@DefineValidationRule
+	public static class PropertyNameMustBeUnique extends ValidationRule<PropertyNameMustBeUnique, FlexoProperty<?>> {
+		public PropertyNameMustBeUnique() {
+			super(FlexoProperty.class, "property_name_must_be_unique");
+		}
+
+		@Override
+		public ValidationIssue<PropertyNameMustBeUnique, FlexoProperty<?>> applyValidation(FlexoProperty<?> property) {
+
+			if (property != null && property.getFlexoConcept() != null) {
+				for (FlexoProperty<?> p2 : property.getFlexoConcept().getDeclaredProperties()) {
+					if (p2 != property && p2.getName().equals(property.getName())) {
+						return new ValidationError<>(this, property, "duplicate_property_($validable.propertyName)");
+					}
+				}
+			}
+			return null;
+		}
+
+	}
+
 }
