@@ -99,6 +99,9 @@ public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectIndividual.class.getPackage().getName());
 
+		private IFlexoOntologyClass type;
+
+		@Deprecated
 		private String typeURI = null;
 
 		public AbstractSelectIndividualImpl() {
@@ -128,15 +131,19 @@ public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot
 		@Override
 		public IFlexoOntologyClass getType() {
 
+			if (type != null) {
+				return type;
+			}
+
 			if (StringUtils.isNotEmpty(typeURI) && getInferedModelSlot() != null && getInferedModelSlot().getMetaModelResource() != null
 					&& getInferedModelSlot().getMetaModelResource().getMetaModelData() != null) {
 				return (IFlexoOntologyClass) getInferedModelSlot().getMetaModelResource().getMetaModelData().getObject(typeURI);
 			}
-			/*System.out.println("Pas trouve, getModelSlot()=" + getModelSlot());
-			if (getModelSlot() != null) {
-				System.out.println("Pas trouve, getModelSlot().getMetaModelResource()=" + getModelSlot().getMetaModelResource());
-				if (getModelSlot().getMetaModelResource() != null) {
-					System.out.println("Pas trouve, mmData=" + getModelSlot().getMetaModelResource().getMetaModelData());
+			/*System.out.println("Pas trouve " + typeURI + " getModelSlot()=" + getInferedModelSlot());
+			if (getInferedModelSlot() != null) {
+				System.out.println("Pas trouve, getModelSlot().getMetaModelResource()=" + getInferedModelSlot().getMetaModelResource());
+				if (getInferedModelSlot().getMetaModelResource() != null) {
+					System.out.println("Pas trouve, mmData=" + getInferedModelSlot().getMetaModelResource().getMetaModelData());
 				}
 			}*/
 			return null;
@@ -144,6 +151,7 @@ public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot
 
 		@Override
 		public void setType(IFlexoOntologyClass ontologyClass) {
+			this.type = ontologyClass;
 			if (ontologyClass != null) {
 				typeURI = ontologyClass.getURI();
 			}

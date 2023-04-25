@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyTechnologyContextManager;
+import org.openflexo.foundation.technologyadapter.SpecificTypeInfo;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
@@ -133,7 +134,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter<TA>> implements 
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public IFlexoOntologyStructuralProperty<TA> getOntologyProperty() {
 		return ontologyProperty;
 	}
@@ -218,6 +219,17 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter<TA>> implements 
 			return false;
 		return true;
 	}
+
+	@Override
+	public void registerSpecificTypeInfo(SpecificTypeInfo<TA> typeInfo) {
+		this.typeInfo = typeInfo;
+	}
+
+	public SpecificTypeInfo<TA> getSpecificTypeInfo() {
+		return typeInfo;
+	}
+
+	private SpecificTypeInfo<TA> typeInfo;
 
 	public static class SubDataPropertyOfProperty<TA extends TechnologyAdapter<TA>> extends SubPropertyOfProperty<TA> {
 

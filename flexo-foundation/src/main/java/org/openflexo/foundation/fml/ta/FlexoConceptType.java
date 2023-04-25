@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.FMLType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
+import org.openflexo.foundation.technologyadapter.SpecificTypeInfo;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 
@@ -260,6 +261,11 @@ public class FlexoConceptType implements FMLType, TechnologySpecificType<FMLTech
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void registerSpecificTypeInfo(SpecificTypeInfo<FMLTechnologyAdapter> typeInfo) {
+		// Not relevant here
 	}
 
 }

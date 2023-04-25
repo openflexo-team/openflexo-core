@@ -50,6 +50,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
@@ -279,5 +280,11 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 			String editionActionKeyword);
 
 	public <MS extends ModelSlot<?>> Class<? extends FMLObject> getFMLObject(Class<MS> modelSlotClass, String objectKeyword);
+
+	public <TA extends TechnologyAdapter<TA>> List<Class<? extends TechnologySpecificType<TA>>> getAvailableTechnologySpecificTypes(
+			Class<TA> taClass);
+
+	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificType<?>> getTechnologySpecificType(Class<MS> modelSlotClass,
+			String identifier);
 
 }

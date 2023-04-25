@@ -165,8 +165,13 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		new ConceptTypesExplorer();
 	}
 
-	public FMLCompilationUnitSemanticsAnalyzer getanalyzer() {
+	public FMLCompilationUnitSemanticsAnalyzer getAnalyzer() {
 		return analyzer;
+	}
+
+	@Override
+	public FMLCompilationUnit getFMLCompilationUnit() {
+		return getAnalyzer().getCompilationUnit();
 	}
 
 	public FMLTechnologyAdapter getFMLTechnologyAdapter() {

@@ -130,10 +130,14 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 
 	public Type getFetchedType();
 
+	public void setFetchedType(Type type);
+
 	public static abstract class AbstractFetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T, AT>
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, AT> implements AbstractFetchRequest<MS, RD, T, AT> {
 
 		private static final Logger logger = Logger.getLogger(AbstractFetchRequestImpl.class.getPackage().getName());
+
+		private Type fetchedType;
 
 		protected String getWhereClausesFMLRepresentation() {
 			if (getConditions().size() > 0) {
@@ -160,7 +164,14 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 		}
 
 		@Override
-		public abstract Type getFetchedType();
+		public Type getFetchedType() {
+			return fetchedType;
+		}
+
+		@Override
+		public void setFetchedType(Type type) {
+			this.fetchedType = type;
+		}
 
 		@Override
 		public final Type getAssignableType() {

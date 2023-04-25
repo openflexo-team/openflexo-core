@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyTechnologyContextManager;
+import org.openflexo.foundation.technologyadapter.SpecificTypeInfo;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
@@ -132,7 +133,7 @@ public class SubClassOfClass<TA extends TechnologyAdapter<TA>> implements Techno
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public IFlexoOntologyClass<TA> getOntologyClass() {
 		if (ontologyClass != null) {
 			return ontologyClass;
@@ -220,5 +221,16 @@ public class SubClassOfClass<TA extends TechnologyAdapter<TA>> implements Techno
 			return false;
 		return true;
 	}
+
+	@Override
+	public void registerSpecificTypeInfo(SpecificTypeInfo<TA> typeInfo) {
+		this.typeInfo = typeInfo;
+	}
+
+	public SpecificTypeInfo<TA> getSpecificTypeInfo() {
+		return typeInfo;
+	}
+
+	private SpecificTypeInfo<TA> typeInfo;
 
 }

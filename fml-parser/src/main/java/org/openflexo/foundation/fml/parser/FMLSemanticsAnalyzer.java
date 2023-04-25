@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
+import org.openflexo.foundation.fml.parser.node.ATechnologySpecificType;
 import org.openflexo.foundation.fml.parser.node.ATypeQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAnnotationTag;
@@ -467,8 +468,23 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		insideNewInstance = false;
 	}
 
+	// Hack used to detect that we are deserializing a technology-specific-type
+	protected boolean insideTechnologySpecificType = false;
+
+	@Override
+	public void inATechnologySpecificType(ATechnologySpecificType node) {
+		super.inATechnologySpecificType(node);
+		insideTechnologySpecificType = true;
+	}
+
+	@Override
+	public void outATechnologySpecificType(ATechnologySpecificType node) {
+		super.outATechnologySpecificType(node);
+		insideTechnologySpecificType = false;
+	}
+
 	protected boolean handleFMLArgument() {
-		return !insideMatchAction && !insideNewInstance;
+		return !insideMatchAction && !insideNewInstance && !insideTechnologySpecificType;
 	}
 
 	@Override

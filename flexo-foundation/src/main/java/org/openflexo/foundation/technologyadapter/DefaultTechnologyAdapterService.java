@@ -64,10 +64,12 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
@@ -115,10 +117,13 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>>> availableAbstractFetchRequestActionTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
 
+	private Map<Class<? extends TechnologyAdapter<?>>, List<Class<? extends TechnologySpecificType>>> availableTechnologySpecificTypes;
+
 	private Map<String, Class<? extends FlexoBehaviour>> availableBehavioursByFMLKeyword;
 	private Map<String, Class<? extends FlexoRole<?>>> availableRolesByFMLKeyword;
 	private Map<String, Class<? extends EditionAction>> availableEditionActionsByFMLKeyword;
 	private Map<String, Class<? extends FMLObject>> availableFMLObjectsByFMLKeyword;
+	private Map<String, Class<? extends TechnologySpecificType>> availableTechnologySpecificTypesByFMLKeyword;
 
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends InspectorEntry>>> availableInspectorEntryTypes;
@@ -270,6 +275,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		availableRolesByFMLKeyword = new HashMap<>();
 		availableEditionActionsByFMLKeyword = new HashMap<>();
 		availableFMLObjectsByFMLKeyword = new HashMap<>();
+		availableTechnologySpecificTypes = new HashMap<>();
+		availableTechnologySpecificTypesByFMLKeyword = new HashMap<>();
 		loadAvailableTechnologyAdapters();
 		status = Status.Started;
 	}
@@ -570,6 +577,38 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
+	 * Return the list of {@link TechnologySpecificAction} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <TA extends TechnologyAdapter<TA>> List<Class<? extends TechnologySpecificType<TA>>> getAvailableTechnologySpecificTypes(
+			Class<TA> taClass) {
+
+		// @DeclareTechnologySpecificTypes
+
+		List<Class<? extends TechnologySpecificType>> returned = availableTechnologySpecificTypes.get(taClass);
+		if (returned == null) {
+			returned = new ArrayList<>();
+			appendTechnologySpecificTypes(returned, taClass);
+			availableTechnologySpecificTypes.put(taClass, returned);
+			for (Class<? extends TechnologySpecificType> taSpecificClass : returned) {
+				FML annotation = taSpecificClass.getAnnotation(FML.class);
+				if (annotation != null) {
+					availableTechnologySpecificTypesByFMLKeyword.put(annotation.value(), taSpecificClass);
+					// System.out.println("store " + editionActionClass + " for " + annotation.value());
+				}
+				// Also store it using class name
+				availableTechnologySpecificTypesByFMLKeyword.put(taSpecificClass.getSimpleName(), taSpecificClass);
+				// System.out.println("store " + editionActionClass + " for " + editionActionClass.getSimpleName());
+			}
+		}
+		return (List) returned;
+
+	}
+
+	/**
 	 * Return the list of {@link FMLObject} class available for supplied modelSlotClass
 	 * 
 	 * @param modelSlotClass
@@ -692,6 +731,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return availableFMLObjectsByFMLKeyword.get(objectKeyword);
 	}
 
+	@Override
+	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificType<?>> getTechnologySpecificType(Class<MS> modelSlotClass,
+			String identifier) {
+		TechnologyAdapter<?> ta = getTechnologyAdapterForModelSlot(modelSlotClass);
+		getAvailableTechnologySpecificTypes(ta.getClass());
+		return (Class) availableTechnologySpecificTypesByFMLKeyword.get(identifier);
+	}
+
 	private static void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
 			DeclareFlexoRoles allFlexoRoles = cl.getAnnotation(DeclareFlexoRoles.class);
@@ -732,6 +779,26 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 		for (Class<?> superInterface : cl.getInterfaces()) {
 			appendEditionActionTypes(aList, superInterface);
+		}
+	}
+
+	private static void appendTechnologySpecificTypes(List<Class<? extends TechnologySpecificType>> aList, Class<?> taClass) {
+		if (taClass == null) {
+			return;
+		}
+		if (taClass.isAnnotationPresent(DeclareTechnologySpecificTypes.class)) {
+			DeclareTechnologySpecificTypes allTypes = taClass.getAnnotation(DeclareTechnologySpecificTypes.class);
+			for (Class<? extends TechnologySpecificType> typeClass : allTypes.value()) {
+				if (!aList.contains(typeClass)) {
+					aList.add(typeClass);
+				}
+			}
+		}
+		if (taClass.getSuperclass() != null) {
+			appendTechnologySpecificTypes(aList, taClass.getSuperclass());
+		}
+		for (Class<?> superInterface : taClass.getInterfaces()) {
+			appendTechnologySpecificTypes(aList, superInterface);
 		}
 	}
 

@@ -153,4 +153,6 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 		return new ParameterizedTypeImpl(unresolvedBaseType, typeArguments.toArray(new Type[typeArguments.size()]));
 	}
 
+	public abstract FMLCompilationUnit getFMLCompilationUnit();
+
 }

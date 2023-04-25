@@ -44,13 +44,20 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.type.WildcardTypeImpl.DefaultWildcardType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.TechnologySpecificType;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
@@ -71,7 +78,9 @@ import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AReferenceTypeArgument;
 import org.openflexo.foundation.fml.parser.node.AShortPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AShrTypeArguments;
+import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASuperWildcardBounds;
+import org.openflexo.foundation.fml.parser.node.ATechnologySpecificType;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.AUshrTypeArguments;
@@ -86,6 +95,8 @@ import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.technologyadapter.SpecificTypeInfo;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * This class implements the semantics analyzer for a parsed Type<br>
@@ -115,7 +126,8 @@ public class TypeFactory extends DepthFirstAdapter {
 			System.out.println("*** " + n + " -> " + TypeUtils.simpleRepresentation(bsa.typeNodes.get(n)));
 		}*/
 
-		// System.out.println("Returning: " + bsa.getType(node) + " of " + bsa.getType(node).getClass());
+		// System.out.println("Returning: " + bsa.getType(node) + " of " + (bsa.getType(node) != null ? bsa.getType(node).getClass() :
+		// null));
 		return bsa.getType(node);
 	}
 
@@ -409,6 +421,126 @@ public class TypeFactory extends DepthFirstAdapter {
 		List<Type> typeArguments = makeTypeArguments(head2, specifier2, someArgs);
 		returned.add(makeParameterizedType(baseType, typeArguments));
 		return returned;
+	}
+
+	// Stack handling technology-specific types
+	private Stack<SpecificTypeInfo> specificTypesInfoStack = new Stack<>();
+
+	@Override
+	public void inATechnologySpecificType(ATechnologySpecificType node) {
+		super.inATechnologySpecificType(node);
+		SpecificTypeInfo newSpecificTypeInfo = new SpecificTypeInfo(retrieveTechnologySpecificType(node));
+		specificTypesInfoStack.push(newSpecificTypeInfo);
+
+		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
+			newSpecificTypeInfo
+					.setSerializationForm(((FMLTypingSpaceDuringParsing) typingSpace).getAnalyzer().getFragment(node).getRawText());
+		}
+
+	}
+
+	@Override
+	public void outATechnologySpecificType(ATechnologySpecificType node) {
+		super.outATechnologySpecificType(node);
+
+		SpecificTypeInfo specificTypeInfo = specificTypesInfoStack.pop();
+
+		TechnologyAdapter<?> ta = typingSpace.getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(specificTypeInfo.getTechnologyAdapterClass());
+
+		registerTypeNode(node, ta.instantiateType(specificTypeInfo));
+	}
+
+	private Class<? extends TechnologySpecificType<?>> retrieveTechnologySpecificType(ATechnologySpecificType tsType) {
+
+		String identifier = tsType.getUidentifier().getText();
+		for (UseModelSlotDeclaration useModelSlotDeclaration : typingSpace.getFMLCompilationUnit().getUseDeclarations()) {
+			Class<? extends TechnologySpecificType<?>> technologySpecificType = typingSpace.getServiceManager()
+					.getTechnologyAdapterService().getTechnologySpecificType(useModelSlotDeclaration.getModelSlotClass(), identifier);
+			if (technologySpecificType != null) {
+				return technologySpecificType;
+			}
+		}
+		logger.warning("Unexpected " + tsType + " of " + tsType.getClass());
+		return null;
+	}
+
+	@Override
+	public final void inASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
+		super.inASimpleQualifiedArgument(node);
+		if (!(typingSpace instanceof FMLTypingSpaceDuringParsing)) {
+			return;
+		}
+
+		SpecificTypeInfo specificTypeInfo = specificTypesInfoStack.peek();
+		DataBinding<Object> value = ExpressionFactory.makeDataBinding(node.getExpression(), typingSpace.getFMLCompilationUnit(),
+				BindingDefinitionType.GET, Object.class, ((FMLTypingSpaceDuringParsing) typingSpace).getAnalyzer(), null);
+		// System.out.println("value=" + value);
+		// System.out.println("valid: " + value.isValid());
+		// System.out.println("reason: " + value.invalidBindingReason());
+		// System.out.println("isConstant: " + value.isConstant());
+
+		try {
+			Object parameterValue = value.getBindingValue(typingSpace.getFMLCompilationUnit());
+			// System.out.println("parameterValue: " + parameterValue + " of " + (parameterValue != null ? parameterValue.getClass() :
+			// null));
+			specificTypeInfo.setParameter(node.getArgName().getText(), parameterValue);
+		} catch (TypeMismatchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NullReferenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReflectiveOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		/*if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
+			// logger.info("Set " + fmlProperty.getName() + " = " + value);
+			// fmlProperty.set(value, modelObject);
+			getModelObject().setValue((T) value);
+		}
+		else if (value.isConstant()) {
+			Object constantValue = ((Constant) value.getExpression()).getValue();
+			if (constantValue != null) {
+				if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
+					// logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
+					// fmlProperty.set(constantValue, modelObject);
+					getModelObject().setValue((T) constantValue);
+				}
+				else {
+					logger.warning("Invalid value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
+							+ " value: " + constantValue + " of " + constantValue.getClass());
+				}
+			}
+		}
+		else {
+			boolean found = false;
+			if (getCompilationUnit() != null) {
+				for (ElementImportDeclaration elementImportDeclaration : getCompilationUnit().getElementImports()) {
+					// System.out.println(
+					// "> J'ai deja: " + elementImportDeclaration.getAbbrev() + "=" + elementImportDeclaration.getReferencedObject());
+					if (elementImportDeclaration.getAbbrev().equals(value.toString())) {
+						// System.out.println("Trouve !!!");
+						// fmlProperty.set(elementImportDeclaration.getReferencedObject(), modelObject);
+						found = true;
+						getModelObject().setValue((T) elementImportDeclaration.getReferencedObject());
+					}
+				}
+			}
+		
+			if (!found) {
+				logger.warning("Unexpected value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
+						+ " value: " + value);
+			}
+		}
+		 */
+	}
+
+	@Override
+	public final void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
+		super.outASimpleQualifiedArgument(node);
 	}
 
 }

@@ -45,6 +45,7 @@ import java.lang.reflect.Type;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyTechnologyContextManager;
+import org.openflexo.foundation.technologyadapter.SpecificTypeInfo;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
@@ -151,7 +152,7 @@ public abstract class IndividualOfClass<TA extends TechnologyAdapter<TA>, I exte
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public C getOntologyClass() {
 		if (ontologyClass != null) {
 			return ontologyClass;
@@ -228,4 +229,14 @@ public abstract class IndividualOfClass<TA extends TechnologyAdapter<TA>, I exte
 		return true;
 	}
 
+	@Override
+	public void registerSpecificTypeInfo(SpecificTypeInfo<TA> typeInfo) {
+		this.typeInfo = typeInfo;
+	}
+
+	public SpecificTypeInfo<TA> getSpecificTypeInfo() {
+		return typeInfo;
+	}
+
+	private SpecificTypeInfo<TA> typeInfo;
 }

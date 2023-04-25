@@ -55,8 +55,10 @@ import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
+import org.openflexo.foundation.fml.parser.node.AFmlSelectType;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.ANormalSelectType;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AWhereClause;
@@ -64,6 +66,7 @@ import org.openflexo.foundation.fml.parser.node.AWithClause;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
+import org.openflexo.foundation.fml.parser.node.PSelectType;
 import org.openflexo.foundation.fml.parser.node.PWhereClause;
 import org.openflexo.foundation.fml.parser.node.PWithClause;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -94,7 +97,15 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	public FR buildModelObjectFromAST(ASelectActionFmlActionExp astNode) {
 		FR returned = null;
 
-		Type type = TypeFactory.makeType(astNode.getSelectedTypeName(), getSemanticsAnalyzer().getTypingSpace());
+		Type type = null;
+		PSelectType selectedType = astNode.getSelectedType();
+		if (selectedType instanceof ANormalSelectType) {
+			type = TypeFactory.makeType(((ANormalSelectType) selectedType).getReferenceType(), getSemanticsAnalyzer().getTypingSpace());
+		}
+		else if (selectedType instanceof AFmlSelectType) {
+			type = TypeFactory.makeType((((AFmlSelectType) selectedType).getTechnologySpecificType()),
+					getSemanticsAnalyzer().getTypingSpace());
+		}
 
 		if (type instanceof VirtualModelInstanceType) {
 			AbstractSelectVirtualModelInstance selectAction = null;
@@ -150,6 +161,8 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 			if (frClass != null) {
 				selectAction = getFactory().newInstance(frClass);
+				//System.out.println("For " + selectAction + " setFetchedType with " + type);
+				selectAction.setFetchedType(type);
 				if (astNode.getFromClause() instanceof AFromClause) {
 					PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 					Type resourceDataType = TypeUtils.getTypeArgument(frClass, AbstractFetchRequest.class, 1);
@@ -162,7 +175,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			}
 
 			if (selectAction == null) {
-				throwIssue("Unexpected fetch request for type " + getText(astNode.getSelectedTypeName()), getTypeFragment());
+				throwIssue("Unexpected fetch request for type " + getText(astNode.getSelectedType()), getTypeFragment());
 			}
 		}
 
@@ -189,7 +202,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 					if ((isUnique && UniqueFetchRequest.class.isAssignableFrom(frClass))
 							|| ((!isUnique) && FetchRequest.class.isAssignableFrom(frClass))) {
 						Type accessedType = TypeUtils.getTypeArgument(frClass, AbstractFetchRequest.class, 2);
-						if (accessedType.equals(type)) {
+						if (TypeUtils.isTypeAssignableFrom(accessedType, type)) {
 							// System.out.println("Looked up " + frClass);
 							if (identifier == null || identifier.equals(frClass.getSimpleName())) {
 								return frClass;
@@ -327,7 +340,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 	private RawSourceFragment getTypeFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getSelectedTypeName());
+			return getFragment(getASTNode().getSelectedType());
 		}
 		return null;
 	}

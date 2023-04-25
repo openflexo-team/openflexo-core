@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 
@@ -106,6 +107,11 @@ public class FMLScriptTypingSpace extends AbstractFMLTypingSpace {
 	@Override
 	public String toString() {
 		return "FMLScriptTypingSpace";
+	}
+
+	@Override
+	public FMLCompilationUnit getFMLCompilationUnit() {
+		return null;
 	}
 
 }

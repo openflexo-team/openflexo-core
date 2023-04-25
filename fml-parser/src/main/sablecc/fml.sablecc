@@ -915,13 +915,22 @@ Productions
 //     | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:uidentifier colon_colon [constructor_name]:lidentifier l_par argument_list? r_par precise_fml_parameters_clause?
        {ta_edition_action}                     [ta_id]:cidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}                         kw_delete expression from_clause?
-     | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident with_clause? from_clause where_clause?
+     | {select_action}                         kw_select kw_unique? [selected_type]:select_type with_clause? from_clause where_clause?
+//     | {select_action}                         kw_select kw_unique? [selected_type]:reference_type with_clause? from_clause where_clause?
+//     | {select_action2}                         kw_select kw_unique? [selected_type]:uidentifier [hop]:fml_parameters with_clause? from_clause where_clause?
+//     | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident with_clause? from_clause where_clause?
      | {log_action}                            kw_log expression
      | {notify_action}                         kw_notify expression in_clause?
      | {begin_match_action}                    kw_begin kw_match [concept_name]:uidentifier from_clause where_clause?
      | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? create_clause
      | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause abstract_action_clause
      | {parenthesed}                           l_par fml_action_exp r_par
+     ;
+       
+       
+   select_type =
+     | {normal} reference_type
+     | {fml}    technology_specific_type
      ;
        
    precise_fml_parameters_clause = kw_with fml_parameters;
@@ -1018,9 +1027,12 @@ Productions
    // --------------------------------------------------------------------------------------
    type =
        {primitive} primitive_type
-     | {complex} reference_type
-     | {void} ty_void
+     | {void}      ty_void
+     | {complex}   reference_type
+     | {fml}       technology_specific_type
      ;
+
+   technology_specific_type = uidentifier fml_parameters;
 
    primitive_type =
        {int}   ty_int
