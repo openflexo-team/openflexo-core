@@ -456,13 +456,15 @@ public interface FinalizeMatching extends EditionAction {
 							}
 						}
 						// System.out.println("executing " + behaviourAction.getFlexoBehaviour().getSignature() + " for " + fci);
-						behaviourAction.doAction();
-						if (behaviourAction.hasActionExecutionSucceeded()) {
-							matchingSet.finalizeFlexoConceptInstance(fci);
-						}
-						else {
-							logger.warning("Could not execute " + behaviourAction.getFlexoBehaviour().getSignature() + " for "
-									+ evaluationContext);
+						if (behaviourAction != null) {
+							behaviourAction.doAction();
+							if (behaviourAction.hasActionExecutionSucceeded()) {
+								matchingSet.finalizeFlexoConceptInstance(fci);
+							}
+							else {
+								logger.warning("Could not execute " + behaviourAction.getFlexoBehaviour().getSignature() + " for "
+										+ evaluationContext);
+							}
 						}
 
 					}
