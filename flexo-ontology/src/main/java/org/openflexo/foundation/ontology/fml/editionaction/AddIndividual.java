@@ -71,10 +71,9 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.validation.FixProposal;
-import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
@@ -115,7 +114,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 	@XMLElement(xmlTag = "DataPropertyAssertion")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	@FMLAttribute(value = DATA_ASSERTIONS_KEY, required = false, description = "<html>data property assertions</html>")
 	public List<DataPropertyAssertion> getDataAssertions();
 
 	@Setter(DATA_ASSERTIONS_KEY)
@@ -131,7 +129,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 	@XMLElement(xmlTag = "ObjectPropertyAssertion")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	@FMLAttribute(value = OBJECT_ASSERTIONS_KEY, required = false, description = "<html>object property assertions</html>")
 	public List<ObjectPropertyAssertion> getObjectAssertions();
 
 	@Setter(OBJECT_ASSERTIONS_KEY)
@@ -306,46 +303,22 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 	}
 
 	@DefineValidationRule
-	public static class AddIndividualActionMustDefineAnOntologyClass
-			extends ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> {
-		public AddIndividualActionMustDefineAnOntologyClass() {
-			super(AddIndividual.class, "add_individual_action_must_define_an_ontology_class");
+	public static class AddIndividualActionShouldDefineAnOntologyClass
+			extends ValidationRule<AddIndividualActionShouldDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> {
+		public AddIndividualActionShouldDefineAnOntologyClass() {
+			super(AddIndividual.class, "add_individual_action_should_define_an_ontology_class");
 		}
 
 		@Override
-		public ValidationIssue<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> applyValidation(
+		public ValidationIssue<AddIndividualActionShouldDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> applyValidation(
 				AddIndividual<?, ?, ?, ?> action) {
 			if ((action.getDynamicType() == null || !action.getDynamicType().isSet()) && action.getOntologyClass() == null
 					&& action.getOwner() instanceof AssignationAction) {
-				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>>> v = new Vector<>();
-				for (IndividualRole<?> pr : action.getFlexoConcept().getAccessibleProperties(IndividualRole.class)) {
-					v.add(new SetsFlexoRole(pr));
-				}
-				return new ValidationError<>(this, action, "add_individual_action_does_not_define_any_ontology_class", v);
+				return new ValidationWarning<>(this, action, "add_individual_action_does_not_define_any_ontology_class");
 			}
 			return null;
 		}
 
-		protected static class SetsFlexoRole extends FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> {
-
-			private final IndividualRole<?> flexoRole;
-
-			public SetsFlexoRole(IndividualRole<?> flexoRole) {
-				super("assign_action_to_flexo_role" + " " + flexoRole.getRoleName());
-				this.flexoRole = flexoRole;
-			}
-
-			public IndividualRole<?> getFlexoRole() {
-				return flexoRole;
-			}
-
-			@Override
-			protected void fixAction() {
-				AddIndividual<?, ?, ?, ?> action = getValidable();
-				((AssignationAction<?>) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
-			}
-
-		}
 	}
 
 }
