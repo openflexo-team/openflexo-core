@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.SubClassOfClass;
@@ -74,11 +75,14 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 	public static final String CLASS_NAME_KEY = "className";
 	@PropertyIdentifier(type = String.class)
 	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
+	@PropertyIdentifier(type = IFlexoOntologyClass.class)
+	public static final String ONTOLOGY_CLASS_KEY = "ontologyClass";
 	// @PropertyIdentifier(type = TypeAwareModelSlot.class)
 	// public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Getter(value = CLASS_NAME_KEY)
 	@XMLAttribute(xmlTag = "newClassName")
+	@FMLAttribute(value = CLASS_NAME_KEY, required = true)
 	public DataBinding<String> getClassName();
 
 	@Setter(CLASS_NAME_KEY)
@@ -91,8 +95,12 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 	@Setter(ONTOLOGY_CLASS_URI_KEY)
 	public void _setOntologyClassURI(String ontologyClassURI);
 
+	// TODO: a DataBinding will be better !
+	@Getter(value = ONTOLOGY_CLASS_KEY, ignoreType = true)
+	@FMLAttribute(value = ONTOLOGY_CLASS_KEY, required = false)
 	public T getOntologyClass();
 
+	@Setter(ONTOLOGY_CLASS_KEY)
 	public void setOntologyClass(T ontologyClass);
 
 	/*@Override

@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
@@ -49,20 +50,27 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * Interface implemented by all {@link EditionAction} setting a value to an object (interface used to share GUI)
  * 
  * @author sylvain
- * 
+ *
+ * @param <ST>
+ *            type of "property value" (the object reifying the statement)
+ * @param <S>
+ *            type of the subject
+ * @param <P>
+ *            type of the property
  */
-public interface SetPropertyValueAction<T> {
+public interface SetPropertyValueAction<ST, S extends IFlexoOntologyConcept<?>, P extends IFlexoOntologyStructuralProperty<?>> {
 
 	public Type getSubjectType();
 
-	public DataBinding<?> getSubject();
+	public DataBinding<S> getSubject();
 
-	public void setSubject(DataBinding<?> subject);
+	public void setSubject(DataBinding<S> subject);
 
-	public IFlexoOntologyStructuralProperty getProperty();
+	public P getProperty();
 
-	public void setProperty(IFlexoOntologyStructuralProperty aProperty);
+	public void setProperty(P aProperty);
 
+	@Deprecated
 	public ModelSlot getInferedModelSlot();
 
 	// public DataBinding<? super T> getAssignation();

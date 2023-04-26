@@ -40,6 +40,7 @@ package org.openflexo.foundation.ontology.fml.editionaction;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 
 /**
@@ -48,14 +49,15 @@ import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
  * @author sylvain
  * 
  */
-public interface SetObjectPropertyValueAction<T> extends SetPropertyValueAction<T> {
+public interface SetObjectPropertyValueAction<ST, S extends IFlexoOntologyConcept<?>, P extends IFlexoOntologyObjectProperty<?>, T>
+		extends SetPropertyValueAction<ST, S, P> {
 
-	public DataBinding<?> getObject();
+	public DataBinding<T> getObject();
 
-	public void setObject(DataBinding<?> object);
+	public void setObject(DataBinding<T> object);
 
-	public IFlexoOntologyObjectProperty getObjectProperty();
+	public P getObjectProperty();
 
-	public void setObjectProperty(IFlexoOntologyObjectProperty aProperty);
+	public void setObjectProperty(P aProperty);
 
 }

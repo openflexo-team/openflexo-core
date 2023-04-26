@@ -47,16 +47,12 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.ontology.fml.rt.ConceptActorReference;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
-import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.validation.ValidationError;
-import org.openflexo.pamela.validation.ValidationIssue;
-import org.openflexo.pamela.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ClassRole.ClassRoleImpl.class)
@@ -150,12 +146,12 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		}
 	}
 
-	@DefineValidationRule
+	/*@DefineValidationRule
 	public static class ClassRoleMustDefineAValidConceptClass extends ValidationRule<ClassRoleMustDefineAValidConceptClass, ClassRole<?>> {
 		public ClassRoleMustDefineAValidConceptClass() {
 			super(ClassRole.class, "flexo_role_must_define_a_valid_concept_class");
 		}
-
+	
 		@Override
 		public ValidationIssue<ClassRoleMustDefineAValidConceptClass, ClassRole<?>> applyValidation(ClassRole<?> patternRole) {
 			if (patternRole.getOntologicType() == null) {
@@ -163,6 +159,6 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 			}
 			return null;
 		}
-	}
+	}*/
 
 }
