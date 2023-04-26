@@ -38,10 +38,13 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.editionaction.UnresolvedTechnologySpecificAction;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
@@ -89,6 +92,14 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 			unresolved.setTAId(astNode.getTaId().getText());
 			unresolved.setEditionActionName(astNode.getEditionAction().getText());
 		}
+
+		if (astNode.getInClause() != null && returned instanceof TechnologySpecificActionDefiningReceiver) {
+			AInClause inClause = (AInClause) astNode.getInClause();
+			DataBinding<Object> receiver = ExpressionFactory.makeDataBinding(inClause.getExpression(), returned, BindingDefinitionType.GET,
+					Object.class, getSemanticsAnalyzer(), this);
+			((TechnologySpecificActionDefiningReceiver) returned).setReceiver(receiver);
+		}
+
 		// decodeFMLProperties(astNode.getFmlParameters(), returned);
 
 		/*
