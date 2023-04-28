@@ -182,7 +182,8 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			logger.info("Resource already registered: " + resource);
 		}
 		if (resource.getURI() == null) {
-			logger.info("Resource with null URI: " + resource);
+			logger.info("Resource with null URI: " + resource
+					+ (resource.getIODelegate() != null ? " from: " + resource.getIODelegate().getSerializationArtefact() : ""));
 			resource.getURI();
 			Thread.dumpStack();
 		}
