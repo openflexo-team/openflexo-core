@@ -366,7 +366,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		return null;
 	}
 
-	private <I> boolean isSerializationArtefactIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+	protected <I> boolean isSerializationArtefactIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		// This allows to ignore all resources contained in prj, that will be explored from their prj resource
 		if (resourceCenter.isDirectory(contents)) {
 			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
