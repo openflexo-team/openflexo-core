@@ -21,6 +21,8 @@
 package org.openflexo.foundation.resource;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
@@ -223,6 +225,8 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		}
 	}
 
+	private Map<Object, R> resourcesForSerializationArtefact = new HashMap<>();
+
 	/**
 	 * Called to register a resource in a given {@link FlexoResourceCenter} and a given technology
 	 * 
@@ -248,7 +252,13 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 			registerResourceInResourceRepository(resource, (ResourceRepository) resourceCenter);
 		}
 
+		resourcesForSerializationArtefact.put(resource.getIODelegate().getSerializationArtefact(), resource);
+
 		return resource;
+	}
+
+	public <I> R getRegisteredResource(I serializationArtefact) {
+		return resourcesForSerializationArtefact.get(serializationArtefact);
 	}
 
 	/**
