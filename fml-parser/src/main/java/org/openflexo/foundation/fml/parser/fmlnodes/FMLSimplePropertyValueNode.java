@@ -176,6 +176,24 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				}
 			}
 		}
+
+		/*if (value instanceof FlexoResource && getCompilationUnit() != null) {
+			try {
+				ElementImportDeclaration importDeclaration = getCompilationUnit().ensureResourceImport((FlexoResource) value);
+				return importDeclaration.getAbbrev();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}*/
+
 		String returned;
 		try {
 			returned = getFactory().getStringEncoder().toString(value);
