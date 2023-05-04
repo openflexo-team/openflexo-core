@@ -183,6 +183,7 @@ flexo_enum_must_have_an_non_empty_and_unique_name=L'\u00E9numeration doit avoir 
 flexo_event=FlexoEvent
 flexo_event_must_have_an_non_empty_and_unique_name=L'\u00E9v\u00E8nement doit avoir un nom non vide
 flexo_id=OpenFlexo ID
+flexo_property_must_have_an_non_empty_and_unique_name=flexo_property_must_have_an_non_empty_and_unique_name
 generate=G\u00E9n\u00E9rer
 generate_creation_scheme_using_properties=G\u00E9n\u00E9rer un CreationScheme en fonction des propri\u00E9t\u00E9s
 generate_unimplemented_properties_and_behaviours=G\u00E9n\u00E9rer les propri\u00E9t\u00E9s et comportements non impl\u00E9ment\u00E9s

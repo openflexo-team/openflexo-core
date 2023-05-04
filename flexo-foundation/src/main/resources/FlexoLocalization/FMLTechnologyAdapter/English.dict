@@ -183,6 +183,7 @@ flexo_enum_must_have_an_non_empty_and_unique_name=Flexo enum must have an non em
 flexo_event=FlexoEvent
 flexo_event_must_have_an_non_empty_and_unique_name=Flexo event must have an non empty and unique name
 flexo_id=OpenFlexo ID
+flexo_property_must_have_an_non_empty_and_unique_name=Flexo property must have an non empty and unique name
 generate=Generate
 generate_creation_scheme_using_properties=Generate creation scheme using properties
 generate_unimplemented_properties_and_behaviours=Generate unimplemented properties and behaviours

@@ -66,6 +66,7 @@ flexo_role_has_no_name=Flexo role has no name
 flexo_role_must_have_a_name=Flexo role must have a name
 flexo_role_must_have_a_name_description=Flexo role must have a name description
 fml_rt_model_slot_does_not_define_a_valid_virtual_model=Fml rt model slot does not define a valid virtual model
+import_declaration_must_reference_a_valid_object=Import declaration must reference a valid object
 incompatible_virtual_model_type=Incompatible virtual model type
 individual_role_does_not_define_any_concept_class=Individual role does not define any concept class
 infered_types_must_be_compatible_in_a_sequence_description=Infered types must be compatible in a sequence description
