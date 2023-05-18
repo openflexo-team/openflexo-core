@@ -38,12 +38,14 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
@@ -51,6 +53,8 @@ import org.openflexo.foundation.fml.FMLSimplePropertyValue;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
+import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 
@@ -175,6 +179,39 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 					return elementImportDeclaration.getAbbrev();
 				}
 			}
+
+			if (value instanceof ResourceData) {
+				try {
+					ElementImportDeclaration importDeclaration = getCompilationUnit()
+							.ensureResourceImport(((ResourceData) value).getResource());
+					return importDeclaration.getAbbrev();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			/*if (value instanceof InnerResourceData) {
+				try {
+					ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport((InnerResourceData & FlexoObject)value);
+					return importDeclaration.getAbbrev();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}*/
 		}
 
 		/*if (value instanceof FlexoResource && getCompilationUnit() != null) {
@@ -191,7 +228,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+		
 		}*/
 
 		String returned;
