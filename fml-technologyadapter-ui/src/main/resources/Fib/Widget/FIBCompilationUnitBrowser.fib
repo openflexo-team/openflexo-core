@@ -124,7 +124,7 @@
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 			icon="controller.iconForObject(flexoBehaviour)"
-			label="flexoBehaviour.signature" isEditable="false"
+			label="flexoBehaviour.displayRepresentation" isEditable="false"
 			name="flexoBehaviour">
 		</BrowserElement>
 	</Browser>
@@ -224,7 +224,7 @@
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 			icon="controller.iconForObject(flexoBehaviour)"
-			label="flexoBehaviour.signature" isEditable="false"
+			label="flexoBehaviour.displayRepresentation" isEditable="false"
 			name="flexoBehaviour">
 		</BrowserElement>
 	</Browser>
@@ -322,7 +322,7 @@
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 			icon="controller.iconForObject(flexoBehaviour)"
-			label="flexoBehaviour.signature" isEditable="false"
+			label="flexoBehaviour.displayRepresentation" isEditable="false"
 			name="flexoBehaviour">
 		</BrowserElement>
 	</Browser>

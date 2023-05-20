@@ -45,7 +45,7 @@
 				<Children data="flexoConcept.flexoBehaviours" name="flexoBehaviours" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
-			label="flexoBehaviour.signature" icon="controller.iconForObject(flexoBehaviour)"
+			label="flexoBehaviour.displayRepresentation" icon="controller.iconForObject(flexoBehaviour)"
 			enabled="data.isAcceptableValue(flexoBehaviour)"
 			isEditable="false"
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">

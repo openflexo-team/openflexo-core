@@ -102,7 +102,7 @@
 			</BrowserElement>
 			<BrowserElement id="25"
 				dataClassName="org.openflexo.foundation.fml.FlexoBehaviour" icon="controller.iconForObject(flexoBehaviour)"
-				label="flexoBehaviour.signature" editableLabel="flexoBehaviour.name"
+				label="flexoBehaviour.displayRepresentation" editableLabel="flexoBehaviour.name"
 				isEditable="false" name="flexoBehaviour">
 				<Children id="26"
 					data="flexoBehaviour.controlGraph.flattenedSequence" name="children" />

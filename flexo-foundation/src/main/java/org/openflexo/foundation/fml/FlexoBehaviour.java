@@ -365,6 +365,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	 */
 	public String getURI();
 
+	public String getDisplayRepresentation();
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected FlexoBehaviourBindingModel bindingModel;
@@ -917,6 +919,11 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				this.stepsNumber.setMandatory(true);
 			}
 			notifiedBindingChanged(stepsNumber);
+		}
+
+		@Override
+		public String getDisplayRepresentation() {
+			return getSignature();
 		}
 
 	}

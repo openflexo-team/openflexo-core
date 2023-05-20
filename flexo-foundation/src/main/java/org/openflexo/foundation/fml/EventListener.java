@@ -201,5 +201,10 @@ public interface EventListener extends AbstractActionScheme {
 			return new EventListenerActionFactory(this, fci);
 		}
 
+		@Override
+		public String getDisplayRepresentation() {
+			return "listen " + (getEventType() != null ? getEventType().getName() : "?") + " from " + getListenedVirtualModelInstance();
+		}
+
 	}
 }
