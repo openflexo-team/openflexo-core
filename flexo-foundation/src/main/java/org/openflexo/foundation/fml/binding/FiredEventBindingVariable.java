@@ -15,7 +15,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
  */
 public class FiredEventBindingVariable extends AbstractFMLBindingVariable implements PropertyChangeListener {
 
-	public static final String EVENT_NAME = "event";
+	public static final String EVENT_NAME = "evt";
 	private final EventListener eventListener;
 
 	public FiredEventBindingVariable(EventListener eventListener) {
@@ -54,9 +54,9 @@ public class FiredEventBindingVariable extends AbstractFMLBindingVariable implem
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		
+
 		super.propertyChange(evt);
-		
+
 		if (evt.getSource() == getEventListener()) {
 			typeMightHaveChanged();
 		}
