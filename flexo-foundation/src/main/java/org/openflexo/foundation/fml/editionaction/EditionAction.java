@@ -64,6 +64,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.FireEvent;
 import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -96,8 +97,8 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(SelectUniqueVirtualModelInstance.class), @Import(SelectVirtualModelInstance.class), @Import(InitiateMatching.class),
 		@Import(FinalizeMatching.class), @Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class),
 		@Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
-		@Import(IncrementalIterationAction.class), @Import(FireEventAction.class), @Import(NotifyPropertyChangedAction.class),
-		@Import(AddClassInstance.class), @Import(UnresolvedTechnologySpecificAction.class) })
+		@Import(IncrementalIterationAction.class), @Import(FireEvent.class), @Import(FireEventAction.class),
+		@Import(NotifyPropertyChangedAction.class), @Import(AddClassInstance.class), @Import(UnresolvedTechnologySpecificAction.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	/**

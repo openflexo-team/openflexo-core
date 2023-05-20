@@ -49,6 +49,7 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.TypingSpace;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.technologyadapter.SpecificTypeInfo;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.toolbox.StringUtils;
@@ -210,6 +211,9 @@ public class FlexoConceptInstanceType implements FMLRTType, TechnologySpecificTy
 
 	@Override
 	public Class<?> getBaseClass() {
+		if (getFlexoConcept() instanceof FlexoEvent) {
+			return FlexoEventInstance.class;
+		}
 		return FlexoConceptInstance.class;
 	}
 
@@ -222,6 +226,10 @@ public class FlexoConceptInstanceType implements FMLRTType, TechnologySpecificTy
 		}
 
 		if (permissive && aType.equals(FlexoConceptInstance.class)) {
+			return true;
+		}
+
+		if (permissive && aType.equals(FlexoEventInstance.class)) {
 			return true;
 		}
 

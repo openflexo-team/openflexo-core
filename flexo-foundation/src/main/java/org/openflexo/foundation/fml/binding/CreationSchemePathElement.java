@@ -71,6 +71,7 @@ import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
@@ -727,7 +728,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			if (getType() != null && !getType().isResolved()) {
 				// This is a good idea to resolve type now
 				getType().resolve();
-				//System.out.println("Attempted to resolve type: " + getType() + " resolved=" + getType().isResolved());
+				// System.out.println("Attempted to resolve type: " + getType() + " resolved=" + getType().isResolved());
 			}
 
 			CS function = (CS) ((FMLBindingFactory) getBindable().getBindingFactory()).retrieveConstructor(getType(),
@@ -870,8 +871,15 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 				else if (container instanceof FlexoConceptInstance) {
 					FlexoConceptInstance containerFCI = (FlexoConceptInstance) container;
-					FlexoConceptInstance newFCI = containerFCI.getVirtualModelInstance()
-							.makeNewFlexoConceptInstance(getCreationScheme().getFlexoConcept(), containerFCI);
+
+					FlexoConceptInstance newFCI;
+					if (getCreationScheme().getFlexoConcept() instanceof FlexoEvent) {
+						newFCI = containerFCI.getVirtualModelInstance().makeNewEvent((FlexoEvent) getCreationScheme().getFlexoConcept());
+					}
+					else {
+						newFCI = containerFCI.getVirtualModelInstance().makeNewFlexoConceptInstance(getCreationScheme().getFlexoConcept(),
+								containerFCI);
+					}
 					if (getCreationScheme().getFlexoConcept().getContainerFlexoConcept() != null) {
 						containerFCI.addToEmbeddedFlexoConceptInstances(newFCI);
 					}

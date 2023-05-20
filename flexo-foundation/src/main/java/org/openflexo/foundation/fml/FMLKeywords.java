@@ -135,6 +135,12 @@ public enum FMLKeywords {
 			return "extends";
 		}
 	},
+	Fire {
+		@Override
+		public String getKeyword() {
+			return "fire";
+		}
+	},
 	For {
 		@Override
 		public String getKeyword() {

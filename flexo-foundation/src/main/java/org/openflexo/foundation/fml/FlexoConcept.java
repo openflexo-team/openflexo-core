@@ -1528,7 +1528,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public FlexoBehaviour getDeclaredFlexoBehaviour(String behaviourName, Type... parameters) {
 			for (FlexoBehaviour b : getDeclaredFlexoBehaviours()) {
-				if (b.getName().equals(behaviourName)) {
+				if ((b.getName() == null && behaviourName == null) || b.getName().equals(behaviourName)) {
 					if (b.getParameters().size() == parameters.length) {
 						boolean allParametersMatch = true;
 						for (int i = 0; i < b.getParameters().size(); i++) {

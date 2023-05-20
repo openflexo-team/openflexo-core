@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -62,6 +63,8 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FireEventAction.FireEventActionImpl.class)
 @XMLElement
+@FMLMigration("FireEvent should be used instead")
+@Deprecated
 public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 

@@ -149,6 +149,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionN
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FMLEditionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FireEventNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode;
@@ -205,6 +206,7 @@ import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.FireEvent;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -524,6 +526,9 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			if (object instanceof AddClassInstance) {
 			return (P2PPNode<?, C>) new AddClassInstanceNode((AddClassInstance) object, getanalyzer());
 			}*/
+			if (object instanceof FireEvent) {
+				return (P2PPNode<?, C>) new FireEventNode((FireEvent) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
 			if (object instanceof LogAction) {
 				return (P2PPNode<?, C>) new LogActionNode((LogAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
