@@ -44,6 +44,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.CreationSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.EventListenerNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
@@ -91,6 +92,7 @@ public class FlexoBehaviourFactory extends SemanticsAnalyzerFactory {
 			return new FMLBehaviourNode(node, getAnalyzer());
 		}
 		else if (node instanceof AListenerBehaviourDecl) {
+			return new EventListenerNode((AListenerBehaviourDecl) node, getAnalyzer());
 		}
 		else if (node instanceof AMethodBehaviourDecl) {
 			return new ActionSchemeNode((AMethodBehaviourDecl) node, getAnalyzer());

@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumValue;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
@@ -121,6 +122,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLTypePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEventNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
@@ -421,6 +423,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			}
 			if (object instanceof FlexoEnum) {
 				return (P2PPNode<?, C>) new FlexoEnumNode((FlexoEnum) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof FlexoEvent) {
+				return (P2PPNode<?, C>) new FlexoEventNode((FlexoEvent) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FlexoConcept) {
 				return (P2PPNode<?, C>) new FlexoConceptNode((FlexoConcept) object,

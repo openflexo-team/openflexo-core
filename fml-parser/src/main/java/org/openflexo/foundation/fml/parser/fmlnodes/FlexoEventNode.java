@@ -46,11 +46,12 @@ import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
-import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AEventDecl;
 import org.openflexo.foundation.fml.parser.node.AInsideClause;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -60,19 +61,20 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, FlexoConcept> {
+// TODO: is there a way to factorize code with FlexoConceptNode ???
+public class FlexoEventNode extends AbstractFlexoConceptNode<AEventDecl, FlexoEvent> {
 
-	public FlexoConceptNode(AConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public FlexoEventNode(AEventDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 	}
 
-	public FlexoConceptNode(FlexoConcept concept, FMLCompilationUnitSemanticsAnalyzer analyzer) {
-		super(concept, analyzer);
+	public FlexoEventNode(FlexoEvent event, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(event, analyzer);
 	}
 
 	@Override
-	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
-		FlexoConcept returned = getFactory().newFlexoConcept();
+	public FlexoEvent buildModelObjectFromAST(AEventDecl astNode) {
+		FlexoEvent returned = getFactory().newFlexoEvent();
 		try {
 			returned.setName(astNode.getUidentifier().getText());
 		} catch (InvalidNameException e) {
@@ -94,12 +96,9 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	}
 
 	@Override
-	public FlexoConceptNode deserialize() {
+	public FlexoEventNode deserialize() {
 		if (getParent() instanceof VirtualModelNode) {
 			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
 		}
 		if (getParent() instanceof FlexoEventNode) {
 			((FlexoEventNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
@@ -116,7 +115,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class, "MetaData"));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment(),"Visibility");
 		when(() -> isAbstract(),"Abstract").thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
-		append(staticContents("", FMLKeywords.Concept.getKeyword(), SPACE), getConceptFragment(),"Concept");
+		append(staticContents("", FMLKeywords.Event.getKeyword(), SPACE), getEventFragment(),"Event");
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment(),"Name");
 
 		when(() -> getModelObject().getParentFlexoConcepts().size() > 0, "ParentConceptsDefinition")
@@ -180,9 +179,9 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		return null;
 	}
 
-	private RawSourceFragment getConceptFragment() {
+	private RawSourceFragment getEventFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwConcept());
+			return getFragment(getASTNode().getKwEvent());
 		}
 		return null;
 	}

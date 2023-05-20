@@ -408,6 +408,10 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(DeletionScheme.class);
 	}
 
+	public EventListener newEventListener() {
+		return newInstance(EventListener.class);
+	}
+
 	public AbstractProperty<?> newAbstractProperty() {
 		return newInstance(AbstractProperty.class);
 	}

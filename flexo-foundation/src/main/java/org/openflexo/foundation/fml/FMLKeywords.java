@@ -123,6 +123,12 @@ public enum FMLKeywords {
 			return "enum";
 		}
 	},
+	Event {
+		@Override
+		public String getKeyword() {
+			return "event";
+		}
+	},
 	Extends {
 		@Override
 		public String getKeyword() {

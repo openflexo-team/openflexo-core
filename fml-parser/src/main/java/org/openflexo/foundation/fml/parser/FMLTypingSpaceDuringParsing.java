@@ -66,9 +66,11 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanc
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEventNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AEnumDecl;
+import org.openflexo.foundation.fml.parser.node.AEventDecl;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
@@ -98,6 +100,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 
 	private Map<String, AModelDecl> foundVirtualModels;
 	private Map<String, AConceptDecl> foundConcepts;
+	private Map<String, AEventDecl> foundEvents;
 	private Map<String, AEnumDecl> foundEnums;
 	private List<CustomType> unresolvedTypes;
 
@@ -118,7 +121,16 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 					}
 				}
 				else {
-					logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+					AEventDecl event = foundEvents.get(typeToResolve.getConceptURI());
+					if (event != null) {
+						FlexoEventNode eventNode = (FlexoEventNode) analyzer.getFMLNode(event);
+						if (eventNode != null) {
+							return eventNode.getModelObject();
+						}
+					}
+					else {
+						logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+					}
 				}
 				return null;
 			}
@@ -161,6 +173,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 
 		foundVirtualModels = new HashMap<>();
 		foundConcepts = new HashMap<>();
+		foundEvents = new HashMap<>();
 		foundEnums = new HashMap<>();
 		new ConceptTypesExplorer();
 	}
@@ -218,6 +231,12 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		}
 		// Then look for a FlexoConcept in this ExecutionUnit
 		else if (foundConcepts.get(typeAsString) != null) {
+			FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+			unresolvedTypes.add(fciType);
+			return fciType;
+		}
+		// Then look for a FlexoEvent in this ExecutionUnit
+		else if (foundEvents.get(typeAsString) != null) {
 			FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 			unresolvedTypes.add(fciType);
 			return fciType;
@@ -351,6 +370,18 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		@Override
 		public void outAConceptDecl(AConceptDecl node) {
 			super.outAConceptDecl(node);
+		}
+
+		@Override
+		public void inAEventDecl(AEventDecl node) {
+			super.inAEventDecl(node);
+			// Found FlexoEvent
+			foundEvents.put(node.getUidentifier().getText(), node);
+		}
+
+		@Override
+		public void outAEventDecl(AEventDecl node) {
+			super.outAEventDecl(node);
 		}
 
 		@Override

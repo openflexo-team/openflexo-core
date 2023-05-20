@@ -42,15 +42,16 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
+public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>>
+		extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
@@ -70,6 +71,9 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 		}
 		if (getParent() instanceof FlexoConceptNode) {
 			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
+		}
+		if (getParent() instanceof FlexoEventNode) {
+			((FlexoEventNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
 		}
 		return this;
 	}

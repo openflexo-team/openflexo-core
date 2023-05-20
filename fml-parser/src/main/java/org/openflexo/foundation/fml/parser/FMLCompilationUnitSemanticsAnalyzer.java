@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEventNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.IterationAssertNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
@@ -87,6 +88,7 @@ import org.openflexo.foundation.fml.parser.node.AComplexFormalArgument;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AEnumDecl;
 import org.openflexo.foundation.fml.parser.node.AEnumValue;
+import org.openflexo.foundation.fml.parser.node.AEventDecl;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
@@ -459,6 +461,18 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAConceptDecl(AConceptDecl node) {
 		super.outAConceptDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inAEventDecl(AEventDecl node) {
+		super.inAEventDecl(node);
+		push(retrieveFMLNode(node, n -> new FlexoEventNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAEventDecl(AEventDecl node) {
+		super.outAEventDecl(node);
 		pop();
 	}
 

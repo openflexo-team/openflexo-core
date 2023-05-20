@@ -1,0 +1,27 @@
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestEvent.fml")
+public model TestEvent {
+
+	create() {
+		log "TestEvent";
+		this.sendMyEvent();
+	}
+	
+	sendMyEvent() {
+		log "Send event";
+		new MyEvent(42);
+	}
+	
+	event MyEvent {
+		int value;
+		create (int aValue) {
+			value = parameters.aValue;
+		}
+	}
+	
+	listen MyEvent from this {
+		log "Event has been received with value="+event.value;
+	}
+	
+}

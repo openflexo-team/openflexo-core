@@ -257,6 +257,7 @@ Tokens
    {normal} kw_else = 'else';
    {normal} kw_end = 'end';
    {normal} kw_enum = 'enum';
+   {normal} kw_event = 'event';
    {normal,binding} kw_extends = 'extends';
    {normal} kw_for = 'for';
    {normal,binding} kw_from = 'from';
@@ -277,7 +278,7 @@ Tokens
    {normal} kw_private = 'private';
    {normal} kw_protected = 'protected';
    {normal} kw_public = 'public';
-   {normal} kw_receive = 'receive';
+   //{normal} kw_receive = 'receive';
    {normal,binding} kw_required = 'required';
    {normal} kw_return = 'return';
    {normal,binding} kw_select = 'select';
@@ -597,6 +598,8 @@ Productions
 
    concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept uidentifier super_clause? inside_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
 
+   event_decl = [annotations]:annotation* visibility? kw_abstract? kw_event uidentifier super_clause? inside_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
+
    enum_decl = [annotations]:annotation* visibility? kw_enum uidentifier l_brc enum_values_list r_brc;
 
    enum_values_list =
@@ -618,6 +621,7 @@ Productions
      | {get_set_property}    visibility? type lidentifier l_brc get_decl set_decl ? r_brc semi
      | {behaviour_declaration} behaviour_decl
      | {concept_declaration} concept_decl
+     | {event_declaration} event_decl
      | {enum_declaration} enum_decl
      | {assert_declaration} assert_decl
      ;
@@ -654,7 +658,7 @@ Productions
      | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par flexo_behaviour_body
      | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
      | {method} [annotations]:annotation* visibility? kw_abstract? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {listener} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:lidentifier r_par flexo_behaviour_body
+     | {listener} [annotations]:annotation* kw_listen [event_type]:reference_type kw_from [listened]:expression flexo_behaviour_body
      | {fml} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
      | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [ta_id]:cidentifier colon_colon [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
      //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:lidentifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
