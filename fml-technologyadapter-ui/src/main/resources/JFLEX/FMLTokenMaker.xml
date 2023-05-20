@@ -24,6 +24,7 @@
     <keyword>else</keyword>
     <keyword>end</keyword>
     <keyword>enum</keyword>
+    <keyword>event</keyword>
     <keyword>extends</keyword>
     <keyword>for</keyword>
     <keyword>from</keyword>
@@ -40,7 +41,6 @@
     <keyword>namespace</keyword>
     <keyword>notify</keyword>
     <keyword>onfailure</keyword>
-    <keyword>receive</keyword>
     <keyword>required</keyword>
     <keyword>return</keyword>
     <keyword>select</keyword>
