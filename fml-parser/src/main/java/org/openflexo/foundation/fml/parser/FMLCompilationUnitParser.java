@@ -294,7 +294,7 @@ public class FMLCompilationUnitParser {
 			return e.getVirtualModelInfo();
 		} catch (ParserException e) {
 			// e.printStackTrace();
-			logger.info("New exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
+			logger.warning("ParserException token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
 					+ e.getToken().getText().length());
 			// throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),
 			// rawSource);
