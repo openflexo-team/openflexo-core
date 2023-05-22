@@ -99,7 +99,7 @@ public class TypeDeclarationNode extends FMLObjectNode<ATypeDecl, TypeDeclaratio
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(staticContents("", FMLKeywords.Type.getKeyword(), SPACE), getTypeKeywordFragment());
+		append(staticContents("", FMLKeywords.Typedef.getKeyword(), SPACE), getTypeKeywordFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getReferencedType()), SPACE), getTypeFragment());
 		append(staticContents("", FMLKeywords.As.getKeyword(), SPACE), getAsFragment());
 		append(dynamicContents(() -> getModelObject().getAbbrev()), getAbbrevFragment());
@@ -107,7 +107,7 @@ public class TypeDeclarationNode extends FMLObjectNode<ATypeDecl, TypeDeclaratio
 	}
 
 	private RawSourceFragment getTypeKeywordFragment() {
-		return getFragment(getASTNode().getKwType());
+		return getFragment(getASTNode().getKwTypedef());
 	}
 
 	private RawSourceFragment getTypeFragment() {

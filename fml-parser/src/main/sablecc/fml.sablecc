@@ -286,7 +286,7 @@ Tokens
    {normal} kw_set = 'set';
    {normal} kw_super = 'super';
    {normal} kw_then = 'then';
-   {normal} kw_type = 'type';
+   {normal} kw_typedef = 'typedef';
    {normal,binding} kw_unique = 'unique';
    {normal -> binding} kw_use = 'use';
    {normal -> binding} kw_values = 'values';
@@ -576,7 +576,7 @@ Productions
    // --------------------------------------------------------------------------------------
    // Type declaration
    // --------------------------------------------------------------------------------------
-   type_decl = kw_type [type]:type_decl_type kw_as [name]:uidentifier semi;
+   type_decl = kw_typedef [type]:type_decl_type kw_as [name]:uidentifier semi;
 
    type_decl_type =
      | {normal} reference_type

@@ -297,10 +297,10 @@ public enum FMLKeywords {
 			return "then";
 		}
 	},
-	Type {
+	Typedef {
 		@Override
 		public String getKeyword() {
-			return "type";
+			return "typedef";
 		}
 	},
 	Unique {
