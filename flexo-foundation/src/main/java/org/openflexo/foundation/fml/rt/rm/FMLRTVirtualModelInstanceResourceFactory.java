@@ -23,8 +23,8 @@ package org.openflexo.foundation.fml.rt.rm;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -135,20 +135,24 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		returned.setVirtualModelResource(virtualModelResource);
 		registerResource(returned, resourceCenter);
 
+		FMLRTVirtualModelInstance resourceData = null;
+
 		if (createEmptyContents) {
-			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
+			resourceData = createEmptyContents(returned);
 			resourceData.setVirtualModel(virtualModelResource.getCompilationUnit().getVirtualModel());
 			returned.save();
-			if (resourceData.getFMLRunTimeEngine() != null) {
-				// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
-				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
-				// This inheritance should disappear
-				resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
-			}
 		}
 
 		containerResource.addToContents(returned);
 		containerResource.notifyContentsAdded(returned);
+
+		if (createEmptyContents && resourceData.getFMLRunTimeEngine() != null) {
+			// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
+			// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
+			// This inheritance should disappear
+			resourceData.getFMLRunTimeEngine().addToExecutionContext(resourceData, resourceData);
+		}
+
 		return returned;
 	}
 
