@@ -1,0 +1,26 @@
+import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Pong.fml"] as Pong;
+
+@URI("http://openflexo.org/test/TestResourceCenter/PingPong.fml/Ping.fml")
+@Author("sylvainguerin")
+public model Ping {
+
+	create() {
+	}
+
+	ping() {
+		log "Send Ping";
+		fire new PingEvent();
+	}
+
+	listen PongEvent from pong {
+		log "Pong received";
+		pongs = pongs+1;
+		//this.pong();
+	}
+
+	event PingEvent {
+		create() {
+		}
+	}
+	
+}

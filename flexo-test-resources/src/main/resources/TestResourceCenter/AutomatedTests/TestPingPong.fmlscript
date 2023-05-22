@@ -1,0 +1,20 @@
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/PingPong.fml"];
+context;
+assert virtualModel != null;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+//validate virtualModel;
+service ResourceCenterService add_temp_rc;
+myVMI = new PingPong() with (name="TestPingPong");
+context;
+assert myVMI != null;
+assert myVMI.pings == 0;
+assert myVMI.pongs == 0;
+myVMI.ping.ping();
+assert myVMI.pings == 1;
+assert myVMI.pongs == 1;
+
+

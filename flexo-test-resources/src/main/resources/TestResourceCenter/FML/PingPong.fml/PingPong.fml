@@ -1,0 +1,24 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Ping.fml"] as Ping;
+import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Pong.fml"] as Pong;
+
+@URI("http://openflexo.org/test/TestResourceCenter/PingPong.fml")
+public model PingPong {
+	
+	int pings;
+	int pongs;
+	
+	Ping ping with ModelInstance();
+	Pong pong with ModelInstance();
+
+	create() {
+		ping = new Ping() with (name="Ping");
+		log "@@@@@@@@@@@@@@@@@ On cree le PONG";
+		pong = new Pong() with (name="Pong");
+		log "@@@@@@@@@@@@@@@@@ DONE on cree le PONG";
+		pings = 0;
+		pongs = 0;
+	}
+
+}
