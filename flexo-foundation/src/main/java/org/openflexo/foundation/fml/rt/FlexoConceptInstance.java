@@ -551,6 +551,36 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 */
 	public FlexoConceptInstance getInspectedObject();
 
+	/**
+	 * This is the general API for containment: return the unique (and non null) {@link FlexoConceptInstance} in which this instance lives
+	 * Containment semantics is the merge of:
+	 * <ul>
+	 * <li>All {@link FlexoConceptInstance} living in a {@link VirtualModelInstance}</li>
+	 * <li>All {@link FlexoConceptInstance} having a container {@link FlexoConceptInstance}, see
+	 * {@link #getContainerFlexoConceptInstance()}/{@link #getEmbeddedFlexoConceptInstances()}</li>
+	 * <li>All {@link VirtualModelInstance} living in a {@link VirtualModelInstance}, see
+	 * {@link VirtualModelInstance#getContainerVirtualModelInstance()}/{@link VirtualModelInstance#getVirtualModelInstances()}</li>
+	 * </ul>
+	 * 
+	 * @return
+	 */
+	public FlexoConceptInstance getContainer();
+
+	/**
+	 * This is the general API for containment: return the list of instances which live in this instance Containment semantics is the merge
+	 * of:
+	 * <ul>
+	 * <li>All {@link FlexoConceptInstance} living in a {@link VirtualModelInstance}</li>
+	 * <li>All {@link FlexoConceptInstance} having a container {@link FlexoConceptInstance}, see
+	 * {@link #getContainerFlexoConceptInstance()}/{@link #getEmbeddedFlexoConceptInstances()}</li>
+	 * <li>All {@link VirtualModelInstance} living in a {@link VirtualModelInstance}, see
+	 * {@link VirtualModelInstance#getContainerVirtualModelInstance()}/{@link VirtualModelInstance#getVirtualModelInstances()}</li>
+	 * </ul>
+	 * 
+	 * @return
+	 */
+	public List<FlexoConceptInstance> getContainedInstances();
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -600,6 +630,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			else if (getResourceCenter() != null && getResourceCenter().getDelegatingProjectResource() != null) {
 				return getServiceManager().getProjectLoaderService()
 						.getEditorForProject(getResourceCenter().getDelegatingProjectResource().getFlexoProject());
+			}
+			if (getServiceManager() != null) {
+				return getServiceManager().getDefaultEditor();
 			}
 			return null;
 		}
@@ -961,7 +994,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 					setIsModified();
 
-					getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldValue, value);
+					notifyPropertyChanged(flexoProperty, oldValue, oldValue);
 				}
 			}
 		}
@@ -1215,7 +1248,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					container = container.getContainerFlexoConceptInstance();
 				}
 			}
-			if (getOwningVirtualModelInstance() != this && flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+			if (getOwningVirtualModelInstance() != null && getOwningVirtualModelInstance() != this
+					&& flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
 				// In this case the property concerns the owning FMLRTVirtualModelInstance
 				getOwningVirtualModelInstance().setFlexoPropertyValue(flexoRole, object);
 			}
@@ -1574,6 +1608,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			references.add(actorReference);
 			// System.out.println("added " + actorReference + " for " + actorReference.getModellingElement());
 			performSuperAdder(ACTORS_KEY, actorReference);
+
+			notifyPropertyChangedForContainedInstances(actorReference.getFlexoRole(), actorReference, null);
+
 		}
 
 		@Override
@@ -1598,6 +1635,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				actors.remove(actorReference.getRoleName());
 			}
 			performSuperRemover(ACTORS_KEY, actorReference);
+
+			notifyPropertyChangedForContainedInstances(actorReference.getFlexoRole(), actorReference, null);
+
 		}
 
 		public Object evaluate(String expression) {
@@ -1682,6 +1722,49 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return returned;
 		}
 
+		private void notifyPropertyChanged(FlexoProperty<?> property, Object oldValue, Object newValue) {
+			getPropertyChangeSupport().firePropertyChange(property.getName(), oldValue, newValue);
+			notifyPropertyChangedForContainedInstances(property, oldValue, newValue);
+
+		}
+
+		private <T> void notifyPropertyChangedForContainedInstances(FlexoProperty<?> property, Object oldValue, Object newValue) {
+			for (FlexoConceptInstance containedInstance : getContainedInstances()) {
+				((FlexoConceptInstanceImpl) containedInstance).notifyPropertyChanged(property, oldValue, newValue);
+			}
+		}
+
+		private FlexoConceptInstance getConcernedInstance(FlexoProperty<?> property) {
+			if (getFlexoConcept() == null) {
+				logger.warning("FlexoConceptInstance with null FlexoConcept");
+				return null;
+			}
+			if (property.getFlexoConcept() == null) {
+				logger.warning("property " + property + " with null FlexoConcept");
+				return null;
+			}
+			if (property.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+				return this;
+			}
+
+			FlexoConceptInstance container = getContainer();
+			while (container != null && container.getFlexoConcept() != null) {
+				if (property.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+					return container;
+				}
+				container = container.getContainer();
+			}
+
+			if (container != null) {
+				logger.warning("container " + container + " with null FlexoConcept");
+				return null;
+			}
+
+			logger.warning("Cannot find concerned instance for " + property + " from " + this);
+			return null;
+
+		}
+
 		@Override
 		public Object getValue(BindingVariable variable) {
 
@@ -1694,29 +1777,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			else if (variable instanceof SuperBindingVariable) {
 				return getSuperReference(((SuperBindingVariable) variable).getSuperConcept());
 			}
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME) && getFlexoConcept() != null) {
-				if (getFlexoConcept().getApplicableContainerFlexoConcept() != null) {
-					return getContainerFlexoConceptInstance();
-				}
-				return getOwningVirtualModelInstance();
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME)) {
+				return getContainer();
 			}
 			else if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
 			}
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				FlexoProperty<?> flexoProperty = ((FlexoPropertyBindingVariable) variable).getFlexoProperty();
-				if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
-					FlexoConceptInstance container = getContainerFlexoConceptInstance();
-					while (container != null) {
-						if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
-							return ((FlexoPropertyBindingVariable) variable).getValue(container);
-						}
-						container = container.getContainerFlexoConceptInstance();
-					}
+				FlexoConceptInstance concernedInstance = getConcernedInstance(((FlexoPropertyBindingVariable) variable).getFlexoProperty());
+				if (concernedInstance == null) {
+					logger.warning("Cannot find concerned FlexoConceptInstance for " + variable);
+					return null;
 				}
-				else {
-					return ((FlexoPropertyBindingVariable) variable).getValue(this);
-				}
+				return ((FlexoPropertyBindingVariable) variable).getValue(concernedInstance);
 			}
 
 			if (getOwningVirtualModelInstance() != null) {
@@ -1727,16 +1800,43 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return variables.get(variable.getVariableName());
 			}
 
-			logger.warning("Cannot find BindingVariable " + variable + " for " + this);
 			return null;
 		}
 
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
-			// TODO here the code relies on switches, a dispatching approach will be safer (charlie)
+			if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+				FlexoConceptInstance concernedInstance = getConcernedInstance(((FlexoPropertyBindingVariable) variable).getFlexoProperty());
+				if (concernedInstance == null) {
+					logger.warning("Cannot find concerned FlexoConceptInstance for " + variable);
+					return;
+				}
+				((FlexoConceptInstanceImpl) concernedInstance).internallySetValue(value, (FlexoPropertyBindingVariable) variable);
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
+				logger.warning(
+						"Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY_NAME + " in " + this + " of " + getClass());
+				return;
+			}
 
-			if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
-				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
+			if (variables.containsKey(variable.getVariableName())) {
+				variables.put(variable.getVariableName(), value);
+				return;
+			}
+
+			logger.warning("Unexpected variable requested in settable context in FlexoConceptInstance: " + variable + " of "
+					+ variable.getClass());
+		}
+
+		private void internallySetValue(Object value, FlexoPropertyBindingVariable bindingVariable) {
+
+			if (getFlexoConcept() == null) {
+				logger.warning("null FlexoConcept for " + this + " of " + getClass());
+				return;
+			}
+
+			if (bindingVariable instanceof FlexoRoleBindingVariable) {
+				FlexoRole role = ((FlexoRoleBindingVariable) bindingVariable).getFlexoRole();
 				if (role != null) {
 					if (role.getCardinality().isMultipleCardinality()) {
 						if (value instanceof List) {
@@ -1769,44 +1869,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 				}
 				else {
-					logger.warning("Unexpected property " + variable);
+					logger.warning("Unexpected property " + bindingVariable);
 				}
 				return;
 			}
-			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				FlexoPropertyBindingVariable bindingVariable = (FlexoPropertyBindingVariable) variable;
+			else {
 				if (!bindingVariable.isSettable()) {
-					logger.warning("Can't set value " + value + " for read-only variable " + variable);
+					logger.warning("Can't set value " + value + " for read-only variable " + bindingVariable);
 					return;
 				}
 				FlexoProperty<Object> property = (FlexoProperty<Object>) bindingVariable.getFlexoProperty();
 				setFlexoPropertyValue(property, value);
 				return;
 			}
-			/*else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
-						+ getClass());
-				return;
-			}*/
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
-				logger.warning(
-						"Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY_NAME + " in " + this + " of " + getClass());
-				return;
-			}
-
-			if (variables.containsKey(variable.getVariableName())) {
-				variables.put(variable.getVariableName(), value);
-				return;
-			}
-
-			if (getOwningVirtualModelInstance() != null) {
-				getOwningVirtualModelInstance().setValue(value, variable);
-				return;
-			}
-
-			logger.warning("Unexpected variable requested in settable context in FlexoConceptInstance: " + variable + " of "
-					+ variable.getClass());
-
 		}
 
 		/**
@@ -2380,6 +2455,47 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 			return this;
+		}
+
+		/**
+		 * This is the general API for containment: return the unique (and non null) {@link FlexoConceptInstance} in which this instance
+		 * lives Containment semantics is the merge of:
+		 * <ul>
+		 * <li>All {@link FlexoConceptInstance} living in a {@link VirtualModelInstance}</li>
+		 * <li>All {@link FlexoConceptInstance} having a container {@link FlexoConceptInstance}, see
+		 * {@link #getContainerFlexoConceptInstance()}/{@link #getEmbeddedFlexoConceptInstances()}</li>
+		 * <li>All {@link VirtualModelInstance} living in a {@link VirtualModelInstance}, see
+		 * {@link VirtualModelInstance#getContainerVirtualModelInstance()}/{@link VirtualModelInstance#getVirtualModelInstances()}</li>
+		 * </ul>
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInstance getContainer() {
+			if (getContainerFlexoConceptInstance() == null) {
+				return getOwningVirtualModelInstance();
+			}
+			else {
+				return getContainerFlexoConceptInstance();
+			}
+		}
+
+		/**
+		 * This is the general API for containment: return the list of instances which live in this instance Containment semantics is the
+		 * merge of:
+		 * <ul>
+		 * <li>All {@link FlexoConceptInstance} living in a {@link VirtualModelInstance}</li>
+		 * <li>All {@link FlexoConceptInstance} having a container {@link FlexoConceptInstance}, see
+		 * {@link #getContainerFlexoConceptInstance()}/{@link #getEmbeddedFlexoConceptInstances()}</li>
+		 * <li>All {@link VirtualModelInstance} living in a {@link VirtualModelInstance}, see
+		 * {@link VirtualModelInstance#getContainerVirtualModelInstance()}/{@link VirtualModelInstance#getVirtualModelInstances()}</li>
+		 * </ul>
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConceptInstance> getContainedInstances() {
+			return getEmbeddedFlexoConceptInstances();
 		}
 
 	}

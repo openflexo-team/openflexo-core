@@ -70,7 +70,6 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
@@ -1163,41 +1162,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return null;
 		}
 
-		@Override
-		public Object getValue(BindingVariable variable) {
-
-			if (variable == null) {
-				return null;
-			}
-			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME) && getVirtualModel() != null
-					&& getVirtualModel().getContainerVirtualModel() != null) {
-				return getContainerVirtualModelInstance();
-			}
-
-			Object returned = super.getValue(variable);
-
-			if (returned != null) {
-				return returned;
-			}
-
-			// When not found, delegate it to the container virtual model instance
-			if (getContainerVirtualModelInstance() != null && getContainerVirtualModelInstance() != this) {
-				return getContainerVirtualModelInstance().getValue(variable);
-			}
-
-			// Warning is not required, since it will will warn each time a value is null !
-			// logger.warning("Unexpected variable requested in FMLRTVirtualModelInstance: "
-			// + variable + " of " + variable.getClass());
-			return null;
-		}
-
-		@Override
-		public void setValue(Object value, BindingVariable variable) {
-
-			super.setValue(value, variable);
-
-		}
-
 		public class FlexoConceptInstanceIndex<T> extends WeakHashMap<T, List<FlexoConceptInstance>> {
 
 			public class IndexedValueListener extends BindingPathChangeListener<T> {
@@ -1642,6 +1606,45 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				result = prime * result + ((flexoConceptInstance == null) ? 0 : flexoConceptInstance.hashCodeUsingRoles());
 			}
 			return result;
+		}
+
+		/**
+		 * This is the general API for containment: return the unique (and non null) {@link FlexoConceptInstance} in which this instance
+		 * lives Containment semantics is the merge of:
+		 * <ul>
+		 * <li>All {@link FlexoConceptInstance} living in a {@link VirtualModelInstance}</li>
+		 * <li>All {@link FlexoConceptInstance} having a container {@link FlexoConceptInstance}, see
+		 * {@link #getContainerFlexoConceptInstance()}/{@link #getEmbeddedFlexoConceptInstances()}</li>
+		 * <li>All {@link VirtualModelInstance} living in a {@link VirtualModelInstance}, see
+		 * {@link VirtualModelInstance#getContainerVirtualModelInstance()}/{@link VirtualModelInstance#getVirtualModelInstances()}</li>
+		 * </ul>
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInstance getContainer() {
+			return getContainerVirtualModelInstance();
+		}
+
+		/**
+		 * This is the general API for containment: return the list of instances which live in this instance Containment semantics is the
+		 * merge of:
+		 * <ul>
+		 * <li>All {@link FlexoConceptInstance} living in a {@link VirtualModelInstance}</li>
+		 * <li>All {@link FlexoConceptInstance} having a container {@link FlexoConceptInstance}, see
+		 * {@link #getContainerFlexoConceptInstance()}/{@link #getEmbeddedFlexoConceptInstances()}</li>
+		 * <li>All {@link VirtualModelInstance} living in a {@link VirtualModelInstance}, see
+		 * {@link VirtualModelInstance#getContainerVirtualModelInstance()}/{@link VirtualModelInstance#getVirtualModelInstances()}</li>
+		 * </ul>
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConceptInstance> getContainedInstances() {
+			List<FlexoConceptInstance> returned = new ArrayList<>();
+			returned.addAll(getVirtualModelInstances());
+			returned.addAll(getAllRootFlexoConceptInstances());
+			return returned;
 		}
 
 	}
