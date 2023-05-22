@@ -46,7 +46,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -87,11 +86,11 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 		EventListener returned = getFactory().newEventListener();
 
 		Type type = TypeFactory.makeType(astNode.getEventType(), getSemanticsAnalyzer().getTypingSpace());
-		if (type instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) type).getFlexoConcept() instanceof FlexoEvent) {
-			returned.setEventType((FlexoEvent) ((FlexoConceptInstanceType) type).getFlexoConcept());
+		if (type instanceof FlexoConceptInstanceType) {
+			returned.setEventType((FlexoConceptInstanceType) type);
 		}
 		else {
-			throwIssue("Unexpected event type: " + type);
+			throwIssue("Unexpected event type: " + astNode.getEventType());
 		}
 
 		PExpression fromExpression = astNode.getListened();

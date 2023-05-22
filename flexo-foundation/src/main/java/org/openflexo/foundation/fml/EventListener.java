@@ -43,13 +43,13 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.binding.EventListenerBindingModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.EventListenerActionFactory;
-import org.openflexo.pamela.annotations.CloningStrategy;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -57,6 +57,9 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 @ModelEntity
 @ImplementationClass(EventListener.EventListenerImpl.class)
@@ -72,17 +75,20 @@ public interface EventListener extends AbstractActionScheme {
 
 	@Getter(value = EVENT_TYPE_URI_KEY)
 	@XMLAttribute
+	@FMLMigration
+	@Deprecated
 	public String _getEventTypeURI();
 
 	@Setter(EVENT_TYPE_URI_KEY)
+	@FMLMigration
+	@Deprecated
 	public void _setEventTypeURI(String eventTypeURI);
 
-	@Getter(value = EVENT_TYPE_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
-	public FlexoEvent getEventType();
+	@Getter(value = EVENT_TYPE_KEY, ignoreType = true)
+	public FlexoConceptInstanceType getEventType();
 
 	@Setter(EVENT_TYPE_KEY)
-	public void setEventType(FlexoEvent flexoConcept);
+	public void setEventType(FlexoConceptInstanceType eventType);
 
 	@Getter(value = LISTENED_VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
@@ -93,44 +99,59 @@ public interface EventListener extends AbstractActionScheme {
 
 	public VirtualModel getListenedVirtualModelType();
 
+	public FlexoEvent getEvent();
+
 	public static abstract class EventListenerImpl extends AbstractActionSchemeImpl implements EventListener {
 
 		private String _eventTypeURI;
-		private FlexoEvent eventType;
+		private FlexoConceptInstanceType eventType;
+		private FlexoEvent event;
 		private DataBinding<VirtualModelInstance<?, ?>> listenedVirtualModelInstance;
 
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			if (eventType == null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
+			/*if (eventType == null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
 				eventType = (FlexoEvent) getVirtualModelLibrary().getFlexoConcept(_eventTypeURI, true);
-			}
+			}*/
 		}
 
 		@Override
-		public FlexoEvent getEventType() {
-			if (eventType == null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
-				eventType = (FlexoEvent) getVirtualModelLibrary().getFlexoConcept(_eventTypeURI, false);
+		public FlexoEvent getEvent() {
+			if (getEventType() != null) {
+				return (FlexoEvent) getEventType().getFlexoConcept();
+			}
+			return event;
+		}
+
+		@Override
+		public FlexoConceptInstanceType getEventType() {
+			if (eventType == null && event != null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
+				event = (FlexoEvent) getVirtualModelLibrary().getFlexoConcept(_eventTypeURI, false);
+				if (event != null) {
+					eventType = event.getInstanceType();
+				}
 			}
 			return eventType;
 		}
 
 		@Override
-		public void setEventType(FlexoEvent eventType) {
-			if ((eventType == null && this.eventType != null) || (eventType != null && !eventType.equals(this.eventType))) {
+		public void setEventType(FlexoConceptInstanceType eventType) {
+			/*if ((eventType == null && this.eventType != null) || (eventType != null && !eventType.equals(this.eventType))) {
 				String oldSignature = getSignature();
 				FlexoEvent oldValue = this.eventType;
 				this.eventType = eventType;
 				getPropertyChangeSupport().firePropertyChange("eventType", oldValue, eventType);
 				updateSignature(oldSignature);
 				// notifyResultingTypeChanged();
-			}
+			}*/
+			this.eventType = eventType;
 		}
 
 		@Override
 		public String _getEventTypeURI() {
-			if (getEventType() != null) {
-				return getEventType().getURI();
+			if (getEvent() != null) {
+				return getEvent().getURI();
 			}
 			return _eventTypeURI;
 		}
@@ -203,8 +224,38 @@ public interface EventListener extends AbstractActionScheme {
 
 		@Override
 		public String getDisplayRepresentation() {
-			return "listen " + (getEventType() != null ? getEventType().getName() : "?") + " from " + getListenedVirtualModelInstance();
+			return "listen " + TypeUtils.simpleRepresentation(getEventType()) + " from " + getListenedVirtualModelInstance();
+		}
+	}
+
+	@DefineValidationRule
+	public static class TypeMustBeResolved extends ValidationRule<TypeMustBeResolved, EventListener> {
+		public TypeMustBeResolved() {
+			super(EventListener.class, "event_type_must_be_resolved");
+		}
+
+		@Override
+		public ValidationIssue<TypeMustBeResolved, EventListener> applyValidation(EventListener el) {
+
+			if (el.getEventType() == null) {
+				return new ValidationError<>(this, el, "unresolved_type" /* "unresolved_type_($validable.type)"*/);
+			}
+			return null;
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class ListenedVirtualModelInstanceBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<EventListener> {
+		public ListenedVirtualModelInstanceBindingIsRequiredAndMustBeValid() {
+			super("'listened_virtual_model_instance'_binding_is_not_valid", EventListener.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(EventListener object) {
+			return object.getListenedVirtualModelInstance();
+		}
+
+	}
+
 }

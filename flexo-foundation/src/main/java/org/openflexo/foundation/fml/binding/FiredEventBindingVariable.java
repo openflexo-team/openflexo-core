@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.EventListener;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 
 /**
  * BindingVariable used to handle fired event in a {@link EventListener} behaviour
@@ -43,7 +42,7 @@ public class FiredEventBindingVariable extends AbstractFMLBindingVariable implem
 	@Override
 	public Type getType() {
 		if (getEventListener() != null) {
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getEventListener().getEventType());
+			return getEventListener().getEventType();
 		}
 		return null;
 	}
