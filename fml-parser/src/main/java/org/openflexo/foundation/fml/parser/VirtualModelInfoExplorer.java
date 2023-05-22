@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AEnumDecl;
+import org.openflexo.foundation.fml.parser.node.AEventDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
@@ -186,6 +187,23 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void outAConceptDecl(AConceptDecl node) {
 		super.outAConceptDecl(node);
+		conceptsStack.pop();
+	}
+
+	@Override
+	public void inAEventDecl(AEventDecl node) {
+		super.inAEventDecl(node);
+		String conceptName = node.getUidentifier().getText();
+		if (!conceptsStack.isEmpty()) {
+			conceptName = conceptsStack.peek() + "#" + conceptName;
+		}
+		conceptsStack.push(conceptName);
+		info.addToFlexoConcepts(conceptName);
+	}
+
+	@Override
+	public void outAEventDecl(AEventDecl node) {
+		super.outAEventDecl(node);
 		conceptsStack.pop();
 	}
 
