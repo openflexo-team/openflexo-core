@@ -307,11 +307,61 @@ public class FMLCompilationUnitParser {
 	}
 
 	private static VirtualModelInfo attemptToRetrieveVirtualModelInfo(RawSource rawSource) {
-		// TODO: on peut faire mieux !
+		return attemptToRetrieveVirtualModelInfo(rawSource.getRawText());
+	}
+
+	private static VirtualModelInfo attemptToRetrieveVirtualModelInfo(String rawSource) {
 		VirtualModelInfo vmi = new VirtualModelInfo();
-		vmi.setName("Prout");
-		vmi.setURI("http://prout");
+
+		int uriIndex = rawSource.indexOf("@URI") + 4;
+		int startUriIndex = rawSource.indexOf("(", uriIndex) + 1;
+		startUriIndex = rawSource.indexOf("\"", startUriIndex) + 1;
+		int endUriIndex = rawSource.indexOf("\"", startUriIndex);
+
+		if (startUriIndex < endUriIndex) {
+			String uri = rawSource.substring(startUriIndex, endUriIndex);
+			vmi.setURI(uri);
+			System.out.println("URI=" + uri);
+		}
+
+		int startNameIndex = rawSource.indexOf("model", endUriIndex) + 5;
+		int extendsIndex = rawSource.indexOf("extends", startNameIndex);
+		int leftBrcIndex = rawSource.indexOf("{", startNameIndex);
+		int endNameIndex;
+		if (extendsIndex > -1 && extendsIndex < leftBrcIndex) {
+			endNameIndex = extendsIndex;
+		}
+		else {
+			endNameIndex = leftBrcIndex;
+		}
+		if (startNameIndex < endNameIndex) {
+			String name = rawSource.substring(startNameIndex, endNameIndex).trim();
+			vmi.setName(name);
+			System.out.println("name=" + name);
+		}
+
+		/*System.out.println("startUriIndex=" + startUriIndex);
+		System.out.println("endUriIndex=" + endUriIndex);
+		System.out.println("uri=" + rawSource.substring(startUriIndex, endUriIndex));
+		
+		System.out.println("startNameIndex=" + startNameIndex);
+		System.out.println("endNameIndex=" + endNameIndex);
+		System.out.println("name=[" + rawSource.substring(startNameIndex, endNameIndex) + "]");*/
+
 		return vmi;
+	}
+
+	public static void main(String[] args) {
+		String coucou = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n" + "\n"
+				+ "import java.util.Date;\n" + "import java.lang.String;\n" + "\n"
+				+ "@URI (     \"http://www.openflexo.org/MULTIProcessChallenge/MetaModel.fml\")\n" + "@Version(\"0.1\")\n"
+				+ "public model    MetaModel        extends Prout {";
+		attemptToRetrieveVirtualModelInfo(coucou);
+		String coucou2 = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n" + "\n"
+				+ "import java.util.Date;\n" + "import java.lang.String;\n" + "\n"
+				+ "@URI(\"http://www.openflexo.org/MULTIProcessChallenge/MetaModel.fml\")\n" + "@Version(\"0.1\")\n"
+				+ "public model MetaModel {";
+		attemptToRetrieveVirtualModelInfo(coucou2);
 	}
 
 	/**
