@@ -69,7 +69,7 @@ public class SynchronousFMLRunTimeEngine extends DefaultFMLRunTimeEngine {
 			Set<EventInstanceListener> listeners = listeningInstances.get(event.getSourceVirtualModelInstance());
 			if (listeners != null) {
 				for (EventInstanceListener l : new ArrayList<>(listeners)) {
-					if (l.getListener().getEventType().isAssignableFrom(event.getFlexoEvent())) {
+					if (l.getListener().getEvent().isAssignableFrom(event.getFlexoEvent())) {
 						fireEventListener(l.getInstanceBeeingListening(), l.getListener(), event);
 					}
 				}
