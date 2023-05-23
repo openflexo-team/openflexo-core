@@ -591,6 +591,13 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getDefaultValue().rebuild();
+		}
+
 	}
 
 	public static enum RoleCloningStrategy {

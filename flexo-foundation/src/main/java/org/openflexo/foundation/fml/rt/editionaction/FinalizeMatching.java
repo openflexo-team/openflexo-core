@@ -522,6 +522,12 @@ public interface FinalizeMatching extends EditionAction {
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getMatchingSet().rebuild();
+		}
 	}
 
 	@DefineValidationRule

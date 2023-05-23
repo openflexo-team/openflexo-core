@@ -217,5 +217,11 @@ public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefini
 			return Object.class;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getFlexoBehaviour().rebuild();
+		}
+
 	}
 }

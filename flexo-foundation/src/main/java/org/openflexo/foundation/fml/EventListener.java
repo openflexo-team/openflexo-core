@@ -226,6 +226,13 @@ public interface EventListener extends AbstractActionScheme {
 		public String getDisplayRepresentation() {
 			return "listen " + TypeUtils.simpleRepresentation(getEventType()) + " from " + getListenedVirtualModelInstance();
 		}
+		
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getListenedVirtualModelInstance().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

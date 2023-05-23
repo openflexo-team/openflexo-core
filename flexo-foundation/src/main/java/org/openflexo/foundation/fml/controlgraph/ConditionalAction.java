@@ -329,6 +329,12 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getCondition().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

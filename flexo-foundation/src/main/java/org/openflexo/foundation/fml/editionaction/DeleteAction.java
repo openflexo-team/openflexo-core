@@ -199,6 +199,13 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 		public Type getAssignableType() {
 			return Object.class;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getObject().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

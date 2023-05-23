@@ -189,6 +189,14 @@ public interface AddClassInstance extends AssignableAction<Object> {
 		public String getStringRepresentation() {
 			return "new " + TypeUtils.simpleRepresentation(getType()) + "()";
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			// getParameters().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

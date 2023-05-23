@@ -233,6 +233,12 @@ public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstanc
 			}
 		}*/
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getVirtualModelInstanceTitle().rebuild();
+			getVirtualModelInstanceName().rebuild();
+		}
 	}
 
 	@DefineValidationRule

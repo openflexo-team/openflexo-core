@@ -238,6 +238,12 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getExpression().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

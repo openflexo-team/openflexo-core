@@ -151,6 +151,12 @@ public interface NotifyProgressAction extends EditionAction {
 			return Void.class;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getLogString().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

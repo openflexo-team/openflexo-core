@@ -821,6 +821,13 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return false;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getMatchingSet().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

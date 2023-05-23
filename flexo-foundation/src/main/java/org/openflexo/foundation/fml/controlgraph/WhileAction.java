@@ -262,6 +262,12 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getCondition().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

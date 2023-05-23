@@ -143,6 +143,12 @@ public interface NavigationScheme extends AbstractActionScheme {
 			return null;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getTargetObject().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

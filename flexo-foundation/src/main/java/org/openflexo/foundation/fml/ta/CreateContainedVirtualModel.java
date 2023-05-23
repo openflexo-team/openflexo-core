@@ -206,6 +206,13 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 			return null;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getVirtualModelName().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

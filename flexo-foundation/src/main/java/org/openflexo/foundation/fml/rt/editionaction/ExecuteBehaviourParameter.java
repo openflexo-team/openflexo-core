@@ -235,6 +235,12 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject {
 			this.paramName = param;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getValue().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

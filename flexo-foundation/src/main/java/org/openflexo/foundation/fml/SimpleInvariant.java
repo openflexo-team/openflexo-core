@@ -190,6 +190,12 @@ public interface SimpleInvariant extends AbstractInvariant, FMLControlGraphOwner
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getConstraint().rebuild();
+		}
+
 	}
 
 }

@@ -291,6 +291,12 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 			return returned;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

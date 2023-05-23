@@ -249,5 +249,11 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 
 		protected abstract List<T> performExecute(RunTimeEvaluationContext evaluationContext);
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getReceiver().rebuild();
+		}
+
 	}
 }

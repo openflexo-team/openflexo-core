@@ -318,6 +318,15 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getResourceCenter().rebuild();
+			getDynamicRelativePath().rebuild();
+			getResourceName().rebuild();
+			getResourceURI().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

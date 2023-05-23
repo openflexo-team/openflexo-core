@@ -165,5 +165,11 @@ public interface IterationInvariant extends AbstractInvariant {
 			return Object.class;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getIteration().rebuild();
+		}
+
 	}
 }

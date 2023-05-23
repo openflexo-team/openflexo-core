@@ -175,6 +175,13 @@ public interface MatchCondition extends FlexoConceptObject {
 			}
 			return returned;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getCondition().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

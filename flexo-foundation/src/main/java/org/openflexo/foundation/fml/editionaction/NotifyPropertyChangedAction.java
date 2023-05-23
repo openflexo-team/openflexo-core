@@ -186,6 +186,13 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 			return Void.class;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getPropertyName().rebuild();
+			getObject().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

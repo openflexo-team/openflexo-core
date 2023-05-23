@@ -354,6 +354,13 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getRenderer().rebuild();
+			getDelegateConceptInstance().rebuild();
+		}
+
 	}
 
 	public interface FlexoConceptFormatter extends Bindable {

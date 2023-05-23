@@ -496,6 +496,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			return customTypeFactory;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getVirtualModelInstance().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

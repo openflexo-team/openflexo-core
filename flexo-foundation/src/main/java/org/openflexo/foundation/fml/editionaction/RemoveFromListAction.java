@@ -196,6 +196,14 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 
 			return objToRemove;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getList().rebuild();
+			getValue().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

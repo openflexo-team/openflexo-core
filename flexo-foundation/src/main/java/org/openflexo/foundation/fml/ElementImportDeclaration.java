@@ -247,7 +247,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 			}
 			return referencedObject;
 		}
-		
+
 		@Override
 		public void setReferencedObject(FlexoObject referencedObject) {
 			this.referencedObject = referencedObject;
@@ -343,8 +343,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				isBuildingReferencedObject = false;
 			}
 
-			//logger.warning("Cannot access FlexoServiceManager, resourceData=" + getResourceData());
-			
+			// logger.warning("Cannot access FlexoServiceManager, resourceData=" + getResourceData());
+
 			/*if (getResourceData() instanceof FMLCompilationUnit) {
 				FMLCompilationUnitImpl cu = (FMLCompilationUnitImpl) getResourceData();
 				System.out.println("vmlib=" + cu.getVirtualModelLibrary());
@@ -389,9 +389,16 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		public void clearReferencedObject() {
 			referencedObject = null;
 		}
-		
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getObjectReference().rebuild();
+			getResourceReference().rebuild();
+		}
+
 	}
-	
+
 	@DefineValidationRule
 	public static class ResourceReferenceBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<ElementImportDeclaration> {
 		public ResourceReferenceBindingIsRequiredAndMustBeValid() {
@@ -424,7 +431,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
-		public ValidationIssue<ImportDeclarationMustAddressValidReferencedObject, ElementImportDeclaration> applyValidation(ElementImportDeclaration importDeclaration) {
+		public ValidationIssue<ImportDeclarationMustAddressValidReferencedObject, ElementImportDeclaration> applyValidation(
+				ElementImportDeclaration importDeclaration) {
 			if (importDeclaration.getReferencedObject() == null) {
 				return new ValidationError<>(this, importDeclaration, "import_declaration_must_reference_a_valid_object");
 			}

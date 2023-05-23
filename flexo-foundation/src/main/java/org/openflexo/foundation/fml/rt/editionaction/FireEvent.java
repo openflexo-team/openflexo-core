@@ -140,6 +140,11 @@ public interface FireEvent extends EditionAction {
 			return Void.class;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getEventInstance().rebuild();
+		}
 	}
 
 	@DefineValidationRule

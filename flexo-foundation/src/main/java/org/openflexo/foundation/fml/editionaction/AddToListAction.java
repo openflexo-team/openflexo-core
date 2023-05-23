@@ -269,6 +269,13 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 			}
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getList().rebuild();
+			getValue().rebuild();
+		}
+
 	}
 
 	// TODO: a rule that check that assignableAction is not null

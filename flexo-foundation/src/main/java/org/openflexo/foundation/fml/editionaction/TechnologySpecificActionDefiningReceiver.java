@@ -213,6 +213,12 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 			return true;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getReceiver().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

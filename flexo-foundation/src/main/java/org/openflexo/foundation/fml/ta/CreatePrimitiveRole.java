@@ -257,6 +257,15 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 			logger.warning("Unexpected context: " + evaluationContext);
 			return null;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getRoleName().rebuild();
+			getPrimitiveType().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

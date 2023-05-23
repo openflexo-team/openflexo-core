@@ -331,6 +331,14 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirt
 			return null;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getResourceCenter().rebuild();
+			getDynamicRelativePath().rebuild();
+			getResourceURI().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

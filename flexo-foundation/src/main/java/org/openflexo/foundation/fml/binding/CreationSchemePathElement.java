@@ -977,5 +977,16 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getDynamicRelativePath().rebuild();
+			getResourceCenter().rebuild();
+			getRepositoryFolder().rebuild();
+			getVirtualModelInstanceName().rebuild();
+			getVirtualModelInstanceTitle().rebuild();
+			getResourceURI().rebuild();
+		}
+
 	}
 }

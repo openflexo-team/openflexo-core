@@ -267,6 +267,14 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 			logger.warning("Unexpected context: " + evaluationContext);
 			return null;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getConceptName().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

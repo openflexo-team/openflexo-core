@@ -245,6 +245,12 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 			this.paramName = param;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getValue().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

@@ -804,6 +804,13 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			setDynamicFlexoConceptType(dynamicFlexoConceptType);
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getDynamicFlexoConceptType().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

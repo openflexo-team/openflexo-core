@@ -290,6 +290,14 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 			super.notifiedBindingChanged(dataBinding);
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getExclusiveEndValue().rebuild();
+			getIncrement().rebuild();
+			getStartValue().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

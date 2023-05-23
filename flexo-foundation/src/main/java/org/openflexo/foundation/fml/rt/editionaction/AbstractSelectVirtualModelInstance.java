@@ -284,6 +284,13 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 			logger.warning("Additional info: getContainer()=" + getContainer());
 			return null;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

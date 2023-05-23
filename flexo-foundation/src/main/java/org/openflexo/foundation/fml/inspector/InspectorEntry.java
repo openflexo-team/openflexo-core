@@ -517,6 +517,14 @@ public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 			return null;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+			getData().rebuild();
+			getList().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

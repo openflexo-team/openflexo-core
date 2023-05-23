@@ -226,6 +226,12 @@ public interface MatchingCriteria extends FlexoConceptObject {
 		public String toString() {
 			return "MatchingCriteria[" + _getPatternRoleName() + "=" + getValue() + "]";
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getValue().rebuild();
+		}
 	}
 
 	@DefineValidationRule

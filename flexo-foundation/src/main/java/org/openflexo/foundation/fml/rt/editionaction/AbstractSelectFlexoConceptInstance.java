@@ -64,7 +64,6 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -508,6 +507,13 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		public boolean isReceiverMandatory() {
 			return false;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getContainer().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

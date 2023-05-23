@@ -178,6 +178,13 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 			}
 			return returned;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getCondition().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

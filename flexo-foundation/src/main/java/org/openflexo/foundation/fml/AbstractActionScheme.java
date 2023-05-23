@@ -141,5 +141,12 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 		public AbstractActionSchemeActionFactory<?, ?, ?> getActionFactory(FlexoConceptInstance fci) {
 			return null;
 		}
+
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getConditional().rebuild();
+		}
+
 	}
 }

@@ -246,6 +246,12 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			this.paramName = param;
 		}
 
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getValue().rebuild();
+		}
+
 	}
 
 	@DefineValidationRule

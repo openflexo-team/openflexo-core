@@ -277,9 +277,9 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 		@Override
 		public void revalidateBindings() {
 			super.revalidateBindings();
-			getContainer().invalidate(getDeclaringCompilationUnit().getTypingSpace());
-			getDynamicFlexoConceptType().invalidate(getDeclaringCompilationUnit().getTypingSpace());
-			getArguments().invalidate(getDeclaringCompilationUnit().getTypingSpace());
+			getArguments().rebuild();
+			getContainer().rebuild();
+			getDynamicFlexoConceptType().rebuild();
 		}
 
 	}
