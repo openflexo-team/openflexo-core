@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoServiceManager;
 
 /**
@@ -71,6 +70,7 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 		compilationUnit = null;
 	}
 
+	@Override
 	public FMLCompilationUnit getFMLCompilationUnit() {
 		return compilationUnit;
 	}
@@ -104,23 +104,19 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
-		Type returned = super.resolveType(typeAsString);
-		if (returned instanceof UnresolvedType) {
-			if (compilationUnit != null) {
-				// Try to look up a FlexoConcept
-				FlexoConcept lookedUpConcept = compilationUnit.lookupFlexoConceptWithName(typeAsString);
-				if (lookedUpConcept != null) {
-					// Yes ! a concept was found
-					return lookedUpConcept.getInstanceType();
-				}
-				Type foundInUseDeclarations = compilationUnit.lookupClassInUseDeclarations(typeAsString);
-				if (foundInUseDeclarations != null) {
-					return foundInUseDeclarations;
-				}
+		if (compilationUnit != null) {
+			// Try to look up a FlexoConcept
+			FlexoConcept lookedUpConcept = compilationUnit.lookupFlexoConceptWithName(typeAsString);
+			if (lookedUpConcept != null) {
+				// Yes ! a concept was found
+				return lookedUpConcept.getInstanceType();
+			}
+			Type foundInUseDeclarations = compilationUnit.lookupClassInUseDeclarations(typeAsString);
+			if (foundInUseDeclarations != null) {
+				return foundInUseDeclarations;
 			}
 		}
-		return returned;
-
+		return super.resolveType(typeAsString);
 	}
 
 	@Override
