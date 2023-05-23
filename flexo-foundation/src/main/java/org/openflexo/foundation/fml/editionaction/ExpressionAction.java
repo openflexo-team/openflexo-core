@@ -219,7 +219,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public void revalidateBindings() {
 			super.revalidateBindings();
-			getExpression().invalidate(getDeclaringCompilationUnit().getTypingSpace());
+			getExpression().rebuild();
 		}
 	}
 
