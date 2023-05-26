@@ -292,6 +292,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
+			// TODO: We should be able to initialize preference service if it does not already exist
+			// but that's not possible calling registerPreferencesService cause a null pointer that seems
+			// to be connected to TA not completely initialized
 			if (getGeneralPreferences() != null) {
 				getGeneralPreferences().setDirectoryResourceCenterList(rcList);
 			}
