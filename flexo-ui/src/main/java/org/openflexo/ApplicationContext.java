@@ -188,7 +188,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 
 	/*
-	 
+
 	 	@Override
 	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 	
@@ -292,7 +292,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
-			getGeneralPreferences().setDirectoryResourceCenterList(rcList);
+			if (getGeneralPreferences() != null) {
+				getGeneralPreferences().setDirectoryResourceCenterList(rcList);
+			}
 		}
 		else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
