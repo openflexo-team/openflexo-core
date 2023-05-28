@@ -104,6 +104,8 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
+		// TODO factorize code with FMLTypingSpaceDuringParsing while
+		// declaring an abstract method getCompilationUnit()
 		if (compilationUnit != null) {
 			// Try to look up a FlexoConcept
 			FlexoConcept lookedUpConcept = compilationUnit.lookupFlexoConceptWithName(typeAsString);

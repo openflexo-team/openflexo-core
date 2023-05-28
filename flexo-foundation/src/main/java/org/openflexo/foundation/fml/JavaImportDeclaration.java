@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -95,7 +97,30 @@ public interface JavaImportDeclaration extends FMLPrettyPrintable {
 	@Setter(COMPILATION_UNIT_KEY)
 	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
 
+	public Class<?> getJavaClass();
+
 	public static abstract class JavaImportDeclarationImpl extends FMLObjectImpl implements JavaImportDeclaration {
+
+		private static final Logger logger = Logger.getLogger(JavaImportDeclarationImpl.class.getPackage().getName());
+
+		private Class<?> javaClass;
+		private boolean lookupPerformed = false;;
+
+		@Override
+		public Class<?> getJavaClass() {
+			if (javaClass != null) {
+				return javaClass;
+			}
+			if (!lookupPerformed) {
+				try {
+					javaClass = Class.forName(getFullQualifiedClassName());
+				} catch (ClassNotFoundException e) {
+					logger.warning("Cannot find " + getFullQualifiedClassName());
+				}
+				lookupPerformed = true;
+			}
+			return javaClass;
+		}
 
 		@Override
 		public FMLCompilationUnit getResourceData() {

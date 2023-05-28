@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConcept
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumType;
+import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
@@ -223,6 +224,9 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
+		// TODO factorize code with FMLTypingSpaceDuringParsing while
+		// declaring an abstract method getCompilationUnit()
+
 		// First try to match a VirtualModel in this ExecutionUnit
 		if (foundVirtualModels.get(typeAsString) != null) {
 			VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
@@ -248,8 +252,20 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 			return fciType;
 		}
 		// Not found
-		// Look in imported VirtualModels
 		if (analyzer.getCompilationUnit() != null) {
+			// Look in java imports
+			for (JavaImportDeclaration javaImportDeclaration : analyzer.getCompilationUnit().getJavaImports()) {
+				if (javaImportDeclaration.getJavaClass() != null) {
+					if (javaImportDeclaration.getAbbrev() != null && javaImportDeclaration.getAbbrev().equals(typeAsString)) {
+						return javaImportDeclaration.getJavaClass();
+					}
+					if (javaImportDeclaration.getJavaClass().getSimpleName().equals(typeAsString)) {
+						return javaImportDeclaration.getJavaClass();
+					}
+				}
+			}
+
+			// Look in imported VirtualModels
 			for (ElementImportDeclaration importDeclaration : analyzer.getCompilationUnit().getElementImports()) {
 				try {
 					String resourceURI = null;
