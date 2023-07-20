@@ -93,16 +93,16 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 			throwIssue("Unexpected event type: " + astNode.getEventType());
 		}
 
-		try {
-			returned.setName(type.getTypeName());
-		} catch (InvalidNameException e) {
-			throwIssue("Cannot set EventListener event type name: " + astNode.getEventType());
-		}
-
 		PExpression fromExpression = astNode.getListened();
 		DataBinding<VirtualModelInstance<?, ?>> listened = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
 				BindingDefinitionType.GET, VirtualModelInstance.class, getSemanticsAnalyzer(), this);
 		returned.setListenedVirtualModelInstance(listened);
+
+		try {
+			returned.setName(type.getTypeName() + " from " + astNode.getListened());
+		} catch (InvalidNameException e) {
+			throwIssue("Cannot set EventListenr event type name: " + astNode.getEventType());
+		}
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
