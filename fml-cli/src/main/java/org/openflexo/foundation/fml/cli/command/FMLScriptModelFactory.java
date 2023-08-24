@@ -43,6 +43,7 @@ import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ExecuteDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
@@ -66,6 +67,7 @@ import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AEnterDirective;
+import org.openflexo.foundation.fml.parser.node.AExecuteDirective;
 import org.openflexo.foundation.fml.parser.node.AExitDirective;
 import org.openflexo.foundation.fml.parser.node.AExpressionFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AFmlActionFmlCommand;
@@ -125,6 +127,10 @@ public class FMLScriptModelFactory extends PamelaModelFactory {
 
 	public LsDirective newLsDirective(ALsDirective node, AbstractCommandSemanticsAnalyzer semanticsAnalyzer) {
 		return newInstance(LsDirective.class, node, semanticsAnalyzer);
+	}
+	
+	public ExecuteDirective newExecuteDirective(AExecuteDirective node, AbstractCommandSemanticsAnalyzer semanticsAnalyzer) {
+		return newInstance(ExecuteDirective.class, node, semanticsAnalyzer);
 	}
 
 	public MoreDirective newMoreDirective(AMoreDirective node, AbstractCommandSemanticsAnalyzer semanticsAnalyzer) {

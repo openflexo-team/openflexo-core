@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ExecuteDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
@@ -106,7 +107,7 @@ import org.openflexo.pamela.annotations.Setter;
 		@Import(ServiceDirective.class), @Import(ActivateTA.class), @Import(ResourcesDirective.class), @Import(OpenProject.class),
 		@Import(LoadResource.class), @Import(MoreDirective.class), @Import(EnterDirective.class), @Import(ExitDirective.class),
 		@Import(FMLContextCommand.class), @Import(FMLExpression.class), @Import(FMLAssignation.class), @Import(FMLAssertExpression.class),
-		@Import(FMLActionCommand.class) })
+		@Import(FMLActionCommand.class), @Import(ExecuteDirective.class) })
 public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = Node.class)

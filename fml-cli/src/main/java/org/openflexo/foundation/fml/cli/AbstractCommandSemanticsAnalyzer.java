@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AEnterDirective;
+import org.openflexo.foundation.fml.parser.node.AExecuteDirective;
 import org.openflexo.foundation.fml.parser.node.AExitDirective;
 import org.openflexo.foundation.fml.parser.node.AExpressionFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AFmlActionFmlCommand;
@@ -150,6 +151,12 @@ public abstract class AbstractCommandSemanticsAnalyzer extends FMLSemanticsAnaly
 	public void outALsDirective(ALsDirective node) {
 		super.outALsDirective(node);
 		registerCommand(node, scriptModelFactory.newLsDirective(node, this));
+	}
+	
+	@Override
+	public void outAExecuteDirective(AExecuteDirective node) {
+		super.outAExecuteDirective(node);
+		registerCommand(node, scriptModelFactory.newExecuteDirective(node, this));
 	}
 
 	@Override
