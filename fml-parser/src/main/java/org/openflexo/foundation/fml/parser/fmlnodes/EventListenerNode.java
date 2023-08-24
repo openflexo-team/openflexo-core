@@ -98,6 +98,12 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 				BindingDefinitionType.GET, VirtualModelInstance.class, getSemanticsAnalyzer(), this);
 		returned.setListenedVirtualModelInstance(listened);
 
+		try {
+			returned.setName(type.getTypeName() + " from " + astNode.getListened());
+		} catch (InvalidNameException e) {
+			throwIssue("Cannot set EventListenr event type name: " + astNode.getEventType());
+		}
+
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
 			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
