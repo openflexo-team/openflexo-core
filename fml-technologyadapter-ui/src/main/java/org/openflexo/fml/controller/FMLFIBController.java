@@ -94,6 +94,7 @@ import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
+import org.openflexo.foundation.fml.action.RenameCompilationUnit;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -141,6 +142,11 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public FMLFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
 		super(component, viewFactory, controller);
+	}
+
+	public void changeURI(FMLCompilationUnit compilationUnit) {
+		RenameCompilationUnit renameAction = RenameCompilationUnit.actionType.makeNewAction(compilationUnit, null, getEditor());
+		renameAction.doAction();
 	}
 
 	public void deleteFolder(RepositoryFolder<?, ?> folder) {

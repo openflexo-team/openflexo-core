@@ -130,6 +130,20 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
 
 	/**
+	 * Returns URI for this {@link FMLCompilationUnit}<br>
+	 * Note that if this {@link FMLCompilationUnit} is contained in another {@link FMLCompilationUnit}, URI is computed from URI of
+	 * container FMLCompilationUnit
+	 */
+	public abstract String getURI();
+
+	/**
+	 * Sets URI for this {@link FMLCompilationUnit}<br>
+	 * 
+	 * @param anURI
+	 */
+	public void setURI(String anURI);
+
+	/**
 	 * Return list of {@link JavaImportDeclaration} explicitely declared in this {@link FMLCompilationUnit}
 	 * 
 	 * @return
@@ -506,6 +520,21 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public BindingEvaluationContext getReflectedBindingEvaluationContext() {
 			return reflectedBindingEvaluationContext;
+		}
+
+		@Override
+		public String getURI() {
+			if (getVirtualModel() != null) {
+				return getVirtualModel().getURI();
+			}
+			return null;
+		}
+
+		@Override
+		public void setURI(String anURI) {
+			if (getVirtualModel() != null) {
+				getVirtualModel().setURI(anURI);
+			}
 		}
 
 		@Override

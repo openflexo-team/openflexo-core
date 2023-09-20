@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
-	titleFont="SansSerif,0,12" darkLevel="0"
+<Panel className="org.openflexo.gina.utils.FIBInspector"
+	layout="border" titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.FMLCompilationUnit"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
@@ -8,24 +8,40 @@
 		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			name="BasicTab">
 			<Label label="compilation_unit" index="2"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				name="CompilationUnitLabel" localize="true" />
 			<TextField index="3" data="data.name"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="CompilationUnitName" readOnly="true" localize="true" columns="10" />
-		   <Label label="version" index="4"
+				name="CompilationUnitName" readOnly="true" localize="true"
+				columns="10" />
+			<Label label="uri" index="4"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				name="URILabel" localize="true" />
+
+			<Panel vGap="0" hGap="0" layout="border" border="empty"
+				flowAlignment="LEFT" index="5" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)">
+				<TextField data="data.resource.uRI"
+					constraints="border(index=0;location=center)"
+					name="fmlURI" readOnly="true" localize="true" columns="10" />
+				<Button buttonType="Trigger"
+					action="controller.changeURI(data)" localize="true"
+					constraints="border(index=0;location=east)" label="set" readOnly="false" />
+			</Panel>
+
+			<Label label="version" index="6"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				name="VersionLabel" localize="true" />
-			<TextField index="5" data="data.resource.version.toString"
+			<TextField index="7" data="data.resource.version.toString"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
 				name="Version" readOnly="true" localize="true" columns="10" />
-			<Label label="uses" index="6" data=""
+			<Label label="uses" index="8" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
-			<Table
-			    lookAndFeel="FlatDesign" showHeader="false"
+			<Table lookAndFeel="FlatDesign" showHeader="false"
 				iteratorClassName="org.openflexo.foundation.fml.UseModelSlotDeclaration"
 				autoSelectFirstRow="false" createNewRowOnClick="false"
 				boundToSelectionManager="true" showFooter="true"
@@ -35,9 +51,11 @@
 				<IconColumn data="controller.iconForObject(iterator)"
 					title="icon" columnWidth="25" resizable="false"
 					displayTitle="false" name="icon" />
-				<LabelColumn data="iterator.modelSlotClass.simpleName" title="model_slot_class"
-					columnWidth="50" resizable="true" displayTitle="true" name="label" />
-				<RemoveAction method="data.removeFromUseDeclarations(selected)"
+				<LabelColumn data="iterator.modelSlotClass.simpleName"
+					title="model_slot_class" columnWidth="50" resizable="true"
+					displayTitle="true" name="label" />
+				<RemoveAction
+					method="data.removeFromUseDeclarations(selected)"
 					name="deleteUseDeclarations" />
 				<AddAction method="controller.addToUseDeclarations(data)"
 					name="addToUseDeclarations" />
@@ -45,13 +63,12 @@
 			<Label label="namespaces" index="8" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
-			<Table
-			    lookAndFeel="FlatDesign" showHeader="false"
+			<Table lookAndFeel="FlatDesign" showHeader="false"
 				iteratorClassName="org.openflexo.foundation.fml.NamespaceDeclaration"
 				autoSelectFirstRow="false" createNewRowOnClick="false"
 				boundToSelectionManager="true" showFooter="true"
-				selectionMode="MultipleIntervalSelection" name="NamespaceTable" index="9"
-				data="data.namespaces" localize="true"
+				selectionMode="MultipleIntervalSelection" name="NamespaceTable"
+				index="9" data="data.namespaces" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)">
 				<IconColumn data="controller.iconForObject(iterator)"
 					title="icon" columnWidth="25" resizable="false"
@@ -60,46 +77,48 @@
 					columnWidth="100" resizable="true" displayTitle="true" name="value" />
 				<LabelColumn data="iterator.abbrev" title="abbrev"
 					columnWidth="50" resizable="true" displayTitle="true" name="abbrev" />
-				<RemoveAction method="data.removeFromNamespaceDeclarations(selected)"
+				<RemoveAction
+					method="data.removeFromNamespaceDeclarations(selected)"
 					name="deleteNamespaceDeclarations" />
-				<AddAction method="controller.addToNamespaceDeclarations(data)"
+				<AddAction
+					method="controller.addToNamespaceDeclarations(data)"
 					name="addToNamespaceDeclarations" />
 			</Table>
 			<Label label="java_imports" index="8" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
-			<Table
-			    lookAndFeel="FlatDesign" showHeader="false"
+			<Table lookAndFeel="FlatDesign" showHeader="false"
 				iteratorClassName="org.openflexo.foundation.fml.JavaImportDeclaration"
 				autoSelectFirstRow="false" createNewRowOnClick="false"
 				boundToSelectionManager="true" showFooter="true"
-				selectionMode="MultipleIntervalSelection" name="NamespaceTable" index="9"
-				data="data.javaImports" localize="true"
+				selectionMode="MultipleIntervalSelection" name="NamespaceTable"
+				index="9" data="data.javaImports" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)">
 				<IconColumn data="controller.iconForObject(iterator)"
 					title="icon" columnWidth="25" resizable="false"
 					displayTitle="false" name="icon" />
-				<LabelColumn data="iterator.fullQualifiedClassName" title="class_name"
-					columnWidth="100" resizable="true" displayTitle="true" name="class_name" />
+				<LabelColumn data="iterator.fullQualifiedClassName"
+					title="class_name" columnWidth="100" resizable="true"
+					displayTitle="true" name="class_name" />
 				<LabelColumn data="iterator.abbrev" title="abbrev"
 					columnWidth="50" resizable="true" displayTitle="true" name="abbrev" />
-				<RemoveAction method="data.removeFromJavaImports(selected)"
+				<RemoveAction
+					method="data.removeFromJavaImports(selected)"
 					name="deleteJavaImports" />
 				<AddAction method="controller.addToJavaImports(data)"
 					name="addToJavaImports" />
 			</Table>
-			
+
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab">
-			<!--<Label label="model_version" index="0"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
-				name="OpenflexoVersionLabel" localize="true" />
-			<TextField index="1" data="data.modelVersion.toString"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="Version" readOnly="true" localize="true" columns="10" />-->
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			name="AdvancedTab">
+			<!--<Label label="model_version" index="0" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)" 
+				name="OpenflexoVersionLabel" localize="true" /> <TextField index="1" data="data.modelVersion.toString" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)" 
+				name="Version" readOnly="true" localize="true" columns="10" /> -->
 		</Tab>
 		<Tab title="Doc" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="3" font="SansSerif,0,11" useScrollBar="true"
@@ -112,7 +131,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
 				name="VersionTextField" readOnly="true" localize="true" columns="10" />
 		</Tab>
-		
+
 	</TabPanel>
 	<LocalizedDictionary />
 	<Parameter name="title" value="CompilationUnit" />

@@ -83,7 +83,7 @@ import org.openflexo.fml.controller.action.GenerateUnimplementedPropertiesAndBeh
 import org.openflexo.fml.controller.action.MoveVirtualModelToContainerVirtualModelInitializer;
 import org.openflexo.fml.controller.action.MoveVirtualModelToDirectoryInitializer;
 import org.openflexo.fml.controller.action.RenameFlexoConceptInitializer;
-import org.openflexo.fml.controller.action.RenameVirtualModelInitializer;
+import org.openflexo.fml.controller.action.RenameCompilationUnitInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
 import org.openflexo.fml.controller.view.StandardCompilationUnitView;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
@@ -281,7 +281,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 		new MoveVirtualModelToDirectoryInitializer(actionInitializer);
 		new MoveVirtualModelToContainerVirtualModelInitializer(actionInitializer);
-		new RenameVirtualModelInitializer(actionInitializer);
+		new RenameCompilationUnitInitializer(actionInitializer);
 		new DuplicateVirtualModelInitializer(actionInitializer);
 
 		new RenameFlexoConceptInitializer(actionInitializer);

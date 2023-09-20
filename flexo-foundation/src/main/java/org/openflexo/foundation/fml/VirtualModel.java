@@ -636,6 +636,7 @@ public interface VirtualModel extends FlexoConcept {
 		 */
 		@Override
 		public void setURI(String anURI) {
+			logger.info("-------------> setURI with " + anURI);
 			if (getContainerVirtualModel() == null) {
 				if (anURI != null) {
 					// We prevent ',' so that we can use it as a delimiter in tags.

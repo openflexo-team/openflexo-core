@@ -47,17 +47,17 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.RenameVirtualModel;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.action.RenameCompilationUnit;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualModel> {
+public class RenameCompilationUnitWizard extends FlexoActionWizard<RenameCompilationUnit> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(RenameVirtualModelWizard.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(RenameCompilationUnitWizard.class.getPackage().getName());
 
 	private static final String NO_NAME_DEFINED = "please_provide_a_valid_name";
 	private static final String NO_URI_DEFINED = "please_provide_a_valid_URI";
@@ -66,11 +66,11 @@ public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualMod
 	private static final String ALREADY_EXISTING_URI = "already_existing_uri";
 	private static final Dimension DIMENSIONS = new Dimension(700, 400);
 
-	private final RenameVirtualModelInfo renameVirtualModelInfo;
+	private final RenameCompilationUnitInfo renameCompilationUnitInfo;
 
-	public RenameVirtualModelWizard(RenameVirtualModel action, FlexoController controller) {
+	public RenameCompilationUnitWizard(RenameCompilationUnit action, FlexoController controller) {
 		super(action, controller);
-		addStep(renameVirtualModelInfo = new RenameVirtualModelInfo());
+		addStep(renameCompilationUnitInfo = new RenameCompilationUnitInfo());
 	}
 
 	@Override
@@ -88,22 +88,22 @@ public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualMod
 		return FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON.getImage();
 	}
 
-	public RenameVirtualModelInfo getMoveVirtualModelInfo() {
-		return renameVirtualModelInfo;
+	public RenameCompilationUnitInfo getMoveCompilationUnitInfo() {
+		return renameCompilationUnitInfo;
 	}
 
-	@FIBPanel("Fib/Wizard/Refactor/RenameVirtualModel.fib")
-	public class RenameVirtualModelInfo extends WizardStep {
+	@FIBPanel("Fib/Wizard/Refactor/RenameCompilationUnit.fib")
+	public class RenameCompilationUnitInfo extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
 		}
 
-		public RenameVirtualModel getAction() {
-			return RenameVirtualModelWizard.this.getAction();
+		public RenameCompilationUnit getAction() {
+			return RenameCompilationUnitWizard.this.getAction();
 		}
 
-		public VirtualModel getVirtualModel() {
+		public FMLCompilationUnit getCompilationUnit() {
 			return getAction().getFocusedObject();
 		}
 
@@ -115,27 +115,27 @@ public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualMod
 		@Override
 		public boolean isValid() {
 
-			if (StringUtils.isEmpty(getNewVirtualModelName())) {
+			if (StringUtils.isEmpty(getNewCompilationUnitName())) {
 				setIssueMessage(getAction().getLocales().localizedForKey(NO_NAME_DEFINED), IssueMessageType.ERROR);
 				return false;
 			}
-			if (getAction().getFocusedObject().getName().equals(getNewVirtualModelName())
-					&& getAction().getFocusedObject().getURI().equals(getNewVirtualModelURI())) {
+			if (getAction().getFocusedObject().getName().equals(getNewCompilationUnitName())
+					&& getAction().getFocusedObject().getURI().equals(getNewCompilationUnitURI())) {
 				setIssueMessage(getAction().getLocales().localizedForKey(UNCHANGED_NAME_AND_URI), IssueMessageType.ERROR);
 				return false;
 			}
-			if (StringUtils.isEmpty(getNewVirtualModelURI())) {
+			if (StringUtils.isEmpty(getNewCompilationUnitURI())) {
 				setIssueMessage(getAction().getLocales().localizedForKey(NO_URI_DEFINED), IssueMessageType.ERROR);
 				return false;
 			}
 			try {
-				new URL(getNewVirtualModelURI());
+				new URL(getNewCompilationUnitURI());
 			} catch (MalformedURLException e) {
 				setIssueMessage(getAction().getLocales().localizedForKey(MALFORMED_URI), IssueMessageType.ERROR);
 				return false;
 			}
 			if (getAction().getVirtualModelLibrary() == null
-					|| getAction().getVirtualModelLibrary().getCompilationUnitResource(getNewVirtualModelURI()) != null) {
+					|| getAction().getVirtualModelLibrary().getCompilationUnitResource(getNewCompilationUnitURI()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey(ALREADY_EXISTING_URI), IssueMessageType.ERROR);
 				return false;
 			}
@@ -143,45 +143,46 @@ public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualMod
 			return true;
 		}
 
-		public String getNewVirtualModelName() {
-			return getAction().getNewVirtualModelName();
+		public String getNewCompilationUnitName() {
+			return getAction().getNewCompilationUnitName();
 		}
 
-		public void setNewVirtualModelName(String newVirtualModelName) {
-			if ((newVirtualModelName == null && getNewVirtualModelName() != null)
-					|| (newVirtualModelName != null && !newVirtualModelName.equals(getNewVirtualModelName()))) {
-				String oldValue = getNewVirtualModelName();
-				getAction().setNewVirtualModelName(newVirtualModelName);
-				getPropertyChangeSupport().firePropertyChange("newVirtualModelName", oldValue, newVirtualModelName);
-				getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", null, getNewVirtualModelURI());
+		public void setNewCompilationUnitName(String newCompilationUnitName) {
+			if ((newCompilationUnitName == null && getNewCompilationUnitName() != null)
+					|| (newCompilationUnitName != null && !newCompilationUnitName.equals(getNewCompilationUnitName()))) {
+				String oldValue = getNewCompilationUnitName();
+				getAction().setNewCompilationUnitName(newCompilationUnitName);
+				getPropertyChangeSupport().firePropertyChange("newCompilationUnitName", oldValue, newCompilationUnitName);
+				getPropertyChangeSupport().firePropertyChange("newCompilationUnitURI", null, getNewCompilationUnitURI());
 				checkValidity();
 			}
 		}
 
-		public String getNewVirtualModelURI() {
-			return getAction().getNewVirtualModelURI();
+		public String getNewCompilationUnitURI() {
+			return getAction().getNewCompilationUnitURI();
 		}
 
-		public void setNewVirtualModelURI(String newVirtualModelURI) {
-			if ((newVirtualModelURI == null && getNewVirtualModelURI() != null)
-					|| (newVirtualModelURI != null && !newVirtualModelURI.equals(getNewVirtualModelURI()))) {
-				String oldValue = getNewVirtualModelURI();
-				getAction().setNewVirtualModelURI(newVirtualModelURI);
-				getPropertyChangeSupport().firePropertyChange("newVirtualModelURI", oldValue, newVirtualModelURI);
+		public void setNewCompilationUnitURI(String newCompilationUnitURI) {
+			if ((newCompilationUnitURI == null && getNewCompilationUnitURI() != null)
+					|| (newCompilationUnitURI != null && !newCompilationUnitURI.equals(getNewCompilationUnitURI()))) {
+				String oldValue = getNewCompilationUnitURI();
+				getAction().setNewCompilationUnitURI(newCompilationUnitURI);
+				getPropertyChangeSupport().firePropertyChange("newCompilationUnitURI", oldValue, newCompilationUnitURI);
 				checkValidity();
 			}
 		}
 
-		public String getNewVirtualModelDescription() {
-			return getAction().getNewVirtualModelDescription();
+		public String getNewCompilationUnitDescription() {
+			return getAction().getNewCompilationUnitDescription();
 		}
 
-		public void setNewVirtualModelDescription(String newVirtualModelDescription) {
-			if ((newVirtualModelDescription == null && getNewVirtualModelDescription() != null)
-					|| (newVirtualModelDescription != null && !newVirtualModelDescription.equals(getNewVirtualModelDescription()))) {
-				String oldValue = getNewVirtualModelDescription();
-				getAction().setNewVirtualModelDescription(newVirtualModelDescription);
-				getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", oldValue, newVirtualModelDescription);
+		public void setNewCompilationUnitDescription(String newCompilationUnitDescription) {
+			if ((newCompilationUnitDescription == null && getNewCompilationUnitDescription() != null)
+					|| (newCompilationUnitDescription != null
+							&& !newCompilationUnitDescription.equals(getNewCompilationUnitDescription()))) {
+				String oldValue = getNewCompilationUnitDescription();
+				getAction().setNewCompilationUnitDescription(newCompilationUnitDescription);
+				getPropertyChangeSupport().firePropertyChange("newCompilationUnitDescription", oldValue, newCompilationUnitDescription);
 				checkValidity();
 			}
 		}

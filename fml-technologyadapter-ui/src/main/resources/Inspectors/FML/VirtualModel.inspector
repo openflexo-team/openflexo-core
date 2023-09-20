@@ -9,7 +9,7 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="uri" index="2"
+			<!--  <Label label="uri" index="2"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				name="ViewPointURILabel" localize="true" />
 			<TextField index="3" data="data.resource.uRI"
@@ -20,7 +20,7 @@
 				name="VersionLabel" localize="true" />
 			<TextField index="5" data="data.resource.version.toString"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="Version" readOnly="true" localize="true" columns="10" />
+				name="Version" readOnly="true" localize="true" columns="10" /> -->
 			<!--  <Label label="uses" index="6" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />

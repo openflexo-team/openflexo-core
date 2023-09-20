@@ -41,22 +41,22 @@ package org.openflexo.fml.controller.action;
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionRunnable;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.RenameVirtualModel;
+import org.openflexo.foundation.fml.action.RenameCompilationUnit;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class RenameVirtualModelInitializer extends ActionInitializer<RenameVirtualModel, VirtualModel, FMLObject> {
-	public RenameVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
-		super(RenameVirtualModel.actionType, actionInitializer);
+public class RenameCompilationUnitInitializer extends ActionInitializer<RenameCompilationUnit, FMLCompilationUnit, FMLObject> {
+	public RenameCompilationUnitInitializer(ControllerActionInitializer actionInitializer) {
+		super(RenameCompilationUnit.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionRunnable<RenameVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<RenameCompilationUnit, FMLCompilationUnit, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
-			Wizard wizard = new RenameVirtualModelWizard(action, getController());
+			Wizard wizard = new RenameCompilationUnitWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
 			dialog.showDialog();
 			if (dialog.getStatus() != Status.VALIDATED) {
@@ -69,7 +69,7 @@ public class RenameVirtualModelInitializer extends ActionInitializer<RenameVirtu
 	}
 
 	@Override
-	protected FlexoActionRunnable<RenameVirtualModel, VirtualModel, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<RenameCompilationUnit, FMLCompilationUnit, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			getController().setCurrentEditedObject(action.getFocusedObject());
 			return true;
@@ -77,7 +77,7 @@ public class RenameVirtualModelInitializer extends ActionInitializer<RenameVirtu
 	}
 
 	/*@Override
-	protected Icon getEnabledIcon(FlexoActionFactory<RenameVirtualModel, VirtualModel, FMLObject> actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<RenameCompilationUnit, CompilationUnit, FMLObject> actionType) {
 		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.GENERATE);
 	}*/
 
