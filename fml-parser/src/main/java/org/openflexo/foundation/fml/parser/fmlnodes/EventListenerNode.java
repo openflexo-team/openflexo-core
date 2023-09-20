@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
