@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Executable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -52,6 +53,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ExecuteDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
@@ -136,7 +138,7 @@ import org.openflexo.toolbox.StringUtils;
 		@DeclareDirective(QuitDirective.class), @DeclareDirective(ServicesDirective.class), @DeclareDirective(ServiceDirective.class),
 		@DeclareDirective(ActivateTA.class), @DeclareDirective(ResourcesDirective.class), @DeclareDirective(OpenProject.class),
 		@DeclareDirective(LoadResource.class), @DeclareDirective(MoreDirective.class), @DeclareDirective(EnterDirective.class),
-		@DeclareDirective(ExitDirective.class) })
+		@DeclareDirective(ExitDirective.class), @DeclareDirective(ExecuteDirective.class) })
 public interface Directive<N extends Node> extends AbstractCommand<N> {
 
 	public static abstract class DirectiveImpl<N extends Node> extends AbstractCommandImpl<N> {

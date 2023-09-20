@@ -218,6 +218,7 @@ Tokens
 
    {command,script} help = 'help';
    {command,script} history = 'history';
+   {command,script} execute = 'execute';
    {command,script} pwd = 'pwd';
    {command,script} ls = 'ls';
    {command,script} cd = 'cd';
@@ -384,6 +385,7 @@ Productions
      {pwd}         pwd |
      {ls}          ls |
      {cd}          cd path |
+     {execute}     execute path |
      {services}    services |
      {service}     service [service_name]:identifier [action]:identifier [argument]:directive_argument? |
      {activate_ta} activate [technology_adapter]:identifier |
