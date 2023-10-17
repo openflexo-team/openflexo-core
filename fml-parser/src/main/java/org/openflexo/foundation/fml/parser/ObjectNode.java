@@ -90,6 +90,7 @@ import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.WrappedFMLObject;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
+import org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
@@ -147,6 +148,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeleteActionNod
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionIterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FMLEditionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FireEventNode;
@@ -515,6 +517,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			}
 			if (object instanceof IterationAction) {
 				return (P2PPNode<?, C>) new IterationActionNode((IterationAction) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof ExpressionIterationAction) {
+				return (P2PPNode<?, C>) new ExpressionIterationActionNode((ExpressionIterationAction) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			/*if (object instanceof AddFlexoConceptInstance) {

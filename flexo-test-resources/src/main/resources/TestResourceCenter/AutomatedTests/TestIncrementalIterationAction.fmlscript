@@ -1,0 +1,19 @@
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestIncrementalIterationAction.fml"];
+context;
+assert virtualModel != null;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+log virtualModel.normalizedFML;
+//validate virtualModel;
+service ResourceCenterService add_temp_rc;
+myVMI = new TestIncrementalIterationAction() with (name="test");
+context;
+assert myVMI.test1() == 10;
+assert myVMI.test2() == 15;
+assert myVMI.test3() == 49;
+assert myVMI.test4()-28.17<1E-6;
+
+

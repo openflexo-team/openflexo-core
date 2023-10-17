@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
+import org.openflexo.foundation.fml.binding.IterationActionBindingVariable;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -589,7 +590,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 
-		if (variable instanceof DeclarationBindingVariable) {
+		if (variable instanceof DeclarationBindingVariable || variable instanceof IterationActionBindingVariable) {
 			if (value != null) {
 				variables.put(variable.getVariableName(), value);
 			}

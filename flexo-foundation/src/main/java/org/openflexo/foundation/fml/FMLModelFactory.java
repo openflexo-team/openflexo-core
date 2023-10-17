@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
+import org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
@@ -717,6 +718,12 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 	public IterationAction newIterationAction() {
 		IterationAction returned = newInstance(IterationAction.class);
+		returned.setControlGraph(newEmptyControlGraph());
+		return returned;
+	}
+
+	public ExpressionIterationAction newExpressionIterationAction() {
+		ExpressionIterationAction returned = newInstance(ExpressionIterationAction.class);
 		returned.setControlGraph(newEmptyControlGraph());
 		return returned;
 	}

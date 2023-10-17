@@ -22,6 +22,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGra
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionIterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FMLEditionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FireEventNode;
@@ -65,6 +66,7 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PStatement;
+import org.openflexo.foundation.fml.parser.node.PStatementExpression;
 import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -106,6 +108,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	public static ControlGraphNode<?, ?> makeControlGraphNode(PExpression cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PStatementExpression cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
@@ -530,25 +536,29 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAForBasicStatement(AForBasicStatement node) {
 		super.inAForBasicStatement(node);
-		logger.warning("AForBasicStatement not implemented YET");
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionIterationActionNode(n, getCompilationUnitAnalyzer())));
+		// logger.warning("AForBasicStatement not implemented YET");
 		// See TestIterations.fml, l9
 	}
 
 	@Override
 	public void outAForBasicStatement(AForBasicStatement node) {
 		super.outAForBasicStatement(node);
+		pop();
 	}
 
 	@Override
 	public void inAForBasicExpressionStatement(AForBasicExpressionStatement node) {
 		super.inAForBasicExpressionStatement(node);
-		logger.warning("AForBasicExpressionStatement not implemented YET");
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionIterationActionNode(n, getCompilationUnitAnalyzer())));
+		// logger.warning("AForBasicExpressionStatement not implemented YET");
 		// See TestIterations.fml, l16
 	}
 
 	@Override
 	public void outAForBasicExpressionStatement(AForBasicExpressionStatement node) {
 		super.outAForBasicExpressionStatement(node);
+		pop();
 	}
 
 	@Override

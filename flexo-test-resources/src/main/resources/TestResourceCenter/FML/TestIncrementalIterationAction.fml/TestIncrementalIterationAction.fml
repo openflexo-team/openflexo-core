@@ -1,0 +1,41 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestIncrementalIterationAction.fml")
+@Version("0.1")
+model TestIncrementalIterationAction { 
+
+	create() {
+	}
+	
+	int test1() {
+		int sum = 0;
+		for (int i=0; i<5; i++) {
+			sum = sum + i;
+		}
+		return sum;
+	}
+
+	int test2() {
+		int sum = 0;
+		for (int i=1; i<6; i = i+1) {
+			sum = sum + i;
+		}
+		return sum;
+	}
+
+	int test3() {
+		int sum = 0;
+		for (int i=1; i<=13; i=i+2 /* i+=2 */) {
+			sum = sum + i;
+		}
+		return sum;
+	}
+
+	int test4() {
+		float sum = 0;
+		for (float i=0.12; i<=3.17; i=i+0.17) {
+			sum = sum + i;
+			log ("i="+i+" sum="+sum);
+		}
+		log "returning:"+sum;
+		return sum;
+	}
+}

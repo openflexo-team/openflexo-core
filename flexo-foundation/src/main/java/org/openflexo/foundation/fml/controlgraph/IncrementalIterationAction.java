@@ -48,6 +48,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -66,6 +67,8 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(IncrementalIterationAction.IncrementalIterationActionImpl.class)
 @XMLElement
+@FMLMigration("Should be replaced by ExpressionIterationAction")
+@Deprecated
 public interface IncrementalIterationAction extends AbstractIterationAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -104,11 +107,20 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		private DataBinding<Number> exclusiveEndValue;
 		private DataBinding<Number> increment;
 
+		private boolean isStartValueBuilding = false;
+		private boolean isExclusiveEndValueBuilding = false;
+		private boolean isIncrementBuilding = false;
+
 		@Override
 		public DataBinding<Number> getStartValue() {
-			if (startValue == null) {
-				startValue = new DataBinding<>("0", this, Number.class, BindingDefinitionType.GET);
-				startValue.setBindingName("startValue");
+			if (startValue == null && !isStartValueBuilding) {
+				try {
+					isStartValueBuilding = true;
+					startValue = new DataBinding<>("0", this, Number.class, BindingDefinitionType.GET);
+					startValue.setBindingName("startValue");
+				} finally {
+					isStartValueBuilding = false;
+				}
 			}
 			return startValue;
 		}
@@ -126,9 +138,14 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 
 		@Override
 		public DataBinding<Number> getExclusiveEndValue() {
-			if (exclusiveEndValue == null) {
-				exclusiveEndValue = new DataBinding<>(this, Number.class, BindingDefinitionType.GET);
-				exclusiveEndValue.setBindingName("exclusiveEndValue");
+			if (exclusiveEndValue == null && !isExclusiveEndValueBuilding) {
+				try {
+					isExclusiveEndValueBuilding = true;
+					exclusiveEndValue = new DataBinding<>(this, Number.class, BindingDefinitionType.GET);
+					exclusiveEndValue.setBindingName("exclusiveEndValue");
+				} finally {
+					isExclusiveEndValueBuilding = false;
+				}
 			}
 			return exclusiveEndValue;
 		}
@@ -146,9 +163,14 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 
 		@Override
 		public DataBinding<Number> getIncrement() {
-			if (increment == null) {
-				increment = new DataBinding<>("1", this, Number.class, BindingDefinitionType.GET);
-				increment.setBindingName("increment");
+			if (increment == null && !isIncrementBuilding) {
+				try {
+					isIncrementBuilding = true;
+					increment = new DataBinding<>("1", this, Number.class, BindingDefinitionType.GET);
+					increment.setBindingName("increment");
+				} finally {
+					isIncrementBuilding = false;
+				}
 			}
 			return increment;
 		}
