@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label label="iterator_name" align="right" index="2"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<TextField index="3" data="data.iteratorName"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				localize="true" columns="6" text="TextField" />
+
+			<Label name="InstanceTypeLabel" index="4" localize="true"
+				align="right"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
+				label="iterator_type" />
+			<Custom manageDynamicModel="true"
+				dataClassForComponent="java.lang.reflect.Type" componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
+				name="TypeSelector" data="data.declaredType" index="5" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
+				<Assignment mandatory="true"
+					value="controller.serviceManager.technologyAdapterService"
+					variable="component.customTypeManager" />
+				<Assignment mandatory="true"
+					value="controller.serviceManager.technologyAdapterControllerService"
+					variable="component.customTypeEditorProvider" />
+			</Custom>
+
+
+			<Label label="initialization_expression" index="6"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+				localize="true" manageDynamicModel="true" index="7" data="data.initExpression"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			
+			<Label label="condition_expression" index="8"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
+				localize="true" manageDynamicModel="true" index="9" data="data.conditionExpression"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			
+			<Label label="statement_expression" index="10" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"/>
+			<Panel darkLevel="1" useScrollBar="false" protectContent="false"
+				layout="border" borderRight="2" border="rounded3d"
+				trackViewPortWidth="true" index="11"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				borderBottom="2" borderTitle="" titleFont="SansSerif,0,11"
+				borderTop="2" trackViewPortHeight="true">
+				<FIBReferencedComponent
+					dynamicComponent="controller.basicInspectorTabForObject(data.statementExpression)"
+					localize="true" manageDynamicModel="true" name="IterationActionWidget"
+					index="15" data="data.statementExpression" constraints="border(location=center)"
+					opaque="false">
+					<ReferenceAssignment mandatory="true"
+						variable="controller.flexoController" value="controller.flexoController" />
+				</FIBReferencedComponent>
+			</Panel>
+			<Label name="DescriptionLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<TextArea name="Description">
+				<Parameter name="hidden" value="true" />
+			</TextArea>
+			<!--  <FIBReferencedComponent manageDynamicModel="true"
+				useScrollBar="false" data="data.iterationAction" opaque="false"
+				name="FetchRequestWidget"
+				index="10" localize="true"
+				dynamicComponent="controller.inspectorForObject(data.iterationAction)"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=center)"
+				readOnly="false">
+				<ReferenceAssignment mandatory="true"
+					value="controller.flexoController" variable="controller.flexoController" />
+			</FIBReferencedComponent>-->
+		</Tab>
+		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="Iteration action" />
+</Panel>
