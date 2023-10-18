@@ -97,6 +97,7 @@ import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.action.RenameCompilationUnit;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
+import org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
@@ -422,6 +423,20 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public EditionAction createEditionActionInIncrementalIterationAction(IncrementalIterationAction iteration) {
+		if (iteration != null) {
+			if (iteration.getControlGraph() == null) {
+				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
+				iteration.setControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
+	}
+
+	public EditionAction createEditionActionInExpressionIterationAction(ExpressionIterationAction iteration) {
 		if (iteration != null) {
 			if (iteration.getControlGraph() == null) {
 				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();

@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.AbstractInvariant;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -55,7 +56,6 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.AbstractInvariant;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumValue;
@@ -71,6 +71,7 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.TechnologySpecificFlexoBehaviour;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
@@ -258,11 +259,10 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/TextAreaIcon.png"));
 	public static final ImageIconResource TEXT_FIELD_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/TextFieldIcon.png"));
-	
+
 	public static final ImageIconResource DATA_BINDING_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/LinkIcon_16x16.png"));
 
-	
 	// Markers
 	public static final IconMarker ABSTRACT_MARKER = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Abstract.png")), 14, 0);
@@ -438,6 +438,9 @@ public class FMLIconLibrary extends IconLibrary {
 				return CONDITIONAL_ACTION_ICON;
 			}
 			else if (object instanceof IterationAction) {
+				return ITERATION_ACTION_ICON;
+			}
+			else if (object instanceof ExpressionIterationAction) {
 				return ITERATION_ACTION_ICON;
 			}
 			else if (object instanceof WhileAction) {

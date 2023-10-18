@@ -203,6 +203,28 @@
 					method="controller.createEditionActionInIncrementalIterationAction(selected)"
 					name="add_action_inside_iteration" />
 			</BrowserElement>
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction"
+				icon="controller.iconForObject(expressionIterationAction)"
+				label="expressionIterationAction.stringRepresentation"
+				isEditable="false" name="expressionIterationAction">
+				<DragOperation
+					isAvailable="controller.canMoveControlGraph(dragged,target)"
+					targetElementName="editionAction"
+					action="controller.moveControlGraph(dragged,target)"
+					name="drag_operation" />
+				<Children
+					data="expressionIterationAction.controlGraph.flattenedSequence"
+					name="children" />
+				<BrowserRemoveAction
+					method="controller.deleteFlexoConceptObject(selected)"
+					name="delete_action" />
+				<BrowserAddAction
+					method="controller.createEditionAction(selected)" name="add_action" />
+				<BrowserAddAction
+					method="controller.createEditionActionInExpressionIterationAction(selected)"
+					name="add_action_inside_iteration" />
+			</BrowserElement>
 			<BrowserElement id="48"
 				dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
 				icon="controller.iconForObject(conditionalAction)"

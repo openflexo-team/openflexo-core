@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
@@ -416,6 +417,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
 		}
+		else if (ExpressionIterationAction.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.ITERATION_ACTION_ICON;
+		}
 		else if (WhileAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
 		}
@@ -459,18 +463,18 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 	 * @param object
 	 * @return
 	 */
-	//public abstract boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
-	//		FlexoPerspective perspective);
+	// public abstract boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
+	// FlexoPerspective perspective);
 
 	/**
-	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which 
+	 * Return a boolean indicating if this {@link FlexoPerspective} handles supplied object by defining a {@link ModuleView} in which
 	 * supplied object is representable either as a master object or as an object representable in related view
 	 * 
 	 * @param object
 	 * @return
 	 */
 	public abstract boolean isRepresentableInModuleView(TechnologyObject<TA> object);
-	
+
 	/**
 	 * Return {@link FlexoObject} for which this perspective defines a {@link ModuleView} where supplied object is also representable
 	 * 
@@ -478,10 +482,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 	 * @return
 	 */
 	public abstract FlexoObject getRepresentableMasterObject(TechnologyObject<TA> object);
-	
+
 	/**
-	 * Return a newly created {@link ModuleView} for supplied technology object, when supported
-	 * rendering
+	 * Return a newly created {@link ModuleView} for supplied technology object, when supported rendering
 	 * 
 	 * @param object
 	 * @return
