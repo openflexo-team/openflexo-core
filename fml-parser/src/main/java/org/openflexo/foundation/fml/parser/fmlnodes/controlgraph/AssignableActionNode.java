@@ -69,9 +69,11 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 	 */
 	protected boolean requiresSemi() {
 		// We define here the conditions under which this action requires a final semi
+
 		return !((getParent().getModelObject() instanceof AbstractAssignationAction)
 				// If parent id AbstractAssignationAction, the parent will do it
-				|| ((getParent() instanceof IterationActionNode) && getIndex() == 0));
+				|| ((getParent() instanceof IterationActionNode) && getIndex() == 0)
+				|| ((getParent() instanceof ExpressionIterationActionNode) && getIndex() == 2));
 		// For iteration, only first element should avoid final semi
 	}
 
