@@ -652,6 +652,10 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 	}
 
 	private void addChildren(IFlexoOntologyObject<TA> parent, IFlexoOntologyObject<TA> child) {
+		if (structure == null) {
+			logger.warning("Unexpected null structure");
+			return;
+		}
 		List<FlexoOntologyObjectImpl<TA>> v = structure.get(parent);
 		if (v == null) {
 			v = new ArrayList<>();
