@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.ontology.BuiltInDataType;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
@@ -71,6 +72,7 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?>, M
 
 	@Getter(value = PROPERTY_NAME_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = PROPERTY_NAME_KEY, required = true, description = "<html>Name of property to be created</html>")
 	public DataBinding<String> getPropertyName();
 
 	@Setter(PROPERTY_NAME_KEY)
@@ -78,6 +80,7 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?>, M
 
 	@Getter(value = DYNAMIC_DOMAIN_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = DYNAMIC_DOMAIN_KEY, required = false, description = "<html>Domain of property to be created</html>")
 	public DataBinding<IFlexoOntologyClass<?>> getDynamicDomain();
 
 	@Setter(DYNAMIC_DOMAIN_KEY)
