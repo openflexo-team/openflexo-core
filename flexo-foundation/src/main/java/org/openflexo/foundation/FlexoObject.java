@@ -883,6 +883,28 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		public String render() {
 			return toString();
 		}
+
+		/**
+		 * Return a {@link String} identifier identifying this object given its resource data
+		 * 
+		 * @return
+		 */
+		public String getLocalIdentifier() {
+			return getUserIdentifier() + "-" + getFlexoID();
+		}
+
+		/**
+		 * Return a {@link String} usable as a default String to reference this object
+		 * 
+		 * @return
+		 */
+		public String defaultAbbrevName() {
+			if (getImplementedInterface() != null) {
+				return getImplementedInterface().getSimpleName();
+			}
+			return getClass().getSimpleName();
+		}
+
 	}
 
 }

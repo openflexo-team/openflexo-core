@@ -1262,7 +1262,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		private <RD extends ResourceData<RD> & FlexoObject, E extends InnerResourceData<RD> & FlexoObject> String findUniqueAbbrev(
 				E element) {
-			String initialName = element.getImplementedInterface().getSimpleName();
+			String initialName = element.defaultAbbrevName();
 			String baseName = JavaUtils.getJavaName(initialName);
 			baseName = JavaUtils.getConstantJavaName(baseName);
 			// TODO remove this code
@@ -1363,8 +1363,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				String resourceAbbrev = resourceImport.getAbbrev();
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				elementDeclaration.setResourceReference(new DataBinding<>(resourceAbbrev));
-				elementDeclaration
-						.setObjectReference(new DataBinding<>("\"" + element.getUserIdentifier() + "-" + element.getFlexoID() + "\""));
+				elementDeclaration.setObjectReference(new DataBinding<>("\"" + element.getLocalIdentifier() + "\""));
 				// Don't force a deserializing now: set referenced object
 				elementDeclaration.setReferencedObject(element);
 				String abbrev = findUniqueAbbrev(element);

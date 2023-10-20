@@ -59,4 +59,17 @@ public interface InnerResourceData<RD extends ResourceData<?>> {
 	 */
 	RD getResourceData();
 
+	/**
+	 * Return a {@link String} identifier identifying this object given its resource data
+	 * 
+	 * @return
+	 */
+	String getLocalIdentifier();
+
+	/**
+	 * Return a {@link String} usable as a default String to reference this object
+	 * 
+	 * @return
+	 */
+	String defaultAbbrevName();
 }
