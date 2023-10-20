@@ -149,6 +149,11 @@ public class FIBClassSelector<TA extends TechnologyAdapter<TA>> extends FIBFlexo
 
 	@CustomComponentParameter(name = "context", type = CustomComponentParameter.Type.MANDATORY)
 	public void setContext(IFlexoOntology<TA> context) {
+
+		// TODO Fixe this !
+		System.out.println("setContext in FIBClassSelector with" + context);
+		getModel().setStrictMode(true);
+
 		IFlexoOntology<TA> oldValue = getContext();
 		if (oldValue != context) {
 			getModel().setContext(context);
