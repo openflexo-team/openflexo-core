@@ -46,6 +46,8 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
@@ -169,6 +171,11 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		append(dynamicContents(() -> encodeFMLProperty(getModelObject().getValue())), getValueFragment());
 	}
 
+	// Internaly used to cast to double types
+	private <T2 extends InnerResourceData & FlexoObject> T2 castType(T value) {
+		return (T2) value;
+	}
+
 	private String encodeFMLProperty(T value) {
 		if (value == null) {
 			return null;
@@ -197,21 +204,10 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				}
 			}
 
-			/*if (value instanceof InnerResourceData) {
-				try {
-					ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport((InnerResourceData & FlexoObject)value);
-					return importDeclaration.getAbbrev();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}*/
+			if (value instanceof InnerResourceData) {
+				ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport(castType(value));
+				return importDeclaration.getAbbrev();
+			}
 		}
 
 		/*if (value instanceof FlexoResource && getCompilationUnit() != null) {
