@@ -43,7 +43,9 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -91,6 +93,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 	public static final String OBJECT_ASSERTIONS_KEY = "objectAssertions";
 	@PropertyIdentifier(type = String.class)
 	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
+	@PropertyIdentifier(type = IFlexoOntologyClass.class)
+	public static final String ONTOLOGY_CLASS_KEY = "ontologyClass";
 	// @PropertyIdentifier(type = TypeAwareModelSlot.class)
 	// public static final String MODEL_SLOT_KEY = "modelSlot";
 
@@ -142,14 +146,20 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
 	@XMLAttribute
-	@FMLAttribute(value = ONTOLOGY_CLASS_URI_KEY, required = false, description = "<html>reference of the class</html>")
+	@Deprecated
+	@FMLMigration("Will disappear in 3.0")
 	public String _getOntologyClassURI();
 
 	@Setter(ONTOLOGY_CLASS_URI_KEY)
+	@Deprecated
+	@FMLMigration("Will disappear in 3.0")
 	public void _setOntologyClassURI(String ontologyClassURI);
 
+	@Getter(value = ONTOLOGY_CLASS_KEY, ignoreType = true)
+	@FMLAttribute(value = ONTOLOGY_CLASS_KEY, required = false, description = "<html>reference of the class</html>")
 	public IFlexoOntologyClass<?> getOntologyClass();
 
+	@Setter(ONTOLOGY_CLASS_KEY)
 	public void setOntologyClass(IFlexoOntologyClass<?> ontologyClass);
 
 	/*@Override
@@ -174,7 +184,9 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
+		@Deprecated
 		protected String ontologyClassURI = null;
+		protected IFlexoOntologyClass ontologyClass;
 
 		private DataBinding<String> individualName;
 
@@ -186,7 +198,10 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 		}
 
 		public IFlexoOntologyClass<?> getType() {
-			return getOntologyClass();
+			if (getOntologyClass() != null) {
+				return getOntologyClass();
+			}
+			return null;
 		}
 
 		public void setType(IFlexoOntologyClass<?> type) {
@@ -195,18 +210,36 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 		@Override
 		public IFlexoOntologyClass getOntologyClass() {
+			if (ontologyClass != null) {
+				return ontologyClass;
+			}
+			if (StringUtils.isNoneEmpty(ontologyClassURI)) {
+				ontologyClass = FlexoOntologyVirtualModelNature.getOntologyClass(ontologyClassURI, getOwningVirtualModel());
+			}
 			if (getAssignedFlexoProperty() != null) {
+				return getAssignedFlexoProperty().getOntologicType();
+			}
+			return ontologyClass;
+			/*if (getAssignedFlexoProperty() != null) {
 				return getAssignedFlexoProperty().getOntologicType();
 			}
 			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getOwningVirtualModel())) {
 				return FlexoOntologyVirtualModelNature.getOntologyClass(ontologyClassURI, getOwningVirtualModel());
 			}
-			return null;
+			return null;*/
 		}
 
 		@Override
-		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
-			if (ontologyClass != null) {
+		public void setOntologyClass(IFlexoOntologyClass<?> ontologyClass) {
+
+			if (ontologyClass != this.ontologyClass) {
+				IFlexoOntologyClass<?> oldOntologyClass = this.ontologyClass;
+				this.ontologyClass = ontologyClass;
+				ontologyClassURI = null;
+				getPropertyChangeSupport().firePropertyChange(ONTOLOGY_CLASS_KEY, oldOntologyClass, ontologyClass);
+			}
+
+			/*if (ontologyClass != null) {
 				if (getAssignedFlexoProperty() != null) {
 					if (getAssignedFlexoProperty().getOntologicType() != null) {
 						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
@@ -223,7 +256,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 			}
 			else {
 				ontologyClassURI = null;
-			}
+			}*/
 			// System.out.println("ontologyClassURI=" + ontologyClassURI);
 		}
 
