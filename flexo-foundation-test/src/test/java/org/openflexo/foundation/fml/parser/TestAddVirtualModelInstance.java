@@ -134,7 +134,7 @@ public class TestAddVirtualModelInstance extends FMLParserTestCase {
 		BehaviourCallArgumentNode arg2Node = (BehaviourCallArgumentNode) (P2PPNode) rootNode
 				.getObjectNode(expressionAction.getParameters().get(1));*/
 
-		assertEquals("new MyModel(\"test\",3) with (name=\"foo\")", expressionAction.getFMLPrettyPrint());
+		assertEquals("new MyModel(\"test\",3) with (name=\"foo\");", expressionAction.getFMLPrettyPrint());
 		assertEquals("new MyModel(\"test\",3) with (name=\"foo\")", expressionAction.getNormalizedFML());
 
 		assertEquals("(13:1)-(15:2)", behaviourNode.getLastParsedFragment().toString());

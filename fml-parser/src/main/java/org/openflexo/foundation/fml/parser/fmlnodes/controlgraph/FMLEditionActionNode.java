@@ -75,6 +75,11 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		super(astNode, analyzer);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();
+
+		if (getSemiFragment() != null) {
+			setEndPosition(getSemiFragment().getEndPosition());
+		}
+
 	}
 
 	public FMLEditionActionNode(EA editionAction, FMLCompilationUnitSemanticsAnalyzer analyzer) {
@@ -160,7 +165,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		// final to true is here a little hack to prevent semi to be removed at pretty-print
 		// This is due to a wrong management of semi
 		// TODO: refactor 'semi' management
-		when(() -> requiresSemi(),true).thenAppend(staticContents(";"), getSemiFragment());
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 	}
 

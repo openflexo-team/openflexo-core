@@ -130,7 +130,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(12:6)-(12:7)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(12:6)-(12:8)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -166,7 +166,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(16:6)-(16:9)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(16:6)-(16:10)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -202,7 +202,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(20:6)-(20:13)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(20:6)-(20:14)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -241,7 +241,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(24:6)-(24:15)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(24:6)-(24:16)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -280,7 +280,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(28:6)-(28:7)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(28:6)-(28:8)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -319,7 +319,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(32:6)-(32:22)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(32:6)-(32:23)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -358,7 +358,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(36:6)-(36:35)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(36:6)-(36:36)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -397,7 +397,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(40:6)-(40:50)", expressionNode.getLastParsedFragment().toString());
+		assertEquals("(40:6)-(40:51)", expressionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionNode.getPrelude());
 		assertEquals(null, expressionNode.getPostlude());
 
@@ -435,7 +435,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(44:13)-(44:28)", expressionActionNode.getLastParsedFragment().toString());
+		assertEquals("(44:13)-(44:29)", expressionActionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionActionNode.getPrelude());
 		assertEquals(null, expressionActionNode.getPostlude());
 

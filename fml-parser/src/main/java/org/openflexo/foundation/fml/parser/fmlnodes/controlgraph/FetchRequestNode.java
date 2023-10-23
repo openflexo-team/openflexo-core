@@ -87,6 +87,10 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 	public FetchRequestNode(ASelectActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
+
+		if (getSemiFragment() != null) {
+			setEndPosition(getSemiFragment().getEndPosition());
+		}
 	}
 
 	public FetchRequestNode(FR action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
@@ -161,7 +165,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 			if (frClass != null) {
 				selectAction = getFactory().newInstance(frClass);
-				//System.out.println("For " + selectAction + " setFetchedType with " + type);
+				// System.out.println("For " + selectAction + " setFetchedType with " + type);
 				selectAction.setFetchedType(type);
 				if (astNode.getFromClause() instanceof AFromClause) {
 					PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
@@ -277,7 +281,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		// final to true is here a little hack to prevent semi to be removed at pretty-print
 		// This is due to a wrong management of semi
 		// TODO: refactor 'semi' management
-		when(() -> requiresSemi(),true).thenAppend(staticContents(";"), getSemiFragment());
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on
 	}
 

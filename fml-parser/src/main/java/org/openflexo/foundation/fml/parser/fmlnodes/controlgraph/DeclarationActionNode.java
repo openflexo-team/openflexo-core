@@ -63,6 +63,10 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
+
+		if (getSemiFragment() != null) {
+			setEndPosition(getSemiFragment().getEndPosition());
+		}
 	}
 
 	public DeclarationActionNode(DeclarationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {

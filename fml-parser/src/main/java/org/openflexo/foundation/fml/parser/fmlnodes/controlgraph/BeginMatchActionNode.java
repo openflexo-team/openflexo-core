@@ -88,7 +88,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 	public InitiateMatching buildModelObjectFromAST(ABeginMatchActionFmlActionExp astNode) {
 		InitiateMatching returned = getFactory().newInitiateMatching();
 
-		System.out.println("---------> On cherche: " + astNode.getConceptName().getText());
+		// System.out.println("---------> On cherche: " + astNode.getConceptName().getText());
 
 		// FlexoConceptInstanceType matchedType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(),
 		// getFragment(astNode.getConceptName()));
@@ -133,11 +133,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
 		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
 		//append(staticContents(")"), getRParFromFragment());
-		// Append semi only when required
-		// final to true is here a little hack to prevent semi to be removed at pretty-print
-		// This is due to a wrong management of semi
-		// TODO: refactor 'semi' management
-		when(() -> requiresSemi(),true).thenAppend(staticContents(";"), getSemiFragment());
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on
 	}
 

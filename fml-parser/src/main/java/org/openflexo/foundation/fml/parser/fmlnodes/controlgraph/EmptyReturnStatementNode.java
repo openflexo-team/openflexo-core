@@ -54,7 +54,8 @@ public class EmptyReturnStatementNode extends AssignableActionNode<AReturnEmptyS
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EmptyReturnStatementNode.class.getPackage().getName());
 
-	public EmptyReturnStatementNode(AReturnEmptyStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public EmptyReturnStatementNode(AReturnEmptyStatementWithoutTrailingSubstatement astNode,
+			FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -77,7 +78,7 @@ public class EmptyReturnStatementNode extends AssignableActionNode<AReturnEmptyS
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("return"), getReturnFragment());
-		append(staticContents(";"), getSemiFragment());
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 
 	}
 

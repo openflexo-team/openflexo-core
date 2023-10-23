@@ -139,7 +139,7 @@ public class TestAddFlexoConceptInstance extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(10:13)-(10:31)", expressionActionNode.getLastParsedFragment().toString());
+		assertEquals("(10:13)-(10:32)", expressionActionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionActionNode.getPrelude());
 		assertEquals(null, expressionActionNode.getPostlude());
 
@@ -179,7 +179,7 @@ public class TestAddFlexoConceptInstance extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(14:13)-(14:41)", expressionActionNode.getLastParsedFragment().toString());
+		assertEquals("(14:13)-(14:42)", expressionActionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionActionNode.getPrelude());
 		assertEquals(null, expressionActionNode.getPostlude());
 

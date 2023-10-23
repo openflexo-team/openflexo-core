@@ -131,7 +131,7 @@ public class TestAddFlexoConceptInstance2 extends FMLParserTestCase {
 		BehaviourCallArgumentNode arg2Node = (BehaviourCallArgumentNode) (P2PPNode) rootNode
 				.getObjectNode(expressionAction.getParameters().get(1));*/
 
-		assertEquals("new ConceptA(\"test\",3)", expressionAction.getFMLPrettyPrint());
+		assertEquals("new ConceptA(\"test\",3);", expressionAction.getFMLPrettyPrint());
 		assertEquals("new ConceptA(\"test\",3)", expressionAction.getNormalizedFML());
 
 		assertEquals("(9:1)-(11:2)", behaviourNode.getLastParsedFragment().toString());
@@ -142,7 +142,7 @@ public class TestAddFlexoConceptInstance2 extends FMLParserTestCase {
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(10:13)-(10:35)", expressionActionNode.getLastParsedFragment().toString());
+		assertEquals("(10:13)-(10:36)", expressionActionNode.getLastParsedFragment().toString());
 		assertEquals(null, expressionActionNode.getPrelude());
 		assertEquals(null, expressionActionNode.getPostlude());
 

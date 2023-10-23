@@ -131,7 +131,7 @@ public class TestExpression extends FMLParserTestCase {
 		BindingVariableNode assignPathElementNode = checkNode("(12:2)-(12:3)", "a",
 				(BindingVariableNode) assignBPNode.getChildren().get(0));
 
-		ExpressionActionNode expressionNode = checkNodeForObject("(12:6)-(12:8)", null, assignationAction.getAssignableAction());
+		ExpressionActionNode expressionNode = checkNodeForObject("(12:6)-(12:9)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(12:6)-(12:8)", "42", (DataBindingNode) expressionNode.getChildren().get(0));
 		ConstantNode valueNode = checkNode("(12:6)-(12:8)", "42", (ConstantNode) expressionValueNode.getChildren().get(0));
 
@@ -162,7 +162,7 @@ public class TestExpression extends FMLParserTestCase {
 		BindingVariableNode assignPathElementNode1 = checkNode("(16:2)-(16:3)", "a",
 				(BindingVariableNode) assignBPNode.getChildren().get(0));
 
-		ExpressionActionNode expressionNode = checkNodeForObject("(16:6)-(16:10)", null, assignationAction.getAssignableAction());
+		ExpressionActionNode expressionNode = checkNodeForObject("(16:6)-(16:11)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(16:6)-(16:10)", "42 + 1", (DataBindingNode) expressionNode.getChildren().get(0));
 
 		PlusExpressionNode plusExpressionNode = checkNode("(16:6)-(16:10)", "42 + 1",

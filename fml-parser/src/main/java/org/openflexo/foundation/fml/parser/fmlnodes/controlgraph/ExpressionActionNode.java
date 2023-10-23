@@ -59,6 +59,10 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 
 	public ExpressionActionNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
+
+		if (getSemiFragment() != null) {
+			setEndPosition(getSemiFragment().getEndPosition());
+		}
 	}
 
 	public ExpressionActionNode(ExpressionAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
@@ -86,7 +90,7 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 		// final to true is here a little hack to prevent semi to be removed at pretty-print
 		// This is due to a wrong management of semi
 		// TODO: refactor 'semi' management
-		when(() -> requiresSemi(), true).thenAppend(staticContents(";"), getSemiFragment());
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getExpressionFragment() {
