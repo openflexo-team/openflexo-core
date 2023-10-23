@@ -82,6 +82,7 @@ import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.TypeDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -212,6 +213,7 @@ import org.openflexo.foundation.fml.rt.editionaction.FireEvent;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
 import org.openflexo.p2pp.RawSource;
@@ -950,6 +952,16 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				return uri;
 			}
 			return AbstractFMLTypingSpace.CONCEPT_INSTANCE;
+		}
+
+		if (type instanceof TechnologySpecificType) {
+			TechnologyAdapter ta = ((TechnologySpecificType) type).getSpecificTechnologyAdapter();
+			if (ta != null) {
+				return ta.serializeType((TechnologySpecificType) type, getCompilationUnit());
+			}
+			else {
+				logger.warning("No technology adapter for type " + type);
+			}
 		}
 
 		String returned = TypeUtils.simpleRepresentation(type);

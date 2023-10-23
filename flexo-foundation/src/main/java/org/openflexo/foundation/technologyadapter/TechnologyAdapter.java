@@ -63,12 +63,14 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
 import org.openflexo.connie.annotations.NotificationUnsafe;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.TechnologySpecificType;
@@ -790,6 +792,10 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 * @param converter
 	 */
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
+	}
+
+	public String serializeType(TechnologySpecificType<TA> type, FMLCompilationUnit compilationUnit) {
+		return TypeUtils.simpleRepresentation(type);
 	}
 
 	/**
