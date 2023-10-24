@@ -38,22 +38,28 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.lang.reflect.Type;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.TechnologySpecificType;
+import org.openflexo.foundation.fml.TypeDeclaration;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -112,6 +118,15 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 
+		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
+
+		if (getDeclareType()) {
+			TypeDeclaration newTypeDeclaration = factory.newTypeDeclaration();
+			newTypeDeclaration.setAbbrev(getTypeDeclarationName());
+			newTypeDeclaration.setReferencedType(getVariableType());
+			getFocusedObject().getDeclaringCompilationUnit().addToTypeDeclarations(newTypeDeclaration);
+		}
+
 		declarationAction = getFocusedObject().declaresNewVariable(getNewVariableName());
 
 	}
@@ -123,6 +138,15 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 		}
 		if (getFocusedObject().getBindingModel().bindingVariableNamed(getNewVariableName()) != null) {
 			return false;
+		}
+		if (getDeclareType()) {
+			if (getFocusedObject().getDeclaringCompilationUnit().getTypeDeclaration(getTypeDeclarationName()) != null) {
+				return false;
+			}
+			if (getVariableType() instanceof TechnologySpecificType && getFocusedObject().getDeclaringCompilationUnit()
+					.getTypeDeclaration((TechnologySpecificType) getVariableType()) != null) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -144,4 +168,66 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 		return declarationAction;
 	}
 
+	public Type getVariableType() {
+		if (getFocusedObject() != null) {
+			return getFocusedObject().getAssignableType();
+		}
+		return Void.TYPE;
+	}
+
+	public String getVariableTypeAsString() {
+		if (getVariableType() instanceof TechnologySpecificType) {
+			TechnologyAdapter ta = ((TechnologySpecificType) getVariableType()).getSpecificTechnologyAdapter();
+			if (ta != null) {
+				return ta.serializeType((TechnologySpecificType) getVariableType(), getFocusedObject().getDeclaringCompilationUnit(), true);
+			}
+			else {
+				logger.warning("No technology adapter for type " + getVariableType());
+			}
+		}
+
+		return TypeUtils.simpleRepresentation(getVariableType());
+
+	}
+
+	public boolean isDeclarableType() {
+		Type variableType = getVariableType();
+		if (!(variableType instanceof TechnologySpecificType)) {
+			return false;
+		}
+		if (getFocusedObject().getDeclaringCompilationUnit() != null) {
+			return getFocusedObject().getDeclaringCompilationUnit().getTypeDeclaration((TechnologySpecificType) variableType) == null;
+		}
+		return false;
+	}
+
+	private boolean declareType = false;
+	private String typeDeclarationName;
+
+	public boolean getDeclareType() {
+		return declareType;
+	}
+
+	public void setDeclareType(boolean declareType) {
+		if (declareType != this.declareType) {
+			this.declareType = declareType;
+			getPropertyChangeSupport().firePropertyChange("declareType", !declareType, declareType);
+		}
+	}
+
+	public String getTypeDeclarationName() {
+		if (typeDeclarationName == null && getVariableType() != null) {
+			return TypeUtils.simpleRepresentation(getVariableType());
+		}
+		return typeDeclarationName;
+	}
+
+	public void setTypeDeclarationName(String typeDeclarationName) {
+		if ((typeDeclarationName == null && this.typeDeclarationName != null)
+				|| (typeDeclarationName != null && !typeDeclarationName.equals(this.typeDeclarationName))) {
+			String oldValue = this.typeDeclarationName;
+			this.typeDeclarationName = typeDeclarationName;
+			getPropertyChangeSupport().firePropertyChange("typeDeclarationName", oldValue, typeDeclarationName);
+		}
+	}
 }

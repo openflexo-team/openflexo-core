@@ -904,11 +904,11 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return serializeType(type);
 	}
 
-	/*protected final String serializeType(Type type) {
+	protected final String serializeType(Type type) {
 		return serializeType(type, true);
-	}*/
+	}
 
-	protected final String serializeType(Type type/*, boolean abbrevWhenPossible*/) {
+	protected final String serializeType(Type type, boolean useTypeDefinitions) {
 		// TODO: generate required imports !
 		/*if (type != null) {
 			if (type.equals(Boolean.class)) {
@@ -957,7 +957,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		if (type instanceof TechnologySpecificType) {
 			TechnologyAdapter ta = ((TechnologySpecificType) type).getSpecificTechnologyAdapter();
 			if (ta != null) {
-				return ta.serializeType((TechnologySpecificType) type, getCompilationUnit());
+				return ta.serializeType((TechnologySpecificType) type, getCompilationUnit(), useTypeDefinitions);
 			}
 			else {
 				logger.warning("No technology adapter for type " + type);

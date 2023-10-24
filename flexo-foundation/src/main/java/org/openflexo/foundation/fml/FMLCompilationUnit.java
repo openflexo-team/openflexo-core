@@ -203,6 +203,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	@Finder(collection = TYPE_DECLARATIONS_KEY, attribute = TypeDeclaration.ABBREV_KEY)
 	public TypeDeclaration getTypeDeclaration(String abbrev);
 
+	public TypeDeclaration getTypeDeclaration(TechnologySpecificType<?> type);
+
 	@Reindexer(TYPE_DECLARATIONS_KEY)
 	public void moveTypeDeclarationToIndex(TypeDeclaration typeDeclaration, int index);
 
@@ -1527,6 +1529,16 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			Class rawClass = TypeUtils.getRawType(potentialType);
 			if (className.equals(rawClass.getName()) || className.equals(rawClass.getSimpleName())) {
 				return rawClass;
+			}
+			return null;
+		}
+
+		@Override
+		public TypeDeclaration getTypeDeclaration(TechnologySpecificType<?> type) {
+			for (TypeDeclaration typeDeclaration : getTypeDeclarations()) {
+				if (typeDeclaration.getReferencedType().equals(type)) {
+					return typeDeclaration;
+				}
 			}
 			return null;
 		}

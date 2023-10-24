@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.action.DeclareNewVariableAction;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
@@ -101,10 +102,30 @@ public class DeclareNewVariableActionWizard extends FlexoActionWizard<DeclareNew
 				setIssueMessage(getAction().getLocales().localizedForKey("please_supply_valid_variable_name"), IssueMessageType.ERROR);
 				return false;
 			}
+			if (!Character.isLowerCase(getNewVariableName().charAt(0))) {
+				setIssueMessage(getAction().getLocales().localizedForKey("variable_name_must_start_with_lower_case_letter"),
+						IssueMessageType.ERROR);
+				return false;
+			}
 			if (getAction().getFocusedObject().getBindingModel().bindingVariableNamed(getNewVariableName()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("this_variable_name_shadows_an_other_variable"),
 						IssueMessageType.ERROR);
 				return false;
+			}
+			if (getDeclareType()) {
+				if (StringUtils.isEmpty(getTypeDeclarationName())) {
+					setIssueMessage(getAction().getLocales().localizedForKey("please_supply_type_name"), IssueMessageType.ERROR);
+					return false;
+				}
+				if (getAction().getFocusedObject().getDeclaringCompilationUnit().getTypeDeclaration(getTypeDeclarationName()) != null) {
+					setIssueMessage(getAction().getLocales().localizedForKey("this_type_name_is_already_used"), IssueMessageType.ERROR);
+					return false;
+				}
+				if (getAction().getVariableType() instanceof TechnologySpecificType && getAction().getFocusedObject()
+						.getDeclaringCompilationUnit().getTypeDeclaration((TechnologySpecificType) getAction().getVariableType()) != null) {
+					setIssueMessage(getAction().getLocales().localizedForKey("this_type_is_already_defined"), IssueMessageType.ERROR);
+					return false;
+				}
 			}
 
 			return true;
@@ -119,6 +140,35 @@ public class DeclareNewVariableActionWizard extends FlexoActionWizard<DeclareNew
 				String oldValue = getNewVariableName();
 				getAction().setNewVariableName(newVariableName);
 				getPropertyChangeSupport().firePropertyChange("newVariableName", oldValue, newVariableName);
+				checkValidity();
+			}
+		}
+
+		public boolean isDeclarableType() {
+			return getAction().isDeclarableType();
+		}
+
+		public boolean getDeclareType() {
+			return getAction().getDeclareType();
+		}
+
+		public void setDeclareType(boolean declareType) {
+			if (declareType != getDeclareType()) {
+				getAction().setDeclareType(declareType);
+				getPropertyChangeSupport().firePropertyChange("declareType", !declareType, declareType);
+				checkValidity();
+			}
+		}
+
+		public String getTypeDeclarationName() {
+			return getAction().getTypeDeclarationName();
+		}
+
+		public void setTypeDeclarationName(String typeDeclarationName) {
+			if (!typeDeclarationName.equals(getTypeDeclarationName())) {
+				String oldValue = getTypeDeclarationName();
+				getAction().setTypeDeclarationName(typeDeclarationName);
+				getPropertyChangeSupport().firePropertyChange("typeDeclarationName", oldValue, typeDeclarationName);
 				checkValidity();
 			}
 		}

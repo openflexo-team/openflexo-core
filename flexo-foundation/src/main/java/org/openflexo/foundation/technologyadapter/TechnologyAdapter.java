@@ -794,7 +794,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 	}
 
-	public String serializeType(TechnologySpecificType<TA> type, FMLCompilationUnit compilationUnit) {
+	public String serializeType(TechnologySpecificType<TA> type, FMLCompilationUnit compilationUnit, boolean useTypeDefinitions) {
 		return TypeUtils.simpleRepresentation(type);
 	}
 

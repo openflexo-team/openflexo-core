@@ -100,30 +100,45 @@ public class TypeDeclarationNode extends FMLObjectNode<ATypeDecl, TypeDeclaratio
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Typedef.getKeyword(), SPACE), getTypeKeywordFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getReferencedType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getReferencedType(), false), SPACE), getTypeFragment());
 		append(staticContents("", FMLKeywords.As.getKeyword(), SPACE), getAsFragment());
 		append(dynamicContents(() -> getModelObject().getAbbrev()), getAbbrevFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getTypeKeywordFragment() {
-		return getFragment(getASTNode().getKwTypedef());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getKwTypedef());
+		}
+		return null;
 	}
 
 	private RawSourceFragment getTypeFragment() {
-		return getFragment(getASTNode().getType());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getType());
+		}
+		return null;
 	}
 
 	private RawSourceFragment getSemiFragment() {
-		return getFragment(getASTNode().getSemi());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getSemi());
+		}
+		return null;
 	}
 
 	private RawSourceFragment getAsFragment() {
-		return getFragment(getASTNode().getKwAs());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getKwAs());
+		}
+		return null;
 	}
 
 	private RawSourceFragment getAbbrevFragment() {
-		return getFragment(getASTNode().getName());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getName());
+		}
+		return null;
 	}
 
 }

@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController" width="500" height="250">
-  <Label id="1" label="new_variable_name" align="right" localize="true" index="1" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="NewVariableNameLabel" />
-  <TextField id="2" columns="40" text="TextField" localize="true" data="data.newVariableName" index="2" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="VariableNameTF" />
-  <Label id="3" label="variable_type" align="left" constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="Label" />
-  <TextField id="4" columns="7" readOnly="true" data="data.action.focusedObject.assignableType.toString" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="TextField" />
-  <FIBVariable id="5" type="org.openflexo.fml.controller.action.DeclareNewVariableActionWizard$DescribeNewVariable" name="data" />
-  <LocalizedDictionary id="6" />
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0" height="250" width="500" controllerClassName="org.openflexo.view.controller.FlexoFIBController" name="Panel">
+  <Label id="1" label="new_variable_name" align="right" localize="true" constraints="twocols(anchor=east;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="NewVariableNameLabel" />
+  <TextField id="2" columns="40" text="TextField" localize="true" data="data.newVariableName" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="2" name="VariableNameTF" />
+  <Label id="3" label="variable_type" align="left" localize="true" constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="Label" />
+  <TextField id="4" columns="7" readOnly="true" data="data.action.variableTypeAsString" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="TextField" />
+  <Label id="5" label="define_type_in_declarations" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" visible="data.isDeclarableType" name="Label2" />
+  <CheckBox id="6" selected="true" data="data.declareType" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" visible="data.isDeclarableType" name="checkbox" />
+  <Label id="7" label="type_name" align="left" enable="data.declareType" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" visible="data.isDeclarableType" name="Label3" />
+  <TextField id="8" columns="7" enable="data.declareType" data="data.typeDeclarationName" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" visible="data.isDeclarableType" name="TextField2" />
+  <LocalizedDictionary id="9">
+    <Localized id="10" lang="English" value="New variable name" key="new_variable_name" />
+    <Localized id="11" lang="Dutch" value="New variable name" key="new_variable_name" />
+    <Localized id="12" lang="French" value="Nom de la variable" key="new_variable_name" />
+    <Localized id="13" lang="English" value="Variable type" key="variable_type" />
+    <Localized id="14" lang="Dutch" value="Variable type" key="variable_type" />
+    <Localized id="15" lang="French" value="Type de la variable" key="variable_type" />
+    <Localized id="16" lang="English" value="Define type in declarations" key="define_type_in_declarations" />
+    <Localized id="17" lang="Dutch" value="Define type in declarations" key="define_type_in_declarations" />
+    <Localized id="18" lang="French" value="Déclarer ce type" key="define_type_in_declarations" />
+    <Localized id="19" lang="English" value="Type name" key="type_name" />
+    <Localized id="20" lang="Dutch" value="Type name" key="type_name" />
+    <Localized id="21" lang="French" value="Nom du type" key="type_name" />
+  </LocalizedDictionary>
+  <FIBVariable id="22" type="org.openflexo.fml.controller.action.DeclareNewVariableActionWizard$DescribeNewVariable" name="data" />
 </Panel>
