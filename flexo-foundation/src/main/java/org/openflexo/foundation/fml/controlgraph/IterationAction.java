@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
@@ -203,6 +204,14 @@ public interface IterationAction extends AbstractIterationAction {
 			super.accept(visitor);
 			if (getIterationAction() != null) {
 				getIterationAction().accept(visitor);
+			}
+		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (compilationUnit != null) {
+				compilationUnit.ensureJavaImportForType(getItemType());
 			}
 		}
 
