@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -1415,9 +1416,18 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public void ensureJavaImportForType(Type type) {
-			boolean typeWasFound = false;
+			// boolean typeWasFound = false;
 			if (type instanceof FlexoResourceType) {
 				ensureJavaImportForType(((FlexoResourceType) type).getResourceDataClass());
+			}
+			else if (type instanceof WildcardType) {
+				WildcardType wt = (WildcardType) type;
+				for (Type upperBound : wt.getUpperBounds()) {
+					ensureJavaImportForType(upperBound);
+				}
+				for (Type lowerBound : wt.getLowerBounds()) {
+					ensureJavaImportForType(lowerBound);
+				}
 			}
 			else {
 				Class<?> rawType = TypeUtils.getRawType(type);
