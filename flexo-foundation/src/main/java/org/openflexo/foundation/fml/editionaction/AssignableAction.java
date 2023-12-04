@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -174,7 +175,15 @@ public abstract interface AssignableAction<T> extends EditionAction {
 				return null;
 			}
 			if (getAssignableType() instanceof ParameterizedType) {
-				return TypeUtils.getTypeArgument(getAssignableType(), List.class, 0);
+				Type returned = TypeUtils.getTypeArgument(getAssignableType(), List.class, 0);
+				if (returned instanceof WildcardType) {
+					WildcardType wt = (WildcardType) returned;
+					if (wt.getUpperBounds() != null && wt.getUpperBounds().length == 1) {
+						// Special case "? extends XXX" > XXX
+						return wt.getUpperBounds()[0];
+					}
+				}
+				return returned;
 			}
 			return Object.class;
 		}
