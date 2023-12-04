@@ -154,6 +154,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 
 		FlexoResourceCenter<I> delegateResourceCenter = makeDelegateRC(serializationArtefact);
 		FlexoProjectResource<I> returned = makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
+		returned.setURI(uri);
 		returned.setDelegateResourceCenter(delegateResourceCenter);
 		return returned;
 	}
@@ -193,6 +194,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 		}
 
 		FlexoProjectResource<I> returned = makeResource(serializationArtefact, resourceCenter, baseName, uri, createEmptyContents);
+		returned.setURI(uri);
 
 		returned.setDelegateResourceCenter(delegateResourceCenter);
 		return returned;
