@@ -119,6 +119,9 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 			} catch (ReflectiveOperationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (ClassCastException e) {
+				logger.warning("Unexpected type for resourceReference=" + importDeclaration.getResourceReference());
+				e.printStackTrace();
 			}
 		}
 
