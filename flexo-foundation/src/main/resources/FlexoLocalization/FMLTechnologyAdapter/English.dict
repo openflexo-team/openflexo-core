@@ -303,6 +303,7 @@ revalidate=Revalidate
 save_virtual_model_resource=Save virtual model resource
 saving=Saving
 selection=Selection
+set=Set
 setLogicalTypeToAnd=SetLogicalTypeToAnd
 setLogicalTypeToNone=SetLogicalTypeToNone
 setLogicalTypeToOr=SetLogicalTypeToOr

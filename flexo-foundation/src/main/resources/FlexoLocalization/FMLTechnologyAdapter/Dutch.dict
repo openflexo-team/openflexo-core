@@ -303,6 +303,7 @@ revalidate=revalidate
 save_virtual_model_resource=save_virtual_model_resource
 saving=Bezig met opslaan
 selection=Selection
+set=set
 setLogicalTypeToAnd=setLogicalTypeToAnd
 setLogicalTypeToNone=setLogicalTypeToNone
 setLogicalTypeToOr=setLogicalTypeToOr
