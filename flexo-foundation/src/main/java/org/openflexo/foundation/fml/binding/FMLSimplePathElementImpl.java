@@ -48,6 +48,7 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.Property;
 import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.type.ProxyType;
 import org.openflexo.connie.type.TypeUtils;
 
 /**
@@ -106,6 +107,20 @@ public abstract class FMLSimplePathElementImpl<P extends Property> extends Abstr
 				setType(Object.class);
 			}
 		}
+	}
+
+	/**
+	 * Return accessed type for this {@link IBindingPathElement}<br>
+	 * If this is a {@link ProxyType} return referenced type
+	 * 
+	 * @return
+	 */
+	@Override
+	public Type getActualType() {
+		if (getType() instanceof ProxyType) {
+			return ((ProxyType) getType()).getReferencedType();
+		}
+		return getType();
 	}
 
 	@Override

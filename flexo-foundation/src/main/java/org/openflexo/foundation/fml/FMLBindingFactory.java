@@ -208,7 +208,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 
 		if (parent != null) {
 
-			Type pType = parent.getType();
+			Type pType = parent.getActualType();
 
 			if (pType instanceof TechnologySpecificType) {
 				TechnologySpecificType<?> parentType = (TechnologySpecificType<?>) pType;
