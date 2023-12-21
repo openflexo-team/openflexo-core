@@ -406,7 +406,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			}
 		}
 
-		if (object instanceof IFlexoOntologyIndividual && showIndividuals) {
+		if (object instanceof IFlexoOntologyIndividual && getShowIndividuals()) {
 			if (getRootClass() != null && object instanceof IFlexoOntologyConcept) {
 				returned = getRootClass().isSuperConceptOf((IFlexoOntologyConcept<TA>) object);
 			}
@@ -507,7 +507,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			}
 		}
 
-		if (showIndividuals) {
+		if (getShowIndividuals()) {
 			for (IFlexoOntologyIndividual<TA> i : individuals) {
 				IFlexoOntologyClass<TA> preferredLocation = getPreferredStorageLocation(i);
 				if (preferredLocation != null) {
@@ -697,11 +697,10 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			return;
 		}
 
-		if (strictMode) {
-			properties = retrieveDisplayableProperties(getContext());
-			individuals = retrieveDisplayableIndividuals(getContext());
-		}
-		else {
+		properties = retrieveDisplayableProperties(getContext());
+		individuals = retrieveDisplayableIndividuals(getContext());
+
+		if (!strictMode) {
 			for (IFlexoOntology<TA> o : OntologyUtils.getAllImportedOntologies(getContext())) {
 				properties.addAll(retrieveDisplayableProperties(o));
 				individuals.addAll(retrieveDisplayableIndividuals(o));
@@ -733,7 +732,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 
 		}
 
-		if (showIndividuals) {
+		if (getShowIndividuals()) {
 			for (IFlexoOntologyIndividual<TA> i : individuals) {
 				IFlexoOntologyClass<TA> preferredLocation = getPreferredStorageLocation(i);
 				if (preferredLocation != null) {
@@ -758,10 +757,13 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 					classes.addAll(retrieveDisplayableClasses(o));
 				}
 			}
+			if (getDisplayPropertiesInClasses() || getShowIndividuals()) {
+				classes.addAll(storageClasses);
+			}
 			removeOriginalFromRedefinedObjects(classes);
 			addClassesAsHierarchy(null, classes);
 		}
-		else if (getDisplayPropertiesInClasses() || showIndividuals) {
+		else if (getDisplayPropertiesInClasses() || getShowIndividuals()) {
 			removeOriginalFromRedefinedObjects(storageClasses);
 			appendParentClassesToStorageClasses(storageClasses);
 			removeOriginalFromRedefinedObjects(storageClasses);
@@ -978,7 +980,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 		}
 		return returned;
 	}
-	*/
+	 */
 
 	/**
 	 * Remove originals from redefined classes<br>
