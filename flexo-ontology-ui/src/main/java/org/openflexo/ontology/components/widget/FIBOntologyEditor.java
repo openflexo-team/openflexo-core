@@ -422,7 +422,8 @@ public abstract class FIBOntologyEditor<TA extends TechnologyAdapter<TA>> extend
 
 	public Resource getFibForOntologyObject(IFlexoOntologyObject<TA> object) {
 		if (object == null) {
-			return null;
+			object = model.getContext();
+			// return getFIBController().getFIBPanelForObject(model.getContext());
 		}
 		// No specific TechnologyAdapter, lookup in generic libraries
 		return getFIBController().getFIBPanelForObject(object);

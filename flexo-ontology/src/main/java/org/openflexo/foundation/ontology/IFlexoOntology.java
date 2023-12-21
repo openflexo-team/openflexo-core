@@ -43,6 +43,7 @@ package org.openflexo.foundation.ontology;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.annotation.FIBPanel;
 
 /**
  * Flexo Ontology.
@@ -51,6 +52,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * @author gbesancon
  */
+@FIBPanel("Fib/FIBPlainOntologyEditor.fib")
 public interface IFlexoOntology<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyObject<TA>, IFlexoOntologyConceptContainer<TA> {
 
 	/**
