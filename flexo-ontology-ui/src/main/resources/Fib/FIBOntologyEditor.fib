@@ -1,277 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="border" darkLevel="0"
-	dataClassName="org.openflexo.ontology.components.widget.FIBOntologyEditor"
-	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
-	opaque="false" name="main">
-	<Panel layout="gridbag" borderTitle="Panel" borderLeft="10"
-		borderRight="5" darkLevel="0" index="0" constraints="border(index=0;location=north)"
-		opaque="false" name="HeaderPanel">
-		<Label label="Ontology" index="0" data="data.ontology.name"
-			constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-			font="SansSerif,1,14" localize="false" />
-		<Label label="URI" index="1" data="data.ontology.uRI"
-			constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-			font="SansSerif,2,11" foregroundColor="102,102,102" localize="false" />
-	</Panel>
-	<SplitPanel constraints="border(location=center)" opaque="false">
-		<RowSplit name="RowSplit" weight="0.0">
-			<Leaf name="left" weight="0.5" />
-			<Divider />
-			<Leaf name="right" weight="0.5" />
-		</RowSplit>
-		<LocalizedDictionary />
-		<Panel layout="gridbag" borderTitle="Panel" darkLevel="0"
-			constraints="split(location=east;splitIdentifier=right)" opaque="false"
-			name="NavigationPanel">
-			<Panel layout="gridbag" borderTitle="" borderTop="0"
-				borderBottom="0" borderLeft="0" borderRight="0" darkLevel="0" index="0"
-				constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-				visible="data.allowsSearch" name="SearchPanel">
-				<TextField index="0" data="data.filteredName"
-					constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-					name="SearchTextField" localize="true" manageDynamicModel="true"
-					valueChangedAction="data.search()" validateOnReturn="true" columns="7"
-					text="TextField" />
-				<Button action="data.search()" buttonIcon="data.searchIcon"
-					buttonType="Trigger" label="search" localize="true"
-					manageDynamicModel="true" name="SearchButton" index="1"
-					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					visible="(!(data.isSearching))" />
-				<Button action="data.dismissSearch()" buttonIcon="data.cancelIcon"
-					buttonType="Trigger" label="done" localize="true" name="DoneButton"
-					index="2"
-					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					visible="data.isSearching" />
-			</Panel>
-			<List visibleRowCount="8" rowHeight="18" createNewRowOnClick="false"
-				boundToSelectionManager="true" selectionMode="MultipleIntervalSelection"
-				selected="data.selectedValue" layoutOrientation="vertical" index="1"
-				constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.3)"
-				visible="(data.isSearching &amp;&amp;(data.matchingValues.size &gt; 1))"
-				useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="PotentialMatches"
-				format="object.name" icon="controller.iconForObject(object)"
-				localize="true" manageDynamicModel="true" list="data.matchingValues"
-				showIcon="true" iteratorClassName="org.openflexo.foundation.ontology.IFlexoOntologyConcept"
-				autoSelectFirstRow="true" />
-			<Label label="Found xxx matches" align="right" index="2"
-				data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
-				constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-				visible="data.isSearching" name="MatchesLabel" localize="false" />
-			<Browser root="data.model"
-				iteratorClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl"
-				visibleRowCount="10" rowHeight="18" boundToSelectionManager="true"
-				selectionMode="DiscontiguousTreeSelection"
-				selected="(org.openflexo.foundation.ontology.FlexoOntologyObjectImpl)data.selectedValue"
-				showFooter="true" rootVisible="false" showRootsHandle="true"
-				localize="true" manageDynamicModel="true" name="ontologyBrowser"
-				index="3"
-				constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
-				width="200" height="200">
-				<BrowserElement
-					dataClassName="org.openflexo.ontology.components.widget.OntologyBrowserModel"
-					isEditable="false" filtered="false" defaultVisible="true" name="model">
-					<Children data="model.roots" name="children" />
-				</BrowserElement>
-				<BrowserElement
-					dataClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl"
-					label="element.name" icon="controller.iconForObject(element)"
-					tooltip="element.displayableDescription" isEditable="false"
-					filtered="false" defaultVisible="true"
-					dynamicFont="data.model.getFont(element,data.fIBBrowser.retrieveValidFont)"
-					name="element">
-					<Children data="data.model.getChildren(element)" name="children" />
-				</BrowserElement>
-			</Browser>
-			<Panel layout="gridbag" hGap="5" vGap="5" cols="2" rows="1"
-				border="rounded3d" borderTitle="Display options" borderTop="0"
-				borderBottom="5" borderLeft="5" borderRight="5" titleFont="SansSerif,1,10"
-				darkLevel="0" index="4"
-				constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-				font="SansSerif,0,10" opaque="false" name="OptionsPanel">
-				<Panel layout="gridbag" borderTitle="" borderTop="2"
-					borderBottom="2" borderLeft="2" borderRight="2" titleFont="SansSerif,0,10"
-					darkLevel="0" index="1"
-					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0;x=1;y=0)"
-					opaque="false">
-					<CheckBox selected="true" index="0" data="data.showClasses"
-						constraints="gridbag(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="ShowClassesCB" localize="true" />
-					<Image
-						imageFile="../../../../interfacebuilder/src/dev/resources/FIBEditorPalette/Image.gif"
-						sizeAdjustment="OriginalSize" align="left" imageWidth="32"
-						imageHeight="32" index="1" data="data.ontologyClassIcon.image"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<Label label="classes" index="2"
-						constraints="gridbag(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<CheckBox selected="true" index="3" data="data.showIndividuals"
-						constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="ShowIndividualsCB" localize="true" />
-					<Image
-						imageFile="../../../../interfacebuilder/src/dev/resources/FIBEditorPalette/Image.gif"
-						sizeAdjustment="OriginalSize" align="left" imageWidth="32"
-						imageHeight="32" index="4" data="data.ontologyIndividualIcon.image"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<Label label="individuals" index="5"
-						constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<CheckBox selected="true" index="6"
-						data="data.showObjectProperties"
-						constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="ShowObjectPropertiesCB" localize="true" />
-					<Image
-						imageFile="../../../../interfacebuilder/src/dev/resources/FIBEditorPalette/Image.gif"
-						sizeAdjustment="OriginalSize" align="left" imageWidth="32"
-						imageHeight="32" index="7" data="data.ontologyObjectPropertyIcon.image"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<Label label="object_properties" index="8"
-						constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<CheckBox selected="true" index="9" data="data.showDataProperties"
-						constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="ShowDataPropertiesCB" localize="true" />
-					<Image
-						imageFile="../../../../interfacebuilder/src/dev/resources/FIBEditorPalette/Image.gif"
-						sizeAdjustment="OriginalSize" align="left" imageWidth="32"
-						imageHeight="32" index="10" data="data.ontologyDataPropertyIcon.image"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<Label label="datatype_properties" index="11"
-						constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<CheckBox selected="true" index="12"
-						data="data.showAnnotationProperties"
-						constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="ShowAnnotationPropertiesCB" localize="true" />
-					<Image
-						imageFile="../../../../interfacebuilder/src/dev/resources/FIBEditorPalette/Image.gif"
-						sizeAdjustment="OriginalSize" align="left" imageWidth="32"
-						imageHeight="32" index="13" data="data.ontologyAnnotationIcon.image"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=13;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<Label label="annotation_properties" index="14"
-						constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<CheckBox selected="true" index="0" data="data.strictMode"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=2;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="StrictModeCB" localize="true" />
-					<Label label="strict_mode" index="1"
-						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<CheckBox selected="true" index="2" data="data.hierarchicalMode"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=2;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="HierarchicalModelCB" localize="true" enable="(!(data.strictMode))"
-						manageDynamicModel="true" />
-					<Label label="hierarchic_presentation" index="3"
-						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=-5;weightX=0.0;weightY=0.0)"
-						localize="true" enable="(!(data.strictMode))" />
-					<CheckBox selected="true" index="4"
-						data="data.displayPropertiesInClasses"
-						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=2;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="PresentPropertiesInClassesCB" localize="true" />
-					<Label label="present_properties_in_classes" index="5"
-						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<CheckBox visible="data.supportTechnologySpecificHiddenConcepts"
-						selected="true" index="6" data="data.showTechnologySpecificConcepts"
-						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						name="ShowOWLRDFConceptsCB" localize="true" />
-					<Label visible="data.supportTechnologySpecificHiddenConcepts"
-						data="data.technologySpecificHiddenConceptsLabel" index="7"
-						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<Label label="root_class" index="8"
-						constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-						localize="true" />
-					<Custom componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector"
-						localize="true" manageDynamicModel="true" name="RootClassSelector"
-						index="9" data="data.rootClass"
-						constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
-						<Assignment variable="component.strictMode" value="false" />
-						<Assignment variable="component.hierarchicalMode"
-							value="true" />
-						<Assignment variable="component.context" value="data.ontology" />
-						<Dependancy componentName="OntologySelector" />
-					</Custom>
-				</Panel>
-			</Panel>
-		</Panel>
-		<Panel layout="gridbag" hGap="5" vGap="5" flowAlignment="LEADING"
-			titleFont="SansSerif,0,11" darkLevel="0"
-			constraints="split(location=center;splitIdentifier=left)" font="SansSerif,0,11"
-			opaque="false" width="400" height="200" name="DetailsPanel">
-			<!--<FIBReferencedComponent componentFile="Fib/FIBOntologyClassEditor.fib" 
-				localize="true" manageDynamicModel="true" name="ClassDetailsPanel" index="0" 
-				data="(org.openflexo.foundation.ontology.IFlexoOntologyClass)ontologyBrowser.selected" 
-				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" 
-				visible="((ontologyBrowser.selected != null) &amp;&amp;ontologyBrowser.selected.isOntologyClass)" 
-				> <ReferenceAssignment mandatory="true" variable="controller.flexoController" 
-				value="controller.flexoController" /> </FIBReferencedComponent> <FIBReferencedComponent 
-				componentFile="Fib/FIBOntologyObjectPropertyEditor.fib" localize="true" manageDynamicModel="true" 
-				name="ObjectPropertyDetailsPanel" index="0" data="(org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty)ontologyBrowser.selected" 
-				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" 
-				visible="((ontologyBrowser.selected != null) &amp;&amp;ontologyBrowser.selected.isOntologyObjectProperty)" 
-				> <ReferenceAssignment mandatory="true" variable="controller.flexoController" 
-				value="controller.flexoController" /> </FIBReferencedComponent> <FIBReferencedComponent 
-				componentFile="Fib/FIBOntologyIndividualEditor.fib" localize="true" manageDynamicModel="true" 
-				name="IndividualDetailsPanel" index="0" data="(org.openflexo.foundation.ontology.IFlexoOntologyIndividual)ontologyBrowser.selected" 
-				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=5;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" 
-				visible="((ontologyBrowser.selected != null) &amp;&amp;ontologyBrowser.selected.isOntologyIndividual)" 
-				> <ReferenceAssignment mandatory="true" variable="controller.flexoController" 
-				value="controller.flexoController" /> </FIBReferencedComponent> <FIBReferencedComponent 
-				componentFile="Fib/FIBOntologyDataPropertyEditor.fib" localize="true" manageDynamicModel="true" 
-				name="DataPropertyDetailsPanel" index="0" data="(org.openflexo.foundation.ontology.IFlexoOntologyDataProperty)ontologyBrowser.selected" 
-				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" 
-				visible="((ontologyBrowser.selected != null) &amp;&amp;ontologyBrowser.selected.isOntologyDataProperty)" 
-				> <ReferenceAssignment mandatory="true" variable="controller.flexoController" 
-				value="controller.flexoController" /> </FIBReferencedComponent> -->
-
-			<FIBReferencedComponent
-				dynamicComponentFile="data.getFibForOntologyObject(ontologyBrowser.selected)"
-				localize="true" manageDynamicModel="true" name="OntologyObjectWidget"
-				index="15" data="ontologyBrowser.selected"
-				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
-				visible="" opaque="false">
-				<ReferenceAssignment mandatory="true"
-					variable="controller.flexoController" value="controller.flexoController" />
-			</FIBReferencedComponent>
-
-
-			<Panel layout="gridbag" titleFont="SansSerif,0,11" darkLevel="0"
-				index="4"
-				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=5;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)"
-				visible="((ontologyBrowser.selected == null) || ((((!(ontologyBrowser.selected.isOntologyClass)) &amp;&amp;(!(ontologyBrowser.selected.isOntologyIndividual))) &amp;&amp;(!(ontologyBrowser.selected.isOntologyObjectProperty))) &amp;&amp;(!(ontologyBrowser.selected.isOntologyDataProperty))))"
-				opaque="false" name="InformationsPanel">
-				<TextArea columns="6" rows="2" text="TextArea" index="0"
-					data="data.ontology.description"
-					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.5)"
-					useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-					verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
-				<Table iteratorClassName="org.openflexo.foundation.ontology.IFlexoOntology"
-					visibleRowCount="5" rowHeight="18" autoSelectFirstRow="false"
-					createNewRowOnClick="false" boundToSelectionManager="false"
-					showFooter="true" selectionMode="MultipleIntervalSelection"
-					localize="true" manageDynamicModel="true" name="ImportedOntologiesTable"
-					index="1" data="data.ontology.importedOntologies"
-					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;padX=0;padY=0;weightX=1.0;weightY=1.0)">
-					<IconColumn data="controller.iconForObject(iterator)"
-						title="icon" columnWidth="30" resizable="false" displayTitle="false"
-						name="icon" />
-					<LabelColumn data="iterator.uRI" title="Imported ontologies"
-						columnWidth="300" resizable="true" displayTitle="true" name="label" />
-				</Table>
-				<TextArea columns="6" rows="2" text="TextArea" index="2"
-					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.5)"
-					useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-					verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
-			</Panel>
-			<LocalizedDictionary />
-		</Panel>
-	</SplitPanel>
-	<LocalizedDictionary>
-	</LocalizedDictionary>
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" opaque="false" controllerClassName="org.openflexo.view.controller.FlexoFIBController" name="main">
+  <Panel id="1" align="left" borderTop="0" borderTitle="Panel" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="5" constraints="border(index=0;location=north)" opaque="false" index="0" name="HeaderPanel">
+    <Label id="2" label="Ontology" align="left" data="data.ontology.name" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="0" font="SansSerif,1,14" name="OntologyLabel" />
+    <Label id="3" label="URI" align="left" data="data.ontology.uRI" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="1" foregroundColor="102,102,102" font="SansSerif,2,11" name="UriLabel" />
+  </Panel>
+  <SplitPanel id="4" constraints="border(location=center)" opaque="false" name="SplitPanel">
+    <RowSplit id="5" name="RowSplit" weight="0.0">
+      <Leaf id="6" name="left" />
+      <Divider id="7" />
+      <Leaf id="8" name="right" />
+    </RowSplit>
+    <Panel id="9" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="0" constraints="split(location=east;splitIdentifier=right)" opaque="false" name="NavigationPanel">
+      <Panel id="10" align="left" borderTop="0" borderTitle="" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="0" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)" visible="data.allowsSearch" index="0" name="SearchPanel">
+        <TextField id="11" columns="7" validateOnReturn="true" text="TextField" localize="true" manageDynamicModel="true" valueChangedAction="data.search()" data="data.filteredName" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="0" name="SearchTextField" />
+        <Button id="12" buttonIcon="data.searchIcon" buttonType="Trigger" action="data.search()" label="search" localize="true" manageDynamicModel="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="!data.isSearching" index="1" name="SearchButton" />
+        <Button id="13" buttonIcon="data.cancelIcon" buttonType="Trigger" action="data.dismissSearch()" label="done" localize="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="data.isSearching" index="2" name="DoneButton" />
+      </Panel>
+      <List id="14" visibleRowCount="8" boundToSelectionManager="true" layoutOrientation="vertical" selected="data.selectedValue" selectionMode="MultipleIntervalSelection" rowHeight="18" autoSelectFirstRow="true" iteratorClassName="org.openflexo.foundation.ontology.IFlexoOntologyConcept" showText="true" list="data.matchingValues" showIcon="true" localize="true" manageDynamicModel="true" icon="controller.iconForObject(object)" format="object.name" useScrollBar="true" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.3)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" visible="data.isSearching &amp;&amp; data.matchingValues.size &gt; 1" index="1" name="PotentialMatches" />
+      <Label id="15" label="Found xxx matches" align="right" data="&quot;Found &quot; + data.matchingValues.size + &quot; matches&quot;" constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" visible="data.isSearching" index="2" name="MatchesLabel" />
+      <Browser id="16" backgroundSelectionColor="7,73,217" visibleRowCount="10" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data.model" selectionMode="DiscontiguousTreeSelection" selected="(org.openflexo.foundation.ontology.FlexoOntologyObjectImpl)data.selectedValue" rootVisible="false" rowHeight="18" localize="true" manageDynamicModel="true" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)" height="200" index="3" width="200" name="ontologyBrowser">
+        <BrowserElement id="17" dataClassName="org.openflexo.ontology.components.widget.OntologyBrowserModel" isEditable="false" name="model">
+          <Children id="18" data="model.roots" name="children" />
+        </BrowserElement>
+        <BrowserElement id="19" dynamicFont="data.model.getFont(element,data.fIBBrowser.retrieveValidFont)" dataClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl" tooltip="element.displayableDescription" icon="controller.iconForObject(element)" label="element.name" isEditable="false" name="element">
+          <Children id="20" data="data.model.getChildren(element)" name="children" />
+        </BrowserElement>
+      </Browser>
+      <Panel id="21" align="left" borderTop="0" borderTitle="Display options" borderLeft="5" trackViewPortHeight="true" trackViewPortWidth="true" cols="2" borderBottom="5" border="rounded3d" sizeAdjustment="OriginalSize" titleFont="SansSerif,1,10" rows="1" layout="gridbag" vGap="5" borderRight="5" hGap="5" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)" opaque="false" index="4" font="SansSerif,0,10" name="OptionsPanel">
+        <Panel id="22" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,10" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0;x=1;y=0)" opaque="false" index="1" name="Panel">
+          <CheckBox id="23" selected="true" localize="true" data="data.showClasses" constraints="gridbag(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" name="ShowClassesCB" />
+          <Image id="24" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="data.ontologyClassIcon.image" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="Image" />
+          <Label id="25" label="classes" align="left" localize="true" constraints="gridbag(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="2" name="ClassesLabel" />
+          <CheckBox id="26" selected="true" localize="true" data="data.showIndividuals" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="3" name="ShowIndividualsCB" />
+          <Image id="27" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="data.ontologyIndividualIcon.image" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="4" name="Image5" />
+          <Label id="28" label="individuals" align="left" localize="true" constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="5" name="IndividualsLabel" />
+          <CheckBox id="29" selected="true" localize="true" data="data.showObjectProperties" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="6" name="ShowObjectPropertiesCB" />
+          <Image id="30" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="data.ontologyObjectPropertyIcon.image" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="7" name="Image4" />
+          <Label id="31" label="object_properties" align="left" localize="true" constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="8" name="ObjectPropertiesLabel" />
+          <CheckBox id="32" selected="true" localize="true" data="data.showDataProperties" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="9" name="ShowDataPropertiesCB" />
+          <Image id="33" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="data.ontologyDataPropertyIcon.image" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="10" name="Image3" />
+          <Label id="34" label="datatype_properties" align="left" localize="true" constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="11" name="DatatypePropertiesLabel" />
+          <CheckBox id="35" selected="true" localize="true" data="data.showAnnotationProperties" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="12" name="ShowAnnotationPropertiesCB" />
+          <Image id="36" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="data.ontologyAnnotationIcon.image" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=13;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="13" name="Image2" />
+          <Label id="37" label="annotation_properties" align="left" localize="true" constraints="gridbag(anchor=west;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="14" name="AnnotationPropertiesLabel" />
+          <CheckBox id="38" selected="true" localize="true" data="data.strictMode" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=2;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" name="StrictModeCB" />
+          <Label id="39" label="strict_mode" align="left" localize="true" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="StrictModeLabel" />
+          <CheckBox id="40" selected="true" localize="true" manageDynamicModel="true" enable="!data.strictMode" data="data.hierarchicalMode" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=2;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="2" name="HierarchicalModelCB" />
+          <Label id="41" label="hierarchic_presentation" align="left" localize="true" enable="!data.strictMode" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=-5;weightX=0.0;weightY=0.0)" index="3" name="HierarchicPresentationLabel" />
+          <CheckBox id="42" selected="true" localize="true" data="data.displayPropertiesInClasses" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=2;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="4" name="PresentPropertiesInClassesCB" />
+          <Label id="43" label="present_properties_in_classes" align="left" localize="true" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="5" name="PresentPropertiesInClassesLabel" />
+          <CheckBox id="44" selected="true" localize="true" data="data.showTechnologySpecificConcepts" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="data.supportTechnologySpecificHiddenConcepts" index="6" name="ShowOWLRDFConceptsCB" />
+          <Label id="45" align="left" localize="true" data="data.technologySpecificHiddenConceptsLabel" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="data.supportTechnologySpecificHiddenConcepts" index="7" name="Label" />
+          <Label id="46" label="root_class" align="left" localize="true" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="8" name="RootClassLabel" />
+          <Custom id="47" componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector" dataClassForComponent="org.openflexo.foundation.ontology.IFlexoOntologyClass" localize="true" manageDynamicModel="true" data="data.rootClass" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="9" name="RootClassSelector">
+            <Assignment id="48" variable="component.contextOntologyURI" mandatory="true" />
+            <Assignment id="49" variable="component.rootClassURI" mandatory="true" />
+            <Assignment id="50" variable="component.rootClass" mandatory="true" />
+            <Assignment id="51" variable="component.resourceManager" mandatory="true" />
+            <Assignment id="52" variable="component.selectableCondition" mandatory="true" />
+            <Assignment id="53" variable="component.flexoController" mandatory="true" />
+            <Assignment id="54" variable="component.serviceManager" mandatory="true" />
+            <Assignment id="55" variable="component.strictMode" mandatory="true" value="false" />
+            <Assignment id="56" variable="component.hierarchicalMode" mandatory="true" value="true" />
+            <Assignment id="57" variable="component.context" mandatory="true" value="data.ontology" />
+            <Dependancy id="58" componentName="OntologySelector" />
+          </Custom>
+        </Panel>
+      </Panel>
+    </Panel>
+    <Panel id="59" align="left" borderTop="0" flowAlignment="LEADING" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,11" layout="gridbag" vGap="5" borderRight="0" hGap="5" constraints="split(location=center;splitIdentifier=left)" height="200" opaque="false" width="400" font="SansSerif,0,11" name="DetailsPanel">
+      <FIBReferencedComponent id="60" dynamicComponentFile="data.getFibForOntologyObject(ontologyBrowser.selected)" localize="true" manageDynamicModel="true" data="(ontologyBrowser.selected != null ? ontologyBrowser.selected : data.ontology)" constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" opaque="false" index="15" name="OntologyObjectWidget">
+        <ReferenceAssignment id="61" variable="controller.flexoController" mandatory="true" value="controller.flexoController" />
+      </FIBReferencedComponent>
+      <Panel id="62" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,11" layout="gridbag" borderRight="0" constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=5;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)" visible="ontologyBrowser.selected == null || !ontologyBrowser.selected.isOntologyClass &amp;&amp; !ontologyBrowser.selected.isOntologyIndividual &amp;&amp; !ontologyBrowser.selected.isOntologyObjectProperty &amp;&amp; !ontologyBrowser.selected.isOntologyDataProperty" opaque="false" index="4" name="InformationsPanel">
+        <TextArea id="63" rows="2" columns="6" text="TextArea" localize="true" data="data.ontology.description" useScrollBar="true" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.5)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" index="0" name="TextArea" />
+        <Table id="64" backgroundSelectionColor="7,73,217" visibleRowCount="5" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.ontology.IFlexoOntology" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="212,212,212" textSecondarySelectionColor="0,0,0" textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection" rowHeight="18" localize="true" manageDynamicModel="true" data="data.ontology.importedOntologies" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="1" name="ImportedOntologiesTable">
+          <IconColumn id="65" data="controller.iconForObject(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="30" showIcon="false" name="icon" />
+          <LabelColumn id="66" data="iterator.uRI" resizable="true" title="Imported ontologies" displayTitle="true" columnWidth="300" showIcon="false" name="label" />
+        </Table>
+        <TextArea id="67" rows="2" columns="6" text="TextArea" localize="true" useScrollBar="true" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.5)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" index="2" name="TextArea2" />
+      </Panel>
+      <LocalizedDictionary id="68" />
+    </Panel>
+    <LocalizedDictionary id="69" />
+  </SplitPanel>
+  <LocalizedDictionary id="70" />
+  <FIBVariable id="71" type="org.openflexo.ontology.components.widget.FIBOntologyEditor" name="data" />
 </Panel>
