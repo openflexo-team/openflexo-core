@@ -41,7 +41,9 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.java.JavaTypingSpace;
@@ -124,11 +126,23 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 		if (getFMLCompilationUnit() != null) {
 			for (TypeDeclaration typeDeclaration : getFMLCompilationUnit().getTypeDeclarations()) {
 				if (typeAsString.equals(typeDeclaration.getAbbrev())) {
-					return new ProxyType(typeDeclaration.getAbbrev(), (CustomType) typeDeclaration.getReferencedType());
+					return getProxyType(typeDeclaration);
+					// return new ProxyType(typeDeclaration.getAbbrev(), (CustomType) typeDeclaration.getReferencedType());
 				}
 			}
 		}
 		return super.resolveType(typeAsString);
+	}
+
+	private Map<TypeDeclaration, ProxyType> proxyTypes = new HashMap<>();
+
+	public ProxyType getProxyType(TypeDeclaration typeDeclaration) {
+		ProxyType returned = proxyTypes.get(typeDeclaration);
+		if (returned == null) {
+			returned = new ProxyType(typeDeclaration.getAbbrev(), (CustomType) typeDeclaration.getReferencedType());
+			proxyTypes.put(typeDeclaration, returned);
+		}
+		return returned;
 	}
 
 	/**

@@ -210,6 +210,23 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public void moveTypeDeclarationToIndex(TypeDeclaration typeDeclaration, int index);
 
 	/**
+	 * Indicates is supplied type has a corresponding type declaration
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public boolean hasTypeDeclarationFor(TechnologySpecificType<?> type);
+
+	/**
+	 * Normalize supplied type by returning a ProxyType referencing this type if this type appears in a actual type declaration of this
+	 * compilation unit, simply return type when not
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public Type normalizeType(TechnologySpecificType<?> type);
+
+	/**
 	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
 	 * 
 	 * @return
@@ -1551,6 +1568,33 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				}
 			}
 			return null;
+		}
+
+		/**
+		 * Indicates is supplied type has a corresponding type declaration
+		 * 
+		 * @param type
+		 * @return
+		 */
+		@Override
+		public boolean hasTypeDeclarationFor(TechnologySpecificType<?> type) {
+			return getTypeDeclaration(type) != null;
+		}
+
+		/**
+		 * Normalize supplied type by returning a ProxyType referencing this type if this type appears in a actual type declaration of this
+		 * compilation unit, simply return type when not
+		 * 
+		 * @param type
+		 * @return
+		 */
+		@Override
+		public Type normalizeType(TechnologySpecificType<?> type) {
+			TypeDeclaration typeDeclaration = getDeclaringCompilationUnit().getTypeDeclaration(type);
+			if (typeDeclaration != null) {
+				return getTypingSpace().getProxyType(typeDeclaration);
+			}
+			return type;
 		}
 
 	}
