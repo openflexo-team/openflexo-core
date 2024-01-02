@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -68,17 +69,22 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	@PropertyIdentifier(type = String.class)
 	public static final String CONCEPT_URI_KEY = "conceptURI";
+	@PropertyIdentifier(type = IFlexoOntologyClass.class)
+	public static final String ONTOLOGIC_TYPE_KEY = "type";
 
 	@Getter(value = CONCEPT_URI_KEY)
 	@XMLAttribute(xmlTag = "ontologicType")
-	@FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>ontologic type</html>")
+	// @FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>ontologic type</html>")
 	public String _getConceptURI();
 
 	@Setter(CONCEPT_URI_KEY)
 	public void _setConceptURI(String conceptURI);
 
+	@Getter(value = ONTOLOGIC_TYPE_KEY, ignoreType = true)
+	@FMLAttribute(value = ONTOLOGIC_TYPE_KEY, required = false, description = "<html>ontologic type</html>")
 	public IFlexoOntologyClass<?> getOntologicType();
 
+	@Setter(ONTOLOGIC_TYPE_KEY)
 	public void setOntologicType(IFlexoOntologyClass<?> ontologyClass);
 
 	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I>
@@ -120,6 +126,9 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 				Type oldType = lastKnownType;
 				lastKnownType = returned;
 				getPropertyChangeSupport().firePropertyChange(BindingVariable.TYPE_PROPERTY, oldType, returned);
+			}
+			if (getDeclaringCompilationUnit() != null && returned instanceof TechnologySpecificType) {
+				return getDeclaringCompilationUnit().normalizeType((TechnologySpecificType) returned);
 			}
 			return returned;
 		}
