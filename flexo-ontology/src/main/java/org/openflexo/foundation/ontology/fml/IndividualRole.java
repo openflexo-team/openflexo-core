@@ -39,6 +39,7 @@
 package org.openflexo.foundation.ontology.fml;
 
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
@@ -82,6 +83,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I>
 			implements IndividualRole<I> {
+
+		private static final Logger logger = Logger.getLogger(IndividualRoleImpl.class.getPackage().getName());
 
 		public IndividualRoleImpl() {
 			super();
@@ -161,6 +164,10 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		private IFlexoOntologyClass<?> findOntologicType(String conceptURI) {
 			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getOwningVirtualModel())) {
 				return FlexoOntologyVirtualModelNature.getOntologyClass(conceptURI, getOwningVirtualModel());
+			}
+			if (getDeclaringCompilationUnit() == null) {
+				logger.warning("Unexpected null declaring CompilationUnit");
+				return null;
 			}
 			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getDeclaringCompilationUnit().getVirtualModel())) {
 				return FlexoOntologyVirtualModelNature.getOntologyClass(conceptURI, getDeclaringCompilationUnit().getVirtualModel());
