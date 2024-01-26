@@ -86,20 +86,28 @@ public class FMLValidationPanelFIBController extends FMLFIBController {
 	@Override
 	public void showIssue(ValidationIssue<?, ?> issue) {
 		super.showIssue(issue);
-		validationPanel.getFMLEditor().clearHighlights();		
+		validationPanel.getFMLEditor().clearHighlights();
 		int lineNb = getValidationReport().getLineNumber(issue);
 		if (lineNb > -1) {
 			validationPanel.getFMLEditor().highlightLine(lineNb);
 		}
 		if (issue.getValidable() instanceof FMLPrettyPrintable && !(issue.getValidable() instanceof FMLCompilationUnit)) {
-			validationPanel.getFMLEditor().highlightObject((FMLPrettyPrintable)issue.getValidable());
+			validationPanel.getFMLEditor().highlightObject((FMLPrettyPrintable) issue.getValidable());
 		}
 	}
 
 	public void parseImmediately() {
 		validationPanel.getFMLEditor().parseImmediately();
 	}
-	
+
+	/**
+	 * Called to force pretty-print of textual FML from internal representation<br>
+	 * ("synchronize" in GUI)
+	 */
+	public void synchronizeTextualFML() {
+		validationPanel.getFMLEditor().synchronizeTextualFML();
+	}
+
 	@Override
 	public void fixIssue(ValidationIssue<?, ?> issue) {
 		super.fixIssue(issue);

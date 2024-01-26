@@ -2,11 +2,13 @@ package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.List;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.fife.ui.rtextarea.RTextAreaUI;
 
 /**
@@ -120,6 +122,14 @@ public class FMLRSyntaxTextArea extends RSyntaxTextArea implements DocumentListe
 		preventParsing = true;
 		super.setText(t);
 		preventParsing = false;
+	}
+
+	@Override
+	public List<ParserNotice> getParserNotices() {
+		if (parser != null) {
+			return parser.getParserNotices();
+		}
+		return super.getParserNotices();
 	}
 
 }

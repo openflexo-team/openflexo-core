@@ -40,6 +40,7 @@ package org.openflexo.fml.controller.widget.fmleditor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -235,6 +236,13 @@ public class FMLEditorParser extends AbstractParser {
 
 		return result;
 
+	}
+
+	public List<ParserNotice> getParserNotices() {
+		if (result != null) {
+			return result.getNotices();
+		}
+		return Collections.emptyList();
 	}
 
 	public List<ParserNotice> getParserNotices(int line) {

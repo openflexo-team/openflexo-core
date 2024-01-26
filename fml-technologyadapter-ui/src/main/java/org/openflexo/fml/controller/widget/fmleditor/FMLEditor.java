@@ -57,6 +57,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
@@ -120,7 +121,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 	private FMLRSyntaxTextArea textArea;
 	private RTextScrollPane scrollPane;
+	// Vertical band at left where errors are shown
 	private Gutter gutter;
+	// Vertical band at right where errors are shown
+	private ErrorStrip errorStrip;
 	private TextFinderPanel finderToolbar;
 
 	private FMLEditorParser parser;
@@ -249,7 +253,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		// gutter.setFoldIndicatorEnabled(true);
 		// gutter.setFoldIcons(IconLibrary.NAVIGATION_BACKWARD_ICON, IconLibrary.NAVIGATION_FORWARD_ICON);
 
-		ErrorStrip errorStrip = new ErrorStrip(textArea);
+		errorStrip = new ErrorStrip(textArea);
 		editorPanel.add(errorStrip, BorderLayout.LINE_END);
 
 		splitPanel.add(editorPanel, LayoutPosition.CENTER.name());
@@ -424,6 +428,24 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 		updateFMLAsTextRequested = false;
 
+	}
+
+	/**
+	 * Called to force pretty-print of textual FML from internal representation<br>
+	 * ("synchronize" in GUI)
+	 */
+	public void synchronizeTextualFML() {
+
+		// We prevent the caret to move during operation
+		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
+		int updatePolicy = caret.getUpdatePolicy();
+		caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+
+		// Update FML
+		updateFMLAsText();
+
+		// Reset caret update policy
+		caret.setUpdatePolicy(updatePolicy);
 	}
 
 	private boolean modelWillChange = false;

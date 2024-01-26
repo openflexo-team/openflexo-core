@@ -23,6 +23,13 @@
 					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 					font="SansSerif,2,11" name="Label" />
 				<Label id="90"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;synchronize&lt;/a&gt;&lt;/html&gt;"
+					align="left" localize="true"
+					clickAction="controller.synchronizeTextualFML()"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					font="SansSerif,0,10"
+					name="Label3" />
+				<Label id="91"
 					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;reparse&lt;/a&gt;&lt;/html&gt;"
 					align="left" localize="true"
 					clickAction="controller.parseImmediately()"
@@ -89,6 +96,15 @@
 			key="errors/warnings" />
 		<Localized id="163" lang="French" value="errors/warnings"
 			key="errors/warnings" />
+		<Localized id="170" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Synchronize&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;synchronize&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="171" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Synchronize&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;synchronize&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="172" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Synchroniser&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;synchronize&lt;/a&gt;&lt;/html&gt;" />
 	</LocalizedDictionary>
 	<FIBVariable id="164"
 		type="org.openflexo.foundation.fml.FMLValidationReport" name="data" />
