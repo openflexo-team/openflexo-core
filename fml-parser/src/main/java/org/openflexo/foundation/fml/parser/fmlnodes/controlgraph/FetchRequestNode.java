@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.ProxyType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -206,6 +207,9 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 					if ((isUnique && UniqueFetchRequest.class.isAssignableFrom(frClass))
 							|| ((!isUnique) && FetchRequest.class.isAssignableFrom(frClass))) {
 						Type accessedType = TypeUtils.getTypeArgument(frClass, AbstractFetchRequest.class, 2);
+						if (type instanceof ProxyType) {
+							type = ((ProxyType) type).getReferencedType();
+						}
 						if (TypeUtils.isTypeAssignableFrom(accessedType, type)) {
 							// System.out.println("Looked up " + frClass);
 							if (identifier == null || identifier.equals(frClass.getSimpleName())) {
