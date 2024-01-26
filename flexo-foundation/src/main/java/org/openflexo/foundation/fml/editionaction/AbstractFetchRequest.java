@@ -45,6 +45,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -64,6 +65,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
@@ -94,6 +96,8 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String CONDITIONS_KEY = "conditions";
+	@PropertyIdentifier(type = Type.class)
+	String FETCHED_TYPE_KEY = "fetchedType";
 
 	@PropertyIdentifier(type = DataBinding.class)
 	String RECEIVER_KEY = "receiver";
@@ -128,16 +132,26 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 
 	public void deleteCondition(FetchRequestCondition aCondition);
 
+	@Getter(value = FETCHED_TYPE_KEY, ignoreType = true)
 	public Type getFetchedType();
 
+	@Setter(FETCHED_TYPE_KEY)
 	public void setFetchedType(Type type);
+
+	/**
+	 * We define an updater for FETCHED_TYPE property because we need to translate supplied Type to valid TypingSpace
+	 * 
+	 * @param type
+	 */
+	@Updater(FETCHED_TYPE_KEY)
+	public void updateFetchedType(Type type);
 
 	public static abstract class AbstractFetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T, AT>
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, AT> implements AbstractFetchRequest<MS, RD, T, AT> {
 
 		private static final Logger logger = Logger.getLogger(AbstractFetchRequestImpl.class.getPackage().getName());
 
-		private Type fetchedType;
+		// private Type fetchedType;
 
 		protected String getWhereClausesFMLRepresentation() {
 			if (getConditions().size() > 0) {
@@ -163,14 +177,32 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 			return getFetchedType();
 		}
 
-		@Override
+		/*@Override
 		public Type getFetchedType() {
 			return fetchedType;
 		}
-
+		
 		@Override
 		public void setFetchedType(Type type) {
 			this.fetchedType = type;
+		}*/
+
+		/**
+		 * We define an updater for FETCHED_TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void updateFetchedType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
+				setFetchedType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setFetchedType(type);
+			}
 		}
 
 		@Override
