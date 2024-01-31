@@ -200,9 +200,12 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 				if (e.getClickCount() == 1) {
 					clearHighlights();
 				}
+				if (e.getClickCount() == 2) {
+					System.out.println("Open the browser at the right position !!!");
+				}
 			}
 		});
-
+		
 		try {
 			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/dark.xml"));
 			Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/default.xml"));
