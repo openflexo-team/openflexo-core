@@ -11,6 +11,7 @@ FlexoConceptInstanceRole_should_have_a_type_description=FlexoConceptInstanceRole
 Invalid\ binding\ value\:\ b\ reason\:\ BindingVariable\ b\ does\ not\ exist=Invalid binding value\: b reason\: BindingVariable b does not exist
 ModelSlot_($validable.name)_doesn't_define_any_meta_model=ModelSlot_($validable.name)_doesn't_define_any_meta_model
 Unexpected\ exception\:\ null=Unexpected exception\: null
+Unexpected\ fetch\ request\ for\ type\ WSDLAssociation=Unexpected fetch request for type WSDLAssociation
 abstract_behaviour_cannot_have_control_graph=abstract_behaviour_cannot_have_control_graph
 abstract_behaviour_cannot_have_control_graph_description=abstract_behaviour_cannot_have_control_graph_description
 action_does_not_define_any_model_slot=action_does_not_define_any_model_slot
