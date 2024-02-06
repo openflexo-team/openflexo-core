@@ -250,7 +250,9 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		FetchRequestCondition newCondition = getFactory().newFetchRequestCondition();
 		newCondition.setCondition(argValue);
-		modelObject.addToConditions(newCondition);
+		if (modelObject != null) {
+			modelObject.addToConditions(newCondition);
+		}
 	}
 
 	/*
