@@ -74,7 +74,9 @@ public abstract class ExpressionNode<N extends Node, T extends Expression> exten
 				System.out.println("Found DataBinding parent with null model object " + ((DataBindingNode) getParent()).getModelObject());
 				// System.exit(-1);
 			}
-			((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
+			else {
+				((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
+			}
 		}
 		return this;
 	}
