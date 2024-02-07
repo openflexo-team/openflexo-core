@@ -1,0 +1,12 @@
+@URI("http://openflexo.org/test/TestResourceCenter/Bug17.fml")
+public model Bug17 {
+
+	itWorks() {
+		List<String> aList = new ArrayList<String>();
+	}
+
+	itDoesnotWork() {
+		// Mettre Integer dans le new et hop, ca repasse en String
+		List<Integer> anOtherList = new ArrayList<String>();
+	}
+}
