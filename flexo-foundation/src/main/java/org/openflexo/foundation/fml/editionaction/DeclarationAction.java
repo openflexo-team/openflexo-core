@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ConnieType;
-import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.FMLMigration;
@@ -179,6 +178,11 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				return getAssignableAction().getAssignableType();
 			}
 			return Object.class;
+		}
+
+		@Override
+		public Type getAssignableType() {
+			return getType();
 		}
 
 		@Override
