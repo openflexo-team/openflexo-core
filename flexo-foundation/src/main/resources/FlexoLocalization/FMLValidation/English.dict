@@ -39,6 +39,7 @@ binding_'($binding.bindingName)'_is_required_but_was_not_set=Binding '($binding.
 cannot_resolve_action_($validable.editionActionName)=Cannot resolve action ($validable.editionActionName)
 cannot_resolve_technology_adapter_($validable.tAId)=Cannot resolve technology adapter ($validable.tAId)
 cannot_resolve_type_($validable.type)=Cannot resolve type ($validable.type)
+compilation_unit_must_declare_a_virtual_model=Compilation unit must declare a virtual model
 consistency_check_ok=Consistency check ok
 control_graph_declared_for_abstract_behaviour=Control graph declared for abstract behaviour
 controlling_property_shadowing=Controlling property shadowing

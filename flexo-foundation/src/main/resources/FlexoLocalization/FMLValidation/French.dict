@@ -39,6 +39,7 @@ binding_'($binding.bindingName)'_is_required_but_was_not_set=L'expression '($bin
 cannot_resolve_action_($validable.editionActionName)=Impossible de r\u00E9soudre l'action ($validable.editionActionName)
 cannot_resolve_technology_adapter_($validable.tAId)=Impossible de r\u00E9soudre le TechnologyAdapter ($validable.tAId)
 cannot_resolve_type_($validable.type)=Impossible de r\u00E9soudre le type ($validable.type)
+compilation_unit_must_declare_a_virtual_model=compilation_unit_must_declare_a_virtual_model
 consistency_check_ok=V\u00E9rification de consistence conforme
 control_graph_declared_for_abstract_behaviour=control_graph_declared_for_abstract_behaviour
 controlling_property_shadowing=controlling_property_shadowing
