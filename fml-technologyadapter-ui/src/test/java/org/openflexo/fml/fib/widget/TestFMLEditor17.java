@@ -133,7 +133,7 @@ public class TestFMLEditor17 extends OpenflexoFIBTestCase {
 		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
 		assertNotNull(cu);
 		assertEquals(0, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(2, cu.getVirtualModel().getFlexoBehaviours().size());
+		assertEquals(3, cu.getVirtualModel().getFlexoBehaviours().size());
 
 		ValidationReport validation = validate(cu);
 		assertEquals(1, validation.getErrorsCount());
@@ -193,8 +193,11 @@ public class TestFMLEditor17 extends OpenflexoFIBTestCase {
 				+ "        List<String> aList = new ArrayList<String>();\n"
 				+ "    }\n"
 				+ "    \n"
+				+ "    itWorksAsWell() {\n"
+				+ "        List<String> myList = new ArrayList<>();\n"
+				+ "    }\n"
+				+ "    \n"
 				+ "    itDoesnotWork() {\n"
-				+ "        // Mettre Integer dans le new et hop, ca repasse en String\n"
 				+ "        List<Integer> anOtherList = new ArrayList<Integer>();\n"
 				+ "    }\n"
 				+ "}\n";
@@ -208,7 +211,7 @@ public class TestFMLEditor17 extends OpenflexoFIBTestCase {
 		FMLCompilationUnit cu = fmlEditor.getFMLResource().getCompilationUnit();
 		assertNotNull(cu);
 		assertEquals(0, cu.getVirtualModel().getFlexoProperties().size());
-		assertEquals(2, cu.getVirtualModel().getFlexoBehaviours().size());
+		assertEquals(3, cu.getVirtualModel().getFlexoBehaviours().size());
 		assertEquals(0, cu.getVirtualModel().getFlexoConcepts().size());
 
 		assertSame(cu, compilationUnit);
