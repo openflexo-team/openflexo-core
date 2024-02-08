@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.type.ProxyType;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
@@ -127,10 +128,23 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 				lastKnownType = returned;
 				getPropertyChangeSupport().firePropertyChange(BindingVariable.TYPE_PROPERTY, oldType, returned);
 			}
+
 			if (getDeclaringCompilationUnit() != null && returned instanceof TechnologySpecificType) {
+				// If resulting type was declared in a specific type declaration, use that ProxyType
 				return getDeclaringCompilationUnit().normalizeType((TechnologySpecificType) returned);
 			}
 			return returned;
+		}
+
+		@Override
+		public void setType(Type type) {
+			performSuperSetter(TYPE_KEY, type);
+			Type t = ProxyType.getEffectiveType(type);
+			// If declared type is typed, use that information to set ontologic type
+			if (t instanceof IndividualOfClass) {
+				setOntologicType(((IndividualOfClass) t).getOntologyClass());
+			}
+
 		}
 
 		public abstract Class<I> getOntologyIndividualClass();
