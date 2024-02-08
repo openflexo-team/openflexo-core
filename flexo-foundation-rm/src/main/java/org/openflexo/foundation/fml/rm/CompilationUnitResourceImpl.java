@@ -483,7 +483,7 @@ public abstract class CompilationUnitResourceImpl
 
 	@Override
 	public CompilationUnitResource getCompilationUnitResource(String virtualModelNameOrURI) {
-		for (CompilationUnitResource vmRes : getContainedVirtualModelResources()) {
+		for (CompilationUnitResource vmRes : getContainedCompilationUnitResources()) {
 			if (vmRes.getName().equals(virtualModelNameOrURI) || vmRes.getURI().equals(virtualModelNameOrURI)) {
 				return vmRes;
 			}
@@ -492,7 +492,7 @@ public abstract class CompilationUnitResourceImpl
 	}
 
 	@Override
-	public List<CompilationUnitResource> getContainedVirtualModelResources() {
+	public List<CompilationUnitResource> getContainedCompilationUnitResources() {
 		return getContents(CompilationUnitResource.class);
 	}
 

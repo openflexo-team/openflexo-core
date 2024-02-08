@@ -1286,8 +1286,23 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 */
 	public void removeModuleView(ModuleView<?> aView) {
 
+		// System.out.println("removeModuleView for " + aView + " of " + aView.getClass());
+
+		Location toBeRemoved = null;
+
+		for (Location location : getControllerModel().getLocations()) {
+			if (location.getPerspective() == aView.getPerspective() && (location.getMasterObject() == aView.getRepresentedObject()
+					|| location.getObject() == aView.getRepresentedObject())) {
+				toBeRemoved = location;
+			}
+		}
+
 		Map<FlexoObject, ModuleView<?>> moduleViewsForPerspective = getModuleViewsForPerspective(aView.getPerspective());
 		moduleViewsForPerspective.remove(aView.getRepresentedObject());
+
+		if (toBeRemoved != null) {
+			getControllerModel().removeFromLocations(toBeRemoved);
+		}
 
 		// What about the locations ???
 		/*Collection<Location> locations = locationsForView.get(aView);

@@ -604,7 +604,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public void setName(String name) throws InvalidNameException {
 			String simpleName;
-			if (name.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+			if (name != null && name.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
 				simpleName = name.substring(0, name.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
 			}
 			else {

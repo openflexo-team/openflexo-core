@@ -119,6 +119,7 @@ public class FMLCompilationUnitView extends JPanel implements SelectionSynchroni
 
 	@Override
 	public void deleteModuleView() {
+		System.out.println("deleteModuleView() in FMLCompilationUnitView");
 		getRepresentedObject().getPropertyChangeSupport().removePropertyChangeListener(getRepresentedObject().getDeletedProperty(), this);
 		if (getFlexoController() != null) {
 			getFlexoController().removeModuleView(this);
@@ -150,7 +151,10 @@ public class FMLCompilationUnitView extends JPanel implements SelectionSynchroni
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		System.out.println("Hop on recoit " + evt + " depuis " + evt.getSource());
+
 		if (evt.getSource() == getRepresentedObject() && evt.getPropertyName().equals(getRepresentedObject().getDeletedProperty())) {
+			System.out.println("On supprime la ModuleView");
 			deleteModuleView();
 		}
 	}

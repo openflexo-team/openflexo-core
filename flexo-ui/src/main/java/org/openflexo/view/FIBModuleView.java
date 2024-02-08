@@ -89,6 +89,7 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, LocalizedDelegate locales,
 			boolean addScrollBar) {
 		super(representedObject, controller, fibComponent, locales, addScrollBar);
+		getRepresentedObject().getPropertyChangeSupport().addPropertyChangeListener(getRepresentedObject().getDeletedProperty(), this);
 		Progress.progress("instantiating_fib_component");
 	}
 
@@ -112,9 +113,17 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 
 	@Override
 	public void deleteModuleView() {
+		System.out.println("deleteModuleView() in FIBModuleView");
+		getFlexoController().removeModuleView(this);
 		deleteView();
 		getFIBController().delete();
-		getFlexoController().removeModuleView(this);
+		getRepresentedObject().getPropertyChangeSupport().removePropertyChangeListener(getRepresentedObject().getDeletedProperty(), this);
+		if (getFlexoController() != null) {
+			getFlexoController().removeModuleView(this);
+			if (getFlexoController().getSelectionManager() != null) {
+				getFlexoController().getSelectionManager().removeFromSelectionListeners(this);
+			}
+		}
 	}
 
 	@Override

@@ -69,7 +69,8 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class SelectionSynchronizedFIBView extends FlexoFIBView implements SelectionSynchronizedComponent, GraphicalFlexoObserver, FIBSelectionListener {
+public class SelectionSynchronizedFIBView extends FlexoFIBView
+		implements SelectionSynchronizedComponent, GraphicalFlexoObserver, FIBSelectionListener {
 	static final Logger logger = Logger.getLogger(SelectionSynchronizedFIBView.class.getPackage().getName());
 
 	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource,
@@ -223,7 +224,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 		}
 		return object;
 	}
-	
+
 	@Override
 	public Vector<FlexoObject> getSelection() {
 		if (getSelectionManager() != null) {

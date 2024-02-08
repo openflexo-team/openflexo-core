@@ -92,8 +92,8 @@ import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.action.DeleteCompilationUnit;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
-import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.action.RenameCompilationUnit;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
@@ -842,8 +842,8 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public FlexoConcept deleteFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
-			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
-					getEditor());
+			DeleteCompilationUnit deleteVirtualModel = DeleteCompilationUnit.actionType
+					.makeNewAction(((VirtualModel) flexoConcept).getDeclaringCompilationUnit(), null, getEditor());
 			deleteVirtualModel.doAction();
 		}
 		else if (flexoConcept != null) {
@@ -875,11 +875,11 @@ public class FMLFIBController extends FlexoFIBController {
 
 	// Should be above to be available from everywhere
 	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
-	public void deleteVirtualModel(FlexoResource<FMLCompilationUnit> virtualModelResource)
+	public void deleteCompilationUnit(FlexoResource<FMLCompilationUnit> compilationUnitResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType
-				.makeNewAction(virtualModelResource.getResourceData().getVirtualModel(), null, getEditor());
-		deleteVirtualModel.doAction();
+		DeleteCompilationUnit deleteCompilationUnit = DeleteCompilationUnit.actionType
+				.makeNewAction(compilationUnitResource.getResourceData(), null, getEditor());
+		deleteCompilationUnit.doAction();
 	}
 
 	@NotificationUnsafe

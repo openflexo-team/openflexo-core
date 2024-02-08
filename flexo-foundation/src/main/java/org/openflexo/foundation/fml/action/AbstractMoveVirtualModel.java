@@ -93,7 +93,7 @@ public abstract class AbstractMoveVirtualModel<A extends AbstractMoveVirtualMode
 
 	private void buildAllVirtualModelResourceInfos(CompilationUnitResource vm, List<MovedResourceInfo> l, File origin, File destination) {
 		l.add(new MovedResourceInfo(vm, origin, destination));
-		for (CompilationUnitResource virtualModelResource : vm.getContainedVirtualModelResources()) {
+		for (CompilationUnitResource virtualModelResource : vm.getContainedCompilationUnitResources()) {
 			String containedBaseName = virtualModelResource.getName();
 			if (!containedBaseName.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
 				containedBaseName = containedBaseName + CompilationUnitResourceFactory.FML_SUFFIX;

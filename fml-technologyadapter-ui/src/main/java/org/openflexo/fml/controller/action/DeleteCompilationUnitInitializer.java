@@ -42,27 +42,27 @@ import javax.swing.Icon;
 
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionRunnable;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.DeleteVirtualModel;
+import org.openflexo.foundation.fml.action.DeleteCompilationUnit;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
-public class DeleteVirtualModelInitializer extends ActionInitializer<DeleteVirtualModel, VirtualModel, FMLObject> {
-	public DeleteVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
-		super(DeleteVirtualModel.actionType, actionInitializer);
+public class DeleteCompilationUnitInitializer extends ActionInitializer<DeleteCompilationUnit, FMLCompilationUnit, FMLObject> {
+	public DeleteCompilationUnitInitializer(ControllerActionInitializer actionInitializer) {
+		super(DeleteCompilationUnit.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionRunnable<DeleteVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<DeleteCompilationUnit, FMLCompilationUnit, FMLObject> getDefaultInitializer() {
 		return (e, action) -> FlexoController
-				.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_virtual_model"));
+				.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_compilation_unit"));
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory<DeleteVirtualModel, VirtualModel, FMLObject> actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<DeleteCompilationUnit, FMLCompilationUnit, FMLObject> actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

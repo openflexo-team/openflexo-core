@@ -50,8 +50,8 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.foundation.fml.action.DeleteCompilationUnit;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
-import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -162,7 +162,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(4)
 	public void testDeleteVirtualModel() {
-		DeleteVirtualModel action2 = DeleteVirtualModel.actionType.makeNewAction(virtualModel, null, editor);
+		DeleteCompilationUnit action2 = DeleteCompilationUnit.actionType.makeNewAction(virtualModel.getCompilationUnit(), null, editor);
 		assertTrue(action2.isValid());
 		action2.doAction();
 		assertTrue(action2.hasActionExecutionSucceeded());
@@ -172,7 +172,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(5)
 	public void testDeleteViewPoint() {
-		DeleteVirtualModel action = DeleteVirtualModel.actionType.makeNewAction(viewPoint, null, editor);
+		DeleteCompilationUnit action = DeleteCompilationUnit.actionType.makeNewAction(viewPoint.getCompilationUnit(), null, editor);
 		assertTrue(action.isValid());
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
