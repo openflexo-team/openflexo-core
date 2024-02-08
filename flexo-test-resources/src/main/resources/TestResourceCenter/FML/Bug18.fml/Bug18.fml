@@ -1,0 +1,30 @@
+@URI("http://openflexo.org/test/TestResourceCenter/Bug18.fml")
+public model Bug18 {
+
+	Foo[0,*] someFoos with ConceptInstance(virtualModelInstance=this);
+
+	public concept Foo {
+		
+	}
+
+	void test1() {
+		List<Foo> fooList = new ArrayList<Foo>();
+		for (Foo item : select Foo from this) {
+			fooList.add(item);
+		}
+	}
+	
+	void test2() {
+		List<Foo> fooList = new ArrayList<>();
+		for (Foo item : select Foo from this) {
+			fooList.add(item);
+		}
+	}
+	
+	void test3() {
+		for (Foo item : select Foo from this) {
+			someFoos.add(item);
+		}
+	}
+
+}
