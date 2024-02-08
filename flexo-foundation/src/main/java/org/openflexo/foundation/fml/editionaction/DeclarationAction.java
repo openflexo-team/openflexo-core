@@ -269,7 +269,8 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				DeclarationAction<?> declaration) {
 
 			Type expected = declaration.getDeclaredType();
-			Type analyzed = declaration.getAssignableType();
+			Type analyzed = declaration.getAnalyzedType();
+
 			if (declaration.getAssignableAction() != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
 				return new NotCompatibleTypesIssue(this, declaration, expected, analyzed);
 			}
