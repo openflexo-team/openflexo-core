@@ -47,7 +47,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
-import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.InvalidNameException;
@@ -393,8 +393,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public void updateDeclaredType(Type type) {
 
-			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
-				setDeclaredType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			if (getDeclaringCompilationUnit() != null && type instanceof ConnieType) {
+				setDeclaredType(((ConnieType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
 			}
 			else {
 				setDeclaredType(type);
