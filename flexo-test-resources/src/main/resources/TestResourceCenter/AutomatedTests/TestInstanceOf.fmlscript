@@ -1,0 +1,15 @@
+service ResourceCenterService status;
+resources;
+context;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestInstanceOf.fml"];
+context;
+assert virtualModel != null;
+log "Pretty-print of "+virtualModel;
+log virtualModel.fMLPrettyPrint;
+//validate virtualModel;
+service ResourceCenterService add_temp_rc;
+myVMI = new TestInstanceOf() with (name="test1");
+context;
+assert myVMI != null;
+assert myVMI.retrieveAllFoos().size == 5;
+//assert myVMI.retrieveAllFoo2s().size == 3;
