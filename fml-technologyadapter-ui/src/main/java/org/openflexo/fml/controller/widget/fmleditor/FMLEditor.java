@@ -194,24 +194,6 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Hyperli
 		textArea.setSyntaxEditingStyle(FMLLanguageSupport.SYNTAX_STYLE_FML);
 		textArea.setCodeFoldingEnabled(true);
 
-		/*private RSyntaxTextArea createTextArea() {
-			RSyntaxTextArea textArea = new RSyntaxTextArea(25, 80);
-			LanguageSupportFactory.get().register(textArea);
-			textArea.setCaretPosition(0);
-			textArea.addHyperlinkListener(this);
-			textArea.requestFocusInWindow();
-			textArea.setMarkOccurrences(true);
-			textArea.setCodeFoldingEnabled(true);
-			textArea.setTabsEmulated(true);
-			textArea.setTabSize(3);
-			// textArea.setBackground(new java.awt.Color(224, 255, 224));
-			// textArea.setUseSelectedTextColor(true);
-			// textArea.setLineWrap(true);
-			ToolTipManager.sharedInstance().registerComponent(textArea);
-			return textArea;
-		}*/
-
-		LanguageSupportFactory.get().register(textArea);
 		textArea.setCaretPosition(0);
 		textArea.addHyperlinkListener(this);
 		textArea.requestFocusInWindow();
@@ -219,14 +201,6 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Hyperli
 		textArea.setCodeFoldingEnabled(true);
 		textArea.setTabsEmulated(true);
 		textArea.setTabSize(3);
-		ToolTipManager.sharedInstance().registerComponent(textArea);
-
-		/*textArea.addCaretListener(new CaretListener() {
-			@Override
-			public void caretUpdate(CaretEvent e) {
-				clearHighlights();
-			}
-		});*/
 
 		textArea.addMouseListener(new MouseAdapter() {
 			@Override
@@ -304,6 +278,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Hyperli
 		validationPanel = new FMLValidationPanel(getValidationReport(), this, flexoController);
 		splitPanel.add(validationPanel, LayoutPosition.BOTTOM.name());
 
+		LanguageSupportFactory.get().register(textArea);
+		ToolTipManager.sharedInstance().registerComponent(textArea);
+
 		// boolean requiresNewParsing = !fmlResource.getLoadedResourceData().getPrettyPrintDelegate().hasSource();
 
 		// This call is a little bit brutal, because it triggers a new parsing
@@ -333,6 +310,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Hyperli
 	}
 
 	public void delete() {
+		textArea.setParser(null);
 		LanguageSupportFactory.get().unregister(textArea);
 		ToolTipManager.sharedInstance().unregisterComponent(textArea);
 		logger.warning("delete() not fully implemented for FMLEditor");

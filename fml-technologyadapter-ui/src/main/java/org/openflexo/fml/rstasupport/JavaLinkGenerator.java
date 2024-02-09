@@ -24,6 +24,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
 import org.fife.ui.rsyntaxtextarea.SelectRegionLinkGeneratorResult;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenImpl;
+import org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser;
 import org.openflexo.fml.rstasupport.rjc.ast.CodeBlock;
 import org.openflexo.fml.rstasupport.rjc.ast.CompilationUnit;
 import org.openflexo.fml.rstasupport.rjc.ast.FormalParameter;
@@ -32,14 +33,11 @@ import org.openflexo.fml.rstasupport.rjc.ast.Member;
 import org.openflexo.fml.rstasupport.rjc.ast.Method;
 import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 
-
 /**
- * Checks for hyperlink-able tokens under the mouse position when Ctrl is
- * pressed (Cmd on OS X).  Currently this class only checks for accessible
- * members in the current file only (e.g. no members in super classes, no other
- * classes on the classpath, etc.).  So naturally, there is a lot of room for
- * improvement. IDE-style applications, for example, would want to check
- * for members in super-classes, and open their source on click events.
+ * Checks for hyperlink-able tokens under the mouse position when Ctrl is pressed (Cmd on OS X). Currently this class only checks for
+ * accessible members in the current file only (e.g. no members in super classes, no other classes on the classpath, etc.). So naturally,
+ * there is a lot of room for improvement. IDE-style applications, for example, would want to check for members in super-classes, and open
+ * their source on click events.
  *
  * @author Robert Futrell
  * @version 1.0
@@ -49,35 +47,33 @@ class JavaLinkGenerator implements LinkGenerator {
 
 	private FMLLanguageSupport jls;
 
-
 	JavaLinkGenerator(FMLLanguageSupport jls) {
 		this.jls = jls;
 	}
 
-
 	/**
-	 * Checks if the token at the specified offset is possibly a "click-able"
-	 * region.
+	 * Checks if the token at the specified offset is possibly a "click-able" region.
 	 *
-	 * @param textArea The text area.
-	 * @param offs The offset, presumably at the mouse position.
+	 * @param textArea
+	 *            The text area.
+	 * @param offs
+	 *            The offset, presumably at the mouse position.
 	 * @return A result object.
 	 */
-	private IsLinkableCheckResult checkForLinkableToken(
-			RSyntaxTextArea textArea, int offs) {
+	private IsLinkableCheckResult checkForLinkableToken(RSyntaxTextArea textArea, int offs) {
 
 		IsLinkableCheckResult result = null;
 
-		if (offs>=0) {
+		if (offs >= 0) {
 
 			try {
 
 				int line = textArea.getLineOfOffset(offs);
 				Token first = textArea.getTokenListForLine(line);
-				RSyntaxDocument doc = (RSyntaxDocument)textArea.getDocument();
+				RSyntaxDocument doc = (RSyntaxDocument) textArea.getDocument();
 				Token prev = null;
 
-				for (Token t=first; t!=null && t.isPaintable(); t=t.getNextToken()) {
+				for (Token t = first; t != null && t.isPaintable(); t = t.getNextToken()) {
 
 					if (t.containsPosition(offs)) {
 
@@ -86,18 +82,16 @@ class JavaLinkGenerator implements LinkGenerator {
 						Token token = new TokenImpl(t);
 						boolean isMethod = false;
 
-						if (prev==null) {
-							prev = RSyntaxUtilities.getPreviousImportantToken(
-									doc, line-1);
+						if (prev == null) {
+							prev = RSyntaxUtilities.getPreviousImportantToken(doc, line - 1);
 						}
-						if (prev!=null && prev.isSingleChar('.')) {
+						if (prev != null && prev.isSingleChar('.')) {
 							// Not a field or method defined in this class.
 							break;
 						}
 
-						Token next = RSyntaxUtilities.getNextImportantToken(
-								t.getNextToken(), textArea, line);
-						if (next!=null && next.isSingleChar(Token.SEPARATOR, '(')) {
+						Token next = RSyntaxUtilities.getNextImportantToken(t.getNextToken(), textArea, line);
+						if (next != null && next.isSingleChar(Token.SEPARATOR, '(')) {
 							isMethod = true;
 						}
 
@@ -122,32 +116,32 @@ class JavaLinkGenerator implements LinkGenerator {
 
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public LinkGeneratorResult isLinkAtOffset(RSyntaxTextArea textArea,
-			int offs) {
+	public LinkGeneratorResult isLinkAtOffset(RSyntaxTextArea textArea, int offs) {
 
 		int start = -1;
 		int end = -1;
 
 		IsLinkableCheckResult result = checkForLinkableToken(textArea, offs);
-		if (result!=null) {
+		if (result != null) {
 
-			JavaParser parser = jls.getParser(textArea);
-			CompilationUnit cu = parser.getCompilationUnit();
+			FMLEditorParser parser = jls.getParser(textArea);
+			// TODO
+			System.out.println("Un truc a faire ici : isLinkAtOffset(textArea,offs)");
+			CompilationUnit cu = null; // parser.getCompilationUnit();
 			Token t = result.token;
 			boolean method = result.method;
 
-			if (cu!=null) {
+			if (cu != null) {
 
 				TypeDeclaration td = cu.getDeepestTypeDeclarationAtOffset(offs);
 				boolean staticFieldsOnly = false;
 				boolean deepestTypeDec = true;
 				boolean deepestContainingMemberStatic = false;
-				while (td!=null && start==-1) {
+				while (td != null && start == -1) {
 
 					// First, check for a local variable in methods/static blocks
 					if (!method && deepestTypeDec) {
@@ -155,26 +149,26 @@ class JavaLinkGenerator implements LinkGenerator {
 						Iterator<Member> i = td.getMemberIterator();
 						while (i.hasNext()) {
 
-							Method m = null; // Nasty!  Clean this code up
+							Method m = null; // Nasty! Clean this code up
 							Member member = i.next();
 							CodeBlock block = null;
 
 							// Check if a method or static block contains offs
 							if (member instanceof Method) {
-								m = (Method)member;
-								if (m.getBodyContainsOffset(offs) && m.getBody()!=null) {
+								m = (Method) member;
+								if (m.getBodyContainsOffset(offs) && m.getBody() != null) {
 									deepestContainingMemberStatic = m.isStatic();
 									block = m.getBody().getDeepestCodeBlockContaining(offs);
 								}
 							}
 							else if (member instanceof CodeBlock) {
-								block = (CodeBlock)member;
+								block = (CodeBlock) member;
 								deepestContainingMemberStatic = block.isStatic();
 								block = block.getDeepestCodeBlockContaining(offs);
 							}
 
 							// If so, scan its locals
-							if (block!=null) {
+							if (block != null) {
 								String varName = t.getLexeme();
 								// Local variables first, in reverse order
 								List<LocalVariable> locals = block.getLocalVarsBefore(offs);
@@ -186,8 +180,8 @@ class JavaLinkGenerator implements LinkGenerator {
 									}
 								}
 								// Then arguments, if any.
-								if (start==-1 && m!=null) {
-									for (int j=0; j<m.getParameterCount(); j++) {
+								if (start == -1 && m != null) {
+									for (int j = 0; j < m.getParameterCount(); j++) {
 										FormalParameter p = m.getParameter(j);
 										if (varName.equals(p.getName())) {
 											start = p.getNameStartOffset();
@@ -202,14 +196,13 @@ class JavaLinkGenerator implements LinkGenerator {
 					}
 
 					// If no local var match, check fields or methods.
-					if (start==-1) {
+					if (start == -1) {
 						String varName = t.getLexeme();
-						Iterator<? extends Member> i = method ?
-								td.getMethodIterator() : td.getFieldIterator();
+						Iterator<? extends Member> i = method ? td.getMethodIterator() : td.getFieldIterator();
 						while (i.hasNext()) {
 							Member member = i.next();
-							if (((!deepestContainingMemberStatic && !staticFieldsOnly) || member.isStatic()) &&
-									varName.equals(member.getName())) {
+							if (((!deepestContainingMemberStatic && !staticFieldsOnly) || member.isStatic())
+									&& varName.equals(member.getName())) {
 								start = member.getNameStartOffset();
 								end = member.getNameEndOffset();
 								break;
@@ -218,9 +211,9 @@ class JavaLinkGenerator implements LinkGenerator {
 					}
 
 					// If still no match found, check parent type
-					if (start==-1) {
+					if (start == -1) {
 						staticFieldsOnly |= td.isStatic();
-						//td = td.isStatic() ? null : td.getParentType();
+						// td = td.isStatic() ? null : td.getParentType();
 						td = td.getParentType();
 						// Don't check for local vars in parent type methods.
 						deepestTypeDec = false;
@@ -230,9 +223,8 @@ class JavaLinkGenerator implements LinkGenerator {
 
 			}
 
-			if (start>-1) {
-				return new SelectRegionLinkGeneratorResult(textArea, t.getOffset(),
-						start, end);
+			if (start > -1) {
+				return new SelectRegionLinkGeneratorResult(textArea, t.getOffset(), start, end);
 			}
 
 		}
@@ -241,10 +233,8 @@ class JavaLinkGenerator implements LinkGenerator {
 
 	}
 
-
 	/**
-	 * The result of checking whether a region of code under the mouse is
-	 * <em>possibly</em> link-able.
+	 * The result of checking whether a region of code under the mouse is <em>possibly</em> link-able.
 	 */
 	private static final class IsLinkableCheckResult {
 
@@ -254,8 +244,7 @@ class JavaLinkGenerator implements LinkGenerator {
 		private Token token;
 
 		/**
-		 * Whether the token is a method invocation (as opposed to a local
-		 * variable or field).
+		 * Whether the token is a method invocation (as opposed to a local variable or field).
 		 */
 		private boolean method;
 
@@ -265,6 +254,5 @@ class JavaLinkGenerator implements LinkGenerator {
 		}
 
 	}
-
 
 }

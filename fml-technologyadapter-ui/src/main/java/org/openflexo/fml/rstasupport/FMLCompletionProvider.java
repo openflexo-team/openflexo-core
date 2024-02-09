@@ -24,8 +24,7 @@ import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.autocomplete.LanguageAwareCompletionProvider;
 import org.fife.ui.autocomplete.ParameterizedCompletion;
 import org.openflexo.fml.rstasupport.buildpath.LibraryInfo;
-import org.openflexo.fml.rstasupport.rjc.ast.CompilationUnit;
-
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 
 /**
  * Completion provider for the Java programming language.
@@ -33,62 +32,55 @@ import org.openflexo.fml.rstasupport.rjc.ast.CompilationUnit;
  * @author Robert Futrell
  * @version 1.0
  */
-public class JavaCompletionProvider extends LanguageAwareCompletionProvider {
+public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 
 	/**
 	 * The provider used for source code, kept here since it's used so much.
 	 */
 	private SourceCompletionProvider sourceProvider;
 
-	private CompilationUnit cu;
-
+	private FMLCompilationUnit cu;
 
 	/**
 	 * Constructor.
 	 */
-	public JavaCompletionProvider() {
+	public FMLCompletionProvider() {
 		this(null);
 	}
-
 
 	/**
 	 * Constructor.
 	 *
-	 * @param jarManager The jar manager to use when looking up completion
-	 *        choices.  This can be passed in to share a single jar manager
-	 *        across multiple <tt>RSyntaxTextArea</tt>s.  This may also be
-	 *        <code>null</code>, in which case this completion provider will
-	 *        have a unique <tt>JarManager</tt>.
+	 * @param jarManager
+	 *            The jar manager to use when looking up completion choices. This can be passed in to share a single jar manager across
+	 *            multiple <tt>RSyntaxTextArea</tt>s. This may also be <code>null</code>, in which case this completion provider will have a
+	 *            unique <tt>JarManager</tt>.
 	 */
-	public JavaCompletionProvider(JarManager jarManager) {
+	public FMLCompletionProvider(JarManager jarManager) {
 
 		super(new SourceCompletionProvider(jarManager));
-		this.sourceProvider = (SourceCompletionProvider)
-										getDefaultCompletionProvider();
+		this.sourceProvider = (SourceCompletionProvider) getDefaultCompletionProvider();
 		sourceProvider.setJavaProvider(this);
-		setShorthandCompletionCache(new JavaShorthandCompletionCache(
-				sourceProvider, new DefaultCompletionProvider()));
+		setShorthandCompletionCache(new JavaShorthandCompletionCache(sourceProvider, new DefaultCompletionProvider()));
 		setDocCommentCompletionProvider(new DocCommentCompletionProvider());
 
 	}
 
-
 	/**
 	 * Adds a jar to the "build path".
 	 *
-	 * @param info The jar to add.  If this is <code>null</code>, then
-	 *        the current JVM's main JRE jar (rt.jar, or classes.jar on OS X)
-	 *        will be added.  If this jar has already been added, adding it
-	 *        again will do nothing (except possibly update its attached source
-	 *        location).
-	 * @throws IOException If an IO error occurs.
+	 * @param info
+	 *            The jar to add. If this is <code>null</code>, then the current JVM's main JRE jar (rt.jar, or classes.jar on OS X) will be
+	 *            added. If this jar has already been added, adding it again will do nothing (except possibly update its attached source
+	 *            location).
+	 * @throws IOException
+	 *             If an IO error occurs.
 	 * @see #removeJar(File)
 	 * @see #getJars()
 	 */
 	public void addJar(LibraryInfo info) throws IOException {
 		sourceProvider.addJar(info);
 	}
-
 
 	/**
 	 * Removes all jars from the "build path".
@@ -101,7 +93,6 @@ public class JavaCompletionProvider extends LanguageAwareCompletionProvider {
 		sourceProvider.clearJars();
 	}
 
-
 	/**
 	 * Defers to the source-analyzing completion provider.
 	 *
@@ -112,56 +103,57 @@ public class JavaCompletionProvider extends LanguageAwareCompletionProvider {
 		return sourceProvider.getAlreadyEnteredText(comp);
 	}
 
-
-	public synchronized CompilationUnit getCompilationUnit() {
+	public synchronized FMLCompilationUnit getCompilationUnit() {
 		return cu;
 	}
-
 
 	@Override
 	public List<Completion> getCompletionsAt(JTextComponent tc, Point p) {
 		return sourceProvider.getCompletionsAt(tc, p);
 	}
 
+	@Override
+	public List<Completion> getCompletions(JTextComponent comp) {
+		return super.getCompletions(comp);
+	}
+
+	@Override
+	protected List<Completion> getCompletionsImpl(JTextComponent comp) {
+		return super.getCompletionsImpl(comp);
+	}
 
 	/**
 	 * Returns the jars on the "build path".
 	 *
-	 * @return A list of {@link LibraryInfo}s.  Modifying a
-	 *         <code>LibraryInfo</code> in this list will have no effect on
-	 *         this completion provider; in order to do that, you must re-add
-	 *         the jar via {@link #addJar(LibraryInfo)}.  If there are
-	 *         no jars on the "build path," this will be an empty list.
+	 * @return A list of {@link LibraryInfo}s. Modifying a <code>LibraryInfo</code> in this list will have no effect on this completion
+	 *         provider; in order to do that, you must re-add the jar via {@link #addJar(LibraryInfo)}. If there are no jars on the "build
+	 *         path," this will be an empty list.
 	 * @see #addJar(LibraryInfo)
 	 */
 	public List<LibraryInfo> getJars() {
 		return sourceProvider.getJars();
 	}
 
-
 	@Override
-	public List<ParameterizedCompletion> getParameterizedCompletions(
-						JTextComponent tc) {
+	public List<ParameterizedCompletion> getParameterizedCompletions(JTextComponent tc) {
 		return null;
 	}
-
 
 	/**
 	 * Removes a jar from the "build path".
 	 *
-	 * @param jar The jar to remove.
-	 * @return Whether the jar was removed.  This will be <code>false</code>
-	 *         if the jar was not on the build path.
+	 * @param jar
+	 *            The jar to remove.
+	 * @return Whether the jar was removed. This will be <code>false</code> if the jar was not on the build path.
 	 * @see #addJar(LibraryInfo)
 	 */
 	public boolean removeJar(File jar) {
 		return sourceProvider.removeJar(jar);
 	}
 
-
 	private void setCommentCompletions(ShorthandCompletionCache shorthandCache) {
 		AbstractCompletionProvider provider = shorthandCache.getCommentProvider();
-		if(provider != null) {
+		if (provider != null) {
 			for (Completion c : shorthandCache.getCommentCompletions()) {
 				provider.addCompletion(c);
 			}
@@ -169,22 +161,20 @@ public class JavaCompletionProvider extends LanguageAwareCompletionProvider {
 		}
 	}
 
-
-	public synchronized void setCompilationUnit(CompilationUnit cu) {
+	public synchronized void setCompilationUnit(FMLCompilationUnit cu) {
 		this.cu = cu;
 	}
-
 
 	/**
 	 * Set shorthand completion cache (template and comment completions).
 	 *
-	 * @param cache The cache to use.
+	 * @param cache
+	 *            The cache to use.
 	 */
 	public void setShorthandCompletionCache(ShorthandCompletionCache cache) {
 		sourceProvider.setShorthandCache(cache);
-		//reset comment completions too
+		// reset comment completions too
 		setCommentCompletions(cache);
 	}
-
 
 }

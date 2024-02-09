@@ -10,7 +10,6 @@
  */
 package org.openflexo.fml.rstasupport;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -18,7 +17,6 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.ActionMap;
@@ -37,10 +35,10 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.openflexo.fml.rstasupport.rjc.ast.CompilationUnit;
-import org.openflexo.fml.rstasupport.rjc.ast.ImportDeclaration;
-import org.openflexo.fml.rstasupport.rjc.ast.Package;
+import org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser;
+import org.openflexo.fml.controller.widget.fmleditor.FMLRSyntaxTextArea;
 import org.openflexo.fml.rstasupport.tree.JavaOutlineTree;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 
 /**
  * Language support for FML
@@ -57,12 +55,12 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	public static String SYNTAX_STYLE_FML = "text/fml";
 
 	/**
-	 * Maps <tt>JavaParser</tt>s to <tt>Info</tt> instances about them.
+	 * Maps <tt>FMLEditorParser</tt>s to <tt>Info</tt> instances about them.
 	 */
-	private Map<JavaParser, Info> parserToInfoMap;
+	private Map<FMLEditorParser, Info> parserToInfoMap;
 
 	/**
-	 * The shared jar manager to use with all {@link JavaCompletionProvider}s, or <code>null</code> if each one should have a unique jar
+	 * The shared jar manager to use with all {@link FMLCompletionProvider}s, or <code>null</code> if each one should have a unique jar
 	 * manager.
 	 */
 	private JarManager jarManager;
@@ -91,9 +89,9 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	 * @return The completion provider. This will be <code>null</code> if the text area does not have this <tt>JavaLanguageSupport</tt>
 	 *         installed.
 	 */
-	public JavaCompletionProvider getCompletionProvider(RSyntaxTextArea textArea) {
+	public FMLCompletionProvider getCompletionProvider(RSyntaxTextArea textArea) {
 		AutoCompletion ac = getAutoCompletionFor(textArea);
-		return (JavaCompletionProvider) ac.getCompletionProvider();
+		return (FMLCompletionProvider) ac.getCompletionProvider();
 	}
 
 	/**
@@ -112,11 +110,16 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	 *            The text area.
 	 * @return The Java parser. This will be <code>null</code> if the text area does not have this <tt>JavaLanguageSupport</tt> installed.
 	 */
-	public JavaParser getParser(RSyntaxTextArea textArea) {
+	public FMLEditorParser getParser(RSyntaxTextArea textArea) {
+		if (textArea instanceof FMLRSyntaxTextArea) {
+			return ((FMLRSyntaxTextArea) textArea).getParser();
+		}
+
 		// Could be a parser for another language.
 		Object parser = textArea.getClientProperty(PROPERTY_LANGUAGE_PARSER);
-		if (parser instanceof JavaParser) {
-			return (JavaParser) parser;
+
+		if (parser instanceof FMLEditorParser) {
+			return (FMLEditorParser) parser;
 		}
 		return null;
 	}
@@ -127,9 +130,9 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	@Override
 	public void install(RSyntaxTextArea textArea) {
 
-		JavaCompletionProvider p = new JavaCompletionProvider(jarManager);
+		FMLCompletionProvider p = new FMLCompletionProvider(jarManager);
 		// Can't use createAutoCompletion(), as Java's is "special."
-		AutoCompletion ac = new JavaAutoCompletion(p, textArea);
+		AutoCompletion ac = new FMLAutoCompletion(p, textArea);
 		ac.setListCellRenderer(new JavaCellRenderer());
 		ac.setAutoCompleteEnabled(isAutoCompleteEnabled());
 		ac.setAutoActivationEnabled(isAutoActivationEnabled());
@@ -146,13 +149,16 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 		Listener listener = new Listener(textArea);
 		textArea.putClientProperty(PROPERTY_LISTENER, listener);
 
-		JavaParser parser = new JavaParser(textArea);
-		textArea.putClientProperty(PROPERTY_LANGUAGE_PARSER, parser);
-		textArea.addParser(parser);
+		// JavaParser parser = new JavaParser(textArea);
+		// textArea.putClientProperty(PROPERTY_LANGUAGE_PARSER, parser);
+		// textArea.addParser(parser);
 		textArea.setToolTipSupplier(p);
 
-		Info info = new Info(textArea, p, parser);
-		parserToInfoMap.put(parser, info);
+		if (textArea instanceof FMLRSyntaxTextArea) {
+			FMLEditorParser parser = ((FMLRSyntaxTextArea) textArea).getParser();
+			Info info = new Info(textArea, p, parser);
+			parserToInfoMap.put(parser, info);
+		}
 
 		installKeyboardShortcuts(textArea);
 
@@ -183,10 +189,10 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 
 		uninstallImpl(textArea);
 
-		JavaParser parser = getParser(textArea);
+		FMLEditorParser parser = getParser(textArea);
 		Info info = parserToInfoMap.remove(parser);
 		if (info != null) { // Should always be true
-			parser.removePropertyChangeListener(JavaParser.PROPERTY_COMPILATION_UNIT, info);
+			parser.getPropertyChangeSupport().removePropertyChangeListener(FMLEditorParser.PROPERTY_COMPILATION_UNIT, info);
 		}
 		textArea.removeParser(parser);
 		textArea.putClientProperty(PROPERTY_LANGUAGE_PARSER, null);
@@ -243,13 +249,11 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	 */
 	private static class Info implements PropertyChangeListener {
 
-		private JavaCompletionProvider provider;
-		// private JavaParser parser;
+		private FMLCompletionProvider provider;
 
-		Info(RSyntaxTextArea textArea, JavaCompletionProvider provider, JavaParser parser) {
+		Info(RSyntaxTextArea textArea, FMLCompletionProvider provider, FMLEditorParser parser) {
 			this.provider = provider;
-			// this.parser = parser;
-			parser.addPropertyChangeListener(JavaParser.PROPERTY_COMPILATION_UNIT, this);
+			parser.getPropertyChangeSupport().addPropertyChangeListener(FMLEditorParser.PROPERTY_COMPILATION_UNIT, this);
 		}
 
 		/**
@@ -263,8 +267,8 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 
 			String name = e.getPropertyName();
 
-			if (JavaParser.PROPERTY_COMPILATION_UNIT.equals(name)) {
-				CompilationUnit cu = (CompilationUnit) e.getNewValue();
+			if (FMLEditorParser.PROPERTY_COMPILATION_UNIT.equals(name)) {
+				FMLCompilationUnit cu = (FMLCompilationUnit) e.getNewValue();
 				// structureTree.update(file, cu);
 				// updateTable();
 				provider.setCompilationUnit(cu);
@@ -277,12 +281,12 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	/**
 	 * A hack of <tt>AutoCompletion</tt> that forces the <tt>JavaParser</tt> to re-parse the document when the user presses ctrl+space.
 	 */
-	private class JavaAutoCompletion extends AutoCompletion {
+	private class FMLAutoCompletion extends AutoCompletion {
 
 		private RSyntaxTextArea textArea;
 		private String replacementTextPrefix;
 
-		JavaAutoCompletion(JavaCompletionProvider provider, RSyntaxTextArea textArea) {
+		FMLAutoCompletion(FMLCompletionProvider provider, RSyntaxTextArea textArea) {
 			super(provider);
 			this.textArea = textArea;
 		}
@@ -341,11 +345,16 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 			// Make sure we're not currently typing an import statement.
 			if (!text.startsWith("import ")) {
 
-				JavaCompletionProvider provider = (JavaCompletionProvider) getCompletionProvider();
-				CompilationUnit cu = provider.getCompilationUnit();
+				FMLCompletionProvider provider = (FMLCompletionProvider) getCompletionProvider();
+				FMLCompilationUnit cu = provider.getCompilationUnit();
 				int offset = 0;
 				boolean alreadyImported = false;
 
+				System.out.println("TODO: gerer les imports ici");
+
+				// TODO
+				/*
+				
 				// Try to bail early, if possible.
 				if (cu == null) { // Can never happen, right?
 					return null;
@@ -354,10 +363,10 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 					// Package java.lang is "imported" by default.
 					return null;
 				}
-
+				
 				String className = cc.getClassName(false);
 				String fqClassName = cc.getClassName(true);
-
+				
 				// If the completion is in the same package as the source we're
 				// editing (or both are in the default package), bail.
 				int lastClassNameDot = fqClassName.lastIndexOf('.');
@@ -373,19 +382,19 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 				else if (!ccInPackage && pkg == null) {
 					return null;
 				}
-
+				
 				// Loop through all import statements.
 				Iterator<ImportDeclaration> i = cu.getImportIterator();
 				for (; i.hasNext();) {
-
+				
 					ImportDeclaration id = i.next();
 					offset = id.getNameEndOffset() + 1;
-
+				
 					// Pulling in static methods, etc. from a class - skip
 					if (id.isStatic()) {
 						continue;
 					}
-
+				
 					// Importing all classes in the package...
 					else if (id.isWildcard()) {
 						// NOTE: Class may be in default package...
@@ -400,14 +409,14 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 							}
 						}
 					}
-
+				
 					// Importing a single class from a package...
 					else {
-
+				
 						String fullyImportedClassName = id.getName();
 						int dot = fullyImportedClassName.lastIndexOf('.');
 						String importedClassName = fullyImportedClassName.substring(dot + 1);
-
+				
 						// If they explicitly imported a class with the
 						// same name, but it's in a different package, then
 						// the user is required to fully-qualify the class
@@ -421,17 +430,17 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 							}
 							break;
 						}
-
+				
 					}
-
+				
 				}
-
+				
 				// If the class wasn't imported, we'll need to add an
 				// import statement!
 				if (!alreadyImported) {
-
+				
 					StringBuilder importToAdd = new StringBuilder();
-
+				
 					// If there are no previous imports, add the import
 					// statement after the package line (if any).
 					if (offset == 0) {
@@ -441,7 +450,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 							importToAdd.append('\n');
 						}
 					}
-
+				
 					// We read through all imports, but didn't find our class.
 					// Add a new import statement after the last one.
 					if (offset > -1) {
@@ -456,7 +465,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 						// and if so, add the new one alphabetically.
 						return new ImportToAddInfo(offset, importToAdd.toString());
 					}
-
+				
 					// Otherwise, either the class was imported, or a class
 					// with the same name was explicitly imported.
 					else {
@@ -468,8 +477,8 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 							replacementTextPrefix = fqClassName.substring(0, dot + 1);
 						}
 					}
-
-				}
+				
+				}*/
 
 			}
 
@@ -514,7 +523,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 		@Override
 		protected int refreshPopupWindow() {
 			// Force the parser to re-parse
-			JavaParser parser = getParser(textArea);
+			FMLEditorParser parser = getParser(textArea);
 			RSyntaxDocument doc = (RSyntaxDocument) textArea.getDocument();
 			String style = textArea.getSyntaxEditingStyle();
 			parser.parse(doc, style);
@@ -541,12 +550,15 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			JavaParser parser = getParser(textArea);
+			FMLEditorParser parser = getParser(textArea);
 			if (parser == null) {
 				return; // Shouldn't happen
 			}
-			CompilationUnit cu = parser.getCompilationUnit();
 
+			// TODO
+			System.out.println("Un truc a faire la.... actionPerformed() in FMLLanguageSupport$Listener");
+			/*CompilationUnit cu = parser.getCompilationUnit();
+			
 			// Highlight the line range of the Java method being edited in the
 			// gutter.
 			if (cu != null) { // Should always be true
@@ -566,7 +578,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 				else {
 					textArea.setActiveLineRange(-1, -1);
 				}
-			}
+			}*/
 
 		}
 

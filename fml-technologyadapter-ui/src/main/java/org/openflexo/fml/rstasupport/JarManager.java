@@ -28,7 +28,7 @@ import org.openflexo.fml.rstasupport.rjc.ast.ImportDeclaration;
 
 /**
  * Manages a list of jars and gets completions from them.  This can be shared
- * amongst multiple {@link JavaCompletionProvider} instances.
+ * amongst multiple {@link FMLCompletionProvider} instances.
  *
  * @author Robert Futrell
  * @version 1.0

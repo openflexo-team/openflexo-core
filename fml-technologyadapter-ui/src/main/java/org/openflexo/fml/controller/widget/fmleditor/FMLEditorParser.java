@@ -39,6 +39,7 @@ package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,13 +71,22 @@ public class FMLEditorParser extends AbstractParser {
 
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
+	/**
+	 * The property change event that's fired when the document is re-parsed. Applications can listen for this property change and update
+	 * themselves accordingly.
+	 */
+	public static final String PROPERTY_COMPILATION_UNIT = "CompilationUnit";
+
 	private final FMLEditor editor;
 	private final FMLCompilationUnitParser fmlParser;
 	private FMLParseResult result;
 
 	private boolean isInitialized = false;
 
+	private PropertyChangeSupport pcSupport;
+
 	public FMLEditorParser(FMLEditor editor, FMLCompilationUnit compilationUnit) {
+		pcSupport = new PropertyChangeSupport(this);
 		this.editor = editor;
 		fmlParser = new FMLCompilationUnitParser();
 		result = new FMLParseResult(this);
@@ -85,6 +95,10 @@ public class FMLEditorParser extends AbstractParser {
 			result.setValidationReport(validationReport);
 		}
 		isInitialized = true;
+	}
+
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
 	}
 
 	public FMLCompilationUnitParser getFMLParser() {
@@ -128,6 +142,8 @@ public class FMLEditorParser extends AbstractParser {
 
 		result.setParsedLines(0, editor.getTextArea().getLineCount());
 
+		FMLCompilationUnit existingData = null;
+
 		try {
 			// Prevent editor from concurrent modification
 			editor.modelWillChange();
@@ -153,7 +169,7 @@ public class FMLEditorParser extends AbstractParser {
 			}
 
 			// This is the update process
-			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
+			existingData = editor.getFMLResource().getCompilationUnit();
 			RequiresNewPrettyPrintListener pcListener = new RequiresNewPrettyPrintListener(existingData);
 			existingData.updateWith(parsedCompilationUnit);
 			existingData.getTypingSpace().resolveUnresolvedTypes();
@@ -215,6 +231,7 @@ public class FMLEditorParser extends AbstractParser {
 			handleUnexpectedException(e);
 		} finally {
 			editor.modelHasChanged(requiresNewPrettyPrint);
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_COMPILATION_UNIT, null, existingData);
 		}
 
 		// result.setParsedLines(0, editor.getTextArea().getLineCount());

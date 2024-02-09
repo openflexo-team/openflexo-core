@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.fife.rsta.ac.LanguageSupport;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.fife.ui.rtextarea.RTextAreaUI;
@@ -60,6 +61,7 @@ public class FMLRSyntaxTextArea extends RSyntaxTextArea implements DocumentListe
 
 	public void setParser(FMLEditorParser parser) {
 		this.parser = parser;
+		putClientProperty(LanguageSupport.PROPERTY_LANGUAGE_PARSER, parser);
 	}
 
 	private void registerParser() {

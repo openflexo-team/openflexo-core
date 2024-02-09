@@ -28,8 +28,8 @@ import org.fife.ui.rsyntaxtextarea.DocumentRange;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.openflexo.fml.rstasupport.IconFactory;
 import org.openflexo.fml.rstasupport.FMLLanguageSupport;
+import org.openflexo.fml.rstasupport.IconFactory;
 import org.openflexo.fml.rstasupport.JavaParser;
 import org.openflexo.fml.rstasupport.rjc.ast.ASTNode;
 import org.openflexo.fml.rstasupport.rjc.ast.CodeBlock;
@@ -44,20 +44,15 @@ import org.openflexo.fml.rstasupport.rjc.ast.NormalInterfaceDeclaration;
 import org.openflexo.fml.rstasupport.rjc.ast.Package;
 import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 
-
 /**
- * A tree view showing the outline of Java source, similar to the "Outline"
- * view in the Eclipse JDT.  It also uses Eclipse's icons, just like the rest
- * of this code completion library.<p>
+ * A tree view showing the outline of Java source, similar to the "Outline" view in the Eclipse JDT. It also uses Eclipse's icons, just like
+ * the rest of this code completion library.
+ * <p>
  *
- * You can get this tree automatically updating in response to edits in an
- * <code>RSyntaxTextArea</code> with {@link FMLLanguageSupport} installed by
- * calling {@link #listenTo(RSyntaxTextArea)}.  Note that an instance of this
- * class can only listen to a single editor at a time, so if your application
- * contains multiple instances of RSyntaxTextArea, you'll either need a separate
- * <code>JavaOutlineTree</code> for each one, or call <code>uninstall()</code>
- * and <code>listenTo(RSyntaxTextArea)</code> each time a new RSTA receives
- * focus.
+ * You can get this tree automatically updating in response to edits in an <code>RSyntaxTextArea</code> with {@link FMLLanguageSupport}
+ * installed by calling {@link #listenTo(RSyntaxTextArea)}. Note that an instance of this class can only listen to a single editor at a
+ * time, so if your application contains multiple instances of RSyntaxTextArea, you'll either need a separate <code>JavaOutlineTree</code>
+ * for each one, or call <code>uninstall()</code> and <code>listenTo(RSyntaxTextArea)</code> each time a new RSTA receives focus.
  *
  * @author Robert Futrell
  * @version 1.0
@@ -69,27 +64,23 @@ public class JavaOutlineTree extends AbstractSourceTree {
 	private JavaParser parser;
 	private Listener listener;
 
-
 	/**
-	 * Constructor.  The tree created will not have its elements sorted
-	 * alphabetically.
+	 * Constructor. The tree created will not have its elements sorted alphabetically.
 	 */
 	public JavaOutlineTree() {
 		this(false);
 	}
 
-
 	/**
 	 * Constructor.
 	 *
-	 * @param sorted Whether the tree should sort its elements alphabetically.
-	 *        Note that outline trees will likely group nodes by type before
-	 *        sorting (i.e. methods will be sorted in one group, fields in
-	 *        another group, etc.).
+	 * @param sorted
+	 *            Whether the tree should sort its elements alphabetically. Note that outline trees will likely group nodes by type before
+	 *            sorting (i.e. methods will be sorted in one group, fields in another group, etc.).
 	 */
 	public JavaOutlineTree(boolean sorted) {
 		setSorted(sorted);
-		setBorder(BorderFactory.createEmptyBorder(0,8,0,8));
+		setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
 		setRootVisible(false);
 		setCellRenderer(new AstTreeCellRenderer());
 		model = new DefaultTreeModel(new DefaultMutableTreeNode("Nothing"));
@@ -98,37 +89,33 @@ public class JavaOutlineTree extends AbstractSourceTree {
 		addTreeSelectionListener(listener);
 	}
 
-
 	/**
 	 * Refreshes this tree.
 	 *
-	 * @param cu The parsed compilation unit.  If this is <code>null</code>
-	 *        then the tree is cleared.
+	 * @param cu
+	 *            The parsed compilation unit. If this is <code>null</code> then the tree is cleared.
 	 */
 	private void update(CompilationUnit cu) {
 
-		JavaTreeNode root = new JavaTreeNode("Remove me!",
-												IconFactory.SOURCE_FILE_ICON);
+		JavaTreeNode root = new JavaTreeNode("Remove me!", IconFactory.SOURCE_FILE_ICON);
 		root.setSortable(false);
-		if (cu==null) {
+		if (cu == null) {
 			model.setRoot(root);
 			return;
 		}
 
 		Package pkg = cu.getPackage();
-		if (pkg!=null) {
+		if (pkg != null) {
 			String iconName = IconFactory.PACKAGE_ICON;
 			root.add(new JavaTreeNode(pkg, iconName, false));
 		}
 
 		if (!getShowMajorElementsOnly()) {
-			JavaTreeNode importNode = new JavaTreeNode("Imports",
-											IconFactory.IMPORT_ROOT_ICON);
+			JavaTreeNode importNode = new JavaTreeNode("Imports", IconFactory.IMPORT_ROOT_ICON);
 			Iterator<ImportDeclaration> i = cu.getImportIterator();
 			while (i.hasNext()) {
 				ImportDeclaration idec = i.next();
-				JavaTreeNode iNode = new JavaTreeNode(idec,
-											IconFactory.IMPORT_ICON);
+				JavaTreeNode iNode = new JavaTreeNode(idec, IconFactory.IMPORT_ICON);
 				importNode.add(iNode);
 			}
 			root.add(importNode);
@@ -147,7 +134,6 @@ public class JavaOutlineTree extends AbstractSourceTree {
 
 	}
 
-
 	/**
 	 * Refreshes listeners on the text area when its syntax style changes.
 	 */
@@ -155,21 +141,19 @@ public class JavaOutlineTree extends AbstractSourceTree {
 
 		// Remove possible listener on old Java parser (in case they're just
 		// changing syntax style AWAY from Java)
-		if (parser!=null) {
-			parser.removePropertyChangeListener(
-						JavaParser.PROPERTY_COMPILATION_UNIT, listener);
+		if (parser != null) {
+			parser.removePropertyChangeListener(JavaParser.PROPERTY_COMPILATION_UNIT, listener);
 			parser = null;
 		}
 
 		// Get the Java language support (shared by all RSTA instances editing
 		// Java that were registered with the LanguageSupportFactory).
 		LanguageSupportFactory lsf = LanguageSupportFactory.get();
-		LanguageSupport support = lsf.getSupportFor(SyntaxConstants.
-													SYNTAX_STYLE_JAVA);
-		FMLLanguageSupport jls = (FMLLanguageSupport)support;
+		LanguageSupport support = lsf.getSupportFor(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		FMLLanguageSupport jls = (FMLLanguageSupport) support;
 
 		// Listen for re-parsing of the editor, and update the tree accordingly
-		parser = jls.getParser(textArea);
+		/*parser = jls.getParser(textArea);
 		if (parser!=null) { // Should always be true
 			parser.addPropertyChangeListener(
 					JavaParser.PROPERTY_COMPILATION_UNIT, listener);
@@ -179,34 +163,33 @@ public class JavaOutlineTree extends AbstractSourceTree {
 		}
 		else {
 			update((CompilationUnit)null); // Clear the tree
-		}
+		}*/
 
 	}
-
 
 	private MemberTreeNode createMemberNode(Member member) {
 
 		MemberTreeNode node;
 		if (member instanceof CodeBlock) {
-			node = new MemberTreeNode((CodeBlock)member);
+			node = new MemberTreeNode((CodeBlock) member);
 		}
 		else if (member instanceof Field) {
-			node = new MemberTreeNode((Field)member);
+			node = new MemberTreeNode((Field) member);
 		}
 		else {
-			node = new MemberTreeNode((Method)member);
+			node = new MemberTreeNode((Method) member);
 		}
 
 		CodeBlock body = null;
 		if (member instanceof CodeBlock) {
-			body = (CodeBlock)member;
+			body = (CodeBlock) member;
 		}
 		else if (member instanceof Method) {
-			body = ((Method)member).getBody();
+			body = ((Method) member).getBody();
 		}
 
-		if (body!=null && !getShowMajorElementsOnly()) {
-			for (int i=0; i<body.getLocalVarCount(); i++) {
+		if (body != null && !getShowMajorElementsOnly()) {
+			for (int i = 0; i < body.getLocalVarCount(); i++) {
 				LocalVariable var = body.getLocalVar(i);
 				LocalVarTreeNode varNode = new LocalVarTreeNode(var);
 				node.add(varNode);
@@ -217,15 +200,13 @@ public class JavaOutlineTree extends AbstractSourceTree {
 
 	}
 
-
-	private TypeDeclarationTreeNode createTypeDeclarationNode(
-											TypeDeclaration td) {
+	private TypeDeclarationTreeNode createTypeDeclarationNode(TypeDeclaration td) {
 
 		TypeDeclarationTreeNode dmtn = new TypeDeclarationTreeNode(td);
 
 		if (td instanceof NormalClassDeclaration) {
-			NormalClassDeclaration ncd = (NormalClassDeclaration)td;
-			for (int j=0; j<ncd.getChildTypeCount(); j++) {
+			NormalClassDeclaration ncd = (NormalClassDeclaration) td;
+			for (int j = 0; j < ncd.getChildTypeCount(); j++) {
 				TypeDeclaration td2 = ncd.getChildType(j);
 				TypeDeclarationTreeNode tdn = createTypeDeclarationNode(td2);
 				dmtn.add(tdn);
@@ -237,8 +218,8 @@ public class JavaOutlineTree extends AbstractSourceTree {
 		}
 
 		else if (td instanceof NormalInterfaceDeclaration) {
-			NormalInterfaceDeclaration nid = (NormalInterfaceDeclaration)td;
-			for (int j=0; j<nid.getChildTypeCount(); j++) {
+			NormalInterfaceDeclaration nid = (NormalInterfaceDeclaration) td;
+			for (int j = 0; j < nid.getChildTypeCount(); j++) {
 				TypeDeclaration td2 = nid.getChildType(j);
 				TypeDeclarationTreeNode tdn = createTypeDeclarationNode(td2);
 				dmtn.add(tdn);
@@ -253,7 +234,6 @@ public class JavaOutlineTree extends AbstractSourceTree {
 
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -261,15 +241,15 @@ public class JavaOutlineTree extends AbstractSourceTree {
 	public void expandInitialNodes() {
 
 		// First, collapse all rows.
-		int j=0;
-		while (j<getRowCount()) {
+		int j = 0;
+		while (j < getRowCount()) {
 			collapseRow(j++);
 		}
 
 		// Expand only type declarations
 		expandRow(0);
 		j = 1;
-		while (j<getRowCount()) {
+		while (j < getRowCount()) {
 			TreePath path = getPathForRow(j);
 			Object comp = path.getLastPathComponent();
 			if (comp instanceof TypeDeclarationTreeNode) {
@@ -280,13 +260,11 @@ public class JavaOutlineTree extends AbstractSourceTree {
 
 	}
 
-
 	private void gotoElementAtPath(TreePath path) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.
-													getLastPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
 		Object obj = node.getUserObject();
 		if (obj instanceof ASTNode) {
-			ASTNode astNode = (ASTNode)obj;
+			ASTNode astNode = (ASTNode) obj;
 			int start = astNode.getNameStartOffset();
 			int end = astNode.getNameEndOffset();
 			DocumentRange range = new DocumentRange(start, end);
@@ -294,10 +272,9 @@ public class JavaOutlineTree extends AbstractSourceTree {
 		}
 	}
 
-
 	@Override
 	public boolean gotoSelectedElement() {
-		TreePath path = getLeadSelectionPath();//e.getNewLeadSelectionPath();
+		TreePath path = getLeadSelectionPath();// e.getNewLeadSelectionPath();
 		if (path != null) {
 			gotoElementAtPath(path);
 			return true;
@@ -305,47 +282,41 @@ public class JavaOutlineTree extends AbstractSourceTree {
 		return false;
 	}
 
-
 	@Override
 	public void listenTo(RSyntaxTextArea textArea) {
 
-		if (this.textArea!=null) {
+		if (this.textArea != null) {
 			uninstall();
 		}
 
 		// Nothing new to listen to
-		if (textArea==null) {
+		if (textArea == null) {
 			return;
 		}
 
 		// Listen for future language changes in the text editor
 		this.textArea = textArea;
-		textArea.addPropertyChangeListener(
-							RSyntaxTextArea.SYNTAX_STYLE_PROPERTY, listener);
+		textArea.addPropertyChangeListener(RSyntaxTextArea.SYNTAX_STYLE_PROPERTY, listener);
 
 		// Check whether we're currently editing Java
 		checkForJavaParsing();
 
 	}
 
-
 	@Override
 	public void uninstall() {
 
-		if (parser!=null) {
-			parser.removePropertyChangeListener(
-					JavaParser.PROPERTY_COMPILATION_UNIT, listener);
+		if (parser != null) {
+			parser.removePropertyChangeListener(JavaParser.PROPERTY_COMPILATION_UNIT, listener);
 			parser = null;
 		}
 
-		if (textArea!=null) {
-			textArea.removePropertyChangeListener(
-					RSyntaxTextArea.SYNTAX_STYLE_PROPERTY, listener);
+		if (textArea != null) {
+			textArea.removePropertyChangeListener(RSyntaxTextArea.SYNTAX_STYLE_PROPERTY, listener);
 			textArea = null;
 		}
 
 	}
-
 
 	/**
 	 * Overridden to also update the UI of the child cell renderer.
@@ -358,17 +329,13 @@ public class JavaOutlineTree extends AbstractSourceTree {
 		setCellRenderer(new AstTreeCellRenderer());
 	}
 
-
 	/**
-	 * Listens for events this tree is interested in (events in the associated
-	 * editor, for example), as well as events in this tree.
+	 * Listens for events this tree is interested in (events in the associated editor, for example), as well as events in this tree.
 	 */
-	private class Listener implements PropertyChangeListener,
-							TreeSelectionListener {
+	private class Listener implements PropertyChangeListener, TreeSelectionListener {
 
 		/**
-		 * Called whenever the text area's syntax style changes, as well as
-		 * when it is re-parsed.
+		 * Called whenever the text area's syntax style changes, as well as when it is re-parsed.
 		 */
 		@Override
 		public void propertyChange(PropertyChangeEvent e) {
@@ -381,28 +348,26 @@ public class JavaOutlineTree extends AbstractSourceTree {
 			}
 
 			else if (JavaParser.PROPERTY_COMPILATION_UNIT.equals(name)) {
-				CompilationUnit cu = (CompilationUnit)e.getNewValue();
+				CompilationUnit cu = (CompilationUnit) e.getNewValue();
 				update(cu);
 			}
 
 		}
 
 		/**
-		 * Selects the corresponding element in the text editor when a user
-		 * clicks on a node in this tree.
+		 * Selects the corresponding element in the text editor when a user clicks on a node in this tree.
 		 */
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
 			if (getGotoSelectedElementOnClick()) {
-				//gotoSelectedElement();
+				// gotoSelectedElement();
 				TreePath newPath = e.getNewLeadSelectionPath();
-				if (newPath!=null) {
+				if (newPath != null) {
 					gotoElementAtPath(newPath);
 				}
 			}
 		}
 
 	}
-
 
 }
