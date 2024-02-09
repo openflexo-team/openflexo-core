@@ -48,6 +48,8 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.fife.rsta.ac.LanguageSupportFactory;
+import org.fife.ui.rsyntaxtextarea.folding.CurlyFoldParser;
+import org.fife.ui.rsyntaxtextarea.folding.FoldParserManager;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -204,6 +206,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+		FoldParserManager.get().addFoldParserMapping(FMLLanguageSupport.SYNTAX_STYLE_FML, new CurlyFoldParser(true, true));
 	}
 
 	@Override
