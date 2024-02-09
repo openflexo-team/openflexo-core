@@ -146,20 +146,20 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		((CompilationUnitResourceImpl) testInfo.fmlResource).setPersistencyStrategy(PersistencyStrategy.FML);
 		testInfo.fmlResource.save();
 
-		System.out.println("contained: " + testInfo.fmlResource.getContainedVirtualModelResources());
-		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedVirtualModelResources()) {
+		System.out.println("contained: " + testInfo.fmlResource.getContainedCompilationUnitResources());
+		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedCompilationUnitResources()) {
 			System.out.println(" > " + compilationUnitResource + " container: " + compilationUnitResource.getContainer());
 		}
 
-		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedVirtualModelResources()) {
+		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedCompilationUnitResources()) {
 			compilationUnitResource.unloadResourceData(false);
 		}
 
 		testInfo.fmlResource.unloadResourceData(false);
 		assertNull(testInfo.fmlResource.getLoadedResourceData());
 
-		System.out.println("contained: " + testInfo.fmlResource.getContainedVirtualModelResources());
-		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedVirtualModelResources()) {
+		System.out.println("contained: " + testInfo.fmlResource.getContainedCompilationUnitResources());
+		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedCompilationUnitResources()) {
 			System.out.println(" > " + compilationUnitResource + " container: " + compilationUnitResource.getContainer());
 		}
 	}

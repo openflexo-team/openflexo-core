@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.DiamondType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.type.WildcardTypeImpl.DefaultWildcardType;
@@ -66,6 +68,7 @@ import org.openflexo.foundation.fml.parser.node.ACharPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.ACompositeTidentSuffix;
+import org.openflexo.foundation.fml.parser.node.ADiamondTypeArguments;
 import org.openflexo.foundation.fml.parser.node.ADoublePrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AExtendsWildcardBounds;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
@@ -363,6 +366,9 @@ public class TypeFactory extends DepthFirstAdapter {
 			return makeTypeArguments(((AUshrTypeArguments) someArgs).getHeads1(), ((AUshrTypeArguments) someArgs).getSpecifier1(),
 					((AUshrTypeArguments) someArgs).getHeads2(), ((AUshrTypeArguments) someArgs).getSpecifier2(),
 					((AUshrTypeArguments) someArgs).getTypeArgumentList());
+		}
+		if (someArgs instanceof ADiamondTypeArguments) {
+			return Collections.singletonList(DiamondType.INSTANCE);
 		}
 		System.err.println("Unexpected " + someArgs + " of " + someArgs.getClass());
 		return null;

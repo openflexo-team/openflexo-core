@@ -69,7 +69,7 @@
 				data="virtualModel.allRootFlexoConcepts"
 				name="rootFlexoConcepts" />
 			<BrowserRemoveAction
-				method="controller.deleteVirtualModel(selected.resource)"
+				method="controller.deleteCompilationUnit(selected.resource)"
 				name="delete_virtual_model" />
 			<BrowserAddAction
 				method="controller.createFlexoConceptInVirtualModel(selected)"
@@ -169,7 +169,7 @@
 				data="virtualModel.allSuperFlexoConcepts"
 				name="rootFlexoConcepts" />
 			<BrowserRemoveAction
-				method="controller.deleteVirtualModel(selected.resource)"
+				method="controller.deleteCompilationUnit(selected.resource)"
 				name="delete_virtual_model" />
 			<BrowserAddAction
 				method="controller.createFlexoConceptInVirtualModel(selected)"
@@ -269,7 +269,7 @@
 				data="virtualModel.flexoConcepts"
 				name="rootFlexoConcepts" />
 			<BrowserRemoveAction
-				method="controller.deleteVirtualModel(selected.resource)"
+				method="controller.deleteCompilationUnit(selected.resource)"
 				name="delete_virtual_model" />
 			<BrowserAddAction
 				method="controller.createFlexoConceptInVirtualModel(selected)"

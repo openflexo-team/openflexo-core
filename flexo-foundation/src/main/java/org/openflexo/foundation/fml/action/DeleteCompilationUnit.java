@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.action;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -49,44 +48,45 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 
-public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualModel, FMLObject>
+public class DeleteCompilationUnit extends FlexoAction<DeleteCompilationUnit, FMLCompilationUnit, FMLObject>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
-	private static final Logger logger = Logger.getLogger(DeleteVirtualModel.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(DeleteCompilationUnit.class.getPackage().getName());
 
-	public static FlexoActionFactory<DeleteVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionFactory<DeleteVirtualModel, VirtualModel, FMLObject>(
-			"delete_virtual_model", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteCompilationUnit, FMLCompilationUnit, FMLObject> actionType = new FlexoActionFactory<DeleteCompilationUnit, FMLCompilationUnit, FMLObject>(
+			"delete_compilation_unit", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DeleteVirtualModel makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
-			return new DeleteVirtualModel(focusedObject, globalSelection, editor);
+		public DeleteCompilationUnit makeNewAction(FMLCompilationUnit focusedObject, Vector<FMLObject> globalSelection,
+				FlexoEditor editor) {
+			return new DeleteCompilationUnit(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(FMLCompilationUnit object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(FMLCompilationUnit object, Vector<FMLObject> globalSelection) {
 			return isVisibleForSelection(object, globalSelection);
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DeleteVirtualModel.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(DeleteCompilationUnit.actionType, FMLCompilationUnit.class);
 	}
 
-	private DeleteVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private DeleteCompilationUnit(FMLCompilationUnit focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -97,18 +97,20 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Delete VirtualModel");
+		logger.info("Delete CompilationUnit " + getFocusedObject());
+
+		CompilationUnitResource cuResource = (CompilationUnitResource) getFocusedObject().getResource();
 
 		// First recursively delete contained VirtualModel
-		for (VirtualModel vm : new ArrayList<>(getFocusedObject().getVirtualModels())) {
-			DeleteVirtualModel deleteVM = DeleteVirtualModel.actionType.makeNewEmbeddedAction(vm, null, this);
-			deleteVM.doAction();
+		for (CompilationUnitResource compilationUnitResource : cuResource.getContainedCompilationUnitResources()) {
+			DeleteCompilationUnit deleteCU = DeleteCompilationUnit.actionType
+					.makeNewEmbeddedAction(compilationUnitResource.getCompilationUnit(), null, this);
+			deleteCU.doAction();
 		}
 
 		// Then handle the resource
-		CompilationUnitResource virtualModelResource = getFocusedObject().getResource();
-		if (virtualModelResource != null) {
-			CompilationUnitResource containerResource = virtualModelResource.getContainer();
+		if (cuResource != null) {
+			CompilationUnitResource containerResource = cuResource.getContainer();
 			/*if (containerResource != null) {
 				containerResource.getCompilationUnit().getVirtualModel().removeFromVirtualModels(getFocusedObject());
 			}*/
@@ -117,9 +119,9 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 			getFocusedObject().delete();
 
 			// Delete the resource and notify container
-			virtualModelResource.delete();
+			cuResource.delete();
 			if (containerResource != null) {
-				containerResource.notifyContentsRemoved(virtualModelResource);
+				containerResource.notifyContentsRemoved(cuResource);
 			}
 		}
 

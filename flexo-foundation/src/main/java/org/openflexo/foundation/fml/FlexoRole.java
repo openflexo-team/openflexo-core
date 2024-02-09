@@ -50,6 +50,7 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.InvalidNameException;
@@ -575,8 +576,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		@Override
 		public void updateType(Type type) {
 
-			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
-				setType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			if (getDeclaringCompilationUnit() != null && type instanceof ConnieType) {
+				setType(((ConnieType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
 			}
 			else {
 				setType(type);

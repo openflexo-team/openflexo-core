@@ -288,12 +288,12 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 
 		if (this.moduleView != null && this.moduleView instanceof SelectionSynchronizedModuleView) {
 			controller.getSelectionManager()
-			.removeFromSelectionListeners(((SelectionSynchronizedModuleView<?>) this.moduleView).getSelectionListeners());
+					.removeFromSelectionListeners(((SelectionSynchronizedModuleView<?>) this.moduleView).getSelectionListeners());
 		}
 		this.moduleView = moduleView;
 		if (moduleView != null && moduleView instanceof SelectionSynchronizedModuleView) {
 			controller.getSelectionManager()
-			.addToSelectionListeners(((SelectionSynchronizedModuleView<?>) moduleView).getSelectionListeners());
+					.addToSelectionListeners(((SelectionSynchronizedModuleView<?>) moduleView).getSelectionListeners());
 		}
 
 		JComponent newCenterView = null;
@@ -609,6 +609,8 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
+
+		// System.out.println("--------> propertyChange in FlexoMainPane with " + evt);
 		if (evt.getSource() == controller.getControllerModel()) {
 			if (evt.getPropertyName().equals(ControllerModel.CURRENT_LOCATION)) {
 				Location previous = (Location) evt.getOldValue();

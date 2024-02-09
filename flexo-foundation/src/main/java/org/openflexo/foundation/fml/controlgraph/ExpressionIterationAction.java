@@ -50,7 +50,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -162,8 +162,8 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 		@Override
 		public void updateDeclaredType(Type type) {
 
-			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
-				setDeclaredType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			if (getDeclaringCompilationUnit() != null && type instanceof ConnieType) {
+				setDeclaredType(((ConnieType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
 			}
 			else {
 				setDeclaredType(type);

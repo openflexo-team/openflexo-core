@@ -45,7 +45,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -197,8 +197,8 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 		@Override
 		public void updateFetchedType(Type type) {
 
-			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
-				setFetchedType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			if (getDeclaringCompilationUnit() != null && type instanceof ConnieType) {
+				setFetchedType(((ConnieType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
 			}
 			else {
 				setFetchedType(type);

@@ -1,0 +1,42 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestInstanceOf.fml")
+public model TestInstanceOf {
+
+	public concept Foo {
+		create() {
+		}
+	}
+
+	public concept Foo2 extends Foo {
+		create() {
+		}
+	}
+
+	create() {
+		Foo foo1 = new Foo();
+		Foo foo2 = new Foo();
+		Foo2 foo3 = new Foo2();
+		Foo2 foo4 = new Foo2();
+		Foo2 foo5 = new Foo2();
+	}
+	
+	public List<Foo> retrieveAllFoos() {
+		List<Foo> returned = new ArrayList<>();
+		for (Foo item : select Foo from this) {
+			returned.add(item);
+		}
+		return returned;
+	}
+
+	public List<Foo2> retrieveAllFoo2s() {
+		List<Foo2> returned = new ArrayList<>();
+		for (Foo item : select Foo from this) {
+			if (item instanceof Foo2) {
+				returned.add((Foo2)item);
+			}
+		}
+		return returned;
+	}
+
+}

@@ -1,0 +1,15 @@
+@URI("http://openflexo.org/test/TestResourceCenter/Bug17.fml")
+public model Bug17 {
+
+	itWorks() {
+		List<String> aList = new ArrayList<String>();
+	}
+
+	itWorksAsWell() {
+		List<String> myList = new ArrayList<>();
+	}
+
+	itDoesnotWork() {
+		List<Integer> anOtherList = new ArrayList<String>();
+	}
+}

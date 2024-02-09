@@ -100,6 +100,10 @@ public class RenameCompilationUnit extends FlexoAction<RenameCompilationUnit, FM
 	RenameCompilationUnit(FMLCompilationUnit focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		newCompilationUnitName = focusedObject.getName();
+		if (newCompilationUnitName.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+			newCompilationUnitName = newCompilationUnitName.substring(0,
+					newCompilationUnitName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
+		}
 		newCompilationUnitDescription = focusedObject.getDescription();
 		if (focusedObject.getResource() != null && !focusedObject.getResource().computeDefaultURI().equals(focusedObject.getURI())) {
 			newCompilationUnitURI = focusedObject.getURI();

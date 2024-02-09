@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ConnieType;
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.FMLMigration;
@@ -182,6 +181,11 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
+		public Type getAssignableType() {
+			return getType();
+		}
+
+		@Override
 		public Type getType() {
 			if (getDeclaredType() != null) {
 				return getDeclaredType();
@@ -199,8 +203,8 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public void updateDeclaredType(Type type) {
 
-			if (getDeclaringCompilationUnit() != null && type instanceof CustomType) {
-				setDeclaredType(((CustomType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			if (getDeclaringCompilationUnit() != null && type instanceof ConnieType) {
+				setDeclaredType(((ConnieType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
 			}
 			else {
 				setDeclaredType(type);
@@ -265,7 +269,8 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				DeclarationAction<?> declaration) {
 
 			Type expected = declaration.getDeclaredType();
-			Type analyzed = declaration.getAssignableType();
+			Type analyzed = declaration.getAnalyzedType();
+
 			if (declaration.getAssignableAction() != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
 				return new NotCompatibleTypesIssue(this, declaration, expected, analyzed);
 			}

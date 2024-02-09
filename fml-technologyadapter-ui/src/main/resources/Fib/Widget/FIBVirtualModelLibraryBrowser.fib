@@ -52,7 +52,7 @@
 				data="virtualModel.loadedCompilationUnit.virtualModel.allRootFlexoConcepts"
 				name="rootFlexoConcepts" />
 			<BrowserRemoveAction id="24"
-				method="controller.deleteVirtualModel(selected)"
+				method="controller.deleteCompilationUnit(selected)"
 				name="delete_virtual_model" />
 			<BrowserAddAction id="25"
 				method="controller.createFlexoConcept(selected.compilationUnit.virtualModel)"

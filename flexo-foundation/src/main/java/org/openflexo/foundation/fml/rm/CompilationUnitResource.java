@@ -107,7 +107,7 @@ public interface CompilationUnitResource
 	@Override
 	public CompilationUnitResource getContainer();
 
-	public List<CompilationUnitResource> getContainedVirtualModelResources();
+	public List<CompilationUnitResource> getContainedCompilationUnitResources();
 
 	public CompilationUnitResource getCompilationUnitResource(String virtualModelNameOrURI);
 

@@ -62,6 +62,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.binding.CompilationUnitBindingModel;
 import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
 import org.openflexo.foundation.fml.binding.NamespaceBindingVariable;
@@ -71,6 +72,7 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
@@ -597,6 +599,28 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				return getResource().getName();
 			}
 			return super.getName();
+		}
+
+		@Override
+		public void setName(String name) throws InvalidNameException {
+			String simpleName;
+			if (name != null && name.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+				simpleName = name.substring(0, name.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
+			}
+			else {
+				simpleName = name;
+			}
+			if (getVirtualModel() != null) {
+				getVirtualModel().setName(simpleName);
+			}
+			if (getResource() != null) {
+				try {
+					getResource().setName(simpleName);
+				} catch (CannotRenameException e) {
+					throw new InvalidNameException(this, name);
+				}
+			}
+
 		}
 
 		@Override

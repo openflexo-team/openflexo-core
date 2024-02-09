@@ -647,8 +647,10 @@ public interface VirtualModel extends FlexoConcept {
 				}
 				else if (getCompilationUnit() == null || getCompilationUnit().getResource() == null || anURI == null
 						|| !anURI.equals(getCompilationUnit().getResource().getURI())) {
-					FMLMetaData uriMD = getFMLModelFactory().newSingleMetaData(URI_ANNOTATION_NAME, anURI, String.class);
-					addToMetaData(uriMD);
+					if (getFMLModelFactory() != null) {
+						FMLMetaData uriMD = getFMLModelFactory().newSingleMetaData(URI_ANNOTATION_NAME, anURI, String.class);
+						addToMetaData(uriMD);
+					}
 				}
 				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 					getCompilationUnit().getResource().setURI(anURI);
@@ -1284,7 +1286,7 @@ public interface VirtualModel extends FlexoConcept {
 				getCompilationUnit().loadContainedVirtualModelsWhenUnloaded();
 			}
 			List<VirtualModel> returned = new ArrayList<>();
-			for (CompilationUnitResource compilationUnitResource : getResource().getContainedVirtualModelResources()) {
+			for (CompilationUnitResource compilationUnitResource : getResource().getContainedCompilationUnitResources()) {
 				if (compilationUnitResource.getLoadedResourceData() != null) {
 					VirtualModel vm = compilationUnitResource.getLoadedResourceData().getVirtualModel();
 					if (vm != null) {
