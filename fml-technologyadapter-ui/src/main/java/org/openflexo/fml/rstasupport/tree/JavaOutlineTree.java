@@ -29,7 +29,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.openflexo.fml.rstasupport.IconFactory;
-import org.openflexo.fml.rstasupport.JavaLanguageSupport;
+import org.openflexo.fml.rstasupport.FMLLanguageSupport;
 import org.openflexo.fml.rstasupport.JavaParser;
 import org.openflexo.fml.rstasupport.rjc.ast.ASTNode;
 import org.openflexo.fml.rstasupport.rjc.ast.CodeBlock;
@@ -51,7 +51,7 @@ import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
  * of this code completion library.<p>
  *
  * You can get this tree automatically updating in response to edits in an
- * <code>RSyntaxTextArea</code> with {@link JavaLanguageSupport} installed by
+ * <code>RSyntaxTextArea</code> with {@link FMLLanguageSupport} installed by
  * calling {@link #listenTo(RSyntaxTextArea)}.  Note that an instance of this
  * class can only listen to a single editor at a time, so if your application
  * contains multiple instances of RSyntaxTextArea, you'll either need a separate
@@ -166,7 +166,7 @@ public class JavaOutlineTree extends AbstractSourceTree {
 		LanguageSupportFactory lsf = LanguageSupportFactory.get();
 		LanguageSupport support = lsf.getSupportFor(SyntaxConstants.
 													SYNTAX_STYLE_JAVA);
-		JavaLanguageSupport jls = (JavaLanguageSupport)support;
+		FMLLanguageSupport jls = (FMLLanguageSupport)support;
 
 		// Listen for re-parsing of the editor, and update the tree accordingly
 		parser = jls.getParser(textArea);

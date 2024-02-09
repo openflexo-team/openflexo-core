@@ -47,10 +47,10 @@ import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 // TODO: Anonymous inner classes probably aren't handled well.
 class JavaLinkGenerator implements LinkGenerator {
 
-	private JavaLanguageSupport jls;
+	private FMLLanguageSupport jls;
 
 
-	JavaLinkGenerator(JavaLanguageSupport jls) {
+	JavaLinkGenerator(FMLLanguageSupport jls) {
 		this.jls = jls;
 	}
 

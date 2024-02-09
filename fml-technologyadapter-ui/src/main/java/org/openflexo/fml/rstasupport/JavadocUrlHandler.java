@@ -64,8 +64,8 @@ public class JavadocUrlHandler implements ExternalURLHandler {
 	 *
 	 * @return The Java language support
 	 */
-	private JavaLanguageSupport getJavaLanguageSupport() {
-		return (JavaLanguageSupport)LanguageSupportFactory.get().
+	private FMLLanguageSupport getJavaLanguageSupport() {
+		return (FMLLanguageSupport)LanguageSupportFactory.get().
 					getSupportFor(SyntaxConstants.SYNTAX_STYLE_JAVA);
 	}
 
@@ -234,7 +234,7 @@ public class JavadocUrlHandler implements ExternalURLHandler {
 					String pkg = getPackage(c, desc);
 					if (pkg!=null) {
 						clazz = doBackups(pkg, backups) + "." + clazz;
-						JavaLanguageSupport jls = getJavaLanguageSupport();
+						FMLLanguageSupport jls = getJavaLanguageSupport();
 						ClassFile cf = jls.getJarManager().getClassEntry(clazz);
 						if (cf!=null) {
 							ClassCompletion cc = new ClassCompletion(c.getProvider(), cf);
@@ -249,7 +249,7 @@ public class JavadocUrlHandler implements ExternalURLHandler {
 			// #method() (for example, @see's).
 			else {
 
-				JavaLanguageSupport jls = getJavaLanguageSupport();
+				FMLLanguageSupport jls = getJavaLanguageSupport();
 
 				String clazz = desc;
 				String member = null;

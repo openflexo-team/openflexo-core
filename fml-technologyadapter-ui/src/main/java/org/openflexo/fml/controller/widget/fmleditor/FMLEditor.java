@@ -51,22 +51,28 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
 
+import org.fife.rsta.ac.LanguageSupportFactory;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
@@ -75,6 +81,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitDetailedBrowser;
 import org.openflexo.fml.controller.widget.FMLValidationPanel;
+import org.openflexo.fml.rstasupport.FMLLanguageSupport;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -108,13 +115,13 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public class FMLEditor extends JPanel implements PropertyChangeListener {
+public class FMLEditor extends JPanel implements PropertyChangeListener, HyperlinkListener {
 
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
 	static {
 		AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
-		atmf.putMapping("text/fml", "org.openflexo.fml.controller.view.FMLTokenMaker");
+		atmf.putMapping(FMLLanguageSupport.SYNTAX_STYLE_FML, "org.openflexo.fml.controller.view.FMLTokenMaker");
 	}
 
 	private final CompilationUnitResource fmlResource;
@@ -184,8 +191,35 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		this.fmlResource = fmlResource;
 
 		textArea = new FMLRSyntaxTextArea(this);
-		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		textArea.setSyntaxEditingStyle(FMLLanguageSupport.SYNTAX_STYLE_FML);
 		textArea.setCodeFoldingEnabled(true);
+
+		/*private RSyntaxTextArea createTextArea() {
+			RSyntaxTextArea textArea = new RSyntaxTextArea(25, 80);
+			LanguageSupportFactory.get().register(textArea);
+			textArea.setCaretPosition(0);
+			textArea.addHyperlinkListener(this);
+			textArea.requestFocusInWindow();
+			textArea.setMarkOccurrences(true);
+			textArea.setCodeFoldingEnabled(true);
+			textArea.setTabsEmulated(true);
+			textArea.setTabSize(3);
+			// textArea.setBackground(new java.awt.Color(224, 255, 224));
+			// textArea.setUseSelectedTextColor(true);
+			// textArea.setLineWrap(true);
+			ToolTipManager.sharedInstance().registerComponent(textArea);
+			return textArea;
+		}*/
+
+		LanguageSupportFactory.get().register(textArea);
+		textArea.setCaretPosition(0);
+		textArea.addHyperlinkListener(this);
+		textArea.requestFocusInWindow();
+		textArea.setMarkOccurrences(true);
+		textArea.setCodeFoldingEnabled(true);
+		textArea.setTabsEmulated(true);
+		textArea.setTabSize(3);
+		ToolTipManager.sharedInstance().registerComponent(textArea);
 
 		/*textArea.addCaretListener(new CaretListener() {
 			@Override
@@ -205,7 +239,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 				}
 			}
 		});
-		
+
 		try {
 			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/dark.xml"));
 			Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/default.xml"));
@@ -243,7 +277,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		editorPanel.setLayout(new BorderLayout());
 
 		scrollPane = new RTextScrollPane(textArea);
-		((RSyntaxTextArea) scrollPane.getTextArea()).setSyntaxEditingStyle("text/fml");
+		((RSyntaxTextArea) scrollPane.getTextArea()).setSyntaxEditingStyle(FMLLanguageSupport.SYNTAX_STYLE_FML);
 		editorPanel.add(scrollPane, BorderLayout.CENTER);
 
 		finderToolbar = new TextFinderPanel(this);
@@ -299,7 +333,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 	}
 
 	public void delete() {
-		logger.warning("delete() not implemented for FMLEditor");
+		LanguageSupportFactory.get().unregister(textArea);
+		ToolTipManager.sharedInstance().unregisterComponent(textArea);
+		logger.warning("delete() not fully implemented for FMLEditor");
 	}
 
 	public CompilationUnitResource getFMLResource() {
@@ -574,6 +610,26 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 				e.printStackTrace();
 			}
 
+		}
+	}
+
+	/**
+	 * Called when a hyperlink is clicked in the text area.
+	 *
+	 * @param e
+	 *            The event.
+	 */
+	@Override
+	public void hyperlinkUpdate(HyperlinkEvent e) {
+		System.out.println("Hyperlink event: " + e.getEventType());
+		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			URL url = e.getURL();
+			if (url == null) {
+				UIManager.getLookAndFeel().provideErrorFeedback(null);
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "URL clicked:\n" + url);
+			}
 		}
 	}
 

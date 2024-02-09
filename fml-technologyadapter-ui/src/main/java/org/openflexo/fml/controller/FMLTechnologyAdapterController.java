@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.controller;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.fife.rsta.ac.LanguageSupportFactory;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.CustomType;
@@ -75,15 +77,15 @@ import org.openflexo.fml.controller.action.CreatePrimitiveRoleInitializer;
 import org.openflexo.fml.controller.action.CreateTechnologyRoleInitializer;
 import org.openflexo.fml.controller.action.CreateTopLevelVirtualModelInitializer;
 import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
-import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteCompilationUnitInitializer;
+import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DuplicateVirtualModelInitializer;
 import org.openflexo.fml.controller.action.GenerateCreationSchemeInitializer;
 import org.openflexo.fml.controller.action.GenerateUnimplementedPropertiesAndBehavioursInitializer;
 import org.openflexo.fml.controller.action.MoveVirtualModelToContainerVirtualModelInitializer;
 import org.openflexo.fml.controller.action.MoveVirtualModelToDirectoryInitializer;
-import org.openflexo.fml.controller.action.RenameFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.RenameCompilationUnitInitializer;
+import org.openflexo.fml.controller.action.RenameFlexoConceptInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
 import org.openflexo.fml.controller.view.StandardCompilationUnitView;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
@@ -93,6 +95,7 @@ import org.openflexo.fml.controller.widget.FlexoConceptTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoEnumTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoResourceTypeEditor;
 import org.openflexo.fml.controller.widget.VirtualModelInstanceTypeEditor;
+import org.openflexo.fml.rstasupport.FMLLanguageSupport;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -183,9 +186,29 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	private FIBCompilationUnitBrowser compilationUnitBrowser;
 
+	private FMLLanguageSupport fmlLanguageSupport;
+
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
 		return FMLTechnologyAdapter.class;
+	}
+
+	@Override
+	public void activate() {
+		super.activate();
+		logger.info("Activating FMLLanguageSupport in FMLTechnologyAdapterController");
+		LanguageSupportFactory.get().addLanguageSupport(FMLLanguageSupport.SYNTAX_STYLE_FML, FMLLanguageSupport.class.getName());
+		fmlLanguageSupport = (FMLLanguageSupport) LanguageSupportFactory.get().getSupportFor(FMLLanguageSupport.SYNTAX_STYLE_FML);
+		try {
+			fmlLanguageSupport.getJarManager().addCurrentJreClassFileSource();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+
+	@Override
+	public void disactivate() {
+		super.disactivate();
 	}
 
 	@Override

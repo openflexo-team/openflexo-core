@@ -165,7 +165,7 @@ class SourceParamChoicesProvider implements ParameterChoicesProvider {
 		LanguageSupportFactory lsf = LanguageSupportFactory.get();
 		LanguageSupport support = lsf.getSupportFor(SyntaxConstants.
 													SYNTAX_STYLE_JAVA);
-		JavaLanguageSupport jls = (JavaLanguageSupport)support;
+		FMLLanguageSupport jls = (FMLLanguageSupport)support;
 		JarManager jm = jls.getJarManager();
 
 		// Get the deepest TypeDeclaration AST containing the caret position
