@@ -27,7 +27,6 @@ import org.fife.ui.autocomplete.EmptyIcon;
 import org.fife.ui.autocomplete.ParameterChoicesProvider;
 import org.fife.ui.autocomplete.ParameterizedCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser;
 import org.openflexo.fml.rstasupport.rjc.ast.CodeBlock;
 import org.openflexo.fml.rstasupport.rjc.ast.CompilationUnit;
@@ -161,7 +160,7 @@ class SourceParamChoicesProvider implements ParameterChoicesProvider {
 
 		// Get the language support for Java
 		LanguageSupportFactory lsf = LanguageSupportFactory.get();
-		LanguageSupport support = lsf.getSupportFor(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		LanguageSupport support = lsf.getSupportFor(FMLLanguageSupport.SYNTAX_STYLE_FML);
 		FMLLanguageSupport jls = (FMLLanguageSupport) support;
 		JarManager jm = jls.getJarManager();
 

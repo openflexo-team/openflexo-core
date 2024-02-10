@@ -61,7 +61,7 @@ public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 		super(new SourceCompletionProvider(jarManager));
 		this.sourceProvider = (SourceCompletionProvider) getDefaultCompletionProvider();
 		sourceProvider.setJavaProvider(this);
-		setShorthandCompletionCache(new JavaShorthandCompletionCache(sourceProvider, new DefaultCompletionProvider()));
+		setShorthandCompletionCache(new FMLShorthandCompletionCache(sourceProvider, new DefaultCompletionProvider()));
 		setDocCommentCompletionProvider(new DocCommentCompletionProvider());
 
 	}
@@ -162,6 +162,10 @@ public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 	}
 
 	public synchronized void setCompilationUnit(FMLCompilationUnit cu) {
+		if (cu == null) {
+			System.out.println("setCompilationUnit with null ????");
+			Thread.dumpStack();
+		}
 		this.cu = cu;
 	}
 

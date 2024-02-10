@@ -142,8 +142,6 @@ public class FMLEditorParser extends AbstractParser {
 
 		result.setParsedLines(0, editor.getTextArea().getLineCount());
 
-		FMLCompilationUnit existingData = null;
-
 		try {
 			// Prevent editor from concurrent modification
 			editor.modelWillChange();
@@ -169,7 +167,7 @@ public class FMLEditorParser extends AbstractParser {
 			}
 
 			// This is the update process
-			existingData = editor.getFMLResource().getCompilationUnit();
+			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
 			RequiresNewPrettyPrintListener pcListener = new RequiresNewPrettyPrintListener(existingData);
 			existingData.updateWith(parsedCompilationUnit);
 			existingData.getTypingSpace().resolveUnresolvedTypes();
@@ -212,6 +210,8 @@ public class FMLEditorParser extends AbstractParser {
 				result.addNotice(new ValidationIssueNotice(this, validationIssue));
 			}*/
 
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_COMPILATION_UNIT, null, existingData);
+
 		} catch (ParseException e) {
 			// Parse error: cannot do more than display position when parsing failed
 			// TODO: handle errors during parsing
@@ -231,7 +231,6 @@ public class FMLEditorParser extends AbstractParser {
 			handleUnexpectedException(e);
 		} finally {
 			editor.modelHasChanged(requiresNewPrettyPrint);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_COMPILATION_UNIT, null, existingData);
 		}
 
 		// result.setParsedLines(0, editor.getTextArea().getLineCount());

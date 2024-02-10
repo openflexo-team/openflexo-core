@@ -15,22 +15,18 @@ import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import org.fife.rsta.ac.ShorthandCompletionCache;
 import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
-import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
-import org.fife.ui.rsyntaxtextarea.Token;
 import org.openflexo.fml.rstasupport.buildpath.LibraryInfo;
 import org.openflexo.fml.rstasupport.buildpath.SourceLocation;
 import org.openflexo.fml.rstasupport.classreader.ClassFile;
@@ -38,18 +34,12 @@ import org.openflexo.fml.rstasupport.classreader.FieldInfo;
 import org.openflexo.fml.rstasupport.classreader.MemberInfo;
 import org.openflexo.fml.rstasupport.classreader.MethodInfo;
 import org.openflexo.fml.rstasupport.rjc.ast.CodeBlock;
-import org.openflexo.fml.rstasupport.rjc.ast.CompilationUnit;
-import org.openflexo.fml.rstasupport.rjc.ast.Field;
 import org.openflexo.fml.rstasupport.rjc.ast.FormalParameter;
-import org.openflexo.fml.rstasupport.rjc.ast.ImportDeclaration;
 import org.openflexo.fml.rstasupport.rjc.ast.LocalVariable;
-import org.openflexo.fml.rstasupport.rjc.ast.Member;
 import org.openflexo.fml.rstasupport.rjc.ast.Method;
-import org.openflexo.fml.rstasupport.rjc.ast.NormalClassDeclaration;
 import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 import org.openflexo.fml.rstasupport.rjc.lang.Type;
 import org.openflexo.fml.rstasupport.rjc.lang.TypeArgument;
-import org.openflexo.fml.rstasupport.rjc.lang.TypeParameter;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 
 /**
@@ -107,7 +97,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		setParameterChoicesProvider(new SourceParamChoicesProvider());
 	}
 
-	private void addCompletionsForStaticMembers(Set<Completion> set, CompilationUnit cu, ClassFile cf, String pkg) {
+	private void addCompletionsForStaticMembers(Set<Completion> set, FMLCompilationUnit cu, ClassFile cf, String pkg) {
 
 		// Check us first, so if we override anything, we get the "newest"
 		// version.
@@ -152,7 +142,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 *            A mapping of type parameters to type arguments for the object whose fields/methods/etc. are currently being
 	 *            code-completed.
 	 */
-	private void addCompletionsForExtendedClass(Set<Completion> set, CompilationUnit cu, ClassFile cf, String pkg,
+	private void addCompletionsForExtendedClass(Set<Completion> set, FMLCompilationUnit cu, ClassFile cf, String pkg,
 			Map<String, String> typeParamMap) {
 
 		// Reset this class's type-arguments-to-type-parameters map, so that
@@ -209,18 +199,21 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 * @param retVal
 	 *            The set to add completions to.
 	 */
-	private void addCompletionsForLocalVarsMethods(CompilationUnit cu, LocalVariable var, Set<Completion> retVal) {
+	private void addCompletionsForLocalVarsMethods(FMLCompilationUnit cu, LocalVariable var, Set<Completion> retVal) {
 
+		// A IMPLEMENTER
+
+		/*
 		Type type = var.getType();
 		String pkg = cu.getPackageName();
-
+		
 		if (type.isArray()) {
 			ClassFile cf = getClassFileFor(cu, "java.lang.Object");
 			addCompletionsForExtendedClass(retVal, cu, cf, pkg, null);
 			FieldCompletion fc = FieldCompletion.createLengthCompletion(this, type);
 			retVal.add(fc);
 		}
-
+		
 		else if (!type.isBasicType()) {
 			String typeStr = type.getName(true, false);
 			ClassFile cf = getClassFileFor(cu, typeStr);
@@ -228,7 +221,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 				Map<String, String> typeParamMap = createTypeParamMap(type, cf);
 				addCompletionsForExtendedClass(retVal, cu, cf, pkg, typeParamMap);
 			}
-		}
+		}*/
 
 	}
 
@@ -264,25 +257,28 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 * @return The {@link ClassFile} for the class, or <code>null</code> if <code>cf</code> represents <code>java.lang.Object</code> (or if
 	 *         the super class could not be determined).
 	 */
-	private ClassFile getClassFileFor(CompilationUnit cu, String className) {
+	private ClassFile getClassFileFor(FMLCompilationUnit cu, String className) {
 
+		// A IMPLEMENTER
+
+		/*
 		// System.err.println(">>> Getting class file for: " + className);
 		if (className == null) {
 			return null;
 		}
-
+		
 		ClassFile superClass = null;
-
+		
 		// Determine the fully qualified class to grab
 		if (!Util.isFullyQualified(className)) {
-
+		
 			// Check in this source file's package first
 			String pkg = cu.getPackageName();
 			if (pkg != null) {
 				String temp = pkg + "." + className;
 				superClass = jarManager.getClassEntry(temp);
 			}
-
+		
 			// Next, go through the imports (order is important)
 			if (superClass == null) {
 				Iterator<ImportDeclaration> i = cu.getImportIterator();
@@ -302,21 +298,22 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 					}
 				}
 			}
-
+		
 			// Finally, try java.lang
 			if (superClass == null) {
 				String temp = "java.lang." + className;
 				superClass = jarManager.getClassEntry(temp);
 			}
-
+		
 		}
-
+		
 		else {
 			superClass = jarManager.getClassEntry(className);
 		}
-
+		
 		return superClass;
-
+		*/
+		return null;
 	}
 
 	/**
@@ -409,10 +406,13 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 *            The set to add possible completions to.
 	 * @return Whether the user is indeed typing a completion for a String literal member.
 	 */
-	private boolean checkStringLiteralMember(JTextComponent comp, String alreadyEntered, CompilationUnit cu, Set<Completion> set) {
+	private boolean checkStringLiteralMember(JTextComponent comp, String alreadyEntered, FMLCompilationUnit cu, Set<Completion> set) {
 
+		// A IMPLEMENTER
+
+		/*
 		boolean stringLiteralMember = false;
-
+		
 		int offs = comp.getCaretPosition() - alreadyEntered.length() - 1;
 		if (offs > 1) {
 			RSyntaxTextArea textArea = (RSyntaxTextArea) comp;
@@ -436,8 +436,10 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 				ble.printStackTrace();
 			}
 		}
+		
+		return stringLiteralMember;*/
 
-		return stringLiteralMember;
+		return false;
 
 	}
 
@@ -502,55 +504,54 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 
 			FMLCompilationUnit cu = javaProvider.getCompilationUnit();
 
-			System.out.println("FMLCompilationUnit=" + cu);
+			System.out.println("ici FMLCompilationUnit=" + cu);
 
 			if (cu == null) {
 				return completions; // empty
 			}
 
 			// TODO
-			/*
-			
+
 			Set<Completion> set = new TreeSet<>();
-			
+
 			// Cut down the list to just those matching what we've typed.
 			// Note: getAlreadyEnteredText() never returns null
 			String text = getAlreadyEnteredText(comp);
-			
+
 			// Special case - end of a String literal
 			boolean stringLiteralMember = checkStringLiteralMember(comp, text, cu, set);
-			
+
 			// Not after a String literal - regular code completion
 			if (!stringLiteralMember) {
-			
+
 				// Don't add shorthand completions if they're typing something
 				// qualified
 				if (text.indexOf('.') == -1) {
 					addShorthandCompletions(set);
 				}
-			
+
 				loadImportCompletions(set, text, cu);
-			
+
 				// Add completions for fully-qualified stuff (e.g. "com.sun.jav")
 				// long startTime = System.currentTimeMillis();
 				jarManager.addCompletions(this, text, set);
 				// long time = System.currentTimeMillis() - startTime;
 				// System.out.println("jar completions loaded in: " + time);
-			
+
 				// Loop through all types declared in this source, and provide
 				// completions depending on in what type/method/etc. the caret's in.
 				loadCompletionsForCaretPosition(cu, comp, text, set);
-			
+
 			}
-			
+
 			// Do a final sort of all of our completions and we're good to go!
 			completions = new ArrayList<>(set);
 			Collections.sort(completions);
-			
+
 			// Only match based on stuff after the final '.', since that's what is
 			// displayed for all of our completions.
 			text = text.substring(text.lastIndexOf('.') + 1);
-			
+
 			@SuppressWarnings("unchecked")
 			int start = Collections.binarySearch(completions, text, comparator);
 			if (start < 0) {
@@ -562,14 +563,12 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 					start--;
 				}
 			}
-			
+
 			@SuppressWarnings("unchecked")
 			int end = Collections.binarySearch(completions, text + '{', comparator);
 			end = -(end + 1);
-			
-			return completions.subList(start, end);*/
 
-			return completions; // a virer bien sur
+			return completions.subList(start, end);
 
 		} finally {
 			comp.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
@@ -643,39 +642,45 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 * @param retVal
 	 *            The set of values to add to.
 	 */
-	private void loadCompletionsForCaretPosition(CompilationUnit cu, JTextComponent comp, String alreadyEntered, Set<Completion> retVal) {
+	private void loadCompletionsForCaretPosition(FMLCompilationUnit cu, JTextComponent comp, String alreadyEntered,
+			Set<Completion> retVal) {
 
+		// A IMPLEMENTER
+
+		/*
+		
 		// Get completions for all fields and methods of all type declarations.
-
+		
 		// long startTime = System.currentTimeMillis();
 		int caret = comp.getCaretPosition();
 		// List temp = new ArrayList();
 		int start;
 		int end;
-
+		
 		int lastDot = alreadyEntered.lastIndexOf('.');
 		boolean qualified = lastDot > -1;
 		String prefix = qualified ? alreadyEntered.substring(0, lastDot) : null;
-
+		
 		Iterator<TypeDeclaration> i = cu.getTypeDeclarationIterator();
 		while (i.hasNext()) {
-
+		
 			TypeDeclaration td = i.next();
 			start = td.getBodyStartOffset();
 			end = td.getBodyEndOffset();
-
+		
 			if (caret > start && caret <= end) {
 				loadCompletionsForCaretPosition(cu, comp, alreadyEntered, retVal, td, prefix, caret);
 			}
-
+		
 			else if (caret < start) {
 				break; // We've passed any type declarations we could be in
 			}
-
+		
 		}
-
+		
 		// long time = System.currentTimeMillis() - startTime;
 		// System.out.println("methods/fields/localvars loaded in: " + time);
+		*/
 
 	}
 
@@ -705,18 +710,21 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 * @param caret
 	 *            The caret position.
 	 */
-	private void loadCompletionsForCaretPosition(CompilationUnit cu, JTextComponent comp, String alreadyEntered, Set<Completion> retVal,
+	private void loadCompletionsForCaretPosition(FMLCompilationUnit cu, JTextComponent comp, String alreadyEntered, Set<Completion> retVal,
 			TypeDeclaration td, String prefix, int caret) {
 
+		// A IMPLEMENTER
+
+		/*
 		// Do any child types first, so if any vars, etc. have duplicate names,
 		// we pick up the one "closest" to us first.
 		for (int i = 0; i < td.getChildTypeCount(); i++) {
 			TypeDeclaration childType = td.getChildType(i);
 			loadCompletionsForCaretPosition(cu, comp, alreadyEntered, retVal, childType, prefix, caret);
 		}
-
+		
 		Method currentMethod = null;
-
+		
 		Map<String, String> typeParamMap = new HashMap<>();
 		if (td instanceof NormalClassDeclaration) {
 			NormalClassDeclaration ncd = (NormalClassDeclaration) td;
@@ -729,7 +737,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 				}
 			}
 		}
-
+		
 		// Get completions for this class's methods, fields and local
 		// vars. Do this before checking super classes so that, if
 		// we overrode anything, we get the "newest" version.
@@ -758,7 +766,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 				}
 			}
 		}
-
+		
 		// Completions for superclass methods.
 		// TODO: Implement me better
 		if (prefix == null || THIS.equals(prefix)) {
@@ -777,13 +785,13 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 				}
 			}
 		}
-
+		
 		// Completions for methods of fields, return values of methods,
 		// static fields/methods, etc.
 		if (prefix != null && !THIS.equals(prefix)) {
 			loadCompletionsForCaretPositionQualified(cu, alreadyEntered, retVal, td, currentMethod, prefix, caret);
 		}
-
+		*/
 	}
 
 	/**
@@ -805,34 +813,38 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 * @param offs
 	 *            The offset of the caret in the document.
 	 */
-	private void loadCompletionsForCaretPositionQualified(CompilationUnit cu, String alreadyEntered, Set<Completion> retVal,
+	private void loadCompletionsForCaretPositionQualified(FMLCompilationUnit cu, String alreadyEntered, Set<Completion> retVal,
 			TypeDeclaration td, Method currentMethod, String prefix, int offs) {
 
+		// A IMPLEMENTER
+
+		/*
+		
 		// TODO: Remove this restriction.
 		int dot = prefix.indexOf('.');
 		if (dot > -1) {
 			System.out.println("[DEBUG]: Qualified non-this completions currently only go 1 level deep");
 			return;
 		}
-
+		
 		// TODO: Remove this restriction.
 		else if (!prefix.matches("[A-Za-z_][A-Za-z0-9_\\$]*")) {
 			System.out.println("[DEBUG]: Only identifier non-this completions are currently supported");
 			return;
 		}
-
+		
 		String pkg = cu.getPackageName();
 		boolean matched = false;
-
+		
 		for (Iterator<Member> j = td.getMemberIterator(); j.hasNext();) {
-
+		
 			Member m = j.next();
-
+		
 			// The prefix might be a field in the local class.
 			if (m instanceof Field) {
-
+		
 				Field field = (Field) m;
-
+		
 				if (field.getName().equals(prefix)) {
 					// System.out.println("FOUND: " + prefix + " (" + pkg + ")");
 					Type type = field.getType();
@@ -861,16 +873,16 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 					matched = true;
 					break;
 				}
-
+		
 			}
-
+		
 		}
-
+		
 		// The prefix might be for a local variable in the current method.
 		if (currentMethod != null) {
-
+		
 			boolean found = false;
-
+		
 			// Check parameters to the current method
 			for (int i = 0; i < currentMethod.getParameterCount(); i++) {
 				FormalParameter param = currentMethod.getParameter(i);
@@ -882,7 +894,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 					break;
 				}
 			}
-
+		
 			// If a formal param wasn't matched, check local variables.
 			if (!found) {
 				CodeBlock body = currentMethod.getBody();
@@ -890,11 +902,11 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 					loadCompletionsForCaretPositionQualifiedCodeBlock(cu, retVal, td, body, prefix, offs);
 				}
 			}
-
+		
 			matched |= found;
-
+		
 		}
-
+		
 		// Could be a class name, in which case we'll need to add completions
 		// for static fields and methods.
 		if (!matched) {
@@ -906,10 +918,10 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 				}
 			}
 		}
-
+		*/
 	}
 
-	private void loadCompletionsForCaretPositionQualifiedCodeBlock(CompilationUnit cu, Set<Completion> retVal, TypeDeclaration td,
+	private void loadCompletionsForCaretPositionQualifiedCodeBlock(FMLCompilationUnit cu, Set<Completion> retVal, TypeDeclaration td,
 			CodeBlock block, String prefix, int offs) {
 
 		boolean found = false;
@@ -982,16 +994,19 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 * @param cu
 	 *            The compilation unit being parsed.
 	 */
-	private void loadImportCompletions(Set<Completion> set, String text, CompilationUnit cu) {
+	private void loadImportCompletions(Set<Completion> set, String text, FMLCompilationUnit cu) {
 
+		// A IMPLEMENTER
+
+		/*
 		// Fully-qualified completions are handled elsewhere, so no need to
 		// duplicate the work here
 		if (text.indexOf('.') > -1) {
 			return;
 		}
-
+		
 		// long startTime = System.currentTimeMillis();
-
+		
 		String pkgName = cu.getPackageName();
 		loadCompletionsForImport(set, JAVA_LANG_PACKAGE, pkgName);
 		for (Iterator<ImportDeclaration> i = cu.getImportIterator(); i.hasNext();) {
@@ -1002,10 +1017,10 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 			}
 		}
 		// Collections.sort(completions);
-
+		
 		// long time = System.currentTimeMillis() - startTime;
 		// System.out.println("imports loaded in: " + time);
-
+		*/
 	}
 
 	/**
