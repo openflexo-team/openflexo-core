@@ -1155,4 +1155,32 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return returned;
 	}
 
+	public Object getObjectAtLocation(int row, int col) {
+		if (getFragment() == null) {
+			return null;
+		}
+		RawSourcePosition position = getRawSource().new RawSourcePosition(row, col);
+		ObjectNode<?, ?, ?> node = searchObjectNodeAtPosition(position);
+		if (node != null) {
+			return node.getModelObject();
+		}
+
+		return null;
+	}
+
+	private ObjectNode<?, ?, ?> searchObjectNodeAtPosition(RawSourcePosition position) {
+		if (position.isInside(getFragment())) {
+			for (P2PPNode<?, ?> p2ppNode : getChildren()) {
+				if (p2ppNode instanceof ObjectNode) {
+					if (position.isInside(((ObjectNode<?, ?, ?>) p2ppNode).getFragment())) {
+						return ((ObjectNode<?, ?, ?>) p2ppNode).searchObjectNodeAtPosition(position);
+					}
+				}
+			}
+			return this;
+		}
+		return null;
+
+	}
+
 }

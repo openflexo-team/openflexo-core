@@ -79,6 +79,15 @@ public class FIBCompilationUnitDetailedBrowser extends FIBBrowserView<FMLCompila
 		});
 	}
 
+	public void makeVisible(FMLObject object) {
+		SwingUtilities.invokeLater(() -> {
+			if (getFIBView("browser") instanceof JFIBBrowserWidget) {
+				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("browser");
+				browser.performSelect(object, true);
+			}
+		});
+	}
+
 	public FMLEditor getFMLEditor() {
 		return fmlEditor;
 	}

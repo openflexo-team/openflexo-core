@@ -86,6 +86,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationReport;
@@ -209,7 +210,21 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Hyperli
 					clearHighlights();
 				}
 				if (e.getClickCount() == 2) {
-					System.out.println("Open the browser at the right position !!!");
+					// System.out.println("Open the browser at the right position !!!");
+					// System.out.println("Position: " + textArea.getCaretPosition());
+					// System.out.println("Line number: " + textArea.getCaretLineNumber());
+					// System.out.println("Offset: " + textArea.getCaretOffsetFromLineStart());
+					FMLCompilationUnit cu = fmlResource.getCompilationUnit();
+					FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) cu.getPrettyPrintDelegate();
+					// System.out.println("cuNode=" + cuNode);
+
+					Object focusedObject = cuNode.getObjectAtLocation(textArea.getCaretLineNumber() + 1,
+							textArea.getCaretOffsetFromLineStart());
+					logger.info("select and focus object = " + focusedObject);
+
+					if (focusedObject instanceof FMLObject) {
+						browser.makeVisible((FMLObject) focusedObject);
+					}
 				}
 			}
 		});
