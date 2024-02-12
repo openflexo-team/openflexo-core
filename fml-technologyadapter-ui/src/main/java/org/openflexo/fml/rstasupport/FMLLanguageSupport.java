@@ -39,6 +39,11 @@ import org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser;
 import org.openflexo.fml.controller.widget.fmleditor.FMLRSyntaxTextArea;
 import org.openflexo.fml.rstasupport.tree.JavaOutlineTree;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * Language support for FML
@@ -68,7 +73,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	/**
 	 * Client property installed on text areas that points to a listener.
 	 */
-	private static final String PROPERTY_LISTENER = "org.openflexo.fml.rstasupport.JavaLanguageSupport.Listener";
+	private static final String PROPERTY_LISTENER = "org.openflexo.fml.rstasupport.FMLLanguageSupport.Listener";
 
 	/**
 	 * Constructor.
@@ -82,11 +87,11 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	}
 
 	/**
-	 * Returns the completion provider running on a text area with this Java language support installed.
+	 * Returns the completion provider running on a text area with this FML language support installed.
 	 *
 	 * @param textArea
 	 *            The text area.
-	 * @return The completion provider. This will be <code>null</code> if the text area does not have this <tt>JavaLanguageSupport</tt>
+	 * @return The completion provider. This will be <code>null</code> if the text area does not have this <tt>FMLLanguageSupport</tt>
 	 *         installed.
 	 */
 	public FMLCompletionProvider getCompletionProvider(RSyntaxTextArea textArea) {
@@ -95,7 +100,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	}
 
 	/**
-	 * Returns the shared jar manager instance. NOTE: This method will be removed over time, as the Java support becomes more robust!
+	 * Returns the shared jar manager instance. NOTE: This method will be removed over time, as the FML support becomes more robust!
 	 *
 	 * @return The shared jar manager.
 	 */
@@ -104,11 +109,11 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	}
 
 	/**
-	 * Returns the Java parser running on a text area with this Java language support installed.
+	 * Returns the FML parser running on a text area with this FML language support installed.
 	 *
 	 * @param textArea
 	 *            The text area.
-	 * @return The Java parser. This will be <code>null</code> if the text area does not have this <tt>JavaLanguageSupport</tt> installed.
+	 * @return The FML parser. This will be <code>null</code> if the text area does not have this <tt>FMLLanguageSupport</tt> installed.
 	 */
 	public FMLEditorParser getParser(RSyntaxTextArea textArea) {
 		if (textArea instanceof FMLRSyntaxTextArea) {
@@ -131,7 +136,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	public void install(RSyntaxTextArea textArea) {
 
 		FMLCompletionProvider p = new FMLCompletionProvider(jarManager);
-		// Can't use createAutoCompletion(), as Java's is "special."
+		// Can't use createAutoCompletion(), as FML's is "special."
 		AutoCompletion ac = new FMLAutoCompletion(p, textArea);
 		ac.setListCellRenderer(new JavaCellRenderer());
 		ac.setAutoCompleteEnabled(isAutoCompleteEnabled());
@@ -245,7 +250,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 
 	/**
 	 * Manages information about the parsing/auto-completion for a single text area. Unlike many simpler language supports,
-	 * <tt>JavaLanguageSupport</tt> cannot share any information amongst instances of <tt>RSyntaxTextArea</tt>.
+	 * <tt>FMLLanguageSupport</tt> cannot share any information amongst instances of <tt>RSyntaxTextArea</tt>.
 	 */
 	private static class Info implements PropertyChangeListener {
 
@@ -279,7 +284,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	}
 
 	/**
-	 * A hack of <tt>AutoCompletion</tt> that forces the <tt>JavaParser</tt> to re-parse the document when the user presses ctrl+space.
+	 * A hack of <tt>AutoCompletion</tt> that forces the <tt>FMLEditorParser</tt> to re-parse the document when the user presses ctrl+space.
 	 */
 	private class FMLAutoCompletion extends AutoCompletion {
 
@@ -487,7 +492,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 		}
 
 		/**
-		 * Overridden to handle special cases, because sometimes Java code completions will edit more in the source file than just the text
+		 * Overridden to handle special cases, because sometimes FML code completions will edit more in the source file than just the text
 		 * at the current caret position.
 		 */
 		@Override
@@ -533,7 +538,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	}
 
 	/**
-	 * Listens for various events in a text area editing Java (in particular, caret events, so we can track the "active" code block).
+	 * Listens for various events in a text area editing FML (in particular, caret events, so we can track the "active" code block).
 	 */
 	private class Listener implements CaretListener, ActionListener {
 
@@ -555,31 +560,29 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 				return; // Shouldn't happen
 			}
 
-			// TODO
-			System.out.println("Un truc a faire la.... actionPerformed() in FMLLanguageSupport$Listener");
-			/*CompilationUnit cu = parser.getCompilationUnit();
-			
-			// Highlight the line range of the Java method being edited in the
-			// gutter.
+			FMLCompilationUnit cu = parser.getCompilationUnit();
+
+			// Highlight the line range of the behaviour or concept being edited in the gutter.
 			if (cu != null) { // Should always be true
-				int dot = textArea.getCaretPosition();
-				Point p = cu.getEnclosingMethodRange(dot);
-				if (p != null) {
-					try {
-						int startLine = textArea.getLineOfOffset(p.x);
-						// Unterminated blocks can end in Integer.MAX_VALUE
-						int endOffs = Math.min(p.y, textArea.getDocument().getLength());
-						int endLine = textArea.getLineOfOffset(endOffs);
-						textArea.setActiveLineRange(startLine, endLine);
-					} catch (BadLocationException ble) {
-						ble.printStackTrace();
-					}
+				FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) cu.getPrettyPrintDelegate();
+				RawSourceFragment fragment = null;
+				FMLObjectNode<?, ?, ?> focusedObjectNode = cuNode.getFMLObjectNodeAtLocation(textArea.getCaretLineNumber() + 1,
+						textArea.getCaretOffsetFromLineStart(), FlexoBehaviour.class);
+				if (focusedObjectNode == null) {
+					// Try a concept ?
+					focusedObjectNode = cuNode.getFMLObjectNodeAtLocation(textArea.getCaretLineNumber() + 1,
+							textArea.getCaretOffsetFromLineStart(), FlexoConcept.class);
+				}
+				if (focusedObjectNode != null) {
+					fragment = focusedObjectNode.getFragment();
+				}
+				if (fragment != null) {
+					textArea.setActiveLineRange(fragment.getStartPosition().getLine(), fragment.getEndPosition().getLine());
 				}
 				else {
 					textArea.setActiveLineRange(-1, -1);
 				}
-			}*/
-
+			}
 		}
 
 		@Override
@@ -588,7 +591,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 		}
 
 		/**
-		 * Should be called whenever Java language support is removed from a text area.
+		 * Should be called whenever FML language support is removed from a text area.
 		 */
 		public void uninstall() {
 			textArea.removeCaretListener(this);

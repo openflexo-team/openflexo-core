@@ -95,8 +95,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * @param col
 	 * @return
 	 */
-	public FMLObject getFMLObjectAtLocation(int row, int col) {
-		return getFMLObjectAtLocation(row, col, FMLObject.class);
+	public FMLPrettyPrintable getFMLObjectAtLocation(int row, int col) {
+		return getFMLObjectAtLocation(row, col, FMLPrettyPrintable.class);
 	}
 
 	/**
@@ -109,12 +109,34 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * @param objectClass
 	 * @return
 	 */
-	public <T2 extends FMLObject> T2 getFMLObjectAtLocation(int row, int col, Class<T2> objectClass) {
+	public <T2 extends FMLPrettyPrintable> T2 getFMLObjectAtLocation(int row, int col, Class<T2> objectClass) {
+		FMLObjectNode<?, T2, ?> node = getFMLObjectNodeAtLocation(row, col, objectClass);
+		if (node != null) {
+			return node.getModelObject();
+		}
+		return null;
+	}
+
+	/**
+	 * Lookup the most precised object of supplied type represented by supplied position in actual FML pretty-print of this
+	 * {@link FMLObjectNode}
+	 * 
+	 * @param <T2>
+	 * @param row
+	 * @param col
+	 * @param objectClass
+	 * @return
+	 */
+	public <T2 extends FMLPrettyPrintable> FMLObjectNode<?, T2, ?> getFMLObjectNodeAtLocation(int row, int col, Class<T2> objectClass) {
 		if (getFragment() == null) {
 			return null;
 		}
 		RawSourcePosition position = getRawSource().new RawSourcePosition(row, col);
-		return searchFMLObjectNodeAtPosition(position, objectClass);
+		FMLObjectNode<?, T2, ?> nodeAtPosition = searchFMLObjectNodeAtPosition(position, objectClass);
+		if (nodeAtPosition != null) {
+			return nodeAtPosition;
+		}
+		return null;
 	}
 
 	/**
@@ -125,16 +147,17 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * @param objectClass
 	 * @return
 	 */
-	private <T2 extends FMLObject> T2 searchFMLObjectNodeAtPosition(RawSourcePosition position, Class<T2> objectClass) {
+	private <T2 extends FMLPrettyPrintable> FMLObjectNode<?, T2, ?> searchFMLObjectNodeAtPosition(RawSourcePosition position,
+			Class<T2> objectClass) {
 		if (position.isInside(getFragment())) {
-			T2 returned = null;
+			FMLObjectNode<?, T2, ?> returned = null;
 			if (objectClass.isAssignableFrom(getModelObject().getClass())) {
-				returned = (T2) getModelObject();
+				returned = (FMLObjectNode<?, T2, ?>) this;
 			}
 			for (P2PPNode<?, ?> p2ppNode : getChildren()) {
 				if (p2ppNode instanceof FMLObjectNode) {
 					FMLObjectNode<?, ?, ?> child = (FMLObjectNode<?, ?, ?>) p2ppNode;
-					T2 moreSpecialized = child.searchFMLObjectNodeAtPosition(position, objectClass);
+					FMLObjectNode<?, T2, ?> moreSpecialized = child.searchFMLObjectNodeAtPosition(position, objectClass);
 					if (moreSpecialized != null) {
 						return moreSpecialized;
 					}

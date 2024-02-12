@@ -106,7 +106,17 @@ public class FMLEditorParser extends AbstractParser {
 	}
 
 	public CompilationUnitResource getFMLResource() {
-		return editor.getFMLResource();
+		if (editor != null) {
+			return editor.getFMLResource();
+		}
+		return null;
+	}
+
+	public FMLCompilationUnit getCompilationUnit() {
+		if (getFMLResource() != null) {
+			return getFMLResource().getCompilationUnit();
+		}
+		return null;
 	}
 
 	public FMLParseResult getParseResult() {
