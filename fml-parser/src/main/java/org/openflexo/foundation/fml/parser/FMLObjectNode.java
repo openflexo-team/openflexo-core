@@ -44,6 +44,8 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.P2PPNode;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * Maintains consistency between the model (represented by an {@link FMLObject}) and source code represented in FML language
@@ -84,6 +86,64 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	public void setModelObject(T modelObject) {
 		super.setModelObject(modelObject);
 		modelObject.setPrettyPrintDelegate(this);
+	}
+
+	/**
+	 * Lookup the most precised {@link FMLObject} represented by supplied position in actual FML pretty-print of this {@link FMLObjectNode}
+	 * 
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public FMLObject getFMLObjectAtLocation(int row, int col) {
+		return getFMLObjectAtLocation(row, col, FMLObject.class);
+	}
+
+	/**
+	 * Lookup the most precised object of supplied type represented by supplied position in actual FML pretty-print of this
+	 * {@link FMLObjectNode}
+	 * 
+	 * @param <T2>
+	 * @param row
+	 * @param col
+	 * @param objectClass
+	 * @return
+	 */
+	public <T2 extends FMLObject> T2 getFMLObjectAtLocation(int row, int col, Class<T2> objectClass) {
+		if (getFragment() == null) {
+			return null;
+		}
+		RawSourcePosition position = getRawSource().new RawSourcePosition(row, col);
+		return searchFMLObjectNodeAtPosition(position, objectClass);
+	}
+
+	/**
+	 * Internally used to lookup objects
+	 * 
+	 * @param <T2>
+	 * @param position
+	 * @param objectClass
+	 * @return
+	 */
+	private <T2 extends FMLObject> T2 searchFMLObjectNodeAtPosition(RawSourcePosition position, Class<T2> objectClass) {
+		if (position.isInside(getFragment())) {
+			T2 returned = null;
+			if (objectClass.isAssignableFrom(getModelObject().getClass())) {
+				returned = (T2) getModelObject();
+			}
+			for (P2PPNode<?, ?> p2ppNode : getChildren()) {
+				if (p2ppNode instanceof FMLObjectNode) {
+					FMLObjectNode<?, ?, ?> child = (FMLObjectNode<?, ?, ?>) p2ppNode;
+					T2 moreSpecialized = child.searchFMLObjectNodeAtPosition(position, objectClass);
+					if (moreSpecialized != null) {
+						return moreSpecialized;
+					}
+				}
+			}
+			return returned;
+		}
+		return null;
+
 	}
 
 }
