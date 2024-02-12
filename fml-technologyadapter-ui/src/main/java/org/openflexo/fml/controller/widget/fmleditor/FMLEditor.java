@@ -96,13 +96,14 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.swing.layout.JXMultiSplitPane;
-import org.openflexo.swing.layout.JXMultiSplitPane.DividerPainter;
 import org.openflexo.swing.layout.MultiSplitLayout;
+import org.openflexo.swing.layout.MultiSplitLayoutFactory;
+import org.openflexo.swing.layout.JXMultiSplitPane.DividerPainter;
 import org.openflexo.swing.layout.MultiSplitLayout.Divider;
 import org.openflexo.swing.layout.MultiSplitLayout.Leaf;
 import org.openflexo.swing.layout.MultiSplitLayout.Split;
-import org.openflexo.swing.layout.MultiSplitLayoutFactory;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
@@ -218,13 +219,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Hyperli
 					FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) cu.getPrettyPrintDelegate();
 					// System.out.println("cuNode=" + cuNode);
 
-					Object focusedObject = cuNode.getObjectAtLocation(textArea.getCaretLineNumber() + 1,
+					FMLObject focusedObject = cuNode.getFMLObjectAtLocation(textArea.getCaretLineNumber() + 1,
 							textArea.getCaretOffsetFromLineStart());
 					logger.info("select and focus object = " + focusedObject);
-
-					if (focusedObject instanceof FMLObject) {
-						browser.makeVisible((FMLObject) focusedObject);
-					}
+					browser.makeVisible(focusedObject);
 				}
 			}
 		});
