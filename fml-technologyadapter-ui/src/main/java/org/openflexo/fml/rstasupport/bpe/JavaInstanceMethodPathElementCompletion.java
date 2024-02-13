@@ -17,14 +17,14 @@ import java.util.List;
 import javax.swing.Icon;
 
 import org.openflexo.connie.binding.Function.FunctionArgument;
+import org.openflexo.connie.binding.javareflect.JavaInstanceMethodDefinition;
+import org.openflexo.connie.binding.javareflect.JavaInstanceMethodPathElement;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
+import org.openflexo.fml.rstasupport.IconFactory;
 import org.openflexo.fml.rstasupport.MemberCompletion;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.binding.FlexoBehaviourPathElement;
-import org.openflexo.view.controller.FlexoController;
 
-public class FlexoBehaviourPathElementCompletion extends AbstractFunctionPathElementCompletion<FlexoBehaviourPathElement>
+public class JavaInstanceMethodPathElementCompletion extends AbstractFunctionPathElementCompletion<JavaInstanceMethodPathElement>
 		implements MemberCompletion {
 
 	/**
@@ -32,7 +32,7 @@ public class FlexoBehaviourPathElementCompletion extends AbstractFunctionPathEle
 	 */
 	private static final int RELEVANCE = 3;
 
-	public FlexoBehaviourPathElementCompletion(FMLSourceCompletionProvider provider, FlexoBehaviourPathElement pathElement) {
+	public JavaInstanceMethodPathElementCompletion(FMLSourceCompletionProvider provider, JavaInstanceMethodPathElement pathElement) {
 		super(provider, pathElement);
 		setRelevance(RELEVANCE);
 
@@ -45,19 +45,19 @@ public class FlexoBehaviourPathElementCompletion extends AbstractFunctionPathEle
 
 	}
 
-	public FlexoBehaviour getFlexoBehaviour() {
-		return getFunctionPathElement().getFlexoBehaviour();
+	public JavaInstanceMethodDefinition getMethodDefinition() {
+		return getFunctionPathElement().getMethodDefinition();
 	}
 
 	@Override
 	public Icon getIcon() {
-		return FlexoController.statelessIconForObject(getFlexoBehaviour());
+		return IconFactory.get().getIcon(IconFactory.METHOD_PUBLIC_ICON);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof FlexoBehaviourPathElementCompletion)
-				&& ((FlexoBehaviourPathElementCompletion) obj).getReplacementText().equals(getReplacementText());
+		return (obj instanceof JavaInstanceMethodPathElementCompletion)
+				&& ((JavaInstanceMethodPathElementCompletion) obj).getReplacementText().equals(getReplacementText());
 	}
 
 	@Override
@@ -72,12 +72,13 @@ public class FlexoBehaviourPathElementCompletion extends AbstractFunctionPathEle
 
 	@Override
 	public String getEnclosingClassName(boolean fullyQualified) {
-		return getFlexoBehaviour().getFlexoConcept().getName();
+		return fullyQualified ? TypeUtils.fullQualifiedRepresentation(getMethodDefinition().getDeclaringType())
+				: TypeUtils.simpleRepresentation(getMethodDefinition().getDeclaringType());
 	}
 
 	@Override
 	public String getSignature() {
-		return getFlexoBehaviour().getSignature();
+		return getMethodDefinition().getSimplifiedSignature();
 	}
 
 	@Override

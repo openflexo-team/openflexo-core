@@ -10,12 +10,17 @@
  */
 package org.openflexo.fml.rstasupport.bpe;
 
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+
 import javax.swing.text.JTextComponent;
 
 import org.fife.ui.autocomplete.FunctionCompletion;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
+import org.openflexo.fml.rstasupport.MemberCompletion;
 
 /**
  * Base class for completion based on a {@link FunctionPathElement}
@@ -74,5 +79,57 @@ public abstract class AbstractFunctionPathElementCompletion<BPE extends Function
 		sb.append(TypeUtils.simpleRepresentation(getFunctionPathElement().getActualType()));
 		g.drawString(sb.toString(), x, y);
 	}*/
+
+	/**
+	 * Renders a member completion.
+	 *
+	 * @param mc
+	 *            The completion to render.
+	 * @param g
+	 *            The graphics context.
+	 * @param x
+	 *            The x-offset at which to render.
+	 * @param y
+	 *            The y-offset at which to render.
+	 * @param selected
+	 *            Whether the completion is selected/active.
+	 */
+	public static void rendererText(MemberCompletion mc, Graphics g, int x, int y, boolean selected) {
+
+		String shortType = mc.getType();
+		int dot = shortType.lastIndexOf('.');
+		if (dot > -1) {
+			shortType = shortType.substring(dot + 1);
+		}
+
+		// Draw the method signature
+		String sig = mc.getSignature();
+		FontMetrics fm = g.getFontMetrics();
+		g.drawString(sig, x, y);
+		int newX = x + fm.stringWidth(sig);
+		if (mc.isDeprecated()) {
+			int midY = y + fm.getDescent() - fm.getHeight() / 2;
+			g.drawLine(x, midY, newX, midY);
+		}
+		x = newX;
+
+		// Append the return type
+		StringBuilder sb = new StringBuilder(" : ").append(shortType);
+		sb.append(" - ");
+		String s = sb.toString();
+		g.drawString(s, x, y);
+		x += fm.stringWidth(s);
+
+		// Append the type of the containing class of this member.
+		Color origColor = g.getColor();
+		if (!selected) {
+			g.setColor(Color.GRAY);
+		}
+		g.drawString(mc.getEnclosingClassName(false), x, y);
+		if (!selected) {
+			g.setColor(origColor);
+		}
+
+	}
 
 }

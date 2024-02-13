@@ -13,12 +13,14 @@ package org.openflexo.fml.rstasupport;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.javareflect.JavaInstanceMethodPathElement;
 import org.openflexo.fml.rstasupport.bpe.AbstractFunctionPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.AbstractSimplePathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.ContainerPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.DefaultFunctionPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.DefaultSimplePathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.FlexoBehaviourPathElementCompletion;
+import org.openflexo.fml.rstasupport.bpe.JavaInstanceMethodPathElementCompletion;
 import org.openflexo.foundation.fml.binding.ContainerPathElement;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourPathElement;
 
@@ -46,6 +48,9 @@ public class BindingPathElementCompletionFactory {
 		AbstractFunctionPathElementCompletion returned;
 		if (bpe instanceof FlexoBehaviourPathElement) {
 			returned = new FlexoBehaviourPathElementCompletion(completionProvider, (FlexoBehaviourPathElement) bpe);
+		}
+		else if (bpe instanceof JavaInstanceMethodPathElement) {
+			returned = new JavaInstanceMethodPathElementCompletion(completionProvider, (JavaInstanceMethodPathElement) bpe);
 		}
 		else {
 			returned = new DefaultFunctionPathElementCompletion(completionProvider, bpe);
