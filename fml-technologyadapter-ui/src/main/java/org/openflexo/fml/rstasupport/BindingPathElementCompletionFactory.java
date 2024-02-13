@@ -18,7 +18,9 @@ import org.openflexo.fml.rstasupport.bpe.AbstractSimplePathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.ContainerPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.DefaultFunctionPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.DefaultSimplePathElementCompletion;
+import org.openflexo.fml.rstasupport.bpe.FlexoBehaviourPathElementCompletion;
 import org.openflexo.foundation.fml.binding.ContainerPathElement;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourPathElement;
 
 /**
  * Factory for {@link BindingPathElement} completion
@@ -42,12 +44,12 @@ public class BindingPathElementCompletionFactory {
 	public static <BPE extends FunctionPathElement<?>> AbstractFunctionPathElementCompletion<BPE> makeFunctionPathElementCompletion(
 			FMLSourceCompletionProvider completionProvider, BPE bpe) {
 		AbstractFunctionPathElementCompletion returned;
-		/*if (bpe instanceof ContainerPathElement) {
-			returned = new ContainerPathElementCompletion(completionProvider, (ContainerPathElement) bpe);
+		if (bpe instanceof FlexoBehaviourPathElement) {
+			returned = new FlexoBehaviourPathElementCompletion(completionProvider, (FlexoBehaviourPathElement) bpe);
 		}
-		else {*/
-		returned = new DefaultFunctionPathElementCompletion(completionProvider, bpe);
-		// }
+		else {
+			returned = new DefaultFunctionPathElementCompletion(completionProvider, bpe);
+		}
 		return returned;
 	}
 

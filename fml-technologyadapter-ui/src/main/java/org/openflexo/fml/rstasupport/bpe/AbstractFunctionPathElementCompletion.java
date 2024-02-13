@@ -10,6 +10,8 @@
  */
 package org.openflexo.fml.rstasupport.bpe;
 
+import javax.swing.text.JTextComponent;
+
 import org.fife.ui.autocomplete.FunctionCompletion;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.type.TypeUtils;
@@ -25,7 +27,7 @@ public abstract class AbstractFunctionPathElementCompletion<BPE extends Function
 	private BPE functionPathElement;
 
 	AbstractFunctionPathElementCompletion(FMLSourceCompletionProvider provider, BPE functionPathElement) {
-		super(provider, functionPathElement.getLabel(), TypeUtils.simpleRepresentation(functionPathElement.getActualType()));
+		super(provider, functionPathElement.getMethodName(), TypeUtils.simpleRepresentation(functionPathElement.getActualType()));
 		this.functionPathElement = functionPathElement;
 	}
 
@@ -36,6 +38,16 @@ public abstract class AbstractFunctionPathElementCompletion<BPE extends Function
 	@Override
 	public FMLSourceCompletionProvider getProvider() {
 		return (FMLSourceCompletionProvider) super.getProvider();
+	}
+
+	@Override
+	public String getAlreadyEntered(JTextComponent comp) {
+		String temp = getProvider().getAlreadyEnteredText(comp);
+		int lastDot = temp.lastIndexOf('.');
+		if (lastDot > -1) {
+			temp = temp.substring(lastDot + 1);
+		}
+		return temp;
 	}
 
 	@Override

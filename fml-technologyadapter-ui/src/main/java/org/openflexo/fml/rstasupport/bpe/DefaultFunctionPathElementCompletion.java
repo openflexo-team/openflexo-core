@@ -10,9 +10,14 @@
  */
 package org.openflexo.fml.rstasupport.bpe;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.Icon;
 
+import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
 import org.openflexo.fml.rstasupport.IconFactory;
 
@@ -26,6 +31,23 @@ public class DefaultFunctionPathElementCompletion extends AbstractFunctionPathEl
 	public DefaultFunctionPathElementCompletion(FMLSourceCompletionProvider provider, FunctionPathElement<?> pathElement) {
 		super(provider, pathElement);
 		setRelevance(RELEVANCE);
+
+		List<Parameter> params = new ArrayList<>();
+		for (FunctionArgument functionArgument : pathElement.getFunctionArguments()) {
+			params.add(
+					new Parameter(TypeUtils.simpleRepresentation(functionArgument.getArgumentType()), functionArgument.getArgumentName()));
+		}
+		setParams(params);
+
+		/*String[] paramTypes = info.getParameterTypes();
+		List<Parameter> params = new ArrayList<>(paramTypes.length);
+		for (int i = 0; i < paramTypes.length; i++) {
+			String name = ((MethodInfoData) data).getParameterName(i);
+			String type = paramTypes[i].substring(paramTypes[i].lastIndexOf('.') + 1);
+			params.add(new Parameter(type, name));
+		}
+		setParams(params);*/
+
 	}
 
 	@Override
