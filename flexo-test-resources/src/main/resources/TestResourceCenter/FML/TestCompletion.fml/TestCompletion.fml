@@ -1,0 +1,51 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestCompletion.fml")
+public model TestCompletion {
+
+	String strField;
+	int aaa;
+	int abb;
+	float foo;
+	Foo aFoo;
+	Foo2 anOtherFoo;
+
+	public concept Foo {
+		
+		String nameOfFoo;
+		
+		create() {
+		}
+		
+		action1InFoo() {			
+		}
+		
+		int action2InFoo(String aString) {
+			return 0;
+		}
+
+		void action1InFoo(int anInteger, String aString, double aDouble) {	
+		}
+
+	}
+
+	public concept Foo2 extends Foo {
+
+		int foo2Description;
+
+		create() {
+		}
+	}
+
+	create() {
+	}
+	
+	behaviourWithoutArguments() {
+		// TODO
+	}
+
+	String behaviourWithArguments(String aString, String anotherString) {
+		return aString+anotherString;
+	}
+
+}
