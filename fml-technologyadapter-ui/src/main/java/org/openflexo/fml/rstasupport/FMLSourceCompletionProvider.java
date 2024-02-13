@@ -31,6 +31,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.rstasupport.buildpath.LibraryInfo;
 import org.openflexo.fml.rstasupport.buildpath.SourceLocation;
 import org.openflexo.fml.rstasupport.classreader.ClassFile;
@@ -64,7 +65,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
  * @author Robert Futrell
  * @version 1.0
  */
-class SourceCompletionProvider extends DefaultCompletionProvider {
+class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 	/**
 	 * The parent completion provider.
@@ -76,6 +77,11 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	 */
 	private JarManager jarManager;
 
+	/**
+	 * The {@link FMLTechnologyAdapterController}
+	 */
+	private final FMLTechnologyAdapterController fmlTAController;
+
 	private static final String JAVA_LANG_PACKAGE = "java.lang.*";
 	private static final String THIS = "this";
 
@@ -84,18 +90,12 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 
 	/**
 	 * Constructor.
-	 */
-	SourceCompletionProvider() {
-		this(null);
-	}
-
-	/**
-	 * Constructor.
 	 *
 	 * @param jarManager
 	 *            The jar manager for this provider.
 	 */
-	SourceCompletionProvider(JarManager jarManager) {
+	FMLSourceCompletionProvider(JarManager jarManager, FMLTechnologyAdapterController fmlTAController) {
+		this.fmlTAController = fmlTAController;
 		if (jarManager == null) {
 			jarManager = new JarManager();
 		}
@@ -103,6 +103,10 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		setParameterizedCompletionParams('(', ", ", ')');
 		setAutoActivationRules(false, "."); // Default - only activate after '.'
 		setParameterChoicesProvider(new SourceParamChoicesProvider());
+	}
+
+	public FMLTechnologyAdapterController getFMLTechnologyAdapterController() {
+		return fmlTAController;
 	}
 
 	private void addCompletionsForStaticMembers(Set<Completion> set, FMLCompilationUnit cu, ClassFile cf, String pkg) {
@@ -320,7 +324,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		}
 		
 		return superClass;
-		*/
+		 */
 		return null;
 	}
 
@@ -714,7 +718,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		
 		// long time = System.currentTimeMillis() - startTime;
 		// System.out.println("methods/fields/localvars loaded in: " + time);
-		*/
+		 */
 
 	}
 
@@ -725,10 +729,13 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 			bindingModel = ((FMLControlGraph) context).getInferedBindingModel();
 		}
 
-		for (int i = 0; i < bindingModel.getBindingVariablesCount(); i++) {
-			BindingVariable bv = bindingModel.getBindingVariableAt(i);
-			System.out.println(" > " + bv + " of " + bv.getClass().getSimpleName());
-			retVal.add(new BindingVariableCompletion(this, bv));
+		if (bindingModel != null) {
+			for (int i = 0; i < bindingModel.getBindingVariablesCount(); i++) {
+				BindingVariable bv = bindingModel.getBindingVariableAt(i);
+				System.out.println(" > " + bv + " of " + bv.getClass().getSimpleName());
+
+				retVal.add(BindingVariableCompletionFactory.makeBindingVariableCompletion(this, bv));
+			}
 		}
 	}
 
@@ -839,7 +846,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		if (prefix != null && !THIS.equals(prefix)) {
 			loadCompletionsForCaretPositionQualified(cu, alreadyEntered, retVal, td, currentMethod, prefix, caret);
 		}
-		*/
+		 */
 	}
 
 	/**
@@ -966,7 +973,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 				}
 			}
 		}
-		*/
+		 */
 	}
 
 	private void loadCompletionsForCaretPositionQualifiedCodeBlock(FMLCompilationUnit cu, Set<Completion> retVal, TypeDeclaration td,
@@ -1068,7 +1075,7 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		
 		// long time = System.currentTimeMillis() - startTime;
 		// System.out.println("imports loaded in: " + time);
-		*/
+		 */
 	}
 
 	/**

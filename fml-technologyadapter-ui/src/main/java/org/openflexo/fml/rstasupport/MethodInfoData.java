@@ -38,7 +38,7 @@ class MethodInfoData implements Data {
 	/**
 	 * The parent completion provider.
 	 */
-	private SourceCompletionProvider provider;
+	private FMLSourceCompletionProvider provider;
 
 	/**
 	 * The actual metadata.
@@ -57,7 +57,7 @@ class MethodInfoData implements Data {
 	 * @param info The method info.
 	 * @param provider The parent completion provider.
 	 */
-	MethodInfoData(MethodInfo info, SourceCompletionProvider provider) {
+	MethodInfoData(MethodInfo info, FMLSourceCompletionProvider provider) {
 		this.info = info;
 		this.provider = provider;
 	}

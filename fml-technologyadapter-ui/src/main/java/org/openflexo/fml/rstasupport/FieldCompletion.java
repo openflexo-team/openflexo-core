@@ -49,7 +49,7 @@ class FieldCompletion extends AbstractFMLSourceCompletion implements MemberCompl
 
 	FieldCompletion(CompletionProvider provider, FieldInfo info) {
 		super(provider, info.getName());
-		this.data = new FieldInfoData(info, (SourceCompletionProvider) provider);
+		this.data = new FieldInfoData(info, (FMLSourceCompletionProvider) provider);
 		setRelevance(RELEVANCE);
 	}
 

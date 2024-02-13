@@ -33,10 +33,10 @@ import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 class FieldInfoData implements Data {
 
 	private FieldInfo info;
-	private SourceCompletionProvider provider;
+	private FMLSourceCompletionProvider provider;
 
 
-	FieldInfoData(FieldInfo info, SourceCompletionProvider provider) {
+	FieldInfoData(FieldInfo info, FMLSourceCompletionProvider provider) {
 		this.info = info;
 		this.provider = provider;
 	}

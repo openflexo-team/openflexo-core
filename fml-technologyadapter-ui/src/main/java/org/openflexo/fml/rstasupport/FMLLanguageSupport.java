@@ -35,6 +35,7 @@ import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser;
 import org.openflexo.fml.controller.widget.fmleditor.FMLRSyntaxTextArea;
 import org.openflexo.fml.rstasupport.tree.JavaOutlineTree;
@@ -69,6 +70,11 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 	 * manager.
 	 */
 	private JarManager jarManager;
+
+	/**
+	 * The {@link FMLTechnologyAdapterController}
+	 */
+	private FMLTechnologyAdapterController fmlTAController;
 
 	/**
 	 * Client property installed on text areas that points to a listener.
@@ -129,13 +135,21 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 		return null;
 	}
 
+	public FMLTechnologyAdapterController getFMLTechnologyAdapterController() {
+		return fmlTAController;
+	}
+
+	public void setFMLTechnologyAdapterController(FMLTechnologyAdapterController fmlTAController) {
+		this.fmlTAController = fmlTAController;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void install(RSyntaxTextArea textArea) {
 
-		FMLCompletionProvider p = new FMLCompletionProvider(jarManager);
+		FMLCompletionProvider p = new FMLCompletionProvider(jarManager, getFMLTechnologyAdapterController());
 		// Can't use createAutoCompletion(), as FML's is "special."
 		AutoCompletion ac = new FMLAutoCompletion(p, textArea);
 		ac.setListCellRenderer(new JavaCellRenderer());

@@ -23,6 +23,7 @@ import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.autocomplete.LanguageAwareCompletionProvider;
 import org.fife.ui.autocomplete.ParameterizedCompletion;
+import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.rstasupport.buildpath.LibraryInfo;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 
@@ -37,16 +38,14 @@ public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 	/**
 	 * The provider used for source code, kept here since it's used so much.
 	 */
-	private SourceCompletionProvider sourceProvider;
+	private FMLSourceCompletionProvider sourceProvider;
 
 	private FMLCompilationUnit cu;
 
 	/**
-	 * Constructor.
+	 * The {@link FMLTechnologyAdapterController}
 	 */
-	public FMLCompletionProvider() {
-		this(null);
-	}
+	private final FMLTechnologyAdapterController fmlTAController;
 
 	/**
 	 * Constructor.
@@ -56,14 +55,14 @@ public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 	 *            multiple <tt>RSyntaxTextArea</tt>s. This may also be <code>null</code>, in which case this completion provider will have a
 	 *            unique <tt>JarManager</tt>.
 	 */
-	public FMLCompletionProvider(JarManager jarManager) {
+	public FMLCompletionProvider(JarManager jarManager, FMLTechnologyAdapterController fmlTAController) {
 
-		super(new SourceCompletionProvider(jarManager));
-		this.sourceProvider = (SourceCompletionProvider) getDefaultCompletionProvider();
+		super(new FMLSourceCompletionProvider(jarManager, fmlTAController));
+		this.fmlTAController = fmlTAController;
+		this.sourceProvider = (FMLSourceCompletionProvider) getDefaultCompletionProvider();
 		sourceProvider.setJavaProvider(this);
 		setShorthandCompletionCache(new FMLShorthandCompletionCache(sourceProvider, new DefaultCompletionProvider()));
 		setDocCommentCompletionProvider(new DocCommentCompletionProvider());
-
 	}
 
 	/**
@@ -91,6 +90,10 @@ public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 	 */
 	public void clearJars() {
 		sourceProvider.clearJars();
+	}
+
+	public FMLTechnologyAdapterController getFMLTechnologyAdapterController() {
+		return fmlTAController;
 	}
 
 	/**

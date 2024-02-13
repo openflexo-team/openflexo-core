@@ -152,7 +152,7 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 	@Override
 	public String getSummary() {
 
-		SourceCompletionProvider scp = (SourceCompletionProvider)getProvider();
+		FMLSourceCompletionProvider scp = (FMLSourceCompletionProvider)getProvider();
 		SourceLocation  loc = scp.getSourceLocForClass(cf.getClassName(true));
 
 		if (loc!=null) {

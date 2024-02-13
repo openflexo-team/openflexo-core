@@ -201,6 +201,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		logger.info("Activating FMLLanguageSupport in FMLTechnologyAdapterController");
 		LanguageSupportFactory.get().addLanguageSupport(FMLLanguageSupport.SYNTAX_STYLE_FML, FMLLanguageSupport.class.getName());
 		fmlLanguageSupport = (FMLLanguageSupport) LanguageSupportFactory.get().getSupportFor(FMLLanguageSupport.SYNTAX_STYLE_FML);
+		fmlLanguageSupport.setFMLTechnologyAdapterController(this);
 		try {
 			fmlLanguageSupport.getJarManager().addCurrentJreClassFileSource();
 		} catch (IOException ioe) {

@@ -103,7 +103,7 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 
 		super(provider, info.getName(), info.getReturnTypeString(false));
 		setDefinedIn(info.getClassFile().getClassName(false));
-		this.data = new MethodInfoData(info, (SourceCompletionProvider)provider);
+		this.data = new MethodInfoData(info, (FMLSourceCompletionProvider)provider);
 		setRelevanceAppropriately();
 
 		String[] paramTypes = info.getParameterTypes();
