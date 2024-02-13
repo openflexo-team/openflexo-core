@@ -8,21 +8,23 @@
  * This library is distributed under a modified BSD license.  See the included
  * LICENSE.md file for details.
  */
-package org.openflexo.fml.rstasupport;
+package org.openflexo.fml.rstasupport.bv;
 
 import java.awt.Graphics;
 
 import javax.swing.Icon;
 
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
+import org.openflexo.fml.rstasupport.MemberCompletion;
+import org.openflexo.fml.rstasupport.MethodCompletion;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.binding.FlexoConceptBindingVariable;
 import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * A completion for a {@link FlexoConceptBindingVariable}
+ * A completion for a {@link SuperBindingVariable}
  *
  * @author sylvain
  */
@@ -33,7 +35,7 @@ public class SuperBindingVariableCompletion extends AbstractBindingVariableCompl
 	 */
 	private static final int RELEVANCE = 3;
 
-	SuperBindingVariableCompletion(FMLSourceCompletionProvider provider, SuperBindingVariable bindingVariable) {
+	public SuperBindingVariableCompletion(FMLSourceCompletionProvider provider, SuperBindingVariable bindingVariable) {
 		super(provider, bindingVariable);
 		setRelevance(RELEVANCE);
 	}

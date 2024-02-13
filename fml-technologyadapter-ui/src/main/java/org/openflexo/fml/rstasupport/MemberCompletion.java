@@ -12,25 +12,22 @@ package org.openflexo.fml.rstasupport;
 
 import org.openflexo.fml.rstasupport.IconFactory.IconData;
 
-
 /**
  * Extra methods defined by a completion for a Java member (fields and methods).
  *
  * @author Robert Futrell
  * @version 1.0
  */
-interface MemberCompletion extends JavaSourceCompletion {
-
+public interface MemberCompletion extends JavaSourceCompletion {
 
 	/**
 	 * Returns the name of the enclosing class.
 	 *
-	 * @param fullyQualified Whether the name returned should be fully
-	 *        qualified.
+	 * @param fullyQualified
+	 *            Whether the name returned should be fully qualified.
 	 * @return The class name.
 	 */
 	String getEnclosingClassName(boolean fullyQualified);
-
 
 	/**
 	 * Returns the signature of this member.
@@ -39,14 +36,12 @@ interface MemberCompletion extends JavaSourceCompletion {
 	 */
 	String getSignature();
 
-
 	/**
 	 * Returns the type of this member (the return type for methods).
 	 *
 	 * @return The type of this member.
 	 */
 	String getType();
-
 
 	/**
 	 * Returns whether this member is deprecated.
@@ -55,20 +50,17 @@ interface MemberCompletion extends JavaSourceCompletion {
 	 */
 	boolean isDeprecated();
 
-
 	/**
-	 * Metadata about the member.  Member completions will be constructed
-	 * from a concrete instance of this interface.  This is because there are
-	 * two sources that member completions come from - parsing Java source
-	 * files and parsing compiled class files (in libraries).
+	 * Metadata about the member. Member completions will be constructed from a concrete instance of this interface. This is because there
+	 * are two sources that member completions come from - parsing Java source files and parsing compiled class files (in libraries).
 	 */
 	interface Data extends IconData {
 
 		/**
 		 * Returns the name of the enclosing class.
 		 *
-		 * @param fullyQualified Whether the name returned should be fully
-		 *        qualified.
+		 * @param fullyQualified
+		 *            Whether the name returned should be fully qualified.
 		 * @return The class name.
 		 */
 		String getEnclosingClassName(boolean fullyQualified);
@@ -84,8 +76,7 @@ interface MemberCompletion extends JavaSourceCompletion {
 		/**
 		 * Returns the summary description (should be HTML) for this member.
 		 *
-		 * @return The summary description, or <code>null</code> if there is
-		 *         none.
+		 * @return The summary description, or <code>null</code> if there is none.
 		 * @see MemberCompletion#getSummary()
 		 */
 		String getSummary();
@@ -106,6 +97,5 @@ interface MemberCompletion extends JavaSourceCompletion {
 		boolean isConstructor();
 
 	}
-
 
 }

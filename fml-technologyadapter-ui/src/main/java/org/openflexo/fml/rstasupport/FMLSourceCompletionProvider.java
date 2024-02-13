@@ -29,8 +29,12 @@ import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.FunctionPathElement;
+import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.rstasupport.buildpath.LibraryInfo;
 import org.openflexo.fml.rstasupport.buildpath.SourceLocation;
@@ -50,6 +54,7 @@ import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Parses a Java AST for code completions. It currently scans the following:
@@ -65,7 +70,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
  * @author Robert Futrell
  * @version 1.0
  */
-class FMLSourceCompletionProvider extends DefaultCompletionProvider {
+public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 	/**
 	 * The parent completion provider.
@@ -696,7 +701,21 @@ class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		
 		System.out.println("FML:\n" + enclosingObject.getFMLPrettyPrint());*/
 
-		loadRootCompletions(context, retVal);
+		if (StringUtils.isNotEmpty(prefix)) {
+			// If prefix is not empty, we are about to complete a BindingPath
+			// First build existing path
+			DataBinding<?> existingBinding = new DataBinding<>(prefix, context);
+			System.out.println("Hop le binding " + existingBinding);
+			System.out.println("valid: " + existingBinding.isValid());
+			System.out.println("reason: " + existingBinding.invalidBindingReason());
+			System.out.println("type: " + existingBinding.getAnalyzedType());
+			if (existingBinding.isValid()) {
+				loadCompletionsForType(context, existingBinding.getAnalyzedType(), retVal);
+			}
+		}
+		else {
+			loadRootCompletions(context, retVal);
+		}
 
 		/*
 		Iterator<TypeDeclaration> i = cu.getTypeDeclarationIterator();
@@ -723,6 +742,10 @@ class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	}
 
 	private void loadRootCompletions(Bindable context, Set<Completion> retVal) {
+		if (context == null) {
+			return;
+		}
+
 		BindingModel bindingModel = context.getBindingModel();
 
 		if (context instanceof FMLControlGraph) {
@@ -733,9 +756,25 @@ class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 			for (int i = 0; i < bindingModel.getBindingVariablesCount(); i++) {
 				BindingVariable bv = bindingModel.getBindingVariableAt(i);
 				System.out.println(" > " + bv + " of " + bv.getClass().getSimpleName());
-
 				retVal.add(BindingVariableCompletionFactory.makeBindingVariableCompletion(this, bv));
 			}
+		}
+	}
+
+	private void loadCompletionsForType(Bindable context, java.lang.reflect.Type type, Set<Completion> retVal) {
+		BindingFactory bf = context.getBindingFactory();
+
+		BindingVariable dummyBV = new BindingVariable("temp", type);
+		List<? extends SimplePathElement<?>> accessibleSimplePathElements = bf.getAccessibleSimplePathElements(dummyBV, context);
+		List<? extends FunctionPathElement<?>> accessibleFunctionPathElements = bf.getAccessibleFunctionPathElements(dummyBV, context);
+
+		for (SimplePathElement<?> simplePathElement : accessibleSimplePathElements) {
+			System.out.println(" > " + simplePathElement);
+			retVal.add(BindingPathElementCompletionFactory.makeSimplePathElementCompletion(this, simplePathElement));
+		}
+		for (FunctionPathElement<?> functionPathElement : accessibleFunctionPathElements) {
+			System.out.println(" > " + functionPathElement);
+			retVal.add(BindingPathElementCompletionFactory.makeFunctionPathElementCompletion(this, functionPathElement));
 		}
 	}
 

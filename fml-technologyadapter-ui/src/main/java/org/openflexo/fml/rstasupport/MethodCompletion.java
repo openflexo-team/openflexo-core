@@ -27,25 +27,20 @@ import org.openflexo.fml.rstasupport.rjc.ast.FormalParameter;
 import org.openflexo.fml.rstasupport.rjc.ast.Method;
 import org.openflexo.fml.rstasupport.rjc.lang.Type;
 
-
 /**
- * A completion for a Java method.  This completion gets its information from
- * one of two sources:
+ * A completion for a Java method. This completion gets its information from one of two sources:
  *
  * <ul>
- *    <li>A {@link MethodInfo} instance, which is loaded by parsing a class
- *        file.  This is used when this completion represents a method found
- *        in a compiled library.</li>
- *    <li>A {@link Method} instance, which is created when parsing a Java
- *        source file.  This is used when the completion represents a method
- *        found in uncompiled source, such as the source in an
- *        <tt>RSyntaxTextArea</tt>, or in a loose file on disk.</li>
+ * <li>A {@link MethodInfo} instance, which is loaded by parsing a class file. This is used when this completion represents a method found
+ * in a compiled library.</li>
+ * <li>A {@link Method} instance, which is created when parsing a Java source file. This is used when the completion represents a method
+ * found in uncompiled source, such as the source in an <tt>RSyntaxTextArea</tt>, or in a loose file on disk.</li>
  * </ul>
  *
  * @author Robert Futrell
  * @version 1.0
  */
-class MethodCompletion extends FunctionCompletion implements MemberCompletion {
+public class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 
 	/**
 	 * The data source for our completion attributes.
@@ -58,30 +53,29 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 	private String compareString;
 
 	/**
-	 * The relevance of methods.  This allows methods to be "higher" in
-	 * the completion list than other types.
+	 * The relevance of methods. This allows methods to be "higher" in the completion list than other types.
 	 */
-	private static final int NON_CONSTRUCTOR_RELEVANCE		= 2;
-
+	private static final int NON_CONSTRUCTOR_RELEVANCE = 2;
 
 	/**
-	 * Creates a completion for a method discovered when parsing a Java
-	 * source file.
+	 * Creates a completion for a method discovered when parsing a Java source file.
 	 *
-	 * @param provider The parent completion provider.
-	 * @param m Metadata about the method.
+	 * @param provider
+	 *            The parent completion provider.
+	 * @param m
+	 *            Metadata about the method.
 	 */
 	MethodCompletion(CompletionProvider provider, Method m) {
 
 		// NOTE: "void" might not be right - I think this might be constructors
-		super(provider, m.getName(), m.getType()==null ? "void" : m.getType().toString());
+		super(provider, m.getName(), m.getType() == null ? "void" : m.getType().toString());
 		setDefinedIn(m.getParentTypeDeclaration().getName());
 		this.data = new MethodData(m);
 		setRelevanceAppropriately();
 
 		int count = m.getParameterCount();
 		List<Parameter> params = new ArrayList<>(count);
-		for (int i=0; i<count; i++) {
+		for (int i = 0; i < count; i++) {
 			FormalParameter param = m.getParameter(i);
 			Type type = param.getType();
 			String name = param.getName();
@@ -91,37 +85,37 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 
 	}
 
-
 	/**
-	 * Creates a completion for a method discovered when parsing a compiled
-	 * class file.
+	 * Creates a completion for a method discovered when parsing a compiled class file.
 	 *
-	 * @param provider The parent completion provider.
-	 * @param info Metadata about the method.
+	 * @param provider
+	 *            The parent completion provider.
+	 * @param info
+	 *            Metadata about the method.
 	 */
 	MethodCompletion(CompletionProvider provider, MethodInfo info) {
 
 		super(provider, info.getName(), info.getReturnTypeString(false));
 		setDefinedIn(info.getClassFile().getClassName(false));
-		this.data = new MethodInfoData(info, (FMLSourceCompletionProvider)provider);
+		this.data = new MethodInfoData(info, (FMLSourceCompletionProvider) provider);
 		setRelevanceAppropriately();
 
 		String[] paramTypes = info.getParameterTypes();
 		List<Parameter> params = new ArrayList<>(paramTypes.length);
-		for (int i=0; i<paramTypes.length; i++) {
-			String name = ((MethodInfoData)data).getParameterName(i);
-			String type = paramTypes[i].substring(paramTypes[i].lastIndexOf('.')+1);
+		for (int i = 0; i < paramTypes.length; i++) {
+			String name = ((MethodInfoData) data).getParameterName(i);
+			String type = paramTypes[i].substring(paramTypes[i].lastIndexOf('.') + 1);
 			params.add(new Parameter(type, name));
 		}
 		setParams(params);
 
 	}
 
-
 	/**
 	 * Overridden to compare methods by their comparison strings.
 	 *
-	 * @param c2 A <code>Completion</code> to compare to.
+	 * @param c2
+	 *            A <code>Completion</code> to compare to.
 	 * @return The sort order.
 	 */
 	@Override
@@ -129,18 +123,17 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 
 		int rc = -1;
 
-		if (c2==this) {
+		if (c2 == this) {
 			rc = 0;
 		}
 
 		else if (c2 instanceof MethodCompletion) {
-			rc = getCompareString().compareTo(
-					((MethodCompletion)c2).getCompareString());
+			rc = getCompareString().compareTo(((MethodCompletion) c2).getCompareString());
 		}
 
-		else if (c2!=null) {
+		else if (c2 != null) {
 			rc = toString().compareToIgnoreCase(c2.toString());
-			if (rc==0) { // Same text value
+			if (rc == 0) { // Same text value
 				String clazz1 = getClass().getName();
 				clazz1 = clazz1.substring(clazz1.lastIndexOf('.'));
 				String clazz2 = c2.getClass().getName();
@@ -153,25 +146,22 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof MethodCompletion) &&
-			//((MethodCompletion)obj).getSignature().equals(getSignature());
-			((MethodCompletion)obj).getCompareString().equals(getCompareString());
+		// ((MethodCompletion)obj).getSignature().equals(getSignature());
+				((MethodCompletion) obj).getCompareString().equals(getCompareString());
 	}
-
 
 	@Override
 	public String getAlreadyEntered(JTextComponent comp) {
 		String temp = getProvider().getAlreadyEnteredText(comp);
 		int lastDot = temp.lastIndexOf('.');
-		if (lastDot>-1) {
-			temp = temp.substring(lastDot+1);
+		if (lastDot > -1) {
+			temp = temp.substring(lastDot + 1);
 		}
 		return temp;
 	}
-
 
 	/**
 	 * Returns a string used to compare this method completion to another.
@@ -189,18 +179,18 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 		 * 3. Finally, by parameter type.
 		 */
 
-		if (compareString==null) {
+		if (compareString == null) {
 			StringBuilder sb = new StringBuilder(getName());
 			// NOTE: This will fail if a method has > 99 parameters (!)
 			int paramCount = getParamCount();
-			if (paramCount<10) {
+			if (paramCount < 10) {
 				sb.append('0');
 			}
 			sb.append(paramCount);
-			for (int i=0; i<paramCount; i++) {
+			for (int i = 0; i < paramCount; i++) {
 				String type = getParam(i).getType();
 				sb.append(type);
-				if (i<paramCount-1) {
+				if (i < paramCount - 1) {
 					sb.append(',');
 				}
 			}
@@ -211,24 +201,20 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 
 	}
 
-
 	@Override
 	public String getEnclosingClassName(boolean fullyQualified) {
 		return data.getEnclosingClassName(fullyQualified);
 	}
-
 
 	@Override
 	public Icon getIcon() {
 		return IconFactory.get().getIcon(data);
 	}
 
-
 	@Override
 	public String getSignature() {
 		return data.getSignature();
 	}
-
 
 	@Override
 	public String getSummary() {
@@ -236,25 +222,22 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 		String summary = data.getSummary(); // Could be just the method name
 
 		// If it's the Javadoc for the method...
-		if (summary!=null && summary.startsWith("/**")) {
+		if (summary != null && summary.startsWith("/**")) {
 			summary = org.openflexo.fml.rstasupport.Util.docCommentToHtml(summary);
 		}
 
 		return summary;
 	}
 
-
 	@Override
 	public int hashCode() {
 		return getCompareString().hashCode();
 	}
 
-
 	@Override
 	public boolean isDeprecated() {
 		return data.isDeprecated();
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -263,7 +246,6 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 	public void rendererText(Graphics g, int x, int y, boolean selected) {
 		rendererText(this, g, x, y, selected);
 	}
-
 
 	/**
 	 * Sets the relevance of this constructor based on its properties.
@@ -275,23 +257,26 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 		}
 	}
 
-
 	/**
 	 * Renders a member completion.
 	 *
-	 * @param mc The completion to render.
-	 * @param g The graphics context.
-	 * @param x The x-offset at which to render.
-	 * @param y The y-offset at which to render.
-	 * @param selected Whether the completion is selected/active.
+	 * @param mc
+	 *            The completion to render.
+	 * @param g
+	 *            The graphics context.
+	 * @param x
+	 *            The x-offset at which to render.
+	 * @param y
+	 *            The y-offset at which to render.
+	 * @param selected
+	 *            Whether the completion is selected/active.
 	 */
-	public static void rendererText(MemberCompletion mc, Graphics g, int x,
-									int y, boolean selected) {
+	public static void rendererText(MemberCompletion mc, Graphics g, int x, int y, boolean selected) {
 
 		String shortType = mc.getType();
 		int dot = shortType.lastIndexOf('.');
-		if (dot>-1) {
-			shortType = shortType.substring(dot+1);
+		if (dot > -1) {
+			shortType = shortType.substring(dot + 1);
 		}
 
 		// Draw the method signature
@@ -300,7 +285,7 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 		g.drawString(sig, x, y);
 		int newX = x + fm.stringWidth(sig);
 		if (mc.isDeprecated()) {
-			int midY = y + fm.getDescent() - fm.getHeight()/2;
+			int midY = y + fm.getDescent() - fm.getHeight() / 2;
 			g.drawLine(x, midY, newX, midY);
 		}
 		x = newX;
@@ -324,7 +309,6 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -332,6 +316,5 @@ class MethodCompletion extends FunctionCompletion implements MemberCompletion {
 	public String toString() {
 		return getSignature();
 	}
-
 
 }

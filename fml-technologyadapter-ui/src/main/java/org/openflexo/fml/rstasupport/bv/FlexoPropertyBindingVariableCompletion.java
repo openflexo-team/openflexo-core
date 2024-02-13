@@ -8,24 +8,27 @@
  * This library is distributed under a modified BSD license.  See the included
  * LICENSE.md file for details.
  */
-package org.openflexo.fml.rstasupport;
+package org.openflexo.fml.rstasupport.bv;
 
 import java.awt.Graphics;
 
 import javax.swing.Icon;
 
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
+import org.openflexo.fml.rstasupport.MemberCompletion;
+import org.openflexo.fml.rstasupport.MethodCompletion;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.binding.FlexoConceptBindingVariable;
+import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * A completion for a {@link FlexoConceptBindingVariable}
+ * A completion for a {@link FlexoPropertyBindingVariable}
  *
  * @author sylvain
  */
-public class FlexoConceptBindingVariableCompletion extends AbstractBindingVariableCompletion<FlexoConceptBindingVariable>
+public class FlexoPropertyBindingVariableCompletion extends AbstractBindingVariableCompletion<FlexoPropertyBindingVariable>
 		implements MemberCompletion {
 
 	/**
@@ -33,36 +36,36 @@ public class FlexoConceptBindingVariableCompletion extends AbstractBindingVariab
 	 */
 	private static final int RELEVANCE = 3;
 
-	FlexoConceptBindingVariableCompletion(FMLSourceCompletionProvider provider, FlexoConceptBindingVariable bindingVariable) {
+	public FlexoPropertyBindingVariableCompletion(FMLSourceCompletionProvider provider, FlexoPropertyBindingVariable bindingVariable) {
 		super(provider, bindingVariable);
 		setRelevance(RELEVANCE);
 	}
 
-	public FlexoConcept getFlexoConcept() {
+	public FlexoProperty<?> getFlexoProperty() {
 		if (getBindingVariable() != null) {
-			return getBindingVariable().getFlexoConcept();
+			return getBindingVariable().getFlexoProperty();
 		}
 		return null;
 	}
 
-	public VirtualModel getOwner() {
-		if (getFlexoConcept() != null) {
-			return getFlexoConcept().getOwner();
+	public FlexoConcept getFlexoConcept() {
+		if (getFlexoProperty() != null) {
+			return getFlexoProperty().getFlexoConcept();
 		}
 		return null;
 	}
 
 	@Override
 	public String getEnclosingClassName(boolean fullyQualified) {
-		if (getOwner() != null) {
-			return getOwner().getName();
+		if (getFlexoConcept() != null) {
+			return getFlexoConcept().getName();
 		}
-		return "-";
+		return null;
 	}
 
 	@Override
 	public Icon getIcon() {
-		return FlexoController.statelessIconForObject(getFlexoConcept());
+		return FlexoController.statelessIconForObject(getFlexoProperty());
 		// return getProvider().getFMLTechnologyAdapterController().getIconForTechnologyObject(getFlexoProperty());
 	}
 
@@ -78,8 +81,8 @@ public class FlexoConceptBindingVariableCompletion extends AbstractBindingVariab
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof FlexoConceptBindingVariableCompletion)
-				&& ((FlexoConceptBindingVariableCompletion) obj).getSignature().equals(getSignature());
+		return (obj instanceof FlexoPropertyBindingVariableCompletion)
+				&& ((FlexoPropertyBindingVariableCompletion) obj).getSignature().equals(getSignature());
 	}
 
 	@Override
@@ -96,14 +99,6 @@ public class FlexoConceptBindingVariableCompletion extends AbstractBindingVariab
 	@Override
 	public void rendererText(Graphics g, int x, int y, boolean selected) {
 		MethodCompletion.rendererText(this, g, x, y, selected);
-	}
-
-	@Override
-	public String getSummary() {
-		if (getReplacementText().equals("this")) {
-			return "<html>Access to current instance</html>";
-		}
-		return super.getSummary();
 	}
 
 }

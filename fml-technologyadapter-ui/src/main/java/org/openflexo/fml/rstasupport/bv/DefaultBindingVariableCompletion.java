@@ -8,7 +8,7 @@
  * This library is distributed under a modified BSD license.  See the included
  * LICENSE.md file for details.
  */
-package org.openflexo.fml.rstasupport;
+package org.openflexo.fml.rstasupport.bv;
 
 import java.awt.Graphics;
 
@@ -16,9 +16,11 @@ import javax.swing.Icon;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
+import org.openflexo.fml.rstasupport.IconFactory;
 
 /**
- * Base class for completion based on a {@link BindingVariable}
+ * Default class for completion based on a {@link BindingVariable}
  *
  * @author sylvain
  */
@@ -29,7 +31,7 @@ public class DefaultBindingVariableCompletion extends AbstractBindingVariableCom
 	 */
 	private static final int RELEVANCE = 3;
 
-	DefaultBindingVariableCompletion(FMLSourceCompletionProvider provider, BindingVariable bindingVariable) {
+	public DefaultBindingVariableCompletion(FMLSourceCompletionProvider provider, BindingVariable bindingVariable) {
 		super(provider, bindingVariable);
 		setRelevance(RELEVANCE);
 	}

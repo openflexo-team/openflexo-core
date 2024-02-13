@@ -11,12 +11,17 @@
 package org.openflexo.fml.rstasupport;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.fml.rstasupport.bv.AbstractBindingVariableCompletion;
+import org.openflexo.fml.rstasupport.bv.DefaultBindingVariableCompletion;
+import org.openflexo.fml.rstasupport.bv.FlexoConceptBindingVariableCompletion;
+import org.openflexo.fml.rstasupport.bv.FlexoPropertyBindingVariableCompletion;
+import org.openflexo.fml.rstasupport.bv.SuperBindingVariableCompletion;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 
 /**
- * Factory for {@link AbstractBindingVariableCompletion}
+ * Factory for {@link BindingVariable} completion
  *
  * @author sylvain
  */
@@ -24,19 +29,20 @@ public class BindingVariableCompletionFactory {
 
 	public static <BV extends BindingVariable> AbstractBindingVariableCompletion<BV> makeBindingVariableCompletion(
 			FMLSourceCompletionProvider completionProvider, BV bv) {
+		AbstractBindingVariableCompletion returned;
 		if (bv instanceof FlexoPropertyBindingVariable) {
-			return (AbstractBindingVariableCompletion<BV>) new FlexoPropertyBindingVariableCompletion(completionProvider,
-					(FlexoPropertyBindingVariable) bv);
+			returned = new FlexoPropertyBindingVariableCompletion(completionProvider, (FlexoPropertyBindingVariable) bv);
 		}
-		if (bv instanceof FlexoConceptBindingVariable) {
-			return (AbstractBindingVariableCompletion<BV>) new FlexoConceptBindingVariableCompletion(completionProvider,
-					(FlexoConceptBindingVariable) bv);
+		else if (bv instanceof FlexoConceptBindingVariable) {
+			returned = new FlexoConceptBindingVariableCompletion(completionProvider, (FlexoConceptBindingVariable) bv);
 		}
-		if (bv instanceof SuperBindingVariable) {
-			return (AbstractBindingVariableCompletion<BV>) new SuperBindingVariableCompletion(completionProvider,
-					(SuperBindingVariable) bv);
+		else if (bv instanceof SuperBindingVariable) {
+			returned = new SuperBindingVariableCompletion(completionProvider, (SuperBindingVariable) bv);
 		}
-		return (AbstractBindingVariableCompletion<BV>) new DefaultBindingVariableCompletion(completionProvider, bv);
+		else {
+			returned = new DefaultBindingVariableCompletion(completionProvider, bv);
+		}
+		return returned;
 	}
 
 }

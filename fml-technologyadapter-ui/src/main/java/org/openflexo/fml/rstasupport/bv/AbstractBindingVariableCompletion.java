@@ -8,9 +8,11 @@
  * This library is distributed under a modified BSD license.  See the included
  * LICENSE.md file for details.
  */
-package org.openflexo.fml.rstasupport;
+package org.openflexo.fml.rstasupport.bv;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.fml.rstasupport.AbstractFMLSourceCompletion;
+import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
 
 /**
  * Base class for completion based on a {@link BindingVariable}
