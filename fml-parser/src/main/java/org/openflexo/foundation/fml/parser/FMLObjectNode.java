@@ -128,7 +128,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * @return
 	 */
 	public <T2 extends FMLPrettyPrintable> FMLObjectNode<?, T2, ?> getFMLObjectNodeAtLocation(int row, int col, Class<T2> objectClass) {
-		if (getFragment() == null) {
+		if (getLastParsedFragment() == null) {
 			return null;
 		}
 		RawSourcePosition position = getRawSource().new RawSourcePosition(row, col);
@@ -149,7 +149,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 */
 	private <T2 extends FMLPrettyPrintable> FMLObjectNode<?, T2, ?> searchFMLObjectNodeAtPosition(RawSourcePosition position,
 			Class<T2> objectClass) {
-		if (position.isInside(getFragment())) {
+		if (position.isInside(getLastParsedFragment())) {
 			FMLObjectNode<?, T2, ?> returned = null;
 			if (objectClass.isAssignableFrom(getModelObject().getClass())) {
 				returned = (FMLObjectNode<?, T2, ?>) this;

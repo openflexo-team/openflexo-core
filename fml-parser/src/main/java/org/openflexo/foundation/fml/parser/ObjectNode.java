@@ -1156,7 +1156,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	public Object getObjectAtLocation(int row, int col) {
-		if (getFragment() == null) {
+		if (getLastParsedFragment() == null) {
 			return null;
 		}
 		RawSourcePosition position = getRawSource().new RawSourcePosition(row, col);
@@ -1169,10 +1169,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	private ObjectNode<?, ?, ?> searchObjectNodeAtPosition(RawSourcePosition position) {
-		if (position.isInside(getFragment())) {
+		if (position.isInside(getLastParsedFragment())) {
 			for (P2PPNode<?, ?> p2ppNode : getChildren()) {
 				if (p2ppNode instanceof ObjectNode) {
-					if (position.isInside(((ObjectNode<?, ?, ?>) p2ppNode).getFragment())) {
+					if (position.isInside(((ObjectNode<?, ?, ?>) p2ppNode).getLastParsedFragment())) {
 						return ((ObjectNode<?, ?, ?>) p2ppNode).searchObjectNodeAtPosition(position);
 					}
 				}
