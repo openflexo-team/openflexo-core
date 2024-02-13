@@ -33,6 +33,7 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DefaultBindable;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
@@ -703,14 +704,35 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 		if (StringUtils.isNotEmpty(prefix)) {
 			// If prefix is not empty, we are about to complete a BindingPath
+			// First build a bindable disconnected from "real" model with same BindingModel and BindingFactory
+			DefaultBindable defaultBindable = new DefaultBindable() {
+				@Override
+				public BindingModel getBindingModel() {
+					return context.getBindingModel();
+				}
+
+				@Override
+				public BindingFactory getBindingFactory() {
+					return context.getBindingFactory();
+				}
+
+				@Override
+				public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+				}
+
+				@Override
+				public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+				}
+			};
 			// First build existing path
-			DataBinding<?> existingBinding = new DataBinding<>(prefix, context);
-			System.out.println("Hop le binding " + existingBinding);
-			System.out.println("valid: " + existingBinding.isValid());
-			System.out.println("reason: " + existingBinding.invalidBindingReason());
-			System.out.println("type: " + existingBinding.getAnalyzedType());
+			DataBinding<?> existingBinding = new DataBinding<>(prefix, defaultBindable);
+			// System.out.println("Hop le binding " + existingBinding);
+			// System.out.println("valid: " + existingBinding.isValid());
+			// System.out.println("reason: " + existingBinding.invalidBindingReason());
+			// System.out.println("type: " + existingBinding.getAnalyzedType());
 			if (existingBinding.isValid()) {
 				loadCompletionsForType(context, existingBinding.getAnalyzedType(), retVal);
+				// Thread.dumpStack();
 			}
 		}
 		else {
