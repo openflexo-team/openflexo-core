@@ -20,9 +20,11 @@ import org.openflexo.fml.rstasupport.bpe.ContainerPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.DefaultFunctionPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.DefaultSimplePathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.FlexoBehaviourPathElementCompletion;
+import org.openflexo.fml.rstasupport.bpe.FlexoPropertyPathElementCompletion;
 import org.openflexo.fml.rstasupport.bpe.JavaInstanceMethodPathElementCompletion;
 import org.openflexo.foundation.fml.binding.ContainerPathElement;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourPathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 
 /**
  * Factory for {@link BindingPathElement} completion
@@ -34,7 +36,10 @@ public class BindingPathElementCompletionFactory {
 	public static <BPE extends SimplePathElement<?>> AbstractSimplePathElementCompletion<BPE> makeSimplePathElementCompletion(
 			FMLSourceCompletionProvider completionProvider, BPE bpe) {
 		AbstractSimplePathElementCompletion returned;
-		if (bpe instanceof ContainerPathElement) {
+		if (bpe instanceof FlexoPropertyPathElement) {
+			returned = new FlexoPropertyPathElementCompletion(completionProvider, (FlexoPropertyPathElement<?>) bpe);
+		}
+		else if (bpe instanceof ContainerPathElement) {
 			returned = new ContainerPathElementCompletion(completionProvider, (ContainerPathElement) bpe);
 		}
 		else {
