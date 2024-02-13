@@ -27,6 +27,10 @@ import javax.swing.text.JTextComponent;
 import org.fife.rsta.ac.ShorthandCompletionCache;
 import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.fml.rstasupport.buildpath.LibraryInfo;
 import org.openflexo.fml.rstasupport.buildpath.SourceLocation;
 import org.openflexo.fml.rstasupport.classreader.ClassFile;
@@ -41,6 +45,10 @@ import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 import org.openflexo.fml.rstasupport.rjc.lang.Type;
 import org.openflexo.fml.rstasupport.rjc.lang.TypeArgument;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 
 /**
  * Parses a Java AST for code completions. It currently scans the following:
@@ -624,6 +632,31 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		return Character.isJavaIdentifierPart(ch) || ch == '.';
 	}
 
+	private Bindable getRelevantContext(FMLCompilationUnit cu, JTextComponent textArea) {
+		FMLPrettyPrintable enclosingObject = getEnclosingFMLObject(cu, textArea);
+		if (enclosingObject != null) {
+			if (enclosingObject instanceof Sequence) {
+				// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
+				return ((Sequence) enclosingObject).getControlGraph1();
+			}
+			return enclosingObject;
+		}
+		return null;
+	}
+
+	private FMLPrettyPrintable getEnclosingFMLObject(FMLCompilationUnit cu, JTextComponent textArea) {
+		if (textArea instanceof RSyntaxTextArea) {
+			FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) cu.getPrettyPrintDelegate();
+			if (cuNode != null) {
+				// System.out.println("At line=" + (((RSyntaxTextArea) textArea).getCaretLineNumber() + 1) + " row="
+				// + ((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
+				return cuNode.getFMLObjectAtLocation(((RSyntaxTextArea) textArea).getCaretLineNumber() + 1,
+						((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Loads completions based on the current caret location in the source. In other words:
 	 *
@@ -645,22 +678,23 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 	private void loadCompletionsForCaretPosition(FMLCompilationUnit cu, JTextComponent comp, String alreadyEntered,
 			Set<Completion> retVal) {
 
-		// A IMPLEMENTER
-
-		/*
-		
-		// Get completions for all fields and methods of all type declarations.
-		
-		// long startTime = System.currentTimeMillis();
-		int caret = comp.getCaretPosition();
-		// List temp = new ArrayList();
-		int start;
-		int end;
-		
 		int lastDot = alreadyEntered.lastIndexOf('.');
 		boolean qualified = lastDot > -1;
 		String prefix = qualified ? alreadyEntered.substring(0, lastDot) : null;
+		Bindable context = getRelevantContext(cu, comp);
+
+		System.out.println("alreadyEntered=" + alreadyEntered);
+		System.out.println("prefix=" + prefix);
+		System.out.println("context=" + context);
+		/*RawSourceFragment f = ((FMLObjectNode) enclosingObject.getPrettyPrintDelegate()).getFragment();
+		System.out.println("fragment: " + f);
+		System.out.println("[" + f.getRawText() + "]");
 		
+		System.out.println("FML:\n" + enclosingObject.getFMLPrettyPrint());*/
+
+		loadRootCompletions(context, retVal);
+
+		/*
 		Iterator<TypeDeclaration> i = cu.getTypeDeclarationIterator();
 		while (i.hasNext()) {
 		
@@ -682,6 +716,20 @@ class SourceCompletionProvider extends DefaultCompletionProvider {
 		// System.out.println("methods/fields/localvars loaded in: " + time);
 		*/
 
+	}
+
+	private void loadRootCompletions(Bindable context, Set<Completion> retVal) {
+		BindingModel bindingModel = context.getBindingModel();
+
+		if (context instanceof FMLControlGraph) {
+			bindingModel = ((FMLControlGraph) context).getInferedBindingModel();
+		}
+
+		for (int i = 0; i < bindingModel.getBindingVariablesCount(); i++) {
+			BindingVariable bv = bindingModel.getBindingVariableAt(i);
+			System.out.println(" > " + bv + " of " + bv.getClass().getSimpleName());
+			retVal.add(new BindingVariableCompletion(this, bv));
+		}
 	}
 
 	/**

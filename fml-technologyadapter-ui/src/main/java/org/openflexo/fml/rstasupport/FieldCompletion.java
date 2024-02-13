@@ -32,7 +32,7 @@ import org.openflexo.fml.rstasupport.rjc.lang.Type;
  * @author Robert Futrell
  * @version 1.0
  */
-class FieldCompletion extends AbstractJavaSourceCompletion implements MemberCompletion {
+class FieldCompletion extends AbstractFMLSourceCompletion implements MemberCompletion {
 
 	private Data data;
 

@@ -32,7 +32,7 @@ import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
  * @author Robert Futrell
  * @version 1.0
  */
-class ClassCompletion extends AbstractJavaSourceCompletion {
+class ClassCompletion extends AbstractFMLSourceCompletion {
 
 	private ClassFile cf;
 

@@ -23,7 +23,7 @@ import org.fife.ui.autocomplete.CompletionProvider;
  * @author Robert Futrell
  * @version 1.0
  */
-class PackageNameCompletion extends AbstractJavaSourceCompletion {
+class PackageNameCompletion extends AbstractFMLSourceCompletion {
 
 
 	PackageNameCompletion(CompletionProvider provider, String text,

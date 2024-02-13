@@ -16,30 +16,24 @@ import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.autocomplete.CompletionProvider;
 
-
 /**
- * Base class for Java source completions.
+ * Base class for FML source completions.
  *
- * @author Robert Futrell
- * @version 1.0
+ * @author sylvain
  */
-public abstract class AbstractJavaSourceCompletion extends BasicCompletion
-									implements JavaSourceCompletion {
+public abstract class AbstractFMLSourceCompletion extends BasicCompletion implements JavaSourceCompletion {
 
-
-	protected AbstractJavaSourceCompletion(CompletionProvider provider,
-										   String replacementText) {
+	protected AbstractFMLSourceCompletion(CompletionProvider provider, String replacementText) {
 		super(provider, replacementText);
 	}
 
-
 	/**
-	 * Overridden to ensure that two completions don't just have the same
-	 * text value (ignoring case), but that they're of the same "type" of
-	 * <code>Completion</code> as well, so, for example, a completion for the
-	 * "String" class won't clash with a completion for a "string" LocalVar.
+	 * Overridden to ensure that two completions don't just have the same text value (ignoring case), but that they're of the same "type" of
+	 * <code>Completion</code> as well, so, for example, a completion for the "String" class won't clash with a completion for a "string"
+	 * LocalVar.
 	 *
-	 * @param c2 Another completion instance.
+	 * @param c2
+	 *            Another completion instance.
 	 * @return How this completion compares to the other one.
 	 */
 	@Override
@@ -47,13 +41,13 @@ public abstract class AbstractJavaSourceCompletion extends BasicCompletion
 
 		int rc = -1;
 
-		if (c2==this) {
+		if (c2 == this) {
 			rc = 0;
 		}
 
-		else if (c2!=null) {
+		else if (c2 != null) {
 			rc = toString().compareToIgnoreCase(c2.toString());
-			if (rc==0) { // Same text value
+			if (rc == 0) { // Same text value
 				String clazz1 = getClass().getName();
 				clazz1 = clazz1.substring(clazz1.lastIndexOf('.'));
 				String clazz2 = c2.getClass().getName();
@@ -66,16 +60,14 @@ public abstract class AbstractJavaSourceCompletion extends BasicCompletion
 
 	}
 
-
 	@Override
 	public String getAlreadyEntered(JTextComponent comp) {
 		String temp = getProvider().getAlreadyEnteredText(comp);
 		int lastDot = temp.lastIndexOf('.');
-		if (lastDot>-1) {
-			temp = temp.substring(lastDot+1);
+		if (lastDot > -1) {
+			temp = temp.substring(lastDot + 1);
 		}
 		return temp;
 	}
-
 
 }
