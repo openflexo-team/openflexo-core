@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 import org.fife.rsta.ac.ShorthandCompletionCache;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.localization.LocalizedDelegate;
 
 /**
  * A cache of basic template and comment completions for Java, e.g. <code>System.out.println()</code>.
@@ -26,64 +28,61 @@ public class FMLShorthandCompletionCache extends ShorthandCompletionCache {
 
 	private static final ResourceBundle MSG = ResourceBundle.getBundle("org.openflexo.fml.rstasupport.resources");
 
-	public FMLShorthandCompletionCache(DefaultCompletionProvider templateProvider, DefaultCompletionProvider commentsProvider) {
+	public FMLShorthandCompletionCache(FMLSourceCompletionProvider templateProvider, DefaultCompletionProvider commentsProvider) {
 
 		super(templateProvider, commentsProvider);
 		String template;
 
 		// load defaults
 
+		FMLTechnologyAdapter technologyAdapter = templateProvider.getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		LocalizedDelegate locales = technologyAdapter.getLocales();
+
 		template = "concept ${NewConcept} {\n\t${cursor}\n}";
 		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "concept", "concept", template,
-				MSG.getString("concept.shortDesc"), MSG.getString("concept.summary")));
+				locales.localizedForKey("new_concept_template.shortDesc"), locales.localizedForKey("new_concept_template.description")));
 
-		template = "System.out.println(${});${cursor}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "sysout", "sysout", template, MSG.getString("sysout.shortDesc"),
-				MSG.getString("sysout.summary")));
+		template = "event ${NewEvent} {\n\t${cursor}\n}";
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "event", "event", template,
+				locales.localizedForKey("new_event_template.shortDesc"), locales.localizedForKey("new_event_template.description")));
 
-		template = "System.err.println(${});${cursor}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "syserr", "syserr", template, MSG.getString("syserr.shortDesc"),
-				MSG.getString("syserr.summary")));
+		template = "enum ${NewEnum} {\n\tVALUE_1,\n\tVALUE_2,\n\tVALUE_3${cursor}\n}";
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "enum", "enum", template,
+				locales.localizedForKey("new_enum_template.shortDesc"), locales.localizedForKey("new_enum_template.description")));
 
-		template = "for (int ${i} = 0; ${i} < ${array}.length; ${i}++) {\n\t${cursor}\n}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "for", "for-loop-array", template,
-				MSG.getString("for.array.shortDesc"), MSG.getString("for.array.summary")));
+		template = "log \"${cursor}\";";
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "log", "log", template,
+				locales.localizedForKey("log_template.shortDesc"), locales.localizedForKey("log_template.description")));
+
+		template = "for (${Type} ${item} : ${collection}) {\n\t${cursor}\n}";
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "for", "for-loop", template,
+				locales.localizedForKey("forloop_template.shortDesc"), locales.localizedForKey("forloop_template.description")));
 
 		template = "for (int ${i} = 0; ${i} < ${10}; ${i}++) {\n\t${cursor}\n}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "for", "for-loop", template,
-				MSG.getString("for.loop.shortDesc"), MSG.getString("for.loop.summary")));
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "for", "for-iterator-loop", template,
+				locales.localizedForKey("foriteratorloop_template.shortDesc"),
+				locales.localizedForKey("foriteratorloop_template.description")));
 
 		template = "if (${condition}) {\n\t${cursor}\n}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "if", "if-cond", template, MSG.getString("if.cond.shortDesc"),
-				MSG.getString("if.cond.summary")));
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "if", "if-cond", template,
+				locales.localizedForKey("ifcond_template.shortDesc"), locales.localizedForKey("ifcond_template.description")));
 
 		template = "if (${condition}) {\n\t${cursor}\n}\nelse {\n\t\n}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "if", "if-else", template, MSG.getString("if.else.shortDesc"),
-				MSG.getString("if.else.summary")));
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "if", "if-else", template,
+				locales.localizedForKey("ifelse_template.shortDesc"), locales.localizedForKey("ifelse_template.description")));
 
 		template = "do {\n\t${cursor}\n} while (${condition});";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "do", "do-loop", template, MSG.getString("do.shortDesc"),
-				MSG.getString("do.summary")));
+		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "do", "do-loop", template,
+				locales.localizedForKey("do_template.shortDesc"), locales.localizedForKey("do_template.description")));
 
 		template = "while (${condition}) {\n\t${cursor}\n}";
 		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "while", "while-cond", template,
-				MSG.getString("while.shortDesc"), MSG.getString("while.summary")));
+				locales.localizedForKey("while_template.shortDesc"), locales.localizedForKey("while_template.description")));
 
-		template = "new Runnable() {\n\tpublic void run() {\n\t\t${cursor}\n\t}\n}";
-		addShorthandCompletion(
-				new JavaTemplateCompletion(templateProvider, "runnable", "runnable", template, MSG.getString("runnable.shortDesc")));
-
-		template = "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\tdefault:\n\t\tbreak;\n}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "switch", "switch-statement", template,
-				MSG.getString("switch.case.shortDesc"), MSG.getString("switch.case.summary")));
-
-		template = "try {\n\t ${cursor} \n} catch (${err}) {\n\t\n}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "try", "try-catch", template,
-				MSG.getString("try.catch.shortDesc"), MSG.getString("try.catch.summary")));
-
-		template = "catch (${err}) {\n\t${cursor}\n}";
-		addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "catch", "catch-block", template,
-				MSG.getString("catch.block.shortDesc"), MSG.getString("catch.block.summary")));
+		// template = "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\tdefault:\n\t\tbreak;\n}";
+		// addShorthandCompletion(new JavaTemplateCompletion(templateProvider, "switch", "switch-statement", template,
+		// MSG.getString("switch.case.shortDesc"), MSG.getString("switch.case.summary")));
 
 		// Comments
 		addCommentCompletion(new BasicCompletion(commentsProvider, "TODO:", null, MSG.getString("todo")));
