@@ -18,7 +18,7 @@ import org.openflexo.fml.rstasupport.IconFactory.IconData;
  * @author Robert Futrell
  * @version 1.0
  */
-public interface MemberCompletion extends JavaSourceCompletion {
+public interface MemberCompletion extends FMLSourceCompletion {
 
 	/**
 	 * Returns the name of the enclosing class.

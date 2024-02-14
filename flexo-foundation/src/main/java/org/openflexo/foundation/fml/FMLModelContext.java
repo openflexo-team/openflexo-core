@@ -82,15 +82,17 @@ public class FMLModelContext {
 			this.modelEntity = modelEntity;
 			properties = new ArrayList<>();
 			try {
-				Iterator<ModelProperty<? super I>> iterator = modelEntity.getProperties();
-				while (iterator.hasNext()) {
-					ModelProperty property = iterator.next();
-					// System.out.println("> property: " + property.getGetterMethod());
-					Method getterMethod = property.getGetterMethod();
-					if (getterMethod.isAnnotationPresent(FMLAttribute.class)) {
-						FMLProperty<? super I, ?> fmlProperty = new FMLProperty<I, Object>(property,
-								getterMethod.getAnnotation(FMLAttribute.class));
-						properties.add(fmlProperty);
+				if (modelEntity != null && modelEntity.getProperties() != null) {
+					Iterator<ModelProperty<? super I>> iterator = modelEntity.getProperties();
+					while (iterator.hasNext()) {
+						ModelProperty property = iterator.next();
+						// System.out.println("> property: " + property.getGetterMethod());
+						Method getterMethod = property.getGetterMethod();
+						if (getterMethod.isAnnotationPresent(FMLAttribute.class)) {
+							FMLProperty<? super I, ?> fmlProperty = new FMLProperty<I, Object>(property,
+									getterMethod.getAnnotation(FMLAttribute.class));
+							properties.add(fmlProperty);
+						}
 					}
 				}
 			} catch (ModelDefinitionException e) {

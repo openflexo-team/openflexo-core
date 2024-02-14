@@ -63,7 +63,7 @@ public class JavaParamListCellRenderer extends JavaCellRenderer {
 						int index, boolean selected, boolean hasFocus) {
 		super.getListCellRendererComponent(list, value, index, selected,
 											hasFocus);
-		JavaSourceCompletion ajsc = (JavaSourceCompletion)value;
+		FMLSourceCompletion ajsc = (FMLSourceCompletion)value;
 		setIcon(ajsc.getIcon());
 		return this;
 	}

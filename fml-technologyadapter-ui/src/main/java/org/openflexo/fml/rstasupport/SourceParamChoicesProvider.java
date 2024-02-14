@@ -303,7 +303,7 @@ class SourceParamChoicesProvider implements ParameterChoicesProvider {
 	 * A very simple, low-relevance parameter choice completion. This is never used as a general-purpose completion in Java code, as it
 	 * cannot render itself.
 	 */
-	private static class SimpleCompletion extends BasicCompletion implements JavaSourceCompletion {
+	private static class SimpleCompletion extends BasicCompletion implements FMLSourceCompletion {
 
 		private static final Icon ICON = new EmptyIcon(16);
 

@@ -25,7 +25,7 @@ import org.fife.ui.autocomplete.TemplateCompletion;
  * @version 1.0
  */
 public class JavaTemplateCompletion extends TemplateCompletion
-		implements JavaSourceCompletion {
+		implements FMLSourceCompletion {
 
 	private String icon;
 

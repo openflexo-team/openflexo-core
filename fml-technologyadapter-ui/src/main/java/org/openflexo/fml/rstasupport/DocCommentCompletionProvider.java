@@ -79,7 +79,7 @@ class DocCommentCompletionProvider extends DefaultCompletionProvider {
 	/**
 	 * A Javadoc completion.
 	 */
-	private static class JavadocCompletion extends BasicCompletion implements JavaSourceCompletion {
+	private static class JavadocCompletion extends BasicCompletion implements FMLSourceCompletion {
 
 		JavadocCompletion(CompletionProvider provider, String replacementText) {
 			super(provider, replacementText);

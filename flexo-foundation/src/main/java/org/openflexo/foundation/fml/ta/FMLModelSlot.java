@@ -62,8 +62,8 @@ import org.openflexo.pamela.annotations.XMLElement;
  * @author sylvain
  *
  */
-@DeclareFlexoRoles({ FMLDataBindingRole.class, FlexoConceptRole.class, FlexoPropertyRole.class, PrimitiveRoleRole.class, FlexoConceptInstanceRoleRole.class,
-		FlexoBehaviourRole.class, ActionSchemeRole.class })
+@DeclareFlexoRoles({ FMLDataBindingRole.class, FlexoConceptRole.class, FlexoPropertyRole.class, PrimitiveRoleRole.class,
+		FlexoConceptInstanceRoleRole.class, FlexoBehaviourRole.class, ActionSchemeRole.class })
 @DeclareEditionActions({ CreateFlexoConcept.class, CreateTopLevelVirtualModel.class, CreateContainedVirtualModel.class,
 		CreatePrimitiveRole.class, CreateFlexoConceptInstanceRole.class, CreateFlexoBehaviour.class })
 // @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
@@ -71,7 +71,10 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FMLModelSlot.FMLModelSlotImpl.class)
 @XMLElement
-@FML("FMLModelSlot")
+@FML(
+		value = "FMLModelSlot",
+		description = "<html>This ModelSlot represents access to a FML compilation unit<br>"
+				+ "Such model slot allows reflective operations " + "</html>")
 public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit> {
 
 	public static abstract class FMLModelSlotImpl extends ModelSlotImpl<FMLCompilationUnit> implements FMLModelSlot {

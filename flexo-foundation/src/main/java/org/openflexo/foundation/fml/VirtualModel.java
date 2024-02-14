@@ -187,6 +187,7 @@ public interface VirtualModel extends FlexoConcept {
 	 * @return
 	 */
 	@Deprecated
+	@FMLMigration
 	public List<UseModelSlotDeclaration> getAccessibleUseDeclarations();
 
 	/**
@@ -202,6 +203,7 @@ public interface VirtualModel extends FlexoConcept {
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	@Deprecated
+	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
 	public List<UseModelSlotDeclaration> getUseDeclarations();
 
 	// @Setter(USE_DECLARATIONS_KEY)
@@ -223,6 +225,7 @@ public interface VirtualModel extends FlexoConcept {
 	 * @return
 	 */
 	@Deprecated
+	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
 	public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass);
 
 	/**
@@ -232,6 +235,7 @@ public interface VirtualModel extends FlexoConcept {
 	 * @return
 	 */
 	@Deprecated
+	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
 	public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
@@ -1073,6 +1077,7 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
 		public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
 			if (modelSlotClass == null) {
 				return null;
@@ -1194,6 +1199,7 @@ public interface VirtualModel extends FlexoConcept {
 		}
 
 		@Override
+		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
 		public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass) {
 			if (modelSlotClass == null) {
 				return false;
@@ -1216,6 +1222,8 @@ public interface VirtualModel extends FlexoConcept {
 		 * @return
 		 */
 		@Override
+		@Deprecated
+		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
 		public List<UseModelSlotDeclaration> getAccessibleUseDeclarations() {
 			List<UseModelSlotDeclaration> returned = new ArrayList<>();
 			if (getContainerVirtualModel() != null) {

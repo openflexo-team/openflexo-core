@@ -26,7 +26,7 @@ import org.fife.ui.autocomplete.ShorthandCompletion;
  * @version 1.0
  */
 class JavaShorthandCompletion extends ShorthandCompletion implements
-		JavaSourceCompletion {
+		FMLSourceCompletion {
 
 	private static final Color SHORTHAND_COLOR	= new Color(0, 127, 174);
 

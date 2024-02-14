@@ -14,33 +14,31 @@ import java.awt.Graphics;
 
 import org.fife.ui.autocomplete.Completion;
 
-
 /**
- * Interface for Java source code completions.
+ * Interface for FML source code completions.
  *
- * @author Robert Futrell
- * @version 1.0
+ * @author sylvain
  */
-public interface JavaSourceCompletion extends Completion {
-
+public interface FMLSourceCompletion extends Completion {
 
 	/**
-	 * Force subclasses to override equals().
-	 * TODO: Remove me
+	 * Force subclasses to override equals(). TODO: Remove me
 	 */
 	@Override
 	boolean equals(Object obj);
 
-
 	/**
 	 * Used by {@link JavaCellRenderer} to render this completion choice.
 	 *
-	 * @param g The graphics context to render to.
-	 * @param x The x-offset at which to render.
-	 * @param y The y-offset at which to render.
-	 * @param selected Whether this completion is currently selected/active.
+	 * @param g
+	 *            The graphics context to render to.
+	 * @param x
+	 *            The x-offset at which to render.
+	 * @param y
+	 *            The y-offset at which to render.
+	 * @param selected
+	 *            Whether this completion is currently selected/active.
 	 */
 	void rendererText(Graphics g, int x, int y, boolean selected);
-
 
 }

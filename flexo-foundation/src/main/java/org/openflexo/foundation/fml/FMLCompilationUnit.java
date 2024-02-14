@@ -406,6 +406,13 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
 	/**
+	 * Return container {@link FMLCompilationUnit}
+	 * 
+	 * @return
+	 */
+	public FMLCompilationUnit getContainerCompilationUnit();
+
+	/**
 	 * Load eventually unloaded contained VirtualModels<br>
 	 * After this call return, we can safely assert that all contained {@link VirtualModel} are loaded.
 	 */
@@ -888,6 +895,19 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		private boolean isLoading = false;
 
 		/**
+		 * Return container {@link FMLCompilationUnit}
+		 * 
+		 * @return
+		 */
+		@Override
+		public FMLCompilationUnit getContainerCompilationUnit() {
+			if (getResource() != null && getResource().getContainer() != null) {
+				return getResource().getContainer().getCompilationUnit();
+			}
+			return null;
+		}
+
+		/**
 		 * Load eventually unloaded VirtualModels<br>
 		 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
 		 */
@@ -1135,29 +1155,53 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		 */
 		@Override
 		public List<UseModelSlotDeclaration> getAccessibleUseDeclarations() {
-			// TODO: make better implementation
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getAccessibleUseDeclarations();
+			List<UseModelSlotDeclaration> returned = new ArrayList<>();
+			if (getContainerCompilationUnit() != null) {
+				returned.addAll(getContainerCompilationUnit().getAccessibleUseDeclarations());
 			}
-			return null;
+			for (UseModelSlotDeclaration useDecl : getUseDeclarations()) {
+				if (!returned.contains(useDecl)) {
+					returned.add(useDecl);
+				}
+			}
+			return returned;
 		}
 
 		@Override
 		public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass) {
-			// TODO: make better implementation
-			if (getVirtualModel() != null) {
-				return getVirtualModel().uses(modelSlotClass);
+			if (modelSlotClass == null) {
+				return false;
+			}
+			for (UseModelSlotDeclaration useDecl : getAccessibleUseDeclarations()) {
+				if (modelSlotClass.equals(useDecl.getModelSlotClass())) {
+					return true;
+				}
 			}
 			return false;
 		}
 
 		@Override
 		public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
-			// TODO: make better implementation
-			if (getVirtualModel() != null) {
-				return getVirtualModel().declareUse(modelSlotClass);
+			if (modelSlotClass == null) {
+				return null;
 			}
-			return null;
+
+			List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
+			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
+				usedModelSlots.add(msDecl.getModelSlotClass());
+				if (modelSlotClass.equals(msDecl.getModelSlotClass())) {
+					return msDecl;
+				}
+			}
+
+			usedModelSlots.add(modelSlotClass);
+			if (getResource() != null) {
+				getResource().updateFMLModelFactory(usedModelSlots);
+			}
+
+			UseModelSlotDeclaration useDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
+			addToUseDeclarations(useDeclaration);
+			return useDeclaration;
 		}
 
 		@Override

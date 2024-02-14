@@ -41,7 +41,7 @@ public class JavaCellRenderer extends DefaultListCellRenderer {
 	private JList<?> list;
 	private boolean selected;
 	private boolean evenRow;
-	private JavaSourceCompletion jsc;
+	private FMLSourceCompletion jsc;
 
 	/**
 	 * The alternating background color, or <code>null</code> for none.
@@ -93,8 +93,8 @@ public class JavaCellRenderer extends DefaultListCellRenderer {
 		this.list = list;
 		this.selected = selected;
 
-		if (value instanceof JavaSourceCompletion) {
-			jsc = (JavaSourceCompletion)value;
+		if (value instanceof FMLSourceCompletion) {
+			jsc = (FMLSourceCompletion)value;
 			nonJavaCompletion = null;
 			setIcon(jsc.getIcon());
 		}

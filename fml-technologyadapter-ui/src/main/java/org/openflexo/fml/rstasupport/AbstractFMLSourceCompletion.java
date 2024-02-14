@@ -21,7 +21,7 @@ import org.fife.ui.autocomplete.CompletionProvider;
  *
  * @author sylvain
  */
-public abstract class AbstractFMLSourceCompletion extends BasicCompletion implements JavaSourceCompletion {
+public abstract class AbstractFMLSourceCompletion extends BasicCompletion implements FMLSourceCompletion {
 
 	protected AbstractFMLSourceCompletion(CompletionProvider provider, String replacementText) {
 		super(provider, replacementText);

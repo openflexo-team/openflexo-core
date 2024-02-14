@@ -50,11 +50,25 @@ import org.openflexo.fml.rstasupport.rjc.ast.Method;
 import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 import org.openflexo.fml.rstasupport.rjc.lang.Type;
 import org.openflexo.fml.rstasupport.rjc.lang.TypeArgument;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.JavaImportDeclaration;
+import org.openflexo.foundation.fml.NamespaceDeclaration;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -76,7 +90,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	/**
 	 * The parent completion provider.
 	 */
-	private FMLCompletionProvider javaProvider;
+	private FMLCompletionProvider fmlProvider;
 
 	/**
 	 * Used to get information about what classes match imports.
@@ -113,6 +127,21 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 	public FMLTechnologyAdapterController getFMLTechnologyAdapterController() {
 		return fmlTAController;
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		if (getFMLTechnologyAdapterController() != null) {
+			return getFMLTechnologyAdapterController().getServiceManager();
+		}
+		return null;
+	}
+
+	public FMLCompletionProvider getFMLProvider() {
+		return fmlProvider;
+	}
+
+	public FMLCompilationUnit getCompilationUnit() {
+		return getFMLProvider().getCompilationUnit();
 	}
 
 	private void addCompletionsForStaticMembers(Set<Completion> set, FMLCompilationUnit cu, ClassFile cf, String pkg) {
@@ -512,7 +541,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	@Override
 	protected List<Completion> getCompletionsImpl(JTextComponent comp) {
 
-		System.out.println("getCompletionsImpl() in SourceCompletionProvider");
+		// System.out.println("getCompletionsImpl() in SourceCompletionProvider");
 
 		comp.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -520,9 +549,9 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 			completions = new ArrayList<>();// completions.clear();
 
-			FMLCompilationUnit cu = javaProvider.getCompilationUnit();
+			FMLCompilationUnit cu = fmlProvider.getCompilationUnit();
 
-			System.out.println("ici FMLCompilationUnit=" + cu);
+			// System.out.println("ici FMLCompilationUnit=" + cu);
 
 			if (cu == null) {
 				return completions; // empty
@@ -649,6 +678,41 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 				// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
 				return ((Sequence) enclosingObject).getControlGraph1();
 			}
+			if (enclosingObject instanceof UseModelSlotDeclaration) {
+				return ((UseModelSlotDeclaration) enclosingObject).getCompilationUnit();
+			}
+			if (enclosingObject instanceof NamespaceDeclaration) {
+				return ((NamespaceDeclaration) enclosingObject).getCompilationUnit();
+			}
+			if (enclosingObject instanceof JavaImportDeclaration) {
+				return ((JavaImportDeclaration) enclosingObject).getCompilationUnit();
+			}
+			if (enclosingObject instanceof ElementImportDeclaration) {
+				return ((ElementImportDeclaration) enclosingObject).getCompilationUnit();
+			}
+			if (enclosingObject instanceof org.openflexo.foundation.fml.TypeDeclaration) {
+				return ((org.openflexo.foundation.fml.TypeDeclaration) enclosingObject).getCompilationUnit();
+			}
+			if (enclosingObject instanceof FMLMetaData) {
+				FMLObject owner = ((FMLMetaData) enclosingObject).getOwner();
+				if (owner instanceof VirtualModel) {
+					return owner.getDeclaringCompilationUnit();
+				}
+				if (owner instanceof FlexoConcept) {
+					if (((FlexoConcept) owner).getContainerFlexoConcept() != null) {
+						return ((FlexoConcept) owner).getContainerFlexoConcept();
+					}
+					else {
+						return ((FlexoConcept) owner).getOwner();
+					}
+				}
+				if (owner instanceof FlexoProperty) {
+					return ((FlexoProperty) owner).getFlexoConcept();
+				}
+				if (owner instanceof FlexoBehaviour) {
+					return ((FlexoBehaviour) owner).getFlexoBehaviour();
+				}
+			}
 			return enclosingObject;
 		}
 		return null;
@@ -736,6 +800,18 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 			}
 		}
 		else {
+
+			if (context == cu) {
+				/*String template = "import tutu.Prout as ${PROUT};";
+				// String template = "System.out.println(${});${cursor}";
+				JavaTemplateCompletion completion = new JavaTemplateCompletion(this, "prout", "prout", template, "un petit prout",
+						"un gros prout");
+				retVal.add(completion);
+				System.out.println("Ici");*/
+				// System.exit(-1);
+				loadUsesCompletions(cu, comp, alreadyEntered, retVal);
+			}
+
 			loadRootCompletions(context, retVal);
 		}
 
@@ -760,6 +836,22 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		// long time = System.currentTimeMillis() - startTime;
 		// System.out.println("methods/fields/localvars loaded in: " + time);
 		 */
+
+	}
+
+	private void loadUsesCompletions(FMLCompilationUnit cu, JTextComponent comp, String alreadyEntered, Set<Completion> retVal) {
+
+		if (cu.getTechnologyAdapterService() != null) {
+			TechnologyAdapterService taService = cu.getTechnologyAdapterService();
+			for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
+				for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
+					if (!cu.uses(msType)) {
+						System.out.println(" >>>> " + msType);
+						retVal.add(new UseCompletion<>(this, alreadyEntered, msType));
+					}
+				}
+			}
+		}
 
 	}
 
@@ -1167,7 +1259,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	 *            The parent completion provider.
 	 */
 	void setJavaProvider(FMLCompletionProvider javaProvider) {
-		this.javaProvider = javaProvider;
+		this.fmlProvider = javaProvider;
 	}
 
 }
