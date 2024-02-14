@@ -26,7 +26,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  *
  * @author sylvain
  */
-public class UseCompletion<MS extends ModelSlot<?>> extends FMLTemplateCompletion {
+public class UseCompletion<MS extends ModelSlot<?>> extends AbstractTemplateCompletion {
 
 	private Class<MS> msClass;
 

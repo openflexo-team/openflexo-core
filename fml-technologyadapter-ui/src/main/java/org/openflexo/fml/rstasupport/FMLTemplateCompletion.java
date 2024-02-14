@@ -12,35 +12,47 @@ package org.openflexo.fml.rstasupport;
 
 import java.awt.Graphics;
 
+import javax.swing.Icon;
+
+import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.TemplateCompletion;
-import org.openflexo.foundation.FlexoServiceManager;
 
-public abstract class FMLTemplateCompletion extends TemplateCompletion implements FMLSourceCompletion {
+/**
+ * A template completion for FML.
+ *
+ * @author sylvain
+ */
+public class FMLTemplateCompletion extends TemplateCompletion implements FMLSourceCompletion {
 
-	public FMLTemplateCompletion(FMLSourceCompletionProvider provider, String inputText, String definitionString, String template) {
-		this(provider, inputText, definitionString, template, null, null);
+	private String icon;
+
+	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template) {
+		this(provider, inputText, definitionString, template, null);
 	}
 
-	public FMLTemplateCompletion(FMLSourceCompletionProvider provider, String inputText, String definitionString, String template,
-			String shortDescription, String summary) {
-		super(provider, inputText, definitionString, template, shortDescription, summary);
+	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template,
+			String shortDesc) {
+		this(provider, inputText, definitionString, template, shortDesc, null);
+	}
+
+	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template, String shortDesc,
+			String summary) {
+		super(provider, inputText, definitionString, template, shortDesc, summary);
+		setIcon(IconFactory.TEMPLATE_ICON);
 	}
 
 	@Override
-	public FMLSourceCompletionProvider getProvider() {
-		return (FMLSourceCompletionProvider) super.getProvider();
-	}
-
-	public FlexoServiceManager getServiceManager() {
-		if (getProvider() != null) {
-			return getProvider().getServiceManager();
-		}
-		return null;
+	public Icon getIcon() {
+		return IconFactory.get().getIcon(icon);
 	}
 
 	@Override
 	public void rendererText(Graphics g, int x, int y, boolean selected) {
 		JavaShorthandCompletion.renderText(g, getInputText(), getShortDescription(), x, y, selected);
+	}
+
+	public void setIcon(String iconId) {
+		this.icon = iconId;
 	}
 
 }

@@ -565,6 +565,13 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 			// Note: getAlreadyEnteredText() never returns null
 			String text = getAlreadyEnteredText(comp);
 
+			int lastDot = text.lastIndexOf('.');
+			boolean qualified = lastDot > -1;
+			String prefix = qualified ? text.substring(0, lastDot) : null;
+			Bindable context = getRelevantContext(cu, comp);
+
+			System.out.println(">>>>>>>> On arrive ici, le contexte c'est " + context);
+
 			// Special case - end of a String literal
 			boolean stringLiteralMember = checkStringLiteralMember(comp, text, cu, set);
 

@@ -97,7 +97,7 @@ class DocCommentCompletionProvider extends DefaultCompletionProvider {
 
 	}
 
-	private static class JavadocTemplateCompletion extends JavaTemplateCompletion {
+	private static class JavadocTemplateCompletion extends FMLTemplateCompletion {
 
 		JavadocTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template) {
 			super(provider, inputText, definitionString, template);
