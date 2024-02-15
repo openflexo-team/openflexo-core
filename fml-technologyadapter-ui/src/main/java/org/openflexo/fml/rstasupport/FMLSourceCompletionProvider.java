@@ -148,6 +148,179 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		return getFMLProvider().getCompilationUnit();
 	}
 
+	/**
+	 * Represents the context in which a completion is computed
+	 * 
+	 * It relies on the last parsed FML object where the caret is located
+	 * 
+	 */
+	class CompletionContext {
+		final FMLPrettyPrintable enclosingObject;
+		final Bindable context;
+
+		/**
+		 * Build a CompletionContext based on the caret location
+		 * 
+		 * @param cu
+		 * @param textArea
+		 */
+		CompletionContext(FMLCompilationUnit cu, JTextComponent textArea) {
+			this.enclosingObject = getEnclosingFMLObject(cu, textArea);
+			if (enclosingObject != null) {
+				if (enclosingObject instanceof Sequence) {
+					// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
+					context = ((Sequence) enclosingObject).getControlGraph1();
+				}
+				else if (enclosingObject instanceof UseModelSlotDeclaration) {
+					context = ((UseModelSlotDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof NamespaceDeclaration) {
+					context = ((NamespaceDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof JavaImportDeclaration) {
+					context = ((JavaImportDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof ElementImportDeclaration) {
+					context = ((ElementImportDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof org.openflexo.foundation.fml.TypeDeclaration) {
+					context = ((org.openflexo.foundation.fml.TypeDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof FMLMetaData) {
+					FMLObject owner = ((FMLMetaData) enclosingObject).getOwner();
+					if (owner instanceof VirtualModel) {
+						context = owner.getDeclaringCompilationUnit();
+					}
+					else if (owner instanceof FlexoConcept) {
+						if (((FlexoConcept) owner).getContainerFlexoConcept() != null) {
+							context = ((FlexoConcept) owner).getContainerFlexoConcept();
+						}
+						else {
+							context = ((FlexoConcept) owner).getOwner();
+						}
+					}
+					else if (owner instanceof FlexoProperty) {
+						context = ((FlexoProperty<?>) owner).getFlexoConcept();
+					}
+					else if (owner instanceof FlexoBehaviour) {
+						context = ((FlexoBehaviour) owner).getFlexoBehaviour();
+					}
+					else {
+						context = enclosingObject;
+					}
+				}
+				else {
+					context = enclosingObject;
+				}
+			}
+			else {
+				context = null;
+			}
+		}
+
+		/**
+		 * Return context type, as represented by the context object
+		 * 
+		 * @return
+		 */
+		ContextType getContextType() {
+			if (context instanceof FMLCompilationUnit) {
+				return ContextType.COMPILATION_UNIT_DECLARATION;
+			}
+			else if (context instanceof FlexoConcept || context instanceof FlexoProperty || context instanceof FlexoBehaviour) {
+				return ContextType.DECLARATION;
+			}
+			else if (context instanceof FMLControlGraph) {
+				return ContextType.CONTROL_GRAPH;
+			}
+			else {
+				logger.warning("Unexpected context: " + context);
+				return ContextType.DECLARATION;
+			}
+		}
+
+		/**
+		 * Return the {@link BindingModel} applicable in this context
+		 * 
+		 * @return
+		 */
+		public BindingModel getBindingModel() {
+			if (context != null) {
+				return context.getBindingModel();
+			}
+			return null;
+		}
+
+		/**
+		 * Return the {@link BindingFactory} applicable in this context
+		 * 
+		 * @return
+		 */
+		public BindingFactory getBindingFactory() {
+			if (context != null) {
+				return context.getBindingFactory();
+			}
+			return null;
+		}
+
+		/**
+		 * Build a dummy {@link Bindable} with applicable {@link BindingModel} and {@link BindingFactory}
+		 * 
+		 * @return
+		 */
+		Bindable makeDefaultBindable() {
+			return new DefaultBindable() {
+				@Override
+				public BindingModel getBindingModel() {
+					return CompletionContext.this.getBindingModel();
+				}
+
+				@Override
+				public BindingFactory getBindingFactory() {
+					return CompletionContext.this.getBindingFactory();
+				}
+
+				@Override
+				public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+				}
+
+				@Override
+				public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+				}
+			};
+		}
+
+	}
+
+	/**
+	 * Completion context is basically classified into three kinds:
+	 * <ul>
+	 * <li>COMPILATION_UNIT_DECLARATION : declarations outside {@link VirtualModel}</li>
+	 * <li>DECLARATION : declarations relative to a {@link VirtualModel} or a {@link FlexoConcept} (outside any {@link FlexoBehaviour})</li>
+	 * <li>CONTROL_GRAPH : imperative code inside a {@link FlexoBehaviour} control graph</li>
+	 * </ul>
+	 */
+	enum ContextType {
+		COMPILATION_UNIT_DECLARATION, DECLARATION, CONTROL_GRAPH
+	}
+
+	private CompletionContext getRelevantContext(FMLCompilationUnit cu, JTextComponent textArea) {
+		return new CompletionContext(cu, textArea);
+	}
+
+	private FMLPrettyPrintable getEnclosingFMLObject(FMLCompilationUnit cu, JTextComponent textArea) {
+		if (textArea instanceof RSyntaxTextArea) {
+			FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) cu.getPrettyPrintDelegate();
+			if (cuNode != null) {
+				// System.out.println("At line=" + (((RSyntaxTextArea) textArea).getCaretLineNumber() + 1) + " row="
+				// + ((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
+				return cuNode.getFMLObjectAtLocation(((RSyntaxTextArea) textArea).getCaretLineNumber() + 1,
+						((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
+			}
+		}
+		return null;
+	}
+
 	private void addCompletionsForStaticMembers(Set<Completion> set, FMLCompilationUnit cu, ClassFile cf, String pkg) {
 
 		// Check us first, so if we override anything, we get the "newest"
@@ -564,6 +737,9 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		return super.getCompletionsAt(tc, p);
 	}
 
+	/**
+	 * This is the main method where completions are computed
+	 */
 	@Override
 	protected List<Completion> getCompletionsImpl(JTextComponent comp) {
 
@@ -596,7 +772,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 			// String prefix = qualified ? text.substring(0, lastDot) : null;
 			CompletionContext context = getRelevantContext(cu, comp);
 
-			System.out.println(">>>>>>>> On arrive ici, le contexte c'est " + context.context + " of " + context.getContextType());
+			System.out.println("Computing completions, context is " + context.context + " of " + context.getContextType());
 
 			// Special case - end of a String literal
 			boolean stringLiteralMember = checkStringLiteralMember(comp, alreadyEntered, cu, set);
@@ -716,184 +892,6 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	@Override
 	protected boolean isValidChar(char ch) {
 		return Character.isJavaIdentifierPart(ch) || ch == '.';
-	}
-
-	class CompletionContext {
-		final FMLPrettyPrintable enclosingObject;
-		final Bindable context;
-
-		CompletionContext(FMLCompilationUnit cu, JTextComponent textArea) {
-			this.enclosingObject = getEnclosingFMLObject(cu, textArea);
-			if (enclosingObject != null) {
-				if (enclosingObject instanceof Sequence) {
-					// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
-					context = ((Sequence) enclosingObject).getControlGraph1();
-				}
-				else if (enclosingObject instanceof UseModelSlotDeclaration) {
-					context = ((UseModelSlotDeclaration) enclosingObject).getCompilationUnit();
-				}
-				else if (enclosingObject instanceof NamespaceDeclaration) {
-					context = ((NamespaceDeclaration) enclosingObject).getCompilationUnit();
-				}
-				else if (enclosingObject instanceof JavaImportDeclaration) {
-					context = ((JavaImportDeclaration) enclosingObject).getCompilationUnit();
-				}
-				else if (enclosingObject instanceof ElementImportDeclaration) {
-					context = ((ElementImportDeclaration) enclosingObject).getCompilationUnit();
-				}
-				else if (enclosingObject instanceof org.openflexo.foundation.fml.TypeDeclaration) {
-					context = ((org.openflexo.foundation.fml.TypeDeclaration) enclosingObject).getCompilationUnit();
-				}
-				else if (enclosingObject instanceof FMLMetaData) {
-					FMLObject owner = ((FMLMetaData) enclosingObject).getOwner();
-					if (owner instanceof VirtualModel) {
-						context = owner.getDeclaringCompilationUnit();
-					}
-					else if (owner instanceof FlexoConcept) {
-						if (((FlexoConcept) owner).getContainerFlexoConcept() != null) {
-							context = ((FlexoConcept) owner).getContainerFlexoConcept();
-						}
-						else {
-							context = ((FlexoConcept) owner).getOwner();
-						}
-					}
-					else if (owner instanceof FlexoProperty) {
-						context = ((FlexoProperty<?>) owner).getFlexoConcept();
-					}
-					else if (owner instanceof FlexoBehaviour) {
-						context = ((FlexoBehaviour) owner).getFlexoBehaviour();
-					}
-					else {
-						context = enclosingObject;
-					}
-				}
-				else {
-					context = enclosingObject;
-				}
-			}
-			else {
-				context = null;
-			}
-		}
-
-		ContextType getContextType() {
-			if (context instanceof FMLCompilationUnit) {
-				return ContextType.COMPILATION_UNIT_DECLARATION;
-			}
-			else if (context instanceof FlexoConcept || context instanceof FlexoProperty || context instanceof FlexoBehaviour) {
-				return ContextType.DECLARATION;
-			}
-			else if (context instanceof FMLControlGraph) {
-				return ContextType.CONTROL_GRAPH;
-			}
-			else {
-				logger.warning("Unexpected context: " + context);
-				return ContextType.DECLARATION;
-			}
-		}
-
-		public BindingModel getBindingModel() {
-			if (context != null) {
-				return context.getBindingModel();
-			}
-			return null;
-		}
-
-		public BindingFactory getBindingFactory() {
-			if (context != null) {
-				return context.getBindingFactory();
-			}
-			return null;
-		}
-
-		Bindable makeDefaultBindable() {
-			return new DefaultBindable() {
-				@Override
-				public BindingModel getBindingModel() {
-					return CompletionContext.this.getBindingModel();
-				}
-
-				@Override
-				public BindingFactory getBindingFactory() {
-					return CompletionContext.this.getBindingFactory();
-				}
-
-				@Override
-				public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-				}
-
-				@Override
-				public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-				}
-			};
-		}
-
-	}
-
-	enum ContextType {
-		COMPILATION_UNIT_DECLARATION, DECLARATION, CONTROL_GRAPH
-	}
-
-	private CompletionContext getRelevantContext(FMLCompilationUnit cu, JTextComponent textArea) {
-		return new CompletionContext(cu, textArea);
-
-		/*	FMLPrettyPrintable enclosingObject = getEnclosingFMLObject(cu, textArea);
-			if (enclosingObject != null) {
-				if (enclosingObject instanceof Sequence) {
-					// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
-					return ((Sequence) enclosingObject).getControlGraph1();
-				}
-				if (enclosingObject instanceof UseModelSlotDeclaration) {
-					return ((UseModelSlotDeclaration) enclosingObject).getCompilationUnit();
-				}
-				if (enclosingObject instanceof NamespaceDeclaration) {
-					return ((NamespaceDeclaration) enclosingObject).getCompilationUnit();
-				}
-				if (enclosingObject instanceof JavaImportDeclaration) {
-					return ((JavaImportDeclaration) enclosingObject).getCompilationUnit();
-				}
-				if (enclosingObject instanceof ElementImportDeclaration) {
-					return ((ElementImportDeclaration) enclosingObject).getCompilationUnit();
-				}
-				if (enclosingObject instanceof org.openflexo.foundation.fml.TypeDeclaration) {
-					return ((org.openflexo.foundation.fml.TypeDeclaration) enclosingObject).getCompilationUnit();
-				}
-				if (enclosingObject instanceof FMLMetaData) {
-					FMLObject owner = ((FMLMetaData) enclosingObject).getOwner();
-					if (owner instanceof VirtualModel) {
-						return owner.getDeclaringCompilationUnit();
-					}
-					if (owner instanceof FlexoConcept) {
-						if (((FlexoConcept) owner).getContainerFlexoConcept() != null) {
-							return ((FlexoConcept) owner).getContainerFlexoConcept();
-						}
-						else {
-							return ((FlexoConcept) owner).getOwner();
-						}
-					}
-					if (owner instanceof FlexoProperty) {
-						return ((FlexoProperty) owner).getFlexoConcept();
-					}
-					if (owner instanceof FlexoBehaviour) {
-						return ((FlexoBehaviour) owner).getFlexoBehaviour();
-					}
-				}
-				return enclosingObject;
-			}
-			return null;*/
-	}
-
-	private FMLPrettyPrintable getEnclosingFMLObject(FMLCompilationUnit cu, JTextComponent textArea) {
-		if (textArea instanceof RSyntaxTextArea) {
-			FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) cu.getPrettyPrintDelegate();
-			if (cuNode != null) {
-				// System.out.println("At line=" + (((RSyntaxTextArea) textArea).getCaretLineNumber() + 1) + " row="
-				// + ((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
-				return cuNode.getFMLObjectAtLocation(((RSyntaxTextArea) textArea).getCaretLineNumber() + 1,
-						((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
-			}
-		}
-		return null;
 	}
 
 	/**
