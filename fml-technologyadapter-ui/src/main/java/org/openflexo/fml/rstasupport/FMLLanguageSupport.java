@@ -38,7 +38,6 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser;
 import org.openflexo.fml.controller.widget.fmleditor.FMLRSyntaxTextArea;
-import org.openflexo.fml.rstasupport.tree.JavaOutlineTree;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -199,7 +198,7 @@ public class FMLLanguageSupport extends AbstractLanguageSupport {
 		int shift = InputEvent.SHIFT_DOWN_MASK;
 
 		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, c | shift), "GoToType");
-		am.put("GoToType", new GoToMemberAction(JavaOutlineTree.class));
+		am.put("GoToType", new GoToMemberAction(/*JavaOutlineTree.class*/null));
 
 	}
 
