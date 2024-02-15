@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
@@ -790,10 +791,13 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 							loadUsesCompletions(cu, comp, alreadyEntered, set);
 							break;
 						case DECLARATION:
+							loadModelSlotCompletions(cu, comp, alreadyEntered, set);
+							loadFlexoRoleCompletions(cu, comp, alreadyEntered, set);
 							addFMLDeclarationsShorthandCompletions(set);
 							break;
 						case CONTROL_GRAPH:
 							addFMLControlGraphShorthandCompletions(set);
+							loadCompletionsForCaretPosition(cu, comp, alreadyEntered, set);
 							break;
 						default:
 							break;
@@ -810,7 +814,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 				// Loop through all types declared in this source, and provide
 				// completions depending on in what type/method/etc. the caret's in.
-				loadCompletionsForCaretPosition(cu, comp, alreadyEntered, set);
+				// loadCompletionsForCaretPosition(cu, comp, alreadyEntered, set);
 
 			}
 
@@ -998,6 +1002,23 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 			}
 		}
 
+	}
+
+	private void loadModelSlotCompletions(FMLCompilationUnit cu, JTextComponent comp, String alreadyEntered, Set<Completion> retVal) {
+
+		for (UseModelSlotDeclaration useModelSlotDeclaration : cu.getAccessibleUseDeclarations()) {
+			retVal.add(new ModelSlotDeclarationCompletion<>(this, alreadyEntered, useModelSlotDeclaration.getModelSlotClass()));
+		}
+	}
+
+	private void loadFlexoRoleCompletions(FMLCompilationUnit cu, JTextComponent comp, String alreadyEntered, Set<Completion> retVal) {
+
+		for (UseModelSlotDeclaration useModelSlotDeclaration : cu.getAccessibleUseDeclarations()) {
+			for (Class<? extends FlexoRole<?>> roleClass : getServiceManager().getTechnologyAdapterService()
+					.getAvailableFlexoRoleTypes(useModelSlotDeclaration.getModelSlotClass())) {
+				retVal.add(new FlexoRoleDeclarationCompletion<>(this, alreadyEntered, roleClass));
+			}
+		}
 	}
 
 	private void loadRootCompletions(CompletionContext context, Set<Completion> retVal) {
