@@ -61,7 +61,10 @@ public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 		this.fmlTAController = fmlTAController;
 		this.sourceProvider = (FMLSourceCompletionProvider) getDefaultCompletionProvider();
 		sourceProvider.setJavaProvider(this);
-		setShorthandCompletionCache(new FMLShorthandCompletionCache(sourceProvider, new DefaultCompletionProvider()));
+		setFMLDeclarationsShorthandCompletionCache(
+				new FMLDeclarationsShorthandCompletionCache(sourceProvider, new DefaultCompletionProvider()));
+		setFMLControlGraphShorthandCompletionCache(
+				new FMLControlGraphShorthandCompletionCache(sourceProvider, new DefaultCompletionProvider()));
 		setDocCommentCompletionProvider(new DocCommentCompletionProvider());
 	}
 
@@ -178,10 +181,20 @@ public class FMLCompletionProvider extends LanguageAwareCompletionProvider {
 	 * @param cache
 	 *            The cache to use.
 	 */
-	public void setShorthandCompletionCache(ShorthandCompletionCache cache) {
-		sourceProvider.setShorthandCache(cache);
+	public void setFMLDeclarationsShorthandCompletionCache(FMLDeclarationsShorthandCompletionCache cache) {
+		sourceProvider.setFMLDeclarationsShorthandCompletionCache(cache);
 		// reset comment completions too
 		setCommentCompletions(cache);
+	}
+
+	/**
+	 * Set shorthand completion cache (template and comment completions).
+	 *
+	 * @param cache
+	 *            The cache to use.
+	 */
+	public void setFMLControlGraphShorthandCompletionCache(FMLControlGraphShorthandCompletionCache cache) {
+		sourceProvider.setFMLControlGraphShorthandCompletionCache(cache);
 	}
 
 }

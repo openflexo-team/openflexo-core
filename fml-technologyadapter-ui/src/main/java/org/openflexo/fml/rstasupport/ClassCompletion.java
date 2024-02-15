@@ -25,7 +25,6 @@ import org.openflexo.fml.rstasupport.classreader.ClassFile;
 import org.openflexo.fml.rstasupport.rjc.ast.CompilationUnit;
 import org.openflexo.fml.rstasupport.rjc.ast.TypeDeclaration;
 
-
 /**
  * Completion for a Java class, interface or enum.
  *
@@ -36,12 +35,16 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 
 	private ClassFile cf;
 
+	/**
+	 * The relevance of fields. This allows fields to be "higher" in the completion list than other types.
+	 */
+	private static final int RELEVANCE = 1;
 
 	ClassCompletion(CompletionProvider provider, ClassFile cf) {
 		super(provider, cf.getClassName(false));
 		this.cf = cf;
+		setRelevance(RELEVANCE);
 	}
-
 
 	/*
 	 * Fixed error when comparing classes of the same name, which did not allow
@@ -54,35 +57,31 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 			return 0;
 		}
 		// Check for classes with same name, but in different packages
-		else if(c2.toString().equalsIgnoreCase(toString())) {
+		else if (c2.toString().equalsIgnoreCase(toString())) {
 			if (c2 instanceof ClassCompletion) {
-				ClassCompletion cc2 = (ClassCompletion)c2;
+				ClassCompletion cc2 = (ClassCompletion) c2;
 				return getClassName(true).compareTo(cc2.getClassName(true));
 			}
 		}
 		return super.compareTo(c2);
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof ClassCompletion) &&
-			((ClassCompletion)obj).getReplacementText().equals(getReplacementText());
+		return (obj instanceof ClassCompletion) && ((ClassCompletion) obj).getReplacementText().equals(getReplacementText());
 	}
-
 
 	/**
 	 * Returns the name of the class represented by this completion.
 	 *
-	 * @param fullyQualified Whether the returned name should be fully
-	 *        qualified.
+	 * @param fullyQualified
+	 *            Whether the returned name should be fully qualified.
 	 * @return The class name.
 	 * @see #getPackageName()
 	 */
-	public String getClassName(boolean fullyQualified){
+	public String getClassName(boolean fullyQualified) {
 		return cf.getClassName(fullyQualified);
 	}
-
 
 	@Override
 	public Icon getIcon() {
@@ -91,24 +90,24 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 
 		boolean isInterface = false;
 		boolean isPublic = false;
-		//boolean isProtected = false;
-		//boolean isPrivate = false;
+		// boolean isProtected = false;
+		// boolean isPrivate = false;
 		boolean isDefault = false;
 
 		int access = cf.getAccessFlags();
-		if ((access&AccessFlags.ACC_INTERFACE)>0) {
+		if ((access & AccessFlags.ACC_INTERFACE) > 0) {
 			isInterface = true;
 		}
 
 		else if (org.openflexo.fml.rstasupport.classreader.Util.isPublic(access)) {
 			isPublic = true;
 		}
-		//else if (org.openflexo.fml.rstasupport.classreader.Util.isProtected(access)) {
-		//	isProtected = true;
-		//}
-		//else if (org.openflexo.fml.rstasupport.classreader.Util.isPrivate(access)) {
-		//	isPrivate = true;
-		//}
+		// else if (org.openflexo.fml.rstasupport.classreader.Util.isProtected(access)) {
+		// isProtected = true;
+		// }
+		// else if (org.openflexo.fml.rstasupport.classreader.Util.isPrivate(access)) {
+		// isPrivate = true;
+		// }
 		else {
 			isDefault = true;
 		}
@@ -137,7 +136,6 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 
 	}
 
-
 	/**
 	 * Returns the package this class or interface is in.
 	 *
@@ -148,18 +146,17 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 		return cf.getPackageName();
 	}
 
-
 	@Override
 	public String getSummary() {
 
-		FMLSourceCompletionProvider scp = (FMLSourceCompletionProvider)getProvider();
-		SourceLocation  loc = scp.getSourceLocForClass(cf.getClassName(true));
+		FMLSourceCompletionProvider scp = (FMLSourceCompletionProvider) getProvider();
+		SourceLocation loc = scp.getSourceLocForClass(cf.getClassName(true));
 
-		if (loc!=null) {
+		if (loc != null) {
 
 			CompilationUnit cu = Util.getCompilationUnitFromDisk(loc, cf);
-			if (cu!=null) {
-				Iterator<TypeDeclaration> i=cu.getTypeDeclarationIterator();
+			if (cu != null) {
+				Iterator<TypeDeclaration> i = cu.getTypeDeclarationIterator();
 				while (i.hasNext()) {
 					TypeDeclaration td = i.next();
 					String typeName = td.getName();
@@ -167,7 +164,7 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 					if (typeName.equals(cf.getClassName(false))) {
 						String summary = td.getDocComment();
 						// Be cautious - might be no doc comment (or a bug?)
-						if (summary!=null && summary.startsWith("/**")) {
+						if (summary != null && summary.startsWith("/**")) {
 							return Util.docCommentToHtml(summary);
 						}
 					}
@@ -181,18 +178,15 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 
 	}
 
-
 	@Override
 	public String getToolTipText() {
 		return "class " + getReplacementText();
 	}
 
-
 	@Override
 	public int hashCode() {
 		return getReplacementText().hashCode();
 	}
-
 
 	@Override
 	public void rendererText(Graphics g, int x, int y, boolean selected) {
@@ -202,7 +196,7 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 		FontMetrics fm = g.getFontMetrics();
 		int newX = x + fm.stringWidth(s);
 		if (cf.isDeprecated()) {
-			int midY = y + fm.getDescent() - fm.getHeight()/2;
+			int midY = y + fm.getDescent() - fm.getHeight() / 2;
 			g.drawLine(x, midY, newX, midY);
 		}
 		x = newX;
@@ -226,6 +220,5 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 		}
 
 	}
-
 
 }

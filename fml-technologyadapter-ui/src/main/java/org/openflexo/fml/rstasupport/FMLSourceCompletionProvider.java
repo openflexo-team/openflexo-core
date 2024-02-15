@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import javax.swing.text.JTextComponent;
 
-import org.fife.rsta.ac.ShorthandCompletionCache;
 import org.fife.ui.autocomplete.Completion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.logging.FlexoLogger;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -86,6 +87,8 @@ import org.openflexo.toolbox.StringUtils;
  * @version 1.0
  */
 public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
+
+	protected static final Logger logger = FlexoLogger.getLogger(FMLSourceCompletionProvider.class.getPackage().getName());
 
 	/**
 	 * The parent completion provider.
@@ -106,7 +109,8 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	private static final String THIS = "this";
 
 	// Shorthand completions (templates and comments)
-	private ShorthandCompletionCache shorthandCache;
+	private FMLDeclarationsShorthandCompletionCache declShorthandCache;
+	private FMLControlGraphShorthandCompletionCache cgShorthandCache;
 
 	/**
 	 * Constructor.
@@ -273,25 +277,47 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	}
 
 	/**
-	 * Adds simple shorthand completions relevant to Java.
+	 * Adds simple shorthand completions relevant to DECLARATION context
 	 *
 	 * @param set
 	 *            The set to add to.
 	 */
-	private void addShorthandCompletions(Set<Completion> set) {
-		if (shorthandCache != null) {
-			set.addAll(shorthandCache.getShorthandCompletions());
+	private void addFMLDeclarationsShorthandCompletions(Set<Completion> set) {
+		if (declShorthandCache != null) {
+			set.addAll(declShorthandCache.getShorthandCompletions());
 		}
 	}
 
 	/**
-	 * Set template completion cache for source completion provider.
+	 * Adds simple shorthand completions relevant to CONTROL_GRAPH.
+	 *
+	 * @param set
+	 *            The set to add to.
+	 */
+	private void addFMLControlGraphShorthandCompletions(Set<Completion> set) {
+		if (cgShorthandCache != null) {
+			set.addAll(cgShorthandCache.getShorthandCompletions());
+		}
+	}
+
+	/**
+	 * Set template completion cache in the context of DECLARATIONS
 	 *
 	 * @param shorthandCache
 	 *            The new cache.
 	 */
-	public void setShorthandCache(ShorthandCompletionCache shorthandCache) {
-		this.shorthandCache = shorthandCache;
+	public void setFMLDeclarationsShorthandCompletionCache(FMLDeclarationsShorthandCompletionCache shorthandCache) {
+		this.declShorthandCache = shorthandCache;
+	}
+
+	/**
+	 * Set template completion cache in the context of CONTROL_GRAPH
+	 *
+	 * @param shorthandCache
+	 *            The new cache.
+	 */
+	public void setFMLControlGraphShorthandCompletionCache(FMLControlGraphShorthandCompletionCache shorthandCache) {
+		this.cgShorthandCache = shorthandCache;
 	}
 
 	/**
@@ -563,38 +589,52 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 			// Cut down the list to just those matching what we've typed.
 			// Note: getAlreadyEnteredText() never returns null
-			String text = getAlreadyEnteredText(comp);
+			String alreadyEntered = getAlreadyEnteredText(comp);
 
-			int lastDot = text.lastIndexOf('.');
-			boolean qualified = lastDot > -1;
-			String prefix = qualified ? text.substring(0, lastDot) : null;
-			Bindable context = getRelevantContext(cu, comp);
+			// int lastDot = text.lastIndexOf('.');
+			// boolean qualified = lastDot > -1;
+			// String prefix = qualified ? text.substring(0, lastDot) : null;
+			CompletionContext context = getRelevantContext(cu, comp);
 
-			System.out.println(">>>>>>>> On arrive ici, le contexte c'est " + context);
+			System.out.println(">>>>>>>> On arrive ici, le contexte c'est " + context.context + " of " + context.getContextType());
 
 			// Special case - end of a String literal
-			boolean stringLiteralMember = checkStringLiteralMember(comp, text, cu, set);
+			boolean stringLiteralMember = checkStringLiteralMember(comp, alreadyEntered, cu, set);
+
+			// System.out.println("stringLiteralMember=" + stringLiteralMember);
 
 			// Not after a String literal - regular code completion
 			if (!stringLiteralMember) {
 
 				// Don't add shorthand completions if they're typing something
 				// qualified
-				if (text.indexOf('.') == -1) {
-					addShorthandCompletions(set);
+				if (alreadyEntered.indexOf('.') == -1) {
+					switch (context.getContextType()) {
+						case COMPILATION_UNIT_DECLARATION:
+							loadUsesCompletions(cu, comp, alreadyEntered, set);
+							break;
+						case DECLARATION:
+							addFMLDeclarationsShorthandCompletions(set);
+							break;
+						case CONTROL_GRAPH:
+							addFMLControlGraphShorthandCompletions(set);
+							break;
+						default:
+							break;
+					}
 				}
 
-				loadImportCompletions(set, text, cu);
+				loadImportCompletions(set, alreadyEntered, cu);
 
 				// Add completions for fully-qualified stuff (e.g. "com.sun.jav")
 				// long startTime = System.currentTimeMillis();
-				jarManager.addCompletions(this, text, set);
+				jarManager.addCompletions(this, alreadyEntered, set);
 				// long time = System.currentTimeMillis() - startTime;
 				// System.out.println("jar completions loaded in: " + time);
 
 				// Loop through all types declared in this source, and provide
 				// completions depending on in what type/method/etc. the caret's in.
-				loadCompletionsForCaretPosition(cu, comp, text, set);
+				loadCompletionsForCaretPosition(cu, comp, alreadyEntered, set);
 
 			}
 
@@ -604,22 +644,22 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 			// Only match based on stuff after the final '.', since that's what is
 			// displayed for all of our completions.
-			text = text.substring(text.lastIndexOf('.') + 1);
+			alreadyEntered = alreadyEntered.substring(alreadyEntered.lastIndexOf('.') + 1);
 
 			@SuppressWarnings("unchecked")
-			int start = Collections.binarySearch(completions, text, comparator);
+			int start = Collections.binarySearch(completions, alreadyEntered, comparator);
 			if (start < 0) {
 				start = -(start + 1);
 			}
 			else {
 				// There might be multiple entries with the same input text.
-				while (start > 0 && comparator.compare(completions.get(start - 1), text) == 0) {
+				while (start > 0 && comparator.compare(completions.get(start - 1), alreadyEntered) == 0) {
 					start--;
 				}
 			}
 
 			@SuppressWarnings("unchecked")
-			int end = Collections.binarySearch(completions, text + '{', comparator);
+			int end = Collections.binarySearch(completions, alreadyEntered + '{', comparator);
 			end = -(end + 1);
 
 			return completions.subList(start, end);
@@ -678,51 +718,169 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		return Character.isJavaIdentifierPart(ch) || ch == '.';
 	}
 
-	private Bindable getRelevantContext(FMLCompilationUnit cu, JTextComponent textArea) {
-		FMLPrettyPrintable enclosingObject = getEnclosingFMLObject(cu, textArea);
-		if (enclosingObject != null) {
-			if (enclosingObject instanceof Sequence) {
-				// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
-				return ((Sequence) enclosingObject).getControlGraph1();
-			}
-			if (enclosingObject instanceof UseModelSlotDeclaration) {
-				return ((UseModelSlotDeclaration) enclosingObject).getCompilationUnit();
-			}
-			if (enclosingObject instanceof NamespaceDeclaration) {
-				return ((NamespaceDeclaration) enclosingObject).getCompilationUnit();
-			}
-			if (enclosingObject instanceof JavaImportDeclaration) {
-				return ((JavaImportDeclaration) enclosingObject).getCompilationUnit();
-			}
-			if (enclosingObject instanceof ElementImportDeclaration) {
-				return ((ElementImportDeclaration) enclosingObject).getCompilationUnit();
-			}
-			if (enclosingObject instanceof org.openflexo.foundation.fml.TypeDeclaration) {
-				return ((org.openflexo.foundation.fml.TypeDeclaration) enclosingObject).getCompilationUnit();
-			}
-			if (enclosingObject instanceof FMLMetaData) {
-				FMLObject owner = ((FMLMetaData) enclosingObject).getOwner();
-				if (owner instanceof VirtualModel) {
-					return owner.getDeclaringCompilationUnit();
+	class CompletionContext {
+		final FMLPrettyPrintable enclosingObject;
+		final Bindable context;
+
+		CompletionContext(FMLCompilationUnit cu, JTextComponent textArea) {
+			this.enclosingObject = getEnclosingFMLObject(cu, textArea);
+			if (enclosingObject != null) {
+				if (enclosingObject instanceof Sequence) {
+					// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
+					context = ((Sequence) enclosingObject).getControlGraph1();
 				}
-				if (owner instanceof FlexoConcept) {
-					if (((FlexoConcept) owner).getContainerFlexoConcept() != null) {
-						return ((FlexoConcept) owner).getContainerFlexoConcept();
+				else if (enclosingObject instanceof UseModelSlotDeclaration) {
+					context = ((UseModelSlotDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof NamespaceDeclaration) {
+					context = ((NamespaceDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof JavaImportDeclaration) {
+					context = ((JavaImportDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof ElementImportDeclaration) {
+					context = ((ElementImportDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof org.openflexo.foundation.fml.TypeDeclaration) {
+					context = ((org.openflexo.foundation.fml.TypeDeclaration) enclosingObject).getCompilationUnit();
+				}
+				else if (enclosingObject instanceof FMLMetaData) {
+					FMLObject owner = ((FMLMetaData) enclosingObject).getOwner();
+					if (owner instanceof VirtualModel) {
+						context = owner.getDeclaringCompilationUnit();
+					}
+					else if (owner instanceof FlexoConcept) {
+						if (((FlexoConcept) owner).getContainerFlexoConcept() != null) {
+							context = ((FlexoConcept) owner).getContainerFlexoConcept();
+						}
+						else {
+							context = ((FlexoConcept) owner).getOwner();
+						}
+					}
+					else if (owner instanceof FlexoProperty) {
+						context = ((FlexoProperty<?>) owner).getFlexoConcept();
+					}
+					else if (owner instanceof FlexoBehaviour) {
+						context = ((FlexoBehaviour) owner).getFlexoBehaviour();
 					}
 					else {
-						return ((FlexoConcept) owner).getOwner();
+						context = enclosingObject;
 					}
 				}
-				if (owner instanceof FlexoProperty) {
-					return ((FlexoProperty) owner).getFlexoConcept();
-				}
-				if (owner instanceof FlexoBehaviour) {
-					return ((FlexoBehaviour) owner).getFlexoBehaviour();
+				else {
+					context = enclosingObject;
 				}
 			}
-			return enclosingObject;
+			else {
+				context = null;
+			}
 		}
-		return null;
+
+		ContextType getContextType() {
+			if (context instanceof FMLCompilationUnit) {
+				return ContextType.COMPILATION_UNIT_DECLARATION;
+			}
+			else if (context instanceof FlexoConcept || context instanceof FlexoProperty || context instanceof FlexoBehaviour) {
+				return ContextType.DECLARATION;
+			}
+			else if (context instanceof FMLControlGraph) {
+				return ContextType.CONTROL_GRAPH;
+			}
+			else {
+				logger.warning("Unexpected context: " + context);
+				return ContextType.DECLARATION;
+			}
+		}
+
+		public BindingModel getBindingModel() {
+			if (context != null) {
+				return context.getBindingModel();
+			}
+			return null;
+		}
+
+		public BindingFactory getBindingFactory() {
+			if (context != null) {
+				return context.getBindingFactory();
+			}
+			return null;
+		}
+
+		Bindable makeDefaultBindable() {
+			return new DefaultBindable() {
+				@Override
+				public BindingModel getBindingModel() {
+					return CompletionContext.this.getBindingModel();
+				}
+
+				@Override
+				public BindingFactory getBindingFactory() {
+					return CompletionContext.this.getBindingFactory();
+				}
+
+				@Override
+				public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+				}
+
+				@Override
+				public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+				}
+			};
+		}
+
+	}
+
+	enum ContextType {
+		COMPILATION_UNIT_DECLARATION, DECLARATION, CONTROL_GRAPH
+	}
+
+	private CompletionContext getRelevantContext(FMLCompilationUnit cu, JTextComponent textArea) {
+		return new CompletionContext(cu, textArea);
+
+		/*	FMLPrettyPrintable enclosingObject = getEnclosingFMLObject(cu, textArea);
+			if (enclosingObject != null) {
+				if (enclosingObject instanceof Sequence) {
+					// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
+					return ((Sequence) enclosingObject).getControlGraph1();
+				}
+				if (enclosingObject instanceof UseModelSlotDeclaration) {
+					return ((UseModelSlotDeclaration) enclosingObject).getCompilationUnit();
+				}
+				if (enclosingObject instanceof NamespaceDeclaration) {
+					return ((NamespaceDeclaration) enclosingObject).getCompilationUnit();
+				}
+				if (enclosingObject instanceof JavaImportDeclaration) {
+					return ((JavaImportDeclaration) enclosingObject).getCompilationUnit();
+				}
+				if (enclosingObject instanceof ElementImportDeclaration) {
+					return ((ElementImportDeclaration) enclosingObject).getCompilationUnit();
+				}
+				if (enclosingObject instanceof org.openflexo.foundation.fml.TypeDeclaration) {
+					return ((org.openflexo.foundation.fml.TypeDeclaration) enclosingObject).getCompilationUnit();
+				}
+				if (enclosingObject instanceof FMLMetaData) {
+					FMLObject owner = ((FMLMetaData) enclosingObject).getOwner();
+					if (owner instanceof VirtualModel) {
+						return owner.getDeclaringCompilationUnit();
+					}
+					if (owner instanceof FlexoConcept) {
+						if (((FlexoConcept) owner).getContainerFlexoConcept() != null) {
+							return ((FlexoConcept) owner).getContainerFlexoConcept();
+						}
+						else {
+							return ((FlexoConcept) owner).getOwner();
+						}
+					}
+					if (owner instanceof FlexoProperty) {
+						return ((FlexoProperty) owner).getFlexoConcept();
+					}
+					if (owner instanceof FlexoBehaviour) {
+						return ((FlexoBehaviour) owner).getFlexoBehaviour();
+					}
+				}
+				return enclosingObject;
+			}
+			return null;*/
 	}
 
 	private FMLPrettyPrintable getEnclosingFMLObject(FMLCompilationUnit cu, JTextComponent textArea) {
@@ -762,7 +920,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		int lastDot = alreadyEntered.lastIndexOf('.');
 		boolean qualified = lastDot > -1;
 		String prefix = qualified ? alreadyEntered.substring(0, lastDot) : null;
-		Bindable context = getRelevantContext(cu, comp);
+		CompletionContext context = getRelevantContext(cu, comp);
 
 		System.out.println("alreadyEntered=" + alreadyEntered);
 		System.out.println("prefix=" + prefix);
@@ -776,25 +934,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		if (StringUtils.isNotEmpty(prefix)) {
 			// If prefix is not empty, we are about to complete a BindingPath
 			// First build a bindable disconnected from "real" model with same BindingModel and BindingFactory
-			DefaultBindable defaultBindable = new DefaultBindable() {
-				@Override
-				public BindingModel getBindingModel() {
-					return context.getBindingModel();
-				}
-
-				@Override
-				public BindingFactory getBindingFactory() {
-					return context.getBindingFactory();
-				}
-
-				@Override
-				public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-				}
-
-				@Override
-				public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-				}
-			};
+			Bindable defaultBindable = context.makeDefaultBindable();
 			// First build existing path
 			DataBinding<?> existingBinding = new DataBinding<>(prefix, defaultBindable);
 			// System.out.println("Hop le binding " + existingBinding);
@@ -853,7 +993,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 			for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 				for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
 					if (!cu.uses(msType)) {
-						System.out.println(" >>>> " + msType);
+						// System.out.println(" >>>> " + msType);
 						retVal.add(new UseCompletion<>(this, alreadyEntered, msType));
 					}
 				}
@@ -862,7 +1002,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 
 	}
 
-	private void loadRootCompletions(Bindable context, Set<Completion> retVal) {
+	private void loadRootCompletions(CompletionContext context, Set<Completion> retVal) {
 		if (context == null) {
 			return;
 		}
@@ -876,25 +1016,26 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		if (bindingModel != null) {
 			for (int i = 0; i < bindingModel.getBindingVariablesCount(); i++) {
 				BindingVariable bv = bindingModel.getBindingVariableAt(i);
-				System.out.println(" > " + bv + " of " + bv.getClass().getSimpleName());
+				// System.out.println(" > " + bv + " of " + bv.getClass().getSimpleName());
 				retVal.add(BindingVariableCompletionFactory.makeBindingVariableCompletion(this, bv));
 			}
 		}
 	}
 
-	private void loadCompletionsForType(Bindable context, java.lang.reflect.Type type, Set<Completion> retVal) {
+	private void loadCompletionsForType(CompletionContext context, java.lang.reflect.Type type, Set<Completion> retVal) {
 		BindingFactory bf = context.getBindingFactory();
 
 		BindingVariable dummyBV = new BindingVariable("temp", type);
-		List<? extends SimplePathElement<?>> accessibleSimplePathElements = bf.getAccessibleSimplePathElements(dummyBV, context);
-		List<? extends FunctionPathElement<?>> accessibleFunctionPathElements = bf.getAccessibleFunctionPathElements(dummyBV, context);
+		List<? extends SimplePathElement<?>> accessibleSimplePathElements = bf.getAccessibleSimplePathElements(dummyBV, context.context);
+		List<? extends FunctionPathElement<?>> accessibleFunctionPathElements = bf.getAccessibleFunctionPathElements(dummyBV,
+				context.context);
 
 		for (SimplePathElement<?> simplePathElement : accessibleSimplePathElements) {
-			System.out.println(" > " + simplePathElement);
+			// System.out.println(" > " + simplePathElement);
 			retVal.add(BindingPathElementCompletionFactory.makeSimplePathElementCompletion(this, simplePathElement));
 		}
 		for (FunctionPathElement<?> functionPathElement : accessibleFunctionPathElements) {
-			System.out.println(" > " + functionPathElement);
+			// System.out.println(" > " + functionPathElement);
 			retVal.add(BindingPathElementCompletionFactory.makeFunctionPathElementCompletion(this, functionPathElement));
 		}
 	}

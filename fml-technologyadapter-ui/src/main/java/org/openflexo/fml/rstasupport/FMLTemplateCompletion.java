@@ -26,6 +26,11 @@ public class FMLTemplateCompletion extends TemplateCompletion implements FMLSour
 
 	private String icon;
 
+	/**
+	 * The relevance of fields. This allows fields to be "higher" in the completion list than other types.
+	 */
+	private static final int RELEVANCE = 2;
+
 	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template) {
 		this(provider, inputText, definitionString, template, null);
 	}
@@ -38,6 +43,7 @@ public class FMLTemplateCompletion extends TemplateCompletion implements FMLSour
 	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template, String shortDesc,
 			String summary) {
 		super(provider, inputText, definitionString, template, shortDesc, summary);
+		setRelevance(RELEVANCE);
 		setIcon(IconFactory.TEMPLATE_ICON);
 	}
 
