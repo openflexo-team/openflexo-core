@@ -100,8 +100,7 @@ class DocCommentCompletionProvider extends DefaultCompletionProvider {
 	private static class JavadocTemplateCompletion extends FMLTemplateCompletion {
 
 		JavadocTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template) {
-			super(provider, inputText, definitionString, template);
-			setIcon(IconFactory.JAVADOC_ITEM_ICON);
+			super(provider, inputText, definitionString, template, IconFactory.get().getIcon(IconFactory.JAVADOC_ITEM_ICON));
 		}
 
 	}

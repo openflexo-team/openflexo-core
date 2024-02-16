@@ -18,21 +18,26 @@ import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.TemplateCompletion;
 
 /**
- * A template completion for FML.
+ * A template completion for FML
  *
  * @author sylvain
  */
 public class FMLTemplateCompletion extends TemplateCompletion implements FMLSourceCompletion {
-
-	private String icon;
 
 	/**
 	 * The relevance of fields. This allows fields to be "higher" in the completion list than other types.
 	 */
 	private static final int RELEVANCE = 2;
 
+	private Icon icon;
+
 	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template) {
-		this(provider, inputText, definitionString, template, null);
+		this(provider, inputText, definitionString, template, (String) null);
+	}
+
+	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template, Icon icon) {
+		this(provider, inputText, definitionString, template);
+		this.icon = icon;
 	}
 
 	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template,
@@ -44,21 +49,25 @@ public class FMLTemplateCompletion extends TemplateCompletion implements FMLSour
 			String summary) {
 		super(provider, inputText, definitionString, template, shortDesc, summary);
 		setRelevance(RELEVANCE);
-		setIcon(IconFactory.TEMPLATE_ICON);
+	}
+
+	public FMLTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template, String shortDesc,
+			String summary, Icon icon) {
+		this(provider, inputText, definitionString, template, shortDesc, summary);
+		this.icon = icon;
 	}
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(icon);
+		if (icon != null) {
+			return icon;
+		}
+		return IconFactory.get().getIcon(IconFactory.TEMPLATE_ICON);
 	}
 
 	@Override
 	public void rendererText(Graphics g, int x, int y, boolean selected) {
 		JavaShorthandCompletion.renderText(g, getInputText(), getShortDescription(), x, y, selected);
-	}
-
-	public void setIcon(String iconId) {
-		this.icon = iconId;
 	}
 
 }
