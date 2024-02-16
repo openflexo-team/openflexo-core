@@ -52,6 +52,7 @@ delete_flexo_concept_action_doesn't_define_any_deletion_scheme=Delete flexo conc
 delete_flexo_concept_action_doesn't_define_any_flexo_concept=Delete flexo concept action doesn't define any flexo concept
 delete_this_binding=Delete this binding
 displaying_validation_report=Displaying validation report
+duplicate_behaviour_($validable.signature)=Duplicate behaviour ($validable.signature)
 duplicate_property_($validable.propertyName)=Duplicate property ($validable.propertyName)
 expected\:\ ($expectedType.toString)\ overriden\ as\ ($overridingType.toString)=Expected\: ($expectedType.toString) overriden as ($overridingType.toString)
 fib_component_model_slot_must_reference_nonnull_template_resource=Fib component model slot must reference nonnull template resource

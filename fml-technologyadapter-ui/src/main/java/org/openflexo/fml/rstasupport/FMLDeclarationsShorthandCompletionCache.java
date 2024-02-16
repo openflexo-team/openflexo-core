@@ -58,13 +58,13 @@ public class FMLDeclarationsShorthandCompletionCache extends ShorthandCompletion
 
 		template = "${Type} ${behaviour_name}() {\n\t${cursor}\n}";
 		addShorthandCompletion(new FMLTemplateCompletion(templateProvider, "action_scheme()", "action_scheme()", template,
-				locales.localizedForKey("new_anonymous_deletion_scheme_template.shortDesc"),
-				locales.localizedForKey("new_anonymous_deletion_scheme_template.description"), FMLIconLibrary.ACTION_SCHEME_ICON));
+				locales.localizedForKey("new_action_scheme_template.shortDesc"),
+				locales.localizedForKey("new_action_scheme_template.description"), FMLIconLibrary.ACTION_SCHEME_ICON));
 
 		template = "create() {\n\t${cursor}\n}";
 		addShorthandCompletion(new FMLTemplateCompletion(templateProvider, "create()", "create()", template,
 				locales.localizedForKey("new_anonymous_creation_scheme_template.shortDesc"),
-				locales.localizedForKey("new_anonymous creation_scheme_template.description"), FMLIconLibrary.CREATION_SCHEME_ICON));
+				locales.localizedForKey("new_anonymous_creation_scheme_template.description"), FMLIconLibrary.CREATION_SCHEME_ICON));
 
 		template = "create::${behaviour_name}() {\n\t${cursor}\n}";
 		addShorthandCompletion(new FMLTemplateCompletion(templateProvider, "create::creation_scheme()", "create::creation_scheme()",
