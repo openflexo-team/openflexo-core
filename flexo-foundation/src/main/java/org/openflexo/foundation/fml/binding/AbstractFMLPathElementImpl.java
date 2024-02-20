@@ -261,4 +261,13 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 	public FMLCompilationUnit getResourceData() {
 		return null;
 	}
+
+	@Override
+	public String getRelativePath() {
+		if (getParent() != null) {
+			return getParent().getRelativePath() + "." + getSerializationRepresentation();
+		}
+		return getSerializationRepresentation();
+	}
+
 }
