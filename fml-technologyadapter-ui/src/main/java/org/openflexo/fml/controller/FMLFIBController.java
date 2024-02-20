@@ -70,6 +70,7 @@ import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -450,7 +451,7 @@ public class FMLFIBController extends FlexoFIBController {
 		return null;
 	}
 
-	public EditionAction createEditionActionInGetControlGraph(GetSetProperty<?> property) {
+	public EditionAction createEditionActionInGetControlGraph(GetProperty<?> property) {
 		if (property != null) {
 			if (property.getGetControlGraph() == null) {
 				EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
