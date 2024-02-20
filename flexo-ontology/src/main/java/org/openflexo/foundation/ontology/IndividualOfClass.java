@@ -41,6 +41,7 @@ package org.openflexo.foundation.ontology;
 
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
@@ -64,6 +65,8 @@ import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
  */
 public abstract class IndividualOfClass<TA extends TechnologyAdapter<TA>, I extends IFlexoOntologyIndividual<TA>, C extends IFlexoOntologyClass<TA>>
 		implements TechnologySpecificType<TA> {
+
+	private static final Logger logger = Logger.getLogger(IndividualOfClass.class.getPackage().getName());
 
 	public static <TA extends TechnologyAdapter<TA>, I extends IFlexoOntologyIndividual<TA>, C extends IFlexoOntologyClass<TA>> IndividualOfClass<TA, I, C> getIndividualOfClass(
 			C anOntologyClass) {
@@ -174,11 +177,12 @@ public abstract class IndividualOfClass<TA extends TechnologyAdapter<TA>, I exte
 
 	@Override
 	public boolean isOfType(Object object, boolean permissive) {
-		if (!(object instanceof IFlexoOntologyIndividual)) {
+		if (object instanceof IFlexoOntologyIndividual) {
+			return (((IFlexoOntologyIndividual) object).isIndividualOf(getOntologyClass()));
+		}
+		else {
 			return false;
 		}
-		// TODO please implement me
-		return true;
 	}
 
 	@Override
