@@ -22,4 +22,5 @@ dependencies {
   implementation project(':flexo-ontology-ui')
   implementation project(':flexo-test-resources')
   implementation project(':flexo-foundation-test')
+  implementation flexoGraphicUtils()
 }
