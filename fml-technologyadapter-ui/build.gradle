@@ -10,9 +10,16 @@ dependencies {
 
   // testing dep
 //  testCompile testUtils()
-  testImplementation ginaTest()
-  testImplementation project(':flexo-ui-test')
-  testImplementation project(':flexo-ontology-ui')
-  testImplementation project(':flexo-test-resources')
-  testImplementation project(':flexo-foundation-test')
+  //testImplementation ginaTest()
+  
+  //testImplementation project(':flexo-ui-test')
+  //testImplementation project(':flexo-ontology-ui')
+  //testImplementation project(':flexo-test-resources')
+  //testImplementation project(':flexo-foundation-test')
+
+  implementation ginaTest()
+  implementation project(':flexo-ui-test')
+  implementation project(':flexo-ontology-ui')
+  implementation project(':flexo-test-resources')
+  implementation project(':flexo-foundation-test')
 }
