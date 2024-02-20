@@ -10,8 +10,6 @@
  */
 package org.openflexo.fml.rstasupport;
 
-import java.util.ResourceBundle;
-
 import org.fife.rsta.ac.ShorthandCompletionCache;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
@@ -26,7 +24,7 @@ import org.openflexo.localization.LocalizedDelegate;
  */
 public class FMLControlGraphShorthandCompletionCache extends ShorthandCompletionCache {
 
-	private static final ResourceBundle MSG = ResourceBundle.getBundle("org.openflexo.fml.rstasupport.resources");
+	// private static final ResourceBundle MSG = ResourceBundle.getBundle("org.openflexo.fml.rstasupport.resources");
 
 	public FMLControlGraphShorthandCompletionCache(FMLSourceCompletionProvider templateProvider,
 			DefaultCompletionProvider commentsProvider) {
@@ -74,8 +72,8 @@ public class FMLControlGraphShorthandCompletionCache extends ShorthandCompletion
 		// MSG.getString("switch.case.shortDesc"), MSG.getString("switch.case.summary")));
 
 		// Comments
-		addCommentCompletion(new BasicCompletion(commentsProvider, "TODO:", null, MSG.getString("todo")));
-		addCommentCompletion(new BasicCompletion(commentsProvider, "FIXME:", null, MSG.getString("fixme")));
+		addCommentCompletion(new BasicCompletion(commentsProvider, "TODO:", null, locales.localizedForKey("todo_template.description")));
+		addCommentCompletion(new BasicCompletion(commentsProvider, "FIXME:", null, locales.localizedForKey("fixme_template.description")));
 
 	}
 
