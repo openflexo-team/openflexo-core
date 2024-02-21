@@ -19,7 +19,7 @@ import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
-import org.openflexo.fml.rstasupport.IconFactory;
+import org.openflexo.fml.rstasupport.JavaIconFactory;
 
 public class DefaultFunctionPathElementCompletion extends AbstractFunctionPathElementCompletion<FunctionPathElement<?>> {
 
@@ -52,7 +52,7 @@ public class DefaultFunctionPathElementCompletion extends AbstractFunctionPathEl
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(IconFactory.METHOD_PUBLIC_ICON);
+		return JavaIconFactory.get().getIcon(JavaIconFactory.METHOD_PUBLIC_ICON);
 	}
 
 	@Override

@@ -112,23 +112,23 @@ class ClassCompletion extends AbstractFMLSourceCompletion {
 			isDefault = true;
 		}
 
-		IconFactory fact = IconFactory.get();
+		JavaIconFactory fact = JavaIconFactory.get();
 		String key = null;
 
 		if (isInterface) {
 			if (isDefault) {
-				key = IconFactory.DEFAULT_INTERFACE_ICON;
+				key = JavaIconFactory.DEFAULT_INTERFACE_ICON;
 			}
 			else {
-				key = IconFactory.INTERFACE_ICON;
+				key = JavaIconFactory.INTERFACE_ICON;
 			}
 		}
 		else {
 			if (isDefault) {
-				key = IconFactory.DEFAULT_CLASS_ICON;
+				key = JavaIconFactory.DEFAULT_CLASS_ICON;
 			}
 			else if (isPublic) {
-				key = IconFactory.CLASS_ICON;
+				key = JavaIconFactory.CLASS_ICON;
 			}
 		}
 

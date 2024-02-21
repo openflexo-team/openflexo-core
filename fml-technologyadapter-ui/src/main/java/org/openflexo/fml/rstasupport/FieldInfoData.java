@@ -55,19 +55,19 @@ class FieldInfoData implements Data {
 		int flags = info.getAccessFlags();
 
 		if (Util.isDefault(flags)) {
-			key = IconFactory.FIELD_DEFAULT_ICON;
+			key = JavaIconFactory.FIELD_DEFAULT_ICON;
 		}
 		else if (Util.isPrivate(flags)) {
-			key = IconFactory.FIELD_PRIVATE_ICON;
+			key = JavaIconFactory.FIELD_PRIVATE_ICON;
 		}
 		else if (Util.isProtected(flags)) {
-			key = IconFactory.FIELD_PROTECTED_ICON;
+			key = JavaIconFactory.FIELD_PROTECTED_ICON;
 		}
 		else if (Util.isPublic(flags)) {
-			key = IconFactory.FIELD_PUBLIC_ICON;
+			key = JavaIconFactory.FIELD_PUBLIC_ICON;
 		}
 		else {
-			key = IconFactory.FIELD_DEFAULT_ICON;
+			key = JavaIconFactory.FIELD_DEFAULT_ICON;
 		}
 
 		return key;

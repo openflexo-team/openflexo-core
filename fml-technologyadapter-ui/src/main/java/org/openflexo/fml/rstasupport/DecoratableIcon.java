@@ -117,7 +117,7 @@ public class DecoratableIcon implements Icon {
 	@Override
 	public void paintIcon(Component c, Graphics g, int x, int y) {
 		if (deprecated) {
-			IconFactory.get().getIcon(IconFactory.DEPRECATED_ICON).
+			JavaIconFactory.get().getIcon(JavaIconFactory.DEPRECATED_ICON).
 										paintIcon(c, g, x, y);
 		}
 		mainIcon.paintIcon(c, g, x, y);

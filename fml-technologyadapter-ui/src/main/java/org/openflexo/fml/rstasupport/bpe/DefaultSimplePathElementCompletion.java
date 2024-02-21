@@ -14,7 +14,7 @@ import javax.swing.Icon;
 
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
-import org.openflexo.fml.rstasupport.IconFactory;
+import org.openflexo.fml.rstasupport.JavaIconFactory;
 
 public class DefaultSimplePathElementCompletion extends AbstractSimplePathElementCompletion<SimplePathElement<?>> {
 
@@ -30,7 +30,7 @@ public class DefaultSimplePathElementCompletion extends AbstractSimplePathElemen
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(IconFactory.LOCAL_VARIABLE_ICON);
+		return JavaIconFactory.get().getIcon(JavaIconFactory.LOCAL_VARIABLE_ICON);
 	}
 
 	@Override

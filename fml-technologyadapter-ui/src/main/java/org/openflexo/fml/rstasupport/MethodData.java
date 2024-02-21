@@ -55,19 +55,19 @@ class MethodData implements Data {
 
 		Modifiers mod = method.getModifiers();
 		if (mod==null) {
-			key = IconFactory.METHOD_DEFAULT_ICON;
+			key = JavaIconFactory.METHOD_DEFAULT_ICON;
 		}
 		else if (mod.isPrivate()) {
-			key = IconFactory.METHOD_PRIVATE_ICON;
+			key = JavaIconFactory.METHOD_PRIVATE_ICON;
 		}
 		else if (mod.isProtected()) {
-			key = IconFactory.METHOD_PROTECTED_ICON;
+			key = JavaIconFactory.METHOD_PROTECTED_ICON;
 		}
 		else if (mod.isPublic()) {
-			key = IconFactory.METHOD_PUBLIC_ICON;
+			key = JavaIconFactory.METHOD_PUBLIC_ICON;
 		}
 		else {
-			key = IconFactory.METHOD_DEFAULT_ICON;
+			key = JavaIconFactory.METHOD_DEFAULT_ICON;
 		}
 
 		return key;

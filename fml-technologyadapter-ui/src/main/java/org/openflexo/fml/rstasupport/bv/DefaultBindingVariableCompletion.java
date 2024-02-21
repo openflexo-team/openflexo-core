@@ -17,7 +17,7 @@ import javax.swing.Icon;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
-import org.openflexo.fml.rstasupport.IconFactory;
+import org.openflexo.fml.rstasupport.JavaIconFactory;
 
 /**
  * Default class for completion based on a {@link BindingVariable}
@@ -38,7 +38,7 @@ public class DefaultBindingVariableCompletion extends AbstractBindingVariableCom
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(IconFactory.LOCAL_VARIABLE_ICON);
+		return JavaIconFactory.get().getIcon(JavaIconFactory.LOCAL_VARIABLE_ICON);
 	}
 
 	@Override

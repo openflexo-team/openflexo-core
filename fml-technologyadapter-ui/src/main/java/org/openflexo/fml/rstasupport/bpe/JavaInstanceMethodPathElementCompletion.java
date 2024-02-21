@@ -21,7 +21,7 @@ import org.openflexo.connie.binding.javareflect.JavaInstanceMethodDefinition;
 import org.openflexo.connie.binding.javareflect.JavaInstanceMethodPathElement;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fml.rstasupport.FMLSourceCompletionProvider;
-import org.openflexo.fml.rstasupport.IconFactory;
+import org.openflexo.fml.rstasupport.JavaIconFactory;
 import org.openflexo.fml.rstasupport.MemberCompletion;
 
 public class JavaInstanceMethodPathElementCompletion extends AbstractFunctionPathElementCompletion<JavaInstanceMethodPathElement>
@@ -51,7 +51,7 @@ public class JavaInstanceMethodPathElementCompletion extends AbstractFunctionPat
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(IconFactory.METHOD_PUBLIC_ICON);
+		return JavaIconFactory.get().getIcon(JavaIconFactory.METHOD_PUBLIC_ICON);
 	}
 
 	@Override

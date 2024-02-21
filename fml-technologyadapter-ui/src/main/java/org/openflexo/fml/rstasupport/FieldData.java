@@ -54,19 +54,19 @@ class FieldData implements Data {
 
 		Modifiers mod = field.getModifiers();
 		if (mod==null) {
-			key = IconFactory.FIELD_DEFAULT_ICON;
+			key = JavaIconFactory.FIELD_DEFAULT_ICON;
 		}
 		else if (mod.isPrivate()) {
-			key = IconFactory.FIELD_PRIVATE_ICON;
+			key = JavaIconFactory.FIELD_PRIVATE_ICON;
 		}
 		else if (mod.isProtected()) {
-			key = IconFactory.FIELD_PROTECTED_ICON;
+			key = JavaIconFactory.FIELD_PROTECTED_ICON;
 		}
 		else if (mod.isPublic()) {
-			key = IconFactory.FIELD_PUBLIC_ICON;
+			key = JavaIconFactory.FIELD_PUBLIC_ICON;
 		}
 		else {
-			key = IconFactory.FIELD_DEFAULT_ICON;
+			key = JavaIconFactory.FIELD_DEFAULT_ICON;
 		}
 
 		return key;

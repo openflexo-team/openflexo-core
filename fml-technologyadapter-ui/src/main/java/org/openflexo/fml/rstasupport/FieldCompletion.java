@@ -74,7 +74,7 @@ class FieldCompletion extends AbstractFMLSourceCompletion implements MemberCompl
 
 			@Override
 			public String getIcon() {
-				return IconFactory.FIELD_PUBLIC_ICON;
+				return JavaIconFactory.FIELD_PUBLIC_ICON;
 			}
 
 			@Override
@@ -128,7 +128,7 @@ class FieldCompletion extends AbstractFMLSourceCompletion implements MemberCompl
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(data);
+		return JavaIconFactory.get().getIcon(data);
 	}
 
 	@Override

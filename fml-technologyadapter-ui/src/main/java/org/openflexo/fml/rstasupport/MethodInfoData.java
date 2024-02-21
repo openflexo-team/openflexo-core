@@ -76,19 +76,19 @@ class MethodInfoData implements Data {
 		int flags = info.getAccessFlags();
 
 		if (Util.isDefault(flags)) {
-			key = IconFactory.METHOD_DEFAULT_ICON;
+			key = JavaIconFactory.METHOD_DEFAULT_ICON;
 		}
 		else if (Util.isPrivate(flags)) {
-			key = IconFactory.METHOD_PRIVATE_ICON;
+			key = JavaIconFactory.METHOD_PRIVATE_ICON;
 		}
 		else if (Util.isProtected(flags)) {
-			key = IconFactory.METHOD_PROTECTED_ICON;
+			key = JavaIconFactory.METHOD_PROTECTED_ICON;
 		}
 		else if (Util.isPublic(flags)) {
-			key = IconFactory.METHOD_PUBLIC_ICON;
+			key = JavaIconFactory.METHOD_PUBLIC_ICON;
 		}
 		else {
-			key = IconFactory.METHOD_DEFAULT_ICON;
+			key = JavaIconFactory.METHOD_DEFAULT_ICON;
 		}
 
 		return key;

@@ -87,7 +87,7 @@ class DocCommentCompletionProvider extends DefaultCompletionProvider {
 
 		@Override
 		public Icon getIcon() {
-			return IconFactory.get().getIcon(IconFactory.JAVADOC_ITEM_ICON);
+			return JavaIconFactory.get().getIcon(JavaIconFactory.JAVADOC_ITEM_ICON);
 		}
 
 		@Override
@@ -100,7 +100,7 @@ class DocCommentCompletionProvider extends DefaultCompletionProvider {
 	private static class JavadocTemplateCompletion extends FMLTemplateCompletion {
 
 		JavadocTemplateCompletion(CompletionProvider provider, String inputText, String definitionString, String template) {
-			super(provider, inputText, definitionString, template, IconFactory.get().getIcon(IconFactory.JAVADOC_ITEM_ICON));
+			super(provider, inputText, definitionString, template, JavaIconFactory.get().getIcon(JavaIconFactory.JAVADOC_ITEM_ICON));
 		}
 
 	}

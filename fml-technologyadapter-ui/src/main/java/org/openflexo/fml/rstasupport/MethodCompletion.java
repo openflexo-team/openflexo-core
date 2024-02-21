@@ -208,7 +208,7 @@ public class MethodCompletion extends FunctionCompletion implements MemberComple
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(data);
+		return JavaIconFactory.get().getIcon(data);
 	}
 
 	@Override

@@ -41,7 +41,7 @@ class PackageNameCompletion extends AbstractFMLSourceCompletion {
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(IconFactory.PACKAGE_ICON);
+		return JavaIconFactory.get().getIcon(JavaIconFactory.PACKAGE_ICON);
 	}
 
 

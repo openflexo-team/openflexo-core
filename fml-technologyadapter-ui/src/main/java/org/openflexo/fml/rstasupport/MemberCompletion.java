@@ -10,7 +10,7 @@
  */
 package org.openflexo.fml.rstasupport;
 
-import org.openflexo.fml.rstasupport.IconFactory.IconData;
+import org.openflexo.fml.rstasupport.JavaIconFactory.IconData;
 
 /**
  * Extra methods defined by a completion for a Java member (fields and methods).

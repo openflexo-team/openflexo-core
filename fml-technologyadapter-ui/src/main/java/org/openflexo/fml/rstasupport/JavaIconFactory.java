@@ -17,56 +17,56 @@ import java.util.Map;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-
-
 /**
  * Holds icons used by Java auto-completion.
  *
  * @author Robert Futrell
  * @version 1.0
  */
-public final class IconFactory {
+public final class JavaIconFactory {
 
-	public static final String SOURCE_FILE_ICON			= "sourceFileIcon";
-	public static final String PACKAGE_ICON				= "packageIcon";
-	public static final String IMPORT_ROOT_ICON			= "importRootIcon";
-	public static final String IMPORT_ICON				= "importIcon";
-	public static final String DEFAULT_CLASS_ICON		= "defaultClassIcon";
-	public static final String DEFAULT_INTERFACE_ICON	= "defaultInterfaceIcon";
-	public static final String CLASS_ICON				= "classIcon";
-	public static final String ENUM_ICON				= "enumIcon";
-	public static final String ENUM_PROTECTED_ICON		= "enumProtectedIcon";
-	public static final String ENUM_PRIVATE_ICON		= "enumPrivateIcon";
-	public static final String ENUM_DEFAULT_ICON		= "enumDefaultIcon";
-	public static final String INNER_CLASS_PUBLIC_ICON		= "innerClassPublicIcon";
-	public static final String INNER_CLASS_PROTECTED_ICON	= "innerClassProtectedIcon";
-	public static final String INNER_CLASS_PRIVATE_ICON	= "innerClassPrivateIcon";
-	public static final String INNER_CLASS_DEFAULT_ICON	= "innerClassDefaultIcon";
-	public static final String INTERFACE_ICON			= "interfaceIcon";
-	public static final String JAVADOC_ITEM_ICON		= "javadocItemIcon";
-	public static final String LOCAL_VARIABLE_ICON		= "localVariableIcon";
-	public static final String METHOD_PUBLIC_ICON		= "methodPublicIcon";
-	public static final String METHOD_PROTECTED_ICON	= "methodProtectedIcon";
-	public static final String METHOD_PRIVATE_ICON		= "methodPrivateIcon";
-	public static final String METHOD_DEFAULT_ICON		= "methodDefaultIcon";
-	public static final String TEMPLATE_ICON			= "templateIcon";
-	public static final String FIELD_PUBLIC_ICON		= "fieldPublicIcon";
-	public static final String FIELD_PROTECTED_ICON		= "fieldProtectedIcon";
-	public static final String FIELD_PRIVATE_ICON		= "fieldPrivateIcon";
-	public static final String FIELD_DEFAULT_ICON		= "fieldDefaultIcon";
+	// public static final ImageIconResource FML_BIG_ICON = new
+	// ImageIconResource(ResourceLocator.locateResource("Icons/FML/FML_64x64.png"));
 
-	public static final String CONSTRUCTOR_ICON			= "constructorIcon";
-	public static final String DEPRECATED_ICON			= "deprecatedIcon";
-	public static final String ABSTRACT_ICON			= "abstractIcon";
-	public static final String FINAL_ICON				= "finalIcon";
-	public static final String STATIC_ICON				= "staticIcon";
+	public static final String SOURCE_FILE_ICON = "sourceFileIcon";
+	public static final String PACKAGE_ICON = "packageIcon";
+	public static final String IMPORT_ROOT_ICON = "importRootIcon";
+	public static final String IMPORT_ICON = "importIcon";
+	public static final String DEFAULT_CLASS_ICON = "defaultClassIcon";
+	public static final String DEFAULT_INTERFACE_ICON = "defaultInterfaceIcon";
+	public static final String CLASS_ICON = "classIcon";
+	public static final String ENUM_ICON = "enumIcon";
+	public static final String ENUM_PROTECTED_ICON = "enumProtectedIcon";
+	public static final String ENUM_PRIVATE_ICON = "enumPrivateIcon";
+	public static final String ENUM_DEFAULT_ICON = "enumDefaultIcon";
+	public static final String INNER_CLASS_PUBLIC_ICON = "innerClassPublicIcon";
+	public static final String INNER_CLASS_PROTECTED_ICON = "innerClassProtectedIcon";
+	public static final String INNER_CLASS_PRIVATE_ICON = "innerClassPrivateIcon";
+	public static final String INNER_CLASS_DEFAULT_ICON = "innerClassDefaultIcon";
+	public static final String INTERFACE_ICON = "interfaceIcon";
+	public static final String JAVADOC_ITEM_ICON = "javadocItemIcon";
+	public static final String LOCAL_VARIABLE_ICON = "localVariableIcon";
+	public static final String METHOD_PUBLIC_ICON = "methodPublicIcon";
+	public static final String METHOD_PROTECTED_ICON = "methodProtectedIcon";
+	public static final String METHOD_PRIVATE_ICON = "methodPrivateIcon";
+	public static final String METHOD_DEFAULT_ICON = "methodDefaultIcon";
+	public static final String TEMPLATE_ICON = "templateIcon";
+	public static final String FIELD_PUBLIC_ICON = "fieldPublicIcon";
+	public static final String FIELD_PROTECTED_ICON = "fieldProtectedIcon";
+	public static final String FIELD_PRIVATE_ICON = "fieldPrivateIcon";
+	public static final String FIELD_DEFAULT_ICON = "fieldDefaultIcon";
+
+	public static final String CONSTRUCTOR_ICON = "constructorIcon";
+	public static final String DEPRECATED_ICON = "deprecatedIcon";
+	public static final String ABSTRACT_ICON = "abstractIcon";
+	public static final String FINAL_ICON = "finalIcon";
+	public static final String STATIC_ICON = "staticIcon";
 
 	private Map<String, Icon> iconMap;
 
-	private static final IconFactory INSTANCE = new IconFactory();
+	private static final JavaIconFactory INSTANCE = new JavaIconFactory();
 
-
-	private IconFactory() {
+	private JavaIconFactory() {
 
 		iconMap = new HashMap<>();
 		iconMap.put(SOURCE_FILE_ICON, loadIcon("jcu_obj.gif"));
@@ -105,21 +105,20 @@ public final class IconFactory {
 
 	}
 
-
 	/**
 	 * Returns the singleton instance of this class.
 	 *
 	 * @return The singleton instance.
 	 */
-	public static IconFactory get() {
+	public static JavaIconFactory get() {
 		return INSTANCE;
 	}
-
 
 	/**
 	 * Returns a known icon.
 	 *
-	 * @param key The icon to retrieve.
+	 * @param key
+	 *            The icon to retrieve.
 	 * @return The icon.
 	 * @see #getIcon(String, boolean)
 	 * @see #getIcon(IconData)
@@ -128,12 +127,13 @@ public final class IconFactory {
 		return getIcon(key, false);
 	}
 
-
 	/**
 	 * Returns a known icon, possibly marked as deprecated.
 	 *
-	 * @param key The icon to retrieve.
-	 * @param deprecated Whether to render it as deprecated.
+	 * @param key
+	 *            The icon to retrieve.
+	 * @param deprecated
+	 *            Whether to render it as deprecated.
 	 * @return The icon.
 	 * @see #getIcon(String)
 	 * @see #getIcon(IconData)
@@ -148,11 +148,11 @@ public final class IconFactory {
 		return icon;
 	}
 
-
 	/**
 	 * Creates and returns an icon based on the properties provided.
 	 *
-	 * @param data Properties about the icon to create.
+	 * @param data
+	 *            Properties about the icon to create.
 	 * @return The icon.
 	 * @see #getIcon(String)
 	 */
@@ -172,10 +172,9 @@ public final class IconFactory {
 		return icon;
 	}
 
-
 	private Icon loadIcon(String name) {
 		URL res = getClass().getResource("img/" + name);
-		if (res==null) {
+		if (res == null) {
 			// IllegalArgumentException is what would be thrown if res
 			// was null anyway, we're just giving the actual arg name to
 			// make the message more descriptive
@@ -184,16 +183,14 @@ public final class IconFactory {
 		return new ImageIcon(res);
 	}
 
-
 	/**
 	 * Information about an icon.
 	 */
 	public interface IconData {
 
 		/**
-		 * Returns the main icon to use when rendering this member's completion.
-		 * This icon will be decorated appropriately based on whether it is
-		 * abstract, deprecated, final, static, or any of the above.
+		 * Returns the main icon to use when rendering this member's completion. This icon will be decorated appropriately based on whether
+		 * it is abstract, deprecated, final, static, or any of the above.
 		 *
 		 * @return The icon to use.
 		 */
@@ -228,6 +225,5 @@ public final class IconFactory {
 		boolean isStatic();
 
 	}
-
 
 }

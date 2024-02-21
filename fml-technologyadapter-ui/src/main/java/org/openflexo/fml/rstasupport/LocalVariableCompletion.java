@@ -40,7 +40,7 @@ class LocalVariableCompletion extends AbstractFMLSourceCompletion {
 
 	@Override
 	public Icon getIcon() {
-		return IconFactory.get().getIcon(IconFactory.LOCAL_VARIABLE_ICON);
+		return JavaIconFactory.get().getIcon(JavaIconFactory.LOCAL_VARIABLE_ICON);
 	}
 
 	@Override

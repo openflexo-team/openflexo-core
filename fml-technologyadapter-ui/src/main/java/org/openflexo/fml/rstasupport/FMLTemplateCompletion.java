@@ -62,7 +62,7 @@ public class FMLTemplateCompletion extends TemplateCompletion implements FMLSour
 		if (icon != null) {
 			return icon;
 		}
-		return IconFactory.get().getIcon(IconFactory.TEMPLATE_ICON);
+		return JavaIconFactory.get().getIcon(JavaIconFactory.TEMPLATE_ICON);
 	}
 
 	@Override
