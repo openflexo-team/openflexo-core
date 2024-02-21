@@ -223,9 +223,9 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 					RawSourcePosition currentPosition = enclosingObjectNode.getRawSource().new RawSourcePosition(
 							((RSyntaxTextArea) textArea).getCaretLineNumber() + 1,
 							((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
-					//System.out.println("Current:" + currentPosition);
-					//System.out.println("lBrcPosition:" + lBrcPosition);
-					//System.out.println("rBrcPosition:" + rBrcPosition);
+					// System.out.println("Current:" + currentPosition);
+					// System.out.println("lBrcPosition:" + lBrcPosition);
+					// System.out.println("rBrcPosition:" + rBrcPosition);
 					if (lBrcPosition != null && rBrcPosition != null && currentPosition.isAfter(lBrcPosition)
 							&& currentPosition.isBefore(rBrcPosition)) {
 						// Special case where a FlexoBehaviour is targeted, but inside its control graph
@@ -829,6 +829,12 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 							break;
 					}
 				}
+				else {
+					// TODO: gerer mieux tout ca !!!
+					loadCompletionsForCaretPosition(cu, comp, alreadyEntered, set);
+				}
+
+				// loadCompletionsForCaretPosition(cu, comp, alreadyEntered, set);
 
 				loadImportCompletions(set, alreadyEntered, cu);
 
