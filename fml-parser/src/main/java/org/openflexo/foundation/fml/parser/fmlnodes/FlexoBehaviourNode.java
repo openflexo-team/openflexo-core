@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * @author sylvain
@@ -372,4 +373,17 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		super.addToChildren(child);
 	}*/
 
+	public RawSourcePosition getLBrcPosition() {
+		if (getLBrcFragment() != null) {
+			return getLBrcFragment().getStartPosition();
+		}
+		return null;
+	}
+
+	public RawSourcePosition getRBrcPosition() {
+		if (getRBrcFragment() != null) {
+			return getRBrcFragment().getStartPosition();
+		}
+		return null;
+	}
 }

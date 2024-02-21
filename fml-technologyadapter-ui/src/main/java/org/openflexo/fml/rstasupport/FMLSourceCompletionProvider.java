@@ -66,11 +66,14 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -156,7 +159,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 	 * 
 	 */
 	class CompletionContext {
-		final FMLPrettyPrintable enclosingObject;
+		final FMLObjectNode<?, FMLPrettyPrintable, ?> enclosingObjectNode;
 		final Bindable context;
 
 		/**
@@ -166,8 +169,10 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		 * @param textArea
 		 */
 		CompletionContext(FMLCompilationUnit cu, JTextComponent textArea) {
-			this.enclosingObject = getEnclosingFMLObject(cu, textArea);
-			if (enclosingObject != null) {
+			this.enclosingObjectNode = getEnclosingFMLObjectNode(cu, textArea);
+			if (enclosingObjectNode != null) {
+				FMLPrettyPrintable enclosingObject = enclosingObjectNode.getModelObject();
+				System.out.println("enclosingObject=" + enclosingObject);
 				if (enclosingObject instanceof Sequence) {
 					// System.out.println("Returning FML:\n" + (((Sequence) enclosingObject).getControlGraph1()).getFMLPrettyPrint());
 					context = ((Sequence) enclosingObject).getControlGraph1();
@@ -204,7 +209,27 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 						context = ((FlexoProperty<?>) owner).getFlexoConcept();
 					}
 					else if (owner instanceof FlexoBehaviour) {
-						context = ((FlexoBehaviour) owner).getFlexoBehaviour();
+						context = ((FlexoBehaviour) owner).getFlexoConcept();
+					}
+					else {
+						context = enclosingObject;
+					}
+				}
+				else if (enclosingObject instanceof FlexoBehaviour) {
+					// System.out.println("Bon, ben :\n" + enclosingObjectNode.debug());
+					FlexoBehaviourNode<?, ?> behaviourNode = (FlexoBehaviourNode<?, ?>) enclosingObjectNode;
+					RawSourcePosition lBrcPosition = behaviourNode.getLBrcPosition();
+					RawSourcePosition rBrcPosition = behaviourNode.getRBrcPosition();
+					RawSourcePosition currentPosition = enclosingObjectNode.getRawSource().new RawSourcePosition(
+							((RSyntaxTextArea) textArea).getCaretLineNumber() + 1,
+							((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
+					//System.out.println("Current:" + currentPosition);
+					//System.out.println("lBrcPosition:" + lBrcPosition);
+					//System.out.println("rBrcPosition:" + rBrcPosition);
+					if (lBrcPosition != null && rBrcPosition != null && currentPosition.isAfter(lBrcPosition)
+							&& currentPosition.isBefore(rBrcPosition)) {
+						// Special case where a FlexoBehaviour is targeted, but inside its control graph
+						context = ((FlexoBehaviour) enclosingObject).getControlGraph();
 					}
 					else {
 						context = enclosingObject;
@@ -217,6 +242,7 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 			else {
 				context = null;
 			}
+			System.out.println("context=" + context);
 		}
 
 		/**
@@ -309,14 +335,14 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		return new CompletionContext(cu, textArea);
 	}
 
-	private FMLPrettyPrintable getEnclosingFMLObject(FMLCompilationUnit cu, JTextComponent textArea) {
+	private FMLObjectNode<?, FMLPrettyPrintable, ?> getEnclosingFMLObjectNode(FMLCompilationUnit cu, JTextComponent textArea) {
 		if (textArea instanceof RSyntaxTextArea) {
 			FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) cu.getPrettyPrintDelegate();
 			if (cuNode != null) {
 				// System.out.println("At line=" + (((RSyntaxTextArea) textArea).getCaretLineNumber() + 1) + " row="
 				// + ((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
-				return cuNode.getFMLObjectAtLocation(((RSyntaxTextArea) textArea).getCaretLineNumber() + 1,
-						((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart());
+				return cuNode.getFMLObjectNodeAtLocation(((RSyntaxTextArea) textArea).getCaretLineNumber() + 1,
+						((RSyntaxTextArea) textArea).getCaretOffsetFromLineStart(), FMLPrettyPrintable.class);
 			}
 		}
 		return null;
