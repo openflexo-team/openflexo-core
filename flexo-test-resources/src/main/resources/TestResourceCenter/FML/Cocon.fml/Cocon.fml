@@ -83,7 +83,7 @@ public model Cocon {
 		ud.inv(new Middle());
 		ud.inv(new Bottom());
 		//ud.ctv(new Top());--> does not compile as expected
-		ud.ctv(new Middle());
+		//ud.ctv(new Middle());--> does not compile as expected
 		ud.ctv(new Bottom());
 		
 	}
