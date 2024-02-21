@@ -10,12 +10,13 @@
  */
 package org.openflexo.fml.rstasupport;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
+
+import org.openflexo.icon.ImageIconResource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Holds icons used by Java auto-completion.
@@ -173,14 +174,20 @@ public final class JavaIconFactory {
 	}
 
 	private Icon loadIcon(String name) {
-		URL res = getClass().getResource("img/" + name);
-		if (res == null) {
-			// IllegalArgumentException is what would be thrown if res
-			// was null anyway, we're just giving the actual arg name to
-			// make the message more descriptive
-			throw new IllegalArgumentException("icon not found: img/" + name);
-		}
-		return new ImageIcon(res);
+
+		return new ImageIconResource(ResourceLocator.locateResource("Icons/Java/" + name));
+
+		// public static final ImageIconResource FML_BIG_ICON = new
+		// ImageIconResource(ResourceLocator.locateResource("Icons/FML/FML_64x64.png"));
+
+		/*	URL res = getClass().getResource("img/" + name);
+			if (res == null) {
+				// IllegalArgumentException is what would be thrown if res
+				// was null anyway, we're just giving the actual arg name to
+				// make the message more descriptive
+				throw new IllegalArgumentException("icon not found: img/" + name);
+			}
+			return new ImageIcon(res);*/
 	}
 
 	/**
