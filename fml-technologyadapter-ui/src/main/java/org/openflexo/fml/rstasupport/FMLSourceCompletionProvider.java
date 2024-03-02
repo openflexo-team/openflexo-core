@@ -272,6 +272,9 @@ public class FMLSourceCompletionProvider extends DefaultCompletionProvider {
 		 * @return
 		 */
 		public BindingModel getBindingModel() {
+			if (context instanceof FMLControlGraph) {
+				return ((FMLControlGraph) context).getInferedBindingModel();
+			}
 			if (context != null) {
 				return context.getBindingModel();
 			}
