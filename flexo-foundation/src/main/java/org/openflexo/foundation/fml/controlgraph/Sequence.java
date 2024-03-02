@@ -49,6 +49,7 @@ import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
@@ -111,14 +112,14 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	public List<FMLControlGraph> getFlattenedSequence();
 
 	public static abstract class SequenceImpl extends FMLControlGraphImpl implements Sequence {
-	
+
 		@Override
 		public void setControlGraph1(FMLControlGraph aControlGraph) {
 			if (aControlGraph != null) {
 				aControlGraph.setOwnerContext(CONTROL_GRAPH1_KEY);
 			}
 			performSuperSetter(CONTROL_GRAPH1_KEY, aControlGraph);
-			
+
 			// Because BindingModel of control graph 2 relies on control graph 1, update base BindingModel of CG2
 			if (getControlGraph2() != null) {
 				getControlGraph2().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph2()));
@@ -309,7 +310,15 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				getControlGraph2().accept(visitor);
 			}
 		}
-		
+
+		@Override
+		public ControlGraphBindingModel<?> getInferedBindingModel() {
+			if (getControlGraph2() != null) {
+				return getControlGraph2().getInferedBindingModel();
+			}
+			return super.getInferedBindingModel();
+		}
+
 	}
 
 	@DefineValidationRule

@@ -137,7 +137,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	 * 
 	 * @return
 	 */
-	public BindingModel getInferedBindingModel();
+	public ControlGraphBindingModel<?> getInferedBindingModel();
 
 	public FMLControlGraphOwner getRootOwner();
 
