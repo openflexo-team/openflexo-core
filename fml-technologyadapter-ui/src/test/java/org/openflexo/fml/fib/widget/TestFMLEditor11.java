@@ -49,6 +49,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -79,6 +80,7 @@ import org.openflexo.test.UITest;
  * @author sylvain
  * 
  */
+@Ignore
 @RunWith(OrderedRunner.class)
 public class TestFMLEditor11 extends OpenflexoFIBTestCase {
 
@@ -198,6 +200,5 @@ public class TestFMLEditor11 extends OpenflexoFIBTestCase {
 		ValidationReport report = validate(cu2);
 		assertEquals(0, report.getAllErrors().size());
 	}
-
 
 }

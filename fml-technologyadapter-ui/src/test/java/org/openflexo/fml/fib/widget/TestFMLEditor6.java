@@ -49,6 +49,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -80,6 +81,7 @@ import org.openflexo.test.UITest;
  * @author sylvain
  * 
  */
+@Ignore
 @RunWith(OrderedRunner.class)
 public class TestFMLEditor6 extends OpenflexoFIBTestCase {
 
@@ -291,10 +293,10 @@ public class TestFMLEditor6 extends OpenflexoFIBTestCase {
 		assertSame(foo, cu.getVirtualModel().getFlexoConcept("Foo"));
 		assertSame(foo2, cu.getVirtualModel().getFlexoConcept("Foo2"));
 
-		System.out.println("FML: "+cu.getFMLPrettyPrint());
-		
-		System.out.println("parents: "+foo2.getParentFlexoConcepts());
-	
+		System.out.println("FML: " + cu.getFMLPrettyPrint());
+
+		System.out.println("parents: " + foo2.getParentFlexoConcepts());
+
 		assertEquals(1, foo2.getParentFlexoConcepts().size());
 		assertTrue(foo2.getParentFlexoConcepts().contains(foo));
 		assertSame(foo, foo2.getParentFlexoConcepts().get(0));

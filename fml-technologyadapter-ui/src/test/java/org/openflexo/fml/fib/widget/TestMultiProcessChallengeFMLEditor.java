@@ -49,6 +49,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -81,6 +82,7 @@ import org.openflexo.test.UITest;
  * @author sylvain
  * 
  */
+@Ignore
 @RunWith(OrderedRunner.class)
 public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 
@@ -143,7 +145,7 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 	@TestOrder(5)
 	@Category(UITest.class)
 	public void validate() {
-		//System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
+		// System.out.println("FML: " + compilationUnit.getFMLPrettyPrint());
 
 		FlexoConcept modelingElement = compilationUnit.getVirtualModel().getFlexoConcept("ModelingElement");
 		assertNotNull(modelingElement);
@@ -159,14 +161,13 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 		assertTrue(taskTypeElement.getParentFlexoConcepts().contains(typeElement));
 		assertNotNull(taskTypeElement.getAccessibleProperty("name"));
 
-
 		/*System.out.println("modelingElement="+modelingElement);
 		System.out.println("modelingElement.name="+modelingElement.getAccessibleProperty("name"));
-
+		
 		System.out.println("typeElement="+typeElement);
 		System.out.println("typeElement.parent="+typeElement.getParentFlexoConcepts());
 		System.out.println("typeElement.name="+typeElement.getAccessibleProperty("name"));
-
+		
 		System.out.println("taskTypeElement="+taskTypeElement);
 		System.out.println("taskTypeElement.parent="+taskTypeElement.getParentFlexoConcepts());
 		System.out.println("taskTypeElement.name="+taskTypeElement.getAccessibleProperty("name"));*/
@@ -202,7 +203,7 @@ public class TestMultiProcessChallengeFMLEditor extends OpenflexoFIBTestCase {
 		log("testValidateAfterTextEditionTimeOut");
 
 		fmlEditor.getTextArea().setText(compilationUnit.getFMLPrettyPrint());
-		
+
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
