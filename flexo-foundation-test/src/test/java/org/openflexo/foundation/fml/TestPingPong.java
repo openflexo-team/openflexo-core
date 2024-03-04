@@ -99,7 +99,7 @@ public class TestPingPong extends OpenflexoTestCase {
 	@TestOrder(3)
 	public void testPing() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
-		ping = pingPong.getVirtualModels().get(0);
+		ping = pingPong.getVirtualModelNamed("Ping");
 		assertEquals("Ping", ping.getName());
 
 		System.out.println("ping : Normalized: " + ping.getNormalizedFML());
@@ -114,7 +114,7 @@ public class TestPingPong extends OpenflexoTestCase {
 	@TestOrder(4)
 	public void testPong() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
-		pong = pingPong.getVirtualModels().get(1);
+		pong = pingPong.getVirtualModelNamed("Pong");
 		assertEquals("Pong", pong.getName());
 
 		System.out.println("pong : Normalized: " + pong.getNormalizedFML());
