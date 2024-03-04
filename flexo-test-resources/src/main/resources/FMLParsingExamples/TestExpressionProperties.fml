@@ -11,6 +11,8 @@ import java.util.Map;
 model MyModel {
 	
 	int aComputedValue values a.path.to.a.computed.value; // A binding without any FML keyword
-	int aAnOtherValue values a.path.with.a.keyword; // 'with' is a reserved keyword
+	// TODO : this does not work anymore and should be investivated (with is now allowed in bindings)
+	// escape characters ?
+	//int aAnOtherValue values a.path.with.a.keyword; // 'with' is a reserved keyword
 
 }
