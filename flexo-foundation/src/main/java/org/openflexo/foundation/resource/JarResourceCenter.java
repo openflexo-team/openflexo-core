@@ -180,7 +180,7 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		// JarResourceCenter rc = new JarResourceCenter(jarFile, rcService);
 		JarResourceCenter rc = instanciateNewJarResourceCenter(jarFile, rcService);
 		rc.setDefaultBaseURI(jarFile.getName());
-		rcService.addToResourceCenters(rc);
+		// rcService.addToResourceCenters(rc); // Too early to do it now > StackOverFlow !!!
 		rcService.storeDirectoryResourceCenterLocations();
 		return rc;
 	}
@@ -654,6 +654,7 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 			return true;
 		}
 
+		@Override
 		public InJarResourceImpl getDirectoryWithRelativePath(String relativePath) {
 			InJarResourceImpl serializationArtefact = getBaseArtefact();
 
