@@ -49,6 +49,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -86,6 +87,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @RunWith(OrderedRunner.class)
+@Ignore // CI/CD issue : job does not end on Jenkins / Investigate
 public class TestFMLEditor20 extends OpenflexoFIBTestCase {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
