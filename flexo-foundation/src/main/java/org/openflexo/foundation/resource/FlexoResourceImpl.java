@@ -751,7 +751,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public String getDisplayName() {
-		if (getIODelegate() != null) {
+		if (getIODelegate() != null && StringUtils.isNotEmpty(getIODelegate().getDisplayName())) {
 			return getIODelegate().getDisplayName();
 		}
 		return getName();
