@@ -81,6 +81,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
@@ -93,6 +94,7 @@ import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
+import org.openflexo.toolbox.StringUtils;
 
 import junit.framework.AssertionFailedError;
 
@@ -460,6 +462,52 @@ public abstract class OpenflexoTestCase {
 		// Print Maximum available memory
 		logger.info("Max Memory:" + runtime.maxMemory() / mb);
 
+	}
+
+	protected static void debugResources() {
+		Collection<? extends FlexoResource<?>> resourcesToDisplay = serviceManager.getResourceManager().getRegisteredResources();
+		logger.info("Registed resources: " + resourcesToDisplay.size());
+
+		int nameMaxLength = 0;
+		int typeMaxLength = 0;
+		int taMaxLength = 0;
+
+		for (FlexoResource<?> resource : resourcesToDisplay) {
+			String name = resource.getDisplayName();
+			String type = resource.getResourceDataClass().getSimpleName();
+			if (type.equals("FMLRTVirtualModelInstance")) {
+				type = "VirtualModelInstance";
+			}
+			String ta = "-";
+			if (resource instanceof TechnologyAdapterResource) {
+				ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
+			}
+			if (name.length() > nameMaxLength)
+				nameMaxLength = name.length();
+			if (type.length() > typeMaxLength)
+				typeMaxLength = type.length();
+			if (ta.length() > taMaxLength)
+				taMaxLength = ta.length();
+		}
+
+		for (FlexoResource<?> resource : serviceManager.getResourceManager().getRegisteredResources()) {
+			String name = resource.getDisplayName();
+			String type = resource.getResourceDataClass().getSimpleName();
+			if (type.equals("FMLRTVirtualModelInstance")) {
+				type = "VirtualModelInstance";
+			}
+			String ta = "-";
+			String uri = "[\"" + resource.getURI() + "\"]";
+			if (resource instanceof TechnologyAdapterResource) {
+				ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
+			}
+			String output = name + StringUtils.buildWhiteSpaceIndentation(nameMaxLength - name.length() + 1) + type
+					+ StringUtils.buildWhiteSpaceIndentation(typeMaxLength - type.length() + 1) + ta
+					+ StringUtils.buildWhiteSpaceIndentation(taMaxLength - ta.length() + 1)
+					+ (resource.isLoaded() ? "[LOADED]   " : "[UNLOADED] ") + uri;
+
+			logger.info(output);
+		}
 	}
 
 	/**
