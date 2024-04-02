@@ -44,6 +44,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -479,13 +480,13 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 	}
 
 	private void appendOntologyContents(IFlexoOntology<TA> o, IFlexoOntologyObject<TA> parent) {
-		List<IFlexoOntologyStructuralProperty<TA>> properties = new ArrayList<>();
-		List<IFlexoOntologyIndividual<TA>> individuals = new ArrayList<>();
+		List<IFlexoOntologyStructuralProperty<TA>> properties = new ArrayListWithoutDuplicates();
+		List<IFlexoOntologyIndividual<TA>> individuals = new ArrayListWithoutDuplicates();
 		Hashtable<IFlexoOntologyStructuralProperty<TA>, List<? extends IFlexoOntologyClass<TA>>> storedProperties = new Hashtable<>();
 		Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>> storedIndividuals = new Hashtable<>();
-		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new ArrayList<>();
-		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new ArrayList<>();
-		List<IFlexoOntologyClass<TA>> storageClasses = new ArrayList<>();
+		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new ArrayListWithoutDuplicates();
+		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new ArrayListWithoutDuplicates();
+		List<IFlexoOntologyClass<TA>> storageClasses = new ArrayListWithoutDuplicates();
 		properties = retrieveDisplayableProperties(o);
 		individuals = retrieveDisplayableIndividuals(o);
 
@@ -555,7 +556,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 				for (IFlexoOntologyClass<TA> preferredLocation : preferredLocations) {
 					List<IFlexoOntologyStructuralProperty<TA>> l = propertiesForStorageClasses.get(preferredLocation);
 					if (l == null) {
-						l = new ArrayList<>();
+						l = new ArrayListWithoutDuplicates();
 						propertiesForStorageClasses.put(preferredLocation, l);
 					}
 					l.add(p);
@@ -578,7 +579,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			roots.clear();
 		}
 		else {
-			roots = new ArrayList<>();
+			roots = new ArrayListWithoutDuplicates();
 		}
 		if (structure != null) {
 			structure.clear();
@@ -651,6 +652,26 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 		}
 	}
 
+	@SuppressWarnings("serial")
+	class ArrayListWithoutDuplicates<E> extends ArrayList<E> {
+
+		@Override
+		public boolean addAll(Collection<? extends E> collection) {
+			for (E c : collection) {
+				add(c);
+			}
+			return true;
+		}
+
+		@Override
+		public boolean add(E c) {
+			if (!contains(c)) {
+				return super.add(c);
+			}
+			return false;
+		}
+	}
+
 	private void addChildren(IFlexoOntologyObject<TA> parent, IFlexoOntologyObject<TA> child) {
 		if (structure == null) {
 			logger.warning("Unexpected null structure");
@@ -658,7 +679,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 		}
 		List<FlexoOntologyObjectImpl<TA>> v = structure.get(parent);
 		if (v == null) {
-			v = new ArrayList<>();
+			v = new ArrayListWithoutDuplicates();
 			structure.put((FlexoOntologyObjectImpl<TA>) parent, v);
 		}
 		if (!v.contains(child)) {
@@ -675,7 +696,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			roots.clear();
 		}
 		else {
-			roots = new ArrayList<>();
+			roots = new ArrayListWithoutDuplicates();
 		}
 		if (structure != null) {
 			structure.clear();
@@ -684,14 +705,14 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			structure = new Hashtable<>();
 		}
 
-		List<IFlexoOntologyStructuralProperty<TA>> properties = new ArrayList<>();
+		List<IFlexoOntologyStructuralProperty<TA>> properties = new ArrayListWithoutDuplicates();
 		Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>> storedProperties = new Hashtable<>();
-		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new ArrayList<>();
-		List<IFlexoOntologyClass<TA>> storageClasses = new ArrayList<>();
+		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new ArrayListWithoutDuplicates();
+		List<IFlexoOntologyClass<TA>> storageClasses = new ArrayListWithoutDuplicates();
 
-		List<IFlexoOntologyIndividual<TA>> individuals = new ArrayList<>();
+		List<IFlexoOntologyIndividual<TA>> individuals = new ArrayListWithoutDuplicates();
 		Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>> storedIndividuals = new Hashtable<>();
-		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new ArrayList<>();
+		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new ArrayListWithoutDuplicates();
 
 		if (getContext() == null) {
 			return;
@@ -748,7 +769,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 		}
 
 		if (getShowClasses()) {
-			List<IFlexoOntologyClass<TA>> classes = new ArrayList<>();
+			List<IFlexoOntologyClass<TA>> classes = new ArrayListWithoutDuplicates<IFlexoOntologyClass<TA>>();
 			if (strictMode) {
 				classes = retrieveDisplayableClasses(getContext());
 			}
@@ -756,6 +777,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 				for (IFlexoOntology<TA> o : OntologyUtils.getAllImportedOntologies(getContext())) {
 					classes.addAll(retrieveDisplayableClasses(o));
 				}
+				classes.addAll(getContext().getClasses());
 			}
 			if (getDisplayPropertiesInClasses() || getShowIndividuals()) {
 				classes.addAll(storageClasses);
@@ -791,7 +813,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 				for (IFlexoOntologyClass<TA> preferredLocation : preferredLocations) {
 					List<IFlexoOntologyStructuralProperty<TA>> l = propertiesForStorageClasses.get(preferredLocation);
 					if (l == null) {
-						l = new ArrayList<>();
+						l = new ArrayListWithoutDuplicates();
 						propertiesForStorageClasses.put(preferredLocation, l);
 					}
 					if (!l.contains(p)) {
@@ -822,7 +844,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 	 */
 	protected List<IFlexoOntologyClass<TA>> getPreferredStorageLocations(IFlexoOntologyStructuralProperty<TA> p,
 			IFlexoOntology<TA> searchedOntology) {
-		List<IFlexoOntologyClass<TA>> potentialStorageClasses = new ArrayList<>();
+		List<IFlexoOntologyClass<TA>> potentialStorageClasses = new ArrayListWithoutDuplicates();
 
 		// First we look if property has a defined domain
 		if (p.getDomain() instanceof IFlexoOntologyClass) {
@@ -861,7 +883,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 
 	protected List<? extends IFlexoOntologyClass<TA>> getFirstDisplayableParents(IFlexoOntologyClass<TA> c) {
 
-		List<IFlexoOntologyClass<TA>> returned = new ArrayList<>();
+		List<IFlexoOntologyClass<TA>> returned = new ArrayListWithoutDuplicates();
 		for (IFlexoOntologyClass<TA> superClass : c.getSuperClasses()) {
 			if (isDisplayable(superClass)) {
 				if (!returned.contains(superClass)) {
@@ -904,7 +926,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 		}
 		else {
 			List<IFlexoOntologyClass<TA>> listByExcludingRootClasses = new ArrayList<>(someClasses);
-			List<IFlexoOntologyClass<TA>> localRootClasses = new ArrayList<>();
+			List<IFlexoOntologyClass<TA>> localRootClasses = new ArrayListWithoutDuplicates();
 			for (IFlexoOntologyClass<TA> c : someClasses) {
 				if (!hasASuperClassDefinedInList(c, someClasses)) {
 					localRootClasses.add(c);
@@ -913,7 +935,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			}
 
 			for (IFlexoOntologyClass<TA> c : localRootClasses) {
-				List<IFlexoOntologyClass<TA>> potentialChildren = new ArrayList<>();
+				List<IFlexoOntologyClass<TA>> potentialChildren = new ArrayListWithoutDuplicates();
 				for (IFlexoOntologyClass<TA> c2 : listByExcludingRootClasses) {
 					if (c.isSuperConceptOf(c2)) {
 						potentialChildren.add(c2);
@@ -931,7 +953,9 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 		listByExcludingCurrentClass.remove(c);
 
 		if (parent == null) {
-			roots.add(c);
+			if (!roots.contains(c)) {
+				roots.add(c);
+			}
 		}
 		else {
 			addChildren(parent, c);
@@ -957,7 +981,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 
 	/* Unused
 	private List<IFlexoOntologyConcept<TA>> retrieveDisplayableObjects(IFlexoOntology<TA> ontology) {
-		ArrayList<IFlexoOntologyConcept<TA>> returned = new ArrayList<>();
+		ArrayList<IFlexoOntologyConcept<TA>> returned = new ArrayListWithoutDuplicates();
 		for (IFlexoOntologyClass<TA> c : ontology.getClasses()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
@@ -1001,10 +1025,10 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 		// System.out.println("appendParentClassesToStorageClasses with " + someClasses);
 
 		// First compute the list of all top-level classes
-		List<IFlexoOntologyClass<TA>> topLevelClasses = new ArrayList<>();
+		List<IFlexoOntologyClass<TA>> topLevelClasses = new ArrayListWithoutDuplicates();
 		for (IFlexoOntologyClass<TA> c : someClasses) {
 			boolean requireAddInTopClasses = true;
-			List<IFlexoOntologyClass<TA>> classesToRemove = new ArrayList<>();
+			List<IFlexoOntologyClass<TA>> classesToRemove = new ArrayListWithoutDuplicates();
 			for (IFlexoOntologyClass<TA> tpC : topLevelClasses) {
 				if (tpC.isSuperClassOf(c)) {
 					requireAddInTopClasses = false;
@@ -1021,7 +1045,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 			}
 		}
 
-		List<IFlexoOntologyClass<TA>> classesToAdd = new ArrayList<>();
+		List<IFlexoOntologyClass<TA>> classesToAdd = new ArrayListWithoutDuplicates();
 		if (someClasses.size() > 1) {
 			for (int i = 0; i < topLevelClasses.size(); i++) {
 				for (int j = i + 1; j < topLevelClasses.size(); j++) {
@@ -1051,7 +1075,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 	}
 
 	private List<IFlexoOntologyClass<TA>> retrieveDisplayableClasses(IFlexoOntology<TA> ontology) {
-		ArrayList<IFlexoOntologyClass<TA>> returned = new ArrayList<>();
+		ArrayList<IFlexoOntologyClass<TA>> returned = new ArrayListWithoutDuplicates<>();
 		for (IFlexoOntologyClass<TA> c : ontology.getClasses()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
@@ -1062,7 +1086,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 	}
 
 	private List<IFlexoOntologyIndividual<TA>> retrieveDisplayableIndividuals(IFlexoOntology<TA> ontology) {
-		ArrayList<IFlexoOntologyIndividual<TA>> returned = new ArrayList<>();
+		ArrayList<IFlexoOntologyIndividual<TA>> returned = new ArrayListWithoutDuplicates();
 		for (IFlexoOntologyIndividual<TA> c : ontology.getIndividuals()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
@@ -1072,7 +1096,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 	}
 
 	private List<IFlexoOntologyStructuralProperty<TA>> retrieveDisplayableProperties(IFlexoOntology<TA> ontology) {
-		ArrayList<IFlexoOntologyStructuralProperty<TA>> returned = new ArrayList<>();
+		ArrayList<IFlexoOntologyStructuralProperty<TA>> returned = new ArrayListWithoutDuplicates();
 
 		for (IFlexoOntologyStructuralProperty<TA> p : ontology.getObjectProperties()) {
 			if (isDisplayable(p)) {
