@@ -39,8 +39,11 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -72,6 +75,7 @@ import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -102,6 +106,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.StringUtils;
 
@@ -612,7 +617,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 			return repository.getRootFolder();
 		}
 	}
-	*/
+	 */
 
 	// Override when required
 	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
@@ -951,6 +956,45 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 
 	public <T extends TechnologySpecificType<TA>> T instantiateType(SpecificTypeInfo<TA> specificTypeInfo) {
 		return null;
+	}
+
+	public String getHTMLReferenceDocumentation(Class<? extends FMLObject> fmlObjectClass) {
+
+		Resource htmlResource = ResourceLocator
+				.locateResource("Documentation/" + getIdentifier() + "/HTML/" + fmlObjectClass.getSimpleName() + ".html");
+		System.out.println("Hop: " + htmlResource);
+		if (htmlResource != null && htmlResource.exists()) {
+			InputStream inputStream = null;
+			BufferedReader reader = null;
+			StringBuilder extractedText = null;
+			try {
+				inputStream = htmlResource.openInputStream();
+				// Create a StringBuilder to store the extracted text
+				extractedText = new StringBuilder();
+				// Create a BufferedReader to read the InputStream
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+				// Read each line from the InputStream and append it to the StringBuilder
+				String line;
+				while ((line = reader.readLine()) != null) {
+					extractedText.append(line).append("\n");
+				}
+			} catch (IOException e) {
+				logger.warning("Unexpected IOException " + e);
+			} finally {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					logger.warning("Unexpected IOException " + e);
+				}
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					logger.warning("Unexpected IOException " + e);
+				}
+			}
+			return extractedText.toString();
+		}
+		return FlexoLocalization.getMainLocalizer().localizedForKey("no_documentation");
 	}
 
 }

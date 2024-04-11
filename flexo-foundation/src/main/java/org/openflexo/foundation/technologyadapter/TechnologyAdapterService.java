@@ -274,6 +274,8 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 
 	public Class<? extends ModelSlot<?>> getModelSlotClass(Class<? extends FlexoRole<?>> roleClass);
 
+	public Class<? extends ModelSlot<?>> getModelSlotClassForEditionAction(Class<? extends EditionAction> eaClass);
+
 	public <MS extends ModelSlot<?>> Class<? extends FlexoRole<?>> getFlexoRole(Class<MS> modelSlotClass, String roleKeyword);
 
 	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificAction<?, ?>> getEditionAction(Class<MS> modelSlotClass,
@@ -287,4 +289,14 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificType<?>> getTechnologySpecificType(Class<MS> modelSlotClass,
 			String identifier);
 
+	/**
+	 * Return TechnologyAdapter in which supplied class was declared as FML primitive (ModelSlot, FlexoRole, FlexoBehaviour, EditionAction,
+	 * FetchRequest)
+	 * 
+	 * @param fmlObjectClass
+	 * @return
+	 */
+	public TechnologyAdapter<?> getDeclaringTechnologyAdapter(Class<? extends FMLObject> fmlObjectClass);
+
+	public String getHTMLReferenceDocumentation(Class<? extends FMLObject> fmlObjectClass);
 }

@@ -889,6 +889,21 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
+	public Class<? extends ModelSlot<?>> getModelSlotClassForEditionAction(Class<? extends EditionAction> eaClass) {
+		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				if (getAvailableAbstractFetchRequestActionTypes(modelSlotClass).contains(eaClass)) {
+					return modelSlotClass;
+				}
+				if (getAvailableEditionActionTypes(modelSlotClass).contains(eaClass)) {
+					return modelSlotClass;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public String getDisplayableStatus() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.getDisplayableStatus() + " with " + getTechnologyAdapters().size() + " technology adapters");
@@ -967,6 +982,68 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+	}
+
+	@Override
+	public TechnologyAdapter<?> getDeclaringTechnologyAdapter(Class<? extends FMLObject> fmlObjectClass) {
+
+		if (ModelSlot.class.isAssignableFrom(fmlObjectClass)) {
+			return getTechnologyAdapterForModelSlot((Class<? extends ModelSlot>) fmlObjectClass);
+		}
+
+		if (FlexoBehaviour.class.isAssignableFrom(fmlObjectClass)) {
+			return getTechnologyAdapterForBehaviourType((Class<? extends FlexoBehaviour>) fmlObjectClass);
+		}
+
+		if (FlexoRole.class.isAssignableFrom(fmlObjectClass)) {
+			Class<? extends ModelSlot> modelSlotClass = getModelSlotClass((Class<? extends FlexoRole<?>>) fmlObjectClass);
+			return getTechnologyAdapterForModelSlot(modelSlotClass);
+		}
+
+		if (EditionAction.class.isAssignableFrom(fmlObjectClass)) {
+			Class<? extends ModelSlot> modelSlotClass = getModelSlotClassForEditionAction((Class<? extends EditionAction>) fmlObjectClass);
+			return getTechnologyAdapterForModelSlot(modelSlotClass);
+		}
+
+		logger.warning("Unexpected type: " + fmlObjectClass);
+
+		return null;
+	}
+
+	private Map<Class<? extends FMLObject>, String> htmlReferenceDocumentation = new HashMap<>();
+
+	private String buildHTMLReferenceDocumentation(Class<? extends FMLObject> fmlObjectClass) {
+
+		TechnologyAdapter<?> ta = getDeclaringTechnologyAdapter(fmlObjectClass);
+		System.out.println("pour=" + fmlObjectClass + " ta=" + ta);
+
+		/*if (ModelSlot.class.isAssignableFrom(fmlObjectClass)) {
+			TechnologyAdapter<?> ta = getTechnologyAdapterForModelSlot((Class<? extends ModelSlot>) fmlObjectClass);
+			System.out.println("pour=" + fmlObjectClass + " ta=" + ta);
+		}*/
+
+		/*if (TechnologyObject.class.isAssignableFrom(fmlObjectClass)) {
+			System.out.println("Pour " + fmlObjectClass);
+			Type typeArgument = TypeUtils.getTypeArgument(fmlObjectClass, TechnologyObject.class, 0);
+			System.out.println("Pour " + fmlObjectClass + " ta=" + typeArgument);
+			if (TechnologyAdapter.class.isAssignableFrom(TypeUtils.getBaseClass(typeArgument))) {
+				Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) typeArgument;
+				System.out.println("taClass=" + taClass);
+			}
+		}*/
+
+		return ta.getHTMLReferenceDocumentation(fmlObjectClass);
+	}
+
+	@Override
+	public String getHTMLReferenceDocumentation(Class<? extends FMLObject> fmlObjectClass) {
+
+		String returned = htmlReferenceDocumentation.get(fmlObjectClass);
+		if (returned == null) {
+			returned = buildHTMLReferenceDocumentation(fmlObjectClass);
+			htmlReferenceDocumentation.put(fmlObjectClass, returned);
+		}
+		return returned;
 	}
 
 }
