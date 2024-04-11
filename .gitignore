@@ -14,4 +14,4 @@
 /.gradle/
 /infer-out/
 .metadata
-
+.java-version

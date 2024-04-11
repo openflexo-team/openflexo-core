@@ -43,15 +43,12 @@ import java.util.Random;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 public class ErrorTask extends FlexoTask {
 
 	public ErrorTask(String name) {
 		super("ERROR_TASK", name);
 	}
 
-	@SuppressWarnings(value = "RANGE_ARRAY_INDEX", justification = "The exception is intensional for test purpose")
 	@Override
 	public void performTask() {
 
