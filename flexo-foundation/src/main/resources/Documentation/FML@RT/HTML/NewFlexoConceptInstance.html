@@ -1,0 +1,38 @@
+<h2><img src="https://openflexo.org/openflexo-core/images/NewFlexoConceptInstance_BIG.png" alt="NewFlexoConceptInstance"/>&nbsp;NewInstance</h2>
+
+This edition primitive allows to dynamically instantiate a FlexoConceptInstance
+
+<br><br>
+<b>Usage:</b>
+
+<code>
+<pre>
+[UndefinedFlexoConceptInstanceType(null) &lt;value&gt; =]
+FML@RT::NewInstance(conceptType=&lt;conceptType_path&gt;[,options])
+</pre>
+</code>
+
+<ul>
+<li> &lt;conceptType_path&gt; addresses a <code>FlexoConcept</code></li>
+</ul>
+
+<b>Configuration:</b>
+<ul>
+<li> &lt;conceptType_path&gt; : <code>FlexoConcept</code> (required) - concept type to be instantiated</li>
+<li> &lt;args_path&gt; : <code>List</code> (optional) - list of arguments</li>
+<li> &lt;container_path&gt; : <code>FlexoConceptInstance</code> (optional) - container for newly created concept instance</li>
+</ul>
+<b>Examples:</b>
+<br>
+<code>
+<pre>
+myInstance = NewInstance(conceptType=aConceptType,container=object,arg0=anArgument);
+</pre>
+</code>
+Instantiate a new instance of concept referenced by ’aConceptType’ with supplied container and arguments, and assign this new instance to ‘myInstance’
+<br>
+<br>
+
+<b>Reference documentation:</b> <a href="https://openflexo.org/openflexo-core/docs/flexo-foundation/NewFlexoConceptInstance">NewFlexoConceptInstance</a><br>
+
+
