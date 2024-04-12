@@ -877,30 +877,45 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
-	public Class<? extends ModelSlot<?>> getModelSlotClass(Class<? extends FlexoRole<?>> roleClass) {
+	public List<Class<? extends ModelSlot<?>>> getModelSlotClassesForFlexoRole(Class<? extends FlexoRole<?>> roleClass) {
+		List<Class<? extends ModelSlot<?>>> returned = new ArrayList<>();
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 				if (getAvailableFlexoRoleTypes(modelSlotClass).contains(roleClass)) {
-					return modelSlotClass;
+					returned.add(modelSlotClass);
 				}
 			}
 		}
-		return null;
+		return returned;
 	}
 
 	@Override
-	public Class<? extends ModelSlot<?>> getModelSlotClassForEditionAction(Class<? extends EditionAction> eaClass) {
+	public List<Class<? extends ModelSlot<?>>> getModelSlotClassesForFlexoBehaviour(Class<? extends FlexoBehaviour> fbClass) {
+		List<Class<? extends ModelSlot<?>>> returned = new ArrayList<>();
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
-				if (getAvailableAbstractFetchRequestActionTypes(modelSlotClass).contains(eaClass)) {
-					return modelSlotClass;
-				}
-				if (getAvailableEditionActionTypes(modelSlotClass).contains(eaClass)) {
-					return modelSlotClass;
+				if (getAvailableFlexoBehaviourTypes(modelSlotClass).contains(fbClass)) {
+					returned.add(modelSlotClass);
 				}
 			}
 		}
-		return null;
+		return returned;
+	}
+
+	@Override
+	public List<Class<? extends ModelSlot<?>>> getModelSlotClassesForEditionAction(Class<? extends EditionAction> eaClass) {
+		List<Class<? extends ModelSlot<?>>> returned = new ArrayList<>();
+		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				if (getAvailableAbstractFetchRequestActionTypes(modelSlotClass).contains(eaClass)) {
+					returned.add(modelSlotClass);
+				}
+				if (getAvailableEditionActionTypes(modelSlotClass).contains(eaClass)) {
+					returned.add(modelSlotClass);
+				}
+			}
+		}
+		return returned;
 	}
 
 	@Override
@@ -996,13 +1011,20 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 
 		if (FlexoRole.class.isAssignableFrom(fmlObjectClass)) {
-			Class<? extends ModelSlot> modelSlotClass = getModelSlotClass((Class<? extends FlexoRole<?>>) fmlObjectClass);
-			return getTechnologyAdapterForModelSlot(modelSlotClass);
+			List<Class<? extends ModelSlot<?>>> msClasses = getModelSlotClassesForFlexoRole((Class<? extends FlexoRole<?>>) fmlObjectClass);
+			if (msClasses.size() > 0) {
+				return getTechnologyAdapterForModelSlot(msClasses.get(0));
+			}
+			return null;
 		}
 
 		if (EditionAction.class.isAssignableFrom(fmlObjectClass)) {
-			Class<? extends ModelSlot> modelSlotClass = getModelSlotClassForEditionAction((Class<? extends EditionAction>) fmlObjectClass);
-			return getTechnologyAdapterForModelSlot(modelSlotClass);
+			List<Class<? extends ModelSlot<?>>> msClasses = getModelSlotClassesForEditionAction(
+					(Class<? extends EditionAction>) fmlObjectClass);
+			if (msClasses.size() > 0) {
+				return getTechnologyAdapterForModelSlot(msClasses.get(0));
+			}
+			return null;
 		}
 
 		logger.warning("Unexpected type: " + fmlObjectClass);
