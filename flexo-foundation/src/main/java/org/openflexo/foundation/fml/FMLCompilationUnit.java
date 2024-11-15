@@ -736,9 +736,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 					FlexoResource resource = getServiceManager().getResourceManager().getResource(resourceURI);
 					if (resource instanceof CompilationUnitResource && resource.isLoaded()) {
 						FMLCompilationUnit importedCompilationUnit = ((CompilationUnitResource) resource).getCompilationUnit();
-						FlexoConcept returned = importedCompilationUnit.getFlexoConcept(flexoConceptNameOrURI);
-						if (returned != null) {
-							return returned;
+						if (importedCompilationUnit != this) {
+							FlexoConcept returned = importedCompilationUnit.getFlexoConcept(flexoConceptNameOrURI);
+							if (returned != null) {
+								return returned;
+							}
 						}
 					}
 				} catch (TypeMismatchException e) {
