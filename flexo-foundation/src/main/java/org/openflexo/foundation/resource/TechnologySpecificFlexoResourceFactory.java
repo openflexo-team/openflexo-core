@@ -123,4 +123,16 @@ public abstract class TechnologySpecificFlexoResourceFactory<R extends Technolog
 		return returned;
 	}
 
+	@Override
+	public <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+		// Un-register the resource from the global repository of technology adapter
+		if (resourceCenter != null) {
+			TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
+			unregisterResourceInResourceRepository(resource,
+					technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+			technologyContextManager.unregisterResource(resource);
+		}
+		return super.unregisterResource(resource, resourceCenter);
+	}
+
 }

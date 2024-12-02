@@ -478,6 +478,16 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 * @param newResourceCenter
 	 */
 	public void resourceCenterRemoved(FlexoResourceCenter<?> removedResourceCenter) {
+
+		System.out.println("Unregistering " + removedResourceCenter + " for " + this);
+
+		for (ResourceRepository<?, ?> resourceRepository : removedResourceCenter.getRegistedRepositories(this, false)) {
+			//System.out.println(" > " + resourceRepository);
+			resourceRepository.unregisterAllResources();
+		}
+
+		getGlobalRepository(removedResourceCenter).unregisterAllResources();
+
 		setChanged();
 		notifyObservers(new DataModification<>(removedResourceCenter, null));
 		resourceCenterHasBeenRemoved(removedResourceCenter);

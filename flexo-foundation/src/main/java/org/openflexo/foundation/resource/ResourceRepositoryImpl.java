@@ -212,6 +212,7 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	 * @param serializationArtefact
 	 * @return
 	 */
+	@Override
 	public R getResource(I serializationArtefact) {
 
 		// TODO: perf issue ?
@@ -245,7 +246,6 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 			parentFolder.removeFromResources(flexoResource);
 		}
 		resources.remove(flexoResource.getURI());
-
 	}
 
 	/* (non-Javadoc)
@@ -348,6 +348,17 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	@Override
 	public boolean containsResource(R resource) {
 		return getAllResources().contains(resource);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openflexo.foundation.resource.ResourceRepository#unregisterAllResources()
+	 */
+	@Override
+	public void unregisterAllResources() {
+		for (R r : new ArrayList<R>(getAllResources())) {
+			System.out.println(" >>> hop on desenregistre " + r);
+			unregisterResource(r);
+		}
 	}
 
 	/* (non-Javadoc)

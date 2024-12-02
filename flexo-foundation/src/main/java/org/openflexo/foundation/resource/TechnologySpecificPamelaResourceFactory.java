@@ -114,6 +114,18 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	}
 
 	@Override
+	public <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+		// Un-register the resource from the global repository of technology adapter
+		if (resourceCenter != null) {
+			TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
+			unregisterResourceInResourceRepository(resource,
+					technologyContextManager.getTechnologyAdapter().getGlobalRepository(resourceCenter));
+			technologyContextManager.unregisterResource(resource);
+		}
+		return super.unregisterResource(resource, resourceCenter);
+	}
+
+	@Override
 	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
 			throws ModelDefinitionException, IOException {
 		R returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);

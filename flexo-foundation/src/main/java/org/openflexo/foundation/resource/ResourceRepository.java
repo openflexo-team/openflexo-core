@@ -170,6 +170,11 @@ public interface ResourceRepository<R extends FlexoResource<?>, I> {
 	boolean containsResource(R resource);
 
 	/**
+	 * Un-register all resources contained in this repository
+	 */
+	void unregisterAllResources();
+
+	/**
 	 * Return the repository folder where the resource is registered
 	 * 
 	 * @param resource

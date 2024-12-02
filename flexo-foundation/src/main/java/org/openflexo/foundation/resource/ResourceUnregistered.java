@@ -51,6 +51,10 @@ public class ResourceUnregistered<RD extends ResourceData<RD>> extends DataModif
 		this.folder = folder;
 	}
 
+	public FlexoResource<RD> getUnregisteredResource() {
+		return super.newValue();
+	}
+
 	public RepositoryFolder<?, ?> getFolder() {
 		return folder;
 	}
