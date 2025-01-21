@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
@@ -49,6 +48,7 @@ import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.JavaActorReference;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
+import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -58,9 +58,6 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.validation.ValidationError;
-import org.openflexo.pamela.validation.ValidationIssue;
-import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * A java property which type is any type of Java language
@@ -180,18 +177,14 @@ public interface JavaRole<T> extends BasicProperty<T> {
 	}
 
 	@DefineValidationRule
-	public static class TypeMustBeResolved extends ValidationRule<TypeMustBeResolved, JavaRole> {
-		public TypeMustBeResolved() {
-			super(JavaRole.class, "assigned_type_must_be_resolved");
+	public static class JavaRoleTypeMustBeResolved extends TypeMustBeResolved<JavaRole> {
+		public JavaRoleTypeMustBeResolved() {
+			super("assigned_type_must_be_resolved", JavaRole.class);
 		}
 
 		@Override
-		public ValidationIssue<TypeMustBeResolved, JavaRole> applyValidation(JavaRole role) {
-
-			if (role.getType() instanceof UnresolvedType) {
-				return new ValidationError<>(this, role, "unresolved_type_($validable.type)");
-			}
-			return null;
+		public Type getType(JavaRole role) {
+			return role.getType();
 		}
 
 	}

@@ -57,12 +57,12 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour.FlexoBehaviourImpl;
 import org.openflexo.foundation.fml.md.ListMetaData;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -772,27 +772,32 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	}
 
 	@DefineValidationRule
-	public static class TypeMustBeValid extends ValidationRule<TypeMustBeValid, FlexoBehaviourParameter> {
+	public static class ArgumentTypeMustBeResolved extends TypeMustBeResolved<FlexoBehaviourParameter> {
+		public ArgumentTypeMustBeResolved() {
+			super("assigned_type_must_be_resolved", FlexoBehaviourParameter.class);
+		}
 
-		public TypeMustBeValid() {
+		@Override
+		public Type getType(FlexoBehaviourParameter role) {
+			return role.getType();
+		}
+	}
+
+	@DefineValidationRule
+	public static class ArgumentTypeMustBeValid extends ValidationRule<ArgumentTypeMustBeValid, FlexoBehaviourParameter> {
+
+		public ArgumentTypeMustBeValid() {
 			super(FlexoBehaviourParameter.class, "argument_type_must_be_valid");
 		}
 
 		@Override
-		public ValidationIssue<TypeMustBeValid, FlexoBehaviourParameter> applyValidation(FlexoBehaviourParameter behaviourArgument) {
+		public ValidationIssue<ArgumentTypeMustBeValid, FlexoBehaviourParameter> applyValidation(
+				FlexoBehaviourParameter behaviourArgument) {
 			if (behaviourArgument.getType() == null) {
 				return new ValidationError<>(this, behaviourArgument, "argument_type_must_be_declared");
 			}
 			if (TypeUtils.isVoid(behaviourArgument.getType())) {
 				return new ValidationError<>(this, behaviourArgument, "argument_type_cannot_be_void");
-			}
-			if (behaviourArgument.getType() instanceof UnresolvedType) {
-				return new ValidationError<>(this, behaviourArgument, "unresolved_type_($validable.type)");
-			}
-			if (behaviourArgument.getType() instanceof ConnieType) {
-				if (!((ConnieType) behaviourArgument.getType()).isResolved()) {
-					return new ValidationError<>(this, behaviourArgument, "cannot_resolve_type_($validable.type)");
-				}
 			}
 			return null;
 		}

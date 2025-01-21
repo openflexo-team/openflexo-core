@@ -43,12 +43,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -229,6 +229,19 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 	}
 
 	@DefineValidationRule
+	public static class DeclaredTypeMustBeResolved extends TypeMustBeResolved<DeclarationAction> {
+		public DeclaredTypeMustBeResolved() {
+			super("declared_type_must_be_resolved", DeclarationAction.class);
+		}
+
+		@Override
+		public Type getType(DeclarationAction declaration) {
+			return declaration.getDeclaredType();
+		}
+
+	}
+
+	@DefineValidationRule
 	public static class TypeMustBeValid extends ValidationRule<TypeMustBeValid, DeclarationAction<?>> {
 
 		public TypeMustBeValid() {
@@ -242,14 +255,6 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			}
 			if (TypeUtils.isVoid(declaration.getDeclaredType())) {
 				return new ValidationError<>(this, declaration, "declared_type_cannot_be_void");
-			}
-			if (declaration.getDeclaredType() instanceof UnresolvedType) {
-				return new ValidationError<>(this, declaration, "unresolved_type_($validable.type)");
-			}
-			if (declaration.getDeclaredType() instanceof ConnieType) {
-				if (!((ConnieType) declaration.getDeclaredType()).isResolved()) {
-					return new ValidationError<>(this, declaration, "cannot_resolve_type_($validable.type)");
-				}
 			}
 			return null;
 		}

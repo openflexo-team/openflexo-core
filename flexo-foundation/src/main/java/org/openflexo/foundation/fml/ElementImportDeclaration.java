@@ -55,6 +55,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.validation.BindingMustBeValid;
+import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
@@ -473,6 +474,19 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				return new ValidationError<>(this, importDeclaration, "import_declaration_must_reference_a_valid_object");
 			}
 			return null;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeMustBeResolved extends TypeMustBeResolved<ElementImportDeclaration> {
+		public DeclaredTypeMustBeResolved() {
+			super("declared_type_must_be_resolved", ElementImportDeclaration.class);
+		}
+
+		@Override
+		public Type getType(ElementImportDeclaration object) {
+			return object.getDeclaredType();
 		}
 
 	}

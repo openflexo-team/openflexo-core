@@ -227,7 +227,7 @@ public interface EventListener extends AbstractActionScheme {
 		public String getDisplayRepresentation() {
 			return "listen " + TypeUtils.simpleRepresentation(getEventType()) + " from " + getListenedVirtualModelInstance();
 		}
-		
+
 		@Override
 		public void revalidateBindings() {
 			super.revalidateBindings();
@@ -237,13 +237,13 @@ public interface EventListener extends AbstractActionScheme {
 	}
 
 	@DefineValidationRule
-	public static class TypeMustBeResolved extends ValidationRule<TypeMustBeResolved, EventListener> {
-		public TypeMustBeResolved() {
+	public static class EventTypeMustBeResolved extends ValidationRule<EventTypeMustBeResolved, EventListener> {
+		public EventTypeMustBeResolved() {
 			super(EventListener.class, "event_type_must_be_resolved");
 		}
 
 		@Override
-		public ValidationIssue<TypeMustBeResolved, EventListener> applyValidation(EventListener el) {
+		public ValidationIssue<EventTypeMustBeResolved, EventListener> applyValidation(EventListener el) {
 
 			if (el.getEventType() == null) {
 				return new ValidationError<>(this, el, "unresolved_type" /* "unresolved_type_($validable.type)"*/);
