@@ -571,9 +571,11 @@ Productions
    import_decl =
        {java_import} kw_import [identifier]:composite_tident semi
      | {named_java_import} kw_import [identifier]:composite_tident kw_as [name]:identifier semi
-     | {uri_import} kw_import [object]:reference_by_uri semi
-     | {named_uri_import} kw_import [object]:reference_by_uri kw_as [name]:identifier semi
+     | {uri_import} kw_import [object]:reference_by_uri import_type? semi
+     | {named_uri_import} kw_import [object]:reference_by_uri kw_as [name]:identifier import_type? semi
      ;
+
+   import_type = colon [type]:reference_type;
 
    // --------------------------------------------------------------------------------------
    // Type declaration

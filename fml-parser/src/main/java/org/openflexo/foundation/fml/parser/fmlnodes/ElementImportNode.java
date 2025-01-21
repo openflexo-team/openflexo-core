@@ -38,17 +38,22 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.URIExpressionFactory;
+import org.openflexo.foundation.fml.parser.node.AImportType;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AObjectInResourceReferenceByUri;
 import org.openflexo.foundation.fml.parser.node.AResourceReferenceByUri;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.PImportDecl;
+import org.openflexo.foundation.fml.parser.node.PImportType;
 import org.openflexo.foundation.fml.parser.node.PReferenceByUri;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.toolbox.StringUtils;
@@ -83,17 +88,23 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 	public ElementImportDeclaration buildModelObjectFromAST(PImportDecl astNode) {
 		ElementImportDeclaration returned = getFactory().newElementImportDeclaration();
 		PReferenceByUri ref = null;
+		AImportType importType = null;
 		if (astNode instanceof AUriImportImportDecl) {
 			ref = ((AUriImportImportDecl) astNode).getObject();
+			importType = (AImportType) ((AUriImportImportDecl) astNode).getImportType();
 		}
 		if (astNode instanceof ANamedUriImportImportDecl) {
 			ref = ((ANamedUriImportImportDecl) astNode).getObject();
 			returned.setAbbrev(getText(((ANamedUriImportImportDecl) astNode).getName()));
+			importType = (AImportType) ((ANamedUriImportImportDecl) astNode).getImportType();
+		}
+		if (importType != null) {
+			returned.setDeclaredType(TypeFactory.makeType(importType.getType(), getSemanticsAnalyzer().getTypingSpace()));
 		}
 		if (ref instanceof AObjectInResourceReferenceByUri) {
 			DataBinding<String> resourceReference = URIExpressionFactory.makeDataBinding(
-					((AObjectInResourceReferenceByUri) ref).getResource(), returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(),
-					this);
+					((AObjectInResourceReferenceByUri) ref).getResource(), returned, BindingDefinitionType.GET, Object.class,
+					getSemanticsAnalyzer(), this);
 			returned.setResourceReference(resourceReference);
 			DataBinding<String> objectReference = URIExpressionFactory.makeDataBinding(((AObjectInResourceReferenceByUri) ref).getObject(),
 					returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
@@ -119,6 +130,8 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 		append(staticContents("]"), getRBktFragment());
 		when(() -> isNamedImport()).thenAppend(staticContents(SPACE, "as", SPACE), getAsFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getAbbrev()), getAbbrevFragment());
+		when(() -> hasExplicitType()).thenAppend(staticContents("", ":", ""), getTypeColonFragment())
+				.thenAppend(dynamicContents(() -> serializeType(getTypeToSerialize())), getTypeFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 
@@ -132,8 +145,28 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 		return false;
 	}
 
+	private boolean hasExplicitType() {
+		if (getImportType() != null) {
+			return true;
+		}
+		if (getModelObject() != null && (getModelObject().getDeclaredType() != null || getModelObject().getReferencedObject() != null)) {
+			return true;
+		}
+		return false;
+	}
+
+	private Type getTypeToSerialize() {
+		if (getModelObject() != null) {
+			if (getModelObject().getDeclaredType() != null) {
+				return getModelObject().getDeclaredType();
+			}
+			return getModelObject().getAnalyzedType();
+		}
+		return null;
+	}
+
 	private boolean isComputingObjectReference = false;
-	
+
 	private boolean isObjectReference() {
 		if (getReference() instanceof AObjectInResourceReferenceByUri) {
 			return true;
@@ -167,6 +200,16 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 		}
 		if (getASTNode() instanceof ANamedUriImportImportDecl) {
 			return ((ANamedUriImportImportDecl) getASTNode()).getObject();
+		}
+		return null;
+	}
+
+	private PImportType getImportType() {
+		if (getASTNode() instanceof AUriImportImportDecl) {
+			return ((AUriImportImportDecl) getASTNode()).getImportType();
+		}
+		if (getASTNode() instanceof ANamedUriImportImportDecl) {
+			return ((ANamedUriImportImportDecl) getASTNode()).getImportType();
 		}
 		return null;
 	}
@@ -235,6 +278,20 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 	private RawSourceFragment getAbbrevFragment() {
 		if (getASTNode() instanceof ANamedUriImportImportDecl) {
 			return getFragment(((ANamedUriImportImportDecl) getASTNode()).getName());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getTypeColonFragment() {
+		if (getImportType() instanceof AImportType) {
+			return getFragment(((AImportType) getImportType()).getColon());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getTypeFragment() {
+		if (getImportType() instanceof AImportType) {
+			return getFragment(((AImportType) getImportType()).getType());
 		}
 		return null;
 	}

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +49,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -88,6 +90,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	public static final String OBJECT_REFERENCE_KEY = "objectReference";
 	@PropertyIdentifier(type = String.class)
 	public static final String ABBREV_KEY = "abbrev";
+	@PropertyIdentifier(type = Type.class)
+	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = RESOURCE_REFERENCE_KEY)
 	@XMLAttribute
@@ -117,6 +121,13 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	@Setter(ABBREV_KEY)
 	public void setAbbrev(String abbrev);
 
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Type getDeclaredType();
+
+	@Setter(DECLARED_TYPE_KEY)
+	public void setDeclaredType(Type type);
+
 	/**
 	 * Retrieve and return object referenced by this import
 	 * 
@@ -137,6 +148,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	public void clearReferencedObject();
 
 	public boolean isReferencedObjectLoaded();
+
+	public Type getAnalyzedType();
 
 	public static abstract class ElementImportDeclarationImpl extends FMLObjectImpl implements ElementImportDeclaration {
 
@@ -397,6 +410,27 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 			getResourceReference().rebuild();
 		}
 
+		@Override
+		public Type getAnalyzedType() {
+			if (getReferencedObject() != null) {
+				return getReferencedObject().getImplementedInterface();
+			}
+			return Object.class;
+		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (compilationUnit != null) {
+				if (getDeclaredType() != null) {
+					compilationUnit.ensureJavaImportForType(getDeclaredType());
+				}
+				if (getAnalyzedType() != null) {
+					compilationUnit.ensureJavaImportForType(getAnalyzedType());
+				}
+			}
+		}
+
 	}
 
 	@DefineValidationRule
@@ -437,6 +471,55 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				return new ValidationError<>(this, importDeclaration, "import_declaration_must_reference_a_valid_object");
 			}
 			return null;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
+			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, ElementImportDeclaration> {
+
+		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
+			super(ElementImportDeclaration.class, "declared_types_and_analyzed_types_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, ElementImportDeclaration> applyValidation(
+				ElementImportDeclaration declaration) {
+
+			Type expected = declaration.getDeclaredType();
+			Type analyzed = declaration.getAnalyzedType();
+
+			if (expected != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+				return new NotCompatibleTypesIssue(this, declaration, expected, analyzed);
+			}
+
+			return null;
+		}
+
+		public static class NotCompatibleTypesIssue
+				extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, ElementImportDeclaration> {
+
+			private Type expectedType;
+			private Type analyzedType;
+
+			public NotCompatibleTypesIssue(DeclaredTypeShouldBeCompatibleWithAnalyzedType rule, ElementImportDeclaration anObject,
+					Type expected, Type analyzed) {
+				super(rule, anObject, "types_are_not_compatible_in_declaration_:_($expectedType)_is_not_assignable_from_($analyzedType)");
+				this.analyzedType = analyzed;
+				this.expectedType = expected;
+				System.out.println("analyzedType=" + analyzedType + " of " + analyzedType.getClass());
+				System.out.println("expectedType=" + expectedType + " of " + expectedType.getClass());
+			}
+
+			public String getExpectedType() {
+				return TypeUtils.simpleRepresentation(expectedType);
+			}
+
+			public String getAnalyzedType() {
+				return TypeUtils.simpleRepresentation(analyzedType);
+			}
+
 		}
 
 	}
