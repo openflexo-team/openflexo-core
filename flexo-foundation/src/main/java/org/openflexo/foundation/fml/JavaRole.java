@@ -182,7 +182,7 @@ public interface JavaRole<T> extends BasicProperty<T> {
 	@DefineValidationRule
 	public static class TypeMustBeResolved extends ValidationRule<TypeMustBeResolved, JavaRole> {
 		public TypeMustBeResolved() {
-			super(JavaRole.class, "assigned_type_must_be_compatible");
+			super(JavaRole.class, "assigned_type_must_be_resolved");
 		}
 
 		@Override
