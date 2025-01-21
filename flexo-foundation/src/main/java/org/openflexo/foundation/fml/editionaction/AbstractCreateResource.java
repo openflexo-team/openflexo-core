@@ -50,6 +50,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.ResourceData;

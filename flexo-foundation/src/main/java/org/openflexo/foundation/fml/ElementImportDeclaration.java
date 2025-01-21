@@ -53,6 +53,8 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
+import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;

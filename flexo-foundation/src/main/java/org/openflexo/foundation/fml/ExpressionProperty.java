@@ -45,6 +45,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;

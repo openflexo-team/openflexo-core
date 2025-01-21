@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.DefineValidationRule;

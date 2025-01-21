@@ -43,10 +43,10 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.FragmentContext;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.pamela.validation.InformationIssue;
 import org.openflexo.pamela.validation.ValidationError;

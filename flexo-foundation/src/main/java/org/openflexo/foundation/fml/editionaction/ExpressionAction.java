@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.binding.DataBindingPropertyImplementation;
 import org.openflexo.foundation.fml.binding.DataBindingPropertyImplementation.DataBindingProperty;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;

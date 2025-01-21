@@ -51,6 +51,7 @@ import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
+import org.openflexo.foundation.fml.validation.BindingIsRecommandedAndShouldBeValid;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;

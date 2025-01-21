@@ -60,6 +60,7 @@ import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlotObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;

@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoEnumType;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
+import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
