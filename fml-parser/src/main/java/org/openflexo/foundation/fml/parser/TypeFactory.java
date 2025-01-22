@@ -72,6 +72,7 @@ import org.openflexo.foundation.fml.parser.node.ADiamondTypeArguments;
 import org.openflexo.foundation.fml.parser.node.ADoublePrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AExtendsWildcardBounds;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
+import org.openflexo.foundation.fml.parser.node.AFmlType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIntPrimitiveType;
@@ -183,6 +184,9 @@ public class TypeFactory extends DepthFirstAdapter {
 				}
 				if (n instanceof AReferenceTypeArgument) {
 					return getType(((AReferenceTypeArgument) n).getReferenceType());
+				}
+				if (n instanceof AFmlType) {
+					return getType(((AFmlType) n).getTechnologySpecificType());
 				}
 				System.out.println("No expression registered for " + n + " of  " + n.getClass());
 				/*System.out.println("rootNode: " + rootNode + " of " + rootNode.getClass());

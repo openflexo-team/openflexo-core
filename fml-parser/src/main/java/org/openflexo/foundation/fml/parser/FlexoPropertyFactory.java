@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
@@ -82,6 +83,11 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 
 	FlexoPropertyNode<?, ?> makeBasicPropertyNode(AJavaInnerConceptDecl node) {
 		Type type = TypeFactory.makeType(node.getType(), getAnalyzer().getTypingSpace());
+
+		if (type == null) {
+			logger.warning("Cannot find type for " + node + " of " + node.getClass());
+			type = new UnresolvedType(node.toString());
+		}
 
 		if (type instanceof VirtualModelInstanceType) {
 			return new ModelSlotPropertyNode(node, getAnalyzer());
