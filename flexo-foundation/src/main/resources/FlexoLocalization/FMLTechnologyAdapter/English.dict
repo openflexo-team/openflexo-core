@@ -308,6 +308,7 @@ please_define_an_expression=Please define an expression
 please_provide_a_valid_name=Please provide a valid name
 please_select_behaviour(s)_to_implement=Please select behaviour(s) to implement
 please_supply_a_type_for_the_new_parameter=Please supply a type for the new parameter
+please_supply_type_name=Please supply type name
 please_supply_valid_parameter_name=Please supply valid parameter name
 please_supply_valid_uri=Please supply valid uri
 please_supply_valid_variable_name=Please supply valid variable name
