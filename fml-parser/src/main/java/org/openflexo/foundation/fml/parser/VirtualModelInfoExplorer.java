@@ -63,7 +63,6 @@ import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
-import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
@@ -267,14 +266,6 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 		NamespaceDeclarationNode importNode = new NamespaceDeclarationNode(node, analyzer);
 		NamespaceDeclaration nsDeclaration = importNode.getModelObject();
 		compilationUnit.addToNamespaces(nsDeclaration);
-	}
-
-	@Override
-	public void inAUriImportImportDecl(AUriImportImportDecl node) {
-		super.inAUriImportImportDecl(node);
-		ElementImportNode importNode = new ElementImportNode(node, analyzer);
-		ElementImportDeclaration importDeclaration = importNode.getModelObject();
-		compilationUnit.addToElementImports(importDeclaration);
 	}
 
 	@Override

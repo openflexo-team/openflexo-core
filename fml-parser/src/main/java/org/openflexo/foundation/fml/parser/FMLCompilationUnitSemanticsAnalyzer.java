@@ -107,7 +107,6 @@ import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
 import org.openflexo.foundation.fml.parser.node.AProtectedSimpleAssertDeclaration;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.ATypeDecl;
-import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
@@ -401,18 +400,6 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outANamedJavaImportImportDecl(ANamedJavaImportImportDecl node) {
 		super.outANamedJavaImportImportDecl(node);
-		pop();
-	}
-
-	@Override
-	public void inAUriImportImportDecl(AUriImportImportDecl node) {
-		super.inAUriImportImportDecl(node);
-		push(retrieveFMLNode(node, n -> new ElementImportNode(n, getCompilationUnitAnalyzer())));
-	}
-
-	@Override
-	public void outAUriImportImportDecl(AUriImportImportDecl node) {
-		super.outAUriImportImportDecl(node);
 		pop();
 	}
 
