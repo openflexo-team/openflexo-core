@@ -306,7 +306,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @param modelSlotClass
 	 * @return
 	 */
-	@Deprecated
 	public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**

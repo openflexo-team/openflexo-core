@@ -46,11 +46,11 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -60,39 +60,39 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author sylvain
  *
  */
-public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualModel, FMLObject>
+public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, FMLCompilationUnit, FMLObject>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(AddUseDeclaration.class.getPackage().getName());
 
-	public static FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject> actionType = new FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject>(
+	public static FlexoActionFactory<AddUseDeclaration, FMLCompilationUnit, FMLObject> actionType = new FlexoActionFactory<AddUseDeclaration, FMLCompilationUnit, FMLObject>(
 			"declare_use_of_model_slot", FlexoActionFactory.advancedGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public AddUseDeclaration makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+		public AddUseDeclaration makeNewAction(FMLCompilationUnit focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new AddUseDeclaration(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(FMLCompilationUnit object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(FMLCompilationUnit object, Vector<FMLObject> globalSelection) {
 			return isVisibleForSelection(object, globalSelection);
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(AddUseDeclaration.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(AddUseDeclaration.actionType, FMLCompilationUnit.class);
 	}
 
-	private AddUseDeclaration(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private AddUseDeclaration(FMLCompilationUnit focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
