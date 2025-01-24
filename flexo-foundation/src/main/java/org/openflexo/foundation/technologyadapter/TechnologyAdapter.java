@@ -482,11 +482,14 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		System.out.println("Unregistering " + removedResourceCenter + " for " + this);
 
 		for (ResourceRepository<?, ?> resourceRepository : removedResourceCenter.getRegistedRepositories(this, false)) {
-			//System.out.println(" > " + resourceRepository);
+			// System.out.println(" > " + resourceRepository);
 			resourceRepository.unregisterAllResources();
 		}
 
-		getGlobalRepository(removedResourceCenter).unregisterAllResources();
+		TechnologyAdapterGlobalRepository globalRepository = globalRepositories.get(removedResourceCenter);
+		if (globalRepository != null) {
+			globalRepository.unregisterAllResources();
+		}
 
 		setChanged();
 		notifyObservers(new DataModification<>(removedResourceCenter, null));
@@ -652,8 +655,8 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 */
 	public List<TechnologyAdapterGlobalRepository<?, ?>> getGlobalRepositories() {
 		List<TechnologyAdapterGlobalRepository<?, ?>> returned = new ArrayList<>();
-		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
-				.getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : new ArrayList<>(
+				getTechnologyAdapterService().getServiceManager().getResourceCenterService().getResourceCenters())) {
 			// System.out.println("Pour le RC " + rc);
 			TechnologyAdapterGlobalRepository<?, ?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
 			// System.out.println("global repo = " + globalRepository);

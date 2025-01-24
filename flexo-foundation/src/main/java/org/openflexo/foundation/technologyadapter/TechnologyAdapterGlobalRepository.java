@@ -61,7 +61,9 @@ public interface TechnologyAdapterGlobalRepository<TA extends TechnologyAdapter<
 			newRepository.setTechnologyAdapter(technologyAdapter);
 			newRepository.setResourceCenter(resourceCenter);
 			newRepository.setBaseArtefact(resourceCenter.getBaseArtefact());
-			newRepository.getRootFolder().setRepositoryContext(null);
+			if (newRepository.getRootFolder() != null) {
+				newRepository.getRootFolder().setRepositoryContext(null);
+			}
 			return newRepository;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
