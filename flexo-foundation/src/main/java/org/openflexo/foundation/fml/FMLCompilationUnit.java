@@ -1455,7 +1455,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 			ElementImportDeclaration elementDeclaration = retrieveImportDeclaration(element);
 			if (elementDeclaration == null && getFMLModelFactory() != null) {
-				ElementImportDeclaration resourceImport = ensureResourceImport(element.getResourceData(), true);
+				ElementImportDeclaration resourceImport = ensureResourceImport(element.getResourceData(), false);
 				String resourceAbbrev = resourceImport.getAbbrev();
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				elementDeclaration.setResourceReference(new DataBinding<>(resourceAbbrev));
