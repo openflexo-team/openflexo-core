@@ -451,13 +451,13 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 */
 	public ElementImportDeclaration ensureResourceCenterImport(FlexoResourceCenter<?> rc);
 
-	public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData);
+	public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData, boolean anonymous);
 
 	public <RD extends ResourceData<RD> & FlexoObject, R extends FlexoResource<RD>> ElementImportDeclaration ensureResourceImport(
-			R resource) throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException;
+			R resource, boolean anonymous) throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException;
 
 	public <RD extends ResourceData<RD> & FlexoObject, E extends InnerResourceData<RD> & FlexoObject> ElementImportDeclaration ensureElementImport(
-			E element);
+			E element, boolean anonymous);
 
 	public void ensureJavaImport(Class<?> javaClass);
 
@@ -1401,7 +1401,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		private List<ResourceData> resourcesRequestedForImport = new ArrayList<>();
 
 		@Override
-		public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData) {
+		public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData,
+				boolean anonymous) {
 
 			if (resourcesRequestedForImport.contains(resourceData)) {
 				return retrieveImportDeclaration(resourceData);
@@ -1432,8 +1433,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				}
 				// Don't force a deserializing now: set referenced object
 				importDeclaration.setReferencedObject(resourceData);
-				String abbrev = findUniqueAbbrev(resourceData);
-				importDeclaration.setAbbrev(abbrev);
+				if (!anonymous) {
+					String abbrev = findUniqueAbbrev(resourceData);
+					importDeclaration.setAbbrev(abbrev);
+				}
 				addToElementImports(importDeclaration);
 			}
 
@@ -1442,21 +1445,23 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject, E extends InnerResourceData<RD> & FlexoObject> ElementImportDeclaration ensureElementImport(
-				E element) {
+				E element, boolean anonymous) {
 			if (element == null) {
 				return null;
 			}
 			ElementImportDeclaration elementDeclaration = retrieveImportDeclaration(element);
 			if (elementDeclaration == null && getFMLModelFactory() != null) {
-				ElementImportDeclaration resourceImport = ensureResourceImport(element.getResourceData());
+				ElementImportDeclaration resourceImport = ensureResourceImport(element.getResourceData(), true);
 				String resourceAbbrev = resourceImport.getAbbrev();
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				elementDeclaration.setResourceReference(new DataBinding<>(resourceAbbrev));
 				elementDeclaration.setObjectReference(new DataBinding<>("\"" + element.getLocalIdentifier() + "\""));
 				// Don't force a deserializing now: set referenced object
 				elementDeclaration.setReferencedObject(element);
-				String abbrev = findUniqueAbbrev(element);
-				elementDeclaration.setAbbrev(abbrev);
+				if (!anonymous) {
+					String abbrev = findUniqueAbbrev(element);
+					elementDeclaration.setAbbrev(abbrev);
+				}
 				addToElementImports(elementDeclaration);
 
 				// System.out.println("resourceAbbrev: " + resourceAbbrev);
@@ -1471,8 +1476,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject, R extends FlexoResource<RD>> ElementImportDeclaration ensureResourceImport(
-				R resource) throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-			return ensureResourceImport(resource.getResourceData());
+				R resource, boolean anonymous) throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+			return ensureResourceImport(resource.getResourceData(), anonymous);
 		}
 
 		@Override

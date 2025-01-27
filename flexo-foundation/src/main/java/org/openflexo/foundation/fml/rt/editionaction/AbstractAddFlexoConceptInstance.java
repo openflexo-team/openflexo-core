@@ -794,7 +794,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (compilationUnit != null) {
 				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
 				if (getFlexoConceptType() != null) {
-					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit());
+					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit(), true);
 				}
 			}
 		}

@@ -2559,13 +2559,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
 				if (flexoConcept instanceof VirtualModel) {
 					if (((VirtualModel) flexoConcept).getCompilationUnit() != null) {
-						compilationUnit.ensureResourceImport(((VirtualModel) flexoConcept).getCompilationUnit());
+						compilationUnit.ensureResourceImport(((VirtualModel) flexoConcept).getCompilationUnit(), true);
 					}
 				}
 				else {
 					FMLCompilationUnit parentCU = flexoConcept.getDeclaringCompilationUnit();
 					if (parentCU != null && parentCU != this) {
-						compilationUnit.ensureResourceImport(parentCU);
+						compilationUnit.ensureResourceImport(parentCU, true);
 					}
 				}
 			}

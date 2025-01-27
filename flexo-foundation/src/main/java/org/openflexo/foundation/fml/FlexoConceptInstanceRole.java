@@ -397,7 +397,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			if (compilationUnit != null) {
 				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
 				if (getFlexoConceptType() != null) {
-					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit());
+					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit(), true);
 				}
 			}
 			isHandlingRequiredImports = false;

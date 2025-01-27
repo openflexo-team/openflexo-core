@@ -44,6 +44,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -117,6 +118,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	@Setter(COMPILATION_UNIT_KEY)
 	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
 
+	public boolean isAnonymous();
+
 	@Getter(value = ABBREV_KEY)
 	@XMLAttribute
 	public String getAbbrev();
@@ -161,6 +164,11 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		private DataBinding<String> resourceReference;
 		private DataBinding<String> objectReference;
 		private FlexoObject referencedObject;
+
+		@Override
+		public boolean isAnonymous() {
+			return getAbbrev() == null || StringUtils.isEmpty(getAbbrev());
+		}
 
 		@Override
 		public FMLCompilationUnit getResourceData() {
@@ -416,6 +424,9 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		@Override
 		public Type getAnalyzedType() {
 			if (getReferencedObject() != null) {
+				if (getReferencedObject() instanceof FMLCompilationUnit) {
+					return VirtualModel.class;
+				}
 				return getReferencedObject().getImplementedInterface();
 			}
 			return Object.class;
@@ -424,7 +435,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
-			if (compilationUnit != null) {
+			if (compilationUnit != null && !isAnonymous()) {
 				if (getDeclaredType() != null) {
 					compilationUnit.ensureJavaImportForType(getDeclaredType());
 				}
@@ -433,6 +444,13 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				}
 			}
 		}
+
+		/*@Override
+		public void setDeclaredType(Type type) {
+			System.out.println("Mon declared type: " + type + " of " + type.getClass());
+			System.exit(-1);
+			performSuperSetter(DECLARED_TYPE_KEY, type);
+		}*/
 
 	}
 
