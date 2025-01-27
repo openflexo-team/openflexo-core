@@ -210,6 +210,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		@Override
 		public void setMetaModelResource(FlexoMetaModelResource<M, MM, ?> metaModelResource) {
 			this.metaModelResource = metaModelResource;
+			setIsModified();
 		}
 
 		@Override
