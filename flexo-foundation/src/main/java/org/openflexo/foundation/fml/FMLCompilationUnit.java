@@ -1410,37 +1410,41 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 			resourcesRequestedForImport.add(resourceData);
 
-			ElementImportDeclaration importDeclaration = retrieveImportDeclaration(resourceData);
-			if (getFMLModelFactory() == null) {
-				return importDeclaration;
-			}
-			if (resourceData == this) {
-				return importDeclaration;
-			}
-			if (importDeclaration == null && resourceData.getResource() != null) {
-				FlexoResourceCenter<?> resourceCenter = resourceData.getResource().getResourceCenter();
-				String uri = resourceData.getResource().getURI();
-				importDeclaration = getFMLModelFactory().newElementImportDeclaration();
-				if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
-					NamespaceDeclaration rcNSDeclaration = ensureNamespaceDeclaration(resourceCenter);
-					String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
-					importDeclaration.setResourceReference(
-							new DataBinding<>(rcNSDeclaration.getAbbrev() + "+\"" + remainingURI + "\"", importDeclaration));
-					// System.out.println("---" + rcAbbrev + "+\"" + remainingURI + "\"");
+			try {
+				ElementImportDeclaration importDeclaration = retrieveImportDeclaration(resourceData);
+				if (getFMLModelFactory() == null) {
+					return importDeclaration;
 				}
-				else {
-					importDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\"", importDeclaration));
+				if (resourceData == this) {
+					return importDeclaration;
 				}
-				// Don't force a deserializing now: set referenced object
-				importDeclaration.setReferencedObject(resourceData);
-				if (!anonymous) {
-					String abbrev = findUniqueAbbrev(resourceData);
-					importDeclaration.setAbbrev(abbrev);
+				if (importDeclaration == null && resourceData.getResource() != null) {
+					FlexoResourceCenter<?> resourceCenter = resourceData.getResource().getResourceCenter();
+					String uri = resourceData.getResource().getURI();
+					importDeclaration = getFMLModelFactory().newElementImportDeclaration();
+					if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
+						NamespaceDeclaration rcNSDeclaration = ensureNamespaceDeclaration(resourceCenter);
+						String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
+						importDeclaration.setResourceReference(
+								new DataBinding<>(rcNSDeclaration.getAbbrev() + "+\"" + remainingURI + "\"", importDeclaration));
+						// System.out.println("---" + rcAbbrev + "+\"" + remainingURI + "\"");
+					}
+					else {
+						importDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\"", importDeclaration));
+					}
+					// Don't force a deserializing now: set referenced object
+					importDeclaration.setReferencedObject(resourceData);
+					if (!anonymous) {
+						String abbrev = findUniqueAbbrev(resourceData);
+						importDeclaration.setAbbrev(abbrev);
+					}
+					addToElementImports(importDeclaration);
 				}
-				addToElementImports(importDeclaration);
-			}
 
-			return importDeclaration;
+				return importDeclaration;
+			} finally {
+				resourcesRequestedForImport.remove(resourceData);
+			}
 		}
 
 		@Override
