@@ -1,4 +1,4 @@
-import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Ping.fml"] as Ping;
+import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Ping.fml"];
 
 @URI("http://openflexo.org/test/TestResourceCenter/PingPong.fml/Pong.fml")
 @Author("sylvainguerin")

@@ -1,7 +1,7 @@
-import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml"] as MatchingVM2;
-import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM2.fml"] as MyVM2;
-import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml"] as MatchingVM;
-import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM.fml"] as MyVM;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM2.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM.fml"];
 
 @URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml")
 @Version("0.1")

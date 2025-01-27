@@ -1,7 +1,7 @@
 use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
-import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Ping.fml"] as Ping;
-import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Pong.fml"] as Pong;
+import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Ping.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/PingPong.fml/Pong.fml"];
 
 @URI("http://openflexo.org/test/TestResourceCenter/PingPong.fml")
 public model PingPong {

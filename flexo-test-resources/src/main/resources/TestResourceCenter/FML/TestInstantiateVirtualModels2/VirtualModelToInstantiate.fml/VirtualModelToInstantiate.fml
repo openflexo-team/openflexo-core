@@ -1,6 +1,6 @@
 import java.lang.String;
 
-import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/TestInstantiate.fml"] as TestInstantiate;
+import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/TestInstantiate.fml"];
 
 @URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/VirtualModelToInstantiate.fml")
 @Author("sylvainguerin")

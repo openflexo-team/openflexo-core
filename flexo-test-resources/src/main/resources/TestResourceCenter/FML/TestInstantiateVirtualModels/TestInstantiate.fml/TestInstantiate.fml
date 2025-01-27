@@ -1,6 +1,6 @@
 use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
-import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels/RootVirtualModel.fml"] as RootVirtualModel;
+import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels/RootVirtualModel.fml"];
 
 @URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels/TestInstantiate.fml")
 @Author("sylvainguerin")
