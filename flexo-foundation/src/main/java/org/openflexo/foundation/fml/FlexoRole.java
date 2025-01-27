@@ -404,7 +404,15 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				container.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.container = container;
+			if (getPropertyChangeSupport() != null) {
+				// Changing container may also change the model slot beeing addressed. Notify it
+				getPropertyChangeSupport().firePropertyChange(MODEL_SLOT_KEY, lastKnownModelSlot, getModelSlot());
+				lastKnownModelSlot = getModelSlot();
+			}
 		}
+
+		// Last ModelSlot beeing notified
+		private ModelSlot<?> lastKnownModelSlot = null;
 
 		@Override
 		public Object getContainer(BindingEvaluationContext evaluationContext) {
