@@ -4,7 +4,7 @@
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
-import ["http://some_uri/AnOtherModel.fml"] as AnOtherModel; // Import FML model addressed by specified URI
+import ["http://some_uri/AnOtherModel.fml"]; // Import FML model addressed by specified URI
 
 model MyModel {
 	

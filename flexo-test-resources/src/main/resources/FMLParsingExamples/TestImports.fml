@@ -11,10 +11,10 @@ import java.lang.String;
 import java.util.List as JavaFile;
 import AClass;
 import ["http://some_uri/AModel.fml"]; // Import FML model addressed by specified URI
-import ["http://some_uri/AnOtherModel.fml"] as AnOtherModel; // Import FML model addressed by specified URI
-import ["http://some_uri/AResource":"Toto#13"] as aParticularObjectInResource; 
-import [ns+"AThirdModel.fml"]; // Import FML model addressed by specified URI, 'as' is implicit
-import [ns+"AThirdModel.fml":"SomeURI"] as AN_OBJECT;
+import VirtualModel AnOtherModel from ["http://some_uri/AnOtherModel.fml"]; // Import FML model addressed by specified URI
+import ObjectType aParticularObjectInResource from ["http://some_uri/AResource":"Toto#13"]; 
+import [ns+"AThirdModel.fml"]; // Import FML model addressed by specified URI
+import SomeObject AN_OBJECT from [ns+"AThirdModel.fml":"SomeURI"];
 
 // This is the main declaration
 model MyModel {
