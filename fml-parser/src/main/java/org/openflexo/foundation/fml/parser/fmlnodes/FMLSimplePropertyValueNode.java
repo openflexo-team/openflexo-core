@@ -190,7 +190,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			if (value instanceof ResourceData) {
 				try {
 					ElementImportDeclaration importDeclaration = getCompilationUnit()
-							.ensureResourceImport(((ResourceData) value).getResource(), true);
+							.ensureResourceImport(((ResourceData) value).getResource(), false);
 					return importDeclaration.getAbbrev();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -205,7 +205,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			}
 
 			if (value instanceof InnerResourceData) {
-				ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport(castType(value), true);
+				ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport(castType(value), false);
 				return importDeclaration.getAbbrev();
 			}
 		}
