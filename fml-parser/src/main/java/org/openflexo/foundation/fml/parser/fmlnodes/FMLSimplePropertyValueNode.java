@@ -178,7 +178,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 	private String encodeFMLProperty(T value) {
 		if (value == null) {
-			return null;
+			return "null";
 		}
 		if (getCompilationUnit() != null) {
 			for (ElementImportDeclaration elementImportDeclaration : getCompilationUnit().getElementImports()) {
