@@ -573,7 +573,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					}
 				}
 				for (MatchingCriteria removeThis : criteriasToRemove) {
-					System.out.println("REMOVE " + removeThis.getFlexoProperty().getName() + " value=" + removeThis.getValue()
+					System.out.println("REMOVE " + removeThis.getFlexoProperty() + " value=" + removeThis.getValue()
 							+ " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
 					removeFromMatchingCriterias(removeThis);
 					removeThis.delete();
