@@ -5,10 +5,10 @@
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as DIAGRAM;
 
-import ["http://some_uri/ADiagSpecification.diagramspecification"] as DIAGRAM_SPECIFICATION;
+/*import ["http://some_uri/ADiagSpecification.diagramspecification"] as DIAGRAM_SPECIFICATION;
 import [DIAGRAM_SPECIFICATION+"/ExampleDiagram.diagram"] as EXAMPLE_DIAGRAM;
 import [EXAMPLE_DIAGRAM:"SYL_56"] as RED_SHAPE;
-import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;
+import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;*/
 
 model MyModel {
 	

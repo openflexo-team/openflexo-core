@@ -8,7 +8,7 @@ namespace "http://www.openflexo.org/an.other.namespace/" as ns;
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 import java.lang.String;
-import java.util.List as JavaFile;
+import java.util.List;
 import AClass;
 import ["http://some_uri/AModel.fml"]; // Import FML model addressed by specified URI
 import VirtualModel AnOtherModel from ["http://some_uri/AnOtherModel.fml"]; // Import FML model addressed by specified URI
