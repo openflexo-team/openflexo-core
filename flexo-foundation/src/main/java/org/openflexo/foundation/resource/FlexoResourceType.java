@@ -178,14 +178,18 @@ public class FlexoResourceType implements JavaCustomType {
 	}
 
 	@Override
-	public ParameterizedType getJavaType() {
-		if (javaType == null) {
-			javaType = new ParameterizedTypeImpl(FlexoResource.class, getResourceDataClass());
-		}
-		return javaType;
+	public Class<?> getJavaType() {
+		return getBaseClass();
 	}
 
-	private ParameterizedType javaType;
+	public ParameterizedType getGenericJavaType() {
+		if (genericJavaType == null) {
+			genericJavaType = new ParameterizedTypeImpl(FlexoResource.class, getResourceDataClass());
+		}
+		return genericJavaType;
+	}
+
+	private ParameterizedType genericJavaType;
 
 	public Type getResourceDataClass() {
 		if (FlexoResource.class.isAssignableFrom(getBaseClass())) {
@@ -197,7 +201,7 @@ public class FlexoResourceType implements JavaCustomType {
 
 	@Override
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
-		return TypeUtils.isTypeAssignableFrom(getJavaType(), aType, permissive);
+		return TypeUtils.isTypeAssignableFrom(getGenericJavaType(), aType, permissive);
 	}
 
 	@Override
