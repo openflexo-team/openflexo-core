@@ -7,4 +7,6 @@ include 'flexo-test-resources',
         'flexo-documentation',
         'flexo-ontology',
         'fml-parser',
-        'fml-cli'
+        'fml-cli',
+        'fml-cli-test'
+        

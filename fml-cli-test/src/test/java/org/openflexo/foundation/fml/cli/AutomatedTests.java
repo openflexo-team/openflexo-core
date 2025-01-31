@@ -50,6 +50,7 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
+import org.openflexo.foundation.fml.cli.test.FMLScriptParserTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

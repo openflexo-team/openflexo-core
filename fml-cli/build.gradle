@@ -7,8 +7,8 @@ dependencies {
 
   // testing dep
 //  testCompile testUtils()
-  testImplementation project(':flexo-foundation-test')
-  testImplementation project(':flexo-test-resources')
+//  testImplementation project(':flexo-foundation-test')
+//  testImplementation project(':flexo-test-resources')
 }
 
 //apply plugin: 'sablecc'

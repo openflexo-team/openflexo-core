@@ -36,13 +36,16 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli;
+package org.openflexo.foundation.fml.cli.test;
 
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.FMLScriptParser;
+import org.openflexo.foundation.fml.cli.ParseException;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.test.OpenflexoTestCase;
