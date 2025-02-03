@@ -65,14 +65,14 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity(isAbstract = true)
-@ImplementationClass(InferedFMLRTModelSlot.InferedFMLRTModelSlotImpl.class)
-public interface InferedFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
+@ImplementationClass(ReflectedFMLRTModelSlot.ReflectedFMLRTModelSlotImpl.class)
+public interface ReflectedFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends FMLRTModelSlot<VMI, TA> {
 
-	public static abstract class InferedFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-			extends FMLRTModelSlotImpl<VMI, TA> implements InferedFMLRTModelSlot<VMI, TA> {
+	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
+			extends FMLRTModelSlotImpl<VMI, TA> implements ReflectedFMLRTModelSlot<VMI, TA> {
 
-		private static final Logger logger = Logger.getLogger(InferedFMLRTModelSlot.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(ReflectedFMLRTModelSlot.class.getPackage().getName());
 	}
 
 }

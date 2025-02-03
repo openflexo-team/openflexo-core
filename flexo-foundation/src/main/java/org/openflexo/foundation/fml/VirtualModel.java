@@ -62,7 +62,7 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.ReflectedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -157,14 +157,14 @@ public interface VirtualModel extends FlexoConcept {
 	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
 	@XMLAttribute
 	@Deprecated
-	public Class<? extends InferedFMLRTModelSlot<?, ?>> getModelSlotNatureClass();
+	public Class<? extends ReflectedFMLRTModelSlot<?, ?>> getModelSlotNatureClass();
 
 	@Setter(MODEL_SLOT_NATURE_CLASS_KEY)
 	@Deprecated
-	public void setModelSlotNatureClass(Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotNatureClass);
+	public void setModelSlotNatureClass(Class<? extends ReflectedFMLRTModelSlot<?, ?>> modelSlotNatureClass);
 
 	@Deprecated
-	public List<Class<? extends InferedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses();
+	public List<Class<? extends ReflectedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses();
 
 	@Getter("virtualModelClass")
 	@XMLAttribute
@@ -528,21 +528,21 @@ public interface VirtualModel extends FlexoConcept {
 		}
 
 		@Override
-		public void setModelSlotNatureClass(Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotNatureClass) {
+		public void setModelSlotNatureClass(Class<? extends ReflectedFMLRTModelSlot<?, ?>> modelSlotNatureClass) {
 			performSuperSetter(MODEL_SLOT_NATURE_CLASS_KEY, modelSlotNatureClass);
 			vmInstanceType = null;
 		}
 
-		private List<Class<? extends InferedFMLRTModelSlot<?, ?>>> availableModelSlotNatureClasses = null;
+		private List<Class<? extends ReflectedFMLRTModelSlot<?, ?>>> availableModelSlotNatureClasses = null;
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public List<Class<? extends InferedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses() {
+		public List<Class<? extends ReflectedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses() {
 			if (availableModelSlotNatureClasses == null) {
 				availableModelSlotNatureClasses = new ArrayList<>();
 				for (UseModelSlotDeclaration useMSDecl : getUseDeclarations()) {
-					if (InferedFMLRTModelSlot.class.isAssignableFrom(useMSDecl.getModelSlotClass())) {
-						availableModelSlotNatureClasses.add((Class<? extends InferedFMLRTModelSlot<?, ?>>) useMSDecl.getModelSlotClass());
+					if (ReflectedFMLRTModelSlot.class.isAssignableFrom(useMSDecl.getModelSlotClass())) {
+						availableModelSlotNatureClasses.add((Class<? extends ReflectedFMLRTModelSlot<?, ?>>) useMSDecl.getModelSlotClass());
 					}
 				}
 			}

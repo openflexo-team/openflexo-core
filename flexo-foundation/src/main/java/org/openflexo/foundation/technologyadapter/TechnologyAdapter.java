@@ -83,7 +83,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
-import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.ReflectedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
@@ -939,14 +939,14 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 
 	/**
 	 * Return type of an instance of supplied {@link VirtualModel} asserting this {@link VirtualModel} contractualize supplied
-	 * {@link InferedFMLRTModelSlot} class
+	 * {@link ReflectedFMLRTModelSlot} class
 	 * 
 	 * @param vm
 	 * @param modelSlotClass
 	 * @return
 	 */
 	public VirtualModelInstanceType getInferedVirtualModelInstanceType(VirtualModel vm,
-			Class<? extends InferedFMLRTModelSlot<?, ?>> modelSlotClass) {
+			Class<? extends ReflectedFMLRTModelSlot<?, ?>> modelSlotClass) {
 		return null;
 	}
 
