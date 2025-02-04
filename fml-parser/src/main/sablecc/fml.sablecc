@@ -251,6 +251,7 @@ Tokens
    {command,script,normal} kw_assert = 'assert';
    {normal,binding} kw_begin = 'begin';
    {normal} kw_concept = 'concept';
+   {normal} kw_connect = 'connect';
    {normal} kw_create = 'create';
    {normal} kw_default = 'default';
    {normal} kw_delete = 'delete';  
@@ -290,6 +291,7 @@ Tokens
    {normal} kw_typedef = 'typedef';
    {normal,binding} kw_unique = 'unique';
    {normal -> binding} kw_use = 'use';
+   {normal} kw_using = 'using';
    {normal -> binding} kw_values = 'values';
    {normal,binding} kw_where = 'where';
    {normal} kw_while = 'while';
@@ -934,6 +936,7 @@ Productions
        {ta_edition_action}                     [ta_id]:cidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}                         kw_delete expression from_clause?
      | {select_action}                         kw_select kw_unique? [selected_type]:select_type with_clause? from_clause where_clause?
+     | {connect_action}                        kw_connect [connect]:left_hand_side kw_using [using]:expression
      | {log_action}                            kw_log expression
      | {fire_action}                           kw_fire expression
      | {notify_action}                         kw_notify expression in_clause?

@@ -74,6 +74,7 @@ import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
+import org.openflexo.foundation.fml.editionaction.ConnectAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -675,6 +676,10 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 	public LogAction newLogAction() {
 		return newInstance(LogAction.class);
+	}
+
+	public ConnectAction newConnectAction() {
+		return newInstance(ConnectAction.class);
 	}
 
 	public FireEvent newFireEvent() {

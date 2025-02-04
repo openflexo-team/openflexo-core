@@ -81,6 +81,12 @@ public enum FMLKeywords {
 			return "concept";
 		}
 	},
+	Connect {
+		@Override
+		public String getKeyword() {
+			return "connect";
+		}
+	},
 	Create {
 		@Override
 		public String getKeyword() {
@@ -313,6 +319,12 @@ public enum FMLKeywords {
 		@Override
 		public String getKeyword() {
 			return "use";
+		}
+	},
+	Using {
+		@Override
+		public String getKeyword() {
+			return "using";
 		}
 	},
 	Values {
