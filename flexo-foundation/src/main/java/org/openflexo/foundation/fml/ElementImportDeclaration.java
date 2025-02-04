@@ -182,6 +182,24 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
+		public String getStringRepresentation() {
+			if (org.openflexo.toolbox.StringUtils.isNotEmpty(getAbbrev())) {
+				return FMLKeywords.Import.getKeyword() + " " + getAbbrev();
+			}
+			else {
+				if (getReferencedObject() instanceof FlexoResource) {
+					return FMLKeywords.Import.getKeyword() + " " + ((FlexoResource) getReferencedObject()).getName();
+				}
+				else if (getReferencedObject() instanceof ResourceData) {
+					return FMLKeywords.Import.getKeyword() + " " + ((ResourceData) getReferencedObject()).getResource().getName();
+				}
+				else {
+					return FMLKeywords.Import.getKeyword() + " " + getReferencedObject();
+				}
+			}
+		}
+
+		@Override
 		public BindingModel getBindingModel() {
 			if (getCompilationUnit() != null) {
 				return getCompilationUnit().getBindingModel();
