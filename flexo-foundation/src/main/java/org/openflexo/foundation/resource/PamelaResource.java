@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.resource;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.pamela.annotations.Getter;
@@ -69,7 +67,6 @@ public interface PamelaResource<RD extends ResourceData<RD>, F extends PamelaMod
 	void setFactory(F factory);
 
 	@Getter(value = MODEL_VERSION, isStringConvertable = true)
-	@XmlAttribute
 	FlexoVersion getModelVersion();
 
 	@Setter(MODEL_VERSION)

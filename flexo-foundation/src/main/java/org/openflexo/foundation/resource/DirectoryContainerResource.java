@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.resource;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
@@ -71,7 +69,6 @@ public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends
 	 */
 	@Deprecated
 	@Getter(value = DIRECTORY, ignoreType = true)
-	@XmlAttribute
 	public Resource getDirectory();
 
 	/**
