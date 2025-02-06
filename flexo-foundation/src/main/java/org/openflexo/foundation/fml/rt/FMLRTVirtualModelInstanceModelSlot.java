@@ -42,8 +42,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
@@ -63,7 +65,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Model slot allowing to access a {@link FMLRTVirtualModelInstance} (native implementation of a VirtualModel instance in Openflexo
+ * Model slot allowing to access a {@link FMLRTVirtualModelInstance} (native implementation of a {@link VirtualModel} instance in Openflexo
  * infrastructure)
  * 
  * @author sylvain
@@ -78,10 +80,11 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ImplementationClass(FMLRTVirtualModelInstanceModelSlot.FMLRTVirtualModelInstanceModelSlotImpl.class)
 @XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")
 @FML(AbstractFMLTypingSpace.MODEL_INSTANCE)
-public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
+@FMLMigration // Rename to FMLRTModelSlot !
+public interface FMLRTVirtualModelInstanceModelSlot extends AbstractFMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
-	public static abstract class FMLRTVirtualModelInstanceModelSlotImpl
-			extends FMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> implements FMLRTVirtualModelInstanceModelSlot {
+	public static abstract class FMLRTVirtualModelInstanceModelSlotImpl extends
+			AbstractFMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> implements FMLRTVirtualModelInstanceModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceModelSlot.class.getPackage().getName());
 
@@ -102,6 +105,23 @@ public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<FMLRT
 				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
 			}
 		}
+
+		@Override
+		public VirtualModelModelSlotInstance makeActorReference(FMLRTVirtualModelInstance object, FlexoConceptInstance fci) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		/*@SuppressWarnings("unchecked")
+		@Override
+		public VirtualModelModelSlotInstance<VMI, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			VirtualModelModelSlotInstance<VMI, TA> returned = factory.newInstance(VirtualModelModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setVirtualModelInstanceURI(object.getURI());
+			return returned;
+		}*/
 
 	}
 }

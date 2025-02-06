@@ -61,7 +61,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ModelSlotPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.test.parser.FMLParserTestCase;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -105,7 +105,7 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 	private static UseModelSlotDeclaration useDeclaration;
 	private static ElementImportDeclaration importDeclaration;
 	private static JavaImportDeclaration stringImport;
-	private static FMLRTModelSlot<?, ?> myModelModelSlot;
+	private static AbstractFMLRTModelSlot<?, ?> myModelModelSlot;
 
 	private static JavaImportNode stringImportNode;
 
@@ -128,7 +128,7 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 		assertNotNull(importDeclaration = compilationUnit.getElementImports().get(0));
 
 		assertEquals(1, virtualModel.getFlexoProperties().size());
-		assertNotNull(myModelModelSlot = (FMLRTModelSlot<?, ?>) virtualModel.getFlexoProperties().get(0));
+		assertNotNull(myModelModelSlot = (AbstractFMLRTModelSlot<?, ?>) virtualModel.getFlexoProperties().get(0));
 
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 		assertNotNull(vmNode = (VirtualModelNode) rootNode.getObjectNode(virtualModel));

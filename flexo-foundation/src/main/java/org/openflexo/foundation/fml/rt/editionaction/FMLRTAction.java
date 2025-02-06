@@ -45,7 +45,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -67,7 +67,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTAction.FMLRTActionImpl.class)
 public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
-		extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<VMI, ?>, VMI, T> {
+		extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> {
 
 	public abstract Class<VMI> getVirtualModelInstanceClass();
 
@@ -79,7 +79,7 @@ public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends V
 	public VirtualModel getOwnerVirtualModelType();
 
 	public static abstract class FMLRTActionImpl<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
-			extends TechnologySpecificActionDefiningReceiverImpl<FMLRTModelSlot<VMI, ?>, VMI, T> implements FMLRTAction<T, VMI> {
+			extends TechnologySpecificActionDefiningReceiverImpl<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> implements FMLRTAction<T, VMI> {
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
 

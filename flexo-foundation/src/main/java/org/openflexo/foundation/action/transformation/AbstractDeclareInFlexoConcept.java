@@ -53,7 +53,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -355,7 +355,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 */
 	public VirtualModel getAdressedVirtualModel() {
 		if (isVirtualModelModelSlot()) {
-			FMLRTModelSlot<?, ?> virtualModelModelSlot = (FMLRTModelSlot<?, ?>) getInformationSourceModelSlot();
+			AbstractFMLRTModelSlot<?, ?> virtualModelModelSlot = (AbstractFMLRTModelSlot<?, ?>) getInformationSourceModelSlot();
 			return virtualModelModelSlot.getAccessedVirtualModel();
 		}
 		return null;
@@ -376,10 +376,10 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		return null;
 	}
 
-	private List<FMLRTModelSlot<?, ?>> virtualModelModelSlots;
+	private List<AbstractFMLRTModelSlot<?, ?>> virtualModelModelSlots;
 	private List<TypeAwareModelSlot<?, ?>> typeAwareModelSlots;
 
-	public List<FMLRTModelSlot<?, ?>> getVirtualModelModelSlots() {
+	public List<AbstractFMLRTModelSlot<?, ?>> getVirtualModelModelSlots() {
 		if (virtualModelModelSlots == null) {
 			virtualModelModelSlots = new ArrayList<>();
 		}
@@ -388,8 +388,8 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		}
 		if (getVirtualModel() != null) {
 			for (ModelSlot<?> modelSlot : getVirtualModel().getModelSlots()) {
-				if (modelSlot instanceof FMLRTModelSlot) {
-					virtualModelModelSlots.add((FMLRTModelSlot<?, ?>) modelSlot);
+				if (modelSlot instanceof AbstractFMLRTModelSlot) {
+					virtualModelModelSlots.add((AbstractFMLRTModelSlot<?, ?>) modelSlot);
 				}
 			}
 		}
@@ -426,12 +426,12 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	}
 
 	/**
-	 * Return flag indicating if currently selected {@link ModelSlot} is a {@link FMLRTModelSlot}
+	 * Return flag indicating if currently selected {@link ModelSlot} is a {@link AbstractFMLRTModelSlot}
 	 * 
 	 * @return
 	 */
 	public boolean isVirtualModelModelSlot() {
-		if (getInformationSourceModelSlot() instanceof FMLRTModelSlot) {
+		if (getInformationSourceModelSlot() instanceof AbstractFMLRTModelSlot) {
 			return true;
 		}
 		return false;

@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -60,7 +60,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  * @author Sylvain Guerin
  * 
- * @see FMLRTModelSlot
+ * @see AbstractFMLRTModelSlot
  * 
  */
 @ModelEntity

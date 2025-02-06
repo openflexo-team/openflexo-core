@@ -78,11 +78,11 @@ import org.openflexo.toolbox.StringUtils;
  * 
  * Such {@link ModelSlot} is defining a general contract modellized by an abstract {@link VirtualModel}<br>
  * 
- * There are two different implementations of a {@link FMLRTModelSlot}:
+ * There are two different implementations of a {@link AbstractFMLRTModelSlot}:
  * <ul>
  * <li>Native implementation (see {@link FMLRTVirtualModelInstanceModelSlot}) provided by {@link FMLRTTechnologyAdapter}</li>
- * <li>Alternative implementation provided by some {@link TechnologyAdapter} which present data as instances of {@link FlexoConcept} (see
- * )</li>
+ * <li>Alternative implementation (see {@link ReflectedFMLRTModelSlot}) provided by some {@link TechnologyAdapter} which present data as
+ * instances of {@link FlexoConcept} (see )</li>
  * </ul>
  * 
  * @author sylvain
@@ -94,8 +94,9 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @Imports({ @Import(FMLRTVirtualModelInstanceModelSlot.class) })
-@ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
-public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>> extends ModelSlot<VMI> {
+@ImplementationClass(AbstractFMLRTModelSlot.AbstractFMLRTModelSlotImpl.class)
+public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
+		extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -128,10 +129,10 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 	public Class<TA> getTechnologyAdapterClass();
 
-	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
+	public static abstract class AbstractFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
+			extends ModelSlotImpl<VMI> implements AbstractFMLRTModelSlot<VMI, TA> {
 
-		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(AbstractFMLRTModelSlot.class.getPackage().getName());
 
 		@Override
 		public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept) {
@@ -332,7 +333,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 			return "conformTo " + getAccessedVirtualModelURI() + " ";
 		}
 
-		@SuppressWarnings("unchecked")
+		/*@SuppressWarnings("unchecked")
 		@Override
 		public VirtualModelModelSlotInstance<VMI, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
@@ -341,8 +342,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 			returned.setFlexoConceptInstance(fci);
 			returned.setVirtualModelInstanceURI(object.getURI());
 			return returned;
-
-		}
+		}*/
 
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
@@ -458,13 +458,14 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 	}
 
 	@DefineValidationRule
-	public static class VirtualModelIsRequired extends ValidationRule<VirtualModelIsRequired, FMLRTModelSlot<?, ?>> {
+	public static class VirtualModelIsRequired extends ValidationRule<VirtualModelIsRequired, AbstractFMLRTModelSlot<?, ?>> {
 		public VirtualModelIsRequired() {
-			super(FMLRTModelSlot.class, "virtual_model_is_required");
+			super(AbstractFMLRTModelSlot.class, "virtual_model_is_required");
 		}
 
 		@Override
-		public ValidationIssue<VirtualModelIsRequired, FMLRTModelSlot<?, ?>> applyValidation(FMLRTModelSlot<?, ?> modelSlot) {
+		public ValidationIssue<VirtualModelIsRequired, AbstractFMLRTModelSlot<?, ?>> applyValidation(
+				AbstractFMLRTModelSlot<?, ?> modelSlot) {
 
 			if (modelSlot.getAccessedVirtualModel() == null) {
 				return new ValidationError<>(this, modelSlot, "fml_rt_model_slot_does_not_define_a_valid_virtual_model");

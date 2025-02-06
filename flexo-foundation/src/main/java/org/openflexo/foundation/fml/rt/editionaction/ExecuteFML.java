@@ -44,7 +44,7 @@ import java.util.Vector;
 
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -71,7 +71,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @XMLElement
 @FML("ExecuteFML")
 public interface ExecuteFML<T, VMI extends VirtualModelInstance<VMI, ?>>
-		extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<VMI, ?>, VMI, T> {
+		extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> {
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
@@ -92,7 +92,7 @@ public interface ExecuteFML<T, VMI extends VirtualModelInstance<VMI, ?>>
 	public void removeFromParameters(CreateFlexoConceptInstanceParameter aParameter);
 
 	public static abstract class ExecuteFMLImpl<T, VMI extends VirtualModelInstance<VMI, ?>>
-			extends TechnologySpecificActionDefiningReceiverImpl<FMLRTModelSlot<VMI, ?>, VMI, T> implements ExecuteFML<T, VMI> {
+			extends TechnologySpecificActionDefiningReceiverImpl<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> implements ExecuteFML<T, VMI> {
 
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) {

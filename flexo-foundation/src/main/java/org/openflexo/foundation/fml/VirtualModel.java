@@ -157,14 +157,14 @@ public interface VirtualModel extends FlexoConcept {
 	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
 	@XMLAttribute
 	@Deprecated
-	public Class<? extends ReflectedFMLRTModelSlot<?, ?>> getModelSlotNatureClass();
+	public Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>> getModelSlotNatureClass();
 
 	@Setter(MODEL_SLOT_NATURE_CLASS_KEY)
 	@Deprecated
-	public void setModelSlotNatureClass(Class<? extends ReflectedFMLRTModelSlot<?, ?>> modelSlotNatureClass);
+	public void setModelSlotNatureClass(Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>> modelSlotNatureClass);
 
 	@Deprecated
-	public List<Class<? extends ReflectedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses();
+	public List<Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>>> getAvailableModelSlotNatureClasses();
 
 	@Getter("virtualModelClass")
 	@XMLAttribute
@@ -528,21 +528,22 @@ public interface VirtualModel extends FlexoConcept {
 		}
 
 		@Override
-		public void setModelSlotNatureClass(Class<? extends ReflectedFMLRTModelSlot<?, ?>> modelSlotNatureClass) {
+		public void setModelSlotNatureClass(Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>> modelSlotNatureClass) {
 			performSuperSetter(MODEL_SLOT_NATURE_CLASS_KEY, modelSlotNatureClass);
 			vmInstanceType = null;
 		}
 
-		private List<Class<? extends ReflectedFMLRTModelSlot<?, ?>>> availableModelSlotNatureClasses = null;
+		private List<Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>>> availableModelSlotNatureClasses = null;
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public List<Class<? extends ReflectedFMLRTModelSlot<?, ?>>> getAvailableModelSlotNatureClasses() {
+		public List<Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>>> getAvailableModelSlotNatureClasses() {
 			if (availableModelSlotNatureClasses == null) {
 				availableModelSlotNatureClasses = new ArrayList<>();
 				for (UseModelSlotDeclaration useMSDecl : getUseDeclarations()) {
 					if (ReflectedFMLRTModelSlot.class.isAssignableFrom(useMSDecl.getModelSlotClass())) {
-						availableModelSlotNatureClasses.add((Class<? extends ReflectedFMLRTModelSlot<?, ?>>) useMSDecl.getModelSlotClass());
+						availableModelSlotNatureClasses
+								.add((Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>>) useMSDecl.getModelSlotClass());
 					}
 				}
 			}

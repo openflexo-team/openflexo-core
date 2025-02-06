@@ -62,7 +62,7 @@ import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBinding
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -90,7 +90,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractSelectFlexoConceptInstance.AbstractSelectFlexoConceptInstanceImpl.class)
 public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
-		extends AbstractFetchRequest<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT> {
+		extends AbstractFetchRequest<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -127,7 +127,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 	public void setType(FlexoConceptInstanceType type);
 
 	public static abstract class AbstractSelectFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
-			extends AbstractFetchRequestImpl<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT>
+			extends AbstractFetchRequestImpl<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT>
 			implements AbstractSelectFlexoConceptInstance<VMI, AT> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectFlexoConceptInstance.class.getPackage().getName());
@@ -564,7 +564,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 						// Attempt to find some solutions...
 	
 						if (object.getOwningVirtualModel() != null) {
-							for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+							for (AbstractFMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -573,8 +573,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 						}
 	
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
-									.getModelSlots(FMLRTModelSlot.class)) {
+							for (AbstractFMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+									.getModelSlots(AbstractFMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -605,9 +605,9 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		protected static class UseFMLRTModelSlot extends
 				FixProposal<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> {
 	
-			private final FMLRTModelSlot modelSlot;
+			private final AbstractFMLRTModelSlot modelSlot;
 	
-			public UseFMLRTModelSlot(FMLRTModelSlot modelSlot) {
+			public UseFMLRTModelSlot(AbstractFMLRTModelSlot modelSlot) {
 				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
 				this.modelSlot = modelSlot;
 			}

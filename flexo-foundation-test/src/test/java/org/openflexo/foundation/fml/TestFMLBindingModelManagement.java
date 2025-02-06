@@ -90,7 +90,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -669,7 +669,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createMS1.doAction();
 		assertTrue(createMS1.hasActionExecutionSucceeded());
 
-		FMLRTModelSlot<?, ?> ms1 = (FMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm1");
+		AbstractFMLRTModelSlot<?, ?> ms1 = (AbstractFMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm1");
 		assertNotNull(ms1);
 		assertSame(createMS1.getNewModelSlot(), ms1);
 
@@ -682,8 +682,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createMS2.doAction();
 		assertTrue(createMS2.hasActionExecutionSucceeded());
 
-		// VirtualModel should have two FMLRTModelSlot
-		assertEquals(2, virtualModel3.getModelSlots(FMLRTModelSlot.class).size());
+		// VirtualModel should have two AbstractFMLRTModelSlot
+		assertEquals(2, virtualModel3.getModelSlots(AbstractFMLRTModelSlot.class).size());
 
 		CreatePrimitiveRole createRoleInVM3 = CreatePrimitiveRole.actionType.makeNewAction(virtualModel3, null, editor);
 		createRoleInVM3.setRoleName("aStringInVM3");

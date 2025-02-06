@@ -126,9 +126,9 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	 */
 	public VirtualModel getVirtualModelType();
 
-	/*public FMLRTModelSlot<?, ?> getVirtualModelModelSlot();
+	/*public AbstractFMLRTModelSlot<?, ?> getVirtualModelModelSlot();
 	
-	public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot);*/
+	public void setVirtualModelModelSlot(AbstractFMLRTModelSlot<?, ?> modelSlot);*/
 
 	@Override
 	public FlexoConceptInstanceType buildType(String serializedType);

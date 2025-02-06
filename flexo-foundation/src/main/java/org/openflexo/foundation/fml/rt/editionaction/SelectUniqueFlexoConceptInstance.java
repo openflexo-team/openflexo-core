@@ -42,7 +42,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -65,5 +65,5 @@ import org.openflexo.pamela.annotations.XMLElement;
 @FML("SelectUniqueFlexoConceptInstance")
 public interface SelectUniqueFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
 		extends AbstractSelectFlexoConceptInstance<VMI, FlexoConceptInstance>,
-		UniqueFetchRequest<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance> {
+		UniqueFetchRequest<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance> {
 }

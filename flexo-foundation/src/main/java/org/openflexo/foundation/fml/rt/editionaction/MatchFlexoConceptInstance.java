@@ -945,7 +945,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	
 						// Attempt to find some solutions...
 	
-						for (FMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+						for (AbstractFMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -953,8 +953,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						}
 	
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
-									.getModelSlots(FMLRTModelSlot.class)) {
+							for (AbstractFMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+									.getModelSlots(AbstractFMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -985,9 +985,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		protected static class UseFMLRTModelSlot
 				extends FixProposal<BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance>, MatchFlexoConceptInstance> {
 	
-			private final FMLRTModelSlot<?, ?> modelSlot;
+			private final AbstractFMLRTModelSlot<?, ?> modelSlot;
 	
-			public UseFMLRTModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
+			public UseFMLRTModelSlot(AbstractFMLRTModelSlot<?, ?> modelSlot) {
 				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
 				this.modelSlot = modelSlot;
 			}

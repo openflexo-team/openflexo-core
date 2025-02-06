@@ -122,7 +122,7 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.rt.FMLRTModelSlot.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()

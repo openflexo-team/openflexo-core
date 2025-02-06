@@ -47,12 +47,14 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link ModelSlot} provided by an alternative technology which allows to access data through a general {@link VirtualModel} contract
- * (data are instances of {@link FlexoConcept})<br>
+ * (data are instances of {@link FlexoConcept}) through a technology-specific resource<br>
+ * 
  * 
  * Accessed resource data is a {@link VirtualModelInstance} (generally subclassed for a given technology).
  * 
@@ -60,19 +62,31 @@ import org.openflexo.pamela.annotations.ModelEntity;
  *
  * @param <VMI>
  *            type of {@link VirtualModelInstance} presented by this model slot
+ * @param <R>
+ *            type of resource beeing interpreted as an instance of a FML {@link VirtualModel}
  * @param <TA>
  *            technology providing this model slot
  */
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ReflectedFMLRTModelSlot.ReflectedFMLRTModelSlotImpl.class)
-public interface ReflectedFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-		extends FMLRTModelSlot<VMI, TA> {
+public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstance<VMI, R, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
+		extends AbstractFMLRTModelSlot<VMI, TA> {
 
-	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-			extends FMLRTModelSlotImpl<VMI, TA> implements ReflectedFMLRTModelSlot<VMI, TA> {
+	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
+			extends AbstractFMLRTModelSlotImpl<VMI, TA> implements ReflectedFMLRTModelSlot<VMI, R, TA> {
 
 		private static final Logger logger = Logger.getLogger(ReflectedFMLRTModelSlot.class.getPackage().getName());
+
+		@Override
+		public ReflectedFMLRTModelSlotInstance<VMI, R, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			ReflectedFMLRTModelSlotInstance<VMI, R, TA> returned = factory.newInstance(ReflectedFMLRTModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setReflectedResource(object.getReflectedResource());
+			return returned;
+		}
 	}
 
 }

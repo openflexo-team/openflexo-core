@@ -53,7 +53,7 @@ import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDe
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -113,8 +113,8 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		}
 		returned.setCardinality(getCardinality(getPCardinality()));
 
-		// If the type is unresolved for a FMLRTModelSlot, manage an unresolved VirtualModelInstanceType to keep track of initial name
-		if (FMLRTModelSlot.class.isAssignableFrom(roleClass) && type instanceof UnresolvedType) {
+		// If the type is unresolved for a AbstractFMLRTModelSlot, manage an unresolved VirtualModelInstanceType to keep track of initial name
+		if (AbstractFMLRTModelSlot.class.isAssignableFrom(roleClass) && type instanceof UnresolvedType) {
 			// In this case this is a FMLRTVirtualModelInstanceModelSlot
 			roleClass = FMLRTVirtualModelInstanceModelSlot.class;
 			FMLTechnologyAdapter fmlTechnologyAdapter = getSemanticsAnalyzer().getServiceManager().getTechnologyAdapterService()

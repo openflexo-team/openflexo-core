@@ -43,7 +43,7 @@ import java.util.List;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -64,5 +64,5 @@ import org.openflexo.pamela.annotations.XMLElement;
 @FML("SelectFlexoConceptInstance")
 public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
 		extends AbstractSelectFlexoConceptInstance<VMI, List<FlexoConceptInstance>>,
-		FetchRequest<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance> {
+		FetchRequest<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance> {
 }

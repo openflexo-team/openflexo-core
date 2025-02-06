@@ -907,12 +907,12 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 					// Attempt to find some solutions...
 
-					/*if (object.getOwningVirtualModel() != null && object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class) != null) {
+					/*if (object.getOwningVirtualModel() != null && object.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class) != null) {
 					
 					if (object.getRootOwner() instanceof FlexoConceptObject) {
 						if (((FlexoConceptObject) object.getRootOwner()).getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) ((FlexoConceptObject) object.getRootOwner())
-									.getFlexoConcept()).getModelSlots(FMLRTModelSlot.class)) {
+							for (AbstractFMLRTModelSlot<?, ?> ms : ((VirtualModel) ((FlexoConceptObject) object.getRootOwner())
+									.getFlexoConcept()).getModelSlots(AbstractFMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -923,8 +923,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					
 					if (object.getRootOwner() != null) {
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
-									.getModelSlots(FMLRTModelSlot.class)) {
+							for (AbstractFMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+									.getModelSlots(AbstractFMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -935,8 +935,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					
 					if (object.getRootOwner() != null) {
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
-									.getModelSlots(FMLRTModelSlot.class)) {
+							for (AbstractFMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+									.getModelSlots(AbstractFMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -968,9 +968,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				protected static class UseFMLRTModelSlot extends
 				FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance<?, ?>>, AbstractAddFlexoConceptInstance<?, ?>> {
 		
-					private final FMLRTModelSlot<?, ?> modelSlot;
+					private final AbstractFMLRTModelSlot<?, ?> modelSlot;
 		
-					public UseFMLRTModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
+					public UseFMLRTModelSlot(AbstractFMLRTModelSlot<?, ?> modelSlot) {
 						super("sets_receiver_to_'" + modelSlot.getName() + "'");
 						this.modelSlot = modelSlot;
 					}

@@ -57,7 +57,7 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -138,8 +138,8 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 
 			newModelSlot = technologyAdapter.makeModelSlot(getModelSlotClass(), getFlexoConcept());
 			newModelSlot.setName(modelSlotName);
-			if (newModelSlot instanceof FMLRTModelSlot) {
-				((FMLRTModelSlot<?, ?>) newModelSlot).setAccessedVirtualModelResource(vmRes);
+			if (newModelSlot instanceof AbstractFMLRTModelSlot) {
+				((AbstractFMLRTModelSlot<?, ?>) newModelSlot).setAccessedVirtualModelResource(vmRes);
 
 			}
 			else if (newModelSlot instanceof TypeAwareModelSlot) {
@@ -225,7 +225,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	public boolean isVirtualModelModelSlot() {
 		// System.out.println("isTypeAwareModelSlot ? with " + getModelSlotClass());
 		// System.out.println("return " + (getModelSlotClass() != null && TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())));
-		return getModelSlotClass() != null && getModelSlotClass().equals(FMLRTModelSlot.class);
+		return getModelSlotClass() != null && getModelSlotClass().equals(AbstractFMLRTModelSlot.class);
 	}
 
 	/**

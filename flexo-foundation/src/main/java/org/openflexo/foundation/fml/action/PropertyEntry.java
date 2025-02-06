@@ -60,7 +60,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.task.Progress;
@@ -502,7 +502,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 	}
 
 	public boolean isVirtualModelModelSlot() {
-		return getModelSlotClass() != null && FMLRTModelSlot.class.isAssignableFrom(getModelSlotClass());
+		return getModelSlotClass() != null && AbstractFMLRTModelSlot.class.isAssignableFrom(getModelSlotClass());
 	}
 
 	public FlexoConcept getFlexoConcept() {

@@ -88,7 +88,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAda
 	}
 
 	/**
-	 * Creates and return a new {@link FMLRTModelSlot} adressing supplied VirtualModel.<br>
+	 * Creates and return a new {@link AbstractFMLRTModelSlot} adressing supplied VirtualModel.<br>
 	 * 
 	 * @param modelSlotClass
 	 * @param containerVirtualModel
@@ -97,8 +97,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAda
 	 *            the virtual model referenced by the model slot
 	 * @return
 	 */
-	public FMLRTModelSlot makeVirtualModelModelSlot(final VirtualModel containerVirtualModel, final VirtualModel addressedVirtualModel) {
-		final FMLRTModelSlot returned = this.makeModelSlot(FMLRTModelSlot.class, containerVirtualModel);
+	public AbstractFMLRTModelSlot makeVirtualModelModelSlot(final VirtualModel containerVirtualModel, final VirtualModel addressedVirtualModel) {
+		final AbstractFMLRTModelSlot returned = this.makeModelSlot(AbstractFMLRTModelSlot.class, containerVirtualModel);
 		returned.setAccessedVirtualModel(addressedVirtualModel);
 		return returned;
 	}

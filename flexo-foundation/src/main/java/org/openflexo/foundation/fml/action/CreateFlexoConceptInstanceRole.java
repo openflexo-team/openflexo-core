@@ -61,7 +61,7 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -79,7 +79,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, FMLRTModelSlot> {
+public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, AbstractFMLRTModelSlot> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceRole.class.getPackage().getName());
@@ -157,7 +157,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	}
 
 	public VirtualModel getModelSlotVirtualModel() {
-		FMLRTModelSlot<?, ?> ms = getModelSlot();
+		AbstractFMLRTModelSlot<?, ?> ms = getModelSlot();
 		if (ms == null || !useModelSlot) {
 			return getFlexoConcept().getOwner();
 		}
@@ -169,25 +169,25 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 	// A GARDER
 	@Override
-	public Class<FMLRTModelSlot> getModelSlotType() {
-		return FMLRTModelSlot.class;
+	public Class<AbstractFMLRTModelSlot> getModelSlotType() {
+		return AbstractFMLRTModelSlot.class;
 	}
 
 	// A GARDER
 	@Override
-	public List<FMLRTModelSlot> getAvailableModelSlots() {
+	public List<AbstractFMLRTModelSlot> getAvailableModelSlots() {
 		if (getFocusedObject() instanceof VirtualModel) {
-			return ((VirtualModel) getFocusedObject()).getModelSlots(FMLRTModelSlot.class);
+			return ((VirtualModel) getFocusedObject()).getModelSlots(AbstractFMLRTModelSlot.class);
 		}
 		else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
-			return getFocusedObject().getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class);
+			return getFocusedObject().getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class);
 		}
 		return null;
 	}
 
 	// A GARDER
 	@Override
-	protected FMLRTModelSlot retrieveDefaultModelSlot() {
+	protected AbstractFMLRTModelSlot retrieveDefaultModelSlot() {
 		FlexoConcept flexoConcept = null;
 		// The action is visible for FlexoConcept and StructuralFacet.
 		if (getFocusedObject() instanceof FlexoConceptStructuralFacet) {
@@ -196,16 +196,16 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		else {
 			flexoConcept = (FlexoConcept) getFocusedObject();
 		}
-		if (flexoConcept instanceof VirtualModel && ((VirtualModel) flexoConcept).getModelSlots(FMLRTModelSlot.class).size() > 0) {
-			return ((VirtualModel) flexoConcept).getModelSlots(FMLRTModelSlot.class).get(0);
+		if (flexoConcept instanceof VirtualModel && ((VirtualModel) flexoConcept).getModelSlots(AbstractFMLRTModelSlot.class).size() > 0) {
+			return ((VirtualModel) flexoConcept).getModelSlots(AbstractFMLRTModelSlot.class).get(0);
 		}
 		else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
-				&& flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).size() > 0) {
+				&& flexoConcept.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class).size() > 0) {
 			if (getFlexoRoleClass() == null) {
-				return flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);
+				return flexoConcept.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class).get(0);
 			}
 			// Trying to find the most adapted model slot
-			for (FMLRTModelSlot<?, ?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+			for (AbstractFMLRTModelSlot<?, ?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class)) {
 				if (ms.getAccessedVirtualModel() != null) {
 					if (ms.getAccessedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
 						return ms;
@@ -217,7 +217,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	}
 
 	@Override
-	public void setModelSlot(FMLRTModelSlot modelSlot) {
+	public void setModelSlot(AbstractFMLRTModelSlot modelSlot) {
 		super.setModelSlot(modelSlot);
 		getPropertyChangeSupport().firePropertyChange("modelSlotVirtualModel", null, getModelSlotVirtualModel());
 	}
@@ -228,7 +228,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 	public void setFlexoConceptInstanceType(FlexoConcept flexoConceptInstanceType) {
 		// The default model slot may change
-		FMLRTModelSlot<?, ?> oldModelSlot = getModelSlot();
+		AbstractFMLRTModelSlot<?, ?> oldModelSlot = getModelSlot();
 		this.flexoConceptInstanceType = flexoConceptInstanceType;
 		defaultModelSlot = retrieveDefaultModelSlot();
 		getPropertyChangeSupport().firePropertyChange("modelSlot", oldModelSlot, getModelSlot());

@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
@@ -84,11 +84,11 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ImplementationClass(ExecuteFlexoBehaviour.ExecuteFlexoBehaviourImpl.class)
 @XMLElement
 @FML("ExecuteFlexoBehaviour")
-public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<?, ?>, FlexoConceptInstance, T> {
+public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<?, ?>, FlexoConceptInstance, T> {
 
 	// <FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
 	// public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
-	// extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<VMI, ?>, VMI, T> {
+	// extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String FLEXO_BEHAVIOUR_KEY = "flexoBehaviour";
@@ -118,7 +118,7 @@ public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefini
 	public void removeFromParameters(CreateFlexoConceptInstanceParameter aParameter);
 
 	public static abstract class ExecuteFlexoBehaviourImpl<T>
-			extends TechnologySpecificActionDefiningReceiverImpl<FMLRTModelSlot<?, ?>, FlexoConceptInstance, T>
+			extends TechnologySpecificActionDefiningReceiverImpl<AbstractFMLRTModelSlot<?, ?>, FlexoConceptInstance, T>
 			implements ExecuteFlexoBehaviour<T> {
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
