@@ -1278,7 +1278,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 					if (object != null && !done) {
 						ActorReference<? extends T> actorReference = flexoRole.makeActorReference(object, this);
-						addToActors(actorReference);
+						if (actorReference != null) {
+							addToActors(actorReference);
+						}
+						else {
+							logger.warning("No ActorReference for " + object + " with role=" + flexoRole);
+						}
 					}
 
 					if (getResourceData() != null) {

@@ -69,7 +69,7 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -2556,7 +2556,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			isHandlingRequiredImports = true;
 			super.handleRequiredImports(compilationUnit);
 			for (FlexoConcept flexoConcept : getParentFlexoConcepts()) {
-				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
+				compilationUnit.ensureUse(FMLRTModelSlot.class);
 				if (flexoConcept instanceof VirtualModel) {
 					if (((VirtualModel) flexoConcept).getCompilationUnit() != null) {
 						compilationUnit.ensureResourceImport(((VirtualModel) flexoConcept).getCompilationUnit(), true);

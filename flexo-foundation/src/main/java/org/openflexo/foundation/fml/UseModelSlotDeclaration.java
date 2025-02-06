@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -115,7 +115,7 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 		public String getAbbrev() {
 			String returned = (String) performSuperGetter(ABBREV_KEY);
 			if (returned == null && getModelSlotClass() != null) {
-				if (FMLRTVirtualModelInstanceModelSlot.class.isAssignableFrom(getModelSlotClass())) {
+				if (FMLRTModelSlot.class.isAssignableFrom(getModelSlotClass())) {
 					return "FMLRT";
 				}
 				if (FMLModelSlot.class.isAssignableFrom(getModelSlotClass())) {

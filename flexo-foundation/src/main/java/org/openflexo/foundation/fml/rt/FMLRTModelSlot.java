@@ -77,16 +77,16 @@ import org.openflexo.pamela.annotations.XMLElement;
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class, SelectUniqueFlexoConceptInstance.class,
 		SelectUniqueVirtualModelInstance.class })
 @ModelEntity
-@ImplementationClass(FMLRTVirtualModelInstanceModelSlot.FMLRTVirtualModelInstanceModelSlotImpl.class)
-@XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")
+@ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
+@XMLElement(xmlTag = "FMLRTModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot,FMLRTModelSlot")
 @FML(AbstractFMLTypingSpace.MODEL_INSTANCE)
 @FMLMigration // Rename to FMLRTModelSlot !
-public interface FMLRTVirtualModelInstanceModelSlot extends AbstractFMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
+public interface FMLRTModelSlot extends AbstractFMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
-	public static abstract class FMLRTVirtualModelInstanceModelSlotImpl extends
-			AbstractFMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> implements FMLRTVirtualModelInstanceModelSlot {
+	public static abstract class FMLRTModelSlotImpl extends AbstractFMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter>
+			implements FMLRTModelSlot {
 
-		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceModelSlot.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
 
 		@Override
 		public Class<FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
@@ -95,33 +95,26 @@ public interface FMLRTVirtualModelInstanceModelSlot extends AbstractFMLRTModelSl
 
 		@Override
 		public String getStringRepresentation() {
-			return "FMLRTVirtualModelInstanceModelSlot";
+			return "FMLRTModelSlot";
 		}
 
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
-				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
+				compilationUnit.ensureUse(FMLRTModelSlot.class);
 			}
 		}
 
 		@Override
 		public VirtualModelModelSlotInstance makeActorReference(FMLRTVirtualModelInstance object, FlexoConceptInstance fci) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		/*@SuppressWarnings("unchecked")
-		@Override
-		public VirtualModelModelSlotInstance<VMI, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
-			VirtualModelModelSlotInstance<VMI, TA> returned = factory.newInstance(VirtualModelModelSlotInstance.class);
+			VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);
 			returned.setVirtualModelInstanceURI(object.getURI());
 			return returned;
-		}*/
+		}
 
 	}
 }

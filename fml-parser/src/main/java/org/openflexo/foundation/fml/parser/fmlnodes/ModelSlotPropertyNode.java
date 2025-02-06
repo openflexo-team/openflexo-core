@@ -54,7 +54,7 @@ import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
@@ -95,8 +95,8 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 					((AFmlFullyQualifiedInnerConceptDecl) astNode).getRole());
 		}
 		if (astNode instanceof AJavaInnerConceptDecl && type instanceof VirtualModelInstanceType) {
-			// In this case this is a FMLRTVirtualModelInstanceModelSlot
-			roleClass = FMLRTVirtualModelInstanceModelSlot.class;
+			// In this case this is a FMLRTModelSlot
+			roleClass = FMLRTModelSlot.class;
 		}
 		if (roleClass == null) {
 			throwIssue("Cannot find roleClass", getFragment(astNode));
@@ -115,8 +115,8 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 
 		// If the type is unresolved for a AbstractFMLRTModelSlot, manage an unresolved VirtualModelInstanceType to keep track of initial name
 		if (AbstractFMLRTModelSlot.class.isAssignableFrom(roleClass) && type instanceof UnresolvedType) {
-			// In this case this is a FMLRTVirtualModelInstanceModelSlot
-			roleClass = FMLRTVirtualModelInstanceModelSlot.class;
+			// In this case this is a FMLRTModelSlot
+			roleClass = FMLRTModelSlot.class;
 			FMLTechnologyAdapter fmlTechnologyAdapter = getSemanticsAnalyzer().getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(FMLTechnologyAdapter.class);
 			type = new VirtualModelInstanceType(((UnresolvedType) type).getUnresolvedTypeName(),

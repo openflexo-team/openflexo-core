@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.UnresolvedTechnologySpecificAction;
 import org.openflexo.foundation.fml.parser.node.TCidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -78,7 +78,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 
 	public Class<? extends FlexoRole<?>> getRoleClass(TUidentifier roleIdentifier) {
 		if (roleIdentifier.getText().equals(AbstractFMLTypingSpace.MODEL_INSTANCE)) {
-			return FMLRTVirtualModelInstanceModelSlot.class;
+			return FMLRTModelSlot.class;
 		}
 		if (roleIdentifier.getText().equals(AbstractFMLTypingSpace.CONCEPT_INSTANCE)) {
 			return FlexoConceptInstanceRole.class;

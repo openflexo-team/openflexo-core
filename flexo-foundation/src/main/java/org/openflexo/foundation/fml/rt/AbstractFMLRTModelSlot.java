@@ -74,15 +74,16 @@ import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link ModelSlot} allowing to access an {@link VirtualModelInstance}<br>
+ * A {@link ModelSlot} presenting a {@link VirtualModelInstance}<br>
  * 
  * Such {@link ModelSlot} is defining a general contract modellized by an abstract {@link VirtualModel}<br>
  * 
  * There are two different implementations of a {@link AbstractFMLRTModelSlot}:
  * <ul>
- * <li>Native implementation (see {@link FMLRTVirtualModelInstanceModelSlot}) provided by {@link FMLRTTechnologyAdapter}</li>
- * <li>Alternative implementation (see {@link ReflectedFMLRTModelSlot}) provided by some {@link TechnologyAdapter} which present data as
- * instances of {@link FlexoConcept} (see )</li>
+ * <li>Native implementation (see {@link FMLRTModelSlot}) provided by {@link FMLRTTechnologyAdapter} : this model slot gives access to a
+ * plain {@link FMLRTVirtualModelInstance} beeing serialized in its own resource</li>
+ * <li>Alternative implementation (see {@link ReflectedFMLRTModelSlot}) provided by some {@link TechnologyAdapter} which present data
+ * reflected as instances of {@link FlexoConcept}</li>
  * </ul>
  * 
  * @author sylvain
@@ -93,7 +94,7 @@ import org.openflexo.toolbox.StringUtils;
  *            technology providing this model slot
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FMLRTVirtualModelInstanceModelSlot.class) })
+@Imports({ @Import(FMLRTModelSlot.class) })
 @ImplementationClass(AbstractFMLRTModelSlot.AbstractFMLRTModelSlotImpl.class)
 public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends ModelSlot<VMI> {

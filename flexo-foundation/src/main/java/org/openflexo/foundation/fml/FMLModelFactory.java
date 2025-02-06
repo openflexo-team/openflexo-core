@@ -93,7 +93,7 @@ import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -231,7 +231,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(FMLCompilationUnit.class);
 		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
-		retrieveTechnologySpecificClassesForModelSlot(FMLRTVirtualModelInstanceModelSlot.class, classes);
+		retrieveTechnologySpecificClassesForModelSlot(FMLRTModelSlot.class, classes);
 		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				if (modelSlotClass != null) {
@@ -256,7 +256,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(FMLCompilationUnit.class);
 		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
-		retrieveTechnologySpecificClassesForModelSlot(FMLRTVirtualModelInstanceModelSlot.class, classes);
+		retrieveTechnologySpecificClassesForModelSlot(FMLRTModelSlot.class, classes);
 		if (usedModelSlots != null) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);

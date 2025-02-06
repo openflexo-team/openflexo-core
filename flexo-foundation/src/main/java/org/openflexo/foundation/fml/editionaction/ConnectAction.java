@@ -168,6 +168,11 @@ public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResou
 		}
 
 		@Override
+		public Type getAssignableType() {
+			return getInferedType();
+		}
+
+		@Override
 		public void revalidateBindings() {
 			super.revalidateBindings();
 			getConnect().rebuild();

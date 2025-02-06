@@ -53,7 +53,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link ModelSlot} provided by an alternative technology which allows to access data through a general {@link VirtualModel} contract
- * (data are instances of {@link FlexoConcept}) through a technology-specific resource<br>
+ * (data are reflected as instances of {@link FlexoConcept}) through a technology-specific resource<br>
  * 
  * 
  * Accessed resource data is a {@link VirtualModelInstance} (generally subclassed for a given technology).

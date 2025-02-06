@@ -352,12 +352,12 @@ public class FMLCompilationUnitParser {
 	}
 
 	public static void main(String[] args) {
-		String coucou = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n" + "\n"
+		String coucou = "use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;\n" + "\n"
 				+ "import java.util.Date;\n" + "import java.lang.String;\n" + "\n"
 				+ "@URI (     \"http://www.openflexo.org/MULTIProcessChallenge/MetaModel.fml\")\n" + "@Version(\"0.1\")\n"
 				+ "public model    MetaModel        extends Prout {";
 		attemptToRetrieveVirtualModelInfo(coucou);
-		String coucou2 = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n" + "\n"
+		String coucou2 = "use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;\n" + "\n"
 				+ "import java.util.Date;\n" + "import java.lang.String;\n" + "\n"
 				+ "@URI(\"http://www.openflexo.org/MULTIProcessChallenge/MetaModel.fml\")\n" + "@Version(\"0.1\")\n"
 				+ "public model MetaModel {";

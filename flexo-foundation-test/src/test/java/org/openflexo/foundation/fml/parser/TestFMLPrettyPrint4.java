@@ -160,9 +160,9 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 		assertEquals(null, rootNode.getPrelude());
 		assertEquals(null, rootNode.getPostlude());
 
-		assertEquals("(1:0)-(1:80)", useDeclNode.getLastParsedFragment().toString());
+		assertEquals("(1:0)-(1:60)", useDeclNode.getLastParsedFragment().toString());
 		assertEquals(null, useDeclNode.getPrelude());
-		assertEquals("(1:80)-(3:0)", useDeclNode.getPostlude().toString());
+		assertEquals("(1:60)-(3:0)", useDeclNode.getPostlude().toString());
 
 		assertEquals("(3:0)-(3:65)", elementImportNode.getLastParsedFragment().toString());
 		assertEquals(null, elementImportNode.getPrelude());

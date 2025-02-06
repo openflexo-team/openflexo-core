@@ -64,7 +64,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
  * @author sylvain
  * 
  */
-@DeclareModelSlots({ FMLRTVirtualModelInstanceModelSlot.class })
+@DeclareModelSlots({ FMLRTModelSlot.class })
 @DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
 @DeclareResourceFactories({ FMLRTVirtualModelInstanceResourceFactory.class })
 public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAdapter> {

@@ -12,4 +12,4 @@
 
 ## Javadoc
 
-[org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot](./apidocs/org/openflexo/foundation/fml/rt/FMLRTVirtualModelInstanceModelSlot.md)
+[org.openflexo.foundation.fml.rt.FMLRTModelSlot](./apidocs/org/openflexo/foundation/fml/rt/FMLRTVirtualModelInstanceModelSlot.md)

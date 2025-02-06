@@ -65,7 +65,7 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 
 public class GenerateUnimplementedPropertiesAndBehaviours
 		extends FlexoAction<GenerateUnimplementedPropertiesAndBehaviours, FlexoConcept, FMLObject>
@@ -180,7 +180,7 @@ public class GenerateUnimplementedPropertiesAndBehaviours
 				action = createModelSlot;
 				createModelSlot.setModelSlotName(flexoProperty.getName());
 				createModelSlot.setTechnologyAdapter(getFMLRTTechnologyAdapter());
-				createModelSlot.setModelSlotClass(FMLRTVirtualModelInstanceModelSlot.class);
+				createModelSlot.setModelSlotClass(FMLRTModelSlot.class);
 				createModelSlot.setVmRes((CompilationUnitResource) ((VirtualModelInstanceType) type).getVirtualModel().getResource());
 			}
 			else if (type instanceof FlexoConceptInstanceType) {
