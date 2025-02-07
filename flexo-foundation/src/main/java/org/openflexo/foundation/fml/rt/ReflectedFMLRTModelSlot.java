@@ -111,8 +111,8 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 
 		@Override
 		public ReflectedFMLRTModelSlotInstance<VMI, R, TA> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
-			System.out.println("Alors la ca rigole moins on dirait, hein ????");
-			System.exit(-1);
+			// System.out.println("Alors la ca rigole moins on dirait, hein ????");
+			// System.exit(-1);
 			return null;
 		}
 
