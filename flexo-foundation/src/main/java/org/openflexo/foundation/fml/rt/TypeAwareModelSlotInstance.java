@@ -40,12 +40,10 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.pamela.annotations.Getter;
@@ -107,42 +105,23 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 			super();
 		}
 
-		/**
-		 * Return the data this model slot gives access to.<br>
-		 * This is the data contractualized by the related model slot
-		 * 
-		 * @return
-		 */
 		@Override
-		public M getAccessedResourceData() {
-			FlexoServiceManager svcManager = getServiceManager();
-			if (getModelSlot() != null && getVirtualModelInstance() != null && svcManager != null && svcManager.getResourceManager() != null
-					&& accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
-				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) svcManager.getResourceManager()
-						.getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
-				if (modelResource != null) {
-					accessedResourceData = modelResource.getModel();
-					setResource(modelResource, false);
-					// resource = modelResource;
-				}
-			}
-			if (accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
-				logger.warning("cannot find model " + modelURI);
-				/*for (FlexoResourceCenter<?> rc : svcManager.getResourceCenterService().getResourceCenters()) {
-					System.out.println("--------------- RC: " + rc);
-					for (FlexoResource<?> resource : rc.getAllResources()) {
-						System.out.println(" > " + resource.getURI());
-					}
-				}*/
-			}
-			return accessedResourceData;
+		protected boolean isResourceRetrievable() {
+			return StringUtils.isNotEmpty(modelURI) && getServiceManager() != null && getServiceManager().getResourceManager() != null;
 		}
 
 		@Override
-		public TechnologyAdapterResource<M, ?> getResource() {
-			TechnologyAdapterResource<M, ?> returned = super.getResource();
-			if (returned == null && getAccessedResourceData() != null) {
-				return (TechnologyAdapterResource) getAccessedResourceData().getResource();
+		protected FlexoModelResource<M, MM, ?, ?> retrieveResource() {
+			FlexoModelResource<M, MM, ?, ?> returned = (FlexoModelResource<M, MM, ?, ?>) getServiceManager().getResourceManager()
+					.getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
+			if (returned == null) {
+				logger.warning("cannot find model " + modelURI);
+				/*for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+				System.out.println("--------------- RC: " + rc);
+				for (FlexoResource<?> resource : rc.getAllResources()) {
+					System.out.println(" > " + resource.getURI());
+				}
+				}*/
 			}
 			return returned;
 		}

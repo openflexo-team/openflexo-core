@@ -38,12 +38,9 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -94,42 +91,32 @@ public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD>, RD extends 
 		private FlexoVersion version;
 
 		@Override
-		public TechnologyAdapterResource<RD, ?> getResource() {
-			TechnologyAdapterResource<RD, ?> returned = super.getResource();
-			if (returned == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
-					&& getServiceManager().getResourceManager() != null) {
-				// System.out.println("------------> OK, je cherche la resource " + resourceURI);
-				returned = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
-						getVersion());
-				// System.out.println("Je trouve " + returned);
+		protected boolean isResourceRetrievable() {
+			return StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null && getServiceManager().getResourceManager() != null;
+		}
 
-				/*if (returned == null) {
-					System.out.println("Bon, je trouve pas la resource " + resourceURI);
-					for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
-						System.out.println("> Dans " + rc);
-						for (FlexoResource<?> r : rc.getAllResources()) {
-							System.out.println("   >>> " + r.getURI());
-						}
-					}
+		@Override
+		protected TechnologyAdapterResource<RD, ?> retrieveResource() {
+			TechnologyAdapterResource<RD, ?> returned = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager()
+					.getResource(resourceURI, getVersion());
+			if (returned == null) {
+				logger.warning("cannot find resource " + resourceURI);
+				/*for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+				System.out.println("--------------- RC: " + rc);
+				for (FlexoResource<?> resource : rc.getAllResources()) {
+					System.out.println(" > " + resource.getURI());
+				}
 				}*/
-
-				setResource(returned, false);
 			}
 			return returned;
 		}
 
-		@Override
+		/*@Override
 		public RD getAccessedResourceData() {
 			if (accessedResourceData == null && getServiceManager() != null) {
-
+		
 				TechnologyAdapterResource<RD, ?> resource = getResource();
-
-				/*if (resource == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
-						&& getServiceManager().getResourceManager() != null) {
-					resource = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
-							getVersion());
-					setResource(resource, false);
-				}*/
+		
 				if (resource != null) {
 					try {
 						accessedResourceData = resource.getResourceData();
@@ -146,7 +133,7 @@ public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD>, RD extends 
 				logger.warning("cannot find resource " + resourceURI);
 			}
 			return accessedResourceData;
-		}
+		}*/
 
 		// Serialization/deserialization only, do not use
 		@Override

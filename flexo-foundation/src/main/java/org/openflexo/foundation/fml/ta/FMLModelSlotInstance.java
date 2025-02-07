@@ -86,17 +86,25 @@ public interface FMLModelSlotInstance extends ResourceBasedModelSlotInstance<FML
 		private String virtualModelURI;
 
 		@Override
-		public CompilationUnitResource getResource() {
-			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelURI)
-					&& getServiceManager() != null && getServiceManager().getResourceManager() != null) {
+		protected boolean isResourceRetrievable() {
+			return StringUtils.isNotEmpty(virtualModelURI) && getServiceManager() != null
+					&& getServiceManager().getResourceManager() != null;
+		}
 
-				resource = (CompilationUnitResource) getServiceManager().getResourceManager().getResource(virtualModelURI);
+		@Override
+		protected CompilationUnitResource retrieveResource() {
+			CompilationUnitResource returned = (CompilationUnitResource) getServiceManager().getResourceManager()
+					.getResource(virtualModelURI);
+			if (returned == null) {
+				logger.warning("Cannot find virtual model " + virtualModelURI);
+				/*for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+				System.out.println("--------------- RC: " + rc);
+				for (FlexoResource<?> resource : rc.getAllResources()) {
+				System.out.println(" > " + resource.getURI());
+				}
+				}*/
 			}
-
-			if (resource == null && StringUtils.isNotEmpty(virtualModelURI)) {
-				logger.warning("Cannot find virtual model instance " + virtualModelURI);
-			}
-			return (CompilationUnitResource) resource;
+			return returned;
 		}
 
 		// Serialization/deserialization only, do not use

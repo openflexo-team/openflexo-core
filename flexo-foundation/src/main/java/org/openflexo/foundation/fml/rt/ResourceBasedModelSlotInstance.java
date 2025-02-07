@@ -104,7 +104,7 @@ public abstract interface ResourceBasedModelSlotInstance<MS extends ModelSlot<? 
 	 * @return
 	 */
 	@Getter(value = RESOURCE_KEY, ignoreType = true)
-	public TechnologyAdapterResource<RD, ?> getResource();
+	public R getResource();
 
 	/**
 	 * Sets the resource of the data this model slot gives access to.<br>
@@ -113,17 +113,7 @@ public abstract interface ResourceBasedModelSlotInstance<MS extends ModelSlot<? 
 	 * @param resource
 	 */
 	@Setter(RESOURCE_KEY)
-	public void setResource(TechnologyAdapterResource<RD, ?> resource);
-
-	/**
-	 * Sets the resource of the data this model slot gives access to.<br>
-	 * This is the data contractualized by the related model slot<br>
-	 * A flag allows to declare enclosing resource to be modified or not
-	 * 
-	 * @param resource
-	 * @param declareAsModified
-	 */
-	public void setResource(TechnologyAdapterResource<RD, ?> resource, boolean declareAsModified);
+	public void setResource(R resource);
 
 	public static abstract class ResourceBasedModelSlotInstanceImpl<MS extends ModelSlot<RD>, R extends TechnologyAdapterResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
 			extends ModelSlotInstanceImpl<MS, RD> implements ResourceBasedModelSlotInstance<MS, R, RD> {
@@ -131,7 +121,7 @@ public abstract interface ResourceBasedModelSlotInstance<MS extends ModelSlot<? 
 		private static final Logger logger = Logger.getLogger(ResourceBasedModelSlotInstance.class.getPackage().getName());
 
 		protected RD accessedResourceData;
-		protected TechnologyAdapterResource<RD, ?> resource;
+		protected R resource;
 
 		/**
 		 * Return the data this model slot gives access to.<br>
@@ -172,7 +162,7 @@ public abstract interface ResourceBasedModelSlotInstance<MS extends ModelSlot<? 
 			// NPE Protection when deleting VMI
 			if (accessedResourceData != null) {
 				logger.info("resourceData will be set to " + accessedResourceData + " for ModelSlot: " + this.getModelSlotName());
-				setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());
+				setResource((R) accessedResourceData.getResource());
 			}
 			this.accessedResourceData = accessedResourceData;
 
@@ -197,33 +187,26 @@ public abstract interface ResourceBasedModelSlotInstance<MS extends ModelSlot<? 
 		 * @return
 		 */
 		@Override
-		public TechnologyAdapterResource<RD, ?> getResource() {
+		public final R getResource() {
+			if (resource == null && isResourceRetrievable()) {
+				resource = retrieveResource();
+			}
 			return resource;
 		}
 
-		@Override
-		public void setResource(TechnologyAdapterResource<RD, ?> resource) {
-			setResource(resource, true);
-		}
+		abstract protected boolean isResourceRetrievable();
 
-		/**
-		 * Sets the resource of the data this model slot gives access to.<br>
-		 * This is the data contractualized by the related model slot<br>
-		 * A flag allows to declare enclosing resource to be modified or not
-		 * 
-		 * @param resource
-		 * @param declareAsModified
-		 */
+		abstract protected R retrieveResource();
+
 		@Override
-		public void setResource(TechnologyAdapterResource<RD, ?> resource, boolean declareAsModified) {
+		public final void setResource(R resource) {
 			if ((resource == null && this.resource != null) || (resource != null && !resource.equals(this.resource))) {
 				TechnologyAdapterResource<RD, ?> oldValue = this.resource;
 				this.resource = resource;
 				getPropertyChangeSupport().firePropertyChange(RESOURCE_KEY, oldValue, resource);
-				if (declareAsModified && (getVirtualModelInstance() != null)) {
+				if (getVirtualModelInstance() != null) {
 					getVirtualModelInstance().setModified(true);
 				}
-
 			}
 		}
 

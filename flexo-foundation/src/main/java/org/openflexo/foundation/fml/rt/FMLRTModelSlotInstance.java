@@ -87,18 +87,25 @@ public interface FMLRTModelSlotInstance
 		private String virtualModelInstanceURI;
 
 		@Override
-		public FMLRTVirtualModelInstanceResource getResource() {
-			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)
-					&& getServiceManager() != null && getServiceManager().getResourceManager() != null) {
+		protected boolean isResourceRetrievable() {
+			return StringUtils.isNotEmpty(virtualModelInstanceURI) && getServiceManager() != null
+					&& getServiceManager().getResourceManager() != null;
+		}
 
-				resource = (FMLRTVirtualModelInstanceResource) getServiceManager().getResourceManager()
-						.getResource(virtualModelInstanceURI);
+		@Override
+		protected FMLRTVirtualModelInstanceResource retrieveResource() {
+			FMLRTVirtualModelInstanceResource returned = (FMLRTVirtualModelInstanceResource) getServiceManager().getResourceManager()
+					.getResource(virtualModelInstanceURI);
+			if (returned == null) {
+				logger.warning("Cannot find virtual model instance" + virtualModelInstanceURI);
+				/*for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+				System.out.println("--------------- RC: " + rc);
+				for (FlexoResource<?> resource : rc.getAllResources()) {
+				System.out.println(" > " + resource.getURI());
+				}
+				}*/
 			}
-
-			if (resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
-				// logger.warning("Cannot find virtual model instance " + virtualModelInstanceURI);
-			}
-			return (FMLRTVirtualModelInstanceResource) resource;
+			return returned;
 		}
 
 		// Serialization/deserialization only, do not use
