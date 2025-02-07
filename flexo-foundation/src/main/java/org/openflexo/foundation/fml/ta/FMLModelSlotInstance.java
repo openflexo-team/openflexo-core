@@ -41,10 +41,9 @@ package org.openflexo.foundation.fml.ta;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.ResourceBasedModelSlotInstance;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -56,7 +55,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * 
- * Concretize the binding of a {@link FMLModelSlot} to a concrete {@link VirtualModel}
+ * Concretize the binding of a {@link FMLModelSlot} to a concrete {@link FMLCompilationUnit}
  * 
  * @author Sylvain Guerin
  * 
@@ -66,7 +65,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FMLModelSlotInstance.FMLModelSlotInstanceImpl.class)
 @XMLElement
-public interface FMLModelSlotInstance extends ModelSlotInstance<FMLModelSlot, FMLCompilationUnit> {
+public interface FMLModelSlotInstance extends ResourceBasedModelSlotInstance<FMLModelSlot, CompilationUnitResource, FMLCompilationUnit> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -78,8 +77,8 @@ public interface FMLModelSlotInstance extends ModelSlotInstance<FMLModelSlot, FM
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setVirtualModelURI(String virtualModelInstanceURI);
 
-	public static abstract class FMLModelSlotInstanceImpl extends ModelSlotInstanceImpl<FMLModelSlot, FMLCompilationUnit>
-			implements FMLModelSlotInstance {
+	public static abstract class FMLModelSlotInstanceImpl extends
+			ResourceBasedModelSlotInstanceImpl<FMLModelSlot, CompilationUnitResource, FMLCompilationUnit> implements FMLModelSlotInstance {
 
 		private static final Logger logger = Logger.getLogger(FMLModelSlotInstance.class.getPackage().getName());
 

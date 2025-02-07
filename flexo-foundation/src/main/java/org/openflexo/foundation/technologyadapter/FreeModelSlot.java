@@ -63,7 +63,7 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public FreeModelSlotInstance<RD, ?> makeActorReference(RD object, FlexoConceptInstance fci) {
+		public FreeModelSlotInstance<?, RD> makeActorReference(RD object, FlexoConceptInstance fci) {
 
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			FreeModelSlotInstance returned = factory.newInstance(FreeModelSlotInstance.class);

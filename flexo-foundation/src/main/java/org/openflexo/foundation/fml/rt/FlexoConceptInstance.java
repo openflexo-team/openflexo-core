@@ -1489,7 +1489,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					addToActors(msi);
 				}
 				else {
-					msi.setAccessedResourceData((RD) value);
+					if (msi instanceof SettableModelSlotInstance) {
+						((SettableModelSlotInstance<MS, RD>) msi).setAccessedResourceData((RD) value);
+					}
 				}
 				/*if (value instanceof TechnologyAdapterResource) {
 					msi.setResource((TechnologyAdapterResource<?, ?>) value);

@@ -107,9 +107,9 @@ public interface FMLRTModelSlot extends AbstractFMLRTModelSlot<FMLRTVirtualModel
 		}
 
 		@Override
-		public VirtualModelModelSlotInstance makeActorReference(FMLRTVirtualModelInstance object, FlexoConceptInstance fci) {
+		public FMLRTModelSlotInstance makeActorReference(FMLRTVirtualModelInstance object, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
-			VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
+			FMLRTModelSlotInstance returned = factory.newInstance(FMLRTModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);
 			returned.setVirtualModelInstanceURI(object.getURI());

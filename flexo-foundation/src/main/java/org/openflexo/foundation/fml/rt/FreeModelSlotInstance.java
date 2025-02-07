@@ -63,15 +63,15 @@ import org.openflexo.toolbox.StringUtils;
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
  * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
- * @author Sylvain Guerin, Vincent LeildÃ©
+ * @author sylvain
  * @see FreeModelSlot
  * 
  */
 @ModelEntity
 @ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
 @XMLElement
-public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
-		extends ModelSlotInstance<MS, RD> {
+public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends ResourceBasedModelSlotInstance<MS, TechnologyAdapterResource<RD, ?>, RD> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String RESOURCE_URI_KEY = "resourceURI";
@@ -83,8 +83,8 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 	@Setter(RESOURCE_URI_KEY)
 	public void setResourceURI(String resourceURI);
 
-	public static abstract class FreeModelSlotInstanceImpl<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
-			extends ModelSlotInstanceImpl<MS, RD> implements FreeModelSlotInstance<RD, MS> {
+	public static abstract class FreeModelSlotInstanceImpl<MS extends FreeModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+			extends ResourceBasedModelSlotInstanceImpl<MS, TechnologyAdapterResource<RD, ?>, RD> implements FreeModelSlotInstance<MS, RD> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlotInstance.class.getPackage().getName());
 
@@ -92,21 +92,6 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 		private String resourceURI;
 
 		private FlexoVersion version;
-
-		/*public FreeModelSlotInstanceImpl(View view, MS modelSlot) {
-			super(view, modelSlot);
-		}*/
-
-		/*public FreeModelSlotInstanceImpl(FMLRTVirtualModelInstance vmInstance, MS modelSlot) {
-			super(vmInstance, modelSlot);
-		}*/
-
-		/**
-		 * Default constructor
-		 */
-		public FreeModelSlotInstanceImpl() {
-			super();
-		}
 
 		@Override
 		public TechnologyAdapterResource<RD, ?> getResource() {

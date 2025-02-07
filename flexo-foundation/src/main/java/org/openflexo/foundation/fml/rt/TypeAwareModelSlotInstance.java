@@ -69,7 +69,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(TypeAwareModelSlotInstance.TypeAwareModelSlotInstanceImpl.class)
 @XMLElement
 public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-		extends ModelSlotInstance<MS, M> {
+		extends ResourceBasedModelSlotInstance<MS, FlexoModelResource<M, MM, ?, ?>, M> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String MODEL_URI_KEY = "modelURI";
@@ -84,7 +84,8 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 	public M getModel();
 
 	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-			extends ModelSlotInstanceImpl<MS, M> implements TypeAwareModelSlotInstance<M, MM, MS> {
+			extends ResourceBasedModelSlotInstanceImpl<MS, FlexoModelResource<M, MM, ?, ?>, M>
+			implements TypeAwareModelSlotInstance<M, MM, MS> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 

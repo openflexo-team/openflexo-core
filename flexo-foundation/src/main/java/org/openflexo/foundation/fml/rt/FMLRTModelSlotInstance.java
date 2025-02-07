@@ -62,9 +62,10 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @ModelEntity
-@ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
+@ImplementationClass(FMLRTModelSlotInstance.FMLRTModelSlotInstanceImpl.class)
 @XMLElement
-public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLRTModelSlot, FMLRTVirtualModelInstance> {
+public interface FMLRTModelSlotInstance
+		extends ResourceBasedModelSlotInstance<FMLRTModelSlot, FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
@@ -76,10 +77,11 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLRTMo
 	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public static abstract class VirtualModelModelSlotInstanceImpl extends
-			ModelSlotInstanceImpl<FMLRTModelSlot, FMLRTVirtualModelInstance> implements VirtualModelModelSlotInstance {
+	public static abstract class FMLRTModelSlotInstanceImpl
+			extends ResourceBasedModelSlotInstanceImpl<FMLRTModelSlot, FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance>
+			implements FMLRTModelSlotInstance {
 
-		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FMLRTModelSlotInstance.class.getPackage().getName());
 
 		// Serialization/deserialization only, do not use
 		private String virtualModelInstanceURI;
