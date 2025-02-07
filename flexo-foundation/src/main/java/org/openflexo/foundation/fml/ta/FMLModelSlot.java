@@ -38,9 +38,11 @@
 
 package org.openflexo.foundation.fml.ta;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -51,6 +53,8 @@ import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -152,6 +156,26 @@ public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit> {
 		@Override
 		public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
 			return FMLTechnologyAdapter.class;
+		}
+
+		@Override
+		public FMLModelSlotInstance connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+			FMLModelSlotInstance modelSlotInstance;
+			try {
+				modelSlotInstance = makeActorReference((FMLCompilationUnit) resource.getResourceData(), context);
+				context.addToActors(modelSlotInstance);
+				return modelSlotInstance;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
 
 	}

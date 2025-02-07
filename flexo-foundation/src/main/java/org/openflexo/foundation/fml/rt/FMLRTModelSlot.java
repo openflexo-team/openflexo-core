@@ -38,8 +38,10 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMigration;
@@ -60,6 +62,8 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -114,6 +118,26 @@ public interface FMLRTModelSlot extends AbstractFMLRTModelSlot<FMLRTVirtualModel
 			returned.setFlexoConceptInstance(fci);
 			returned.setVirtualModelInstanceURI(object.getURI());
 			return returned;
+		}
+
+		@Override
+		public FMLRTModelSlotInstance connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+			FMLRTModelSlotInstance modelSlotInstance;
+			try {
+				modelSlotInstance = makeActorReference((FMLRTVirtualModelInstance) resource.getResourceData(), context);
+				context.addToActors(modelSlotInstance);
+				return modelSlotInstance;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
 
 	}

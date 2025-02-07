@@ -38,13 +38,17 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -292,6 +296,26 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		@Override
 		public boolean isMetaModelRequired() {
 			return true;
+		}
+
+		@Override
+		public TypeAwareModelSlotInstance<M, MM, ?> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+			TypeAwareModelSlotInstance<M, MM, ?> modelSlotInstance;
+			try {
+				modelSlotInstance = makeActorReference((M) resource.getResourceData(), context);
+				context.addToActors(modelSlotInstance);
+				return modelSlotInstance;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
 
 	}

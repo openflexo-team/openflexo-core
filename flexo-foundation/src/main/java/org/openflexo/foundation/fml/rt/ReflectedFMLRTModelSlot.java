@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -87,6 +88,34 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 			returned.setReflectedResource(object.getReflectedResource());
 			return returned;
 		}
+
+		/*@Override
+		public FreeModelSlotInstance<?, RD> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+			FreeModelSlotInstance<?, RD> modelSlotInstance;
+			try {
+				modelSlotInstance = makeActorReference((RD) resource.getResourceData(), context);
+				context.addToActors(modelSlotInstance);
+				return modelSlotInstance;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}*/
+
+		@Override
+		public ReflectedFMLRTModelSlotInstance<VMI, R, TA> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+			System.out.println("Alors la ca rigole moins on dirait, hein ????");
+			System.exit(-1);
+			return null;
+		}
+
 	}
 
 }

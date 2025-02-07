@@ -38,12 +38,16 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
@@ -132,6 +136,49 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 			// Override when required
 			return null;
 		}
+
+		@Override
+		public FreeModelSlotInstance<?, RD> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+			FreeModelSlotInstance<?, RD> modelSlotInstance;
+			try {
+				modelSlotInstance = makeActorReference((RD) resource.getResourceData(), context);
+				context.addToActors(modelSlotInstance);
+				return modelSlotInstance;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		/*public FreeModelSlotInstance<?, RD> connectTo(DataBinding<RD> connect, FlexoResource<?> resource, RunTimeEvaluationContext evaluationContext) {
+			FreeModelSlotInstance<?, RD> modelSlotInstance;
+			try {
+				modelSlotInstance = makeActorReference((RD) resource.getResourceData(), context);
+				context.addToActors(modelSlotInstance);
+				return modelSlotInstance;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		
+		
+		DataBinding<RD> getConnect()*/
 
 	}
 }

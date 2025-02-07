@@ -44,13 +44,17 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.BindingPath;
+import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -58,6 +62,9 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * Primitive used to display a log in FML virtual machine at run-time
@@ -85,6 +92,13 @@ public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResou
 
 	@Setter(USING_KEY)
 	public void setUsing(DataBinding<R> using);
+
+	/**
+	 * Compute and return infered model slot from getConnect() binding<br>
+	 * 
+	 * @return
+	 */
+	public ModelSlot<?> getModelSlot();
 
 	public static abstract class ConnectActionImpl<RD extends ResourceData<RD>, R extends FlexoResource<?>> extends AssignableActionImpl<RD>
 			implements ConnectAction<RD, R> {
@@ -154,7 +168,22 @@ public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResou
 				e.printStackTrace();
 			}
 
-			System.out.println("Hop, il faudrait connecter la resource " + resource);
+			/*System.out.println("Hop, il faudrait connecter la resource " + resource);
+			System.out.println("MS: " + getModelSlot());
+			System.out.println("evaluationContext=" + evaluationContext);
+			System.out.println("fci=" + evaluationContext.getFlexoConceptInstance());
+			System.out.println("fc1=" + evaluationContext.getFlexoConceptInstance().getFlexoConcept());
+			System.out.println("fc2=" + getModelSlot().getFlexoConcept());*/
+
+			if (evaluationContext.getFlexoConceptInstance().getFlexoConcept() != getModelSlot().getFlexoConcept()) {
+				logger.warning("Inconsistent type for connecting : please investigate here");
+				// I'm sure this can happen > we have to find the right FCI for the connection
+				// TODO: please fix this
+			}
+
+			getModelSlot().connectTo(resource, evaluationContext.getFlexoConceptInstance());
+
+			// System.exit(-1);
 
 			return null;
 		}
@@ -177,6 +206,18 @@ public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResou
 			super.revalidateBindings();
 			getConnect().rebuild();
 			getUsing().rebuild();
+		}
+
+		@Override
+		public ModelSlot<?> getModelSlot() {
+			if (getConnect().isSet() && getConnect().isValid() && getConnect().isBindingPath()) {
+				BindingPath bindingPath = ((BindingPath) getConnect().getExpression());
+				IBindingPathElement lastPathElement = bindingPath.getLastBindingPathElement();
+				if (lastPathElement instanceof ModelSlotBindingVariable) {
+					return ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
+				}
+			}
+			return null;
 		}
 
 	}
@@ -205,6 +246,21 @@ public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResou
 			return object.getUsing();
 		}
 
+	}
+
+	@DefineValidationRule
+	class ConnectActionMustAddressAModelSlot extends ValidationRule<ConnectActionMustAddressAModelSlot, ConnectAction> {
+		public ConnectActionMustAddressAModelSlot() {
+			super(ConnectAction.class, "connect_action_must_address_a_model_slot");
+		}
+
+		@Override
+		public ValidationIssue<ConnectActionMustAddressAModelSlot, ConnectAction> applyValidation(ConnectAction action) {
+			if (action.getModelSlot() == null) {
+				return new ValidationError<>(this, action, "connect_action_does_not_adress_a_model_slot");
+			}
+			return null;
+		}
 	}
 
 }

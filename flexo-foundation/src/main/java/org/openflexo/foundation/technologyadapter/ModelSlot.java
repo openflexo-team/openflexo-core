@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -213,6 +214,17 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	@Override
 	public ModelSlotInstance<?, RD> makeActorReference(RD object, FlexoConceptInstance epi);
+
+	/**
+	 * Generic method used to connect a {@link ModelSlot} using a supplied resource
+	 * 
+	 * @param resource
+	 * @param context
+	 *            flexo concept instance where returned {@link ModelSlotInstance} lives
+	 * @return
+	 */
+	// TODO : expose type of resource in class type variables (this is a big refactoring !)
+	public ModelSlotInstance<?, RD> connectTo(FlexoResource<?> resource, FlexoConceptInstance context);
 
 	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
 			implements ModelSlot<RD> {
@@ -595,7 +607,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null && compilationUnit.getResource() != null) {
-				compilationUnit.ensureUse((Class<? extends ModelSlot<?>>) (Class) getImplementedInterface());
+				compilationUnit.ensureUse((Class) getImplementedInterface());
 			}
 		}
 
