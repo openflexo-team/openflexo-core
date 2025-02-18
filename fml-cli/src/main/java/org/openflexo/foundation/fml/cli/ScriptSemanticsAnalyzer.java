@@ -123,7 +123,7 @@ public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 	@Override
 	protected void registerCommand(Node n, AbstractCommand<?> command) {
 		command.setLine(currentLine);
-		System.out.println("Line " + command.getLine() + ": register new command in script: " + command);
+		logger.fine("Line " + command.getLine() + ": register new command in script: " + command);
 		script.addToCommands(command);
 		/*if (command instanceof FMLAssignation) {
 			((FMLAssignation) command).declareVariableWhenRequired();
