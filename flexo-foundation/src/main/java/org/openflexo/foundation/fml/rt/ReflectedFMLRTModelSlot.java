@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
@@ -69,6 +70,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  *            technology providing this model slot
  */
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
+@DeclareActorReferences({ ReflectedFMLRTModelSlotInstance.class }) // TODO : this declaration is not taken under account
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ReflectedFMLRTModelSlot.ReflectedFMLRTModelSlotImpl.class)
 public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstance<VMI, R, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
@@ -111,8 +113,8 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 
 		@Override
 		public ReflectedFMLRTModelSlotInstance<VMI, R, TA> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
-			// System.out.println("Alors la ca rigole moins on dirait, hein ????");
-			// System.exit(-1);
+			System.out.println("Alors la ca rigole moins on dirait, hein ????");
+			System.exit(-1);
 			return null;
 		}
 
