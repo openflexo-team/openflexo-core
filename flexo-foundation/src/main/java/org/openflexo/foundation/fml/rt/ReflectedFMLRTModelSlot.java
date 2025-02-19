@@ -47,9 +47,12 @@ import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
@@ -73,18 +76,18 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @DeclareActorReferences({ ReflectedFMLRTModelSlotInstance.class }) // TODO : this declaration is not taken under account
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ReflectedFMLRTModelSlot.ReflectedFMLRTModelSlotImpl.class)
-public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstance<VMI, R, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
+public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends AbstractFMLRTModelSlot<VMI, TA> {
 
-	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
-			extends AbstractFMLRTModelSlotImpl<VMI, TA> implements ReflectedFMLRTModelSlot<VMI, R, TA> {
+	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+			extends AbstractFMLRTModelSlotImpl<VMI, TA> implements ReflectedFMLRTModelSlot<VMI, R, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(ReflectedFMLRTModelSlot.class.getPackage().getName());
 
 		@Override
-		public ReflectedFMLRTModelSlotInstance<VMI, R, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
+		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
-			ReflectedFMLRTModelSlotInstance<VMI, R, TA> returned = factory.newInstance(ReflectedFMLRTModelSlotInstance.class);
+			ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> returned = factory.newInstance(ReflectedFMLRTModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);
 			returned.setReflectedResource(object.getReflectedResource());
@@ -112,7 +115,7 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 		}*/
 
 		@Override
-		public ReflectedFMLRTModelSlotInstance<VMI, R, TA> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
 			System.out.println("Alors la ca rigole moins on dirait, hein ????");
 			System.exit(-1);
 			return null;

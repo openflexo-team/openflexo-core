@@ -946,7 +946,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 * @return
 	 */
 	public VirtualModelInstanceType getInferedVirtualModelInstanceType(VirtualModel vm,
-			Class<? extends ReflectedFMLRTModelSlot<?, ?, ?>> modelSlotClass) {
+			Class<? extends ReflectedFMLRTModelSlot<?, ?, ?, ?>> modelSlotClass) {
 		return null;
 	}
 

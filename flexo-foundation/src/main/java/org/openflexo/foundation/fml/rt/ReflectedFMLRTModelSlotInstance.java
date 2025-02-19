@@ -41,8 +41,11 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -73,8 +76,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ReflectedFMLRTModelSlotInstance.ReflectedFMLRTModelSlotInstanceImpl.class)
 @XMLElement
-public interface ReflectedFMLRTModelSlotInstance<VMI extends ReflectedVirtualModelInstance<VMI, R, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
-		extends ModelSlotInstance<ReflectedFMLRTModelSlot<VMI, R, TA>, VMI> {
+public interface ReflectedFMLRTModelSlotInstance<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+		extends ModelSlotInstance<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String REFLECTED_RESOURCE_URI_KEY = "reflectedResourceURI";
@@ -90,8 +93,9 @@ public interface ReflectedFMLRTModelSlotInstance<VMI extends ReflectedVirtualMod
 
 	public void setReflectedResource(R reflectedResource);
 
-	public static abstract class ReflectedFMLRTModelSlotInstanceImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
-			extends ModelSlotInstanceImpl<ReflectedFMLRTModelSlot<VMI, R, TA>, VMI> implements ReflectedFMLRTModelSlotInstance<VMI, R, TA> {
+	public static abstract class ReflectedFMLRTModelSlotInstanceImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+			extends ModelSlotInstanceImpl<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI>
+			implements ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(ReflectedFMLRTModelSlotInstance.class.getPackage().getName());
 

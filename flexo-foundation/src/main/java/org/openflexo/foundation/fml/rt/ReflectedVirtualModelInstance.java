@@ -41,8 +41,11 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -61,20 +64,28 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ReflectedVirtualModelInstance.ReflectedVirtualModelInstanceImpl.class)
 @XMLElement
-public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
+public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends VirtualModelInstance<VMI, TA> {
 
 	@PropertyIdentifier(type = TechnologyAdapterResource.class)
 	public static final String REFLECTED_RESOURCE = "reflectedResource";
+	@PropertyIdentifier(type = ReflectedVirtualModelInstanceModelFactory.class)
+	public static final String REFLECTED_MODEL_FACTORY = "reflectedModelFactory";
 
-	@Getter(value = REFLECTED_RESOURCE)
+	@Getter(value = REFLECTED_RESOURCE, ignoreType = true)
 	public R getReflectedResource();
 
 	@Setter(REFLECTED_RESOURCE)
 	public void setReflectedResource(R resource);
 
-	public static abstract class ReflectedVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
-			extends VirtualModelInstanceImpl<VMI, TA> implements ReflectedVirtualModelInstance<VMI, R, TA> {
+	@Getter(value = REFLECTED_MODEL_FACTORY, ignoreType = true)
+	public ReflectedVirtualModelInstanceModelFactory<R, RD, TA> getReflectedModelFactory();
+
+	@Setter(REFLECTED_MODEL_FACTORY)
+	public void setReflectedModelFactory(ReflectedVirtualModelInstanceModelFactory<R, RD, TA> factory);
+
+	public static abstract class ReflectedVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+			extends VirtualModelInstanceImpl<VMI, TA> implements ReflectedVirtualModelInstance<VMI, R, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(ReflectedVirtualModelInstance.class.getPackage().getName());
 

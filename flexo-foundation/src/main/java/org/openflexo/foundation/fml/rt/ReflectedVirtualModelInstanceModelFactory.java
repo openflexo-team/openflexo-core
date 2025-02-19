@@ -45,9 +45,11 @@ import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
 import org.openflexo.pamela.converter.DataBindingConverter;
 import org.openflexo.pamela.converter.FlexoVersionConverter;
@@ -57,12 +59,12 @@ import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link PamelaModelFactory} used to handle {@link VirtualModelInstance} models<br>
+ * {@link PamelaModelFactory} used to handle {@link ReflectedVirtualModelInstance} models<br>
  * 
  * @author sylvain
  * 
  */
-public abstract class ReflectedVirtualModelInstanceModelFactory<R extends TechnologyAdapterResource & PamelaResource>
+public abstract class ReflectedVirtualModelInstanceModelFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends DefaultPamelaResourceModelFactory<R> {
 
 	private RelativePathResourceConverter relativePathResourceConverter;
