@@ -56,6 +56,11 @@ public interface BasicMetaData extends FMLMetaData {
 
 	public static abstract class BasicMetaDataImpl extends FMLMetaDataImpl implements BasicMetaData {
 
+		@Override
+		public String toString() {
+			return "@" + getKey();
+		}
+
 	}
 
 }

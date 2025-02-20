@@ -244,6 +244,10 @@ public interface SingleMetaData<T> extends FMLMetaData {
 			return getValue().toString();
 		}*/
 
+		@Override
+		public String toString() {
+			return "@" + getKey() + "(" + getSerializationRepresentation() + ")";
+		}
 	}
 
 }
