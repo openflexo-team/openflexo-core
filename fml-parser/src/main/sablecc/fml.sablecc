@@ -617,14 +617,14 @@ Productions
 
    inner_concept_decl =
       // basic role declaration
-       {java} visibility? type cardinality? variable_declarator semi
-     | {fml} visibility? type cardinality? lidentifier kw_with [role]:uidentifier fml_parameters? semi
-     | {fml_fully_qualified} visibility? type cardinality? lidentifier kw_with [ta_id]:cidentifier colon_colon [role]:uidentifier fml_parameters? semi
+       {java} [annotations]:annotation* visibility? type cardinality? variable_declarator semi
+     | {fml} [annotations]:annotation* visibility? type cardinality? lidentifier kw_with [role]:uidentifier fml_parameters? semi
+     | {fml_fully_qualified} [annotations]:annotation* visibility? type cardinality? lidentifier kw_with [ta_id]:cidentifier colon_colon [role]:uidentifier fml_parameters? semi
      // abstract property declaration
-     | {abstract_property} visibility? kw_abstract type variable_declarator semi
-     | {expression_property} visibility? type [identifier]:lidentifier kw_values [expression_value]:expression semi
+     | {abstract_property} [annotations]:annotation* visibility? kw_abstract type variable_declarator semi
+     | {expression_property} [annotations]:annotation* visibility? type [identifier]:lidentifier kw_values [expression_value]:expression semi
      // get set property declaration
-     | {get_set_property}    visibility? type lidentifier l_brc get_decl set_decl ? r_brc semi
+     | {get_set_property}    [annotations]:annotation* visibility? type lidentifier l_brc get_decl set_decl ? r_brc semi
      | {behaviour_declaration} behaviour_decl
      | {concept_declaration} concept_decl
      | {event_declaration} event_decl
