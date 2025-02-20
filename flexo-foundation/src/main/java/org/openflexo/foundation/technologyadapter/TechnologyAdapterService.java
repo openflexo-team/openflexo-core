@@ -216,7 +216,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> TechnologyAdapter<?> getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?,?>> TechnologyAdapter<?> getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass);
 
 	public <B extends FlexoBehaviour> TechnologyAdapter<?> getTechnologyAdapterForBehaviourType(Class<B> behaviourClass);
 
@@ -226,7 +226,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?,?>> List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes(Class<MS> modelSlotClass);
 
 	/**
 	 * Return the list of {@link TechnologySpecificAction} class available for supplied modelSlotClass
@@ -234,7 +234,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?,?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass);
 
 	/**
 	 * Return the list of extra {@link FMLObject} class involved in supplied {@link ModelSlot} definition
@@ -242,7 +242,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends FMLObject>> getAvailableFMLObjectTypes(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?,?>> List<Class<? extends FMLObject>> getAvailableFMLObjectTypes(Class<MS> modelSlotClass);
 
 	/**
 	 * Return the list of {@link AbstractFetchRequest} class available for supplied modelSlotClass
@@ -250,7 +250,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes(
+	public <MS extends ModelSlot<?,?>> List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes(
 			Class<MS> modelSlotClass);
 
 	/**
@@ -259,7 +259,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes(
+	public <MS extends ModelSlot<?,?>> List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes(
 			Class<MS> modelSlotClass);
 
 	/**
@@ -268,27 +268,27 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?,?>> List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes(Class<MS> modelSlotClass);
 
-	public <MS extends ModelSlot<?>> Class<? extends FlexoBehaviour> getFlexoBehaviour(Class<MS> modelSlotClass, String behaviourKeyword);
+	public <MS extends ModelSlot<?,?>> Class<? extends FlexoBehaviour> getFlexoBehaviour(Class<MS> modelSlotClass, String behaviourKeyword);
 
-	public List<Class<? extends ModelSlot<?>>> getModelSlotClassesForFlexoRole(Class<? extends FlexoRole<?>> roleClass);
+	public List<Class<? extends ModelSlot<?,?>>> getModelSlotClassesForFlexoRole(Class<? extends FlexoRole<?>> roleClass);
 
-	public List<Class<? extends ModelSlot<?>>> getModelSlotClassesForFlexoBehaviour(Class<? extends FlexoBehaviour> fbClass);
+	public List<Class<? extends ModelSlot<?,?>>> getModelSlotClassesForFlexoBehaviour(Class<? extends FlexoBehaviour> fbClass);
 
-	public List<Class<? extends ModelSlot<?>>> getModelSlotClassesForEditionAction(Class<? extends EditionAction> eaClass);
+	public List<Class<? extends ModelSlot<?,?>>> getModelSlotClassesForEditionAction(Class<? extends EditionAction> eaClass);
 
-	public <MS extends ModelSlot<?>> Class<? extends FlexoRole<?>> getFlexoRole(Class<MS> modelSlotClass, String roleKeyword);
+	public <MS extends ModelSlot<?,?>> Class<? extends FlexoRole<?>> getFlexoRole(Class<MS> modelSlotClass, String roleKeyword);
 
-	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificAction<?, ?>> getEditionAction(Class<MS> modelSlotClass,
+	public <MS extends ModelSlot<?,?>> Class<? extends TechnologySpecificAction<?, ?>> getEditionAction(Class<MS> modelSlotClass,
 			String editionActionKeyword);
 
-	public <MS extends ModelSlot<?>> Class<? extends FMLObject> getFMLObject(Class<MS> modelSlotClass, String objectKeyword);
+	public <MS extends ModelSlot<?,?>> Class<? extends FMLObject> getFMLObject(Class<MS> modelSlotClass, String objectKeyword);
 
 	public <TA extends TechnologyAdapter<TA>> List<Class<? extends TechnologySpecificType<TA>>> getAvailableTechnologySpecificTypes(
 			Class<TA> taClass);
 
-	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificType<?>> getTechnologySpecificType(Class<MS> modelSlotClass,
+	public <MS extends ModelSlot<?,?>> Class<? extends TechnologySpecificType<?>> getTechnologySpecificType(Class<MS> modelSlotClass,
 			String identifier);
 
 	/**

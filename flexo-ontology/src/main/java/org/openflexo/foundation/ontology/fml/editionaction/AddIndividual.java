@@ -80,7 +80,7 @@ import org.openflexo.pamela.validation.ValidationWarning;
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddIndividual.AddIndividualImpl.class)
-public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
+public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
 		extends AddConcept<MS, M, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -179,7 +179,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
-	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
+	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
 			extends AddConceptImpl<MS, M, T> implements AddIndividual<MS, M, T, TA> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());

@@ -48,6 +48,7 @@ import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -66,11 +67,25 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoOntologyModelSlotInstance.FlexoOntologyModelSlotInstanceImpl.class)
 @XMLElement
-public interface FlexoOntologyModelSlotInstance<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, MS extends FlexoOntologyModelSlot<M, MM, TA>, TA extends TechnologyAdapter<TA>>
-		extends TypeAwareModelSlotInstance<M, MM, MS> {
+public interface FlexoOntologyModelSlotInstance<
+//@formatter:off
+	M extends FlexoModel<M, MM> & IFlexoOntology<TA>, 
+	MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, 
+	MS extends FlexoOntologyModelSlot<M, MM, R, TA>, 
+	R extends FlexoModelResource<M, MM, TA, TA>,
+	TA extends TechnologyAdapter<TA>>
+		extends TypeAwareModelSlotInstance<M, MM, MS, R, TA> {
+	//@formatter:on
 
-	public static abstract class FlexoOntologyModelSlotInstanceImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, MS extends FlexoOntologyModelSlot<M, MM, TA>, TA extends TechnologyAdapter<TA>>
-			extends TypeAwareModelSlotInstanceImpl<M, MM, MS> implements FlexoOntologyModelSlotInstance<M, MM, MS, TA> {
+	public static abstract class FlexoOntologyModelSlotInstanceImpl<
+	//@formatter:off
+		M extends FlexoModel<M, MM> & IFlexoOntology<TA>, 
+		MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, 
+		MS extends FlexoOntologyModelSlot<M, MM, R, TA>, 
+		R extends FlexoModelResource<M, MM, TA, TA>,
+		TA extends TechnologyAdapter<TA>>
+			extends TypeAwareModelSlotInstanceImpl<M, MM, MS, R, TA> implements FlexoOntologyModelSlotInstance<M, MM, MS, R, TA> {
+		//@formatter:on
 
 		private static final Logger logger = Logger.getLogger(FlexoOntologyModelSlotInstance.class.getPackage().getName());
 

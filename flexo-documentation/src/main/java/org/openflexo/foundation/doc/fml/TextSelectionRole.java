@@ -51,8 +51,8 @@ public interface TextSelectionRole<D extends FlexoDocument<D, TA>, TA extends Te
 		@Override
 		public FlexoDocument<D, TA> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot
-					&& ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource() != null) {
-				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
+					&& ((FlexoDocumentModelSlot<D, ?, ?>) getModelSlot()).getTemplateResource() != null) {
+				return ((FlexoDocumentModelSlot<D, ?, ?>) getModelSlot()).getTemplateResource().getDocument();
 			}
 			return null;
 		}

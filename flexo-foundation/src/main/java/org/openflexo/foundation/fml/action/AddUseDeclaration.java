@@ -114,7 +114,7 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, FMLCompila
 	}
 
 	private TechnologyAdapter<?> modelSlotTechnologyAdapter;
-	private Class<? extends ModelSlot<?>> modelSlotClass;
+	private Class<? extends ModelSlot<?,?>> modelSlotClass;
 
 	public TechnologyAdapter<?> getModelSlotTechnologyAdapter() {
 		return modelSlotTechnologyAdapter;
@@ -134,7 +134,7 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, FMLCompila
 		}
 	}
 
-	public Class<? extends ModelSlot<?>> getModelSlotClass() {
+	public Class<? extends ModelSlot<?,?>> getModelSlotClass() {
 		if (modelSlotClass == null && modelSlotTechnologyAdapter != null
 				&& modelSlotTechnologyAdapter.getAvailableModelSlotTypes().size() > 0) {
 			return modelSlotTechnologyAdapter.getAvailableModelSlotTypes().get(0);
@@ -142,7 +142,7 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, FMLCompila
 		return modelSlotClass;
 	}
 
-	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+	public void setModelSlotClass(Class<? extends ModelSlot<?,?>> modelSlotClass) {
 		this.modelSlotClass = modelSlotClass;
 		getPropertyChangeSupport().firePropertyChange("modelSlotClass", modelSlotClass != null ? null : false, modelSlotClass);
 	}

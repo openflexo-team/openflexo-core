@@ -354,7 +354,7 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 		availableInspectorEntryTypes.add(FloatInspectorEntry.class);
 		availableInspectorEntryTypes.add(IntegerInspectorEntry.class);
 		if (getFocusedObject().getOwningVirtualModel() != null) {
-			for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
+			for (ModelSlot<?,?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
 				for (Class<? extends InspectorEntry> entryType : ms.getAvailableInspectorEntryTypes()) {
 					if (!availableInspectorEntryTypes.contains(entryType)) {
 						availableInspectorEntryTypes.add(entryType);

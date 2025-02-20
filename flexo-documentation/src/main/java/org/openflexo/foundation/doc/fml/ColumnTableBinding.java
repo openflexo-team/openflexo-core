@@ -164,9 +164,9 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 		}
 
 		@Override
-		public ModelSlot<D> getModelSlot() {
+		public ModelSlot<D, ?> getModelSlot() {
 			if (getTableRole() != null) {
-				return (ModelSlot<D>) getTableRole().getModelSlot();
+				return (ModelSlot<D, ?>) getTableRole().getModelSlot();
 			}
 			return null;
 		}

@@ -60,7 +60,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  *            Type of fetched value
  */
 @ModelEntity(isAbstract = true)
-public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+public abstract interface FetchRequest<MS extends ModelSlot<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
 		extends AbstractFetchRequest<MS, RD, T, List<T>> {
 
 }

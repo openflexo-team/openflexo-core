@@ -51,7 +51,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  * 
  */
 @ModelEntity(isAbstract = true)
-public abstract interface SettableModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+public abstract interface SettableModelSlotInstance<MS extends ModelSlot<? extends RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
 		extends ModelSlotInstance<MS, RD> {
 
 	/**

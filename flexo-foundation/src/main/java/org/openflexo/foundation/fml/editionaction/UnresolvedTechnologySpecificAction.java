@@ -70,7 +70,7 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(UnresolvedTechnologySpecificAction.UnresolvedTechnologySpecificActionImpl.class)
-public abstract interface UnresolvedTechnologySpecificAction extends TechnologySpecificAction<ModelSlot<?>, Object> {
+public abstract interface UnresolvedTechnologySpecificAction extends TechnologySpecificAction<ModelSlot<?,?>, Object> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String TA_ID_KEY = "TAId";
@@ -91,7 +91,7 @@ public abstract interface UnresolvedTechnologySpecificAction extends TechnologyS
 
 	public UseModelSlotDeclaration getUseModelSlotDeclaration();
 
-	public static abstract class UnresolvedTechnologySpecificActionImpl extends TechnologySpecificActionImpl<ModelSlot<?>, Object>
+	public static abstract class UnresolvedTechnologySpecificActionImpl extends TechnologySpecificActionImpl<ModelSlot<?,?>, Object>
 			implements UnresolvedTechnologySpecificAction {
 
 		@SuppressWarnings("unused")

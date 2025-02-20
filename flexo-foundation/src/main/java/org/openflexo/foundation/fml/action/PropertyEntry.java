@@ -144,7 +144,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 	private FlexoConceptObject context;
 
 	private TA technologyAdapter;
-	private Class<? extends ModelSlot<?>> modelSlotClass;
+	private Class<? extends ModelSlot<?,?>> modelSlotClass;
 	private Class<? extends FlexoRole<?>> flexoRoleClass;
 
 	private CompilationUnitResource virtualModelResource;
@@ -389,9 +389,9 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 		}
 	}
 
-	public Class<? extends ModelSlot<?>> getModelSlotClass() {
+	public Class<? extends ModelSlot<?,?>> getModelSlotClass() {
 		/*if (getTechnologyAdapter() != null) {
-			for (Class<? extends ModelSlot<?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
+			for (Class<? extends ModelSlot<?,?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
 				Type rdType = TypeUtils.getTypeArgument(msClass, ModelSlot.class, 0);
 				if (TypeUtils.isTypeAssignableFrom(getType(), rdType)) {
 					return msClass;
@@ -404,10 +404,10 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 		return modelSlotClass;
 	}
 
-	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+	public void setModelSlotClass(Class<? extends ModelSlot<?,?>> modelSlotClass) {
 		if ((modelSlotClass == null && this.modelSlotClass != null)
 				|| (modelSlotClass != null && !modelSlotClass.equals(this.modelSlotClass))) {
-			Class<? extends ModelSlot<?>> oldValue = this.modelSlotClass;
+			Class<? extends ModelSlot<?,?>> oldValue = this.modelSlotClass;
 			this.modelSlotClass = modelSlotClass;
 			getPropertyChangeSupport().firePropertyChange("modelSlotClass", oldValue, modelSlotClass);
 			getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", !isTypeAwareModelSlot(), isTypeAwareModelSlot());
@@ -418,7 +418,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 
 	public Class<? extends FlexoRole<?>> getFlexoRoleClass() {
 		/*if (getTechnologyAdapter() != null) {
-			for (Class<? extends ModelSlot<?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
+			for (Class<? extends ModelSlot<?,?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
 				for (Class<? extends FlexoRole<?>> roleClass : getTechnologyAdapter().getTechnologyAdapterService()
 						.getAvailableFlexoRoleTypes(msClass)) {
 					Type rdType = TypeUtils.getTypeArgument(roleClass, FlexoRole.class, 0);
@@ -479,7 +479,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 
 	private static List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter<?> ta) {
 		List<Class<? extends FlexoRole<?>>> returned = new ArrayList<>();
-		for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+		for (Class<? extends ModelSlot<?,?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 			for (Class<? extends FlexoRole<?>> flexoRoleClass : ta.getTechnologyAdapterService()
 					.getAvailableFlexoRoleTypes(modelSlotClass)) {
 				if (!returned.contains(flexoRoleClass)) {
@@ -490,7 +490,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 		return returned;
 	}
 
-	public List<Class<? extends ModelSlot<?>>> getAvailableModelSlotTypes() {
+	public List<Class<? extends ModelSlot<?,?>>> getAvailableModelSlotTypes() {
 		if (getTechnologyAdapter() != null) {
 			return getTechnologyAdapter().getAvailableModelSlotTypes();
 		}

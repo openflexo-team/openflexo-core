@@ -59,7 +59,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologySpecificAction.TechnologySpecificActionImpl.class)
-public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> extends AssignableAction<T> {
+public abstract interface TechnologySpecificAction<MS extends ModelSlot<?,?>, T> extends AssignableAction<T> {
 
 	/**
 	 * Return the {@link TechnologyAdapter} were this {@link EditionAction} was registered
@@ -84,7 +84,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 	 */
 	public MS getAssignedModelSlot();
 
-	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T>
+	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?,?>, T> extends AssignableActionImpl<T>
 			implements TechnologySpecificAction<MS, T> {
 
 		@SuppressWarnings("unused")

@@ -69,7 +69,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreatePrimitiveRole extends AbstractCreateFlexoRole<CreatePrimitiveRole, ModelSlot<?>> {
+public class CreatePrimitiveRole extends AbstractCreateFlexoRole<CreatePrimitiveRole, ModelSlot<?,?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreatePrimitiveRole.class.getPackage().getName());
@@ -134,12 +134,12 @@ public class CreatePrimitiveRole extends AbstractCreateFlexoRole<CreatePrimitive
 	}
 
 	@Override
-	public List<ModelSlot<?>> getAvailableModelSlots() {
+	public List<ModelSlot<?,?>> getAvailableModelSlots() {
 		return null;
 	}
 
 	@Override
-	public Class<? extends ModelSlot<?>> getModelSlotType() {
+	public Class<? extends ModelSlot<?,?>> getModelSlotType() {
 		return null;
 	}
 

@@ -423,7 +423,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @return
 	 */
 	@Deprecated
-	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD, ?>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 			MS modelSlot);
 
 	/**
@@ -434,7 +434,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @return
 	 */
 	@Deprecated
-	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD, ?>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 			String modelSlotName);
 
 	/**
@@ -1416,7 +1416,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public final <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+		public final <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD, ?>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 				MS modelSlot) {
 
 			for (ActorReference<?> actorReference : getActors()) {
@@ -1454,7 +1454,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public final <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+		public final <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD, ?>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 				String modelSlotName) {
 
 			for (ActorReference<?> actorReference : getActors()) {
@@ -1480,7 +1480,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@SuppressWarnings("unchecked")
-		private <MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> void setModelSlotValue(MS ms, Object value) {
+		private <MS extends ModelSlot<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>> void setModelSlotValue(MS ms,
+				Object value) {
 
 			if (getFlexoConcept() != null && ms != null) {
 				ModelSlotInstance<MS, RD> msi = getModelSlotInstance(ms.getName());

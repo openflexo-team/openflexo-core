@@ -226,7 +226,7 @@ public interface VirtualModel extends FlexoConcept {
 	 */
 	@Deprecated
 	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-	public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?, ?>> boolean uses(Class<MS> modelSlotClass);
 
 	/**
 	 * Declare use of supplied modelSlotClass
@@ -236,7 +236,7 @@ public interface VirtualModel extends FlexoConcept {
 	 */
 	@Deprecated
 	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-	public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?, ?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
 	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel}
@@ -1035,9 +1035,9 @@ public interface VirtualModel extends FlexoConcept {
 		@Deprecated
 		public Set<FlexoMetaModel<?>> getAllReferencedMetaModels() {
 			HashSet<FlexoMetaModel<?>> returned = new HashSet<>();
-			for (ModelSlot<?> modelSlot : getModelSlots()) {
+			for (ModelSlot<?, ?> modelSlot : getModelSlots()) {
 				if (modelSlot instanceof TypeAwareModelSlot) {
-					TypeAwareModelSlot<?, ?> tsModelSlot = (TypeAwareModelSlot<?, ?>) modelSlot;
+					TypeAwareModelSlot<?, ?, ?> tsModelSlot = (TypeAwareModelSlot<?, ?, ?>) modelSlot;
 					if (tsModelSlot.getMetaModelResource() != null) {
 						returned.add(tsModelSlot.getMetaModelResource().getMetaModelData());
 					}
@@ -1079,12 +1079,12 @@ public interface VirtualModel extends FlexoConcept {
 		 */
 		@Override
 		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-		public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
+		public <MS extends ModelSlot<?, ?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
 			if (modelSlotClass == null) {
 				return null;
 			}
 
-			List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
+			List<Class<? extends ModelSlot<?, ?>>> usedModelSlots = new ArrayList<>();
 			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
 				usedModelSlots.add(msDecl.getModelSlotClass());
 				if (modelSlotClass.equals(msDecl.getModelSlotClass())) {
@@ -1201,7 +1201,7 @@ public interface VirtualModel extends FlexoConcept {
 
 		@Override
 		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-		public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass) {
+		public <MS extends ModelSlot<?, ?>> boolean uses(Class<MS> modelSlotClass) {
 			if (modelSlotClass == null) {
 				return false;
 			}

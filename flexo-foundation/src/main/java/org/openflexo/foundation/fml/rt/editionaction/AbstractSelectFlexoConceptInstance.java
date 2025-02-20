@@ -90,7 +90,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractSelectFlexoConceptInstance.AbstractSelectFlexoConceptInstanceImpl.class)
 public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
-		extends AbstractFetchRequest<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT> {
+		extends AbstractFetchRequest<AbstractFMLRTModelSlot<VMI, ?, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -127,7 +127,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 	public void setType(FlexoConceptInstanceType type);
 
 	public static abstract class AbstractSelectFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
-			extends AbstractFetchRequestImpl<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT>
+			extends AbstractFetchRequestImpl<AbstractFMLRTModelSlot<VMI, ?, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT>
 			implements AbstractSelectFlexoConceptInstance<VMI, AT> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectFlexoConceptInstance.class.getPackage().getName());

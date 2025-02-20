@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -74,7 +75,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(ConnectAction.ConnectActionImpl.class)
 @XMLElement
-public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResource<?>> extends AssignableAction<RD> {
+public interface ConnectAction<RD extends ResourceData<RD> & TechnologyObject<?>, R extends FlexoResource<?>> extends AssignableAction<RD> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONNECT_KEY = "connect";
@@ -98,10 +99,10 @@ public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResou
 	 * 
 	 * @return
 	 */
-	public ModelSlot<?> getModelSlot();
+	public ModelSlot<RD, R> getModelSlot();
 
-	public static abstract class ConnectActionImpl<RD extends ResourceData<RD>, R extends FlexoResource<?>> extends AssignableActionImpl<RD>
-			implements ConnectAction<RD, R> {
+	public static abstract class ConnectActionImpl<RD extends ResourceData<RD> & TechnologyObject<?>, R extends FlexoResource<?>>
+			extends AssignableActionImpl<RD> implements ConnectAction<RD, R> {
 
 		private static final Logger logger = Logger.getLogger(ConnectAction.class.getPackage().getName());
 
@@ -209,12 +210,12 @@ public interface ConnectAction<RD extends ResourceData<RD>, R extends FlexoResou
 		}
 
 		@Override
-		public ModelSlot<?> getModelSlot() {
+		public ModelSlot<RD, R> getModelSlot() {
 			if (getConnect().isSet() && getConnect().isValid() && getConnect().isBindingPath()) {
 				BindingPath bindingPath = ((BindingPath) getConnect().getExpression());
 				IBindingPathElement lastPathElement = bindingPath.getLastBindingPathElement();
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
-					return ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
+					return (ModelSlot<RD, R>) ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}
 			}
 			return null;

@@ -55,14 +55,14 @@ public class UseDeclarationsExplorer extends DepthFirstAdapter {
 
 	private final FMLCompilationUnitSemanticsAnalyzer analyzer;
 
-	private List<Class<? extends ModelSlot<?>>> modelSlotClasses = new ArrayList<>();
+	private List<Class<? extends ModelSlot<?,?>>> modelSlotClasses = new ArrayList<>();
 
 	public UseDeclarationsExplorer(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super();
 		this.analyzer = analyzer;
 	}
 
-	public List<Class<? extends ModelSlot<?>>> getModelSlotClasses() {
+	public List<Class<? extends ModelSlot<?,?>>> getModelSlotClasses() {
 		return modelSlotClasses;
 	}
 
@@ -70,9 +70,9 @@ public class UseDeclarationsExplorer extends DepthFirstAdapter {
 	public void inAUseDecl(AUseDecl node) {
 		// TODO Auto-generated method stub
 		super.inAUseDecl(node);
-		Class<? extends ModelSlot<?>> modelSlotClass = null;
+		Class<? extends ModelSlot<?,?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?,?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
 			modelSlotClasses.add(modelSlotClass);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

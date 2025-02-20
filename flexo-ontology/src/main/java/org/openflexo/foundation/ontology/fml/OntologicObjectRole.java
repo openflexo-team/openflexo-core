@@ -53,7 +53,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
 
 	@Override
-	public TypeAwareModelSlot<?, ?> getModelSlot();
+	public TypeAwareModelSlot<?, ?, ?> getModelSlot();
 
 	public static abstract class OntologicObjectRoleImpl<T extends IFlexoOntologyObject> extends FlexoRoleImpl<T> implements
 			OntologicObjectRole<T> {
@@ -87,11 +87,11 @@ public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends Fle
 		}*/
 
 		@Override
-		public TypeAwareModelSlot<?, ?> getModelSlot() {
-			TypeAwareModelSlot<?, ?> returned = null;
-			ModelSlot<?> superMS = super.getModelSlot();
+		public TypeAwareModelSlot<?, ?, ?> getModelSlot() {
+			TypeAwareModelSlot<?, ?, ?> returned = null;
+			ModelSlot<?,?> superMS = super.getModelSlot();
 			if (superMS instanceof TypeAwareModelSlot) {
-				returned = (TypeAwareModelSlot<?, ?>) super.getModelSlot();
+				returned = (TypeAwareModelSlot<?, ?, ?>) super.getModelSlot();
 			}
 			if (returned == null) {
 				if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
@@ -102,7 +102,7 @@ public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends Fle
 		}
 
 		@Override
-		public void setModelSlot(ModelSlot<?> modelSlot) {
+		public void setModelSlot(ModelSlot<?,?> modelSlot) {
 			if (modelSlot instanceof TypeAwareModelSlot) {
 				super.setModelSlot(modelSlot);
 			}

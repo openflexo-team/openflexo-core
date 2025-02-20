@@ -45,7 +45,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -57,17 +56,18 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FreeModelSlot.FreeModelSlotImpl.class)
-public abstract interface FreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlot<RD> {
+public abstract interface FreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R extends TechnologyAdapterResource<RD, ?>>
+		extends ModelSlot<RD, R> {
 
-	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD>
-			implements FreeModelSlot<RD> {
+	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>, R extends TechnologyAdapterResource<RD, ?>>
+			extends ModelSlotImpl<RD, R> implements FreeModelSlot<RD, R> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FreeModelSlot.class.getPackage().getName());
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public FreeModelSlotInstance<?, RD> makeActorReference(RD object, FlexoConceptInstance fci) {
+		public FreeModelSlotInstance<?, R, RD> makeActorReference(RD object, FlexoConceptInstance fci) {
 
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			FreeModelSlotInstance returned = factory.newInstance(FreeModelSlotInstance.class);
@@ -138,10 +138,10 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		}
 
 		@Override
-		public FreeModelSlotInstance<?, RD> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
-			FreeModelSlotInstance<?, RD> modelSlotInstance;
+		public FreeModelSlotInstance<?, R, RD> connectTo(R resource, FlexoConceptInstance context) {
+			FreeModelSlotInstance<?, R, RD> modelSlotInstance;
 			try {
-				modelSlotInstance = makeActorReference((RD) resource.getResourceData(), context);
+				modelSlotInstance = makeActorReference(resource.getResourceData(), context);
 				context.addToActors(modelSlotInstance);
 				return modelSlotInstance;
 			} catch (FileNotFoundException e) {

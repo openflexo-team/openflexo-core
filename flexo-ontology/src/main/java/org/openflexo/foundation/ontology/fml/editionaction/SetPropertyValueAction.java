@@ -44,7 +44,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 /**
  * Interface implemented by all {@link EditionAction} setting a value to an object (interface used to share GUI)
@@ -70,8 +69,8 @@ public interface SetPropertyValueAction<ST, S extends IFlexoOntologyConcept<?>, 
 
 	public void setProperty(P aProperty);
 
-	@Deprecated
-	public ModelSlot getInferedModelSlot();
+	// @Deprecated
+	// public ModelSlot getInferedModelSlot();
 
 	// public DataBinding<? super T> getAssignation();
 

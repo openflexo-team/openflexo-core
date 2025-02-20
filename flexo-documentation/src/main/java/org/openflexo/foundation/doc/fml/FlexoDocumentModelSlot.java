@@ -26,6 +26,7 @@ import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -44,7 +45,8 @@ import org.openflexo.pamela.annotations.XMLAttribute;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocumentModelSlot.FlexoDocumentModelSlotImpl.class)
-public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, ?>> extends FreeModelSlot<D> {
+public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, TA>, R extends FlexoDocumentResource<D, TA, ?>, TA extends TechnologyAdapter<TA>>
+		extends FreeModelSlot<D, R> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String TEMPLATE_DOCUMENT_URI_KEY = "templateDocumentURI";
@@ -60,8 +62,8 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, ?>> extends F
 
 	public FlexoDocumentResource<D, ?, ?> getTemplateResource();
 
-	public static abstract class FlexoDocumentModelSlotImpl<D extends FlexoDocument<D, ?>> extends FreeModelSlotImpl<D>
-			implements FlexoDocumentModelSlot<D> {
+	public static abstract class FlexoDocumentModelSlotImpl<D extends FlexoDocument<D, TA>, R extends FlexoDocumentResource<D, TA, ?>, TA extends TechnologyAdapter<TA>>
+			extends FreeModelSlotImpl<D, R> implements FlexoDocumentModelSlot<D, R, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentModelSlot.class.getPackage().getName());
 

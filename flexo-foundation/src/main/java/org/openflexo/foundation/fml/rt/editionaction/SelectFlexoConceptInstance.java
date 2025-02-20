@@ -64,5 +64,5 @@ import org.openflexo.pamela.annotations.XMLElement;
 @FML("SelectFlexoConceptInstance")
 public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
 		extends AbstractSelectFlexoConceptInstance<VMI, List<FlexoConceptInstance>>,
-		FetchRequest<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance> {
+		FetchRequest<AbstractFMLRTModelSlot<VMI, ?, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance> {
 }

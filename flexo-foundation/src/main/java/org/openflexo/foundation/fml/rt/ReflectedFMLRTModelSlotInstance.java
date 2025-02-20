@@ -76,8 +76,13 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ReflectedFMLRTModelSlotInstance.ReflectedFMLRTModelSlotInstanceImpl.class)
 @XMLElement
-public interface ReflectedFMLRTModelSlotInstance<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+public interface ReflectedFMLRTModelSlotInstance<
+//@formatter:off
+	VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, 
+	R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, 
+	TA extends TechnologyAdapter<TA>>
 		extends ModelSlotInstance<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI> {
+	//@formatter:on
 
 	@PropertyIdentifier(type = String.class)
 	public static final String REFLECTED_RESOURCE_URI_KEY = "reflectedResourceURI";

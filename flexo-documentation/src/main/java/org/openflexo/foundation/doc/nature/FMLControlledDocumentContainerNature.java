@@ -53,7 +53,7 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
  * @author sylvain
  * 
  */
-public abstract class FMLControlledDocumentContainerNature<MS extends FlexoDocumentModelSlot<?>> implements VirtualModelNature {
+public abstract class FMLControlledDocumentContainerNature<MS extends FlexoDocumentModelSlot<?, ?, ?>> implements VirtualModelNature {
 
 	// Prevent external instantiation
 	protected FMLControlledDocumentContainerNature() {

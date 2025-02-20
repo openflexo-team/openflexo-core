@@ -56,11 +56,11 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity
 @ImplementationClass(ModelSlotPathElement.ModelSlotPathElementImpl.class)
-public interface ModelSlotPathElement<MS extends ModelSlot<?>> extends FlexoPropertyPathElement<MS> {
+public interface ModelSlotPathElement<MS extends ModelSlot<?,?>> extends FlexoPropertyPathElement<MS> {
 
 	public MS getModelSlot();
 
-	public static abstract class ModelSlotPathElementImpl<MS extends ModelSlot<?>> extends FlexoPropertyPathElementImpl<MS>
+	public static abstract class ModelSlotPathElementImpl<MS extends ModelSlot<?,?>> extends FlexoPropertyPathElementImpl<MS>
 			implements FlexoPropertyPathElement<MS> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlotPathElement.class.getPackage().getName());

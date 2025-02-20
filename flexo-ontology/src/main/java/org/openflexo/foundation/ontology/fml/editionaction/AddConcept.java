@@ -51,10 +51,10 @@ import org.openflexo.pamela.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddConcept.AddConceptImpl.class)
-public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
+public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
 		extends TechnologySpecificActionDefiningReceiver<MS, M, T> {
 
-	public static abstract class AddConceptImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
+	public static abstract class AddConceptImpl<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T>
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, M, T> implements AddConcept<MS, M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddConcept.class.getPackage().getName());

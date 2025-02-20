@@ -233,7 +233,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
 		retrieveTechnologySpecificClassesForModelSlot(FMLRTModelSlot.class, classes);
 		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
-			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
+			for (Class<? extends ModelSlot<?,?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				if (modelSlotClass != null) {
 					retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 				}
@@ -252,13 +252,13 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 	 * @throws ModelDefinitionException
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(Class<? extends VirtualModel> baseClass,
-			List<Class<? extends ModelSlot<?>>> usedModelSlots) throws ModelDefinitionException {
+			List<Class<? extends ModelSlot<?,?>>> usedModelSlots) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(FMLCompilationUnit.class);
 		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
 		retrieveTechnologySpecificClassesForModelSlot(FMLRTModelSlot.class, classes);
 		if (usedModelSlots != null) {
-			for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
+			for (Class<? extends ModelSlot<?,?>> modelSlotClass : usedModelSlots) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 			}
 		}
@@ -266,7 +266,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return classes;
 	}
 
-	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass,
+	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?,?>> modelSlotClass,
 			List<Class<?>> classes) {
 		classes.add(modelSlotClass);
 
@@ -369,7 +369,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?>> UseModelSlotDeclaration newUseModelSlotDeclaration(Class<MS> modelSlotClass) {
+	public <MS extends ModelSlot<?,?>> UseModelSlotDeclaration newUseModelSlotDeclaration(Class<MS> modelSlotClass) {
 		UseModelSlotDeclaration returned = newInstance(UseModelSlotDeclaration.class);
 		returned.setModelSlotClass(modelSlotClass);
 		return returned;
@@ -767,7 +767,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot,
+	public <MS extends ModelSlot<?,?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot,
 			Bindable bindable) {
 		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
 		returned.setParent(parent);
@@ -776,7 +776,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName,
+	public <MS extends ModelSlot<?,?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName,
 			Bindable bindable) {
 		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
 		returned.setParent(parent);

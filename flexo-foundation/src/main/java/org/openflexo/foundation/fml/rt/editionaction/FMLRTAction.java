@@ -67,7 +67,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTAction.FMLRTActionImpl.class)
 public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
-		extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> {
+		extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<VMI, ?, ?>, VMI, T> {
 
 	public abstract Class<VMI> getVirtualModelInstanceClass();
 
@@ -79,7 +79,7 @@ public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends V
 	public VirtualModel getOwnerVirtualModelType();
 
 	public static abstract class FMLRTActionImpl<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
-			extends TechnologySpecificActionDefiningReceiverImpl<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> implements FMLRTAction<T, VMI> {
+			extends TechnologySpecificActionDefiningReceiverImpl<AbstractFMLRTModelSlot<VMI, ?, ?>, VMI, T> implements FMLRTAction<T, VMI> {
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
 

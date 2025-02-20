@@ -91,7 +91,7 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractFetchRequest.AbstractFetchRequestImpl.class)
-public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T, AT>
+public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>, T, AT>
 		extends TechnologySpecificActionDefiningReceiver<MS, RD, AT> {
 
 	@PropertyIdentifier(type = Vector.class)
@@ -146,7 +146,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 	@Updater(FETCHED_TYPE_KEY)
 	public void updateFetchedType(Type type);
 
-	public static abstract class AbstractFetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T, AT>
+	public static abstract class AbstractFetchRequestImpl<MS extends ModelSlot<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>, T, AT>
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, AT> implements AbstractFetchRequest<MS, RD, T, AT> {
 
 		private static final Logger logger = Logger.getLogger(AbstractFetchRequestImpl.class.getPackage().getName());

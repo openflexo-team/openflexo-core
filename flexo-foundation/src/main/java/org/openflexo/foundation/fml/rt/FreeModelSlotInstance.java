@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -57,8 +56,16 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
- * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
+ * 
+ * Default representation of a {@link ModelSlotInstance} which represents a direct reference to a given resource presenting a
+ * {@link ResourceData}
+ * 
+ * @param <MS>
+ *            type of {@link ModelSlot} beeing connected
+ * @param <R>
+ *            type of resource being connected
+ * @param <RD>
+ *            type of resource data beeing exposed by the {@link ModelSlot}
  * 
  * @author sylvain
  * @see FreeModelSlot
@@ -67,8 +74,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
 @XMLElement
-public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
-		extends ResourceBasedModelSlotInstance<MS, TechnologyAdapterResource<RD, ?>, RD> {
+public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD, R>, R extends TechnologyAdapterResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends ResourceBasedModelSlotInstance<MS, R, RD> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String RESOURCE_URI_KEY = "resourceURI";
@@ -80,8 +87,8 @@ public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD>, RD extends 
 	@Setter(RESOURCE_URI_KEY)
 	public void setResourceURI(String resourceURI);
 
-	public static abstract class FreeModelSlotInstanceImpl<MS extends FreeModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
-			extends ResourceBasedModelSlotInstanceImpl<MS, TechnologyAdapterResource<RD, ?>, RD> implements FreeModelSlotInstance<MS, RD> {
+	public static abstract class FreeModelSlotInstanceImpl<MS extends FreeModelSlot<RD, R>, R extends TechnologyAdapterResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
+			extends ResourceBasedModelSlotInstanceImpl<MS, R, RD> implements FreeModelSlotInstance<MS, R, RD> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlotInstance.class.getPackage().getName());
 
@@ -96,9 +103,8 @@ public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD>, RD extends 
 		}
 
 		@Override
-		protected TechnologyAdapterResource<RD, ?> retrieveResource() {
-			TechnologyAdapterResource<RD, ?> returned = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager()
-					.getResource(resourceURI, getVersion());
+		protected R retrieveResource() {
+			R returned = (R) getServiceManager().getResourceManager().getResource(resourceURI, getVersion());
 			if (returned == null) {
 				logger.warning("cannot find resource " + resourceURI);
 				/*for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {

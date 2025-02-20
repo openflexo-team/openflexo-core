@@ -56,10 +56,10 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(CloneIndividual.CloneIndividualImpl.class)
-public abstract interface CloneIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
+public abstract interface CloneIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
 		extends AddIndividual<MS, M, T, TA> {
 
-	public static abstract class CloneIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
+	public static abstract class CloneIndividualImpl<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
 			extends AddIndividualImpl<MS, M, T, TA> implements CloneIndividual<MS, M, T, TA> {
 
 		private static final Logger logger = Logger.getLogger(CloneIndividual.class.getPackage().getName());

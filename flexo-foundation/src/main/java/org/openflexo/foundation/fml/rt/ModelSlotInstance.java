@@ -56,17 +56,23 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Concretizes the binding of a {@link ModelSlot} to its data<br>
+ * This is the run-time object for a {@link ModelSlot}
+ * 
+ * It concretized the effective binding of a {@link ModelSlot} to its data<br>
  * A {@link ModelSlotInstance} persists the connection of a {@link ModelSlot} at run-time
+ * 
+ * @param <MS>
+ *            type of {@link ModelSlot} beeing connected
+ * @param <RD>
+ *            type of resource data beeing exposed by the {@link ModelSlot}
  * 
  * @author sylvain
  * @see ModelSlot
- * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlotInstance.ModelSlotInstanceImpl.class)
 @Imports({ @Import(FreeModelSlotInstance.class), @Import(TypeAwareModelSlotInstance.class), @Import(FMLRTModelSlotInstance.class) })
-public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
 		extends ActorReference<RD> {
 
 	@PropertyIdentifier(type = String.class)
@@ -98,7 +104,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 */
 	// public void setAccessedResourceData(RD accessedResourceData);
 
-	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
 			extends ActorReferenceImpl<RD> implements ModelSlotInstance<MS, RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());

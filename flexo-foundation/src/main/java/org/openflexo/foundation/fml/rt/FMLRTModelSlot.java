@@ -44,7 +44,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -62,7 +61,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
-import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -84,10 +83,11 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
 @XMLElement(xmlTag = "FMLRTModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot,FMLRTModelSlot")
 @FML(AbstractFMLTypingSpace.MODEL_INSTANCE)
-@FMLMigration // Rename to FMLRTModelSlot !
-public interface FMLRTModelSlot extends AbstractFMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
+public interface FMLRTModelSlot
+		extends AbstractFMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTVirtualModelInstanceResource, FMLRTTechnologyAdapter> {
 
-	public static abstract class FMLRTModelSlotImpl extends AbstractFMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter>
+	public static abstract class FMLRTModelSlotImpl
+			extends AbstractFMLRTModelSlotImpl<FMLRTVirtualModelInstance, FMLRTVirtualModelInstanceResource, FMLRTTechnologyAdapter>
 			implements FMLRTModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
@@ -121,10 +121,10 @@ public interface FMLRTModelSlot extends AbstractFMLRTModelSlot<FMLRTVirtualModel
 		}
 
 		@Override
-		public FMLRTModelSlotInstance connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+		public FMLRTModelSlotInstance connectTo(FMLRTVirtualModelInstanceResource resource, FlexoConceptInstance context) {
 			FMLRTModelSlotInstance modelSlotInstance;
 			try {
-				modelSlotInstance = makeActorReference((FMLRTVirtualModelInstance) resource.getResourceData(), context);
+				modelSlotInstance = makeActorReference(resource.getResourceData(), context);
 				context.addToActors(modelSlotInstance);
 				return modelSlotInstance;
 			} catch (FileNotFoundException e) {

@@ -159,7 +159,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 		@Override
 		public FlexoDocument<D, TA> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
-				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
+				return ((FlexoDocumentModelSlot<D, ?, ?>) getModelSlot()).getTemplateResource().getDocument();
 			}
 			return null;
 		}

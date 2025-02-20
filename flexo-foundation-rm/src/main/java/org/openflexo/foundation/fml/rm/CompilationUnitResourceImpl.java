@@ -276,7 +276,7 @@ public abstract class CompilationUnitResourceImpl
 		TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
 		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
 		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
-		for (Class<? extends ModelSlot<?>> msClass : getUsedModelSlots()) {
+		for (Class<? extends ModelSlot<?,?>> msClass : getUsedModelSlots()) {
 			TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
 			if (!requiredTAList.contains(requiredTA)) {
 				requiredTAList.add(requiredTA);
@@ -560,7 +560,7 @@ public abstract class CompilationUnitResourceImpl
 		}
 	}
 
-	private List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
+	private List<Class<? extends ModelSlot<?,?>>> usedModelSlots = new ArrayList<>();
 
 	/**
 	 * Return {@link ModelSlot} classes used in this {@link VirtualModel} resource<br>
@@ -570,7 +570,7 @@ public abstract class CompilationUnitResourceImpl
 	 * @return
 	 */
 	@Override
-	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots() {
+	public List<Class<? extends ModelSlot<?,?>>> getUsedModelSlots() {
 		return usedModelSlots;
 	}
 
@@ -578,7 +578,7 @@ public abstract class CompilationUnitResourceImpl
 	public String getUsedModelSlotsAsString() {
 		boolean isFirst = true;
 		StringBuffer sb = new StringBuffer();
-		for (Class<? extends ModelSlot<?>> msClass : usedModelSlots) {
+		for (Class<? extends ModelSlot<?,?>> msClass : usedModelSlots) {
 			sb.append((isFirst ? "" : ",") + msClass.getName());
 			isFirst = false;
 		}
@@ -599,7 +599,7 @@ public abstract class CompilationUnitResourceImpl
 			StringTokenizer st = new StringTokenizer(usedModelSlotClasses, ",");
 			while (st.hasMoreTokens()) {
 				String next = st.nextToken();
-				usedModelSlots.add((Class<? extends ModelSlot<?>>) Class.forName(next));
+				usedModelSlots.add((Class<? extends ModelSlot<?,?>>) Class.forName(next));
 			}
 		}
 	}
@@ -612,7 +612,7 @@ public abstract class CompilationUnitResourceImpl
 	 * @param useDeclarations
 	 */
 	@Override
-	public FMLModelFactory updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> usedModelSlots) {
+	public FMLModelFactory updateFMLModelFactory(List<Class<? extends ModelSlot<?,?>>> usedModelSlots) {
 		this.usedModelSlots = usedModelSlots;
 		try {
 			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());

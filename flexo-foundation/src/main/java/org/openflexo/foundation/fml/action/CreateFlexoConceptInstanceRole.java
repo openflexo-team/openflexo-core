@@ -125,7 +125,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException, InvalidNameException {
 		// logger.info("Add flexo role, flexoRoleClass=" + flexoRoleClass);
 		// logger.info("modelSlot = " + getModelSlot());
-		ModelSlot<?> ms = getModelSlot();
+		ModelSlot<?, ?> ms = getModelSlot();
 		if (ms != null) {
 			newFlexoRole = ms.makeFlexoRole(FlexoConceptInstanceRole.class);
 		}
@@ -157,7 +157,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	}
 
 	public VirtualModel getModelSlotVirtualModel() {
-		AbstractFMLRTModelSlot<?, ?> ms = getModelSlot();
+		AbstractFMLRTModelSlot<?, ?, ?> ms = getModelSlot();
 		if (ms == null || !useModelSlot) {
 			return getFlexoConcept().getOwner();
 		}
@@ -205,7 +205,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 				return flexoConcept.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class).get(0);
 			}
 			// Trying to find the most adapted model slot
-			for (AbstractFMLRTModelSlot<?, ?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class)) {
+			for (AbstractFMLRTModelSlot<?, ?, ?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class)) {
 				if (ms.getAccessedVirtualModel() != null) {
 					if (ms.getAccessedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
 						return ms;
@@ -228,7 +228,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 	public void setFlexoConceptInstanceType(FlexoConcept flexoConceptInstanceType) {
 		// The default model slot may change
-		AbstractFMLRTModelSlot<?, ?> oldModelSlot = getModelSlot();
+		AbstractFMLRTModelSlot<?, ?, ?> oldModelSlot = getModelSlot();
 		this.flexoConceptInstanceType = flexoConceptInstanceType;
 		defaultModelSlot = retrieveDefaultModelSlot();
 		getPropertyChangeSupport().firePropertyChange("modelSlot", oldModelSlot, getModelSlot());

@@ -95,7 +95,7 @@ public class FMLCompilationUnitParser {
 	 * @throws IOException
 	 */
 	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			Function<List<Class<? extends ModelSlot<?,?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
 			throws ParseException, IOException {
 		return parse(new StringReader(data), new StringReader(data), modelFactory, modelFactoryUpdater, finalizeDeserialization);
 	}
@@ -119,7 +119,7 @@ public class FMLCompilationUnitParser {
 	 *             if an IOException occurs during parsing
 	 */
 	public FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			Function<List<Class<? extends ModelSlot<?,?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
 			throws ParseException, IOException {
 
 		// InputStream rawSourceInputStream = IOUtils.toBufferedInputStream(inputStream);
@@ -157,7 +157,7 @@ public class FMLCompilationUnitParser {
 	 *             if an IOException occurs during parsing
 	 */
 	public FMLCompilationUnit parse(File file, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			Function<List<Class<? extends ModelSlot<?,?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
 			throws ParseException, IOException {
 
 		return parse(new FileInputStream(file), modelFactory, modelFactoryUpdater, finalizeDeserialization);
@@ -183,7 +183,7 @@ public class FMLCompilationUnitParser {
 	 *             if an IOException occurs during parsing
 	 */
 	private FMLCompilationUnit parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			Function<List<Class<? extends ModelSlot<?,?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
 			throws ParseException, IOException {
 
 		RawSource rawSource = readRawSource(rawSourceReader);

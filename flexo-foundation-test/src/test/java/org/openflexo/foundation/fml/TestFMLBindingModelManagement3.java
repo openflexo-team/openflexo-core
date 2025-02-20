@@ -72,8 +72,8 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
@@ -233,7 +233,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		createMS1.doAction();
 		assertTrue(createMS1.hasActionExecutionSucceeded());
 
-		AbstractFMLRTModelSlot<?, ?> ms1 = (AbstractFMLRTModelSlot<?, ?>) virtualModel3.getModelSlot("vm1");
+		AbstractFMLRTModelSlot<?, ?, ?> ms1 = (AbstractFMLRTModelSlot<?, ?, ?>) virtualModel3.getModelSlot("vm1");
 		assertNotNull(ms1);
 		assertSame(createMS1.getNewModelSlot(), ms1);
 

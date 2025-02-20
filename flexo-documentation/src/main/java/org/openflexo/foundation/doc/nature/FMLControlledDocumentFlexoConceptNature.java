@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.VirtualModel;
  * @author sylvain
  * 
  */
-public abstract class FMLControlledDocumentFlexoConceptNature<MS extends FlexoDocumentModelSlot<?>> implements FlexoConceptNature {
+public abstract class FMLControlledDocumentFlexoConceptNature<MS extends FlexoDocumentModelSlot<?, ?, ?>> implements FlexoConceptNature {
 
 	// Prevent external instantiation
 	protected FMLControlledDocumentFlexoConceptNature() {

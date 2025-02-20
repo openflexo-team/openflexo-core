@@ -44,6 +44,7 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.pamela.annotations.Getter;
@@ -66,8 +67,15 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TypeAwareModelSlotInstance.TypeAwareModelSlotInstanceImpl.class)
 @XMLElement
-public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-		extends ResourceBasedModelSlotInstance<MS, FlexoModelResource<M, MM, ?, ?>, M> {
+public interface TypeAwareModelSlotInstance<
+//@formatter:off
+	M extends FlexoModel<M, MM> & TechnologyObject<TA>, 
+	MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, 
+	MS extends TypeAwareModelSlot<M, MM, R>, 
+	R extends FlexoModelResource<M, MM, TA, TA>,
+	TA extends TechnologyAdapter<TA>>
+		extends ResourceBasedModelSlotInstance<MS, R, M> {
+	// @formatter:on
 
 	@PropertyIdentifier(type = String.class)
 	public static final String MODEL_URI_KEY = "modelURI";
@@ -81,9 +89,16 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 
 	public M getModel();
 
-	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-			extends ResourceBasedModelSlotInstanceImpl<MS, FlexoModelResource<M, MM, ?, ?>, M>
-			implements TypeAwareModelSlotInstance<M, MM, MS> {
+	public static abstract class TypeAwareModelSlotInstanceImpl<
+	//@formatter:off
+		M extends FlexoModel<M, MM> & TechnologyObject<TA>, 
+		MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, 
+		MS extends TypeAwareModelSlot<M, MM, R>, 
+		R extends FlexoModelResource<M, MM, TA, TA>,
+		TA extends TechnologyAdapter<TA>>
+			extends ResourceBasedModelSlotInstanceImpl<MS, R, M>
+			implements TypeAwareModelSlotInstance<M, MM, MS, R, TA> {
+		// @formatter:on
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 
@@ -111,9 +126,9 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 		}
 
 		@Override
-		protected FlexoModelResource<M, MM, ?, ?> retrieveResource() {
-			FlexoModelResource<M, MM, ?, ?> returned = (FlexoModelResource<M, MM, ?, ?>) getServiceManager().getResourceManager()
-					.getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
+		protected R retrieveResource() {
+			R returned = (R) getServiceManager().getResourceManager().getModelWithURI(modelURI,
+					getModelSlot().getModelSlotTechnologyAdapter());
 			if (returned == null) {
 				logger.warning("cannot find model " + modelURI);
 				/*for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {

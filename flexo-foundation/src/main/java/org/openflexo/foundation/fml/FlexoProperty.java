@@ -229,7 +229,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 
 		// Unused private PropertyChangeSupport pcSupport;
 
-		// Unused private ModelSlot<?> modelSlot;
+		// Unused private ModelSlot<?,?> modelSlot;
 
 		private Type resultingType;
 

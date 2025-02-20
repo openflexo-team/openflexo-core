@@ -53,6 +53,7 @@ import org.openflexo.foundation.ontology.fml.editionaction.AddIndividual;
 import org.openflexo.foundation.ontology.fml.rt.FlexoOntologyModelSlotInstance;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -70,8 +71,8 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoOntologyModelSlot.FlexoOntologyModelSlotImpl.class)
-public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter<TA>>
-		extends TypeAwareModelSlot<M, MM> {
+public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, R extends FlexoModelResource<M, MM, TA, TA>, TA extends TechnologyAdapter<TA>>
+		extends TypeAwareModelSlot<M, MM, R> {
 
 	/**
 	 * Instantiate a new IndividualRole
@@ -81,20 +82,20 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 	 */
 	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass<?> type);
 
-	public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA> makeAddIndividualAction(
+	public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, R, TA>, M, IFlexoOntologyIndividual<TA>, TA> makeAddIndividualAction(
 			IndividualRole<?> individualRole, AbstractCreationScheme creationScheme);
 
 	public abstract Class<? extends IndividualRole<?>> getIndividualRoleClass();
 
-	public static abstract class FlexoOntologyModelSlotImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter<TA>>
-			extends TypeAwareModelSlotImpl<M, MM> implements FlexoOntologyModelSlot<M, MM, TA> {
+	public static abstract class FlexoOntologyModelSlotImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, R extends FlexoModelResource<M, MM, TA, TA>, TA extends TechnologyAdapter<TA>>
+			extends TypeAwareModelSlotImpl<M, MM, R> implements FlexoOntologyModelSlot<M, MM, R, TA> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FlexoOntologyModelSlot.class.getPackage().getName());
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public TypeAwareModelSlotInstance<M, MM, ?> makeActorReference(M object, FlexoConceptInstance fci) {
+		public TypeAwareModelSlotInstance<M, MM, ?, ?, ?> makeActorReference(M object, FlexoConceptInstance fci) {
 
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			FlexoOntologyModelSlotInstance returned = factory.newInstance(FlexoOntologyModelSlotInstance.class);
@@ -125,12 +126,12 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		}
 
 		@Override
-		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA> makeAddIndividualAction(
+		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, R, TA>, M, IFlexoOntologyIndividual<TA>, TA> makeAddIndividualAction(
 				IndividualRole<?> flexoRole, AbstractCreationScheme creationScheme) {
 			@SuppressWarnings("unchecked")
-			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA>>) getEditionActionClass(
+			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, R, TA>, M, IFlexoOntologyIndividual<TA>, TA>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, R, TA>, M, IFlexoOntologyIndividual<TA>, TA>>) getEditionActionClass(
 					AddIndividual.class);
-			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA> returned = makeEditionAction(
+			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, R, TA>, M, IFlexoOntologyIndividual<TA>, TA> returned = makeEditionAction(
 					addIndividualClass);
 			returned.getReceiver().setUnparsedBinding(getName());
 			// returned.setModelSlot(this);
@@ -142,10 +143,10 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		}
 
 		public abstract String getURIForObject(
-				FlexoOntologyModelSlotInstance<M, MM, ? extends FlexoOntologyModelSlot<M, MM, TA>, TA> msInstance, Object o);
+				FlexoOntologyModelSlotInstance<M, MM, ? extends FlexoOntologyModelSlot<M, MM, R, TA>, ?, TA> msInstance, Object o);
 
 		public abstract Object retrieveObjectWithURI(
-				FlexoOntologyModelSlotInstance<M, MM, ? extends FlexoOntologyModelSlot<M, MM, TA>, TA> msInstance, String objectURI);
+				FlexoOntologyModelSlotInstance<M, MM, ? extends FlexoOntologyModelSlot<M, MM, R, TA>, ?, TA> msInstance, String objectURI);
 
 		/**
 		 * Return flag indicating if this model slot implements a strict meta-modelling contract (return true if and only if a model in this

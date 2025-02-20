@@ -124,7 +124,7 @@ public interface CompilationUnitResource
 	 * 
 	 * @return
 	 */
-	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots();
+	public List<Class<? extends ModelSlot<?,?>>> getUsedModelSlots();
 
 	/**
 	 * Return a string representation of used model slots classes as a comma-separated string with class names
@@ -143,7 +143,7 @@ public interface CompilationUnitResource
 	 * 
 	 * @param useDeclarations
 	 */
-	public FMLModelFactory updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> useDeclarations);
+	public FMLModelFactory updateFMLModelFactory(List<Class<? extends ModelSlot<?,?>>> useDeclarations);
 
 	/**
 	 * Returns a list of VMI resources located by this resource<br>

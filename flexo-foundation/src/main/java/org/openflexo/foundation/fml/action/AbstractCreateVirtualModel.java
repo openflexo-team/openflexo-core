@@ -150,7 +150,7 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 		private TA technologyAdapter;
 		private boolean required = true;
 		private boolean readOnly = false;
-		private Class<? extends ModelSlot<?>> modelSlotClass;
+		private Class<? extends ModelSlot<?,?>> modelSlotClass;
 
 		private CompilationUnitResource compilationUnitResource;
 		private FlexoMetaModelResource<?, ?, ?> metaModelResource;
@@ -174,14 +174,14 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 			return locales;
 		}
 
-		public Class<? extends ModelSlot<?>> getModelSlotClass() {
+		public Class<? extends ModelSlot<?,?>> getModelSlotClass() {
 			if (modelSlotClass == null && technologyAdapter != null && technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
 				return technologyAdapter.getAvailableModelSlotTypes().get(0);
 			}
 			return modelSlotClass;
 		}
 
-		public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+		public void setModelSlotClass(Class<? extends ModelSlot<?,?>> modelSlotClass) {
 			this.modelSlotClass = modelSlotClass;
 			getPropertyChangeSupport().firePropertyChange("modelSlotClass", modelSlotClass != null ? null : false, modelSlotClass);
 		}

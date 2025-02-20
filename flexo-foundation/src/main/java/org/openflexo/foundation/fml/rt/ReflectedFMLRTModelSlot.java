@@ -46,7 +46,6 @@ import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -77,10 +76,10 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ReflectedFMLRTModelSlot.ReflectedFMLRTModelSlotImpl.class)
 public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
-		extends AbstractFMLRTModelSlot<VMI, TA> {
+		extends AbstractFMLRTModelSlot<VMI, R, TA> {
 
 	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
-			extends AbstractFMLRTModelSlotImpl<VMI, TA> implements ReflectedFMLRTModelSlot<VMI, R, RD, TA> {
+			extends AbstractFMLRTModelSlotImpl<VMI, R, TA> implements ReflectedFMLRTModelSlot<VMI, R, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(ReflectedFMLRTModelSlot.class.getPackage().getName());
 
@@ -115,7 +114,7 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 		}*/
 
 		@Override
-		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> connectTo(R resource, FlexoConceptInstance context) {
 			System.out.println("Alors la ca rigole moins on dirait, hein ????");
 			System.exit(-1);
 			return null;

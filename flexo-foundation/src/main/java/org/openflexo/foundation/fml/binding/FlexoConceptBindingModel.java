@@ -302,7 +302,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 					bv = new FlexoConceptInstanceRoleBindingVariable((FlexoConceptInstanceRole) r);
 				}
 				else if (r instanceof ModelSlot) {
-					bv = new ModelSlotBindingVariable((ModelSlot<?>) r);
+					bv = new ModelSlotBindingVariable((ModelSlot<?,?>) r);
 				}
 				else if (r instanceof FlexoRole) {
 					bv = new FlexoRoleBindingVariable((FlexoRole<?>) r);

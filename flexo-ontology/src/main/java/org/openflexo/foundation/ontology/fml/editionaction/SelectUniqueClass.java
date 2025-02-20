@@ -59,7 +59,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(SelectUniqueClass.AbstractSelectClassImpl.class)
-public abstract interface SelectUniqueClass<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
+public abstract interface SelectUniqueClass<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
 		extends AbstractSelectClass<MS, M, T, T>, UniqueFetchRequest<MS, M, T> {
 
 }

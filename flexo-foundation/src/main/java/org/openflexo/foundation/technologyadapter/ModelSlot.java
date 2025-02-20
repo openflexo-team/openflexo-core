@@ -72,24 +72,25 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
  * A model slot is a named object providing access to a particular data encoded in a given technology<br>
- * A model slot should be seen as a connector to a data.<br>
- * A model slot formalizes a contract for accessing to a data
+ * 
+ * A model slot formalizes a contract for accessing to a data, it is connected at run-time to a given resource and exposes a resource data
  * 
  * It is defined at FML level. <br>
- * A {@link ModelSlotInstance} binds used slots to some data
  * 
  * @param <RD>
- *            Type of resource data handled by this ModelSlot
+ *            Type of resource data exposed by this {@link ModelSlot}
+ * @param <R>
+ *            Type of resource beeing connected at run-time through this model slot
  * 
- * @author Sylvain Guerin
- * @see org.openflexo.foundation.fml.ViewPoint
- * @see org.openflexo.foundation.fml.rt.View
- * @see org.openflexo.foundation.fml.rt.ModelSlotInstance
+ * 
+ * @author sylvain
+ * @see ModelSlotInstance
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(AbstractFMLRTModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD>, ModelSlotObject<RD> {
+public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R extends FlexoResource<?>>
+		extends FlexoRole<RD>, ModelSlotObject<RD> {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
@@ -224,10 +225,10 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	 * @return
 	 */
 	// TODO : expose type of resource in class type variables (this is a big refactoring !)
-	public ModelSlotInstance<?, RD> connectTo(FlexoResource<?> resource, FlexoConceptInstance context);
+	public ModelSlotInstance<?, RD> connectTo(R resource, FlexoConceptInstance context);
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
-			implements ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>, R extends FlexoResource<?>>
+			extends FlexoRoleImpl<RD> implements ModelSlot<RD, R> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -243,7 +244,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;*/
 
 		@Override
-		public ModelSlot<RD> getModelSlot() {
+		public ModelSlot<RD, R> getModelSlot() {
 			return this;
 		}
 
@@ -594,7 +595,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		@Override
 		public void finalizeDeserialization() {
 			if (getVirtualModel() != null && getFMLModelFactory() != null) {
-				Class<? extends ModelSlot<?>> modelSlotClass = getFMLModelFactory().getModelEntityForInstance(this)
+				Class<? extends ModelSlot<?, ?>> modelSlotClass = getFMLModelFactory().getModelEntityForInstance(this)
 						.getImplementedInterface();
 				if (!getVirtualModel().uses(modelSlotClass)) {
 					getVirtualModel().declareUse(modelSlotClass);

@@ -318,7 +318,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		behaviourClassMap.put(NavigationScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
 
 		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringCompilationUnit().getUseDeclarations()) {
-			Class<? extends ModelSlot<?>> msClass = useMS.getModelSlotClass();
+			Class<? extends ModelSlot<?,?>> msClass = useMS.getModelSlotClass();
 			if (editor != null && editor.getServiceManager() != null) {
 				for (Class<? extends FlexoBehaviour> behaviour : editor.getServiceManager().getTechnologyAdapterService()
 						.getAvailableFlexoBehaviourTypes(msClass)) {

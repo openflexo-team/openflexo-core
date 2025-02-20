@@ -42,7 +42,6 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -58,19 +57,24 @@ import org.openflexo.pamela.annotations.Setter;
  * Abstract representation of a {@link ModelSlotInstance} which represents a direct reference to a given resource presenting a
  * {@link ResourceData}
  * 
- * @author Sylvain
- * 
  * @param <MS>
+ *            type of {@link ModelSlot} beeing connected
  * @param <R>
- * @param <R>
- *            type of resource beeing interpreted as an instance of a FML {@link VirtualModel}
- * @param <TA>
- *            technology providing this model slot
+ *            type of resource being connected
+ * @param <RD>
+ *            type of resource data beeing exposed by the {@link ModelSlot}
+ * 
+ * @author Sylvain
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ResourceBasedModelSlotInstance.ResourceBasedModelSlotInstanceImpl.class)
-public abstract interface ResourceBasedModelSlotInstance<MS extends ModelSlot<? extends RD>, R extends TechnologyAdapterResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
+public abstract interface ResourceBasedModelSlotInstance<
+//@formatter:off
+	MS extends ModelSlot<? extends RD, R>, 
+	R extends TechnologyAdapterResource<RD, ?>, 
+	RD extends ResourceData<RD> & TechnologyObject<?>>
 		extends ModelSlotInstance<MS, RD>, SettableModelSlotInstance<MS, RD> {
+	//@formatter:on
 
 	@PropertyIdentifier(type = TechnologyAdapterResource.class)
 	public static final String RESOURCE_KEY = "resource";
@@ -115,7 +119,7 @@ public abstract interface ResourceBasedModelSlotInstance<MS extends ModelSlot<? 
 	@Setter(RESOURCE_KEY)
 	public void setResource(R resource);
 
-	public static abstract class ResourceBasedModelSlotInstanceImpl<MS extends ModelSlot<RD>, R extends TechnologyAdapterResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
+	public static abstract class ResourceBasedModelSlotInstanceImpl<MS extends ModelSlot<RD, R>, R extends TechnologyAdapterResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
 			extends ModelSlotInstanceImpl<MS, RD> implements ResourceBasedModelSlotInstance<MS, R, RD> {
 
 		private static final Logger logger = Logger.getLogger(ResourceBasedModelSlotInstance.class.getPackage().getName());

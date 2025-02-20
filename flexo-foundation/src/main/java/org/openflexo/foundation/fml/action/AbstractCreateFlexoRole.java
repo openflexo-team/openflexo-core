@@ -110,7 +110,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 
 	@Override
 	protected final String getDefaultPropertyName() {
-		ModelSlot<?> ms = getModelSlot();
+		ModelSlot<?,?> ms = getModelSlot();
 		if (ms != null && getFlexoRoleClass() != null) {
 			return ms.defaultFlexoRoleName(getFlexoRoleClass());
 		}
@@ -189,7 +189,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 				return ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType()).get(0);
 			}
 			// Trying to find the most adapted model slot
-			for (ModelSlot<?> ms : ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType())) {
+			for (ModelSlot<?,?> ms : ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType())) {
 				if (ms.getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 					return (MS) ms;
 				}
@@ -202,7 +202,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 				return flexoConcept.getOwningVirtualModel().getModelSlots(getModelSlotType()).get(0);
 			}
 			// Trying to find the most adapted model slot
-			for (ModelSlot<?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(getModelSlotType())) {
+			for (ModelSlot<?,?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(getModelSlotType())) {
 				if (ms.getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 					return (MS) ms;
 				}
@@ -219,7 +219,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 	 */
 	public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
 		if (getModelSlot() instanceof TypeAwareModelSlot) {
-			TypeAwareModelSlot<?, ?> typeAwareModelSlot = (TypeAwareModelSlot<?, ?>) modelSlot;
+			TypeAwareModelSlot<?, ?, ?> typeAwareModelSlot = (TypeAwareModelSlot<?, ?, ?>) modelSlot;
 			if (typeAwareModelSlot.getMetaModelResource() != null) {
 				return typeAwareModelSlot.getMetaModelResource().getMetaModelData();
 			}

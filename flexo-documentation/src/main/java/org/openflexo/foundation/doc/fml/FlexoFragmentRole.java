@@ -34,6 +34,7 @@ import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
@@ -41,7 +42,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -112,8 +112,8 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 		@Override
 		public FlexoDocument<D, TA> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot
-					&& ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource() != null) {
-				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
+					&& ((FlexoDocumentModelSlot<D, ?, ?>) getModelSlot()).getTemplateResource() != null) {
+				return ((FlexoDocumentModelSlot<D, ?, ?>) getModelSlot()).getTemplateResource().getDocument();
 			}
 			return null;
 		}
@@ -157,7 +157,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 		public ValidationIssue<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole<?, ?, ?>> applyValidation(
 				FlexoFragmentRole<?, ?, ?> role) {
 			if (role.getModelSlot() instanceof FlexoDocumentModelSlot
-					&& ((FlexoDocumentModelSlot<?>) role.getModelSlot()).getTemplateResource() != null) {
+					&& ((FlexoDocumentModelSlot<?, ?, ?>) role.getModelSlot()).getTemplateResource() != null) {
 				if (role.getFragment() == null) {
 					return new ValidationError<>(this, role, "fragment_role_doesn't_reference_any_template_fragment");
 				}

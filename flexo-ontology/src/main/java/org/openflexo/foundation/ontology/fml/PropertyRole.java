@@ -181,8 +181,8 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 		}
 
 		@Override
-		public TypeAwareModelSlot<?, ?> getModelSlot() {
-			TypeAwareModelSlot<?, ?> returned = super.getModelSlot();
+		public TypeAwareModelSlot<?, ?, ?> getModelSlot() {
+			TypeAwareModelSlot<?, ?, ?> returned = super.getModelSlot();
 			if (returned == null) {
 				if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
 					return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);

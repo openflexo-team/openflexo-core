@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -96,8 +97,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @Imports({ @Import(FMLRTModelSlot.class) })
 @ImplementationClass(AbstractFMLRTModelSlot.AbstractFMLRTModelSlotImpl.class)
-public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-		extends ModelSlot<VMI> {
+public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
+		extends ModelSlot<VMI, R> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -130,8 +131,8 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 
 	public Class<TA> getTechnologyAdapterClass();
 
-	public static abstract class AbstractFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-			extends ModelSlotImpl<VMI> implements AbstractFMLRTModelSlot<VMI, TA> {
+	public static abstract class AbstractFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<?, TA>, TA extends TechnologyAdapter<TA>>
+			extends ModelSlotImpl<VMI, R> implements AbstractFMLRTModelSlot<VMI, R, TA> {
 
 		private static final Logger logger = Logger.getLogger(AbstractFMLRTModelSlot.class.getPackage().getName());
 
@@ -459,14 +460,14 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 	}
 
 	@DefineValidationRule
-	public static class VirtualModelIsRequired extends ValidationRule<VirtualModelIsRequired, AbstractFMLRTModelSlot<?, ?>> {
+	public static class VirtualModelIsRequired extends ValidationRule<VirtualModelIsRequired, AbstractFMLRTModelSlot<?, ?, ?>> {
 		public VirtualModelIsRequired() {
 			super(AbstractFMLRTModelSlot.class, "virtual_model_is_required");
 		}
 
 		@Override
-		public ValidationIssue<VirtualModelIsRequired, AbstractFMLRTModelSlot<?, ?>> applyValidation(
-				AbstractFMLRTModelSlot<?, ?> modelSlot) {
+		public ValidationIssue<VirtualModelIsRequired, AbstractFMLRTModelSlot<?, ?, ?>> applyValidation(
+				AbstractFMLRTModelSlot<?, ?, ?> modelSlot) {
 
 			if (modelSlot.getAccessedVirtualModel() == null) {
 				return new ValidationError<>(this, modelSlot, "fml_rt_model_slot_does_not_define_a_valid_virtual_model");

@@ -75,7 +75,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividualRole, FlexoOntologyModelSlot<?, ?, ?>> {
+public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividualRole, FlexoOntologyModelSlot<?, ?, ?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(CreateIndividualRole.class.getPackage().getName());
 
@@ -164,7 +164,7 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 	}
 
 	@Override
-	public List<FlexoOntologyModelSlot<?, ?, ?>> getAvailableModelSlots() {
+	public List<FlexoOntologyModelSlot<?, ?, ?, ?>> getAvailableModelSlots() {
 
 		if (getFocusedObject() instanceof VirtualModel) {
 			return (List) ((VirtualModel) getFocusedObject()).getModelSlots(FlexoOntologyModelSlot.class);
@@ -176,7 +176,7 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 	}
 
 	@Override
-	public void setModelSlot(FlexoOntologyModelSlot<?, ?, ?> modelSlot) {
+	public void setModelSlot(FlexoOntologyModelSlot<?, ?, ?, ?> modelSlot) {
 		super.setModelSlot(modelSlot);
 		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
@@ -201,7 +201,7 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 		this.flexoRoleClass = flexoRoleClass;
 
 		// The default model slot may change
-		ModelSlot<?> oldModelSlot = getModelSlot();
+		ModelSlot<?, ?> oldModelSlot = getModelSlot();
 		defaultModelSlot = retrieveDefaultModelSlot();
 		getPropertyChangeSupport().firePropertyChange("modelSlot", oldModelSlot, getModelSlot());
 
@@ -223,7 +223,7 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Class<FlexoOntologyModelSlot<?, ?, ?>> getModelSlotType() {
+	public Class<FlexoOntologyModelSlot<?, ?, ?, ?>> getModelSlotType() {
 		return (Class) FlexoOntologyModelSlot.class;
 	}
 

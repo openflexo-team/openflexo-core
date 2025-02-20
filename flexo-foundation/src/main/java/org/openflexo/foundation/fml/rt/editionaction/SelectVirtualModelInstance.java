@@ -64,6 +64,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 @FML("SelectVirtualModelInstance")
 public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
 		extends AbstractSelectVirtualModelInstance<VMI, List<VirtualModelInstance<?, ?>>>,
-		FetchRequest<AbstractFMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>> {
+		FetchRequest<AbstractFMLRTModelSlot<VMI, ?, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>> {
 
 }

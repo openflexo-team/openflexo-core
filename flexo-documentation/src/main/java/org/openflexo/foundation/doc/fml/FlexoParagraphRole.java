@@ -87,7 +87,7 @@ public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extend
 		@Override
 		public FlexoDocument<D, TA> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
-				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
+				return ((FlexoDocumentModelSlot<D, ?, ?>) getModelSlot()).getTemplateResource().getDocument();
 			}
 			return null;
 		}

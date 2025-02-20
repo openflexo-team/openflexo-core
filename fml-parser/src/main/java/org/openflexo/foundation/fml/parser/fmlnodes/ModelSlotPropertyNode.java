@@ -69,7 +69,7 @@ import org.openflexo.p2pp.PrettyPrintContext.Indentation;
  * @author sylvain
  * 
  */
-public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends ModelSlot<?>> extends AbstractRolePropertyNode<N, MS> {
+public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends ModelSlot<?,?>> extends AbstractRolePropertyNode<N, MS> {
 
 	private static final Logger logger = Logger.getLogger(ModelSlotPropertyNode.class.getPackage().getName());
 

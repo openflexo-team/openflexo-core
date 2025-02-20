@@ -40,8 +40,8 @@ package org.openflexo.foundation.doc.nature;
 
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.fml.FlexoDocumentModelSlot;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 
 /**
@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
  * @author sylvain
  * 
  */
-public abstract class FMLControlledDocumentVirtualModelInstanceNature<MS extends FlexoDocumentModelSlot<D>, D extends FlexoDocument<D, ?>>
+public abstract class FMLControlledDocumentVirtualModelInstanceNature<MS extends FlexoDocumentModelSlot<D, ?, ?>, D extends FlexoDocument<D, ?>>
 		implements VirtualModelInstanceNature {
 
 	// Prevent external instantiation

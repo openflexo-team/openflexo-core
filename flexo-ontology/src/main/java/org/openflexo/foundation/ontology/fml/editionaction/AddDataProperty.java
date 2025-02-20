@@ -60,7 +60,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddDataProperty.AddDataPropertyImpl.class)
-public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyDataProperty<?>>
+public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyDataProperty<?>>
 		extends AddConcept<MS, M, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -93,7 +93,7 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?>, M
 	@Setter(DATA_TYPE_KEY)
 	public void setDataType(BuiltInDataType dataType);
 
-	public static abstract class AddDataPropertyImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyDataProperty<?>>
+	public static abstract class AddDataPropertyImpl<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyDataProperty<?>>
 			extends AddConceptImpl<MS, M, T> implements AddDataProperty<MS, M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddDataProperty.class.getPackage().getName());

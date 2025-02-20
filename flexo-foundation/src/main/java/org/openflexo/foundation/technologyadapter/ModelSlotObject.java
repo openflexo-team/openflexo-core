@@ -52,7 +52,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 public interface ModelSlotObject<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoConceptObject {
 
-	public ModelSlot<RD> getModelSlot();
+	public ModelSlot<RD, ?> getModelSlot();
 
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 

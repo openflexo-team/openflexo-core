@@ -72,7 +72,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractSelectIndividual.AbstractSelectIndividualImpl.class)
-public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual, AT>
+public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual, AT>
 		extends AbstractFetchRequest<MS, M, T, AT> {
 
 	@PropertyIdentifier(type = String.class)
@@ -94,7 +94,7 @@ public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot
 
 	public IFlexoOntology<?> getMetaModelAsOntology();
 
-	public static abstract class AbstractSelectIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual, AT>
+	public static abstract class AbstractSelectIndividualImpl<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual, AT>
 			extends AbstractFetchRequestImpl<MS, M, T, AT> implements AbstractSelectIndividual<MS, M, T, AT> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectIndividual.class.getPackage().getName());

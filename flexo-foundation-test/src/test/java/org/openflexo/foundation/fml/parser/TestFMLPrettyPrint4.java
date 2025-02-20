@@ -105,7 +105,7 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 	private static UseModelSlotDeclaration useDeclaration;
 	private static ElementImportDeclaration importDeclaration;
 	private static JavaImportDeclaration stringImport;
-	private static AbstractFMLRTModelSlot<?, ?> myModelModelSlot;
+	private static AbstractFMLRTModelSlot<?, ?, ?> myModelModelSlot;
 
 	private static JavaImportNode stringImportNode;
 
@@ -128,7 +128,7 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 		assertNotNull(importDeclaration = compilationUnit.getElementImports().get(0));
 
 		assertEquals(1, virtualModel.getFlexoProperties().size());
-		assertNotNull(myModelModelSlot = (AbstractFMLRTModelSlot<?, ?>) virtualModel.getFlexoProperties().get(0));
+		assertNotNull(myModelModelSlot = (AbstractFMLRTModelSlot<?, ?, ?>) virtualModel.getFlexoProperties().get(0));
 
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 		assertNotNull(vmNode = (VirtualModelNode) rootNode.getObjectNode(virtualModel));

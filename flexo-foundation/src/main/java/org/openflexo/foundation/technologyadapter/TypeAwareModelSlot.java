@@ -46,7 +46,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -73,8 +72,13 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TypeAwareModelSlot.TypeAwareModelSlotImpl.class)
-public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
-		extends ModelSlot<M> {
+public interface TypeAwareModelSlot<
+// @formatter:off
+	M extends FlexoModel<M, MM> & TechnologyObject<?>, 
+	MM extends FlexoMetaModel<MM> & TechnologyObject<?>,
+	R extends FlexoModelResource<M, MM, ?, ?>>
+		extends ModelSlot<M, R> {
+	// @formatter:on
 
 	@PropertyIdentifier(type = String.class)
 	public static final String META_MODEL_URI_KEY = "metaModelURI";
@@ -122,8 +126,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 	public boolean isMetaModelRequired();
 
-	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
-			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
+	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, R extends FlexoModelResource<M, MM, ?, ?>>
+			extends ModelSlotImpl<M, R> implements TypeAwareModelSlot<M, MM, R> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlot.class.getPackage().getName());
 
@@ -132,7 +136,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public TypeAwareModelSlotInstance<M, MM, ?> makeActorReference(M object, FlexoConceptInstance fci) {
+		public TypeAwareModelSlotInstance<M, MM, ?, ?, ?> makeActorReference(M object, FlexoConceptInstance fci) {
 
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			TypeAwareModelSlotInstance returned = factory.newInstance(TypeAwareModelSlotInstance.class);
@@ -299,10 +303,10 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		}
 
 		@Override
-		public TypeAwareModelSlotInstance<M, MM, ?> connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
-			TypeAwareModelSlotInstance<M, MM, ?> modelSlotInstance;
+		public TypeAwareModelSlotInstance<M, MM, ?, ?, ?> connectTo(R resource, FlexoConceptInstance context) {
+			TypeAwareModelSlotInstance<M, MM, ?, ?, ?> modelSlotInstance;
 			try {
-				modelSlotInstance = makeActorReference((M) resource.getResourceData(), context);
+				modelSlotInstance = makeActorReference(resource.getResourceData(), context);
 				context.addToActors(modelSlotInstance);
 				return modelSlotInstance;
 			} catch (FileNotFoundException e) {

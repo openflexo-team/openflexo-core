@@ -76,7 +76,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnologyRole, ModelSlot<?>> {
+public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnologyRole, ModelSlot<?,?>> {
 
 	private static final Logger logger = Logger.getLogger(CreateTechnologyRole.class.getPackage().getName());
 
@@ -110,7 +110,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	}
 
 	private Class<? extends FlexoRole<?>> flexoRoleClass;
-	private Class<? extends ModelSlot<?>> modelSlotClass;
+	private Class<? extends ModelSlot<?,?>> modelSlotClass;
 
 	public CreateTechnologyRole(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -118,7 +118,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Class<? extends ModelSlot<?>> getModelSlotType() {
+	public Class<? extends ModelSlot<?,?>> getModelSlotType() {
 		return (Class) ModelSlot.class;
 	}
 
@@ -187,7 +187,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	}
 
 	@Override
-	public List<ModelSlot<?>> getAvailableModelSlots() {
+	public List<ModelSlot<?,?>> getAvailableModelSlots() {
 
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
@@ -224,7 +224,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 		this.flexoRoleClass = flexoRoleClass;
 
 		// The default model slot may change
-		ModelSlot<?> oldModelSlot = getModelSlot();
+		ModelSlot<?,?> oldModelSlot = getModelSlot();
 		defaultModelSlot = retrieveDefaultModelSlot();
 		getPropertyChangeSupport().firePropertyChange("modelSlot", oldModelSlot, getModelSlot());
 
@@ -233,9 +233,9 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);
 	}
 
-	public Class<? extends ModelSlot<?>> getModelSlotClass() {
+	public Class<? extends ModelSlot<?,?>> getModelSlotClass() {
 		if (modelSlotClass == null && getFlexoRoleClass() != null) {
-			List<Class<? extends ModelSlot<?>>> msClasses = getServiceManager().getTechnologyAdapterService()
+			List<Class<? extends ModelSlot<?,?>>> msClasses = getServiceManager().getTechnologyAdapterService()
 					.getModelSlotClassesForFlexoRole(getFlexoRoleClass());
 			if (msClasses.size() > 0) {
 				modelSlotClass = msClasses.get(0);
@@ -244,7 +244,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 		return modelSlotClass;
 	}
 
-	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+	public void setModelSlotClass(Class<? extends ModelSlot<?,?>> modelSlotClass) {
 		if ((modelSlotClass == null && this.modelSlotClass != null)
 				|| (modelSlotClass != null && !modelSlotClass.equals(this.modelSlotClass))) {
 			Class<? extends FlexoRole<?>> oldValue = this.modelSlotClass;

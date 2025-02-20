@@ -129,7 +129,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 
 	private final List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactories;
 
-	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
+	private List<Class<? extends ModelSlot<?,?>>> availableModelSlotTypes;
 	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
 	private final List<Class<? extends TechnologyAdapterResource<?, ?>>> availableResourceTypes;
 
@@ -497,7 +497,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	}
 
 	public boolean hasTypeAwareModelSlot() {
-		for (Class<? extends ModelSlot<?>> modelSlotType : getAvailableModelSlotTypes()) {
+		for (Class<? extends ModelSlot<?,?>> modelSlotType : getAvailableModelSlotTypes()) {
 			if (TypeAwareModelSlot.class.isAssignableFrom(modelSlotType)) {
 				return true;
 			}
@@ -505,20 +505,20 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		return false;
 	}
 
-	public List<Class<? extends ModelSlot<?>>> getAvailableModelSlotTypes() {
+	public List<Class<? extends ModelSlot<?,?>>> getAvailableModelSlotTypes() {
 		if (availableModelSlotTypes == null) {
 			availableModelSlotTypes = computeAvailableModelSlotTypes();
 		}
 		return availableModelSlotTypes;
 	}
 
-	private List<Class<? extends ModelSlot<?>>> computeAvailableModelSlotTypes() {
+	private List<Class<? extends ModelSlot<?,?>>> computeAvailableModelSlotTypes() {
 		availableModelSlotTypes = new ArrayList<>();
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareModelSlots.class)) {
 			DeclareModelSlots allModelSlots = cl.getAnnotation(DeclareModelSlots.class);
 			for (Class<? extends ModelSlot> msClass : allModelSlots.value()) {
-				availableModelSlotTypes.add((Class<? extends ModelSlot<?>>) msClass);
+				availableModelSlotTypes.add((Class<? extends ModelSlot<?,?>>) msClass);
 			}
 		}
 		return availableModelSlotTypes;
@@ -600,7 +600,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 *            the virtual model in which model slot should be created
 	 * @return
 	 */
-	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, FlexoConcept containerFlexoConcept) {
+	public final <MS extends ModelSlot<?,?>> MS makeModelSlot(Class<MS> modelSlotClass, FlexoConcept containerFlexoConcept) {
 		// NPE Protection
 		if (containerFlexoConcept != null) {
 			FMLModelFactory factory = containerFlexoConcept.getFMLModelFactory();

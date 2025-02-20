@@ -61,7 +61,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(RoleSpecificAction.RoleSpecificActionImpl.class)
-public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
+public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<?,?>, T extends TechnologyObject<?>>
 		extends TechnologySpecificActionDefiningReceiver<MS, T, T> {
 
 	/**
@@ -88,7 +88,7 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 	 */
 	public Class<? extends R> getFlexoRoleClass();
 
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T extends TechnologyObject<?>>
+	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?,?>, T extends TechnologyObject<?>>
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, T, T> implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());

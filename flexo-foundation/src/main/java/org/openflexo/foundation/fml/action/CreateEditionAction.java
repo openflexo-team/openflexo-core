@@ -138,7 +138,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, FMLControlGraph.class);
 	}
 
-	private ModelSlot<?> modelSlot;
+	private ModelSlot<?,?> modelSlot;
 	private FlexoRole<?> flexoRole;
 	private Class<? extends EditionAction> editionActionClass;
 	private Class<? extends FetchRequest<?, ?, ?>> fetchRequestClass;
@@ -211,7 +211,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		if (getVirtualModel().getCompilationUnit() != null && getVirtualModel().getCompilationUnit().getUseDeclarations() != null) {
 			for (UseModelSlotDeclaration useDecl : getVirtualModel().getCompilationUnit().getUseDeclarations()) {
-				Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
+				Class<? extends ModelSlot<?,?>> modelSlotClass = useDecl.getModelSlotClass();
 				TechnologyAdapter<?> modelSlotTA = getServiceManager().getTechnologyAdapterService()
 						.getTechnologyAdapterForModelSlot(modelSlotClass);
 				for (Class<? extends EditionAction> eaClass : getServiceManager().getTechnologyAdapterService()
@@ -576,10 +576,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	}
 
-	public List<ModelSlot<?>> getAvailableModelSlotsForAction(Class<? extends EditionAction> actionType) {
-		List<ModelSlot<?>> returned = new ArrayList<>();
+	public List<ModelSlot<?,?>> getAvailableModelSlotsForAction(Class<? extends EditionAction> actionType) {
+		List<ModelSlot<?,?>> returned = new ArrayList<>();
 		// if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
-		for (ModelSlot<?> ms : getModelSlotsAccessibleFromFocusedObject()) {
+		for (ModelSlot<?,?> ms : getModelSlotsAccessibleFromFocusedObject()) {
 			if (ms.getAvailableEditionActionTypes().contains(actionType)) {
 				returned.add(ms);
 			}
@@ -591,11 +591,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return returned;
 	}
 
-	public ModelSlot<?> getModelSlot() {
+	public ModelSlot<?,?> getModelSlot() {
 		if (getFlexoRole() != null) {
 			return getFlexoRole().getModelSlot();
 		}
-		List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getEditionActionClass());
+		List<ModelSlot<?,?>> availableMS = getAvailableModelSlotsForAction(getEditionActionClass());
 		if (modelSlot == null) {
 			if (availableMS.size() > 0) {
 				// Force the model slot not to be null;
@@ -614,9 +614,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return modelSlot;
 	}
 
-	public void setModelSlot(ModelSlot<?> modelSlot) {
+	public void setModelSlot(ModelSlot<?,?> modelSlot) {
 		if ((modelSlot == null && this.modelSlot != null) || (modelSlot != null && !modelSlot.equals(this.modelSlot))) {
-			ModelSlot<?> oldValue = this.modelSlot;
+			ModelSlot<?,?> oldValue = this.modelSlot;
 			this.modelSlot = modelSlot;
 			getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
 		}
@@ -697,7 +697,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	 * 
 	 * @return
 	 */
-	private List<ModelSlot<?>> getModelSlotsAccessibleFromFocusedObject() {
+	private List<ModelSlot<?,?>> getModelSlotsAccessibleFromFocusedObject() {
 		if (getVirtualModel() != null) {
 			return getVirtualModel().getModelSlots();
 		}
@@ -856,7 +856,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				case FetchRequest:
 					FetchRequest<?, ?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
 					iterationAction.setIterationAction(fetchRequest);
-					// Unused List<ModelSlot<?>> availableMS =
+					// Unused List<ModelSlot<?,?>> availableMS =
 					getAvailableModelSlotsForAction(getFetchRequestClass());
 					break;
 				default:

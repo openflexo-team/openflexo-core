@@ -168,8 +168,8 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			return null;
 		}
 		if (object instanceof ModelSlot) {
-			return getFMLModelFactory().newModelSlotPathElement(parent, (ModelSlot<?>) object, bindable);
-			// return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
+			return getFMLModelFactory().newModelSlotPathElement(parent, (ModelSlot<?,?>) object, bindable);
+			// return new ModelSlotPathElement<ModelSlot<?,?>>(parent, (ModelSlot<?,?>) object);
 		}
 		if (object instanceof FlexoProperty && getFMLModelFactory() != null) {
 			return getFMLModelFactory().newFlexoPropertyPathElement(parent, (FlexoProperty<?>) object, bindable);

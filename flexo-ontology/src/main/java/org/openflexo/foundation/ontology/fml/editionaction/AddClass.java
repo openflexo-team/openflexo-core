@@ -69,7 +69,7 @@ import org.openflexo.pamela.validation.ValidationWarning;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddClass.AddClassImpl.class)
-public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass<TA>, TA extends TechnologyAdapter<TA>>
+public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass<TA>, TA extends TechnologyAdapter<TA>>
 		extends AddConcept<MS, M, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -113,7 +113,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?>, M extend
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);*/
 
-	public static abstract class AddClassImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass<TA>, TA extends TechnologyAdapter<TA>>
+	public static abstract class AddClassImpl<MS extends TypeAwareModelSlot<M, ?, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass<TA>, TA extends TechnologyAdapter<TA>>
 			extends AddConceptImpl<MS, M, T> implements AddClass<MS, M, T, TA> {
 
 		private static final Logger logger = Logger.getLogger(AddClass.class.getPackage().getName());

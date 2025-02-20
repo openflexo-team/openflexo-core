@@ -88,11 +88,11 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 		return false;
 	}
 
-	public static List<? extends FlexoOntologyModelSlot<?, ?, ?>> getFlexoOntologyModelSlots(VirtualModel virtualModel) {
+	public static List<? extends FlexoOntologyModelSlot<?, ?, ?, ?>> getFlexoOntologyModelSlots(VirtualModel virtualModel) {
 		return INSTANCE._getFlexoOntologyModelSlots(virtualModel);
 	}
 
-	private static List<? extends FlexoOntologyModelSlot<?, ?, ?>> _getFlexoOntologyModelSlots(VirtualModel virtualModel) {
+	private static List<? extends FlexoOntologyModelSlot<?, ?, ?, ?>> _getFlexoOntologyModelSlots(VirtualModel virtualModel) {
 		if (virtualModel != null && virtualModel.getModelSlots(FlexoOntologyModelSlot.class).size() > 0) {
 			return (List) virtualModel.getModelSlots(FlexoOntologyModelSlot.class);
 		}
@@ -106,9 +106,9 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	 */
 	public static Set<IFlexoOntology<?>> getAllReferencedMetaModels(VirtualModel virtualModel) {
 		HashSet<IFlexoOntology<?>> returned = new HashSet<>();
-		List<? extends FlexoOntologyModelSlot<?, ?, ?>> flexoOntologyModelSlots = getFlexoOntologyModelSlots(virtualModel);
+		List<? extends FlexoOntologyModelSlot<?, ?, ?, ?>> flexoOntologyModelSlots = getFlexoOntologyModelSlots(virtualModel);
 		if (flexoOntologyModelSlots != null) {
-			for (FlexoOntologyModelSlot<?, ?, ?> modelSlot : getFlexoOntologyModelSlots(virtualModel)) {
+			for (FlexoOntologyModelSlot<?, ?, ?, ?> modelSlot : getFlexoOntologyModelSlots(virtualModel)) {
 				if (modelSlot.getMetaModelResource() != null) {
 					returned.add(modelSlot.getMetaModelResource().getMetaModelData());
 				}

@@ -51,9 +51,9 @@ import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -79,9 +79,10 @@ import org.openflexo.pamela.annotations.XMLElement;
 		value = "FMLModelSlot",
 		description = "<html>This ModelSlot represents access to a FML compilation unit<br>"
 				+ "Such model slot allows reflective operations " + "</html>")
-public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit> {
+public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit, CompilationUnitResource> {
 
-	public static abstract class FMLModelSlotImpl extends ModelSlotImpl<FMLCompilationUnit> implements FMLModelSlot {
+	public static abstract class FMLModelSlotImpl extends ModelSlotImpl<FMLCompilationUnit, CompilationUnitResource>
+			implements FMLModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FMLModelSlot.class.getPackage().getName());
 
@@ -159,10 +160,10 @@ public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit> {
 		}
 
 		@Override
-		public FMLModelSlotInstance connectTo(FlexoResource<?> resource, FlexoConceptInstance context) {
+		public FMLModelSlotInstance connectTo(CompilationUnitResource resource, FlexoConceptInstance context) {
 			FMLModelSlotInstance modelSlotInstance;
 			try {
-				modelSlotInstance = makeActorReference((FMLCompilationUnit) resource.getResourceData(), context);
+				modelSlotInstance = makeActorReference(resource.getResourceData(), context);
 				context.addToActors(modelSlotInstance);
 				return modelSlotInstance;
 			} catch (FileNotFoundException e) {

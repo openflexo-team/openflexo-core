@@ -139,9 +139,9 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
 		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		for (String msClassName : usedModelSlots) {
-			Class<? extends ModelSlot<?>> msClass;
+			Class<? extends ModelSlot<?,?>> msClass;
 			try {
-				msClass = (Class<? extends ModelSlot<?>>) Class.forName(msClassName);
+				msClass = (Class<? extends ModelSlot<?,?>>) Class.forName(msClassName);
 				TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
 				if (!requiredTAList.contains(requiredTA)) {
 					requiredTAList.add(requiredTA);
@@ -252,9 +252,9 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAUseDecl(AUseDecl node) {
 		super.inAUseDecl(node);
-		Class<? extends ModelSlot<?>> modelSlotClass = null;
+		Class<? extends ModelSlot<?,?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?,?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
 			info.addToRequiredModelSlot(modelSlotClass.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

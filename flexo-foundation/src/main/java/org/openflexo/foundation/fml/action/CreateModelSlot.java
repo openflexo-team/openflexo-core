@@ -105,9 +105,9 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	private CompilationUnitResource vmRes;
 	private boolean required = false;
 	private boolean readOnly = false;
-	private Class<? extends ModelSlot<?>> modelSlotClass;
+	private Class<? extends ModelSlot<?, ?>> modelSlotClass;
 
-	private ModelSlot<?> newModelSlot;
+	private ModelSlot<?, ?> newModelSlot;
 
 	CreateModelSlot(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -130,7 +130,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 			}
 
 			// Add required uses declaration
-			List<Class<? extends ModelSlot<?>>> msClasses = new ArrayList<>();
+			List<Class<? extends ModelSlot<?, ?>>> msClasses = new ArrayList<>();
 			for (UseModelSlotDeclaration useDecl : getVirtualModel().getCompilationUnit().getUseDeclarations()) {
 				msClasses.add(useDecl.getModelSlotClass());
 			}
@@ -139,7 +139,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 			newModelSlot = technologyAdapter.makeModelSlot(getModelSlotClass(), getFlexoConcept());
 			newModelSlot.setName(modelSlotName);
 			if (newModelSlot instanceof AbstractFMLRTModelSlot) {
-				((AbstractFMLRTModelSlot<?, ?>) newModelSlot).setAccessedVirtualModelResource(vmRes);
+				((AbstractFMLRTModelSlot<?, ?, ?>) newModelSlot).setAccessedVirtualModelResource(vmRes);
 
 			}
 			else if (newModelSlot instanceof TypeAwareModelSlot) {
@@ -164,7 +164,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		return null;
 	}
 
-	public ModelSlot<?> getNewModelSlot() {
+	public ModelSlot<?, ?> getNewModelSlot() {
 		return newModelSlot;
 	}
 
@@ -204,14 +204,14 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		return true;
 	}
 
-	public Class<? extends ModelSlot<?>> getModelSlotClass() {
+	public Class<? extends ModelSlot<?, ?>> getModelSlotClass() {
 		if (modelSlotClass == null && technologyAdapter != null && technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
 			return technologyAdapter.getAvailableModelSlotTypes().get(0);
 		}
 		return modelSlotClass;
 	}
 
-	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+	public void setModelSlotClass(Class<? extends ModelSlot<?, ?>> modelSlotClass) {
 		this.modelSlotClass = modelSlotClass;
 		getPropertyChangeSupport().firePropertyChange("modelSlotClass", modelSlotClass != null ? null : false, modelSlotClass);
 	}
@@ -338,7 +338,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	}
 
 	@Override
-	public ModelSlot<?> getNewFlexoProperty() {
+	public ModelSlot<?, ?> getNewFlexoProperty() {
 		return getNewModelSlot();
 	}
 }

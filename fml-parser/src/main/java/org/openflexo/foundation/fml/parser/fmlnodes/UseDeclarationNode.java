@@ -61,9 +61,9 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 
 	@Override
 	public UseModelSlotDeclaration buildModelObjectFromAST(AUseDecl astNode) {
-		Class<? extends ModelSlot<?>> modelSlotClass = null;
+		Class<? extends ModelSlot<?,?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(makeFullQualifiedIdentifier(astNode.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?,?>>) Class.forName(makeFullQualifiedIdentifier(astNode.getIdentifier()));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

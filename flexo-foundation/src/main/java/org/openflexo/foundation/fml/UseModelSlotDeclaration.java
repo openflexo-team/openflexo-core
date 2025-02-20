@@ -74,10 +74,10 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 
 	@Getter(value = MODEL_SLOT_CLASS_KEY)
 	@XMLAttribute
-	public Class<? extends ModelSlot<?>> getModelSlotClass();
+	public Class<? extends ModelSlot<?,?>> getModelSlotClass();
 
 	@Setter(MODEL_SLOT_CLASS_KEY)
-	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass);
+	public void setModelSlotClass(Class<? extends ModelSlot<?,?>> modelSlotClass);
 
 	@Getter(value = COMPILATION_UNIT_KEY, inverse = FMLCompilationUnit.USE_DECLARATIONS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)

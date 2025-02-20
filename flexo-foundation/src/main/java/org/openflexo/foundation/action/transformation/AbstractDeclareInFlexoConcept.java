@@ -93,7 +93,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	/**
 	 * Stores the model slot used as source of information (data) in pattern proposal
 	 */
-	private ModelSlot<?> informationSourceModelSlot;
+	private ModelSlot<?, ?> informationSourceModelSlot;
 
 	/**
 	 * Reference the {@link FlexoConcept} on which we want to apply transformation
@@ -116,7 +116,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		// Get the set of model slots that are available from the current virtual model
-		List<ModelSlot<?>> availableModelSlots = getAvailableModelSlots();
+		List<ModelSlot<?, ?>> availableModelSlots = getAvailableModelSlots();
 		if (availableModelSlots != null && availableModelSlots.size() > 0) {
 			informationSourceModelSlot = availableModelSlots.get(0);
 		}
@@ -323,7 +323,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * 
 	 * @return
 	 */
-	public ModelSlot<?> getInformationSourceModelSlot() {
+	public ModelSlot<?, ?> getInformationSourceModelSlot() {
 		return informationSourceModelSlot;
 	}
 
@@ -332,7 +332,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * 
 	 * @return
 	 */
-	public void setInformationSourceModelSlot(ModelSlot<?> modelSlot) {
+	public void setInformationSourceModelSlot(ModelSlot<?, ?> modelSlot) {
 		this.informationSourceModelSlot = modelSlot;
 	}
 
@@ -341,7 +341,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * 
 	 * @return
 	 */
-	public List<ModelSlot<?>> getAvailableModelSlots() {
+	public List<ModelSlot<?, ?>> getAvailableModelSlots() {
 		if (getVirtualModel() != null) {
 			return getVirtualModel().getModelSlots();
 		}
@@ -355,7 +355,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 */
 	public VirtualModel getAdressedVirtualModel() {
 		if (isVirtualModelModelSlot()) {
-			AbstractFMLRTModelSlot<?, ?> virtualModelModelSlot = (AbstractFMLRTModelSlot<?, ?>) getInformationSourceModelSlot();
+			AbstractFMLRTModelSlot<?, ?, ?> virtualModelModelSlot = (AbstractFMLRTModelSlot<?, ?, ?>) getInformationSourceModelSlot();
 			return virtualModelModelSlot.getAccessedVirtualModel();
 		}
 		return null;
@@ -368,7 +368,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 */
 	public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
 		if (isTypeAwareModelSlot()) {
-			TypeAwareModelSlot<?, ?> typeAwareModelSlot = (TypeAwareModelSlot<?, ?>) getInformationSourceModelSlot();
+			TypeAwareModelSlot<?, ?, ?> typeAwareModelSlot = (TypeAwareModelSlot<?, ?, ?>) getInformationSourceModelSlot();
 			if (typeAwareModelSlot != null && typeAwareModelSlot.getMetaModelResource() != null) {
 				return typeAwareModelSlot.getMetaModelResource().getMetaModelData();
 			}
@@ -376,10 +376,10 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		return null;
 	}
 
-	private List<AbstractFMLRTModelSlot<?, ?>> virtualModelModelSlots;
-	private List<TypeAwareModelSlot<?, ?>> typeAwareModelSlots;
+	private List<AbstractFMLRTModelSlot<?, ?, ?>> virtualModelModelSlots;
+	private List<TypeAwareModelSlot<?, ?, ?>> typeAwareModelSlots;
 
-	public List<AbstractFMLRTModelSlot<?, ?>> getVirtualModelModelSlots() {
+	public List<AbstractFMLRTModelSlot<?, ?, ?>> getVirtualModelModelSlots() {
 		if (virtualModelModelSlots == null) {
 			virtualModelModelSlots = new ArrayList<>();
 		}
@@ -387,16 +387,16 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 			virtualModelModelSlots.clear();
 		}
 		if (getVirtualModel() != null) {
-			for (ModelSlot<?> modelSlot : getVirtualModel().getModelSlots()) {
+			for (ModelSlot<?, ?> modelSlot : getVirtualModel().getModelSlots()) {
 				if (modelSlot instanceof AbstractFMLRTModelSlot) {
-					virtualModelModelSlots.add((AbstractFMLRTModelSlot<?, ?>) modelSlot);
+					virtualModelModelSlots.add((AbstractFMLRTModelSlot<?, ?, ?>) modelSlot);
 				}
 			}
 		}
 		return virtualModelModelSlots;
 	}
 
-	public List<TypeAwareModelSlot<?, ?>> getTypeAwareModelSlots() {
+	public List<TypeAwareModelSlot<?, ?, ?>> getTypeAwareModelSlots() {
 		if (typeAwareModelSlots == null) {
 			typeAwareModelSlots = new ArrayList<>();
 		}
@@ -404,9 +404,9 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 			typeAwareModelSlots.clear();
 		}
 		if (getVirtualModel() != null) {
-			for (ModelSlot<?> modelSlot : getVirtualModel().getModelSlots()) {
+			for (ModelSlot<?, ?> modelSlot : getVirtualModel().getModelSlots()) {
 				if (modelSlot instanceof TypeAwareModelSlot) {
-					typeAwareModelSlots.add((TypeAwareModelSlot<?, ?>) modelSlot);
+					typeAwareModelSlots.add((TypeAwareModelSlot<?, ?, ?>) modelSlot);
 				}
 			}
 		}

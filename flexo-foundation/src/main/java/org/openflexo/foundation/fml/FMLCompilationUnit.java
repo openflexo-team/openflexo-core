@@ -298,7 +298,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @return
 	 */
 	@Deprecated
-	public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?,?>> boolean uses(Class<MS> modelSlotClass);
 
 	/**
 	 * Declare use of supplied modelSlotClass
@@ -306,7 +306,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
+	public <MS extends ModelSlot<?,?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
 	 * Return resource for this virtual model
@@ -433,7 +433,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @param modelSlotClass
 	 * @return
 	 */
-	public UseModelSlotDeclaration ensureUse(Class<? extends ModelSlot<?>> modelSlotClass);
+	public UseModelSlotDeclaration ensureUse(Class<? extends ModelSlot<?,?>> modelSlotClass);
 
 	/**
 	 * Ensure that supplied {@link FlexoResourceCenter} is refererenced in namespaces
@@ -877,7 +877,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			// TODO: implement this with #use
 			List<TechnologyAdapter> returned = new ArrayList<>();
 			returned.add(getTechnologyAdapter());
-			for (ModelSlot<?> ms : getVirtualModel().getModelSlots()) {
+			for (ModelSlot<?,?> ms : getVirtualModel().getModelSlots()) {
 				if (!returned.contains(ms.getModelSlotTechnologyAdapter())) {
 					returned.add(ms.getModelSlotTechnologyAdapter());
 				}
@@ -1169,7 +1169,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		@Override
-		public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass) {
+		public <MS extends ModelSlot<?,?>> boolean uses(Class<MS> modelSlotClass) {
 			if (modelSlotClass == null) {
 				return false;
 			}
@@ -1182,12 +1182,12 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		@Override
-		public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
+		public <MS extends ModelSlot<?,?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
 			if (modelSlotClass == null) {
 				return null;
 			}
 
-			List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
+			List<Class<? extends ModelSlot<?,?>>> usedModelSlots = new ArrayList<>();
 			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
 				usedModelSlots.add(msDecl.getModelSlotClass());
 				if (modelSlotClass.equals(msDecl.getModelSlotClass())) {
@@ -1539,7 +1539,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		 * @return
 		 */
 		@Override
-		public UseModelSlotDeclaration ensureUse(Class<? extends ModelSlot<?>> modelSlotClass) {
+		public UseModelSlotDeclaration ensureUse(Class<? extends ModelSlot<?,?>> modelSlotClass) {
 			for (UseModelSlotDeclaration useModelSlotDeclaration : getUseDeclarations()) {
 				if (useModelSlotDeclaration.getModelSlotClass().equals(modelSlotClass)) {
 					return useModelSlotDeclaration;
@@ -1609,7 +1609,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			if (getUseDeclarations() != null) {
 				Class<?> returned;
 				for (UseModelSlotDeclaration useModelSlotDeclaration : getUseDeclarations()) {
-					Class<? extends ModelSlot<?>> msClass = useModelSlotDeclaration.getModelSlotClass();
+					Class<? extends ModelSlot<?,?>> msClass = useModelSlotDeclaration.getModelSlotClass();
 					if (msClass != null) {
 						Type msType = TypeUtils.getTypeArgument(msClass, ModelSlot.class, 0);
 						returned = lookupClass(className, msType);

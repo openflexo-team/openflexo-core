@@ -58,8 +58,8 @@ import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
-import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -125,10 +125,10 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@Getter(value = MODEL_SLOT_KEY)
 	@Embedded // TODO Why this property is embedded ?
-	ModelSlot<?> getModelSlot();
+	ModelSlot<?, ?> getModelSlot();
 
 	@Setter(MODEL_SLOT_KEY)
-	void setModelSlot(ModelSlot<?> modelSlot);
+	void setModelSlot(ModelSlot<?, ?> modelSlot);
 
 	/**
 	 * Return cardinality of this property
@@ -274,7 +274,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
-		private ModelSlot<?> modelSlot;
+		private ModelSlot<?, ?> modelSlot;
 		private DataBinding<?> defaultValue;
 		private DataBinding<?> container;
 
@@ -309,7 +309,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		 * 
 		 * @return
 		 */
-		private ModelSlot<?> getInferedModelSlot() {
+		private ModelSlot<?, ?> getInferedModelSlot() {
 			if (getContainer().isSet() && getContainer().isValid() && getContainer().isBindingPath()) {
 				BindingPath bindingPath = ((BindingPath) getContainer().getExpression());
 				IBindingPathElement lastPathElement = bindingPath.getLastBindingPathElement();
@@ -320,7 +320,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				}
 				else if (lastPathElement instanceof FlexoPropertyPathElement
 						&& ((FlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
-					return (ModelSlot<?>) ((FlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty();
+					return (ModelSlot<?, ?>) ((FlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty();
 				}
 				else if (lastPathElement instanceof ModelSlotPathElement) {
 					return ((ModelSlotPathElement<?>) lastPathElement).getModelSlot();
@@ -331,7 +331,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		@Override
-		public ModelSlot<?> getModelSlot() {
+		public ModelSlot<?, ?> getModelSlot() {
 			if (modelSlot == null) {
 				return getInferedModelSlot();
 			}
@@ -339,7 +339,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		@Override
-		public void setModelSlot(ModelSlot<?> modelSlot) {
+		public void setModelSlot(ModelSlot<?, ?> modelSlot) {
 			this.modelSlot = modelSlot;
 			setChanged();
 			notifyObservers(new DataModification<>("modelSlot", null, modelSlot));
@@ -412,7 +412,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		// Last ModelSlot beeing notified
-		private ModelSlot<?> lastKnownModelSlot = null;
+		private ModelSlot<?, ?> lastKnownModelSlot = null;
 
 		@Override
 		public Object getContainer(BindingEvaluationContext evaluationContext) {
@@ -639,7 +639,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole<?>> applyValidation(FlexoRole<?> aRole) {
-			ModelSlot<?> ms = aRole.getModelSlot();
+			ModelSlot<?, ?> ms = aRole.getModelSlot();
 			if (ms instanceof AbstractFMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
 				return new ValidationWarning<>(this, aRole, "FlexoRole_should_not_have_reflexive_model_slot_no_more", fixProposal);
