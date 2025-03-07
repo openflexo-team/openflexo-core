@@ -1068,7 +1068,8 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 			try {
 				return reader.readRootElement(serializationArtefact);
 			} catch (IOException e) {
-				logger.warning("Cannot parse document in File: " + serializationArtefact.getAbsolutePath());
+				// Do not warn because many files are subject to be tested if they are XML
+				// logger.warning("Cannot parse document in File: " + serializationArtefact.getAbsolutePath());
 				return null;
 			}
 
