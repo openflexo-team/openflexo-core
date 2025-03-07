@@ -159,7 +159,10 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 
 	@Override
 	public String getLabel() {
-		return getFlexoBehaviour().getSignature();
+		if (getFlexoBehaviour() != null) {
+			return getFlexoBehaviour().getSignature();
+		}
+		return null;
 	}
 
 	@Override

@@ -168,7 +168,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			return null;
 		}
 		if (object instanceof ModelSlot) {
-			return getFMLModelFactory().newModelSlotPathElement(parent, (ModelSlot<?,?>) object, bindable);
+			return getFMLModelFactory().newModelSlotPathElement(parent, (ModelSlot<?, ?>) object, bindable);
 			// return new ModelSlotPathElement<ModelSlot<?,?>>(parent, (ModelSlot<?,?>) object);
 		}
 		if (object instanceof FlexoProperty && getFMLModelFactory() != null) {
@@ -432,7 +432,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 		}*/
 		if (parent != null) {
 
-			if (parent.getLabel().startsWith(FMLKeywords.Super.getKeyword())) {
+			if (parent.getLabel() != null && parent.getLabel().startsWith(FMLKeywords.Super.getKeyword())) {
 				return new FlexoBehaviourPathElement(parent, methodName, args, bindable);
 			}
 
