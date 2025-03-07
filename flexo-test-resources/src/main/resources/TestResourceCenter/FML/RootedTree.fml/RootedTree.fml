@@ -1,0 +1,91 @@
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/RootedTree.fml")
+public model RootedTree {
+
+	   Vertex[0,*] roots with ConceptInstance();
+
+	   // Default constructor
+	   create() {
+	   }
+	   
+	   // Vertex concept
+	   concept Vertex {
+	      Edge[0,*] incomingEdges with ConceptInstance();
+	      Edge[0,*] outgoingEdges with ConceptInstance();
+	      String name;
+
+	      create(String aName) {
+	         name = parameters.aName;
+	      }
+
+	      List<Vertex> neighbours() {
+	         List<Vertex> returned = new ArrayList<>();
+	         for (Edge e : outgoingEdges) {
+	            returned.add(e.endVertex);
+	         }
+	         return returned;
+	      }
+
+	   }
+
+	   // Edge concept
+	   concept Edge {
+	      Vertex beginVertex with ConceptInstance();
+	      Vertex endVertex with ConceptInstance();
+
+	      create(Vertex beginVertex,Vertex endVertex) {
+	         beginVertex = parameters.beginVertex;
+	         endVertex = parameters.endVertex;   
+	         beginVertex.outgoingEdges.add(this);
+	         endVertex.incomingEdges.add(this);
+	      }
+	   }
+
+	   // API to create Vertex
+	   public Vertex addVertex(required String name) {
+	      return new Vertex(parameters.name);
+	   }
+
+	   // API to create Edge
+	   public Edge addEdge(required Vertex beginVertex, required Vertex endVertex) {
+	      return new Edge(parameters.beginVertex,parameters.endVertex);
+	   }
+
+	   // API to declare Vertex as root
+	   public addToRoots(required Vertex vertex) {
+	      roots.add(parameters.vertex);
+	   }
+
+	   // This is the algorithm
+	   public Set<Vertex> breadthFirstTraversalDoFlat() {
+		   
+	      Set<Vertex> known = new HashSet<>();
+	      Iterator<Vertex> neighbours = roots.iterator();
+	      Deque<Vertex> frontier = new LinkedList<>();
+	      while (true) {
+	         if (neighbours.hasNext()) {
+	            Vertex v = neighbours.next(); 
+	             if (!known.contains(v)) {
+	               log "add vertex: " + v;
+	               known.add(v);
+	               frontier.addLast(v);
+	            }
+	         }
+	         else { 
+	            if (!frontier.isEmpty()) {
+	               Vertex v = frontier.removeFirst();
+	               log "handle frontier "+v;
+	               neighbours = v.neighbours().iterator();
+	            }
+	            else {
+	               return known;           
+	            }
+	         }
+	      }
+	      return null; 
+	   }
+	   
+}
