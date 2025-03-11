@@ -84,12 +84,13 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 		private static final Logger logger = Logger.getLogger(ReflectedFMLRTModelSlot.class.getPackage().getName());
 
 		@Override
-		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
+		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> makeActorReference(VMI accessedResourceData, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> returned = factory.newInstance(ReflectedFMLRTModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);
-			returned.setReflectedResource(object.getReflectedResource());
+			returned.setReflectedResource(accessedResourceData.getReflectedResource());
+			returned.setAccessedResourceData(accessedResourceData);
 			return returned;
 		}
 
@@ -113,12 +114,12 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 			return null;
 		}*/
 
-		@Override
+		/*@Override
 		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> connectTo(R resource, FlexoConceptInstance context) {
 			System.out.println("Alors la ca rigole moins on dirait, hein ????");
 			System.exit(-1);
 			return null;
-		}
+		}*/
 
 	}
 

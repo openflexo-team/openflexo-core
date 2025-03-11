@@ -107,6 +107,7 @@ public interface ReflectedFMLRTModelSlotInstance<
 		// Serialization/deserialization only, do not use
 		private String reflectedResourceURI;
 		private R reflectedResource;
+		private VMI accessedResourceData;
 
 		@Override
 		public R getReflectedResource() {
@@ -138,8 +139,12 @@ public interface ReflectedFMLRTModelSlotInstance<
 
 		@Override
 		public VMI getAccessedResourceData() {
-			logger.warning("C'est ici qu'il faut faire quelque chose !!!");
-			return null;
+			return accessedResourceData;
+		}
+
+		@Override
+		public void setAccessedResourceData(VMI accessedResourceData) {
+			this.accessedResourceData = accessedResourceData;
 		}
 
 		/*@Override

@@ -99,10 +99,11 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD, ?
 
 	/**
 	 * Sets the data this model slot gives access to.<br>
+	 * This is the data contractualized by the related model slot
 	 * 
 	 * @param accessedResourceData
 	 */
-	// public void setAccessedResourceData(RD accessedResourceData);
+	public void setAccessedResourceData(RD accessedResourceData);
 
 	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>>
 			extends ActorReferenceImpl<RD> implements ModelSlotInstance<MS, RD> {
