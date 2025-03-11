@@ -39,8 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -61,9 +61,9 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 
 	@Override
 	public UseModelSlotDeclaration buildModelObjectFromAST(AUseDecl astNode) {
-		Class<? extends ModelSlot<?,?>> modelSlotClass = null;
+		Class<? extends ModelSlot<?, ?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?,?>>) Class.forName(makeFullQualifiedIdentifier(astNode.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?, ?>>) Class.forName(makeFullQualifiedIdentifier(astNode.getIdentifier()));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -86,10 +86,17 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", "use", SPACE), getUseFragment());
-		append(dynamicContents(() -> getModelObject().getModelSlotClass().getCanonicalName()), getModelSlotClassFragment());
+		append(dynamicContents(() -> getModelSlotClassName()), getModelSlotClassFragment());
 		append(staticContents(SPACE, "as", SPACE), getAsFragment());
 		append(dynamicContents(() -> getModelObject().getAbbrev()), getTaIdFragment());
 		append(staticContents(";"), getSemiFragment());
+	}
+
+	private String getModelSlotClassName() {
+		if (getModelObject() != null && getModelObject().getModelSlotClass() != null) {
+			return getModelObject().getModelSlotClass().getCanonicalName();
+		}
+		return ModelSlot.class.getCanonicalName();
 	}
 
 	private RawSourceFragment getUseFragment() {
