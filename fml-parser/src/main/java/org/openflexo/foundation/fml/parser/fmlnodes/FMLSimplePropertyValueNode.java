@@ -138,7 +138,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				for (ElementImportDeclaration elementImportDeclaration : getCompilationUnit().getElementImports()) {
 					// System.out.println(
 					// "> J'ai deja: " + elementImportDeclaration.getAbbrev() + "=" + elementImportDeclaration.getReferencedObject());
-					if (elementImportDeclaration.getAbbrev().equals(value.toString())) {
+					if (elementImportDeclaration.getAbbrev() != null && elementImportDeclaration.getAbbrev().equals(value.toString())) {
 						// System.out.println("Trouve !!!");
 						// fmlProperty.set(elementImportDeclaration.getReferencedObject(), modelObject);
 						found = true;
