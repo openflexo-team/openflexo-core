@@ -47,7 +47,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.java.JavaTypingSpace;
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.ProxyType;
 import org.openflexo.connie.type.UnresolvedType;
@@ -139,7 +138,7 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 	public ProxyType getProxyType(TypeDeclaration typeDeclaration) {
 		ProxyType returned = proxyTypes.get(typeDeclaration);
 		if (returned == null) {
-			returned = new ProxyType(typeDeclaration.getAbbrev(), (CustomType) typeDeclaration.getReferencedType());
+			returned = new ProxyType(typeDeclaration.getAbbrev(), typeDeclaration.getReferencedType());
 			proxyTypes.put(typeDeclaration, returned);
 		}
 		return returned;
