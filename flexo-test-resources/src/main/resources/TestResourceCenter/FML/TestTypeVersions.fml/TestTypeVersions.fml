@@ -1,0 +1,15 @@
+import java.lang.String;
+
+// We use here String as an example of a type that can be versionned : here this has no meaning
+typedef String as Foo;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestTypeVersions.fml")
+@Author("sylvainguerin")
+model TestTypeVersions {
+	
+	Foo@(1) foo1; // Foo in version 1
+	Foo@(1.2) foo2; // Foo in version 1.2
+	Foo@(1.3.4) foo3; // Foo in version 1.3.4
+	Foo@(1.3.4beta) foo4; // Foo in version 1.3.4beta
+
+}
