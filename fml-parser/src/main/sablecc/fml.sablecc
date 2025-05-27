@@ -319,6 +319,7 @@ Tokens
    | digit+ exponent_part float_type_suffix?
    | digit+ exponent_part? float_type_suffix
    ;
+   //lit_plain_integer = decimal_numeral;
    lit_integer =
      decimal_numeral integer_type_suffix?
    | hex_numeral integer_type_suffix?
@@ -1044,11 +1045,21 @@ Productions
    // --------------------------------------------------------------------------------------
    // Types
    // --------------------------------------------------------------------------------------
+
+   version = 
+	  {basic} lit_integer |
+	  {float} lit_float |
+	  //{simple} [major]:lit_integer dot [minor]:lit_integer |
+	  {detailed} [float1]:lit_float [float2]:lit_float [additional]:lidentifier? ;
+	  //{detailed} [major]:lit_integer [dot1]:dot [minor]:lit_integer [dot2]:dot [patch]:lit_integer [additional]:lidentifier? ;
+
+   at_version = at l_par version r_par;
+
    type =
        {primitive} primitive_type
      | {void}      ty_void
-     | {complex}   reference_type
-     | {fml}       technology_specific_type
+     | {complex}   reference_type at_version?
+     | {fml}       technology_specific_type at_version?
      ;
 
    technology_specific_type = uidentifier fml_parameters;
@@ -1064,7 +1075,9 @@ Productions
      | {boolean} ty_boolean
      ;
 
-   reference_type = [identifier]:composite_tident [args]:type_arguments?;
+   reference_type = 
+    // [identifier]:composite_tident at_version? [args]:type_arguments? ;
+     [identifier]:composite_tident [args]:type_arguments? ;
 
   // Take care of the following lexical anomaly:
    //   A<B<C>>  and  A<B<C<D>>>
