@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.localization.LocalizationService;
+import org.openflexo.foundation.lsp.LSPService;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.nature.ScreenshotService;
 import org.openflexo.foundation.project.FlexoProjectImpl.FlexoProjectReferenceLoader;
@@ -236,6 +237,10 @@ public abstract class FlexoServiceManager {
 
 	public ScreenshotService getScreenshotService() {
 		return getService(ScreenshotService.class);
+	}	
+	
+	public LSPService getLspService() {
+		return getService(LSPService.class);
 	}
 
 	public class ServiceRegistered implements ServiceNotification {
@@ -300,6 +305,8 @@ public abstract class FlexoServiceManager {
 	protected abstract ScreenshotService createScreenshotService();
 
 	protected abstract ProjectLoader createProjectLoaderService();
+	
+	protected abstract LSPService createLspService();
 
 	public FlexoEditor getDefaultEditor() {
 		return null;

@@ -44,6 +44,7 @@ import org.openflexo.connie.DataBinding.CachingStrategy;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.localization.DefaultLocalizationService;
 import org.openflexo.foundation.localization.LocalizationService;
+import org.openflexo.foundation.lsp.LSPService;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
 import org.openflexo.foundation.nature.DefaultScreenshotService;
 import org.openflexo.foundation.nature.ProjectNatureService;
@@ -122,8 +123,17 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		ScreenshotService screenshotService = createScreenshotService();
 		registerService(screenshotService);
 
+		LSPService lspService = createLspService();
+		registerService(lspService);
+		
+
 		applicationEditor = createApplicationEditor();
 
+	}
+
+	@Override
+	protected LSPService createLspService() {
+		return LSPService.createInstance();
 	}
 
 	@Override
