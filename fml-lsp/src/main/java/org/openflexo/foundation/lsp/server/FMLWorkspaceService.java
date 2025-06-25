@@ -1,4 +1,4 @@
-package org.openflexo.foundation.lsp.languageServer;
+package org.openflexo.foundation.lsp.server;
 
 import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;

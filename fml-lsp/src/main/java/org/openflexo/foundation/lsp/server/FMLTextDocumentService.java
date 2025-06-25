@@ -1,4 +1,4 @@
-package org.openflexo.foundation.lsp.languageServer;
+package org.openflexo.foundation.lsp.server;
 
 
 
@@ -22,9 +22,9 @@ import org.eclipse.lsp4j.WorkspaceEdit;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.LanguageClient;
 import org.eclipse.lsp4j.services.TextDocumentService;
-import org.openflexo.foundation.lsp.languageServer.providers.CompletionProvider;
-import org.openflexo.foundation.lsp.languageServer.providers.HoverProvider;
-import org.openflexo.foundation.lsp.languageServer.providers.RenameProvider;
+import org.openflexo.foundation.lsp.server.providers.CompletionProvider;
+import org.openflexo.foundation.lsp.server.providers.HoverProvider;
+import org.openflexo.foundation.lsp.server.providers.RenameProvider;
 
 /**
  * Text document service implementation for the FML Language Server.

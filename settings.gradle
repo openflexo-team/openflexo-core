@@ -8,5 +8,6 @@ include 'flexo-test-resources',
         'flexo-ontology',
         'fml-parser',
         'fml-cli',
-        'fml-cli-test'
+        'fml-cli-test',
+        'fml-lsp'
         

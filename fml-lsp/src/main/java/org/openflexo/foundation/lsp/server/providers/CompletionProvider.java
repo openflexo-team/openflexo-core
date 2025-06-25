@@ -1,4 +1,4 @@
-package org.openflexo.foundation.lsp.languageServer.providers;
+package org.openflexo.foundation.lsp.server.providers;
 
 import java.util.ArrayList;
 import java.util.Collections;

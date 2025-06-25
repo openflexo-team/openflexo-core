@@ -39,12 +39,13 @@
 
 package org.openflexo.foundation;
 
+import java.util.ServiceLoader;
+
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.CachingStrategy;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.localization.DefaultLocalizationService;
 import org.openflexo.foundation.localization.LocalizationService;
-import org.openflexo.foundation.lsp.LSPService;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
 import org.openflexo.foundation.nature.DefaultScreenshotService;
 import org.openflexo.foundation.nature.ProjectNatureService;
@@ -123,18 +124,34 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		ScreenshotService screenshotService = createScreenshotService();
 		registerService(screenshotService);
 
-		LSPService lspService = createLspService();
-		registerService(lspService);
-		
+		registerAvailableServices();
 
 		applicationEditor = createApplicationEditor();
 
 	}
 
+	/**
+	 * Retrieve all services available in the classpath and register them.
+	 * 
+	 * Those services are found using META-INF informations collected in classpath
+	 */
 	@Override
+	protected void registerAvailableServices() {
+		// Load all other services found in the classpath (using java ServiceLoader)
+		// (Those services are found using META-INF informations collected in classpath)
+		ServiceLoader<FlexoService> loader = ServiceLoader.load(FlexoService.class);
+
+		for (FlexoService service : loader) {
+			logger.info("Register service " + service);
+			registerService(service);
+		}
+
+	}
+
+	/*@Override
 	protected LSPService createLspService() {
 		return LSPService.createInstance();
-	}
+	}*/
 
 	@Override
 	protected FlexoEditingContext createEditingContext() {

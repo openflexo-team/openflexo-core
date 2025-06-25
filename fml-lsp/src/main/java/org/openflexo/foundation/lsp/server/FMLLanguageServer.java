@@ -1,4 +1,4 @@
-package org.openflexo.foundation.lsp.languageServer;
+package org.openflexo.foundation.lsp.server;
 
 import java.util.concurrent.CompletableFuture;
 
