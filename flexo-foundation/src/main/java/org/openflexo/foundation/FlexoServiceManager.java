@@ -301,6 +301,13 @@ public abstract class FlexoServiceManager {
 
 	protected abstract ProjectLoader createProjectLoaderService();
 
+	/**
+	 * Retrieve all services available in the classpath and register them.
+	 * 
+	 * Those services are found using META-INF informations collected in classpath
+	 */
+	protected abstract void registerAvailableServices();
+
 	public FlexoEditor getDefaultEditor() {
 		return null;
 	}
