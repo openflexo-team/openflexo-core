@@ -48,7 +48,15 @@ public class LSPService extends FlexoServiceImpl{
     public static LSPService getInstance(){
         return instance;
     }
-
+    
+    /**
+     * Starts the FML Language Server on a background thread.
+     * 
+     * Opens a socket on port 5007, waits for a client connection, and
+     * sets up the LSP communication channel using the LSP4J launcher.
+     * 
+     * This method blocks the thread while waiting for messages from the client.
+     */
     public void start() {
         executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {

@@ -13,6 +13,15 @@ import org.eclipse.lsp4j.TextEdit;
 import org.eclipse.lsp4j.WorkspaceEdit;
 import org.openflexo.foundation.lsp.languageServer.utils.TextUtils;
 
+/**
+ * Provides rename functionality for symbols in the FML language.
+ * 
+ * Handles requests to rename identifiers by locating all occurrences
+ * of the target word within a document and preparing the corresponding edits.
+ * 
+ * Note: Currently, renaming is based on simple word matching and does not
+ * distinguish symbol types or scopes.
+ */
 public class RenameProvider {
 	
 	public RenameProvider() {

@@ -12,6 +12,16 @@ import org.eclipse.lsp4j.Position;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.lsp.languageServer.utils.TextUtils;
 
+
+/**
+ * Provides hover information for FML language elements.
+ * 
+ * Generates contextual documentation or details displayed when
+ * the user hovers over language keywords or symbols in the editor.
+ * 
+ * This class is responsible for identifying relevant text under the cursor
+ * and returning appropriate hover content to assist the user.
+ */
 public class HoverProvider {
 	
 	public HoverProvider() {

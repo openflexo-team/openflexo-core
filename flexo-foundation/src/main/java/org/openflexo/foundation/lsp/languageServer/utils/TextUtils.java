@@ -1,5 +1,11 @@
 package org.openflexo.foundation.lsp.languageServer.utils;
 
+
+/**
+ * Utility class for common text processing operations used by the FML language server.
+ * 
+ * This class is stateless and cannot be instantiated.
+ */
 public final class TextUtils {
 
     private TextUtils() {

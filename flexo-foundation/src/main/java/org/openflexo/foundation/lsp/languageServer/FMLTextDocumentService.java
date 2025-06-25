@@ -26,11 +26,23 @@ import org.openflexo.foundation.lsp.languageServer.providers.CompletionProvider;
 import org.openflexo.foundation.lsp.languageServer.providers.HoverProvider;
 import org.openflexo.foundation.lsp.languageServer.providers.RenameProvider;
 
-
+/**
+ * Text document service implementation for the FML Language Server.
+ * 
+ * This class handles document-related LSP features such as:
+ * - Receiving and storing document content on open/change/close events.
+ * - Providing language features like completion, hover information, and rename.
+ *
+ * It delegates feature logic to specialized providers: {@link CompletionProvider},
+ * {@link HoverProvider}, and {@link RenameProvider}.
+ *
+ * A connection to the LSP client can be established via the {@code connect} method.
+ */
 public class FMLTextDocumentService implements TextDocumentService{
 
     private LanguageClient client;
     
+    // In-memory storage of currently open documents, keyed by their URI
     private Map<String, String> documents = new HashMap<>();
     														
     private CompletionProvider completionProvider = new CompletionProvider();
@@ -41,7 +53,10 @@ public class FMLTextDocumentService implements TextDocumentService{
     public FMLTextDocumentService(){
         
     }
-
+    
+    /**
+     * Connects the text document service to the LSP client.
+     */
     public void connect(LanguageClient client){
         this.client = client;
     }
@@ -62,28 +77,11 @@ public class FMLTextDocumentService implements TextDocumentService{
     @Override
     public CompletableFuture<WorkspaceEdit> rename(RenameParams params) {
         return renameProvider.provide(params, documents);
-    }
+    } 
     
-    
-
-
- 
-			
-    
-	    
-    
-    //TODO edit parser import to use fmlParser and add it diagnostics
-    /*
-    private void publishDiagnostics(String uri, Parser parser){
-        PublishDiagnosticsParams paramsDiag = new PublishDiagnosticsParams();
-        paramsDiag.setUri(uri);
-        paramsDiag.setDiagnostics(parser.diagnostics);
-        client.publishDiagnostics(paramsDiag);
-    }*/
-
-    
-    
-    
+    /**
+     * Handles opening a document. Stores its initial content.
+     */
     @Override
     public void didOpen(DidOpenTextDocumentParams params) {
     	String uri = params.getTextDocument().getUri();
@@ -91,7 +89,10 @@ public class FMLTextDocumentService implements TextDocumentService{
         documents.put(uri, text);
 
     }
-
+    
+    /**
+     * Handles content changes in a document. Updates the in-memory content.
+     */
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
     	String uri = params.getTextDocument().getUri();
@@ -102,12 +103,18 @@ public class FMLTextDocumentService implements TextDocumentService{
         //c'est ici que l'on reçoit le document mis à jour
 
     }
-
+    
+    /**
+     * Handles closing a document. Removes it from in-memory storage.
+     */
     @Override
     public void didClose(DidCloseTextDocumentParams params) {
     	documents.remove(params.getTextDocument().getUri());
     }
-
+    
+    /**
+     * Not implemented yet
+     */
     @Override
     public void didSave(DidSaveTextDocumentParams params) {
         throw new UnsupportedOperationException("Unimplemented method 'didSave'");

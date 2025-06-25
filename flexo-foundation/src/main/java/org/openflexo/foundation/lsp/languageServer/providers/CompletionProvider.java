@@ -15,6 +15,16 @@ import org.eclipse.lsp4j.MarkupContent;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.openflexo.foundation.fml.FMLKeywords;
 
+
+/**
+ * Central provider for code completion suggestions in the FML language.
+ * 
+ * Responsible for generating and supplying completion items such as keywords,
+ * snippets, and potentially other code constructs to assist users while editing FML files.
+ * 
+ * This class serves as the main source of completion data for the language server.
+ */
+
 public class CompletionProvider {
 	public CompletionProvider(){
 

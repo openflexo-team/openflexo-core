@@ -4,6 +4,10 @@ import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
 import org.eclipse.lsp4j.services.WorkspaceService;
 
+/**
+ * Workspace service for the FML Language Server.
+ * Currently not implemented.
+ */
 public class FMLWorkspaceService implements WorkspaceService{
     @Override
     public void didChangeConfiguration(DidChangeConfigurationParams params) {
