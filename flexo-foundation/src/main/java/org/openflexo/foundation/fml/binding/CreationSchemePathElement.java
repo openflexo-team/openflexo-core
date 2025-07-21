@@ -43,7 +43,6 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +70,6 @@ import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
@@ -93,7 +91,7 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
- * Modelize a new instance of a given {@link FlexoConcept}
+ * Modelize the instantiation (creation of a new instance) of a given {@link FlexoConcept}
  * 
  * @author sylvain
  * 
@@ -381,93 +379,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			this.repositoryFolder = repositoryFolder;
 		}
 
-		/*@Override
-		public Object getBindingValue(Object target, BindingEvaluationContext evaluationContext)
-				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
-		
-			System.out.println("Executing CreationSchemePathElement: " + this);
-			System.out.println("target=" + target);
-			System.out.println("evaluationContext=" + evaluationContext);
-		
-			try {
-		
-				FlexoConceptInstance container = null;
-		
-				if (target == null && evaluationContext instanceof FlexoBehaviourAction) {
-					container = ((FlexoBehaviourAction) evaluationContext).getFlexoConceptInstance();
-				}
-		
-				if (target instanceof FlexoConceptInstance) {
-					container = (FlexoConceptInstance) target;
-				}
-		
-				if (container == null) {
-					throw new NullReferenceException("Unable to find executable context for " + this);
-				}
-		
-				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
-		
-					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
-		
-		
-					VirtualModel instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
-		
-					// TODO: manage container
-					logger.warning("What about the container ??? " + container);
-		
-					CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
-							.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-					createVMIAction.setSkipChoosePopup(true);
-					createVMIAction.setNewVirtualModelInstanceName(vmiName);
-					createVMIAction.setVirtualModel(instantiatedVirtualModel);
-					createVMIAction.setCreationScheme(getCreationScheme());
-		
-					for (FunctionArgument functionArgument : getFunctionArguments()) {
-						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
-						Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
-						// System.out.println("values:" + v);
-						createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
-					}
-		
-					createVMIAction.doAction();
-					FMLRTVirtualModelInstance returned = createVMIAction.getNewVirtualModelInstance();
-					// System.out.println("returned=" + returned);
-					return returned;
-				}
-				else {
-					FlexoConceptInstance newFCI = container.getVirtualModelInstance()
-							.makeNewFlexoConceptInstance(getCreationScheme().getFlexoConcept(), container);
-					if (getCreationScheme().getFlexoConcept().getContainerFlexoConcept() != null) {
-						container.addToEmbeddedFlexoConceptInstances(newFCI);
-					}
-		
-					if (performExecuteCreationScheme(newFCI, container.getVirtualModelInstance(), evaluationContext)) {
-						if (logger.isLoggable(Level.FINE)) {
-							logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
-						}
-						return newFCI;
-					}
-					else {
-						logger.warning("Failing execution of creationScheme: " + getCreationScheme());
-					}
-				}
-		
-			} catch (IllegalArgumentException e) {
-				StringBuffer warningMessage = new StringBuffer(
-						"While evaluating edition scheme " + getCreationScheme() + " exception occured: " + e.getMessage());
-				warningMessage.append(", object = " + target);
-				logger.warning(warningMessage.toString());
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-				throw new InvocationTargetTransformException(e);
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-				throw new InvocationTargetTransformException(e);
-			}
-			return null;
-		
-		}*/
-
 		@Override
 		public CreationSchemePathElement transform(ExpressionTransformer transformer) throws TransformException {
 			return this;
@@ -662,34 +573,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			return false;
 		}
 
-		/*private boolean performExecuteCreationScheme(FlexoConceptInstance newInstance, VirtualModelInstance<?, ?> vmInstance,
-				BindingEvaluationContext evaluationContext)
-				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
-		
-			if (evaluationContext instanceof FlexoBehaviourAction) {
-				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
-						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
-		
-				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
-					DataBinding<?> param = getArgumentValue(p);
-					Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
-					System.out.println("For parameter " + param + " value is " + paramValue);
-					if (paramValue != null) {
-						creationSchemeAction.setParameterValue(p, paramValue);
-					}
-				}
-		
-				creationSchemeAction.doAction();
-		
-				return creationSchemeAction.hasActionExecutionSucceeded();
-		
-			}
-			logger.warning("Unexpected: " + evaluationContext);
-			Thread.dumpStack();
-			return false;
-		}*/
-
 		@Override
 		public boolean isResolved() {
 			return getCreationScheme() != null;
@@ -853,9 +736,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					createVMIAction.setVirtualModel(instantiatedVirtualModel);
 					createVMIAction.setCreationScheme((CreationScheme) getCreationScheme());
 
-					// System.out.println("On execute le CS: " + getCreationScheme());
-					// System.out.println("FML: " + getCreationScheme().getFMLPrettyPrint());
-
 					for (FunctionArgument functionArgument : getFunctionArguments()) {
 						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
 						Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
@@ -872,27 +752,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				else if (container instanceof FlexoConceptInstance) {
 					FlexoConceptInstance containerFCI = (FlexoConceptInstance) container;
 
-					FlexoConceptInstance newFCI;
-					if (getCreationScheme().getFlexoConcept() instanceof FlexoEvent) {
-						newFCI = containerFCI.getVirtualModelInstance().makeNewEvent((FlexoEvent) getCreationScheme().getFlexoConcept());
-					}
-					else {
-						newFCI = containerFCI.getVirtualModelInstance().makeNewFlexoConceptInstance(getCreationScheme().getFlexoConcept(),
-								containerFCI);
-					}
-					if (getCreationScheme().getFlexoConcept().getContainerFlexoConcept() != null) {
-						containerFCI.addToEmbeddedFlexoConceptInstances(newFCI);
-					}
+					return performExecuteCreationScheme(containerFCI, containerFCI.getVirtualModelInstance(), evaluationContext);
 
-					if (performExecuteCreationScheme(newFCI, containerFCI.getVirtualModelInstance(), evaluationContext)) {
-						if (logger.isLoggable(Level.FINE)) {
-							logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
-						}
-						return newFCI;
-					}
-					else {
-						logger.warning("Failing execution of creationScheme: " + getCreationScheme());
-					}
 				}
 				else {
 					logger.warning("Do not know what to do with: " + container);
@@ -918,8 +779,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		private AbstractCreationSchemeAction<?, CS, ?> makeCreationSchemeAction(CS behaviour, VirtualModelInstance<?, ?> vmInstance,
 				BindingEvaluationContext evaluationContext) {
-			// System.out.println("SM=" + getServiceManager());
-			// System.out.println("SM2=" + behaviour.getServiceManager());
 			TechnologyAdapter<?> ta = behaviour.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapterForBehaviourType(behaviour.getClass());
 			if (ta == null) {
@@ -940,27 +799,12 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			}
 		}
 
-		private boolean performExecuteCreationScheme(FlexoConceptInstance newInstance, VirtualModelInstance<?, ?> vmInstance,
+		private FlexoConceptInstance performExecuteCreationScheme(FlexoConceptInstance containerFCI, VirtualModelInstance<?, ?> vmInstance,
 				BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
 
 			AbstractCreationSchemeAction<?, CS, ?> creationSchemeAction = makeCreationSchemeAction(getCreationScheme(), vmInstance,
 					evaluationContext);
-
-			/*if (evaluationContext instanceof FlexoBehaviourAction) {
-				creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
-						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-			}
-			else if (evaluationContext instanceof RunTimeEvaluationContext) {
-				creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
-						((RunTimeEvaluationContext) evaluationContext).getEditor());
-			}
-			else {
-				logger.warning("Unexpected: " + evaluationContext);
-				Thread.dumpStack();
-			}*/
-
-			creationSchemeAction.initWithFlexoConceptInstance(newInstance);
 
 			for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
 				DataBinding<?> param = getArgumentValue(p);
@@ -971,9 +815,13 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 			}
 
+			creationSchemeAction.setContainer(containerFCI);
+
 			creationSchemeAction.doAction();
 
-			return creationSchemeAction.hasActionExecutionSucceeded();
+			// return creationSchemeAction.hasActionExecutionSucceeded();
+
+			return creationSchemeAction.getNewFlexoConceptInstance();
 
 		}
 

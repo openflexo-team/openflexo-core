@@ -127,28 +127,13 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 	protected void doAction(Object context) throws FlexoException {
 		logger.info("Add flexo concept instance in container " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
-		// We create the FCI
-		fciBeingCreated = getFocusedObject().getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
-
-		// We add the FlexoConceptInstance to the container BEFORE to execute creation scheme
-		if (getContainer() instanceof FMLRTVirtualModelInstance) {
-			// ((FMLRTVirtualModelInstance) getContainer()).addToFlexoConceptInstances(fciBeingCreated);
+		if (creationSchemeAction != null) {
+			creationSchemeAction.doAction();
+			fciBeingCreated = creationSchemeAction.getFlexoConceptInstance();
 		}
 		else {
-			getContainer().addToEmbeddedFlexoConceptInstances(fciBeingCreated);
-			// getFocusedObject().getVirtualModelInstance().removeFromFlexoConceptInstances(fciBeingCreated);
-		}
-
-		// We init the new FCI using a creation scheme
-		if (creationSchemeAction != null) {
-
-			// System.out.println("We now execute " + creationSchemeAction);
-			// System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
-
-			creationSchemeAction.initWithFlexoConceptInstance(fciBeingCreated);
-			creationSchemeAction.doAction();
-
-			fciBeingCreated = creationSchemeAction.getFlexoConceptInstance();
+			fciBeingCreated = getFocusedObject().getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept(), getContainer(),
+					getCreationScheme(), null);
 		}
 
 	}
@@ -244,7 +229,8 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 		boolean wasValidable = isActionValidable();
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
-			creationSchemeAction = new CreationSchemeAction(creationScheme, getFocusedObject().getOwningVirtualModelInstance(), null, this);
+			creationSchemeAction = new CreationSchemeAction(creationScheme, getFocusedObject().getVirtualModelInstance(), null, this);
+			creationSchemeAction.setContainer(getContainer());
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
 		}

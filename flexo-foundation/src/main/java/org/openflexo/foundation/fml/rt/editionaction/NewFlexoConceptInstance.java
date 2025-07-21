@@ -57,9 +57,7 @@ import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -209,14 +207,42 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 				}
 			}
 
-			return vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container);
+			CreationScheme creationScheme = findBestCreationSchemeForDynamicInstantiation(evaluationContext);
+
+			List<?> arguments = retrieveArguments(evaluationContext);
+
+			if (creationScheme == null) {
+				throw new FMLExecutionException(
+						"Cannot find a suitable CreationScheme for " + instantiatedFlexoConcept + " with arguments " + arguments);
+			}
+
+			CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmi, null, evaluationContext.getEditor());
+
+			if (creationScheme.getParameters().size() > 0) {
+				int index = 0;
+				for (FlexoBehaviourParameter arg : creationScheme.getParameters()) {
+					creationSchemeAction.setParameterValue(arg, arguments.get(index));
+					index++;
+				}
+			}
+
+			FlexoConceptInstance newInstance = vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container, creationScheme,
+					evaluationContext);
+
+			creationSchemeAction.assignNewFlexoConceptInstance(newInstance);
+			creationSchemeAction.doAction();
+			if (creationSchemeAction.getThrownException() instanceof FMLExecutionException) {
+				throw (FMLExecutionException) creationSchemeAction.getThrownException();
+			}
+			if (creationSchemeAction.getThrownException() != null) {
+				throw new FMLExecutionException(creationSchemeAction.getThrownException());
+			}
+
+			return newInstance;
+
 		}
 
-		@Override
-		protected CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
-				throws FMLExecutionException {
-
-			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+		private List<?> retrieveArguments(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			List<?> arguments;
 			try {
 				arguments = getArguments().getBindingValue(evaluationContext);
@@ -227,6 +253,15 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 			if (arguments == null) {
 				arguments = Collections.emptyList();
 			}
+			return arguments;
+		}
+
+		@Override
+		protected CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
+
+			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+			List<?> arguments = retrieveArguments(evaluationContext);
 
 			if (instantiatedFlexoConcept != null) {
 				for (CreationScheme creationScheme : instantiatedFlexoConcept.getAccessibleCreationSchemes()) {
@@ -246,32 +281,6 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 			}
 
 			return super.findBestCreationSchemeForDynamicInstantiation(evaluationContext);
-		}
-
-		@Override
-		protected boolean _performExecuteCreationScheme(CreationScheme creationScheme, FlexoConceptInstance newInstance,
-				VirtualModelInstance<?, ?> vmInstance, RunTimeEvaluationContext evaluationContext) {
-			if (evaluationContext instanceof FlexoBehaviourAction) {
-				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
-						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
-				try {
-					List<?> arguments = getArguments().getBindingValue(evaluationContext);
-					for (int i = 0; i < creationScheme.getParameters().size(); i++) {
-						FlexoBehaviourParameter p = creationScheme.getParameters().get(i);
-						creationSchemeAction.setParameterValue(p, arguments.get(i));
-					}
-					creationSchemeAction.doAction();
-
-					return creationSchemeAction.hasActionExecutionSucceeded();
-				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
-			logger.warning("Unexpected: " + evaluationContext);
-			Thread.dumpStack();
-			return false;
 		}
 
 		@Override

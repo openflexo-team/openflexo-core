@@ -103,7 +103,7 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 		protected FlexoEventInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			VMI vmi = getVirtualModelInstance(evaluationContext);
 			FlexoEvent instantiatedFlexoConcept = (FlexoEvent) retrieveFlexoConcept(evaluationContext);
-			return vmi.makeNewEvent(instantiatedFlexoConcept);
+			return vmi.makeNewEvent(instantiatedFlexoConcept, instantiatedFlexoConcept.getDefaultCreationScheme(), evaluationContext);
 		}
 
 		@Override

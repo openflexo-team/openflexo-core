@@ -110,7 +110,8 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 				}
 			}
 
-			return vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container);
+			return vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container, instantiatedFlexoConcept.getDefaultCreationScheme(),
+					evaluationContext);
 		}
 	}
 

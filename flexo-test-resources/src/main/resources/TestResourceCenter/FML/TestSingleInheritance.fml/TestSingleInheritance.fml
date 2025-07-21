@@ -13,7 +13,7 @@ model TestSingleInheritance {
 			// Is that the "good" file ?
 			foo = "ConceptA";
 		}
-		delete::_delete () {
+		delete() {
 		}
 		doSomething () {
 			log("Do something in ConceptA");
@@ -28,7 +28,7 @@ model TestSingleInheritance {
 			log("Creating ConceptB instance");
 			foo = (foo + "ConceptB");
 		}
-		delete::_delete () {
+		delete() {
 		}
 		doSomething () {
 			log("Do something in ConceptB");

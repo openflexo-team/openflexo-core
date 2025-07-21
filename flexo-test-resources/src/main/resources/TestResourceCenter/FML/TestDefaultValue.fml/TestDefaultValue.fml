@@ -1,0 +1,24 @@
+import java.util.List;
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestDefaultValue.fml")
+public model TestDefaultValue {
+
+   int aValue = 42;
+	
+   create() {
+   }
+
+   concept Foo {
+      int anInteger = 2;
+      String aName = "Hello!";
+      List<String> aList = new ArrayList<String>();
+
+      create() {
+      }
+      
+      public addAValue() {
+         aList.add("Bob");
+      }
+   }
+}

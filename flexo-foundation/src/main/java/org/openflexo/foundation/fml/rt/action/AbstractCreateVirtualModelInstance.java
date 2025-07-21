@@ -123,6 +123,13 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 		newVirtualModelInstance = newVirtualModelInstanceResource.getVirtualModelInstance();
 
+		if (getContainerVirtualModelInstance() != null) {
+			newVirtualModelInstance.initializeDefaultValues(getContainerVirtualModelInstance());
+		}
+		else {
+			newVirtualModelInstance.initializeDefaultValues(newVirtualModelInstance);
+		}
+
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in container " + getFocusedObject());
 
 		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
@@ -138,7 +145,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			// System.out.println("We now execute " + creationSchemeAction);
 			// System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
 
-			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
+			creationSchemeAction.assignNewFlexoConceptInstance(newVirtualModelInstance);
 			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
 			creationSchemeAction.doAction();
 			if (creationSchemeAction.getThrownException() != null) {

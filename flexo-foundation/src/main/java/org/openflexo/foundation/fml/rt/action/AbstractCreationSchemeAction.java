@@ -51,7 +51,8 @@ import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -162,12 +163,34 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 		retrieveMissingDefaultParameters();
 
 		if (newFlexoConceptInstance == null) {
-			newFlexoConceptInstance = makeNewFlexoConceptInstance();
+
+			if (getFlexoConceptBeingCreated() instanceof FlexoEvent) {
+				newFlexoConceptInstance = getVirtualModelInstance().makeNewEvent((FlexoEvent) getFlexoConceptBeingCreated(),
+						getCreationScheme(), this);
+			}
+			else {
+				newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConceptBeingCreated(),
+						getContainer(), getCreationScheme(), this);
+			}
 		}
 
-		// System.out.println("OK on execute " + getFlexoBehaviour().getFMLRepresentation());
+		else {
+			// Just execute control graph
+			executeControlGraph();
+		}
 
-		executeControlGraph();
+		// TODO : still required ???
+		/*if (defaultMatchingSet != null) {
+			finalizeDefaultMatchingSet();
+		}*/
+
+		/*if (newFlexoConceptInstance == null) {
+			newFlexoConceptInstance = makeNewFlexoConceptInstance();
+		}
+		
+		// System.out.println("OK on execute " + getFlexoBehaviour().getFMLRepresentation());
+		
+		executeControlGraph();*/
 	}
 
 	/**
@@ -176,7 +199,7 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 	 * @return
 	 * @throws InvalidParametersException
 	 */
-	protected FlexoConceptInstance makeNewFlexoConceptInstance() throws InvalidParametersException {
+	/*protected FlexoConceptInstance makeNewFlexoConceptInstance() throws InvalidParametersException {
 		// We have to create the FCI by ourselve
 		if (getFlexoConceptBeingCreated() instanceof VirtualModel) {
 			// AbstractCreateVirtualModelAction should be used instead
@@ -194,7 +217,7 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 			throw new InvalidParametersException(
 					"Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
 		}
-	}
+	}*/
 
 	/**
 	 * Used when creation of FlexoConceptInstance initialization is beeing delegated to an other component.<br>
@@ -203,9 +226,9 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 	 * 
 	 * @param flexoConceptInstance
 	 */
-	public void initWithFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance) {
+	/*public void initWithFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance) {
 		this.newFlexoConceptInstance = flexoConceptInstance;
-	}
+	}*/
 
 	public boolean retrieveMissingDefaultParameters() {
 		boolean returned = true;
@@ -246,6 +269,15 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 	 */
 	public FlexoConceptInstance getNewFlexoConceptInstance() {
 		return newFlexoConceptInstance;
+	}
+
+	/**
+	 * Called by the {@link FMLRTVirtualModelInstanceModelFactory} after instance creation and before CreationScheme execution
+	 * 
+	 * @param newFlexoConceptInstance
+	 */
+	public void assignNewFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
+		this.newFlexoConceptInstance = newFlexoConceptInstance;
 	}
 
 	/**
