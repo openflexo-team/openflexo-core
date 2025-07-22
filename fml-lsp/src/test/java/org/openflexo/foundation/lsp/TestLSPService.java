@@ -48,6 +48,11 @@ public class TestLSPService extends OpenflexoTestCase {
 		// LSPService initialization
 		LSPService lspService = serviceManager.getService(LSPService.class);
 		assertNotNull(lspService);
+		
+		//TODO find a better way to lock the test
+		while(true) {
+			
+		}
 
 	}
 

@@ -11,7 +11,8 @@ import org.eclipse.lsp4j.Range;
 import org.eclipse.lsp4j.RenameParams;
 import org.eclipse.lsp4j.TextEdit;
 import org.eclipse.lsp4j.WorkspaceEdit;
-import org.openflexo.foundation.lsp.languageServer.utils.TextUtils;
+import org.openflexo.foundation.lsp.utils.DocumentContext;
+import org.openflexo.foundation.lsp.utils.TextUtils;
 
 /**
  * Provides rename functionality for symbols in the FML language.
@@ -29,12 +30,14 @@ public class RenameProvider {
 	}
 	
 	//TODO make the symbol detection uses the symbol and not juste the word
-    public CompletableFuture<WorkspaceEdit> provide(RenameParams params, Map<String,String> documents) {
+    public CompletableFuture<WorkspaceEdit> provide(RenameParams params, Map<String, DocumentContext> documents) {
         String uri = params.getTextDocument().getUri();
         Position pos = params.getPosition();
         String newName = params.getNewName();
-
-        String text = documents.get(uri);
+        
+        DocumentContext document = documents.get(uri);
+        String text = document.getRawText();
+        
         if (text == null) {
             return CompletableFuture.completedFuture(new WorkspaceEdit());
         }

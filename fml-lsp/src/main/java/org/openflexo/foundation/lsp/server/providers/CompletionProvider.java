@@ -24,7 +24,6 @@ import org.openflexo.foundation.fml.FMLKeywords;
  * 
  * This class serves as the main source of completion data for the language server.
  */
-
 public class CompletionProvider {
 	public CompletionProvider(){
 

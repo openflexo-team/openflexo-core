@@ -12,12 +12,12 @@ public class FMLWorkspaceService implements WorkspaceService{
     @Override
     public void didChangeConfiguration(DidChangeConfigurationParams params) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'didChangeConfiguration'");
+        System.out.println("Configuration modifié");
     }
 
     @Override
     public void didChangeWatchedFiles(DidChangeWatchedFilesParams params) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'didChangeWatchedFiles'");
+        System.out.println("Changement de fichier");
     }
 }

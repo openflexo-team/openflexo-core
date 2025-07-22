@@ -1,0 +1,293 @@
+Log file that records all request exchanges between the client and the server.
+This one only contains the initialization steps.
+
+Currently, log files are written to Java’s temporary directory:
+java.io.tmpdir.
+
+The code responsible for generating these logs can be found in the LSPService.java class, 
+inside the handleClient() method.
+
+############################################################################################
+
+[Trace - 09:38:22 AM] Received request 'initialize - (0)'
+Params: {
+  "processId": 53068,
+  "rootPath": "c:\\Users\\antoi\\Documents\\testFml",
+  "rootUri": "file:///c%3A/Users/antoi/Documents/testFml",
+  "capabilities": {
+    "workspace": {
+      "applyEdit": true,
+      "workspaceEdit": {
+        "documentChanges": true,
+        "resourceOperations": [
+          "create",
+          "rename",
+          "delete"
+        ],
+        "failureHandling": "textOnlyTransactional"
+      },
+      "didChangeConfiguration": {
+        "dynamicRegistration": true
+      },
+      "didChangeWatchedFiles": {
+        "dynamicRegistration": true
+      },
+      "symbol": {
+        "symbolKind": {
+          "valueSet": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26
+          ]
+        },
+        "dynamicRegistration": true
+      },
+      "executeCommand": {
+        "dynamicRegistration": true
+      },
+      "workspaceFolders": true,
+      "configuration": true
+    },
+    "textDocument": {
+      "synchronization": {
+        "willSave": true,
+        "willSaveWaitUntil": true,
+        "didSave": true,
+        "dynamicRegistration": true
+      },
+      "completion": {
+        "completionItem": {
+          "snippetSupport": true,
+          "commitCharactersSupport": true,
+          "documentationFormat": [
+            "markdown",
+            "plaintext"
+          ],
+          "deprecatedSupport": true,
+          "preselectSupport": true
+        },
+        "completionItemKind": {
+          "valueSet": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25
+          ]
+        },
+        "contextSupport": true,
+        "dynamicRegistration": true
+      },
+      "hover": {
+        "contentFormat": [
+          "markdown",
+          "plaintext"
+        ],
+        "dynamicRegistration": true
+      },
+      "signatureHelp": {
+        "signatureInformation": {
+          "documentationFormat": [
+            "markdown",
+            "plaintext"
+          ],
+          "parameterInformation": {
+            "labelOffsetSupport": true
+          }
+        },
+        "dynamicRegistration": true
+      },
+      "references": {
+        "dynamicRegistration": true
+      },
+      "documentHighlight": {
+        "dynamicRegistration": true
+      },
+      "documentSymbol": {
+        "symbolKind": {
+          "valueSet": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26
+          ]
+        },
+        "hierarchicalDocumentSymbolSupport": true,
+        "dynamicRegistration": true
+      },
+      "formatting": {
+        "dynamicRegistration": true
+      },
+      "rangeFormatting": {
+        "dynamicRegistration": true
+      },
+      "onTypeFormatting": {
+        "dynamicRegistration": true
+      },
+      "declaration": {
+        "linkSupport": true,
+        "dynamicRegistration": true
+      },
+      "definition": {
+        "linkSupport": true,
+        "dynamicRegistration": true
+      },
+      "typeDefinition": {
+        "linkSupport": true,
+        "dynamicRegistration": true
+      },
+      "implementation": {
+        "linkSupport": true,
+        "dynamicRegistration": true
+      },
+      "codeAction": {
+        "codeActionLiteralSupport": {
+          "codeActionKind": {
+            "valueSet": [
+              "",
+              "quickfix",
+              "refactor",
+              "refactor.extract",
+              "refactor.inline",
+              "refactor.rewrite",
+              "source",
+              "source.organizeImports"
+            ]
+          }
+        },
+        "dynamicRegistration": true
+      },
+      "codeLens": {
+        "dynamicRegistration": true
+      },
+      "documentLink": {
+        "dynamicRegistration": true
+      },
+      "colorProvider": {
+        "dynamicRegistration": true
+      },
+      "rename": {
+        "prepareSupport": true,
+        "dynamicRegistration": true
+      },
+      "publishDiagnostics": {
+        "relatedInformation": true
+      },
+      "foldingRange": {
+        "rangeLimit": 5000,
+        "lineFoldingOnly": true,
+        "dynamicRegistration": true
+      }
+    }
+  },
+  "trace": "off",
+  "workspaceFolders": [
+    {
+      "uri": "file:///c%3A/Users/antoi/Documents/testFml",
+      "name": "testFml"
+    }
+  ]
+}
+
+
+[Trace - 09:38:22 AM] Sending response 'initialize - (0)'. Processing request took 23ms
+Result: {
+  "capabilities": {
+    "textDocumentSync": 1,
+    "hoverProvider": true,
+    "completionProvider": {},
+    "renameProvider": true
+  }
+}
+
+
+[Trace - 09:38:22 AM] Received notification 'initialized'
+Params: {}
+
+
+[Trace - 09:38:22 AM] Received notification 'textDocument/didOpen'
+Params: {
+  "textDocument": {
+    "uri": "file:///c%3A/Users/antoi/Documents/testFml/test.fml",
+    "languageId": "fml",
+    "version": 1,
+    "text": "private\r\n\r\nconcept MyConcept {\r\n    // content\r\n}"
+  }
+}
+
+
+[Trace - 09:38:23 AM] Received notification '$/setTraceNotification'
+Params: {
+  "value": "off"
+}
+
+
+[Trace - 09:38:43 AM] Received request 'shutdown - (1)'
+Params: null
+
+

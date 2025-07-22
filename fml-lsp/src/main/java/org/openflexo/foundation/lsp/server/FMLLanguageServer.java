@@ -12,6 +12,7 @@ import org.eclipse.lsp4j.services.LanguageClientAware;
 import org.eclipse.lsp4j.services.LanguageServer;
 import org.eclipse.lsp4j.services.TextDocumentService;
 import org.eclipse.lsp4j.services.WorkspaceService;
+import org.openflexo.foundation.FlexoServiceManager;
 
 /**
  * Main entry point for the FML Language Server implementation.
@@ -22,15 +23,15 @@ import org.eclipse.lsp4j.services.WorkspaceService;
  * of the language logic to {@link FMLTextDocumentService} and {@link FMLWorkspaceService}.
  */
 
-public class FMLLanguageServer implements LanguageServer, LanguageClientAware {
+public class FMLLanguageServer implements LanguageServer, LanguageClientAware{
 
     private TextDocumentService textDocumentService;
     private WorkspaceService workspaceService;
     private LanguageClient client;
     private int errorCode = 1;
 
-    public FMLLanguageServer() {
-        this.textDocumentService = new FMLTextDocumentService();
+    public FMLLanguageServer(FlexoServiceManager serviceManager) {
+        this.textDocumentService = new FMLTextDocumentService(serviceManager);
         this.workspaceService = new FMLWorkspaceService();
     }
 

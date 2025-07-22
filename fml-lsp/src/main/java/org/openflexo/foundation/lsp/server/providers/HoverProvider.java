@@ -10,7 +10,8 @@ import org.eclipse.lsp4j.MarkupContent;
 import org.eclipse.lsp4j.MarkupKind;
 import org.eclipse.lsp4j.Position;
 import org.openflexo.foundation.fml.FMLKeywords;
-import org.openflexo.foundation.lsp.languageServer.utils.TextUtils;
+import org.openflexo.foundation.lsp.utils.DocumentContext;
+import org.openflexo.foundation.lsp.utils.TextUtils;
 
 
 /**
@@ -29,9 +30,11 @@ public class HoverProvider {
 	}
     
 
-	public CompletableFuture<Hover> provide(HoverParams params, Map<String,String> documents) {
+	public CompletableFuture<Hover> provide(HoverParams params, Map<String, DocumentContext> documents) {
 	    String uri = params.getTextDocument().getUri();
-	    String text = documents.get(uri);
+	    
+	    DocumentContext document = documents.get(uri);
+	    String text = document.getRawText();
 	
 	    if (text == null) {
 	        return CompletableFuture.completedFuture(null);
