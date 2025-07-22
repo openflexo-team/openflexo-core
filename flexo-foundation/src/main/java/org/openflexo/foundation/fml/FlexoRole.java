@@ -148,12 +148,23 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	@Setter(CARDINALITY_KEY)
 	void setCardinality(PropertyCardinality cardinality);
 
+	/**
+	 * Return the default value (if specified) for that role<br>
+	 * A default value is defined as an expression which can be computed using the current instance context
+	 * 
+	 * @return
+	 */
 	@Getter(value = DEFAULT_VALUE_KEY)
 	@XMLAttribute
-	DataBinding<?> getDefaultValue();
+	DataBinding<T> getDefaultValue();
 
+	/**
+	 * Sets default value for this role
+	 * 
+	 * @param defaultValue
+	 */
 	@Setter(DEFAULT_VALUE_KEY)
-	void setDefaultValue(DataBinding<?> defaultValue);
+	void setDefaultValue(DataBinding<T> defaultValue);
 
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -275,7 +286,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
 		private ModelSlot<?, ?> modelSlot;
-		private DataBinding<?> defaultValue;
+		private DataBinding<T> defaultValue;
 		private DataBinding<?> container;
 
 		/*@Override
@@ -433,7 +444,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		@Override
-		public DataBinding<?> getDefaultValue() {
+		public DataBinding<T> getDefaultValue() {
 			if (defaultValue == null) {
 				defaultValue = new DataBinding<>(this, getType(), BindingDefinitionType.GET);
 				defaultValue.setBindingName("defaultValue");
@@ -442,7 +453,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		@Override
-		public void setDefaultValue(DataBinding<?> defaultValue) {
+		public void setDefaultValue(DataBinding<T> defaultValue) {
 			if (defaultValue != null) {
 				defaultValue.setOwner(this);
 				defaultValue.setBindingName("defaultValue");

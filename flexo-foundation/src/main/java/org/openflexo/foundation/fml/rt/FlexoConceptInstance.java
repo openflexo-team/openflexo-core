@@ -86,6 +86,16 @@ import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.ConstraintsShouldNotBeViolated;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceImpl;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceMustHaveType;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.RoleCardinalitiesMustBeValid;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.ConstraintsShouldNotBeViolated.ViolatedInvariant;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceImpl.LocalRunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceImpl.SuperReference;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceMustHaveType.DeleteThisInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.RoleCardinalitiesMustBeValid.InvalidCardinality;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject.VirtualModelInstanceObjectImpl;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ResourceData;
@@ -94,13 +104,11 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.DeserializationFinalizer;
 import org.openflexo.pamela.annotations.DeserializationInitializer;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
@@ -111,6 +119,8 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.validation.CompoundIssue;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
@@ -241,6 +251,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public void removeFromActors(ActorReference<?> anActorReference);
 
 	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
+
+	/**
+	 * Initialize default values for a newly created instance
+	 * 
+	 * @param evaluationContext
+	 */
+	public void initializeDefaultValues(RunTimeEvaluationContext evaluationContext);
 
 	// Debug method
 	public String debug();
@@ -804,7 +821,32 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
+		public void initializeDefaultValues(RunTimeEvaluationContext evaluationContext) {
+			// We initialize the default values
+			for (FlexoRole role : getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
+				if (role.getDefaultValue() != null && role.getDefaultValue().isSet() && evaluationContext != null) {
+					Object defaultValue;
+					try {
+						defaultValue = role.getDefaultValue().getBindingValue(evaluationContext);
+						// System.out.println("defaultValue=" + defaultValue);
+						setFlexoPropertyValue(role, defaultValue);
+					} catch (TypeMismatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ReflectiveOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		@Override
 		public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty) {
+
 			if (flexoProperty == null || flexoProperty.getFlexoConcept() == null) {
 				logger.warning("Unexpected null value: " + flexoProperty);
 				return null;
@@ -1742,7 +1784,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 		}
 
+		/**
+		 * Lookup {@link FlexoConceptInstance} on which supplied property applies
+		 * 
+		 * @param property
+		 * @return
+		 */
 		private FlexoConceptInstance getConcernedInstance(FlexoProperty<?> property) {
+
 			if (getFlexoConcept() == null) {
 				logger.warning("FlexoConceptInstance with null FlexoConcept");
 				return null;
@@ -1820,6 +1869,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					return;
 				}
 				((FlexoConceptInstanceImpl) concernedInstance).internallySetValue(value, (FlexoPropertyBindingVariable) variable);
+				return;
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
 				logger.warning(

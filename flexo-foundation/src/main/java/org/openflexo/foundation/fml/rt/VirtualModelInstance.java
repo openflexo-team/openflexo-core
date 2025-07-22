@@ -63,6 +63,8 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IndexableContainer;
+import org.openflexo.foundation.fml.AbstractCreationScheme;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEvent;
@@ -246,20 +248,13 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setName(String name);
 
 	/**
-	 * Build a new FlexoConceptInstance<br>
-	 * Just instantiate, do not register yet
-	 * 
-	 * @return
-	 */
-	public FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept);
-
-	/**
 	 * Instantiate and register a new {@link FlexoConceptInstance}
 	 * 
 	 * @param pattern
 	 * @return
 	 */
-	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept);
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, CreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	/**
 	 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
@@ -267,7 +262,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 * @param pattern
 	 * @return
 	 */
-	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container);
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
+			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	/**
 	 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
@@ -275,7 +271,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 * @param pattern
 	 * @return
 	 */
-	public FlexoEventInstance makeNewEvent(FlexoEvent event);
+	public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the FlexoConcept identified by supplied String parameter
@@ -609,11 +606,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			super.setFlexoConceptURI(virtualModelURI);
 		}
 
-		/*@Override
-		public VirtualModel getMetaModel() {
-			return getFlexoConcept();
-		}*/
-
 		@Override
 		public FlexoVersion getModelVersion() {
 			if (getVirtualModelInstanceResource() != null) {
@@ -689,9 +681,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 * @return
 		 */
 		@Override
-		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
+		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, CreationScheme creationScheme,
+				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
-			return makeNewFlexoConceptInstance(concept, null);
+			return makeNewFlexoConceptInstance(concept, null, creationScheme, evaluationContext);
 		}
 
 		/**
@@ -701,27 +694,11 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 * @return
 		 */
 		@Override
-		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container) {
+		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
+				AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
-			FlexoConceptInstance returned = buildNewFlexoConceptInstance(concept);
-			if (container != null && container != this) {
-				container.addToEmbeddedFlexoConceptInstances(returned);
-			}
-			addToFlexoConceptInstances(returned);
-			return returned;
-		}
+			return getFactory().makeNewFlexoConceptInstance(concept, container, this, creationScheme, evaluationContext);
 
-		/**
-		 * Build a new FlexoConceptInstance<br>
-		 * Just instantiate, do not register yet
-		 * 
-		 * @return
-		 */
-		@Override
-		public FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
-			FlexoConceptInstance returned = getVirtualModelInstanceResource().getFactory().newInstance(FlexoConceptInstance.class);
-			returned.setFlexoConcept(concept);
-			return returned;
 		}
 
 		/**
@@ -731,13 +708,11 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 * @return
 		 */
 		@Override
-		public FlexoEventInstance makeNewEvent(FlexoEvent event) {
+		public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
+				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
-			FlexoEventInstance returned = getVirtualModelInstanceResource().getFactory().newInstance(FlexoEventInstance.class);
-			returned.setFlexoConcept(event);
-			returned.setSourceVirtualModelInstance(this);
+			return getFactory().makeNewEventInstance(event, this, creationScheme, evaluationContext);
 
-			return returned;
 		}
 
 		/**

@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import org.openflexo.foundation.fml.AbstractCreationScheme;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -45,7 +49,7 @@ import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link PamelaModelFactory} used to handle View models<br>
+ * {@link PamelaModelFactory} used to handle {@link VirtualModelInstance} models<br>
  * Only one instance of this class should be used in a session
  * 
  * @author sylvain
@@ -56,6 +60,110 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 	public FMLRTVirtualModelInstanceModelFactory(FMLRTVirtualModelInstanceResource resource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(resource, FMLRTVirtualModelInstance.class, editingContext, taService);
+	}
+
+	@Override
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
+			VirtualModelInstance<?, ?> ownerVirtualModelInstance, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+		return makeNewFlexoConceptInstance(concept, container, ownerVirtualModelInstance, null, evaluationContext);
+	}
+
+	@Override
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
+			VirtualModelInstance<?, ?> ownerVirtualModelInstance, AbstractCreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+
+		// Perform some checks
+		if (concept == null) {
+			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance with null FlexoConcept");
+		}
+		if (ownerVirtualModelInstance == null) {
+			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance in null ownerVirtualModelInstance");
+		}
+		if (!ownerVirtualModelInstance.getVirtualModel().isAssignableFrom(concept.getDeclaringCompilationUnit().getVirtualModel())) {
+			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept declaring compilation unit");
+		}
+		if (container == null && !concept.isRoot()) {
+			// check that the FlexoConcept is root
+			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : not root FlexoConcept");
+		}
+		if (container != null && container != ownerVirtualModelInstance
+				&& !container.getFlexoConcept().isAssignableFrom(concept.getContainerFlexoConcept())) {
+			// check that the container is valid
+			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
+		}
+
+		// Then create the new FlexoConceptInstance
+		FlexoConceptInstance returned = buildNewFlexoConceptInstance(concept);
+
+		// If container is not null, add it to the container
+		if (container != null && container != ownerVirtualModelInstance) {
+			container.addToEmbeddedFlexoConceptInstances(returned);
+		}
+
+		// Don't forget to declate it in the owner VirtualModelInstance
+		ownerVirtualModelInstance.addToFlexoConceptInstances(returned);
+
+		// Preferably use supplied evaluation context
+		if (evaluationContext == null) {
+			// evaluationContext = returned;
+		}
+
+		// Initialize default values
+		returned.initializeDefaultValues(evaluationContext);
+
+		executeCreationScheme(returned, creationScheme, evaluationContext);
+
+		return returned;
+
+	}
+
+	@Override
+	public FlexoEventInstance makeNewEventInstance(FlexoEvent event, VirtualModelInstance<?, ?> ownerVirtualModelInstance,
+			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+
+		FlexoEventInstance returned = newInstance(FlexoEventInstance.class);
+		returned.setFlexoConcept(event);
+		returned.setSourceVirtualModelInstance(ownerVirtualModelInstance);
+
+		executeCreationScheme(returned, creationScheme, evaluationContext);
+
+		return returned;
+	}
+
+	protected FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
+
+		FlexoConceptInstance returned = newInstance(FlexoConceptInstance.class);
+		returned.setFlexoConcept(concept);
+
+		return returned;
+	}
+
+	private void executeCreationScheme(FlexoConceptInstance newInstance, AbstractCreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+		if (evaluationContext instanceof AbstractCreationSchemeAction) {
+			// Special case here
+			// FlexoConceptInstance has been created, but need to be assigned to be taken under account in creation scheme
+			((AbstractCreationSchemeAction) evaluationContext).assignNewFlexoConceptInstance(newInstance);
+		}
+
+		// Perform execute creation scheme
+		if (creationScheme != null && creationScheme.getControlGraph() != null) {
+			try {
+				creationScheme.getControlGraph().execute(evaluationContext);
+			} catch (ReturnException e) {
+				logger.warning("CreationScheme is not supposed to return any values: " + e);
+				System.err.println(creationScheme.getFMLPrettyPrint());
+				throw new FMLExecutionException("CreationScheme is not supposed to return any value");
+			} catch (FMLExecutionException e) {
+				logger.warning("Unexpected exception while executing FML control graph: " + e);
+				System.err.println(creationScheme.getFMLPrettyPrint());
+				e.printStackTrace();
+				throw e;
+			}
+
+		}
+
 	}
 
 }

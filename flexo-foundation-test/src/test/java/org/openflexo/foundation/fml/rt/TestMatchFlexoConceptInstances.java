@@ -74,7 +74,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTestCase {
 
-	private static VirtualModel viewPoint;
+	private static VirtualModel rootVirtualModel;
 	private static VirtualModel vm;
 	private static VirtualModel matchingVM;
 	private static FlexoConcept concept;
@@ -88,7 +88,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 
 	private static FlexoEditor editor;
 	private static FlexoProject<File> project;
-	private static FMLRTVirtualModelInstance newView;
+	private static FMLRTVirtualModelInstance rootVMI;
 	private static FMLRTVirtualModelInstance model;
 	private static FMLRTVirtualModelInstance matchingModel;
 	private static FMLRTVirtualModelInstance model2;
@@ -110,16 +110,16 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		instanciateTestServiceManager();
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml");
-		assertNotNull(viewPoint);
-		assertNotNull(vm = viewPoint.getVirtualModelNamed("MyVM"));
+		rootVirtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml");
+		assertNotNull(rootVirtualModel);
+		assertNotNull(vm = rootVirtualModel.getVirtualModelNamed("MyVM"));
 		assertNotNull(concept = vm.getFlexoConcept("Concept"));
-		assertNotNull(matchingVM = viewPoint.getVirtualModelNamed("MatchingVM"));
+		assertNotNull(matchingVM = rootVirtualModel.getVirtualModelNamed("MatchingVM"));
 		assertNotNull(matchedConcept = matchingVM.getFlexoConcept("MatchedConcept"));
-		assertNotNull(vm2 = viewPoint.getVirtualModelNamed("MyVM2"));
+		assertNotNull(vm2 = rootVirtualModel.getVirtualModelNamed("MyVM2"));
 		assertNotNull(conceptA = vm2.getFlexoConcept("ConceptA"));
 		assertNotNull(conceptB = vm2.getFlexoConcept("ConceptB"));
-		assertNotNull(matchingVM2 = viewPoint.getVirtualModelNamed("MatchingVM2"));
+		assertNotNull(matchingVM2 = rootVirtualModel.getVirtualModelNamed("MatchingVM2"));
 		assertNotNull(matchedConceptA = matchingVM2.getFlexoConcept("MatchedConceptA"));
 		assertNotNull(matchedConceptB = matchingVM2.getFlexoConcept("MatchedConceptB"));
 
@@ -135,10 +135,10 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		System.out.println("matchingVM2: " + matchingVM2.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(matchingVM2);
 
-		System.out.println(viewPoint.getFMLModelFactory().stringRepresentation(viewPoint));
+		System.out.println(rootVirtualModel.getFMLModelFactory().stringRepresentation(rootVirtualModel));
 
-		System.out.println("VP: " + viewPoint.getCompilationUnit().getFMLPrettyPrint());
-		assertVirtualModelIsValid(viewPoint);
+		System.out.println("VP: " + rootVirtualModel.getCompilationUnit().getFMLPrettyPrint());
+		assertVirtualModelIsValid(rootVirtualModel);
 
 	}
 
@@ -152,25 +152,33 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 	}
 
 	/**
-	 * Instantiate in project a View conform to the ViewPoint
+	 * Instantiate in project a {@link VirtualModelInstance} conform to the {@link VirtualModel}
 	 */
 	@Test
 	@TestOrder(3)
-	public void testCreateView() {
+	public void testCreateRootVMI() {
 		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType
 				.makeNewAction(project.getVirtualModelInstanceRepository().getRootFolder(), null, editor);
 		action.setNewVirtualModelInstanceName("MyView");
 		action.setNewVirtualModelInstanceTitle("Test creation of a new view");
-		action.setVirtualModel(viewPoint);
-		action.setCreationScheme(viewPoint.getCreationSchemes().get(0));
+		action.setVirtualModel(rootVirtualModel);
+		action.setCreationScheme(rootVirtualModel.getCreationSchemes().get(0));
+
+		System.err.println("FML: " + rootVirtualModel.getCreationSchemes().get(0).getFMLPrettyPrint());
+
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
-		assertNotNull(newView = action.getNewVirtualModelInstance());
-		assertNotNull(model = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("model"));
-		assertNotNull(matchingModel = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("matchingModel"));
+		assertNotNull(rootVMI = action.getNewVirtualModelInstance());
+
+		System.err.println("Hop les vmis : " + rootVMI.getVirtualModelInstances());
+
+		System.err.println("SA:" + rootVMI.getResource().getIODelegate().getSerializationArtefact());
+
+		assertNotNull(model = (FMLRTVirtualModelInstance) rootVMI.getVirtualModelInstance("model"));
+		assertNotNull(matchingModel = (FMLRTVirtualModelInstance) rootVMI.getVirtualModelInstance("matchingModel"));
 		assertEquals(model, matchingModel.getFlexoPropertyValue("_model"));
-		assertNotNull(model2 = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("model2"));
-		assertNotNull(matchingModel2 = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("matchingModel2"));
+		assertNotNull(model2 = (FMLRTVirtualModelInstance) rootVMI.getVirtualModelInstance("model2"));
+		assertNotNull(matchingModel2 = (FMLRTVirtualModelInstance) rootVMI.getVirtualModelInstance("matchingModel2"));
 		assertEquals(model2, matchingModel2.getFlexoPropertyValue("_model"));
 
 	}

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -176,6 +177,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		assertNotNull(conceptInstanceA1 = createInstance(conceptA, vmi1, "ConceptInstanceA1"));
 		assertNotNull(conceptInstanceA2 = createInstance(conceptA, vmi1, "ConceptInstanceA2"));
 		assertNotNull(conceptInstanceB1 = createInstance(conceptB, conceptInstanceA1, "ConceptInstanceB1"));
+		assertSame(conceptInstanceA1, conceptInstanceB1.getContainerFlexoConceptInstance());
 		assertNotNull(conceptInstanceB2 = createInstance(conceptB, conceptInstanceA1, "ConceptInstanceB2"));
 		assertNotNull(conceptInstanceB3 = createInstance(conceptB, conceptInstanceA2, "ConceptInstanceB3"));
 		assertNotNull(conceptInstanceC1 = createInstance(conceptC, conceptInstanceB1, "ConceptInstanceC1"));
@@ -197,6 +199,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		assertEquals("ConceptInstanceB1", conceptInstanceB1.getFlexoPropertyValue("b1"));
 		assertEquals("ConceptInstanceB1", conceptInstanceB1.getFlexoActor("b1"));
+
 		assertEquals("ConceptInstanceA1", conceptInstanceB1.getFlexoPropertyValue("a1"));
 		assertEquals("ConceptInstanceA1", conceptInstanceB1.getFlexoActor("a1"));
 
