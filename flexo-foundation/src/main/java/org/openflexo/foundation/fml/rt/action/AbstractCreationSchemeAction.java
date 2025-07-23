@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -164,13 +165,18 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 
 		if (newFlexoConceptInstance == null) {
 
-			if (getFlexoConceptBeingCreated() instanceof FlexoEvent) {
-				newFlexoConceptInstance = getVirtualModelInstance().makeNewEvent((FlexoEvent) getFlexoConceptBeingCreated(),
-						getCreationScheme(), this);
+			if (getVirtualModelInstance() instanceof FMLRTVirtualModelInstance) {
+				if (getFlexoConceptBeingCreated() instanceof FlexoEvent) {
+					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
+							.makeNewEvent((FlexoEvent) getFlexoConceptBeingCreated(), getCreationScheme(), this);
+				}
+				else {
+					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
+							.makeNewFlexoConceptInstance(getFlexoConceptBeingCreated(), getContainer(), getCreationScheme(), this);
+				}
 			}
 			else {
-				newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConceptBeingCreated(),
-						getContainer(), getCreationScheme(), this);
+				logger.warning("Not implemented feature for " + getVirtualModelInstance().getClass());
 			}
 		}
 

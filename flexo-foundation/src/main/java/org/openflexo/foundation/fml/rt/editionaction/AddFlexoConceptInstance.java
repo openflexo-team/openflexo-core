@@ -110,8 +110,14 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 				}
 			}
 
-			return vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container, instantiatedFlexoConcept.getDefaultCreationScheme(),
-					evaluationContext);
+			if (vmi instanceof FMLRTVirtualModelInstance) {
+				return ((FMLRTVirtualModelInstance) vmi).makeNewFlexoConceptInstance(instantiatedFlexoConcept, container,
+						instantiatedFlexoConcept.getDefaultCreationScheme(), evaluationContext);
+			}
+			else {
+				logger.warning("Not implemented (and deprecated) feature for " + vmi.getClass());
+				return null;
+			}
 		}
 	}
 

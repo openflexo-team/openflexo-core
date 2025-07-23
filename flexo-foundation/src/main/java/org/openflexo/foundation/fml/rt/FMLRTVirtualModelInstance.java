@@ -40,6 +40,10 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.AbstractCreationScheme;
+import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -58,8 +62,32 @@ import org.openflexo.pamela.annotations.XMLElement;
 @XMLElement
 public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
-	// @Override
-	// public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository();
+	/**
+	 * Instantiate and register a new {@link FlexoConceptInstance}
+	 * 
+	 * @param pattern
+	 * @return
+	 */
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, CreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
+
+	/**
+	 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
+	 * 
+	 * @param pattern
+	 * @return
+	 */
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
+			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
+
+	/**
+	 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
+	 * 
+	 * @param pattern
+	 * @return
+	 */
+	public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class FMLRTVirtualModelInstanceImpl
 			extends VirtualModelInstanceImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> implements FMLRTVirtualModelInstance {
@@ -81,6 +109,53 @@ public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVir
 			}
 			return null;
 		}
+
+		@Override
+		public FMLRTVirtualModelInstanceModelFactory getFactory() {
+			return (FMLRTVirtualModelInstanceModelFactory) super.getFactory();
+		}
+
+		/**
+		 * Instanciate and register a new {@link FlexoConceptInstance}
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		@Override
+		public final FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, CreationScheme creationScheme,
+				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+
+			return makeNewFlexoConceptInstance(concept, null, creationScheme, evaluationContext);
+		}
+
+		/**
+		 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		@Override
+		public final FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
+				AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+
+			return getFactory().makeNewFlexoConceptInstance(concept, container, this, creationScheme, evaluationContext);
+
+		}
+
+		/**
+		 * Instanciate and fire a new {@link FlexoEventInstance} as a Flexo event
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		@Override
+		public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
+				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+
+			return getFactory().makeNewEventInstance(event, this, creationScheme, evaluationContext);
+
+		}
+
 	}
 
 }

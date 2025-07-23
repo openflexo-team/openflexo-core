@@ -39,9 +39,9 @@
 package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.foundation.fml.AbstractCreationScheme;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -62,13 +62,46 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 		super(resource, FMLRTVirtualModelInstance.class, editingContext, taService);
 	}
 
-	@Override
+	/**
+	 * General API to instantiate a {@link FlexoConceptInstance} conform to a given {@link FlexoConcept} in a container.<br>
+	 * Default {@link CreationScheme} will be used and executed for the initialization of the instance, after the initialization of default
+	 * values. If no default {@link CreationScheme} is declared, none will be executed
+	 * 
+	 * @param concept
+	 *            type of {@link FlexoConceptInstance} to be instantiated
+	 * @param container
+	 *            the container of the new instance (might be null if this instance is a root level of owner {@link VirtualModelInstance})
+	 * @param ownerVirtualModelInstance
+	 *            the {@link VirtualModelInstance} where the instance is to be initialized (cannot be null)
+	 * @param evaluationContext
+	 *            {@link RunTimeEvaluationContext} providing executing environment for default values calculation
+	 * @return
+	 * @throws FMLExecutionException
+	 */
 	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
 			VirtualModelInstance<?, ?> ownerVirtualModelInstance, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 		return makeNewFlexoConceptInstance(concept, container, ownerVirtualModelInstance, null, evaluationContext);
 	}
 
-	@Override
+	/**
+	 * General API to instantiate a {@link FlexoConceptInstance} conform to a given {@link FlexoConcept} in a container.<br>
+	 * Provides a {@link CreationScheme} to be executed for the initialization of the instance, which will be executed after the
+	 * initialization of default values
+	 * 
+	 * @param concept
+	 *            type of {@link FlexoConceptInstance} to be instantiated
+	 * @param container
+	 *            the container of the new instance (might be null if this instance is a root level of owner {@link VirtualModelInstance})
+	 * @param ownerVirtualModelInstance
+	 *            the {@link VirtualModelInstance} where the instance is to be initialized (cannot be null)
+	 * @param creationScheme
+	 *            when not null, {@link CreationScheme} to be executed for the initialization of the instance
+	 * @param evaluationContext
+	 *            {@link RunTimeEvaluationContext} providing executing environment for default values calculation, as well as
+	 *            {@link CreationScheme} execution
+	 * @return
+	 * @throws FMLExecutionException
+	 */
 	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
 			VirtualModelInstance<?, ?> ownerVirtualModelInstance, AbstractCreationScheme creationScheme,
 			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
@@ -118,7 +151,18 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 
 	}
 
-	@Override
+	/**
+	 * General API to instantiate a {@link FlexoEventInstance} conform to a given {@link FlexoEvent} in a container.<br>
+	 * 
+	 * @param event
+	 *            type of {@link FlexoEventInstance} to be instantiated
+	 * @param ownerVirtualModelInstance
+	 *            the {@link VirtualModelInstance} where the instance is to be initialized (cannot be null)
+	 * @param evaluationContext
+	 *            {@link RunTimeEvaluationContext} providing executing environment for default values calculation
+	 * @return
+	 * @throws FMLExecutionException
+	 */
 	public FlexoEventInstance makeNewEventInstance(FlexoEvent event, VirtualModelInstance<?, ?> ownerVirtualModelInstance,
 			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
@@ -131,39 +175,12 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 		return returned;
 	}
 
-	protected FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
+	private FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
 
 		FlexoConceptInstance returned = newInstance(FlexoConceptInstance.class);
 		returned.setFlexoConcept(concept);
 
 		return returned;
-	}
-
-	private void executeCreationScheme(FlexoConceptInstance newInstance, AbstractCreationScheme creationScheme,
-			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-		if (evaluationContext instanceof AbstractCreationSchemeAction) {
-			// Special case here
-			// FlexoConceptInstance has been created, but need to be assigned to be taken under account in creation scheme
-			((AbstractCreationSchemeAction) evaluationContext).assignNewFlexoConceptInstance(newInstance);
-		}
-
-		// Perform execute creation scheme
-		if (creationScheme != null && creationScheme.getControlGraph() != null) {
-			try {
-				creationScheme.getControlGraph().execute(evaluationContext);
-			} catch (ReturnException e) {
-				logger.warning("CreationScheme is not supposed to return any values: " + e);
-				System.err.println(creationScheme.getFMLPrettyPrint());
-				throw new FMLExecutionException("CreationScheme is not supposed to return any value");
-			} catch (FMLExecutionException e) {
-				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(creationScheme.getFMLPrettyPrint());
-				e.printStackTrace();
-				throw e;
-			}
-
-		}
-
 	}
 
 }

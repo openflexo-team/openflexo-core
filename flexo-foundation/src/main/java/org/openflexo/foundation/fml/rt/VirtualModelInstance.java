@@ -63,11 +63,8 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IndexableContainer;
-import org.openflexo.foundation.fml.AbstractCreationScheme;
-import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -246,33 +243,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 	@Setter(NAME_KEY)
 	public void setName(String name);
-
-	/**
-	 * Instantiate and register a new {@link FlexoConceptInstance}
-	 * 
-	 * @param pattern
-	 * @return
-	 */
-	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, CreationScheme creationScheme,
-			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
-
-	/**
-	 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
-	 * 
-	 * @param pattern
-	 * @return
-	 */
-	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
-			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
-
-	/**
-	 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
-	 * 
-	 * @param pattern
-	 * @return
-	 */
-	public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
-			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the FlexoConcept identified by supplied String parameter
@@ -672,47 +642,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 					willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
 				}
 			});
-		}
-
-		/**
-		 * Instanciate and register a new {@link FlexoConceptInstance}
-		 * 
-		 * @param pattern
-		 * @return
-		 */
-		@Override
-		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, CreationScheme creationScheme,
-				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-
-			return makeNewFlexoConceptInstance(concept, null, creationScheme, evaluationContext);
-		}
-
-		/**
-		 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
-		 * 
-		 * @param pattern
-		 * @return
-		 */
-		@Override
-		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container,
-				AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-
-			return getFactory().makeNewFlexoConceptInstance(concept, container, this, creationScheme, evaluationContext);
-
-		}
-
-		/**
-		 * Instanciate and fire a new {@link FlexoEventInstance} as a Flexo event
-		 * 
-		 * @param pattern
-		 * @return
-		 */
-		@Override
-		public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
-				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-
-			return getFactory().makeNewEventInstance(event, this, creationScheme, evaluationContext);
-
 		}
 
 		/**
