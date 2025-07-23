@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
@@ -63,7 +63,7 @@ import org.openflexo.pamela.factory.PamelaModelFactory;
  * @author sylvain
  * 
  */
-public abstract class AbstractVirtualModelInstanceModelFactory<R extends AbstractVirtualModelInstanceResource<?, ?>>
+public abstract class AbstractVirtualModelInstanceModelFactory<R extends PamelaResource<?, ?>>
 		extends DefaultPamelaResourceModelFactory<R> {
 
 	private RelativePathResourceConverter relativePathResourceConverter;

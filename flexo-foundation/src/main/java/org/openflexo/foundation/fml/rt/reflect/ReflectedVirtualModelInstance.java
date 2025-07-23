@@ -36,11 +36,14 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt;
+package org.openflexo.foundation.fml.rt.reflect;
 
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -79,10 +82,10 @@ public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<
 	public void setReflectedResource(R resource);
 
 	@Getter(value = REFLECTED_MODEL_FACTORY, ignoreType = true)
-	public ReflectedVirtualModelInstanceModelFactory<R, RD, TA> getReflectedModelFactory();
+	public ReflectedVirtualModelInstanceModelFactory<R, RD, TA, ?> getReflectedModelFactory();
 
 	@Setter(REFLECTED_MODEL_FACTORY)
-	public void setReflectedModelFactory(ReflectedVirtualModelInstanceModelFactory<R, RD, TA> factory);
+	public void setReflectedModelFactory(ReflectedVirtualModelInstanceModelFactory<R, RD, TA, ?> factory);
 
 	public static abstract class ReflectedVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends VirtualModelInstanceImpl<VMI, TA> implements ReflectedVirtualModelInstance<VMI, R, RD, TA> {
