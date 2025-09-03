@@ -5,7 +5,7 @@ public model TestSequenceInIteration {
 	public int a;
 
 	public anAction() {
-		for (ConceptInstance foo : select Foo from (this)) {
+		for (Foo foo : select Foo from (this)) {
 			foo.foo(1);
 			foo.foo(2);
 		}

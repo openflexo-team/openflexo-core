@@ -50,9 +50,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -66,7 +64,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
@@ -101,22 +98,6 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 	public static final String CONDITION_EXPRESSION_KEY = "conditionExpression";
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String STATEMENT_EXPRESSION_KEY = "statementExpression";
-
-	@FMLMigration("ignoreForEquality=true to be removed")
-	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
-	@XMLAttribute
-	public Type getDeclaredType();
-
-	@Setter(DECLARED_TYPE_KEY)
-	public void setDeclaredType(Type type);
-
-	/**
-	 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
-	 * 
-	 * @param type
-	 */
-	@Updater(DECLARED_TYPE_KEY)
-	public void updateDeclaredType(Type type);
 
 	/**
 	 * Returns the control graph to be executed after each iteration
@@ -153,28 +134,10 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 		private DataBinding<?> initExpression;
 		private DataBinding<Boolean> conditionExpression;
 
-		/**
-		 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
-		 * 
-		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
-		 * 
-		 * @param type
-		 */
 		@Override
-		public void updateDeclaredType(Type type) {
-
-			if (getDeclaringCompilationUnit() != null && type instanceof ConnieType) {
-				setDeclaredType(((ConnieType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
-			}
-			else {
-				setDeclaredType(type);
-			}
-		}
-
-		@Override
-		public Type getItemType() {
-			if (getDeclaredType() != null) {
-				return getDeclaredType();
+		public Type getAnalyzedType() {
+			if (getInitExpression().isSet() && getInitExpression().isValid()) {
+				return getInitExpression().getAnalyzedType();
 			}
 			return Object.class;
 		}

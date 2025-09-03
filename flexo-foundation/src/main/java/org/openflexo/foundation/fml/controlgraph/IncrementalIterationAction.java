@@ -187,7 +187,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		}
 
 		@Override
-		public Type getItemType() {
+		public Type getAnalyzedType() {
 			if (getStartValue() != null && getStartValue().isSet() && getStartValue().isValid()) {
 				return getStartValue().getAnalyzedType();
 			}

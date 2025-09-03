@@ -93,7 +93,7 @@ public interface IterationAction extends AbstractIterationAction {
 		private DataBinding<List<?>> iteration;
 
 		@Override
-		public Type getItemType() {
+		public Type getAnalyzedType() {
 			if (getIterationAction() != null) {
 				return getIterationAction().getIteratorType();
 			}
