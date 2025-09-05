@@ -6,6 +6,10 @@ dependencies {
   // Still to be removed
   implementation flexoGraphicUtils() // used for icon mgt in FlexoConcept
 
+  // Replacement for java.xml.bind
+  implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
+  implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
+
   // external dep
   api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.8.0.202006091008-r'
   api group: 'com.google.inject', name: 'guice', version: '4.2.3'
@@ -15,7 +19,7 @@ dependencies {
 }
 
 //if (JavaVersion.current().isJava9Compatible()) {
-	tasks.withType(JavaCompile) {
-		options.compilerArgs.addAll(['--add-modules', 'java.xml.bind'])
-    }
+//	tasks.withType(JavaCompile) {
+//		options.compilerArgs.addAll(['--add-modules', 'java.xml.bind'])
+//    }
 //}
