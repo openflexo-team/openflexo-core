@@ -11,3 +11,10 @@ dependencies {
 
 apply plugin: 'sablecc'
 
+def generateGrammarSourceTask = tasks.named("generateGrammarSource")
+
+// We explicity declare a dependence between those two tasks
+tasks.named("processResources") {
+   dependsOn(generateGrammarSourceTask)
+}
+

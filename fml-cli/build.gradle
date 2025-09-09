@@ -5,13 +5,7 @@ dependencies {
   // external dep
   api group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
-  // testing dep
-//  testCompile testUtils()
-//  testImplementation project(':flexo-foundation-test')
-//  testImplementation project(':flexo-test-resources')
 }
-
-//apply plugin: 'sablecc'
 
 // use with gradle --no-daemon --console plain fml-cli:run -q
 apply plugin: 'application'
