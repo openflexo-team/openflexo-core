@@ -1165,7 +1165,7 @@ public abstract class CompilationUnitResourceImpl
 				String dependenciesList = metaDataManager.getProperty("dependenciesList", file);
 				String flexoConceptsList = metaDataManager.getProperty("flexoConceptsList", file);
 				String virtualModelClassName = metaDataManager.getProperty("virtualModelClassName", file);
-				if (uri != null && name != null && version != null /*&& modelVersion != null*/ && requiredModelSlotList != null) {
+				if (uri != null && name != null /*&& version != null*/ /*&& modelVersion != null*/ /*&& requiredModelSlotList != null*/) {
 					// Metadata are present, take it from cache
 					// System.out.println("Return info from cache for " + this);
 					return new VirtualModelInfo(uri, version, name, requiredModelSlotList, dependenciesList, flexoConceptsList,
