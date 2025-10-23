@@ -156,4 +156,19 @@ public class TestBindingPathParser extends ExpressionParserTestCase {
 		tryToParse("a.{\"get\"}(2).c", "a.{\"get\"}(2).c", BindingPath.class, null, serviceManager, false);
 	}
 
+	@Test
+	public void testUseOfFMLKeywords() {
+		tryToParse("myList.get(2)", "myList.get(2)", BindingPath.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testUseOfFMLKeywords2() {
+		tryToParse("myList.get(2).tutu.model", "myList.get(2).tutu.model", BindingPath.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testUseOfFMLKeywords3() {
+		tryToParse("myList.get(2).tutu.get(2)", "myList.get(2).tutu.get(2)", BindingPath.class, null, serviceManager, false);
+	}
+
 }

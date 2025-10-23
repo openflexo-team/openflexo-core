@@ -493,13 +493,70 @@ Productions
 
    identifier_prefix = 
      {normal} lidentifier dot |
+    // {kw} authorized_kw_in_composite_ident dot |
      {escaped} escaped_identifier dot;
     //   {lower_case} lidentifier dot
     // | {upper_case} uidentifier dot;
-   
-   authorized_kw_in_composite_ident =
+  
+    authorized_kw_in_composite_ident =
+   //  {abstract} kw_abstract |
+     {concept} kw_concept |
      {get} kw_get |
-     {model} kw_model;
+     {model} kw_model |
+     {set} kw_set;
+  
+  // TODO : check if other keywords should be included
+  /* authorized_kw_in_composite_ident =
+     {abstract} kw_abstract |
+     {as} kw_as |
+     //{assert} kw_assert |
+     {begin} kw_begin |
+     {concept} kw_concept |
+     //{connect} kw_connect |
+     {create} kw_create |
+     {default} kw_default |
+     //{delete} kw_delete |
+     //{do} kw_do |
+     {else} kw_else |
+     {end} kw_end |
+     {enum} kw_enum |
+     {event} kw_event |
+     {extends} kw_extends |
+     //{fire} kw_fire |
+     {for} kw_for |
+     {from} kw_from |
+     {get} kw_get |
+     {if} kw_if |
+     {import} kw_import |
+     {in} kw_in |
+     {inside} kw_inside |
+     //{instanceof} kw_instanceof |
+     {listen} kw_listen |
+     //{log} kw_log |
+     {match} kw_match |
+     {model} kw_model |
+     {namespace} kw_namespace |
+     //{notify} kw_notify |
+     //{new} kw_new |
+     {onfailure} kw_onfailure |
+     {private} kw_private |
+     {protected} kw_protected |
+     {public} kw_public |
+     {required} kw_required |
+     {return} kw_return |
+     {select} kw_select |
+     {set} kw_set |
+     //{super} kw_super |
+     {then} kw_then |
+     {typedef} kw_typedef |
+     
+     {unique} kw_unique |
+     {use} kw_use |
+     {using} kw_using |
+     {values} kw_values |
+     {where} kw_where |
+     {while} kw_while |
+     {with} kw_with;*/
      
    
    composite_ident = 
@@ -1044,6 +1101,7 @@ Productions
        {super} kw_super dot lidentifier
      | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:lidentifier
      | {primary} primary_no_id dot lidentifier
+     | {kw} primary_no_id dot authorized_kw_in_composite_ident
      ;
 
    literal =

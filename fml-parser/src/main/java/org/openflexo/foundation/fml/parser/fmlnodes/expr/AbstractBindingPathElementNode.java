@@ -45,11 +45,13 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.BindingPathElement.BindingPathElementOwner;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.foundation.fml.parser.BindingPathFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
+import org.openflexo.foundation.fml.parser.node.AKwFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryNoIdPrimary;
 import org.openflexo.foundation.fml.parser.node.AReferenceSuperFieldAccess;
@@ -145,6 +147,9 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 	protected String getLastPathIdentifier(PFieldAccess fieldAccess) {
 		if (fieldAccess instanceof APrimaryFieldAccess) {
 			return (((APrimaryFieldAccess) fieldAccess).getLidentifier().getText());
+		}
+		if (fieldAccess instanceof AKwFieldAccess) {
+			return BindingPathFactory.getKwToken(((AKwFieldAccess) fieldAccess).getAuthorizedKwInCompositeIdent()).getText();
 		}
 		if (fieldAccess instanceof AReferenceSuperFieldAccess) {
 			return (((AReferenceSuperFieldAccess) fieldAccess).getIdentifier2().getText());

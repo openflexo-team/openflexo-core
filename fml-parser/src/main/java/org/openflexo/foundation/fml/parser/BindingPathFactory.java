@@ -68,6 +68,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.StaticMethodCallBinding
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.node.ACidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
+import org.openflexo.foundation.fml.parser.node.AConceptAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AEscapedCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
@@ -80,6 +81,7 @@ import org.openflexo.foundation.fml.parser.node.AGetAuthorizedKwInCompositeIdent
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AKwCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AKwFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ALidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
@@ -93,6 +95,7 @@ import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.APrimaryNoIdPrimary;
 import org.openflexo.foundation.fml.parser.node.AReferenceSuperFieldAccess;
+import org.openflexo.foundation.fml.parser.node.ASetAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASuperFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
@@ -157,6 +160,22 @@ public class BindingPathFactory {
 		// return bindingPathFactory.path;
 		return new BindingPath(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements, bindingPathFactory.getBindable(),
 				FMLPrettyPrinter.getInstance());
+	}
+
+	public static Token getKwToken(PAuthorizedKwInCompositeIdent node) {
+		if (node instanceof AGetAuthorizedKwInCompositeIdent) {
+			return ((AGetAuthorizedKwInCompositeIdent) node).getKwGet();
+		}
+		else if (node instanceof ASetAuthorizedKwInCompositeIdent) {
+			return ((ASetAuthorizedKwInCompositeIdent) node).getKwSet();
+		}
+		else if (node instanceof AModelAuthorizedKwInCompositeIdent) {
+			return ((AModelAuthorizedKwInCompositeIdent) node).getKwModel();
+		}
+		else if (node instanceof AConceptAuthorizedKwInCompositeIdent) {
+			return ((AConceptAuthorizedKwInCompositeIdent) node).getKwConcept();
+		}
+		return null;
 	}
 
 	private BindingPathFactory(Node node, AbstractExpressionFactory expressionFactory) {
@@ -227,6 +246,10 @@ public class BindingPathFactory {
 		if (node instanceof APrimaryFieldAccess) {
 			appendBindingPath(((APrimaryFieldAccess) node).getPrimaryNoId());
 			appendBindingPath(((APrimaryFieldAccess) node).getLidentifier());
+		}
+		else if (node instanceof AKwFieldAccess) {
+			appendBindingPath(((AKwFieldAccess) node).getPrimaryNoId());
+			appendBindingPath(((AKwFieldAccess) node).getAuthorizedKwInCompositeIdent());
 		}
 		else if (node instanceof AReferenceSuperFieldAccess) {
 			appendBindingPath(((AReferenceSuperFieldAccess) node).getIdentifier1());
@@ -353,12 +376,7 @@ public class BindingPathFactory {
 	}
 
 	private void appendBindingPath(PAuthorizedKwInCompositeIdent node) {
-		if (node instanceof AGetAuthorizedKwInCompositeIdent) {
-			makeNormalBindingPathElement(((AGetAuthorizedKwInCompositeIdent) node).getKwGet());
-		}
-		else if (node instanceof AModelAuthorizedKwInCompositeIdent) {
-			makeNormalBindingPathElement(((AModelAuthorizedKwInCompositeIdent) node).getKwModel());
-		}
+		makeNormalBindingPathElement(getKwToken(node));
 	}
 
 	private IBindingPathElement retrieveActualParent() {
