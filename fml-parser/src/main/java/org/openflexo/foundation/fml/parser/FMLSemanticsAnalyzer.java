@@ -63,13 +63,17 @@ import org.openflexo.foundation.fml.parser.node.ACompositeCidentAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.ACompositeTidentAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AEscapedCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
+import org.openflexo.foundation.fml.parser.node.AEscapedIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
-import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
+import org.openflexo.foundation.fml.parser.node.AKwCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ANormalIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
@@ -77,9 +81,11 @@ import org.openflexo.foundation.fml.parser.node.ATechnologySpecificType;
 import org.openflexo.foundation.fml.parser.node.ATypeQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAnnotationTag;
+import org.openflexo.foundation.fml.parser.node.PAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PCompositeCident;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PCompositeTident;
+import org.openflexo.foundation.fml.parser.node.PEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.TCidentifier;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
@@ -333,8 +339,11 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
 		List<String> returned = new ArrayList<>();
 		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof AIdentifierPrefix) {
-				returned.add(((AIdentifierPrefix) p).getLidentifier().getText());
+			if (p instanceof ANormalIdentifierPrefix) {
+				returned.add(((ANormalIdentifierPrefix) p).getLidentifier().getText());
+			}
+			if (p instanceof AEscapedIdentifierPrefix) {
+				returned.add(getEscapedText((AEscapedIdentifierPrefix) p));
 			}
 		}
 		returned.add(identifier.getText());
@@ -344,11 +353,43 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
 		StringBuffer returned = new StringBuffer();
 		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof AIdentifierPrefix) {
-				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			if (p instanceof ANormalIdentifierPrefix) {
+				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+			if (p instanceof AEscapedIdentifierPrefix) {
+				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
 			}
 		}
 		returned.append(identifier.getText());
+		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, PAuthorizedKwInCompositeIdent identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof ANormalIdentifierPrefix) {
+				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+			if (p instanceof AEscapedIdentifierPrefix) {
+				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
+			}
+		}
+		returned.append(getText(identifier));
+		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, PEscapedIdentifier identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof ANormalIdentifierPrefix) {
+				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+			if (p instanceof AEscapedIdentifierPrefix) {
+				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
+			}
+		}
+		returned.append(((AEscapedIdentifier) identifier).getLitString().getText());
+		// returned.append(identifier.getText());
 		return returned.toString();
 	}
 
@@ -357,9 +398,17 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 			return makeFullQualifiedIdentifier(((ANormalCompositeIdent) compositeIdentifier).getPrefixes(),
 					((ANormalCompositeIdent) compositeIdentifier).getIdentifier());
 		}
+		if (compositeIdentifier instanceof AEscapedCompositeIdent) {
+			return makeFullQualifiedIdentifier(((AEscapedCompositeIdent) compositeIdentifier).getPrefixes(),
+					((AEscapedCompositeIdent) compositeIdentifier).getIdentifier());
+		}
 		if (compositeIdentifier instanceof AConstantCompositeIdent) {
 			return makeFullQualifiedIdentifier(((AConstantCompositeIdent) compositeIdentifier).getPrefixes(),
 					((AConstantCompositeIdent) compositeIdentifier).getIdentifier());
+		}
+		if (compositeIdentifier instanceof AKwCompositeIdent) {
+			return makeFullQualifiedIdentifier(((AKwCompositeIdent) compositeIdentifier).getPrefixes(),
+					((AKwCompositeIdent) compositeIdentifier).getIdentifier());
 		}
 		return null;
 	}
@@ -377,8 +426,11 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
 		List<String> returned = new ArrayList<>();
 		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof AIdentifierPrefix) {
-				returned.add(((AIdentifierPrefix) p).getLidentifier().getText());
+			if (p instanceof ANormalIdentifierPrefix) {
+				returned.add(((ANormalIdentifierPrefix) p).getLidentifier().getText());
+			}
+			if (p instanceof AEscapedIdentifierPrefix) {
+				returned.add(getEscapedText((AEscapedIdentifierPrefix) p));
 			}
 		}
 		returned.add(identifier.getText());
@@ -388,19 +440,29 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
 		StringBuffer returned = new StringBuffer();
 		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof AIdentifierPrefix) {
-				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			if (p instanceof ANormalIdentifierPrefix) {
+				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+			if (p instanceof AEscapedIdentifierPrefix) {
+				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
 			}
 		}
 		returned.append(identifier.getText());
 		return returned.toString();
 	}
 
+	private static String getEscapedText(AEscapedIdentifierPrefix p) {
+		return ((AEscapedIdentifier) (p.getEscapedIdentifier())).getLitString().getText();
+	}
+
 	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TCidentifier identifier) {
 		StringBuffer returned = new StringBuffer();
 		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof AIdentifierPrefix) {
-				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			if (p instanceof ANormalIdentifierPrefix) {
+				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+			if (p instanceof AEscapedIdentifierPrefix) {
+				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
 			}
 		}
 		returned.append(identifier.getText());

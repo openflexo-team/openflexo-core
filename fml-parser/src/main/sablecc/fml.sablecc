@@ -313,6 +313,7 @@ Tokens
    // --------------------------------------------------------------------------------------
    lit_string = '"' string_character* '"';
    lit_character = ''' (single_character | escape_sequence) ''';
+   //escaped_identifier = ''' single_character string_character+ ''';
    lit_float =
      digit+ '.' digit* exponent_part? float_type_suffix?
    | '.' digit+ exponent_part? float_type_suffix?
@@ -337,6 +338,8 @@ Tokens
    uidentifier = uppercase_letter letter_or_digit*;
    // path_identifier = path_letter*;
 
+   //escaped_identifier = '{' ''' single_character string_character+ ''' '}';
+ 
    // --------------------------------------------------------------------------------------
    // White space and comments
    // --------------------------------------------------------------------------------------
@@ -486,12 +489,23 @@ Productions
    // General rules
    // --------------------------------------------------------------------------------------
 
-   identifier_prefix = lidentifier dot;
-   //   {lower_case} lidentifier dot
-   // | {upper_case} uidentifier dot;
+   escaped_identifier = l_brc lit_string r_brc;
+
+   identifier_prefix = 
+     {normal} lidentifier dot |
+     {escaped} escaped_identifier dot;
+    //   {lower_case} lidentifier dot
+    // | {upper_case} uidentifier dot;
+   
+   authorized_kw_in_composite_ident =
+     {get} kw_get |
+     {model} kw_model;
+     
    
    composite_ident = 
+     {kw}   [prefixes]:identifier_prefix* [identifier]:authorized_kw_in_composite_ident |
      {normal}   [prefixes]:identifier_prefix* [identifier]:lidentifier |
+     {escaped}  [prefixes]:identifier_prefix* [identifier]:escaped_identifier |
      {constant} [prefixes]:identifier_prefix* [identifier]:cidentifier;
  
    composite_tident_suffix = dollar uidentifier;

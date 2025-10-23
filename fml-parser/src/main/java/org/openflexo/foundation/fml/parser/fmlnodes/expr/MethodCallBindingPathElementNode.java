@@ -56,17 +56,18 @@ public class MethodCallBindingPathElementNode
 
 	private Node identifierNode;
 	private IBindingPathElement parent;
+	private boolean escapedSerialization = false;
 
 	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, Node identifierNode, FMLSemanticsAnalyzer analyzer,
-			IBindingPathElement parent, Bindable bindable) {
+			IBindingPathElement parent, Bindable bindable, boolean escapedSerialization) {
 		super(astNode, analyzer, bindable);
 		this.identifierNode = identifierNode;
 		this.parent = parent;
+		this.escapedSerialization = escapedSerialization;
 		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
-
 	}
 
 	public MethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer,
@@ -93,10 +94,14 @@ public class MethodCallBindingPathElementNode
 		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
 			String methodName = getLastPathIdentifier(astNode.getPrimary());
-			// String methodName2 = getText(identifierNode);
-
-			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
-					methodName, getArguments(), getBindable());
+			if (escapedSerialization) {
+				methodName = methodName.substring(1, methodName.length() - 1);
+			}
+			SimpleMethodPathElement<?> pathElement = getBindingFactory().makeSimpleMethodPathElement(parent, methodName, getArguments(),
+					getBindable());
+			if (escapedSerialization) {
+				pathElement.setEscapedSerialization(true);
+			}
 			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
 		}
