@@ -64,6 +64,8 @@ public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends Technolo
 	 */
 	public int getIndex();
 
+	public String getRawText();
+
 	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocRun<D, TA> {
 
