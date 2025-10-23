@@ -150,7 +150,8 @@ public abstract class ExpressionParserTestCase extends TestCase {
 			if (shouldFail) {
 				fail();
 			}
-			assertTrue(expectedExpressionClass.isAssignableFrom(parsed.getClass()));
+			assertTrue("Expected: " + expectedExpressionClass + " but is " + parsed.getClass(),
+					expectedExpressionClass.isAssignableFrom(parsed.getClass()));
 			if (expectedEvaluatedExpression != null) {
 				assertEquals(expectedEvaluatedExpression, prettyPrinter.getStringRepresentation(evaluated, bindable));
 			}
