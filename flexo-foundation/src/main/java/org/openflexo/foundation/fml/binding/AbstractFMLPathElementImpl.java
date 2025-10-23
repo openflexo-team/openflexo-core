@@ -72,16 +72,6 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 	public static final String NAME_PROPERTY = "propertyName";
 	public static final String TYPE_PROPERTY = "type";
 
-	public AbstractFMLPathElementImpl() {
-	}
-
-	/*public AbstractFMLPathElementImpl(IBindingPathElement parent, String parsed, Bindable bindable) {
-		this();
-		setParent(parent);
-		setParsed(parsed);
-		setBindable(bindable);
-	}*/
-
 	@Override
 	public Bindable getBindable() {
 		return bindable;
