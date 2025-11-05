@@ -501,6 +501,7 @@ Productions
     authorized_kw_in_composite_ident =
    //  {abstract} kw_abstract |
      {concept} kw_concept |
+     {create} kw_create |
      {get} kw_get |
      {model} kw_model |
      {set} kw_set;

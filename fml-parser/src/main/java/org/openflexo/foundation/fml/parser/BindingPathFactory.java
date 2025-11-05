@@ -70,6 +70,7 @@ import org.openflexo.foundation.fml.parser.node.ACidentifierUriExpressionPrimary
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.AConceptAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ACreateAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AEscapedCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifierPrefix;
@@ -174,6 +175,9 @@ public class BindingPathFactory {
 		}
 		else if (node instanceof AConceptAuthorizedKwInCompositeIdent) {
 			return ((AConceptAuthorizedKwInCompositeIdent) node).getKwConcept();
+		}
+		else if (node instanceof ACreateAuthorizedKwInCompositeIdent) {
+			return ((ACreateAuthorizedKwInCompositeIdent) node).getKwCreate();
 		}
 		return null;
 	}
