@@ -182,11 +182,6 @@ public interface FinalizeMatching extends EditionAction {
 		private FlexoConceptInstanceType matchedType;
 
 		@Override
-		public String getStringRepresentation() {
-			return getHeaderContext() + getMatchingSet() + ".finalizeMatching()";
-		}
-
-		@Override
 		public DataBinding<MatchingSet> getMatchingSet() {
 			if (matchingSet == null) {
 				matchingSet = new DataBinding<>(this, MatchingSet.class, BindingDefinitionType.GET);
@@ -529,6 +524,12 @@ public interface FinalizeMatching extends EditionAction {
 			getContainer().rebuild();
 			getMatchingSet().rebuild();
 		}
+
+		@Override
+		public String getStringRepresentation() {
+			return "end match " + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "?");
+		}
+
 	}
 
 	@DefineValidationRule

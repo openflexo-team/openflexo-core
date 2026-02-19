@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
 import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -512,6 +513,12 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		public void revalidateBindings() {
 			super.revalidateBindings();
 			getContainer().rebuild();
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			return "select " + (this instanceof UniqueFetchRequest ? "unique " : "")
+					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "?") + " from " + getContainer();
 		}
 
 	}

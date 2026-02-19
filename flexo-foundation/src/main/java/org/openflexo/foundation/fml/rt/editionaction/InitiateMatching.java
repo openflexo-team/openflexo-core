@@ -234,12 +234,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		}
 
 		@Override
-		public String getStringRepresentation() {
-			return getHeaderContext() + getContainer() + ".initiateMatching("
-					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : null) + ")";
-		}
-
-		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {
 			if (container == null) {
 				container = new DataBinding<>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
@@ -296,6 +290,11 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		public void revalidateBindings() {
 			super.revalidateBindings();
 			getContainer().rebuild();
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			return "begin match " + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "?") + " from " + getContainer();
 		}
 
 	}

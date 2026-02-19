@@ -691,6 +691,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			getMatchingSet().rebuild();
 		}
 
+		@Override
+		public String getStringRepresentation() {
+			return "match " + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "?") + " from " + getContainer();
+		}
+
 	}
 
 	@DefineValidationRule
