@@ -88,9 +88,6 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 			returned.setDeclaredType(TypeFactory.makeType(getDeclaredType(), getSemanticsAnalyzer().getTypingSpace()));
 		}
 
-		System.out.println("------ PROUT on cree une IterationAction pour " + astNode);
-		System.out.println("Type : " + returned.getDeclaredType());
-
 		ControlGraphNode<?, ?> iterationActionCGNode = getIterationActionCGNode(astNode);
 		if (iterationActionCGNode.getModelObject() instanceof AssignableAction) {
 			returned.setIterationAction((AssignableAction) iterationActionCGNode.getModelObject());
