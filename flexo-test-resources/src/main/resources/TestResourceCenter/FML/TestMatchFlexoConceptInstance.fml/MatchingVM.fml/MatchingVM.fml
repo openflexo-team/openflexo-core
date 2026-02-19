@@ -14,17 +14,26 @@ model MatchingVM {
 		log">>>> Parametre model : " + parameters._model;
 	}
 
-	synchronizeUsingMatchingSet () {
+	/*synchronizeUsingMatchingSet () {
 		MatchingSet matchingSet = begin match MatchedConcept from this;
 		for (Concept aConcept : select Concept from _model) {
 			match MatchedConcept in matchingSet from this where (c=aConcept) create::init(aConcept.p + "-matched",aConcept);
 		}
 		end match MatchedConcept in matchingSet delete::performDelete();
+	}*/
+
+	// New syntax
+	synchronizeUsingMatchingSet () {
+		MatchingSet matchingSet = begin match MatchedConcept from this;
+		for (Concept aConcept : select Concept from _model) {
+			match MatchedConcept in matchingSet from this where (c=aConcept) unmatched: new MatchedConcept::init(aConcept.p + "-matched",aConcept);
+		}
+		end match MatchedConcept in matchingSet unmatched: performDelete();
 	}
 
 	defaultSynchronize () {
 		for (Concept aConcept : select Concept from _model) {
-			match MatchedConcept from this where (c=aConcept) create::init(aConcept.p + "-default",aConcept);
+			match MatchedConcept from this where (c=aConcept) unmatched: new MatchedConcept::init(aConcept.p + "-default",aConcept);
 		}
 	}
 

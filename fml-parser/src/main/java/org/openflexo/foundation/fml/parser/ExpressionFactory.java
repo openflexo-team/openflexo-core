@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AGtRelationalExp;
 import org.openflexo.foundation.fml.parser.node.AGteqRelationalExp;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
@@ -76,7 +77,6 @@ import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AMinusAddExp;
 import org.openflexo.foundation.fml.parser.node.AMinusUnaryExp;
 import org.openflexo.foundation.fml.parser.node.ANeqEqualityExp;
-import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANullLiteral;
 import org.openflexo.foundation.fml.parser.node.APercentMultExp;
@@ -90,6 +90,7 @@ import org.openflexo.foundation.fml.parser.node.AQmarkConditionalExp;
 import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AShlShiftExp;
 import org.openflexo.foundation.fml.parser.node.AShrShiftExp;
+import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASlashMultExp;
 import org.openflexo.foundation.fml.parser.node.AStarMultExp;
 import org.openflexo.foundation.fml.parser.node.AStringLiteral;
@@ -293,14 +294,26 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 	}
 
 	@Override
-	public void inANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
-		super.inANewInstancePrimaryNoId(node);
+	public void inASimpleNewInstance(ASimpleNewInstance node) {
+		super.inASimpleNewInstance(node);
 		pushBindingPathNode(node);
 	}
 
 	@Override
-	public void outANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
-		super.outANewInstancePrimaryNoId(node);
+	public void outASimpleNewInstance(ASimpleNewInstance node) {
+		super.outASimpleNewInstance(node);
+		popBindingPathNode(node);
+	}
+
+	@Override
+	public void inAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
+		super.inAFullQualifiedNewInstance(node);
+		pushBindingPathNode(node);
+	}
+
+	@Override
+	public void outAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
+		super.outAFullQualifiedNewInstance(node);
 		popBindingPathNode(node);
 	}
 

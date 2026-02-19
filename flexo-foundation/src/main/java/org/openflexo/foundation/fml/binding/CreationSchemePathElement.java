@@ -622,7 +622,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				System.out.println(function.getFMLPrettyPrint());
 			}*/
 			setFunction(function);
-			if (function == null && getType().isResolved()) {
+			if (function == null && getType() != null && getType().isResolved()) {
 				// Do not warn for unresolved type
 				// logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments()
 				// + (getParent() != null ? " and parent " + getParent().getType() : ""));

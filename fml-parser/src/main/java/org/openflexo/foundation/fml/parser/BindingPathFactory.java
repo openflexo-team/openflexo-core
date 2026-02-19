@@ -42,6 +42,7 @@ package org.openflexo.foundation.fml.parser;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingVariable;
@@ -84,6 +85,7 @@ import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AKwCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AKwFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ALidentifierUriExpressionPrimary;
+import org.openflexo.foundation.fml.parser.node.ALitteralUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AModelAuthorizedKwInCompositeIdent;
@@ -114,6 +116,7 @@ import org.openflexo.foundation.fml.parser.node.PNewInstance;
 import org.openflexo.foundation.fml.parser.node.PPrimary;
 import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.PStatementExpression;
+import org.openflexo.foundation.fml.parser.node.PUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.TCidentifier;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
@@ -130,6 +133,8 @@ import org.openflexo.foundation.fml.parser.node.Token;
  * 
  */
 public class BindingPathFactory {
+
+	private static final Logger logger = Logger.getLogger(BindingPathFactory.class.getPackage().getName());
 
 	private final AbstractExpressionFactory expressionFactory;
 
@@ -193,6 +198,7 @@ public class BindingPathFactory {
 		return expressionFactory.getBindable();
 	}
 
+	// IMPORTANT : Take care that the rootNode MUST match one of those types
 	private void explore() {
 
 		// System.out.println("Analyzing path " + rootNode);
@@ -201,23 +207,28 @@ public class BindingPathFactory {
 		if (rootNode instanceof PPrimaryNoId) {
 			appendBindingPath((PPrimaryNoId) rootNode);
 		}
-		if (rootNode instanceof PPrimary) {
+		else if (rootNode instanceof PPrimary) {
 			appendBindingPath((PPrimary) rootNode);
 		}
-		if (rootNode instanceof PLeftHandSide) {
+		else if (rootNode instanceof PLeftHandSide) {
 			appendBindingPath((PLeftHandSide) rootNode);
 		}
-		if (rootNode instanceof PStatementExpression) {
+		else if (rootNode instanceof PStatementExpression) {
 			appendBindingPath((PStatementExpression) rootNode);
 		}
-		if (rootNode instanceof AUidentifierUriExpressionPrimary) {
-			appendBindingPath(((AUidentifierUriExpressionPrimary) rootNode).getUidentifier());
+		else if (rootNode instanceof PNewInstance) {
+			appendBindingPath((PNewInstance) rootNode);
 		}
-		if (rootNode instanceof ALidentifierUriExpressionPrimary) {
-			appendBindingPath(((ALidentifierUriExpressionPrimary) rootNode).getLidentifier());
+		else if (rootNode instanceof PUriExpressionPrimary) {
+			appendBindingPath((PUriExpressionPrimary) rootNode);
 		}
-		if (rootNode instanceof ACidentifierUriExpressionPrimary) {
-			appendBindingPath(((ACidentifierUriExpressionPrimary) rootNode).getCidentifier());
+		else {
+			if (rootNode != null) {
+				logger.warning("Unhandled rootNode: " + rootNode + " of " + rootNode.getClass());
+			}
+			else {
+				logger.warning("Unexpected null rootNode");
+			}
 		}
 	}
 
@@ -311,6 +322,21 @@ public class BindingPathFactory {
 		}
 		else if (node instanceof AClassMethodMethodInvocation) {
 			appendClassMethodInvocation((AClassMethodMethodInvocation) node);
+		}
+	}
+
+	private void appendBindingPath(PUriExpressionPrimary node) {
+		if (node instanceof AUidentifierUriExpressionPrimary) {
+			appendBindingPath(((AUidentifierUriExpressionPrimary) rootNode).getUidentifier());
+		}
+		if (node instanceof ALidentifierUriExpressionPrimary) {
+			appendBindingPath(((ALidentifierUriExpressionPrimary) rootNode).getLidentifier());
+		}
+		if (node instanceof ACidentifierUriExpressionPrimary) {
+			appendBindingPath(((ACidentifierUriExpressionPrimary) rootNode).getCidentifier());
+		}
+		if (node instanceof ALitteralUriExpressionPrimary) {
+			makeNormalBindingPathElement(((ALitteralUriExpressionPrimary) rootNode).getLitString());
 		}
 	}
 
