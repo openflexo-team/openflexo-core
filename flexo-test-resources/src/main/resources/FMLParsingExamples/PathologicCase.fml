@@ -14,10 +14,10 @@ model MyModel {
 	synchronize () {
 		MatchingSet matchingSet = begin match MatchedConceptA from (this);
 		for (ConceptA conceptA : select ConceptA from (_model)) {
-			MatchedConceptA matchedA = match MatchedConceptA in (matchingSet) from (this) where (conceptA=conceptA) create::_create(conceptA,(conceptA.nameA + "-matched"));
+			MatchedConceptA matchedA = match MatchedConceptA in (matchingSet) from (this) where (conceptA=conceptA) unmatched: new ConceptA(conceptA,(conceptA.nameA + "-matched"));
 			matchedA.synchronize();
 		}
-		end match MatchedConceptA in (matchingSet) delete::_delete();
+		end match MatchedConceptA in (matchingSet) unmatched: delete();
 	}
 	
 }

@@ -23,9 +23,9 @@ model TestMatch {
 				in (matchingSet) 
 				from (this) 
 				where (myConcept=aConcept)
-				create::representNewConcept(aConcept);
+				unmatched: new MyConceptGR::representNewConcept(aConcept);
 		}
-		end match MyConceptGR in (matchingSet) delete::removeFromDiagram();
+		end match MyConceptGR in (matchingSet) unmatched: removeFromDiagram();
 	}
 
 	/*concept MyConceptGR {

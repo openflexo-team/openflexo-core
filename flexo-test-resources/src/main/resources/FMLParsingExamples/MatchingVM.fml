@@ -23,14 +23,14 @@ model MatchingVM {
 	synchronizeUsingMatchingSet () {
 		MatchingSet matchingSet = begin match MatchedConcept from (this);;
 		for (Concept _concept : select Concept from (_model)) {
-			match MatchedConcept in (matchingSet) from (this) create::toto(_concept,(_concept.p + "-matched"));
+			match MatchedConcept in (matchingSet) from (this) unmatched: new MatchedConcept::toto(_concept,(_concept.p + "-matched"));
 		}
-		end match MatchedConcept in (matchingSet) delete::tutu();
+		end match MatchedConcept in (matchingSet) unmatched: delete();
 	}
 
 	defaultSynchronize () {
 		for (Concept _concept : select Concept from (_model)) {
-			match MatchedConcept in (matchingSet) from (this) create::tutu(_concept,(_concept.p + "-default"));
+			match MatchedConcept in (matchingSet) from (this) unmatched: new MatchedConcept::tutu(_concept,(_concept.p + "-default"));
 		}
 	}
 
