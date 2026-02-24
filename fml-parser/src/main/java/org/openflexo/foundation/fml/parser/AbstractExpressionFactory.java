@@ -21,6 +21,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.node.AConditionalExpression;
 import org.openflexo.foundation.fml.parser.node.AExpressionPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ALiteralPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.APostDecrementPostfixExp;
 import org.openflexo.foundation.fml.parser.node.APostIncrementPostfixExp;
 import org.openflexo.foundation.fml.parser.node.APostfixUnaryExpNotPlusMinus;
@@ -289,8 +290,11 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 					return getExpression(((APrimaryUriExpression) n).getUriExpressionPrimary());
 				}
 				/*if (n instanceof ALitteralUriExpressionPrimary) {
-					return getExpression(((ALitteralUriExpressionPrimary) n).getLitString());
+				return getExpression(((ALitteralUriExpressionPrimary) n).getLitString());
 				}*/
+				if (n instanceof ANewInstancePrimaryNoId) {
+					return getExpression(((ANewInstancePrimaryNoId) n).getNewInstance());
+				}
 
 				// This may be NOT an issue
 				// logger.warning("In expressionFactory: " + this + " : no expression registered for " + n + " of " + n.getClass());
