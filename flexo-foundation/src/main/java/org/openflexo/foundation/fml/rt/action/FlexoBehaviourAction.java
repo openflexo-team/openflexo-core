@@ -422,7 +422,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			for (FlexoConceptInstance fci : new ArrayList<>(defaultMatchingSet.getUnmatchedInstances())) {
 				// Should i really delete this ????
 				// TODO : handle case of default MatchingSet
-				// fci.delete();
+				fci.delete();
 			}
 		}
 		defaultMatchingSet = null;
