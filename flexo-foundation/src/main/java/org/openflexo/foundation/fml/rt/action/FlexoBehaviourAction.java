@@ -420,7 +420,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public void finalizeDefaultMatchingSet() {
 		if (defaultMatchingSet != null) {
 			for (FlexoConceptInstance fci : new ArrayList<>(defaultMatchingSet.getUnmatchedInstances())) {
-				fci.delete();
+				// Should i really delete this ????
+				// TODO : handle case of default MatchingSet
+				// fci.delete();
 			}
 		}
 		defaultMatchingSet = null;
