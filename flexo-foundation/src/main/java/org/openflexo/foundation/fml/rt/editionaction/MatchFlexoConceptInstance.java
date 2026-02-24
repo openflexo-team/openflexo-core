@@ -86,7 +86,6 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
-import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given
@@ -321,9 +320,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (getCreationScheme() != null) {
-				return getCreationScheme().getFlexoConcept();
-			}
 			return flexoConceptType;
 		}
 
@@ -332,27 +328,14 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			if (requireChange(this.flexoConceptType, flexoConceptType)) {
 				FlexoConcept oldConcept = this.flexoConceptType;
 				this.flexoConceptType = flexoConceptType;
-				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
-					setCreationScheme(null);
-				}
 				fireFlexoConceptChange(oldConcept, flexoConceptType);
 			}
 		}
 
 		private void fireCreationSchemeChange(CreationScheme oldValue, CreationScheme newValue) {
 			if (requireChange(oldValue, newValue)) {
-				FlexoConcept oldFlexoConcept = (oldValue != null ? oldValue.getFlexoConcept() : null);
-				FlexoConcept newFlexoConcept = (newValue != null ? newValue.getFlexoConcept() : null);
-				if (oldValue != null) {
-					oldValue.getPropertyChangeSupport().removePropertyChangeListener(this);
-				}
-				if (newValue != null) {
-					newValue.getPropertyChangeSupport().addPropertyChangeListener(this);
-				}
-				fireFlexoConceptChange(oldFlexoConcept, newFlexoConcept);
 				getPropertyChangeSupport().firePropertyChange("creationScheme", oldValue, newValue);
 				getPropertyChangeSupport().firePropertyChange("newInstanceArguments", null, getNewInstanceArguments());
-				// updateParameters();
 			}
 		}
 
@@ -689,6 +672,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			super.revalidateBindings();
 			getContainer().rebuild();
 			getMatchingSet().rebuild();
+			getNewInstance().rebuild();
 		}
 
 		@Override
@@ -698,26 +682,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	}
 
-	@DefineValidationRule
-	public static class MatchFlexoConceptInstanceMustAddressACreationScheme
-			extends ValidationRule<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
-		public MatchFlexoConceptInstanceMustAddressACreationScheme() {
-			super(MatchFlexoConceptInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
-		}
-
-		@Override
-		public ValidationIssue<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> applyValidation(
-				MatchFlexoConceptInstance action) {
-			if (action.getCreationScheme() == null) {
-				if (action.getFlexoConceptType() == null) {
-					return new ValidationError<>(this, action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
-				}
-				return new ValidationError<>(this, action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
-			}
-			return null;
-		}
-	}
-
+	/**
+	 * Check that new 'new_instance' binding is valid, is a new instantiation, with compatible type
+	 */
 	@DefineValidationRule
 	public static class NewInstanceBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
 		public NewInstanceBindingIsRequiredAndMustBeValid() {

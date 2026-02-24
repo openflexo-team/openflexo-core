@@ -114,7 +114,7 @@ public class MatchingSet {
 					}
 				}
 				else {
-					allInstances = container.getEmbeddedFlexoConceptInstances();
+					allInstances = new ArrayList<>(container.getEmbeddedFlexoConceptInstances());
 				}
 			}
 
@@ -168,23 +168,15 @@ public class MatchingSet {
 	 */
 	public MatchingSet(MatchFlexoConceptInstance matchRequest, RunTimeEvaluationContext evaluationContext) {
 		// In this case, we don't know the type, otherwise some instances might be missed
-		this.flexoConceptType = null;
+
+		if (matchRequest != null && matchRequest.getMatchedType() != null) {
+			this.flexoConceptType = matchRequest.getMatchedType().getFlexoConcept();
+		}
+		else {
+			this.flexoConceptType = null;
+		}
 
 		try {
-
-			/*FMLRTVirtualModelInstance vmInstance = matchRequest.getVirtualModelInstance(evaluationContext);
-			FlexoConceptInstance container = matchRequest.getContainer(evaluationContext);
-			
-			if (vmInstance == null) {
-				if (container instanceof FMLRTVirtualModelInstance) {
-					vmInstance = (FMLRTVirtualModelInstance) container;
-				}
-				else {
-					if (container.getVirtualModelInstance() instanceof FMLRTVirtualModelInstance) {
-						vmInstance = (FMLRTVirtualModelInstance) container.getVirtualModelInstance();
-					}
-				}
-			}*/
 
 			container = matchRequest.getContainer().getBindingValue(evaluationContext);
 
@@ -195,10 +187,15 @@ public class MatchingSet {
 
 			// Still this problem with double API: please fix this one day
 			if (container instanceof VirtualModelInstance) {
-				allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
+				if (flexoConceptType != null) {
+					allInstances = new ArrayList<>(((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType));
+				}
+				else {
+					allInstances = new ArrayList<>(((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances());
+				}
 			}
 			else if (container != null) {
-				allInstances = container.getEmbeddedFlexoConceptInstances();
+				allInstances = new ArrayList<>(container.getEmbeddedFlexoConceptInstances());
 			}
 			else {
 				logger.warning("No container for " + matchRequest);
@@ -215,7 +212,6 @@ public class MatchingSet {
 		}
 
 		unmatchedInstances = new ArrayList<>(allInstances);
-		// System.out.println("Et unmatched=" + unmatchedInstances);
 	}
 
 	/**

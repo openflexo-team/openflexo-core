@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -205,7 +206,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 				lastKnownType = getCreationScheme().getReturnType();
 			}
-			else {
+			else if (!resolvedAsNoConstructorIsDefined) {
 				logger.warning("Inconsistent data: null CreationScheme");
 			}
 		}
@@ -391,17 +392,22 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			StringBuffer returned = new StringBuffer();
 
 			if (isResolved()) {
-				if ((getFunction() instanceof CreationScheme && ((CreationScheme) getFunction()).isAnonymous())
-						|| getFunction().isDefaultCreationScheme()) {
+				if (resolvedAsNoConstructorIsDefined) {
 					returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
 				}
 				else {
-					returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "::" + getFunction().getName() + "(");
-				}
-				boolean isFirst = true;
-				for (Function.FunctionArgument a : getFunction().getArguments()) {
-					returned.append((isFirst ? "" : ",") + getArgumentValue(a));
-					isFirst = false;
+					if ((getFunction() instanceof CreationScheme && ((CreationScheme) getFunction()).isAnonymous())
+							|| getFunction().isDefaultCreationScheme()) {
+						returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+					}
+					else {
+						returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "::" + getFunction().getName() + "(");
+					}
+					boolean isFirst = true;
+					for (Function.FunctionArgument a : getFunction().getArguments()) {
+						returned.append((isFirst ? "" : ",") + getArgumentValue(a));
+						isFirst = false;
+					}
 				}
 				returned.append(")");
 			}
@@ -575,7 +581,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		@Override
 		public boolean isResolved() {
-			return getCreationScheme() != null;
+			return getCreationScheme() != null || resolvedAsNoConstructorIsDefined;
 		}
 
 		@Override
@@ -585,6 +591,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		@Override
 		public void invalidate(TypingSpace typingSpace) {
+			resolvedAsNoConstructorIsDefined = false;
 			if (getType() != null && typingSpace != null) {
 				FlexoConceptInstanceType translatedType = getType().translateTo(typingSpace);
 				setFunction(null);
@@ -592,17 +599,21 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			}
 		}
 
+		private boolean resolvedAsNoConstructorIsDefined = false;
+
 		@Override
 		@SuppressWarnings("unchecked")
 		public void resolve() {
 
-			// System.out.println("resolve() CreationSchemePathElement ");
-			// System.out.println("type=" + getType());
-			// System.out.println("resolved=" + getType().isResolved());
-			// System.out.println("name=" + getParsed());
-			// System.out.println("args=" + getArguments());
-			// System.out.println("bindable=" + getBindable());
-			// System.out.println("bindable.getBindingFactory()=" + getBindable().getBindingFactory());
+			/*System.out.println("resolve() CreationSchemePathElement ");
+			System.out.println("type=" + getType());
+			if (getType() != null) {
+				System.out.println("resolved=" + getType().isResolved());
+			}
+			System.out.println("name=" + getParsed());
+			System.out.println("args=" + getArguments());
+			System.out.println("bindable=" + getBindable());
+			System.out.println("bindable.getBindingFactory()=" + getBindable().getBindingFactory());*/
 
 			if (getBindable() == null || getBindable().getBindingFactory() == null) {
 				return;
@@ -616,16 +627,20 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 			CS function = (CS) ((FMLBindingFactory) getBindable().getBindingFactory()).retrieveConstructor(getType(),
 					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
-			/*System.out.println("########## Je cherche le constructeur " + getParsed() + " pour " + getType());
-			System.out.println("Je retourne: " + function);
+			// System.out.println("########## Je cherche le constructeur " + getParsed() + " pour " + getType());
+			// System.out.println("Je retourne: " + function);
 			if (function != null) {
 				System.out.println(function.getFMLPrettyPrint());
-			}*/
+			}
+			else if (getType() != null && getType().getFlexoConcept() != null && !getType().getFlexoConcept().hasCreationScheme()) {
+				// Special case where no constructor was defined for this concept, thus the instantiation is valid
+				resolvedAsNoConstructorIsDefined = true;
+			}
 			setFunction(function);
-			if (function == null && getType() != null && getType().isResolved()) {
+			if (function == null && !resolvedAsNoConstructorIsDefined && getType() != null && getType().isResolved()) {
 				// Do not warn for unresolved type
-				// logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments()
-				// + (getParent() != null ? " and parent " + getParent().getType() : ""));
+				logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments()
+						+ (getParent() != null ? " and parent " + getParent().getType() : ""));
 				// System.out.println("type: " + getType() + " resolved=" + getType().isResolved());
 				// System.out.println("arguments: " + getArguments() + " size: " + getArguments().size());
 			}
@@ -666,8 +681,16 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					throw new NullReferenceException("Unable to find executable context for " + this);
 				}
 
+				/*if (getCreationScheme() == null && getFlexoConcept() instanceof VirtualModel) {
+					System.out.println("Ah, prout pour " + getFlexoConcept());
+					System.exit(-1);
+				}*/
+
 				// Special case to create VirtualModelInstance
-				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel && (getCreationScheme() instanceof CreationScheme)) {
+				// if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() instanceof VirtualModel
+				// && (getCreationScheme() instanceof CreationScheme)) {
+
+				if (getFlexoConcept() instanceof VirtualModel) {
 
 					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
 
@@ -680,7 +703,14 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					System.out.println("BM=" + getBindingModel());
 					System.out.println("vmiName=" + vmiName);*/
 
-					VirtualModel instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
+					VirtualModel instantiatedVirtualModel;
+
+					if (getCreationScheme() != null) {
+						instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
+					}
+					else {
+						instantiatedVirtualModel = (VirtualModel) getFlexoConcept();
+					}
 
 					// We have to instantiate a VirtualModel
 					// At this point, 3 cases may happen:
@@ -736,11 +766,13 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					createVMIAction.setVirtualModel(instantiatedVirtualModel);
 					createVMIAction.setCreationScheme((CreationScheme) getCreationScheme());
 
-					for (FunctionArgument functionArgument : getFunctionArguments()) {
-						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
-						Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
-						// System.out.println("values:" + v);
-						createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
+					if (getFunctionArguments() != null) {
+						for (FunctionArgument functionArgument : getFunctionArguments()) {
+							// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
+							Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
+							// System.out.println("values:" + v);
+							createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
+						}
 					}
 
 					// System.out.println("Doing the action...");
@@ -772,6 +804,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				throw new InvocationTargetTransformException(e);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (FMLExecutionException e) {
+				e.printStackTrace();
 			}
 			return null;
 
@@ -801,17 +835,27 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		private FlexoConceptInstance performExecuteCreationScheme(FlexoConceptInstance containerFCI, VirtualModelInstance<?, ?> vmInstance,
 				BindingEvaluationContext evaluationContext)
-				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, FMLExecutionException {
+
+			if (getCreationScheme() == null) {
+				System.out.println("Zut, pas de CS, mais le concept c'est " + getFlexoConcept());
+
+				return ((FMLRTVirtualModelInstance) vmInstance).makeNewFlexoConceptInstance(getFlexoConcept(), containerFCI, null,
+						vmInstance);
+
+			}
 
 			AbstractCreationSchemeAction<?, CS, ?> creationSchemeAction = makeCreationSchemeAction(getCreationScheme(), vmInstance,
 					evaluationContext);
 
-			for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
-				DataBinding<?> param = getArgumentValue(p);
-				Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
-				// System.out.println("For parameter " + param + " value is " + paramValue);
-				if (paramValue != null) {
-					creationSchemeAction.setParameterValue(p, paramValue);
+			if (getCreationScheme() != null) {
+				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
+					DataBinding<?> param = getArgumentValue(p);
+					Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
+					// System.out.println("For parameter " + param + " value is " + paramValue);
+					if (paramValue != null) {
+						creationSchemeAction.setParameterValue(p, paramValue);
+					}
 				}
 			}
 
