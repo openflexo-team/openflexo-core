@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLEnumPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
@@ -63,6 +64,7 @@ import org.openflexo.foundation.fml.parser.node.ACompositeCidentAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.ACompositeTidentAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AEnumQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AEscapedCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifierPrefix;
@@ -579,6 +581,24 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public void outATypeQualifiedArgument(ATypeQualifiedArgument node) {
 		super.outATypeQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			pop();
+			// System.out.println("EXIT from " + peek() + " with " + node);
+		}
+	}
+
+	@Override
+	public void inAEnumQualifiedArgument(AEnumQualifiedArgument node) {
+		super.inAEnumQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			// System.out.println("ENTER in " + peek() + " with " + node);
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLEnumPropertyValueNode(n, getCompilationUnitAnalyzer())));
+		}
+	}
+
+	@Override
+	public void outAEnumQualifiedArgument(AEnumQualifiedArgument node) {
+		super.outAEnumQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			pop();
 			// System.out.println("EXIT from " + peek() + " with " + node);

@@ -1062,9 +1062,15 @@ Productions
    qualified_argument =
        {simple}         [arg_name]:lidentifier assign expression
      | {type}           [arg_name]:lidentifier assign reference_type
+     | {enum}           [arg_name]:lidentifier assign enum_value_argument
      | {instance}       [arg_name]:lidentifier assign qualified_instance
      | {list_instances} [arg_name]:lidentifier assign l_brc qualified_argument_list_instances? r_brc
      ;
+
+	enum_value_argument =
+		{lower} dollar lidentifier
+	 |	{upper} dollar uidentifier
+	 ;
 
    fml_parameters =
        {full_qualified} l_par qualified_argument_list? r_par

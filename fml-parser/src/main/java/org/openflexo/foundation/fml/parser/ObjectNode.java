@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLEnumPropertyValue;
 import org.openflexo.foundation.fml.FMLInstancePropertyValue;
 import org.openflexo.foundation.fml.FMLInstancesListPropertyValue;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
@@ -118,6 +119,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLBehaviourNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLEnumPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
@@ -583,6 +585,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			}
 			if (object instanceof FMLTypePropertyValue) {
 				return new FMLTypePropertyValueNode((FMLTypePropertyValue) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof FMLEnumPropertyValue) {
+				return new FMLEnumPropertyValueNode((FMLEnumPropertyValue) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FMLInstancePropertyValue) {
