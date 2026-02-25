@@ -9,7 +9,11 @@ public model TestDefaultValue {
    create() {
    }
 
-   concept Foo {
+   concept Foo1 {
+	  int value = 42;
+   }
+
+   concept Foo2 {
       int anInteger = 2;
       String aName = "Hello!";
       List<String> aList = new ArrayList<String>();

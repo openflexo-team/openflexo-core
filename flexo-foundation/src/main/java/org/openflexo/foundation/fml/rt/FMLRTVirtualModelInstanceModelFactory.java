@@ -140,6 +140,7 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 		// Preferably use supplied evaluation context
 		if (evaluationContext == null) {
 			// evaluationContext = returned;
+			logger.warning("makeNewFlexoConceptInstance() with null evaluationContext");
 		}
 
 		// Initialize default values

@@ -488,9 +488,9 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						}
 						else {
 							// A simple FlexoConcept in a VirtualModel
-							if (!vm.getAllRootFlexoConcepts().contains(getCreationScheme().getFlexoConcept())) {
-								check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName()
-										+ " in " + parentContext.getName();
+							if (!vm.getAllRootFlexoConcepts().contains(getFlexoConcept())) {
+								check.invalidBindingReason = "cannot instantiate " + getFlexoConcept().getName() + " in "
+										+ parentContext.getName();
 								check.valid = false;
 								return check;
 							}
