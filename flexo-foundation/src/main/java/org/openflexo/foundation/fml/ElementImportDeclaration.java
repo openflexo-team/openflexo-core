@@ -361,12 +361,19 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 						// System.out.println("resource=" + resource);
 						// System.out.println("resource.getLoadedResourceData()=" + resource.getLoadedResourceData());
 
-						// We should have already loaded this resource, otherwise it means that this resource was a cross reference
-						ResourceData<?> resourceData = resource.getLoadedResourceData();
+						ResourceData<?> resourceData = null;
 
-						/*if (resourceData instanceof FMLCompilationUnit) {
-							return ((FMLCompilationUnit) resourceData).getVirtualModel();
-						}*/
+						// We should have already loaded this resource in the case of normal loading
+						// But it may happens during computation of dependencies (when resolution is performed by the
+						// VirtualModelInfoExplorer) that the resource is not loaded.
+						// In this case, force the loading
+						if (resource.isLoaded()) {
+							resourceData = resource.getLoadedResourceData();
+						}
+						else {
+							logger.info("Resource not loaded : " + resource.getURI() + ". Force loading");
+							resourceData = resource.getResourceData();
+						}
 
 						if (objectReference == null) {
 							return (FlexoObject) resourceData;
