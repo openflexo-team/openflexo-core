@@ -80,6 +80,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 	 */
 	@Getter(value = FRAGMENT_KEY, isStringConvertable = true)
 	@XMLAttribute
+	@FMLAttribute(FRAGMENT_KEY)
 	public F getFragment();
 
 	/**
