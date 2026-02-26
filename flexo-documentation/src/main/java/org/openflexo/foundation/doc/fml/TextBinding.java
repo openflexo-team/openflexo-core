@@ -59,6 +59,8 @@ import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -87,6 +89,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TextBinding.TextBindingImpl.class)
 @XMLElement
+@FML("TextBinding")
 public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends ModelSlotObject<D> {
 
 	@PropertyIdentifier(type = TextSelection.class)
@@ -103,6 +106,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	@Getter(TEXT_SELECTION_KEY)
 	@XMLElement
+	@FMLAttribute(TEXT_SELECTION_KEY)
 	public TextSelection<D, TA> getTextSelection();
 
 	@Setter(TEXT_SELECTION_KEY)
@@ -110,6 +114,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	@Getter(VALUE_KEY)
 	@XMLAttribute
+	@FMLAttribute(VALUE_KEY)
 	public DataBinding<String> getValue();
 
 	@Setter(VALUE_KEY)
@@ -123,6 +128,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	@Getter(value = IS_MULTILINE_KEY, defaultValue = "false")
 	@XMLAttribute
+	@FMLAttribute(IS_MULTILINE_KEY)
 	public boolean isMultiline();
 
 	@Setter(IS_MULTILINE_KEY)

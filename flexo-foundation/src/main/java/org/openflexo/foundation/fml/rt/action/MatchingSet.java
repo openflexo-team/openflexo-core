@@ -178,12 +178,8 @@ public class MatchingSet {
 
 		try {
 
-			container = matchRequest.getContainer().getBindingValue(evaluationContext);
-
 			// If container is defined, use container
-			if (matchRequest.getContainer() != null && matchRequest.getContainer().isSet()) {
-				container = matchRequest.getContainer().getBindingValue(evaluationContext);
-			}
+			container = matchRequest.getContainer().getBindingValue(evaluationContext);
 
 			// Still this problem with double API: please fix this one day
 			if (container instanceof VirtualModelInstance) {

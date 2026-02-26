@@ -27,6 +27,8 @@ import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.fml.annotations.FMLAttribute.AttributeKind;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -91,6 +93,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 	@Getter(value = TEXT_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = TextBinding.FRAGMENT_ROLE_KEY)
 	@Embedded
 	@XMLElement
+	@FMLAttribute(value = TEXT_BINDINGS_KEY, kind = AttributeKind.InstancesList)
 	public List<TextBinding<D, TA>> getTextBindings();
 
 	@Setter(TEXT_BINDINGS_KEY)

@@ -110,12 +110,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	private Map<Class<?>, TechnologyAdapter> loadedAdapters;
 
-	private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
-	private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
-	private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends EditionAction>>> availableEditionActionTypes;
-	private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends FMLObject>>> availableFMLObjectsTypes;
-	private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>>> availableAbstractFetchRequestActionTypes;
-	private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
+	private Map<Class<? extends ModelSlot<?, ?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
+	private Map<Class<? extends ModelSlot<?, ?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
+	private Map<Class<? extends ModelSlot<?, ?>>, List<Class<? extends EditionAction>>> availableEditionActionTypes;
+	private Map<Class<? extends ModelSlot<?, ?>>, List<Class<? extends FMLObject>>> availableFMLObjectsTypes;
+	private Map<Class<? extends ModelSlot<?, ?>>, List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>>> availableAbstractFetchRequestActionTypes;
+	private Map<Class<? extends ModelSlot<?, ?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
 
 	private Map<Class<? extends TechnologyAdapter<?>>, List<Class<? extends TechnologySpecificType>>> availableTechnologySpecificTypes;
 
@@ -465,13 +465,13 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?,?>> TechnologyAdapter<?> getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass) {
+	public <MS extends ModelSlot<?, ?>> TechnologyAdapter<?> getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass) {
 		if (modelSlotClass == null) {
 			return null;
 		}
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
 			// System.out.println("ta: " + ta);
-			for (Class<? extends ModelSlot<?,?>> msType : ta.getAvailableModelSlotTypes()) {
+			for (Class<? extends ModelSlot<?, ?>> msType : ta.getAvailableModelSlotTypes()) {
 				// System.out.println("msType=" + msType + " modelSlotClass=" + modelSlotClass);
 				if (msType != null && msType.isAssignableFrom(modelSlotClass)) {
 					return ta;
@@ -500,7 +500,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
 			// System.out.println("ta: " + ta);
-			for (Class<? extends ModelSlot<?,?>> msType : ta.getAvailableModelSlotTypes()) {
+			for (Class<? extends ModelSlot<?, ?>> msType : ta.getAvailableModelSlotTypes()) {
 				for (Class<? extends FlexoBehaviour> behaviourType : getAvailableFlexoBehaviourTypes(msType)) {
 					if (behaviourType != null && behaviourType.isAssignableFrom(behaviourClass)) {
 						return ta;
@@ -518,7 +518,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?,?>> List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes(Class<MS> modelSlotClass) {
+	public <MS extends ModelSlot<?, ?>> List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes(Class<MS> modelSlotClass) {
 		List<Class<? extends FlexoRole<?>>> returned = availableFlexoRoleTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
@@ -555,7 +555,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?,?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass) {
+	public <MS extends ModelSlot<?, ?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass) {
 		List<Class<? extends EditionAction>> returned = availableEditionActionTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
@@ -615,7 +615,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?,?>> List<Class<? extends FMLObject>> getAvailableFMLObjectTypes(Class<MS> modelSlotClass) {
+	public <MS extends ModelSlot<?, ?>> List<Class<? extends FMLObject>> getAvailableFMLObjectTypes(Class<MS> modelSlotClass) {
 		List<Class<? extends FMLObject>> returned = availableFMLObjectsTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
@@ -650,7 +650,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?,?>> List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes(
+	public <MS extends ModelSlot<?, ?>> List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes(
 			Class<MS> modelSlotClass) {
 		List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> returned = availableAbstractFetchRequestActionTypes.get(modelSlotClass);
 		if (returned == null) {
@@ -668,7 +668,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?,?>> List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes(
+	public <MS extends ModelSlot<?, ?>> List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes(
 			Class<MS> modelSlotClass) {
 		List<Class<? extends FetchRequest<?, ?, ?>>> returned = availableFetchRequestActionTypes.get(modelSlotClass);
 		if (returned == null) {
@@ -686,7 +686,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public <MS extends ModelSlot<?,?>> List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes(Class<MS> modelSlotClass) {
+	public <MS extends ModelSlot<?, ?>> List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes(Class<MS> modelSlotClass) {
 		List<Class<? extends FlexoBehaviour>> returned = availableFlexoBehaviourTypes.get(modelSlotClass);
 		if (returned == null) {
 			returned = new ArrayList<>();
@@ -707,32 +707,33 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
-	public <MS extends ModelSlot<?,?>> Class<? extends FlexoBehaviour> getFlexoBehaviour(Class<MS> modelSlotClass, String behaviourKeyword) {
+	public <MS extends ModelSlot<?, ?>> Class<? extends FlexoBehaviour> getFlexoBehaviour(Class<MS> modelSlotClass,
+			String behaviourKeyword) {
 		getAvailableFlexoBehaviourTypes(modelSlotClass);
 		return availableBehavioursByFMLKeyword.get(behaviourKeyword);
 	}
 
 	@Override
-	public <MS extends ModelSlot<?,?>> Class<? extends FlexoRole<?>> getFlexoRole(Class<MS> modelSlotClass, String roleKeyword) {
+	public <MS extends ModelSlot<?, ?>> Class<? extends FlexoRole<?>> getFlexoRole(Class<MS> modelSlotClass, String roleKeyword) {
 		getAvailableFlexoRoleTypes(modelSlotClass);
 		return availableRolesByFMLKeyword.get(roleKeyword);
 	}
 
 	@Override
-	public <MS extends ModelSlot<?,?>> Class<? extends TechnologySpecificAction<?, ?>> getEditionAction(Class<MS> modelSlotClass,
+	public <MS extends ModelSlot<?, ?>> Class<? extends TechnologySpecificAction<?, ?>> getEditionAction(Class<MS> modelSlotClass,
 			String editionActionKeyword) {
 		getAvailableEditionActionTypes(modelSlotClass);
 		return (Class<? extends TechnologySpecificAction<?, ?>>) availableEditionActionsByFMLKeyword.get(editionActionKeyword);
 	}
 
 	@Override
-	public <MS extends ModelSlot<?,?>> Class<? extends FMLObject> getFMLObject(Class<MS> modelSlotClass, String objectKeyword) {
+	public <MS extends ModelSlot<?, ?>> Class<? extends FMLObject> getFMLObject(Class<MS> modelSlotClass, String objectKeyword) {
 		getAvailableFMLObjectTypes(modelSlotClass);
 		return availableFMLObjectsByFMLKeyword.get(objectKeyword);
 	}
 
 	@Override
-	public <MS extends ModelSlot<?,?>> Class<? extends TechnologySpecificType<?>> getTechnologySpecificType(Class<MS> modelSlotClass,
+	public <MS extends ModelSlot<?, ?>> Class<? extends TechnologySpecificType<?>> getTechnologySpecificType(Class<MS> modelSlotClass,
 			String identifier) {
 		TechnologyAdapter<?> ta = getTechnologyAdapterForModelSlot(modelSlotClass);
 		getAvailableTechnologySpecificTypes(ta.getClass());
@@ -807,6 +808,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 		ModelEntity<?> modelEntity = pamelaMetaModel.getModelEntity(cl);
 
+		if (modelEntity == null) {
+			logger.warning("Could not find ModelEntity " + cl);
+			return;
+		}
+
 		if (cl.isAnnotationPresent(FML.class) && !FlexoRole.class.isAssignableFrom(cl) && !FlexoBehaviour.class.isAssignableFrom(cl)
 				&& !EditionAction.class.isAssignableFrom(cl)) {
 			// Good candidate
@@ -877,10 +883,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
-	public List<Class<? extends ModelSlot<?,?>>> getModelSlotClassesForFlexoRole(Class<? extends FlexoRole<?>> roleClass) {
-		List<Class<? extends ModelSlot<?,?>>> returned = new ArrayList<>();
+	public List<Class<? extends ModelSlot<?, ?>>> getModelSlotClassesForFlexoRole(Class<? extends FlexoRole<?>> roleClass) {
+		List<Class<? extends ModelSlot<?, ?>>> returned = new ArrayList<>();
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
-			for (Class<? extends ModelSlot<?,?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+			for (Class<? extends ModelSlot<?, ?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 				if (getAvailableFlexoRoleTypes(modelSlotClass).contains(roleClass)) {
 					returned.add(modelSlotClass);
 				}
@@ -890,10 +896,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
-	public List<Class<? extends ModelSlot<?,?>>> getModelSlotClassesForFlexoBehaviour(Class<? extends FlexoBehaviour> fbClass) {
-		List<Class<? extends ModelSlot<?,?>>> returned = new ArrayList<>();
+	public List<Class<? extends ModelSlot<?, ?>>> getModelSlotClassesForFlexoBehaviour(Class<? extends FlexoBehaviour> fbClass) {
+		List<Class<? extends ModelSlot<?, ?>>> returned = new ArrayList<>();
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
-			for (Class<? extends ModelSlot<?,?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+			for (Class<? extends ModelSlot<?, ?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 				if (getAvailableFlexoBehaviourTypes(modelSlotClass).contains(fbClass)) {
 					returned.add(modelSlotClass);
 				}
@@ -903,10 +909,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
-	public List<Class<? extends ModelSlot<?,?>>> getModelSlotClassesForEditionAction(Class<? extends EditionAction> eaClass) {
-		List<Class<? extends ModelSlot<?,?>>> returned = new ArrayList<>();
+	public List<Class<? extends ModelSlot<?, ?>>> getModelSlotClassesForEditionAction(Class<? extends EditionAction> eaClass) {
+		List<Class<? extends ModelSlot<?, ?>>> returned = new ArrayList<>();
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
-			for (Class<? extends ModelSlot<?,?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+			for (Class<? extends ModelSlot<?, ?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 				if (getAvailableAbstractFetchRequestActionTypes(modelSlotClass).contains(eaClass)) {
 					returned.add(modelSlotClass);
 				}
@@ -1011,7 +1017,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 
 		if (FlexoRole.class.isAssignableFrom(fmlObjectClass)) {
-			List<Class<? extends ModelSlot<?,?>>> msClasses = getModelSlotClassesForFlexoRole((Class<? extends FlexoRole<?>>) fmlObjectClass);
+			List<Class<? extends ModelSlot<?, ?>>> msClasses = getModelSlotClassesForFlexoRole(
+					(Class<? extends FlexoRole<?>>) fmlObjectClass);
 			if (msClasses.size() > 0) {
 				return getTechnologyAdapterForModelSlot(msClasses.get(0));
 			}
@@ -1019,7 +1026,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 
 		if (EditionAction.class.isAssignableFrom(fmlObjectClass)) {
-			List<Class<? extends ModelSlot<?,?>>> msClasses = getModelSlotClassesForEditionAction(
+			List<Class<? extends ModelSlot<?, ?>>> msClasses = getModelSlotClassesForEditionAction(
 					(Class<? extends EditionAction>) fmlObjectClass);
 			if (msClasses.size() > 0) {
 				return getTechnologyAdapterForModelSlot(msClasses.get(0));
