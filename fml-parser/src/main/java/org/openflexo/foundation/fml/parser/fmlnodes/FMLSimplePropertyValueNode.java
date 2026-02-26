@@ -120,11 +120,22 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		}
 		else if (value.isConstant()) {
 			Object constantValue = ((Constant) value.getExpression()).getValue();
+
 			if (constantValue != null) {
 				if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
 					// logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
 					// fmlProperty.set(constantValue, modelObject);
 					getModelObject().setValue((T) constantValue);
+				}
+				else if (constantValue instanceof String) {
+					try {
+						getModelObject().setValue(
+								getFactory().getStringEncoder().fromString((Class<T>) fmlProperty.getType(), (String) constantValue));
+					} catch (InvalidDataException e) {
+						logger.warning("Don't know how to convert " + propertyName);
+						e.printStackTrace();
+						return null;
+					}
 				}
 				else {
 					logger.warning("Invalid value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
@@ -208,6 +219,17 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport(castType(value), false);
 				return importDeclaration.getAbbrev();
 			}
+
+			// Is that type convertable natively into a String ?
+			else if (getFactory().getStringEncoder().isConvertable(TypeUtils.getBaseClass(getModelObject().getProperty().getType()))) {
+				try {
+					return "\"" + getFactory().getStringEncoder().toString(value) + "\"";
+				} catch (InvalidDataException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 		}
 
 		/*if (value instanceof FlexoResource && getCompilationUnit() != null) {
