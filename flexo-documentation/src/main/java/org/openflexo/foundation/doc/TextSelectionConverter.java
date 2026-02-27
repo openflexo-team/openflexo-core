@@ -98,7 +98,7 @@ public class TextSelectionConverter extends Converter<TextSelection<?, ?>> {
 		returned.setEndRunIndex(p2.run);
 		returned.setEndCharacterIndex(p2.character);
 
-		return null;
+		return returned;
 	}
 
 	@Override
