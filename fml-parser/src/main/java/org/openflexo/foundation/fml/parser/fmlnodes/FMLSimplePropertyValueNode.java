@@ -128,9 +128,12 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 					getModelObject().setValue((T) constantValue);
 				}
 				else if (constantValue instanceof String) {
+
 					try {
-						getModelObject().setValue(
-								getFactory().getStringEncoder().fromString((Class<T>) fmlProperty.getType(), (String) constantValue));
+						T deserializedValue = getFactory().getStringEncoder().fromString((Class<T>) fmlProperty.getType(),
+								(String) constantValue);
+						// System.err.println("Deserialized " + constantValue + " for " + fmlProperty + " -> " + deserializedValue);
+						getModelObject().setValue(deserializedValue);
 					} catch (InvalidDataException e) {
 						logger.warning("Don't know how to convert " + propertyName);
 						e.printStackTrace();
@@ -223,7 +226,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			// Is that type convertable natively into a String ?
 			else if (getFactory().getStringEncoder().isConvertable(TypeUtils.getBaseClass(getModelObject().getProperty().getType()))) {
 				try {
-					return "\"" + getFactory().getStringEncoder().toString(value) + "\"";
+					return getFactory().getStringEncoder().toString(value);
 				} catch (InvalidDataException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
