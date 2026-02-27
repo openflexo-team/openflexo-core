@@ -287,9 +287,10 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 						FlexoDocRun<?, ?> templateStartRun = txtSelection.getStartRun();
 						FlexoDocRun<?, ?> templateEndRun = txtSelection.getEndRun();
-						if (templateStartRun == templateEndRun) {
-							logger.warning("debut et fin sont identiques?");
-						}
+						// Seems normal
+						/*if (templateStartRun == templateEndRun) {
+							logger.warning("debut et fin sont identiques? " + txtSelection.getRawText());
+						}*/
 						List<String> newStructure = new ArrayList<>();
 						if (txtSelection.getStartCharacterIndex() > -1) {
 							if (templateStartRun instanceof FlexoTextRun) {
