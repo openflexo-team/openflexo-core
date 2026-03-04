@@ -47,6 +47,8 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlotObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -68,6 +70,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ColumnTableBinding.ColumnTableBindingImpl.class)
 @XMLElement
+@FML("ColumnTableBinding")
 public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends ModelSlotObject<D>, FlexoConceptObject {
 
@@ -83,6 +86,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 	 */
 	@Getter(value = COLUMN_INDEX_KEY, defaultValue = "-1")
 	@XMLAttribute
+	@FMLAttribute(COLUMN_INDEX_KEY)
 	public int getColumnIndex();
 
 	@Setter(COLUMN_INDEX_KEY)
@@ -96,6 +100,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 
 	@Getter(COLUMN_NAME_KEY)
 	@XMLAttribute
+	@FMLAttribute(COLUMN_NAME_KEY)
 	public String getColumnName();
 
 	@Setter(COLUMN_NAME_KEY)
@@ -103,6 +108,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 
 	@Getter(VALUE_KEY)
 	@XMLAttribute
+	@FMLAttribute(VALUE_KEY)
 	public DataBinding<String> getValue();
 
 	@Setter(VALUE_KEY)
@@ -152,7 +158,9 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			return getFlexoConcept().getInspector().getBindingFactory();
+			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null)
+				return getFlexoConcept().getInspector().getBindingFactory();
+			return null;
 		}
 
 		@Override

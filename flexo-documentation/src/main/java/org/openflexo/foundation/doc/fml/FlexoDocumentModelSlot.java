@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -33,6 +34,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Implementation of the ModelSlot class for the DOCX technology adapter<br>
@@ -50,6 +52,8 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, TA>, R extend
 
 	@PropertyIdentifier(type = String.class)
 	public static final String TEMPLATE_DOCUMENT_URI_KEY = "templateDocumentURI";
+	@PropertyIdentifier(type = FlexoDocument.class)
+	public static final String TEMPLATE_DOCUMENT_KEY = "templateDocument";
 	@PropertyIdentifier(type = FlexoResource.class)
 	public static final String TEMPLATE_RESOURCE_KEY = "templateResource";
 
@@ -60,14 +64,24 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, TA>, R extend
 	@Setter(TEMPLATE_DOCUMENT_URI_KEY)
 	public void setTemplateDocumentURI(String templateDocumentURI);
 
-	public FlexoDocumentResource<D, ?, ?> getTemplateResource();
+	@Getter(value = TEMPLATE_DOCUMENT_KEY, ignoreType = true)
+	@FMLAttribute(value = TEMPLATE_DOCUMENT_KEY, required = true)
+	public FlexoDocument<D, TA> getTemplateDocument();
+
+	@Setter(TEMPLATE_DOCUMENT_KEY)
+	public void setTemplateDocument(FlexoDocument<D, TA> aDocument);
+
+	public FlexoDocumentResource<D, TA, ?> getTemplateResource();
+
+	public void setTemplateResource(FlexoDocumentResource<D, TA, ?> templateResource);
 
 	public static abstract class FlexoDocumentModelSlotImpl<D extends FlexoDocument<D, TA>, R extends FlexoDocumentResource<D, TA, ?>, TA extends TechnologyAdapter<TA>>
 			extends FreeModelSlotImpl<D, R> implements FlexoDocumentModelSlot<D, R, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentModelSlot.class.getPackage().getName());
 
-		protected String templateDocumentURI;
+		private String templateDocumentURI;
+		private FlexoDocumentResource<D, TA, ?> templateResource;
 
 		@Override
 		public String getTemplateDocumentURI() {
@@ -90,6 +104,38 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, TA>, R extend
 		@Override
 		protected String getFMLRepresentationForConformToStatement() {
 			return "conformTo " + getTemplateDocumentURI() + " ";
+		}
+
+		@Override
+		public FlexoDocument<D, TA> getTemplateDocument() {
+			if (getTemplateResource() != null) {
+				return getTemplateResource().getDocument();
+			}
+			return null;
+		}
+
+		@Override
+		public void setTemplateDocument(FlexoDocument<D, TA> templateDocument) {
+			setTemplateResource(templateDocument != null ? (FlexoDocumentResource<D, TA, ?>) templateDocument.getResource() : null);
+		}
+
+		@Override
+		public FlexoDocumentResource<D, TA, ?> getTemplateResource() {
+			if (templateResource == null && StringUtils.isNotEmpty(templateDocumentURI) && getServiceManager() != null
+					&& getServiceManager().getResourceManager() != null) {
+				getServiceManager().activateTechnologyAdapter(getModelSlotTechnologyAdapter(), true);
+				templateResource = (FlexoDocumentResource<D, TA, ?>) getServiceManager().getResourceManager()
+						.getResource(templateDocumentURI);
+				logger.info("Looked-up " + templateResource + " for " + templateDocumentURI);
+			}
+			return templateResource;
+		}
+
+		@Override
+		public void setTemplateResource(FlexoDocumentResource<D, TA, ?> templateResource) {
+			//System.err.println("setTemplateResource with " + templateResource);
+			this.templateResource = templateResource;
+			setIsModified();
 		}
 
 	}

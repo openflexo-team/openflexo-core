@@ -32,6 +32,8 @@ import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.fml.annotations.FMLAttribute.AttributeKind;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -100,6 +102,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	 */
 	@Getter(TABLE_ID_KEY)
 	@XMLAttribute
+	@FMLAttribute(TABLE_ID_KEY)
 	public String getTableId();
 
 	@Setter(TABLE_ID_KEY)
@@ -112,6 +115,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	 */
 	@Getter(ITERATION_KEY)
 	@XMLAttribute
+	@FMLAttribute(ITERATION_KEY)
 	public DataBinding<List> getIteration();
 
 	/**
@@ -124,6 +128,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 	@Getter(value = START_ITERATION_INDEX_KEY, defaultValue = "-1")
 	@XMLAttribute
+	@FMLAttribute(START_ITERATION_INDEX_KEY)
 	public int getStartIterationIndex();
 
 	@Setter(START_ITERATION_INDEX_KEY)
@@ -131,6 +136,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 	@Getter(value = END_ITERATION_INDEX_KEY, defaultValue = "-1")
 	@XMLAttribute
+	@FMLAttribute(END_ITERATION_INDEX_KEY)
 	public int getEndIterationIndex();
 
 	@Setter(END_ITERATION_INDEX_KEY)
@@ -138,6 +144,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 	@Getter(value = DATA_ORIENTATION_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = DATA_ORIENTATION_KEY, kind = AttributeKind.Enum)
 	public DataOrientation getDataOrientation();
 
 	@Setter(DATA_ORIENTATION_KEY)
@@ -145,6 +152,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 	@Getter(value = COLUMN_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = ColumnTableBinding.TABLE_ROLE_KEY)
 	@XMLElement
+	@FMLAttribute(value = COLUMN_BINDINGS_KEY, kind = AttributeKind.InstancesList)
 	public List<ColumnTableBinding<D, TA>> getColumnBindings();
 
 	@Setter(COLUMN_BINDINGS_KEY)
@@ -177,6 +185,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 		@Override
 		public void setTableId(String tableId) {
+			// System.err.println(">>>>>>>>>>> setTableId with " + tableId);
 			if ((tableId == null && this.tableId != null) || (tableId != null && !tableId.equals(this.tableId))) {
 				String oldValue = getTableId();
 				this.tableId = tableId;

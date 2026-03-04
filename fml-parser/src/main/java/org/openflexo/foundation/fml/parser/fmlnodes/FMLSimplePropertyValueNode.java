@@ -226,14 +226,26 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			// Is that type convertable natively into a String ?
 			else if (getFactory().getStringEncoder().isConvertable(TypeUtils.getBaseClass(getModelObject().getProperty().getType()))) {
 				try {
-					return getFactory().getStringEncoder().toString(value);
+					String returned = getFactory().getStringEncoder().toString(value);
+					if (value instanceof String) {
+						returned = "\"" + returned + "\"";
+					}
+					return returned;
+
 				} catch (InvalidDataException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 
+			else {
+				logger.warning("While serializing property " + getModelObject().getProperty() + " don't know what to do with " + value);
+				return null;
+			}
 		}
+
+		logger.warning("While serializing property " + getModelObject().getProperty() + " no compilation unit");
+		return null;
 
 		/*if (value instanceof FlexoResource && getCompilationUnit() != null) {
 			try {
@@ -252,7 +264,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		
 		}*/
 
-		String returned;
+		/*String returned;
 		try {
 			returned = getFactory().getStringEncoder().toString(value);
 			if (value instanceof String) {
@@ -263,8 +275,8 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			e.printStackTrace();
 			return null;
 		}
-
-		return returned;
+		
+		return returned;*/
 	}
 
 	private RawSourceFragment getArgNameFragment() {
