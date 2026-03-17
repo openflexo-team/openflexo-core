@@ -107,6 +107,11 @@ public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<
 			}
 			return null;
 		}
+
+		@Override
+		public ReflectedVirtualModelInstanceModelFactory<R, RD, TA, ?> getFactory() {
+			return getReflectedModelFactory();
+		}
 	}
 
 }
