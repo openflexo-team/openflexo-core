@@ -514,7 +514,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				List<FMLMetaData> allMetaData = md.getMultipleMetaData(FlexoBehaviourParameterImpl.AVAILABLE_ANNOTATIONS);
 				for (FMLMetaData metaData : allMetaData) {
 					if (metaData instanceof MultiValuedMetaData) {
-						if (parameter.getName().equals(((MultiValuedMetaData) metaData).getValue("value", String.class))) {
+						if (parameter.getName() != null
+								&& parameter.getName().equals(((MultiValuedMetaData) metaData).getValue("value", String.class))) {
 							return (MultiValuedMetaData) metaData;
 						}
 					}
