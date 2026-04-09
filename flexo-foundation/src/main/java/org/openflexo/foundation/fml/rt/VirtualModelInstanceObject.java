@@ -44,7 +44,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
@@ -69,7 +69,7 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 	 */
 	public abstract VirtualModelInstance<?, ?> getVirtualModelInstance();
 
-	public AbstractVirtualModelInstanceModelFactory<?> getFactory();
+	public AbstractVirtualModelInstanceModelFactory getFactory();
 
 	/**
 	 * Returns FlexoResourceCenter where resides related resource
@@ -78,7 +78,7 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 	 */
 	public FlexoResourceCenter<?> getResourceCenter();
 
-	public void setLocalFactory(AbstractVirtualModelInstanceModelFactory<?> localFactory);
+	public void setLocalFactory(AbstractVirtualModelInstanceModelFactory localFactory);
 
 	public abstract class VirtualModelInstanceObjectImpl extends FlexoObjectImpl implements VirtualModelInstanceObject {
 
@@ -129,17 +129,17 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 		}
 
 		@Override
-		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
+		public AbstractVirtualModelInstanceModelFactory getFactory() {
 			if (getVirtualModelInstance() != null && getVirtualModelInstance().getResource() != null) {
-				return ((AbstractVirtualModelInstanceResource<?, ?>) getVirtualModelInstance().getResource()).getFactory();
+				return ((FMLRTVirtualModelInstanceResource) getVirtualModelInstance().getResource()).getFactory();
 			}
 			return localFactory;
 		}
 
-		private AbstractVirtualModelInstanceModelFactory<?> localFactory;
+		private AbstractVirtualModelInstanceModelFactory localFactory;
 
 		@Override
-		public void setLocalFactory(AbstractVirtualModelInstanceModelFactory<?> localFactory) {
+		public void setLocalFactory(AbstractVirtualModelInstanceModelFactory localFactory) {
 			this.localFactory = localFactory;
 		}
 

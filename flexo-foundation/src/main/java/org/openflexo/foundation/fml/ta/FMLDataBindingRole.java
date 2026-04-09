@@ -124,7 +124,7 @@ public interface FMLDataBindingRole extends FlexoRole<DataBinding> {
 
 		@Override
 		public ActorReference<DataBinding> makeActorReference(DataBinding object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FMLDataBindingActorReference returned = factory.newInstance(FMLDataBindingActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

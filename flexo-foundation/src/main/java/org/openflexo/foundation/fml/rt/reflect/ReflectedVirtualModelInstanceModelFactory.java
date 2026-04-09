@@ -38,19 +38,33 @@
 
 package org.openflexo.foundation.fml.rt.reflect;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoEnumValueConverter;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
+import org.openflexo.pamela.PamelaMetaModelLibrary;
+import org.openflexo.pamela.converter.DataBindingConverter;
+import org.openflexo.pamela.converter.FlexoVersionConverter;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
@@ -61,14 +75,72 @@ import org.openflexo.pamela.factory.PamelaModelFactory;
  * @author sylvain
  * 
  */
-public abstract class ReflectedVirtualModelInstanceModelFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, S>
-		extends AbstractVirtualModelInstanceModelFactory<R> {
+public abstract class ReflectedVirtualModelInstanceModelFactory<R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, S>
+		extends PamelaModelFactory implements AbstractVirtualModelInstanceModelFactory {
 
-	public ReflectedVirtualModelInstanceModelFactory(R virtualModelInstanceResource,
-			Class<? extends VirtualModelInstance<?, ?>> baseVMIClass, EditingContext editingContext, TechnologyAdapterService taService)
-			throws ModelDefinitionException {
+	/**
+	 * This is the resource beeing reflected (viewed) as a VirtualModelInstance
+	 */
+	private R reflectedResource;
 
-		super(virtualModelInstanceResource, baseVMIClass, editingContext, taService);
+	private final FlexoServiceManager serviceManager;
+
+	public ReflectedVirtualModelInstanceModelFactory(R reflectedResource, Class<? extends VirtualModelInstance<?, ?>> baseVMIClass,
+			EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
+
+		super(PamelaMetaModelLibrary.retrieveMetaModel(appendGRClasses(allClassesForModelContext(baseVMIClass, taService))));
+
+		serviceManager = taService.getServiceManager();
+		setEditingContext(editingContext);
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
+		addConverter(new FlexoObjectReferenceConverter(taService.getServiceManager().getResourceManager()));
+		addConverter(new FlexoEnumValueConverter());
+
+		this.reflectedResource = reflectedResource;
+	}
+
+	public R getReflectedResource() {
+		return reflectedResource;
+	}
+
+	@Override
+	public FlexoServiceManager getServiceManager() {
+		return serviceManager;
+	}
+
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
+	 * parts, and return a newly created PamelaMetaModel dedicated to {@link VirtualModel} manipulations
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	public static List<Class<?>> allClassesForModelContext(Class<? extends VirtualModelInstance<?, ?>> baseVMIClass,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
+		List<Class<?>> classes = new ArrayList<>();
+		classes.add(baseVMIClass);
+		if (taService != null) {
+			for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
+				for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+					classes.add(modelSlotClass);
+					DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
+					if (arDeclarations != null) {
+						for (Class<? extends ActorReference> arClass : arDeclarations.value()) {
+							classes.add(arClass);
+						}
+					}
+				}
+			}
+		}
+
+		return classes;
+	}
+
+	private static Class<?>[] appendGRClasses(final Collection<Class<?>> classes) {
+		final Set<Class<?>> returned = new HashSet<>(classes);
+		return returned.toArray(new Class<?>[returned.size()]);
 	}
 
 	public ReflectedFlexoConceptInstance<S> makeNewFlexoConceptInstance(FlexoConcept concept, S supportObject,

@@ -38,12 +38,25 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
+import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
+import org.openflexo.pamela.converter.DataBindingConverter;
+import org.openflexo.pamela.converter.FlexoVersionConverter;
+import org.openflexo.pamela.converter.RelativePathResourceConverter;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
@@ -55,11 +68,33 @@ import org.openflexo.pamela.factory.PamelaModelFactory;
  * @author sylvain
  * 
  */
-public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelInstanceModelFactory<FMLRTVirtualModelInstanceResource> {
+public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResourceModelFactory<FMLRTVirtualModelInstanceResource>
+		implements AbstractVirtualModelInstanceModelFactory {
+
+	private final FlexoServiceManager serviceManager;
+	private RelativePathResourceConverter relativePathResourceConverter;
 
 	public FMLRTVirtualModelInstanceModelFactory(FMLRTVirtualModelInstanceResource resource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(resource, FMLRTVirtualModelInstance.class, editingContext, taService);
+		super(resource, allClassesForModelContext(FMLRTVirtualModelInstance.class, taService));
+		serviceManager = taService.getServiceManager();
+		setEditingContext(editingContext);
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
+		addConverter(new FlexoObjectReferenceConverter(taService.getServiceManager().getResourceManager()));
+		addConverter(new FlexoEnumValueConverter());
+
+		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
+		if (resource != null && resource.getIODelegate() != null && resource.getIODelegate().getSerializationArtefactAsResource() != null) {
+			relativePathResourceConverter
+					.setContainerResource(resource.getIODelegate().getSerializationArtefactAsResource().getContainer());
+		}
+
+	}
+
+	@Override
+	public FlexoServiceManager getServiceManager() {
+		return serviceManager;
 	}
 
 	/**
@@ -182,6 +217,61 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 		returned.setFlexoConcept(concept);
 
 		return returned;
+	}
+
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
+	 * parts, and return a newly created PamelaMetaModel dedicated to {@link VirtualModel} manipulations
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	public static List<Class<?>> allClassesForModelContext(Class<? extends VirtualModelInstance<?, ?>> baseVMIClass,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
+		List<Class<?>> classes = new ArrayList<>();
+		classes.add(baseVMIClass);
+		if (taService != null) {
+			for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
+				for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+					classes.add(modelSlotClass);
+					DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
+					if (arDeclarations != null) {
+						for (Class<? extends ActorReference> arClass : arDeclarations.value()) {
+							classes.add(arClass);
+						}
+					}
+				}
+			}
+		}
+
+		return classes;
+	}
+
+	protected void executeCreationScheme(FlexoConceptInstance newInstance, AbstractCreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+		if (evaluationContext instanceof AbstractCreationSchemeAction) {
+			// Special case here
+			// FlexoConceptInstance has been created, but need to be assigned to be taken under account in creation scheme
+			((AbstractCreationSchemeAction) evaluationContext).assignNewFlexoConceptInstance(newInstance);
+		}
+
+		// Perform execute creation scheme
+		if (creationScheme != null && creationScheme.getControlGraph() != null) {
+			try {
+				creationScheme.getControlGraph().execute(evaluationContext);
+			} catch (ReturnException e) {
+				logger.warning("CreationScheme is not supposed to return any values: " + e);
+				System.err.println(creationScheme.getFMLPrettyPrint());
+				throw new FMLExecutionException("CreationScheme is not supposed to return any value");
+			} catch (FMLExecutionException e) {
+				logger.warning("Unexpected exception while executing FML control graph: " + e);
+				System.err.println(creationScheme.getFMLPrettyPrint());
+				e.printStackTrace();
+				throw e;
+			}
+
+		}
 	}
 
 }

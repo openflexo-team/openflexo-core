@@ -112,7 +112,7 @@ public interface FMLRTModelSlot
 
 		@Override
 		public FMLRTModelSlotInstance makeActorReference(FMLRTVirtualModelInstance object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FMLRTModelSlotInstance returned = factory.newInstance(FMLRTModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);

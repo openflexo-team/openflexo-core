@@ -137,7 +137,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 
 		@Override
 		public ConceptActorReference<C> makeActorReference(C object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			ConceptActorReference<C> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

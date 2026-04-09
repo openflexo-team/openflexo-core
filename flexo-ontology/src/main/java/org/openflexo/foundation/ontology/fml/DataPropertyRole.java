@@ -113,7 +113,7 @@ public abstract interface DataPropertyRole<P extends IFlexoOntologyDataProperty>
 
 		@Override
 		public ActorReference<P> makeActorReference(P object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			ConceptActorReference<P> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

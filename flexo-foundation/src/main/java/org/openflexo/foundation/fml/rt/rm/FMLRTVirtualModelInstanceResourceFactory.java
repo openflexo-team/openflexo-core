@@ -35,6 +35,7 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.TechnologySpecificPamelaResourceFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
@@ -48,9 +49,11 @@ import org.openflexo.xml.XMLRootElementInfo;
  *
  */
 public class FMLRTVirtualModelInstanceResourceFactory extends
-		AbstractVirtualModelInstanceResourceFactory<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter, FMLRTVirtualModelInstanceResource> {
+		TechnologySpecificPamelaResourceFactory<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, FMLRTTechnologyAdapter, FMLRTVirtualModelInstanceModelFactory> {
 
 	private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceResourceFactory.class.getPackage().getName());
+
+	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 
 	public static final FlexoVersion CURRENT_FML_RT_VERSION = new FlexoVersion("1.0");
 	public static final String FML_RT_SUFFIX = ".fml.rt";
@@ -120,7 +123,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws ModelDefinitionException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource makeContainedFMLRTVirtualModelInstanceResource(String baseName,
-			CompilationUnitResource virtualModelResource, AbstractVirtualModelInstanceResource<?, ?> containerResource,
+			CompilationUnitResource virtualModelResource, FMLRTVirtualModelInstanceResource containerResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
 			throws SaveResourceException, ModelDefinitionException {
 
@@ -185,7 +188,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws IOException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource retrieveContainedFMLRTVirtualModelInstanceResource(I serializationArtefact,
-			AbstractVirtualModelInstanceResource<?, ?> containerResource) throws ModelDefinitionException, IOException {
+			FMLRTVirtualModelInstanceResource containerResource) throws ModelDefinitionException, IOException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);

@@ -339,7 +339,7 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 		/*@SuppressWarnings("unchecked")
 		@Override
 		public FMLRTModelSlotInstance<VMI, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FMLRTModelSlotInstance<VMI, TA> returned = factory.newInstance(FMLRTModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);

@@ -53,12 +53,13 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -258,10 +259,10 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 					if (evaluationContext instanceof FlexoBehaviourAction) {
 
-						AbstractVirtualModelInstanceResource<?, ?> resourceToDelete = null;
+						FMLRTVirtualModelInstanceResource resourceToDelete = null;
 
-						if (objectToDelete instanceof VirtualModelInstance) {
-							resourceToDelete = (AbstractVirtualModelInstanceResource<?, ?>) ((VirtualModelInstance<?, ?>) objectToDelete)
+						if (objectToDelete instanceof FMLRTVirtualModelInstance) {
+							resourceToDelete = (FMLRTVirtualModelInstanceResource) ((VirtualModelInstance<?, ?>) objectToDelete)
 									.getResource();
 						}
 

@@ -117,7 +117,7 @@ public interface JavaRole<T> extends BasicProperty<T> {
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
 
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 
 			if (object instanceof FlexoObject) {
 				ModelObjectActorReference returned = factory.newInstance(ModelObjectActorReference.class);

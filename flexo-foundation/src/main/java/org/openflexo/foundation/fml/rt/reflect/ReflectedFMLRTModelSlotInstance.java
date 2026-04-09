@@ -43,8 +43,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance.ModelSlotInstanceImpl;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -82,7 +80,7 @@ import org.openflexo.toolbox.StringUtils;
 public interface ReflectedFMLRTModelSlotInstance<
 //@formatter:off
 	VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, 
-	R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, 
+	R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, 
 	TA extends TechnologyAdapter<TA>>
 		extends ModelSlotInstance<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI> {
 	//@formatter:on
@@ -101,7 +99,7 @@ public interface ReflectedFMLRTModelSlotInstance<
 
 	public void setReflectedResource(R reflectedResource);
 
-	public static abstract class ReflectedFMLRTModelSlotInstanceImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+	public static abstract class ReflectedFMLRTModelSlotInstanceImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends ModelSlotInstanceImpl<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI>
 			implements ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> {
 

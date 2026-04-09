@@ -146,7 +146,7 @@ public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit, CompilationU
 
 		@Override
 		public FMLModelSlotInstance makeActorReference(FMLCompilationUnit virtualModel, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FMLModelSlotInstance returned = factory.newInstance(FMLModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);

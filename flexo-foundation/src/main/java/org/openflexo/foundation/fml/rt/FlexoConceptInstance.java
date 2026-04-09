@@ -415,7 +415,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public boolean hasValidRenderer();
 
 	@DeserializationInitializer
-	public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory);
+	public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory factory);
 
 	@DeserializationFinalizer
 	public void finalizeDeserialization();
@@ -536,7 +536,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @param factory
 	 * @return
 	 */
-	public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory);
+	public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory factory);
 
 	/**
 	 * An {@link #equals(Object)} implementation for {@link FlexoConceptInstance}, focused on roles
@@ -2029,10 +2029,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return returned;
 		}
 
-		private AbstractVirtualModelInstanceModelFactory<?> storedFactoryAfterDeletion;
+		private AbstractVirtualModelInstanceModelFactory storedFactoryAfterDeletion;
 
 		@Override
-		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
+		public AbstractVirtualModelInstanceModelFactory getFactory() {
 			if (isDeleted()) {
 				return storedFactoryAfterDeletion;
 			}
@@ -2274,10 +2274,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return this;
 		}
 
-		private AbstractVirtualModelInstanceModelFactory<?> deserializationFactory;
+		private AbstractVirtualModelInstanceModelFactory deserializationFactory;
 
 		@Override
-		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
+		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory factory) {
 			deserializationFactory = factory;
 		}
 
@@ -2286,7 +2286,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			deserializationFactory = null;
 		}
 
-		public AbstractVirtualModelInstanceModelFactory<?> getDeserializationFactory() {
+		public AbstractVirtualModelInstanceModelFactory getDeserializationFactory() {
 			return deserializationFactory;
 		}
 
@@ -2330,7 +2330,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = getFactory();
 			if (factory == null) {
 				return null;
 			}
@@ -2392,7 +2392,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory) {
+		public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory factory) {
 			FlexoConceptInstance clone = factory.newInstance(FlexoConceptInstance.class);
 			clone.setFlexoConcept(getFlexoConcept());
 			clone.setLocalFactory(factory);

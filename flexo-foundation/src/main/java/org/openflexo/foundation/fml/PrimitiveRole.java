@@ -129,7 +129,8 @@ public interface PrimitiveRole<T> extends BasicProperty<T> {
 
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
+
 			PrimitiveActorReference<T> returned = factory.newInstance(PrimitiveActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setModellingElement(object);

@@ -73,7 +73,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -117,8 +117,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-		extends FlexoConceptInstance, ResourceData<VMI>, TechnologyObject<TA> /*, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>*/,
-		IndexableContainer<FlexoConceptInstance> {
+		extends FlexoConceptInstance, ResourceData<VMI>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
 
 	public static final String EVENT_FIRED = "EventFired";
 
@@ -366,6 +365,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 */
 	public void notifyAllRootFlexoConceptInstancesMayHaveChanged();
 
+	// TODO : Resource support must be moved to FMLRTVirtualModelInstance
 	@Override
 	public FlexoResource<VMI> getResource();
 
@@ -384,7 +384,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 * @return
 	 */
 	@Override
-	public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory);
+	public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory factory);
 
 	public void setLocalServiceManager(FlexoServiceManager localServiceManager);
 
@@ -403,7 +403,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstance.class.getPackage().getName());
 
-		private AbstractVirtualModelInstanceResource<VMI, TA> resource;
+		private FMLRTVirtualModelInstanceResource resource;
 		private String title;
 
 		/**
@@ -470,7 +470,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		}
 
 		@Override
-		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
+		public AbstractVirtualModelInstanceModelFactory getFactory() {
 			if (getVirtualModelInstanceResource() != null) {
 				return getVirtualModelInstanceResource().getFactory();
 			}
@@ -906,18 +906,18 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return returned;
 		}
 
-		public final AbstractVirtualModelInstanceResource<VMI, TA> getVirtualModelInstanceResource() {
+		public final FMLRTVirtualModelInstanceResource getVirtualModelInstanceResource() {
 			return resource;
 		}
 
 		@Override
 		public final FlexoResource<VMI>/*AbstractVirtualModelInstanceResource<VMI, TA>*/ getResource() {
-			return resource;
+			return (FlexoResource) resource;
 		}
 
 		@Override
 		public final void setResource(FlexoResource<VMI>/*AbstractVirtualModelInstanceResource<VMI, TA>*/ resource) {
-			this.resource = (AbstractVirtualModelInstanceResource<VMI, TA>) resource;
+			this.resource = (FMLRTVirtualModelInstanceResource) resource;
 		}
 
 		@Override
@@ -1311,8 +1311,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 */
 		private void loadVirtualModelInstancesWhenUnloaded() {
 			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
-				if (r instanceof AbstractVirtualModelInstanceResource) {
-					((AbstractVirtualModelInstanceResource<?, ?>) r).getVirtualModelInstance();
+				if (r instanceof FMLRTVirtualModelInstanceResource) {
+					((FMLRTVirtualModelInstanceResource) r).getVirtualModelInstance();
 				}
 			}
 		}
@@ -1423,7 +1423,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 * @return
 		 */
 		@Override
-		public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory) {
+		public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory factory) {
 
 			VirtualModelInstance<VMI, TA> clone = (VirtualModelInstance<VMI, TA>) factory.newInstance(getImplementedInterface());
 			clone.setVirtualModel(getVirtualModel());

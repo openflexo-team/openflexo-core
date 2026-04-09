@@ -84,6 +84,7 @@ public abstract class FlexoOntologyTechnologyContextManager<TA extends Technolog
 				individualsOfClass.put(anOntologyClass, returned);
 				return returned;
 			} catch (ClassCastException e) {
+				e.printStackTrace();
 				logger.warning(e.getMessage());
 				return null;
 			}

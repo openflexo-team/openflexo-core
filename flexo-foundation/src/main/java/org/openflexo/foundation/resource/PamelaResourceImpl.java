@@ -40,8 +40,6 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -310,32 +308,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	// This should be removed from Pamela Resource class
 	protected File getFile() {
 		return (File) getIODelegate().getSerializationArtefact();
-	}
-
-	/**
-	 * Return a FlexoIOStreamDelegate associated to this flexo resource
-	 * 
-	 * @return
-	 */
-	public final StreamIODelegate<?> getFlexoIOStreamDelegate() {
-		if (getIODelegate() instanceof StreamIODelegate) {
-			return (StreamIODelegate<?>) getIODelegate();
-		}
-		return null;
-	}
-
-	public final InputStream getInputStream() {
-		if (getFlexoIOStreamDelegate() != null) {
-			return getFlexoIOStreamDelegate().getInputStream();
-		}
-		return null;
-	}
-
-	public final OutputStream getOutputStream() {
-		if (getFlexoIOStreamDelegate() != null) {
-			return getFlexoIOStreamDelegate().getOutputStream();
-		}
-		return null;
 	}
 
 	/**

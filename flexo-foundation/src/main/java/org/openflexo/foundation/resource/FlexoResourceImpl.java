@@ -42,6 +42,8 @@ package org.openflexo.foundation.resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -781,6 +783,32 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		I parent = rc.getContainer((I) getIODelegate().getSerializationArtefact());
 		I parentParent = rc.getContainer(parent);
 		return rc.relativePath(parentParent);
+	}
+
+	/**
+	 * Return a FlexoIOStreamDelegate associated to this flexo resource
+	 * 
+	 * @return
+	 */
+	public final StreamIODelegate<?> getFlexoIOStreamDelegate() {
+		if (getIODelegate() instanceof StreamIODelegate) {
+			return (StreamIODelegate<?>) getIODelegate();
+		}
+		return null;
+	}
+
+	public final InputStream getInputStream() {
+		if (getFlexoIOStreamDelegate() != null) {
+			return getFlexoIOStreamDelegate().getInputStream();
+		}
+		return null;
+	}
+
+	public final OutputStream getOutputStream() {
+		if (getFlexoIOStreamDelegate() != null) {
+			return getFlexoIOStreamDelegate().getOutputStream();
+		}
+		return null;
 	}
 
 }
