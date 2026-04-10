@@ -52,11 +52,11 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @Imports({ @Import(ClassRole.class), @Import(IndividualRole.class), @Import(PropertyRole.class), @Import(OntologicObjectRole.class) })
 public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
 
-	@Override
-	public TypeAwareModelSlot<?, ?, ?> getModelSlot();
+	/*@Override
+	public TypeAwareModelSlot<?, ?, ?> getModelSlot();*/
 
-	public static abstract class OntologicObjectRoleImpl<T extends IFlexoOntologyObject> extends FlexoRoleImpl<T> implements
-			OntologicObjectRole<T> {
+	public static abstract class OntologicObjectRoleImpl<T extends IFlexoOntologyObject> extends FlexoRoleImpl<T>
+			implements OntologicObjectRole<T> {
 
 		/*public boolean getIsPrimaryConceptRole() {
 			if (getFlexoConcept() == null) {
@@ -64,7 +64,7 @@ public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends Fle
 			}
 			return getFlexoConcept().getPrimaryConceptRole() == this;
 		}
-
+		
 		public void setIsPrimaryConceptRole(boolean isPrimary) {
 			if (getFlexoConcept() == null) {
 				return;
@@ -75,21 +75,24 @@ public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends Fle
 				getFlexoConcept().setPrimaryConceptRole(null);
 			}
 		}
-
+		
 		@Override
 		public boolean getIsPrimaryRole() {
 			return getIsPrimaryConceptRole();
 		}
-
+		
 		@Override
 		public void setIsPrimaryRole(boolean isPrimary) {
 			setIsPrimaryConceptRole(isPrimary);
 		}*/
 
-		@Override
+		/*@Override
 		public TypeAwareModelSlot<?, ?, ?> getModelSlot() {
 			TypeAwareModelSlot<?, ?, ?> returned = null;
 			ModelSlot<?,?> superMS = super.getModelSlot();
+			
+			getRoleTechnologyAdapterClass();
+			
 			if (superMS instanceof TypeAwareModelSlot) {
 				returned = (TypeAwareModelSlot<?, ?, ?>) super.getModelSlot();
 			}
@@ -99,10 +102,10 @@ public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends Fle
 				}
 			}
 			return returned;
-		}
+		}*/
 
 		@Override
-		public void setModelSlot(ModelSlot<?,?> modelSlot) {
+		public void setModelSlot(ModelSlot<?, ?> modelSlot) {
 			if (modelSlot instanceof TypeAwareModelSlot) {
 				super.setModelSlot(modelSlot);
 			}

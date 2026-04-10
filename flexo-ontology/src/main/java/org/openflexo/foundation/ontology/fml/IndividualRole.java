@@ -206,8 +206,14 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 		@Override
 		public ConceptActorReference<I> makeActorReference(I object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
+
+			System.err.println("Nous voila ici, role=" + this);
+			System.err.println(getFMLPrettyPrint());
+			System.out.println("fci=" + fci);
+			System.out.println("object=" + object);
+
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(object);
