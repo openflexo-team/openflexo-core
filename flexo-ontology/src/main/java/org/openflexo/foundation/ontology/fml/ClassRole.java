@@ -47,6 +47,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.ontology.fml.rt.ConceptActorReference;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
+import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -72,6 +73,9 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 	public C getOntologicType();
 
 	public void setOntologicType(C ontologyClass);
+
+	@Override
+	public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot();
 
 	public static abstract class ClassRoleImpl<C extends IFlexoOntologyClass> extends OntologicObjectRoleImpl<C> implements ClassRole<C> {
 
@@ -144,6 +148,12 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 			returned.setModellingElement(object);
 			return returned;
 		}
+
+		@Override
+		public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot() {
+			return (FlexoOntologyModelSlot) super.getModelSlot();
+		}
+
 	}
 
 	/*@DefineValidationRule

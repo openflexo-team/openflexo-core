@@ -52,6 +52,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.ontology.fml.rt.ConceptActorReference;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
+import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -87,6 +88,9 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	@Setter(ONTOLOGIC_TYPE_KEY)
 	public void setOntologicType(IFlexoOntologyClass<?> ontologyClass);
+
+	@Override
+	public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot();
 
 	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I>
 			implements IndividualRole<I> {
@@ -206,6 +210,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 		@Override
 		public ConceptActorReference<I> makeActorReference(I object, FlexoConceptInstance fci) {
+
 			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
 
@@ -218,6 +223,11 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(object);
 			return returned;
+		}
+
+		@Override
+		public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot() {
+			return (FlexoOntologyModelSlot) super.getModelSlot();
 		}
 
 	}

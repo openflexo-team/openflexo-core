@@ -53,55 +53,14 @@ import org.openflexo.pamela.annotations.ModelEntity;
 public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
 
 	/*@Override
-	public TypeAwareModelSlot<?, ?, ?> getModelSlot();*/
+	public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot();*/
 
 	public static abstract class OntologicObjectRoleImpl<T extends IFlexoOntologyObject> extends FlexoRoleImpl<T>
 			implements OntologicObjectRole<T> {
 
-		/*public boolean getIsPrimaryConceptRole() {
-			if (getFlexoConcept() == null) {
-				return false;
-			}
-			return getFlexoConcept().getPrimaryConceptRole() == this;
-		}
-		
-		public void setIsPrimaryConceptRole(boolean isPrimary) {
-			if (getFlexoConcept() == null) {
-				return;
-			}
-			if (isPrimary) {
-				getFlexoConcept().setPrimaryConceptRole(this);
-			} else {
-				getFlexoConcept().setPrimaryConceptRole(null);
-			}
-		}
-		
-		@Override
-		public boolean getIsPrimaryRole() {
-			return getIsPrimaryConceptRole();
-		}
-		
-		@Override
-		public void setIsPrimaryRole(boolean isPrimary) {
-			setIsPrimaryConceptRole(isPrimary);
-		}*/
-
 		/*@Override
-		public TypeAwareModelSlot<?, ?, ?> getModelSlot() {
-			TypeAwareModelSlot<?, ?, ?> returned = null;
-			ModelSlot<?,?> superMS = super.getModelSlot();
-			
-			getRoleTechnologyAdapterClass();
-			
-			if (superMS instanceof TypeAwareModelSlot) {
-				returned = (TypeAwareModelSlot<?, ?, ?>) super.getModelSlot();
-			}
-			if (returned == null) {
-				if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
-					return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
-				}
-			}
-			return returned;
+		public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot() {
+			return (FlexoOntologyModelSlot) super.getModelSlot();
 		}*/
 
 		@Override
@@ -110,5 +69,6 @@ public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends Fle
 				super.setModelSlot(modelSlot);
 			}
 		}
+
 	}
 }
