@@ -25,8 +25,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,10 +110,17 @@ public class GitHubClient {
 		if (status >= 400) {
 			InputStream err = conn.getErrorStream();
 			String body = err != null ? readStream(err) : "(no body)";
-			GitHubResult errorResult = gson.fromJson(body, GitHubResult.class);
-			String msg = (errorResult != null && errorResult.getMessage() != null)
-					? errorResult.getMessage()
-					: body;
+			logger.warning("GitHub API error " + status + " on " + conn.getURL() + " — raw response: " + body);
+			String msg = body;
+			try {
+				GitHubResult errorResult = gson.fromJson(body, GitHubResult.class);
+				if (errorResult != null && errorResult.getMessage() != null) {
+					msg = errorResult.getMessage();
+				}
+			} catch (Exception ignored) {
+				// Non-JSON response (e.g. HTML error page): use the raw body truncated
+				msg = body.length() > 200 ? body.substring(0, 200) + "…" : body;
+			}
 			throw new GitHubException(msg, status);
 		}
 	}
@@ -224,5 +234,76 @@ public class GitHubClient {
 
 		GitHubResult result = post(API_BASE + "/gists", gistBody, GitHubResult.class);
 		return result != null ? result.getHtmlUrl() : null;
+	}
+
+	/**
+	 * Uploads a PNG screenshot to the repository via the Contents API and returns its raw download URL.
+	 * The URL can be embedded as an inline image in a GitHub issue: {@code ![name](url)}.
+	 * The file is committed to {@code bug-report-screenshots/{timestamp}-{filename}} on the default branch.
+	 *
+	 * @param repoName  target repository name within openflexo-team
+	 * @param filename  filename to use (e.g. "screenshot.png")
+	 * @param imageData raw PNG bytes
+	 * @return raw download URL (raw.githubusercontent.com), or null if the upload failed
+	 */
+	public String uploadScreenshot(String repoName, String filename, byte[] imageData) throws IOException, GitHubException {
+		String safeFilename = URLEncoder.encode(System.currentTimeMillis() + "-" + filename, "UTF-8").replace("+", "%20");
+		String url = API_BASE + "/repos/" + ORG + "/" + repoName + "/contents/bug-report-screenshots/" + safeFilename;
+
+		Map<String, Object> requestBody = new HashMap<>();
+		requestBody.put("message", "Add bug report screenshot");
+		requestBody.put("content", Base64.getEncoder().encodeToString(imageData));
+
+		HttpURLConnection conn = openConnection(url);
+		conn.setRequestMethod("PUT");
+		conn.setDoOutput(true);
+		conn.setRequestProperty("Content-Type", "application/json");
+		byte[] jsonBytes = gson.toJson(requestBody).getBytes("UTF-8");
+		conn.setFixedLengthStreamingMode(jsonBytes.length);
+		conn.connect();
+		try (OutputStream os = conn.getOutputStream()) {
+			os.write(jsonBytes);
+			os.flush();
+		}
+		checkStatus(conn);
+		String responseBody = readStream(conn.getInputStream());
+		com.google.gson.JsonObject json = gson.fromJson(responseBody, com.google.gson.JsonObject.class);
+		com.google.gson.JsonObject content = json != null ? json.getAsJsonObject("content") : null;
+		com.google.gson.JsonElement downloadUrl = content != null ? content.get("download_url") : null;
+		return downloadUrl != null && !downloadUrl.isJsonNull() ? downloadUrl.getAsString() : null;
+	}
+
+	/**
+	 * Updates the body of an existing issue.
+	 *
+	 * @param repoName    target repository name within openflexo-team
+	 * @param issueNumber the issue number to update
+	 * @param newBody     the new issue body (Markdown)
+	 */
+	public void updateIssueBody(String repoName, long issueNumber, String newBody) throws IOException, GitHubException {
+		String url = API_BASE + "/repos/" + ORG + "/" + repoName + "/issues/" + issueNumber;
+
+		// HttpURLConnection does not support PATCH natively; bypass via reflection
+		HttpURLConnection conn = openConnection(url);
+		try {
+			Field methodField = HttpURLConnection.class.getDeclaredField("method");
+			methodField.setAccessible(true);
+			methodField.set(conn, "PATCH");
+		} catch (ReflectiveOperationException e) {
+			throw new IOException("Cannot set PATCH method on HttpURLConnection", e);
+		}
+		conn.setDoOutput(true);
+		conn.setRequestProperty("Content-Type", "application/json");
+
+		Map<String, Object> requestBody = new HashMap<>();
+		requestBody.put("body", newBody);
+		byte[] jsonBytes = gson.toJson(requestBody).getBytes("UTF-8");
+		conn.setFixedLengthStreamingMode(jsonBytes.length);
+		conn.connect();
+		try (OutputStream os = conn.getOutputStream()) {
+			os.write(jsonBytes);
+		}
+		checkStatus(conn);
+		readStream(conn.getInputStream());
 	}
 }
