@@ -259,7 +259,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 
 		@Override
 		public final AT execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
-			List<T> computedValues = performExecute(evaluationContext);
+			List<? extends T> computedValues = performExecute(evaluationContext);
 			if (this instanceof UniqueFetchRequest) {
 				if (computedValues.size() > 1) {
 					logger.warning("More than one value found for a UNIQUE request, return first one: " + computedValues);
@@ -279,7 +279,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 
 		}
 
-		protected abstract List<T> performExecute(RunTimeEvaluationContext evaluationContext);
+		protected abstract List<? extends T> performExecute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 		@Override
 		public void revalidateBindings() {

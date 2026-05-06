@@ -40,30 +40,22 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
-import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
-import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -312,28 +304,28 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			return null;
 		}
 
-		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition, VirtualModelInstance<?, ?> vmi,
+		/*private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition, VirtualModelInstance<?, ?> vmi,
 				RunTimeEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
 			Expression indexableTerm = getIndexableTerm(indexableCondition);
 			Expression oppositeTerm = getOppositeTerm(indexableCondition);
-
+		
 			// System.out.println("indexable term = " + indexableTerm);
 			// System.out.println("opposite term = " + oppositeTerm);
-
+		
 			DataBinding<?> indexableTermBinding = new DataBinding<>(indexableTerm.toString(), indexableCondition, Object.class,
 					BindingDefinitionType.GET);
 			indexableTermBinding.setBindingName("indexableTerm");
-
+		
 			DataBinding<?> valueBinding = new DataBinding<>(oppositeTerm.toString(), indexableCondition, Object.class,
 					BindingDefinitionType.GET);
 			valueBinding.setBindingName("expectedValue");
-
+		
 			Object expectedValue = valueBinding.getBindingValue(evaluationContext);
 			// System.out.println("Searching" + indexableTerm + " = " + expectedValue);
-
+		
 			Map<Object, List<FlexoConceptInstance>> index = vmi.getIndex(getFlexoConceptType().getInstanceType(), indexableTermBinding);
-
+		
 			if (index != null) {
 				List<FlexoConceptInstance> returned = index.get(expectedValue);
 				if (returned != null) {
@@ -341,12 +333,13 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				}
 				return Collections.emptyList();
 			}
-
+		
 			return Collections.emptyList();
-		}
+		}*/
 
 		@Override
-		protected List<FlexoConceptInstance> performExecute(RunTimeEvaluationContext evaluationContext) {
+		protected List<? extends FlexoConceptInstance> performExecute(RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
 
 			VirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
 			FlexoConceptInstance container = getContainer(evaluationContext);
@@ -366,14 +359,20 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 			if (vmi != null) {
 
-				// System.out.println("SELECT FCI " + getFlexoConceptType().getName() + " from " + vmi + " container=" + container);
+				return vmi.selectFlexoConceptInstances(getFlexoConceptType(), container, getConditions(), evaluationContext);
 
+				/*System.err.println("SELECT FCI " + getFlexoConceptType().getName() + " from " + vmi + " container=" + container);
+				
+				return vmi.selectFlexoConceptInstances(getFlexoConceptType(), container, getConditions(), evaluationContext);
+				
 				if (isIndexable(container)) {
 					List<FlexoConceptInstance> returned;
 					try {
 						// Compute returned as result of filter for first condition to apply
-						returned = getIndexedMatchingList(getConditions().get(0), vmi, evaluationContext);
-
+						returned = vmi.getIndexedMatchingList(getFlexoConceptType(), getConditions().get(0), evaluationContext);
+				
+						// returned = getIndexedMatchingList(getConditions().get(0), vmi, evaluationContext);
+				
 						// More than one condition, we need to merge multiple filters
 						for (int i = 1; i < getConditions().size(); i++) {
 							List<FlexoConceptInstance> filtered = getIndexedMatchingList(getConditions().get(i), vmi, evaluationContext);
@@ -386,7 +385,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 								}
 							}
 						}
-
+				
 						return returned;
 					} catch (TypeMismatchException e) {
 						e.printStackTrace();
@@ -398,9 +397,9 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 						e.printStackTrace();
 					}
 				}
-
+				
 				// Otherwise, we do it brute force !!!
-
+				
 				List<FlexoConceptInstance> fciList = null;
 				if (container instanceof VirtualModelInstance) {
 					fciList = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(getFlexoConceptType());
@@ -409,7 +408,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					fciList = container.getEmbeddedFlexoConceptInstances(getFlexoConceptType());
 				}
 				// System.out.println("Unfiltered FCI list for " + getFlexoConceptType() + " : " + fciList);
-				return filterWithConditions(fciList, evaluationContext);
+				return filterWithConditions(fciList, evaluationContext);*/
 			}
 			logger.warning(
 					getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
@@ -422,78 +421,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			 */
 			// logger.warning(getOwner().getFMLRepresentation());
 			return null;
-		}
-
-		public boolean isIndexable(FlexoConceptInstance container) {
-			// Temporary desactivate indexes caching
-			/*if (container instanceof FMLRTVirtualModelInstance && getConditions().size() > 0) {
-				for (FetchRequestCondition condition : getConditions()) {
-					if (!isIndexableCondition(condition)) {
-						return false;
-					}
-				}
-				return true;
-			}*/
-			return false;
-
-		}
-
-		private static boolean isIndexableCondition(FetchRequestCondition condition) {
-			return getIndexableTerm(condition) != null;
-		}
-
-		private static Expression getIndexableTerm(FetchRequestCondition condition) {
-			if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
-				BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
-				Expression leftTerm = binaryExpression.getLeftArgument();
-				boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
-				Expression rightTerm = binaryExpression.getRightArgument();
-				boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
-				if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
-					if (leftTermUsesSelectedBindingVariable) {
-						if (rightTermUsesSelectedBindingVariable) {
-							return null;
-						}
-						return leftTerm;
-					}
-					if (rightTermUsesSelectedBindingVariable) {
-						return rightTerm;
-					}
-					return null;
-				}
-			}
-			return null;
-		}
-
-		private static Expression getOppositeTerm(FetchRequestCondition condition) {
-			if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
-				BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
-				Expression leftTerm = binaryExpression.getLeftArgument();
-				boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
-				Expression rightTerm = binaryExpression.getRightArgument();
-				boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
-				if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
-					if (leftTermUsesSelectedBindingVariable) {
-						if (rightTermUsesSelectedBindingVariable)
-							return null;
-						return rightTerm;
-					}
-					if (rightTermUsesSelectedBindingVariable)
-						return leftTerm;
-					return null;
-				}
-			}
-			return null;
-		}
-
-		private static boolean expressionUsesSelectedBindingVariable(Expression exp) {
-			List<BindingVariable> allBVs = exp.getAllBindingVariables();
-			for (BindingVariable v : allBVs) {
-				if (v instanceof FetchRequestConditionSelectedBindingVariable) {
-					return true;
-				}
-			}
-			return false;
 		}
 
 		@Override
