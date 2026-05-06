@@ -237,22 +237,23 @@ public class GitHubClient {
 	}
 
 	/**
-	 * Uploads a PNG screenshot to the repository via the Contents API and returns its raw download URL.
-	 * The URL can be embedded as an inline image in a GitHub issue: {@code ![name](url)}.
-	 * The file is committed to {@code bug-report-screenshots/{timestamp}-{filename}} on the default branch.
+	 * Uploads a file to the repository via the Contents API and returns its raw download URL.
+	 * The file is committed to {@code {folder}/{timestamp}-{filename}} on the default branch.
+	 * The URL can be embedded in a GitHub issue as an image ({@code ![name](url)}) or a link ({@code [name](url)}).
 	 *
-	 * @param repoName  target repository name within openflexo-team
-	 * @param filename  filename to use (e.g. "screenshot.png")
-	 * @param imageData raw PNG bytes
+	 * @param repoName target repository name within openflexo-team
+	 * @param folder   destination folder in the repository (e.g. "bug-report-screenshots")
+	 * @param filename original filename (may contain spaces; will be URL-encoded)
+	 * @param data     raw file bytes
 	 * @return raw download URL (raw.githubusercontent.com), or null if the upload failed
 	 */
-	public String uploadScreenshot(String repoName, String filename, byte[] imageData) throws IOException, GitHubException {
+	public String uploadFileToRepo(String repoName, String folder, String filename, byte[] data) throws IOException, GitHubException {
 		String safeFilename = URLEncoder.encode(System.currentTimeMillis() + "-" + filename, "UTF-8").replace("+", "%20");
-		String url = API_BASE + "/repos/" + ORG + "/" + repoName + "/contents/bug-report-screenshots/" + safeFilename;
+		String url = API_BASE + "/repos/" + ORG + "/" + repoName + "/contents/" + folder + "/" + safeFilename;
 
 		Map<String, Object> requestBody = new HashMap<>();
-		requestBody.put("message", "Add bug report screenshot");
-		requestBody.put("content", Base64.getEncoder().encodeToString(imageData));
+		requestBody.put("message", "Add bug report attachment");
+		requestBody.put("content", Base64.getEncoder().encodeToString(data));
 
 		HttpURLConnection conn = openConnection(url);
 		conn.setRequestMethod("PUT");
