@@ -41,7 +41,13 @@ package org.openflexo.foundation.fml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.expr.BinaryOperatorExpression;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
+import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
@@ -230,6 +236,64 @@ public class FMLUtils {
 
 		return vm1.getVirtualModelLibrary();
 
+	}
+
+	public static Expression getIndexableTerm(FetchRequestCondition condition) {
+		if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
+			BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
+			Expression leftTerm = binaryExpression.getLeftArgument();
+			boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
+			Expression rightTerm = binaryExpression.getRightArgument();
+			boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
+			if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
+				if (leftTermUsesSelectedBindingVariable) {
+					if (rightTermUsesSelectedBindingVariable) {
+						return null;
+					}
+					return leftTerm;
+				}
+				if (rightTermUsesSelectedBindingVariable) {
+					return rightTerm;
+				}
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public static Expression getOppositeTerm(FetchRequestCondition condition) {
+		if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
+			BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
+			Expression leftTerm = binaryExpression.getLeftArgument();
+			boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
+			Expression rightTerm = binaryExpression.getRightArgument();
+			boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
+			if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
+				if (leftTermUsesSelectedBindingVariable) {
+					if (rightTermUsesSelectedBindingVariable)
+						return null;
+					return rightTerm;
+				}
+				if (rightTermUsesSelectedBindingVariable)
+					return leftTerm;
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public static boolean isIndexableCondition(FetchRequestCondition condition) {
+		return getIndexableTerm(condition) != null;
+	}
+
+	public static boolean expressionUsesSelectedBindingVariable(Expression exp) {
+		List<BindingVariable> allBVs = exp.getAllBindingVariables();
+		for (BindingVariable v : allBVs) {
+			if (v instanceof FetchRequestConditionSelectedBindingVariable) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

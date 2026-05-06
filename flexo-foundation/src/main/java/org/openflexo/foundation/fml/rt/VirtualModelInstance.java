@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -55,14 +56,17 @@ import javax.swing.SwingUtilities;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IndexableContainer;
+import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -389,6 +393,21 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setLocalServiceManager(FlexoServiceManager localServiceManager);
 
 	public Class<VMI> getInferedImplementedInterface();
+
+	/**
+	 * Select (request when required) a list of {@link FlexoConceptInstance} whose type is defined by supplied <code>conceptType</code>, and
+	 * matching some conditions<br>
+	 * 
+	 * If this {@link VirtualModelInstance} is requestable, this may trigger requests
+	 * 
+	 * @param conceptType
+	 * @param container
+	 * @param conditions
+	 * @param evaluationContext
+	 * @return
+	 */
+	public List<? extends FlexoConceptInstance> selectFlexoConceptInstances(FlexoConcept conceptType, FlexoConceptInstance container,
+			List<FetchRequestCondition> conditions, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	/**
 	 * Base implementation for VirtualModelInstance
@@ -1548,6 +1567,131 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			List<FlexoConceptInstance> returned = new ArrayList<>();
 			returned.addAll(getVirtualModelInstances());
 			returned.addAll(getAllRootFlexoConceptInstances());
+			return returned;
+		}
+
+		// TODO: repair indexation/caching
+		public boolean isIndexable(FlexoConceptInstance container) {
+			// Temporary desactivate indexes caching
+			/*if (container instanceof FMLRTVirtualModelInstance && getConditions().size() > 0) {
+				for (FetchRequestCondition condition : getConditions()) {
+					if (!isIndexableCondition(condition)) {
+						return false;
+					}
+				}
+				return true;
+			}*/
+			return false;
+
+		}
+
+		@Override
+		public List<? extends FlexoConceptInstance> selectFlexoConceptInstances(FlexoConcept conceptType, FlexoConceptInstance container,
+				List<FetchRequestCondition> conditions, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			System.err.println("SELECT FCI " + conceptType.getName() + " from " + this + " container=" + container);
+
+			if (isIndexable(container)) {
+				List<FlexoConceptInstance> returned;
+				try {
+					// Compute returned as result of filter for first condition to apply
+					returned = getIndexedMatchingList(conceptType, conditions.get(0), evaluationContext);
+
+					// returned = getIndexedMatchingList(getConditions().get(0), vmi, evaluationContext);
+
+					// More than one condition, we need to merge multiple filters
+					for (int i = 1; i < conditions.size(); i++) {
+						List<FlexoConceptInstance> filtered = getIndexedMatchingList(conceptType, conditions.get(i), evaluationContext);
+						Iterator<FlexoConceptInstance> it = returned.iterator();
+						while (it.hasNext()) {
+							FlexoConceptInstance fci = it.next();
+							if (!filtered.contains(fci)) {
+								// fci is not in the filtered list, we discard it
+								it.remove();
+							}
+						}
+					}
+
+					return returned;
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
+				}
+			}
+
+			// Otherwise, we do it brute force !!!
+
+			List<FlexoConceptInstance> fciList = null;
+			if (container instanceof VirtualModelInstance) {
+				fciList = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(conceptType);
+			}
+			else {
+				fciList = container.getEmbeddedFlexoConceptInstances(conceptType);
+			}
+			// System.out.println("Unfiltered FCI list for " + getFlexoConceptType() + " : " + fciList);
+			return filterWithConditions(fciList, conditions, evaluationContext);
+		}
+
+		private List<FlexoConceptInstance> getIndexedMatchingList(FlexoConcept conceptType, FetchRequestCondition indexableCondition,
+				RunTimeEvaluationContext evaluationContext)
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
+			Expression indexableTerm = FMLUtils.getIndexableTerm(indexableCondition);
+			Expression oppositeTerm = FMLUtils.getOppositeTerm(indexableCondition);
+
+			// System.out.println("indexable term = " + indexableTerm);
+			// System.out.println("opposite term = " + oppositeTerm);
+
+			DataBinding<?> indexableTermBinding = new DataBinding<>(indexableTerm.toString(), indexableCondition, Object.class,
+					BindingDefinitionType.GET);
+			indexableTermBinding.setBindingName("indexableTerm");
+
+			DataBinding<?> valueBinding = new DataBinding<>(oppositeTerm.toString(), indexableCondition, Object.class,
+					BindingDefinitionType.GET);
+			valueBinding.setBindingName("expectedValue");
+
+			Object expectedValue = valueBinding.getBindingValue(evaluationContext);
+			// System.out.println("Searching" + indexableTerm + " = " + expectedValue);
+
+			Map<Object, List<FlexoConceptInstance>> index = getIndex(conceptType.getInstanceType(), indexableTermBinding);
+
+			if (index != null) {
+				List<FlexoConceptInstance> returned = index.get(expectedValue);
+				if (returned != null) {
+					return returned;
+				}
+				return Collections.emptyList();
+			}
+
+			return Collections.emptyList();
+		}
+
+		protected List<FlexoConceptInstance> filterWithConditions(List<FlexoConceptInstance> fetchResult,
+				List<FetchRequestCondition> conditions, final RunTimeEvaluationContext evaluationContext) {
+			if (conditions.size() == 0) {
+				return fetchResult;
+			}
+			List<FlexoConceptInstance> returned = new ArrayList<>();
+			for (final FlexoConceptInstance proposedFetchResult : fetchResult) {
+				boolean takeIt = true;
+				for (FetchRequestCondition condition : conditions) {
+					if (!condition.evaluateCondition(proposedFetchResult, evaluationContext)) {
+						takeIt = false;
+						// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
+						// + condition.getCondition().isValid());
+						break;
+					}
+				}
+				if (takeIt) {
+					returned.add(proposedFetchResult);
+					// System.out.println("I take " + proposedFetchResult);
+				}
+				else {
+				}
+			}
 			return returned;
 		}
 
