@@ -144,7 +144,9 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
 				try {
-					return getAccessedVirtualModelResource().getResourceData().getVirtualModel();
+					if (getAccessedVirtualModelResource().getResourceData() != null) {
+						return getAccessedVirtualModelResource().getResourceData().getVirtualModel();
+					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
