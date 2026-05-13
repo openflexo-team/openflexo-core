@@ -280,10 +280,20 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 			notifyChange(ENTRIES_KEY, null, entries);
 		}
 
+		protected static final String RENDERER = "Renderer";
+
 		@Override
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
-				renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
+				if (getFlexoConcept() != null && getFlexoConcept().hasMetaData(RENDERER)) {
+					renderer = getFlexoConcept().getSingleMetaData(RENDERER, DataBinding.class);
+					renderer.setOwner(formatter);
+					renderer.setDeclaredType(String.class);
+					renderer.setBindingDefinitionType(BindingDefinitionType.GET);
+				}
+				else {
+					renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
+				}
 				renderer.setBindingName("renderer");
 			}
 			return renderer;
@@ -299,6 +309,16 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 			}
 			this.renderer = renderer;
 			notifiedBindingChanged(this.renderer);
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == renderer) {
+				if (getFlexoConcept() != null) {
+					getFlexoConcept().setSingleMetaData(RENDERER, renderer, DataBinding.class);
+				}
+			}
 		}
 
 		@Override
