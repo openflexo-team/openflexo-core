@@ -318,7 +318,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		behaviourClassMap.put(NavigationScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
 
 		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringCompilationUnit().getUseDeclarations()) {
-			Class<? extends ModelSlot<?,?>> msClass = useMS.getModelSlotClass();
+			Class<? extends ModelSlot<?, ?>> msClass = useMS.getModelSlotClass();
 			if (editor != null && editor.getServiceManager() != null) {
 				for (Class<? extends FlexoBehaviour> behaviour : editor.getServiceManager().getTechnologyAdapterService()
 						.getAvailableFlexoBehaviourTypes(msClass)) {
@@ -456,6 +456,18 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		this.flexoBehaviourName = flexoBehaviourName;
 	}
 
+	private boolean isAnonymous;
+
+	public boolean isAnonymous() {
+		return isAnonymous;
+	}
+
+	public void setAnonymous(boolean isAnonymous) {
+		if (isAnonymous != this.isAnonymous) {
+			this.isAnonymous = isAnonymous;
+		}
+	}
+
 	private void performCreateParameters() {
 		for (BehaviourParameterEntry entry : getParameterEntries()) {
 			performCreateParameter(entry);
@@ -486,13 +498,23 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newFlexoBehaviour = factory.newInstance(getFlexoBehaviourClass());
-			newFlexoBehaviour.setName(getFlexoBehaviourName());
+			if (!isAnonymous()) {
+				newFlexoBehaviour.setName(getFlexoBehaviourName());
+			}
 			newFlexoBehaviour.setVisibility(getVisibility());
 			newFlexoBehaviour.setAbstract(getIsAbstract());
 			newFlexoBehaviour.setDescription(getDescription());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());
 			performCreateParameters();
 			newFlexoBehaviour.setControlGraph(factory.newEmptyControlGraph());
+
+			if (CreationScheme.class.isAssignableFrom(getFlexoBehaviourClass()) && isAnonymous()) {
+				((CreationScheme) newFlexoBehaviour).setAnonymous(true);
+			}
+			if (DeletionScheme.class.isAssignableFrom(getFlexoBehaviourClass()) && isAnonymous()) {
+				((DeletionScheme) newFlexoBehaviour).setAnonymous(true);
+			}
+
 			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
 		}
 		else {
