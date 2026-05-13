@@ -282,7 +282,16 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 					}
 					FlexoResource resource = analyzer.getServiceManager().getResourceManager().getResource(resourceURI);
 					if (resource instanceof CompilationUnitResource) {
-						VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
+						CompilationUnitResource cuResource = (CompilationUnitResource) resource;
+						if (cuResource.isLoaded()) {
+							// If the resource is loaded, it's safer to look inside
+							FlexoConcept concept = cuResource.getCompilationUnit().getVirtualModel().getFlexoConcept(typeAsString);
+							if (concept != null) {
+								return concept.getInstanceType();
+							}
+						}
+						// Otherwise, look in the VirtualModelInfo
+						VirtualModelInfo info = cuResource.getVirtualModelInfo(resource.getResourceCenter());
 						if (info != null) {
 							if (info.getName().equals(typeAsString)) {
 								// Found type as a VirtualModel
@@ -291,6 +300,9 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 												(CompilationUnitResource) resource));
 								unresolvedTypes.add(vmiType);
 								return vmiType;
+							}
+							if (typeAsString.equals("Chose")) {
+								System.err.println("Je suis en train de chercher dans " + resource);
 							}
 							for (String conceptLocalURI : info.getFlexoConcepts()) {
 								String conceptName = conceptLocalURI;
