@@ -56,6 +56,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
@@ -65,6 +67,7 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject.FMLObjectImpl;
@@ -81,6 +84,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid.InvalidRequiredBindingIssue;
+import org.openflexo.foundation.fml.visitor.FlexoConceptVisitor;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate;
@@ -543,9 +547,16 @@ public abstract class CompilationUnitResourceImpl
 		saveMetaData();
 	}*/
 
+	private FlexoResourceCenter getSerializationRC() {
+		if (getResourceCenter() instanceof FlexoProject) {
+			return ((FlexoProject) getResourceCenter()).getDelegateResourceCenter();
+		}
+		return getResourceCenter();
+	}
+
 	private void saveMetaData() {
-		if (getResourceCenter() instanceof FileSystemBasedResourceCenter) {
-			FileSystemBasedResourceCenter rc = (FileSystemBasedResourceCenter) getResourceCenter();
+		if (getSerializationRC() instanceof FileSystemBasedResourceCenter) {
+			FileSystemBasedResourceCenter rc = (FileSystemBasedResourceCenter) getSerializationRC();
 			FileSystemMetaDataManager metaDataManager = rc.getMetaDataManager();
 			File file = ((File) getIODelegate().getSerializationArtefact());
 			metaDataManager.setProperty("uri", getURI(), file, false);
@@ -553,6 +564,8 @@ public abstract class CompilationUnitResourceImpl
 			metaDataManager.setProperty("version", getVersion().toString(), file, false);
 			// metaDataManager.setProperty("modelVersion", getModelVersion().toString(), file, false);
 			metaDataManager.setProperty("requiredModelSlotList", getUsedModelSlotsAsString(), file, false);
+			metaDataManager.setProperty("flexoConceptsList", getFlexoConceptsAsString(), file, false);
+			metaDataManager.setProperty("dependenciesList", getDependenciesAsString(), file, false);
 			if (getVirtualModelClass() != null) {
 				metaDataManager.setProperty("virtualModelClassName", getVirtualModelClass().getName(), file, false);
 			}
@@ -583,6 +596,61 @@ public abstract class CompilationUnitResourceImpl
 			isFirst = false;
 		}
 		return sb.toString();
+	}
+
+	public String getFlexoConceptsAsString() {
+		final StringBuffer sb = new StringBuffer();
+		getCompilationUnit().getVirtualModel().accept(new FlexoConceptVisitor() {
+			@Override
+			public void visitVirtualModel(VirtualModel virtualModel) {
+				// System.out.println("visitVirtualModel: " + virtualModel);
+			}
+
+			@Override
+			public void visitFlexoConcept(FlexoConcept flexoConcept) {
+				if (sb.length() == 0) {
+					sb.append(flexoConcept.getName());
+				}
+				else {
+					sb.append("," + flexoConcept.getName());
+				}
+			}
+		});
+		return sb.toString();
+	}
+
+	public String getDependenciesAsString() {
+
+		boolean isFirst = true;
+		StringBuffer sb = new StringBuffer();
+		for (ElementImportDeclaration importDeclaration : getCompilationUnit().getElementImports()) {
+			try {
+				String importedResourceURI = importDeclaration.getResourceReference()
+						.getBindingValue(getCompilationUnit().getReflectedBindingEvaluationContext());
+				// System.out.println("Found import " + importedResourceURI);
+				if (StringUtils.isNotEmpty(importedResourceURI)) {
+					sb.append((isFirst ? "" : ",") + importedResourceURI);
+					isFirst = false;
+				}
+				else {
+					logger.warning("Cannot not find resource identified by " + importDeclaration.getResourceReference());
+				}
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassCastException e) {
+				logger.warning("Unexpected type for resourceReference=" + importDeclaration.getResourceReference());
+				e.printStackTrace();
+			}
+		}
+		return sb.toString();
+
 	}
 
 	/**
