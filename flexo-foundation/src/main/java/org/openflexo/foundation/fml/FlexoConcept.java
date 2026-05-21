@@ -577,7 +577,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public <MS extends ModelSlot<?,?>> List<MS> getModelSlots(Class<MS> msType);
 
-	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY, ignoreForEquality = true)
+	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY/*, ignoreForEquality = true*/)
 	@XMLElement(xmlTag = "Inspector")
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
@@ -1388,37 +1388,37 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		public List<ModelSlot<?,?>> getModelSlots() {
+		public List<ModelSlot<?, ?>> getModelSlots() {
 			return (List) getAccessibleProperties(ModelSlot.class);
 		}
 
 		@Override
-		public void addToModelSlots(ModelSlot<?,?> aModelSlot) {
+		public void addToModelSlots(ModelSlot<?, ?> aModelSlot) {
 			addToFlexoProperties(aModelSlot);
 		}
 
 		@Override
-		public void removeFromModelSlots(ModelSlot<?,?> aModelSlot) {
+		public void removeFromModelSlots(ModelSlot<?, ?> aModelSlot) {
 			removeFromFlexoProperties(aModelSlot);
 		}
 
 		@Override
-		public ModelSlot<?,?> getModelSlot(String modelSlotName) {
+		public ModelSlot<?, ?> getModelSlot(String modelSlotName) {
 			FlexoProperty<?> returned = getAccessibleProperty(modelSlotName);
 			if (returned instanceof ModelSlot) {
-				return (ModelSlot<?,?>) returned;
+				return (ModelSlot<?, ?>) returned;
 			}
 			return null;
 		}
 
 		@Override
-		public <MS extends ModelSlot<?,?>> List<MS> getModelSlots(Class<MS> msType) {
+		public <MS extends ModelSlot<?, ?>> List<MS> getModelSlots(Class<MS> msType) {
 			return getAccessibleProperties(msType);
 		}
 
-		public List<ModelSlot<?,?>> getRequiredModelSlots() {
-			List<ModelSlot<?,?>> requiredModelSlots = new ArrayList<>();
-			for (ModelSlot<?,?> modelSlot : getModelSlots()) {
+		public List<ModelSlot<?, ?>> getRequiredModelSlots() {
+			List<ModelSlot<?, ?>> requiredModelSlots = new ArrayList<>();
+			for (ModelSlot<?, ?> modelSlot : getModelSlots()) {
 				if (modelSlot.getIsRequired()) {
 					requiredModelSlots.add(modelSlot);
 				}

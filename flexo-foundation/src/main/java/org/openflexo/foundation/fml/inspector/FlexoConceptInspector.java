@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.inspector;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -51,6 +53,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FlexoConceptFormatterBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptInspectorBindingModel;
+import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
@@ -70,7 +73,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Represents inspector associated with an Edition Pattern
+ * Represents inspector associated with a FlexoConcept
  * 
  * @author sylvain
  * 
@@ -78,6 +81,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoConceptInspector.FlexoConceptInspectorImpl.class)
 @XMLElement(xmlTag = "Inspector")
+@Deprecated // Will be replaced by dedicated .inspector (FIB component)
 public interface FlexoConceptInspector extends FlexoConceptObject {
 
 	public static final String FORMATTER_INSTANCE_PROPERTY = "instance";
@@ -282,19 +286,38 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 
 		protected static final String RENDERER = "Renderer";
 
+		private DataBinding<String> retrieveRendererFromMetadata() {
+			DataBinding<String> returned = getFlexoConcept().getSingleMetaData(RENDERER, DataBinding.class);
+			returned.setOwner(formatter);
+			returned.setDeclaredType(String.class);
+			returned.setBindingDefinitionType(BindingDefinitionType.GET);
+			returned.setBindingName("renderer");
+			return returned;
+		}
+
 		@Override
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
 				if (getFlexoConcept() != null && getFlexoConcept().hasMetaData(RENDERER)) {
-					renderer = getFlexoConcept().getSingleMetaData(RENDERER, DataBinding.class);
-					renderer.setOwner(formatter);
-					renderer.setDeclaredType(String.class);
-					renderer.setBindingDefinitionType(BindingDefinitionType.GET);
+
+					getFlexoConcept().getMetaData(RENDERER).getPropertyChangeSupport()
+							.addPropertyChangeListener(new PropertyChangeListener() {
+								@Override
+								public void propertyChange(PropertyChangeEvent evt) {
+									if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
+										renderer = retrieveRendererFromMetadata();
+										// System.err.println("New renderer: " + renderer + " valid: " + renderer.isValid()
+										// + " reason: " + renderer.invalidBindingReason());
+									}
+								}
+							});
+
+					renderer = retrieveRendererFromMetadata();
 				}
 				else {
 					renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
+					renderer.setBindingName("renderer");
 				}
-				renderer.setBindingName("renderer");
 			}
 			return renderer;
 		}

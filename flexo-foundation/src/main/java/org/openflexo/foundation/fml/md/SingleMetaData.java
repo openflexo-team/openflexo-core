@@ -44,8 +44,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.model.StringConverterLibrary.Converter;
@@ -62,16 +64,23 @@ import org.openflexo.pamela.model.StringConverterLibrary.Converter;
 @XMLElement
 public interface SingleMetaData<T> extends FMLMetaData {
 
+	public static final String VALUE_EXPRESSION_KEY = "valueExpression";
+	public static final String SERIALIZATION_REPRESENTATION_KEY = "serializationRepresentation";
+
+	@Getter(VALUE_EXPRESSION_KEY)
 	public DataBinding<T> getValueExpression();
 
+	@Setter(VALUE_EXPRESSION_KEY)
 	public void setValueExpression(DataBinding<T> aValue);
 
 	public T getValue(Class<T> type);
 
 	public void setValue(T value, Class<T> type);
 
+	@Getter(SERIALIZATION_REPRESENTATION_KEY)
 	public String getSerializationRepresentation();
 
+	@Setter(SERIALIZATION_REPRESENTATION_KEY)
 	public void setSerializationRepresentation(String s);
 
 	public static abstract class SingleMetaDataImpl<T> extends FMLMetaDataImpl implements SingleMetaData<T> {
@@ -84,83 +93,33 @@ public interface SingleMetaData<T> extends FMLMetaData {
 			return (Converter<T>) getFMLModelFactory().getStringEncoder().converterForClass(objectType);
 		}
 
-		/*private <T> T getValueAs(Class<T> type) {
-			Converter<T> converter = converterForClass(type);
-			try {
-				return converter.convertFromString(getStringValueRepresentation(), getFMLModelFactory());
-			} catch (InvalidDataException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-		
-		private <T> void setValueAs(T aValue, Class<T> type) {
-			Converter<T> converter = converterForClass(type);
-			setStringValueRepresentation(converter.convertToString(aValue));
-		}
-		
-		@Override
-		public Class<?> getType() {
-			return type;
-		}
-		
-		@Override
-		public String getFMLValueRepresentation() {
-			if (type != null && type.equals(String.class)) {
-				return "\"" + getStringValueRepresentation() + "\"";
-			}
-			return getStringValueRepresentation();
-		}
-		
-		@Override
-		public void setFMLValueRepresentation(String fmlValueRepresentation) {
-			if (fmlValueRepresentation != null && fmlValueRepresentation.startsWith("\"") && fmlValueRepresentation.endsWith("\"")) {
-				setStringValueRepresentation(fmlValueRepresentation.substring(1, fmlValueRepresentation.length() - 1));
-				type = String.class;
-			}
-			else {
-				setStringValueRepresentation(fmlValueRepresentation);
-			}
-		
-		}*/
-
-		/*@Override
-		public DataBinding<T> getValue() {
-			return value;
-		}
-		
-		@Override
-		public void setValue(DataBinding<T> aValue) {
-			if ((aValue == null && value != null) || (aValue != null && !aValue.equals(value))) {
-				DataBinding<T> oldValue = value;
-				this.value = aValue;
-				getPropertyChangeSupport().firePropertyChange("value", oldValue, aValue);
-			}
-		}*/
-
 		@Override
 		public DataBinding<T> getValueExpression() {
-			/*if (valueExpression == null) {
-				valueExpression = new DataBinding<T>(this, Object.class, DataBinding.BindingDefinitionType.GET);
-				valueExpression.setBindingName("valueExpression");
-				valueExpression.setMandatory(true);
-			
-			}*/
 			return valueExpression;
 		}
 
 		@Override
-		public void setValueExpression(DataBinding<T> value) {
-			if (value != null) {
-				this.valueExpression = new DataBinding<T>(value.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
-				this.valueExpression.setBindingName("valueExpression");
+		public void setValueExpression(DataBinding<T> valueExpression) {
+
+			if (valueExpression != null) {
+				this.valueExpression = new DataBinding<T>(valueExpression.toString(), this, Object.class,
+						DataBinding.BindingDefinitionType.GET);
+				this.valueExpression.setBindingName(VALUE_EXPRESSION_KEY);
 				this.valueExpression.setMandatory(true);
 			}
-			notifiedBindingChanged(value);
+			notifiedBindingChanged(valueExpression);
 		}
 
 		@Override
 		public T getValue(Class<T> type) {
+			if (DataBinding.class.equals(type) && value == null && getValueExpression() != null) {
+				// Special case : this is the DataBinding itself who is the value
+				// Couldn't know it before (during serialization since this is interpretation of the metadata)
+				value = (T) valueExpression;
+				valueExpression = null;
+				return value;
+			}
+
 			if (getValueExpression() != null && getValueExpression().isSet() && getValueExpression().isValid()) {
 				try {
 					return getValueExpression().getBindingValue(getReflectedBindingEvaluationContext());
@@ -177,8 +136,8 @@ public interface SingleMetaData<T> extends FMLMetaData {
 
 			if (value == null && StringUtils.isNotEmpty(serializationRepresentation)) {
 
-				if (serializationRepresentation != null && serializationRepresentation.startsWith("\"")
-						&& serializationRepresentation.endsWith("\"")) {
+				if (String.class.isAssignableFrom(type) && serializationRepresentation != null
+						&& serializationRepresentation.startsWith("\"") && serializationRepresentation.endsWith("\"")) {
 					serializationRepresentation = serializationRepresentation.substring(1, serializationRepresentation.length() - 1);
 				}
 
@@ -188,6 +147,8 @@ public interface SingleMetaData<T> extends FMLMetaData {
 				} catch (InvalidDataException e) {
 					e.printStackTrace();
 				}
+
+				// System.err.println("Decoding [" + serializationRepresentation + "] as " + type + " returning " + value);
 			}
 
 			return value;
@@ -195,18 +156,6 @@ public interface SingleMetaData<T> extends FMLMetaData {
 
 		@Override
 		public void setValue(T value, Class<T> type) {
-			/*if (value == null) {
-				setValueExpression(new DataBinding<T>("null"));
-			}
-			else if (value instanceof Character) {
-				setValueExpression(new DataBinding<T>("'" + value + "'"));
-			}
-			else if (value instanceof String) {
-				setValueExpression(new DataBinding<T>("\"" + value + "\""));
-			}
-			else {
-				setValueExpression(new DataBinding<T>(value.toString()));
-			}*/
 			this.value = value;
 		}
 
@@ -217,7 +166,13 @@ public interface SingleMetaData<T> extends FMLMetaData {
 			}
 			if (value != null) {
 				Converter<T> converter = converterForClass(value.getClass());
-				return "\"" + converter.convertToString(value) + "\"";
+				String convertedValue = converter.convertToString(value);
+				if (value instanceof String) {
+					return "\"" + convertedValue + "\"";
+				}
+				else {
+					return convertedValue;
+				}
 			}
 			if (serializationRepresentation != null) {
 				return serializationRepresentation;
@@ -226,23 +181,18 @@ public interface SingleMetaData<T> extends FMLMetaData {
 		}
 
 		@Override
-		public void setSerializationRepresentation(String s) {
-			this.serializationRepresentation = s;
+		public void setSerializationRepresentation(String serializationRepresentation) {
+			// System.out.println("---> On sette avec " + serializationRepresentation);
+			if ((serializationRepresentation == null && this.serializationRepresentation != null)
+					|| (serializationRepresentation != null && !serializationRepresentation.equals(this.serializationRepresentation))) {
+				// System.out.println("Et donc la");
+				String oldSerializationRepresentation = this.serializationRepresentation;
+				this.serializationRepresentation = serializationRepresentation;
+				value = null;
+				getPropertyChangeSupport().firePropertyChange(SERIALIZATION_REPRESENTATION_KEY, oldSerializationRepresentation,
+						this.serializationRepresentation);
+			}
 		}
-
-		/*@Override
-		public String getSerializationRepresentation() {
-			if (getValue() == null) {
-				return "null";
-			}
-			if (getValue() instanceof String) {
-				return "\"" + getValue() + "\"";
-			}
-			if (getValue() instanceof Character) {
-				return "'" + getValue() + "'";
-			}
-			return getValue().toString();
-		}*/
 
 		@Override
 		public String toString() {
