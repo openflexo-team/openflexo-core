@@ -134,3 +134,4 @@ virtual_model_is_required=Virtual model is required
 virtual_model_is_required_description=Virtual model is required description
 virtual_model_should_not_have_reflexive_model_slot_no_more=Virtual model should not have reflexive model slot no more
 virtual_model_should_not_have_reflexive_model_slot_no_more_description=Virtual model should not have reflexive model slot no more description
+virtual_model_uri_is_not_valid=Virtual model uri is not valid
