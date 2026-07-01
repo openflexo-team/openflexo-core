@@ -161,6 +161,13 @@ public interface IFlexoOntologyConceptContainer<TA extends TechnologyAdapter<TA>
 	 * @return
 	 */
 	public List<? extends IFlexoOntologyDataProperty<TA>> getDataProperties();
+	/**
+	 * Return all annotation properties explicitely defined in this container (strict mode)
+	 *
+	 * @return
+	 */
+	public List<? extends IFlexoOntologyAnnotation<TA>> getAnnotationProperties();
+
 
 	/**
 	 * Return all object properties explicitely defined in this container (strict mode)

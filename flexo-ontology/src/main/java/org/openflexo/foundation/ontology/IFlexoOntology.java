@@ -108,6 +108,15 @@ public interface IFlexoOntology<TA extends TechnologyAdapter<TA>> extends IFlexo
 	 */
 	public List<? extends IFlexoOntologyDataProperty<TA>> getAccessibleDataProperties();
 
+
+	/**
+	 * Return all annotation properties accessible in the context of this ontology.<br>
+	 * This means that properties are also retrieved from imported ontologies (non-strict mode)
+	 *
+	 * @return
+	 */
+	public List<? extends IFlexoOntologyAnnotation<TA>> getAccessibleAnnotationProperties();
+
 	/**
 	 * Retrieve an ontology object from its URI, in the strict context of this ontology. That means that only objects declared in this
 	 * ontology are subject to look up. If searched object is declared in an imported ontology for example, this method will not find it and

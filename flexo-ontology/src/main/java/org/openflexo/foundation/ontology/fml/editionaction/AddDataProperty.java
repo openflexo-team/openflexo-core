@@ -88,6 +88,10 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?, ?>
 
 	@Getter(value = DATA_TYPE_KEY)
 	@XMLAttribute
+	@FMLAttribute(
+			value = DATA_TYPE_KEY,
+			required = false,
+			description = "<html>Built-in datatype of the property</html>")
 	public BuiltInDataType getDataType();
 
 	@Setter(DATA_TYPE_KEY)
@@ -100,6 +104,7 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?, ?>
 
 		private DataBinding<String> propertyName;
 		private DataBinding<IFlexoOntologyClass<?>> dynamicDomain;
+		private BuiltInDataType dataType;
 
 		public abstract Class<T> getOntologyDataPropertyClass();
 
@@ -146,6 +151,23 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?, ?>
 				dynamicDomain.setBindingName("dynamicDomain");
 			}
 			this.dynamicDomain = dynamicDomain;
+		}
+		@Override
+		public BuiltInDataType getDataType() {
+			/*
+			if (dataType == null) {
+				dataType = BuiltInDataType.String;
+			}
+			 */
+
+			return dataType;
+
+
+		}
+
+		@Override
+		public void setDataType(BuiltInDataType dataType) {
+			this.dataType = dataType;
 		}
 
 		@Override

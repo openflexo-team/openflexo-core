@@ -44,13 +44,7 @@ import java.util.Set;
 
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
-import org.openflexo.foundation.ontology.IFlexoOntology;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
-import org.openflexo.foundation.ontology.IFlexoOntologyObject;
-import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
+import org.openflexo.foundation.ontology.*;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 
@@ -236,6 +230,13 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyDataProperty) {
 			return (IFlexoOntologyDataProperty<?>) returned;
+		}
+		return null;
+	}
+	public static IFlexoOntologyAnnotation<?> getOntologyAnnotation(String uri, VirtualModel virtualModel) {
+		Object returned = getOntologyObject(uri, virtualModel);
+		if (returned instanceof IFlexoOntologyAnnotation) {
+			return (IFlexoOntologyAnnotation<?>) returned;
 		}
 		return null;
 	}

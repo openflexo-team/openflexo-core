@@ -40,6 +40,8 @@
 
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 import java.util.Map;
 
 /**
@@ -47,7 +49,7 @@ import java.util.Map;
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyAnnotation {
+public interface IFlexoOntologyAnnotation <TA extends TechnologyAdapter<TA>> extends IFlexoOntologyStructuralProperty<TA>{
 	/**
 	 * Name of annotation.
 	 * 

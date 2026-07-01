@@ -148,17 +148,35 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 		if (ownerVirtualModelInstance == null) {
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance in null ownerVirtualModelInstance");
 		}
-		if (!ownerVirtualModelInstance.getVirtualModel().isAssignableFrom(concept.getDeclaringCompilationUnit().getVirtualModel())) {
+		//if (!ownerVirtualModelInstance.getVirtualModel().isAssignableFrom(concept.getDeclaringCompilationUnit().getVirtualModel())) {
+		if (!concept.getDeclaringCompilationUnit().getVirtualModel().isAssignableFrom(ownerVirtualModelInstance.getVirtualModel())) {
+			System.out.println("ownerVirtualModelInstance.getVirtualModel() ="+ownerVirtualModelInstance.getVirtualModel());
+			System.out.println("concept.getDeclaringCompilationUnit().getVirtualModel() ="+concept.getDeclaringCompilationUnit().getVirtualModel());
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept declaring compilation unit");
 		}
 		if (container == null && !concept.isRoot()) {
 			// check that the FlexoConcept is root
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : not root FlexoConcept");
 		}
-		if (container != null && container != ownerVirtualModelInstance
-				&& !container.getFlexoConcept().isAssignableFrom(concept.getContainerFlexoConcept())) {
-			// check that the container is valid
-			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
+
+		if (container != null && container != ownerVirtualModelInstance) {
+			// We have supplied a non null container, we must check that the target Concept is compatible
+
+			if (concept.getContainerFlexoConcept() == null) {
+				System.out.println("container"+ container);
+				throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : null FlexoConcept container");
+			} else {
+				if (!concept.getContainerFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
+					// check that the container is valid
+					throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
+				}
+			}
+		}
+		else {
+			// We have not supplied a container
+			if (concept.getContainerFlexoConcept() != null) {
+				throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : container "+concept.getContainerFlexoConcept()+" is required");
+			}
 		}
 
 		// Then create the new FlexoConceptInstance
