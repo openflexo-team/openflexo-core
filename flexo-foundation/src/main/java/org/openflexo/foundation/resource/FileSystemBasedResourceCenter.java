@@ -843,6 +843,7 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 					}
 				}
 			}
+
 			return defaultBaseURI + relativePath + lastPath;
 		}
 
@@ -883,14 +884,21 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 			return returned;
 		}
 
+		private String defaultBaseURI = null;
+
 		@Override
 		public String getDefaultBaseURI() {
-			return fsMetaDataManager.getProperty(DEFAULT_BASE_URI, getDirectory().toURI().toString().replace(File.separator, "/"),
-					getDirectory());
+			if (defaultBaseURI == null) {
+				defaultBaseURI = fsMetaDataManager
+						.getProperty(DEFAULT_BASE_URI, getDirectory().toURI().toString().replace(File.separator, "/"), getDirectory())
+						.trim();
+			}
+			return defaultBaseURI;
 		}
 
 		@Override
 		public void setDefaultBaseURI(String defaultBaseURI) {
+			this.defaultBaseURI = defaultBaseURI;
 			fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory(), true);
 		}
 
