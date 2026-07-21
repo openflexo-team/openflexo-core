@@ -133,8 +133,9 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 			System.out.println("valid=" + assignation.isValid());
 			System.out.println("isNewVariableDeclaration=" + assignation.isNewVariableDeclaration());
 			 */
-			return assignation != null && (assignation.isValid() || assignation.isNewVariableDeclaration()) && expression != null
-					&& expression.isValid();
+			// We provide dynamic typing
+			return assignation != null /*&& (assignation.isValid() || assignation.isNewVariableDeclaration())*/ && expression != null
+			/*&& expression.isValid()*/;
 		}
 
 		@Override
@@ -162,6 +163,20 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 			String cmdOutput;
 			Object assignedValue = null;
 
+			// We provide dynamic typing
+			// The expression may be valid now, so we revalidate
+			// TODO: this should have been automatically handled by Connie with the observable scheme and should be no more necessary
+			if (!assignation.isValid()) {
+				assignation.revalidate();
+			}
+
+			// We provide dynamic typing
+			// The expression may be valid now, so we revalidate
+			// TODO: this should have been automatically handled by Connie with the observable scheme and should be no more necessary
+			if (!expression.isValid()) {
+				expression.revalidate();
+			}
+
 			if (expression.isValid()) {
 				try {
 					assignedValue = expression.getBindingValue(getCommandInterpreter());
@@ -175,6 +190,12 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 			}
 			else {
 				cmdOutput = "Cannot execute " + expression + " : " + expression.invalidBindingReason();
+
+				System.err.println("Bon, c'est valide : " + expression + " reason: " + expression.invalidBindingReason());
+				System.err.println("BM=" + expression.getOwner().getBindingModel());
+				expression.revalidate();
+				System.err.println("maintenant, c'est valide : " + expression.isValid());
+				System.err.println("reason: " + expression.invalidBindingReason());
 
 				output.add(cmdOutput);
 				throw new FMLCommandExecutionException(cmdOutput);
