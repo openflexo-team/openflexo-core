@@ -42,9 +42,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
  * @author sylvain
@@ -62,6 +64,23 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 
 	public FlexoPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(property, analyzer);
+	}
+
+	/**
+	 * Emit the property-level FML meta-data (annotations such as <code>@Property(...)</code>) before the property declaration itself.
+	 *
+	 * <p>
+	 * Concrete property nodes all call <code>super.preparePrettyPrint(...)</code> as the very first statement of their own
+	 * {@code preparePrettyPrint}, so appending the meta-data here renders them just before the property, mirroring what
+	 * {@code FlexoConceptNode} / {@code VirtualModelNode} do for concept- and model-level annotations. Without this, property annotations
+	 * were parsed and kept in the model but silently dropped on (normalized) pretty-print.
+	 * </p>
+	 */
+	@Override
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class,
+				"MetaData"));
 	}
 
 	@Override
