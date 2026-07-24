@@ -308,6 +308,9 @@ public class FMLUtils {
 	 * @return
 	 */
 	public static Type inferType(Object object) {
+		if (object == null) {
+			return null;
+		}
 		if (object instanceof FlexoConceptInstance) {
 			return ((FlexoConceptInstance) object).getFlexoConcept().getInstanceType();
 		}
