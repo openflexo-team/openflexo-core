@@ -136,8 +136,11 @@ public interface SingleMetaData<T> extends FMLMetaData {
 
 			if (value == null && StringUtils.isNotEmpty(serializationRepresentation)) {
 
-				if (String.class.isAssignableFrom(type) && serializationRepresentation != null
-						&& serializationRepresentation.startsWith("\"") && serializationRepresentation.endsWith("\"")) {
+				// A quote-delimited representation is an FML string literal (String, FlexoVersion, ...): strip the quotes
+				// before decoding, whatever the target type. DataBinding expressions (unquoted) are handled by the early
+				// return above and never reach this point.
+				if (serializationRepresentation != null && serializationRepresentation.startsWith("\"")
+						&& serializationRepresentation.endsWith("\"")) {
 					serializationRepresentation = serializationRepresentation.substring(1, serializationRepresentation.length() - 1);
 				}
 
@@ -167,11 +170,13 @@ public interface SingleMetaData<T> extends FMLMetaData {
 			if (value != null) {
 				Converter<T> converter = converterForClass(value.getClass());
 				String convertedValue = converter.convertToString(value);
-				if (value instanceof String) {
-					return "\"" + convertedValue + "\"";
+				// DataBinding expressions (e.g. @Renderer) are pretty-printed verbatim; every other scalar meta-data value
+				// (String, FlexoVersion, ...) is an FML string literal and must be re-quoted to round-trip.
+				if (value instanceof DataBinding) {
+					return convertedValue;
 				}
 				else {
-					return convertedValue;
+					return "\"" + convertedValue + "\"";
 				}
 			}
 			if (serializationRepresentation != null) {
