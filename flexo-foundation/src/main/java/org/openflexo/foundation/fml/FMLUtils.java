@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 
 /**
  * Utility class provinding usefull methods in FML context
@@ -313,6 +314,14 @@ public class FMLUtils {
 		}
 		if (object instanceof FlexoConceptInstance) {
 			return ((FlexoConceptInstance) object).getFlexoConcept().getInstanceType();
+		}
+		else if (object instanceof TechnologyObject) {
+			// A technology object may expose a dedicated FML type (eg a typed XML individual)
+			Type instanceType = ((TechnologyObject<?>) object).getInstanceType();
+			if (instanceType != null) {
+				return instanceType;
+			}
+			return object.getClass();
 		}
 		else if (object instanceof Collection) {
 			return new ParameterizedTypeImpl(object.getClass(), inferCommonType((List) object));
