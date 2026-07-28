@@ -75,6 +75,9 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	private static final Logger logger = Logger.getLogger(EndMatchActionNode.class.getPackage().getName());
 
 	private FlexoConceptInstanceType conceptType;
+	// TODO: behaviourName and behaviourArgs are never assigned anymore: the code parsing the
+	// 'end_match_action_clause' (see commented handleArguments below and in buildModelObjectFromAST)
+	// was disabled during a grammar refactoring and never restored. See finalizeDeserialization().
 	private String behaviourName;
 	private List<DataBinding<?>> behaviourArgs;
 
@@ -120,8 +123,16 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			FlexoConcept flexoConceptType = conceptType.getFlexoConcept();
 			if (flexoConceptType != null) {
 				getModelObject().setFlexoConceptType(flexoConceptType);
+				// TODO: this node is out of sync with the grammar. The 'end_match_action_clause'
+				// (kw_unmatched colon {delete(...) | method_invocation}) is no longer parsed in
+				// buildModelObjectFromAST (see the commented-out handleArguments code), so
+				// behaviourName and behaviourArgs are never populated. As a result the behaviour
+				// call and its arguments on the FinalizeMatching are silently lost.
+				// The action clause parsing must be restored (by analogy with AddFlexoConceptInstanceNode /
+				// the old handleArguments) so that 'unmatched: someBehaviour(args)' / 'unmatched: delete(...)'
+				// works again. Until then the block below is guarded to avoid a NPE on the null behaviourArgs.
 				getModelObject().setFlexoBehaviour(flexoConceptType.getFlexoBehaviour(behaviourName));
-				if (getModelObject().getFlexoBehaviour() != null) {
+				if (getModelObject().getFlexoBehaviour() != null && behaviourArgs != null) {
 					int index = 0;
 					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getFlexoBehaviour().getParameters()) {
 						ExecuteBehaviourParameter arg = getModelObject().getParameter(flexoBehaviourParameter);
