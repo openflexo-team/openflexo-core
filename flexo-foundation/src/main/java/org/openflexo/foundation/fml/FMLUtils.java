@@ -317,9 +317,9 @@ public class FMLUtils {
 		}
 		else if (object instanceof TechnologyObject) {
 			// A technology object may expose a dedicated FML type (eg a typed XML individual)
-			Type instanceType = ((TechnologyObject<?>) object).getInstanceType();
-			if (instanceType != null) {
-				return instanceType;
+			Type fmlType = ((TechnologyObject<?>) object).getFMLType();
+			if (fmlType != null) {
+				return fmlType;
 			}
 			return object.getClass();
 		}
