@@ -369,9 +369,19 @@ public class BindingPathFactory {
 			appendBindingPath(((AEscapedCompositeIdent) node).getIdentifier());
 		}
 		if (node instanceof AConstantCompositeIdent) {
+			for (PIdentifierPrefix pIdentifierPrefix : ((AConstantCompositeIdent) node).getPrefixes()) {
+				appendBindingPath(pIdentifierPrefix);
+			}
 			appendBindingPath(((AConstantCompositeIdent) node).getIdentifier());
 		}
 		if (node instanceof AKwCompositeIdent) {
+			// A keyword used as a path element (e.g. 'get', 'set', ...) reaches this {kw} alternative of
+			// composite_ident; the prefixes (the receiver, e.g. 'l' in 'l.get(1)') must be walked here too,
+			// exactly as for the {normal} and {escaped} alternatives, otherwise the receiver is dropped and
+			// the resulting path element has no parent.
+			for (PIdentifierPrefix pIdentifierPrefix : ((AKwCompositeIdent) node).getPrefixes()) {
+				appendBindingPath(pIdentifierPrefix);
+			}
 			appendBindingPath(((AKwCompositeIdent) node).getIdentifier());
 		}
 	}
@@ -456,6 +466,8 @@ public class BindingPathFactory {
 	private void appendMethodInvocation(APrimaryMethodInvocation node, AbstractBindingPathElementNode<?, ?> lastPathElementNode,
 			boolean escapedSerialization) {
 		final IBindingPathElement parent = retrieveActualParent();
+		System.out.println(">>> DBG appendMethodInvocation node=" + node + " parent=" + parent + " bindingVariable="
+				+ bindingVariable + " bindingPathElements=" + bindingPathElements + " lastPathElementNode=" + lastPathElementNode);
 		MethodCallBindingPathElementNode pathElementNode = expressionFactory.retrieveFMLNode(node,
 				n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory, parent,
 						expressionFactory.getBindable(), escapedSerialization));

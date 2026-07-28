@@ -1,0 +1,22 @@
+// Non-regression test for List.get(int) (and other keyword-named methods)
+// on a local-variable receiver. 'get'/'set' are FML keywords, so 'l.get(1)'
+// used to drop its receiver and return null.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/GetBug.fml"];
+context;
+log virtualModel.fMLPrettyPrint;
+service ResourceCenterService add_temp_rc;
+m = new GetBug() with (name="g");
+context;
+assert m != null;
+
+// Baseline (already passing before the fix)
+assert m.localSize() == 3;
+assert m.localContains() == true;
+assert m.chainedLiteral() == "y";
+
+// Regression cases (returned null before the fix)
+assert m.localLiteral() == "y";
+assert m.localExpr() == "y";
+assert m.localIndexVar() == "y";
+assert m.localParam(1) == "y";
+assert m.localSet() == "y";

@@ -1,0 +1,61 @@
+import java.util.List;
+import java.util.ArrayList;
+
+@URI("http://openflexo.org/test/TestResourceCenter/GetBug.fml")
+public model GetBug {
+
+	create() {
+	}
+
+	List<String> mk() {
+		List<String> l = new ArrayList<String>();
+		l.add("x");
+		l.add("y");
+		l.add("z");
+		return l;
+	}
+
+	// Baseline: these already worked before the fix
+	int localSize() {
+		List<String> l = this.mk();
+		return l.size;
+	}
+
+	boolean localContains() {
+		List<String> l = this.mk();
+		return l.contains("y");
+	}
+
+	String chainedLiteral() {
+		return this.mk().get(1);
+	}
+
+	// Regression cases: 'get' is a FML keyword, so 'l.get(...)' on a bare local
+	// variable used to lose its receiver (parent) and return null.
+	String localLiteral() {
+		List<String> l = this.mk();
+		return l.get(1);
+	}
+
+	String localExpr() {
+		List<String> l = this.mk();
+		return l.get(0 + 1);
+	}
+
+	String localIndexVar() {
+		List<String> l = this.mk();
+		int i = 1;
+		return l.get(i);
+	}
+
+	String localParam(int idx) {
+		List<String> l = this.mk();
+		return l.get(parameters.idx);
+	}
+
+	// 'set' is also a FML keyword: same code path, returns the previous element
+	String localSet() {
+		List<String> l = this.mk();
+		return l.set(1, "Y");
+	}
+}
