@@ -52,16 +52,16 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @Imports({ @Import(ClassRole.class), @Import(IndividualRole.class), @Import(PropertyRole.class), @Import(OntologicObjectRole.class) })
 public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
 
-	/*@Override
-	public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot();*/
+	@Override
+	public TypeAwareModelSlot<?, ?, ?> getModelSlot();
 
 	public static abstract class OntologicObjectRoleImpl<T extends IFlexoOntologyObject> extends FlexoRoleImpl<T>
 			implements OntologicObjectRole<T> {
 
-		/*@Override
-		public FlexoOntologyModelSlot<?, ?, ?, ?> getModelSlot() {
-			return (FlexoOntologyModelSlot) super.getModelSlot();
-		}*/
+		@Override
+		public TypeAwareModelSlot<?, ?, ?> getModelSlot() {
+			return (TypeAwareModelSlot<?, ?, ?>) super.getModelSlot();
+		}
 
 		@Override
 		public void setModelSlot(ModelSlot<?, ?> modelSlot) {
