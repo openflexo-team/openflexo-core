@@ -324,7 +324,8 @@ public class FMLUtils {
 			return object.getClass();
 		}
 		else if (object instanceof Collection) {
-			return new ParameterizedTypeImpl(object.getClass(), inferCommonType((List) object));
+			// inferCommonType accepts any Collection: do not cast to List here, the actual value may be a Set (eg a HashSet)
+			return new ParameterizedTypeImpl(object.getClass(), inferCommonType((Collection<?>) object));
 		}
 		else {
 			return object.getClass();
