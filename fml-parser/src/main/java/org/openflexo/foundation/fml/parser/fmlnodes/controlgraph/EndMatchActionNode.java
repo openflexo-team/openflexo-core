@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -50,8 +51,14 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
+import org.openflexo.foundation.fml.parser.node.AComplexEndMatchActionClause;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AInClause;
+import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
+import org.openflexo.foundation.fml.parser.node.ASimpleEndMatchActionClause;
+import org.openflexo.foundation.fml.parser.node.PArgumentList;
+import org.openflexo.foundation.fml.parser.node.PEndMatchActionClause;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PInClause;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
@@ -75,9 +82,11 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	private static final Logger logger = Logger.getLogger(EndMatchActionNode.class.getPackage().getName());
 
 	private FlexoConceptInstanceType conceptType;
-	// TODO: behaviourName and behaviourArgs are never assigned anymore: the code parsing the
-	// 'end_match_action_clause' (see commented handleArguments below and in buildModelObjectFromAST)
-	// was disabled during a grammar refactoring and never restored. See finalizeDeserialization().
+	// The 'unmatched:' clause of an end-match action, parsed in buildModelObjectFromAST and resolved
+	// to a concrete FlexoBehaviour in finalizeDeserialization:
+	// - 'unmatched: delete(args?)' -> deleteClause == true, resolved to the concept default DeletionScheme
+	// - 'unmatched: someBehaviour(args)' -> behaviourName set, resolved to the matching behaviour
+	private boolean deleteClause;
 	private String behaviourName;
 	private List<DataBinding<?>> behaviourArgs;
 
@@ -94,7 +103,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		super(action, analyzer);
 	}
 
-	/*private void handleArguments(PArgumentList argumentList, FinalizeMatching modelObject) {
+	private void handleArguments(PArgumentList argumentList, FinalizeMatching modelObject) {
 		if (argumentList instanceof AManyArgumentList) {
 			AManyArgumentList l = (AManyArgumentList) argumentList;
 			handleArguments(l.getArgumentList(), modelObject);
@@ -104,17 +113,17 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			handleArgument(((AOneArgumentList) argumentList).getExpression(), modelObject);
 		}
 	}
-	
+
 	private void handleArgument(PExpression expression, FinalizeMatching modelObject) {
 		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
 				getSemanticsAnalyzer(), this);
-	
+
 		if (behaviourArgs == null) {
 			behaviourArgs = new ArrayList<>();
 		}
-	
+
 		behaviourArgs.add(argValue);
-	}*/
+	}
 
 	@Override
 	public void finalizeDeserialization() {
@@ -123,15 +132,16 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			FlexoConcept flexoConceptType = conceptType.getFlexoConcept();
 			if (flexoConceptType != null) {
 				getModelObject().setFlexoConceptType(flexoConceptType);
-				// TODO: this node is out of sync with the grammar. The 'end_match_action_clause'
-				// (kw_unmatched colon {delete(...) | method_invocation}) is no longer parsed in
-				// buildModelObjectFromAST (see the commented-out handleArguments code), so
-				// behaviourName and behaviourArgs are never populated. As a result the behaviour
-				// call and its arguments on the FinalizeMatching are silently lost.
-				// The action clause parsing must be restored (by analogy with AddFlexoConceptInstanceNode /
-				// the old handleArguments) so that 'unmatched: someBehaviour(args)' / 'unmatched: delete(...)'
-				// works again. Until then the block below is guarded to avoid a NPE on the null behaviourArgs.
-				getModelObject().setFlexoBehaviour(flexoConceptType.getFlexoBehaviour(behaviourName));
+				// Resolve the behaviour of the 'unmatched:' clause. 'delete(...)' maps to the concept
+				// default DeletionScheme; a named method maps to the matching behaviour. When nothing was
+				// parsed (empty/unsupported clause) the behaviour is left null so that FinalizeMatching
+				// generates no parameter (avoids the former spurious "binding required" validation error).
+				if (deleteClause) {
+					getModelObject().setFlexoBehaviour(flexoConceptType.getDefaultDeletionScheme());
+				}
+				else if (behaviourName != null) {
+					getModelObject().setFlexoBehaviour(flexoConceptType.getFlexoBehaviour(behaviourName));
+				}
 				if (getModelObject().getFlexoBehaviour() != null && behaviourArgs != null) {
 					int index = 0;
 					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getFlexoBehaviour().getParameters()) {
@@ -178,18 +188,21 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 			returned.setMatchingSet(matchingSet);
 		}
-		/*if (astNode.getAbstractActionClause() instanceof ANormalAbstractActionClause) {
-			AActionClause actionClause = (AActionClause) ((ANormalAbstractActionClause) astNode.getAbstractActionClause())
-					.getActionClause();
-			behaviourName = actionClause.getActionName().getText();
-			handleArguments(actionClause.getArgumentList(), returned);
+
+		PEndMatchActionClause clause = astNode.getEndMatchActionClause();
+		if (clause instanceof ASimpleEndMatchActionClause) {
+			// 'unmatched: delete(args?)' -> resolved to the concept default DeletionScheme in finalizeDeserialization
+			deleteClause = true;
+			handleArguments(((ASimpleEndMatchActionClause) clause).getArgumentList(), returned);
 		}
-		if (astNode.getAbstractActionClause() instanceof ADeleteAbstractActionClause) {
-			ADeleteClause actionClause = (ADeleteClause) ((ADeleteAbstractActionClause) astNode.getAbstractActionClause())
-					.getDeleteClause();
-			behaviourName = actionClause.getDestructorName().getText();
-			handleArguments(actionClause.getArgumentList(), returned);
-		}*/
+		else if (clause instanceof AComplexEndMatchActionClause) {
+			// 'unmatched: someBehaviour(args)'. Restoring this branch requires decomposing a
+			// method_invocation (not a PExpression) into behaviour name + arguments. Not re-supported
+			// yet: leave the behaviour unresolved rather than binding an arbitrary behaviour (which used
+			// to happen through getFlexoBehaviour(null) and surfaced as a spurious validation error).
+			logger.warning("'end match ... unmatched: <method invocation>' is not yet supported by the parser; "
+					+ "the unmatched behaviour call is ignored");
+		}
 		return returned;
 
 	}
