@@ -355,33 +355,11 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		}
 	}
 
-	@DefineValidationRule
-	public static class InferedTypesMustBeCompatible extends ValidationRule<InferedTypesMustBeCompatible, Sequence> {
-		public InferedTypesMustBeCompatible() {
-			super(Sequence.class, "infered_types_must_be_compatible_in_a_sequence");
-		}
-
-		@Override
-		public ValidationIssue<InferedTypesMustBeCompatible, Sequence> applyValidation(Sequence sequence) {
-
-			if (sequence.getControlGraph1() == null || sequence.getControlGraph2() == null) {
-				return null;
-			}
-
-			Type inferedType1 = sequence.getControlGraph1().getInferedType();
-			Type inferedType2 = sequence.getControlGraph2().getInferedType();
-
-			if (!(inferedType1.equals(Void.class)) && !(inferedType2.equals(Void.class))
-					&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
-					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)
-					&& !(inferedType1 instanceof FlexoConceptInstanceType && inferedType2 instanceof FlexoConceptInstanceType)) {
-				System.out.println("Types are not compatible in:");
-				System.out.println(sequence.getFMLPrettyPrint());
-				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)
-						+ " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
-			}
-			return null;
-		}
-	}
+	// NB: there is deliberately no "infered types must be compatible" rule here, unlike
+	// ConditionalAction. A Sequence models ordered execution of two statements: the value of
+	// controlGraph1 is discarded and only controlGraph2 contributes to the sequence value. Requiring
+	// the two inferred types to be compatible (a copy of the conditional-branch rule) is wrong and
+	// wrongly rejected valid FML such as two consecutive statements of unrelated types (e.g. two
+	// 'connect' statements binding an XMLModel then an ExcelWorkbook model slot).
 
 }
