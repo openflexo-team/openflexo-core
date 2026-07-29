@@ -138,6 +138,14 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		@Override
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 
+			if (getControlGraph2() == null) {
+				// A well-formed Sequence always has a controlGraph2 (see ControlGraph2IsRequired
+				// validation rule). A null here means the tree was corrupted by a caller, typically
+				// by reassigning the owner of an inner control graph after it was appended. Fail with
+				// an explicit message rather than an opaque NullPointerException.
+				throw new IllegalStateException(
+						"Cannot sequentially append to a corrupted Sequence: controlGraph2 is null (" + this + ")");
+			}
 			getControlGraph2().sequentiallyAppend(controlGraph);
 			getOwner().controlGraphChanged(this);
 		}
