@@ -466,8 +466,8 @@ public class BindingPathFactory {
 	private void appendMethodInvocation(APrimaryMethodInvocation node, AbstractBindingPathElementNode<?, ?> lastPathElementNode,
 			boolean escapedSerialization) {
 		final IBindingPathElement parent = retrieveActualParent();
-		System.out.println(">>> DBG appendMethodInvocation node=" + node + " parent=" + parent + " bindingVariable="
-				+ bindingVariable + " bindingPathElements=" + bindingPathElements + " lastPathElementNode=" + lastPathElementNode);
+		// System.out.println(">>> DBG appendMethodInvocation node=" + node + " parent=" + parent + " bindingVariable="
+		// + bindingVariable + " bindingPathElements=" + bindingPathElements + " lastPathElementNode=" + lastPathElementNode);
 		MethodCallBindingPathElementNode pathElementNode = expressionFactory.retrieveFMLNode(node,
 				n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory, parent,
 						expressionFactory.getBindable(), escapedSerialization));
