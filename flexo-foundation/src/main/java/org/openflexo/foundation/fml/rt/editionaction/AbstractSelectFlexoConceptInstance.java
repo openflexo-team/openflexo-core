@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -167,6 +168,42 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		@Override
 		public FlexoConceptInstanceType getFetchedType() {
 			return getType();
+		}
+
+		/**
+		 * For a select action, the fetched type IS the concept type (see {@link #getFetchedType()} returning
+		 * {@link #getType()}), so route the fetched-type setter to the {@code type} field. This keeps the type carried by
+		 * the modern {@code Type}-valued {@code fetchedType} property (with its translating {@code @Updater}) rather than
+		 * by the deprecated String {@code flexoConceptTypeURI} property (XML-era serialization).
+		 */
+		@Override
+		public void setFetchedType(Type aType) {
+			if (aType == null || aType instanceof FlexoConceptInstanceType) {
+				setType((FlexoConceptInstanceType) aType);
+			}
+			else {
+				performSuperSetter(FETCHED_TYPE_KEY, aType);
+			}
+		}
+
+		/**
+		 * Called during {@code updateWith()} (interactive re-parse): translate the concept type into the current typing
+		 * space (receiver-independent) and store it in the {@code type} field, instead of leaving it in the disconnected
+		 * base slot. Rebuilding the type through the deprecated {@code flexoConceptTypeURI} setter would resolve it via
+		 * {@link #getAddressedVirtualModel()} (receiver-dependent), which yields an UndefinedFlexoConceptInstanceType
+		 * before the receiver binding is re-analyzed. Same rationale as {@code DeclarationAction.updateDeclaredType}.
+		 */
+		@Override
+		public void updateFetchedType(Type aType) {
+			if (aType instanceof ConnieType && getDeclaringCompilationUnit() != null) {
+				setType((FlexoConceptInstanceType) ((ConnieType) aType).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else if (aType == null || aType instanceof FlexoConceptInstanceType) {
+				setType((FlexoConceptInstanceType) aType);
+			}
+			else {
+				super.updateFetchedType(aType);
+			}
 		}
 
 		@Override
