@@ -856,7 +856,6 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 
 		FlexoServiceManager serviceManager = getTechnologyAdapterService().getServiceManager();
 		Enumeration<URL> urlList;
-		ArrayList<FlexoResourceCenter<?>> rcList = new ArrayList<>(serviceManager.getResourceCenterService().getResourceCenters());
 
 		try {
 			urlList = ClassLoader.getSystemClassLoader()
@@ -874,8 +873,11 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 
 					System.out.println("Protocol " + url.getProtocol() + ": Attempt to loading RC " + rcBaseUri + " from " + url);
 
+					// Beware: the resource centers must be looked up in the service, and not in a list computed before entering
+					// this loop: the same base URI may show up twice in the class path (and thus twice in urlList), and a
+					// resource center registered during a previous iteration must be seen here, otherwise it gets duplicated
 					rcExists = false;
-					for (FlexoResourceCenter<?> r : rcList) {
+					for (FlexoResourceCenter<?> r : new ArrayList<>(serviceManager.getResourceCenterService().getResourceCenters())) {
 						rcExists = r.getDefaultBaseURI().equals(rcBaseUri) || rcExists;
 					}
 					if (!rcExists) {
