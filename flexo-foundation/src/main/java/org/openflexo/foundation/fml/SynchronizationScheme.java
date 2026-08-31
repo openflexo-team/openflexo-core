@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -53,15 +54,20 @@ import org.openflexo.pamela.annotations.XMLElement;
  * @author sylvain
  * 
  */
+@Deprecated
 @ModelEntity
 @ImplementationClass(SynchronizationScheme.SynchronizationSchemeImpl.class)
 @XMLElement
+@FML("SynchronizationScheme")
 public interface SynchronizationScheme extends AbstractActionScheme {
 
+	@Deprecated
 	public VirtualModel getSynchronizedVirtualModel();
 
+	@Deprecated
 	public void setSynchronizedVirtualModel(VirtualModel virtualModel);
 
+	@Deprecated
 	public static abstract class SynchronizationSchemeImpl extends AbstractActionSchemeImpl implements SynchronizationScheme {
 
 		@Override
