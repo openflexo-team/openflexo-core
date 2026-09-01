@@ -267,7 +267,10 @@ public class TestBindingPath extends FMLParserTestCase {
 		BindingVariableNode value1PathElementNode = checkNode("(28:6)-(28:7)", "b", (BindingVariableNode) valueNode.getChildren().get(0));
 		SimplePathElementNode value2PathElementNode = checkNode("(28:8)-(28:9)", "UnresolvedSimplePathElement:c",
 				(SimplePathElementNode) valueNode.getChildren().get(1));
-		MethodCallBindingPathElementNode methodPathElementNode = checkNode("(28:10)-(28:13)", "JavaInstanceMethodPathElement:d()",
+		// d() hangs off an unresolved parent, so it is an UnresolvedFunctionPathElement - the call-side counterpart
+		// of the UnresolvedSimplePathElement asserted just above for c. Before the two were made symmetrical, a call
+		// with an undecidable parent silently defaulted to JavaInstanceMethodPathElement and could never be revised.
+		MethodCallBindingPathElementNode methodPathElementNode = checkNode("(28:10)-(28:13)", "UnresolvedFunctionPathElement:d()",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
 	}
 
@@ -300,7 +303,9 @@ public class TestBindingPath extends FMLParserTestCase {
 		BindingVariableNode pathElementNode1 = checkNode("(32:6)-(32:7)", "b", (BindingVariableNode) valueNode.getChildren().get(0));
 		MethodCallBindingPathElementNode pathElementNode2 = checkNode("(32:8)-(32:11)", "JavaInstanceMethodPathElement:c()",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(1));
-		MethodCallBindingPathElementNode pathElementNode3 = checkNode("(32:12)-(32:15)", "JavaInstanceMethodPathElement:d()",
+		// c() resolves against b, so it stays a JavaInstanceMethodPathElement; d() hangs off c(), a call with no type
+		// yet, so it is undecided - exactly like e below, which was already an UnresolvedSimplePathElement.
+		MethodCallBindingPathElementNode pathElementNode3 = checkNode("(32:12)-(32:15)", "UnresolvedFunctionPathElement:d()",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
 		SimplePathElementNode pathElementNode4 = checkNode("(32:16)-(32:17)", "UnresolvedSimplePathElement:e",
 				(SimplePathElementNode) valueNode.getChildren().get(3));
