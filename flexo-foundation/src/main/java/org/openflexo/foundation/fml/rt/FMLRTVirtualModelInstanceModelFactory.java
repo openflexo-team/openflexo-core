@@ -148,17 +148,35 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 		if (ownerVirtualModelInstance == null) {
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance in null ownerVirtualModelInstance");
 		}
-		if (!ownerVirtualModelInstance.getVirtualModel().isAssignableFrom(concept.getDeclaringCompilationUnit().getVirtualModel())) {
+		// The concept must be declared either by the VirtualModel of this VirtualModelInstance, or by one of its
+		// ancestors: with "model Child extends Parent", a Child instance legitimately instantiates Parent's concepts.
+		// isAssignableFrom(x) walks x's parents, so the DECLARING VirtualModel is the receiver here. This test used to
+		// be written the other way round, which rejected every inherited concept and made "model extends model"
+		// unusable as soon as anything was instantiated - the FMLExecutionException is swallowed upstream, so the
+		// symptom was a silently null result and roles quietly filled with nulls.
+		VirtualModel declaringVirtualModel = concept.getDeclaringCompilationUnit() != null
+				? concept.getDeclaringCompilationUnit().getVirtualModel()
+				: null;
+		if (declaringVirtualModel == null || !declaringVirtualModel.isAssignableFrom(ownerVirtualModelInstance.getVirtualModel())) {
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept declaring compilation unit");
 		}
 		if (container == null && !concept.isRoot()) {
 			// check that the FlexoConcept is root
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : not root FlexoConcept");
 		}
-		if (container != null && container != ownerVirtualModelInstance
-				&& !container.getFlexoConcept().isAssignableFrom(concept.getContainerFlexoConcept())) {
-			// check that the container is valid
-			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
+		if (container != null && container != ownerVirtualModelInstance) {
+			// Check that the container is valid: the concept of the ACTUAL container must be the container concept
+			// required by the instantiated concept, or a specialization of it.
+			// Two things used to be wrong here. getContainerFlexoConcept() returns only the DECLARED container, which
+			// is null for a concept declared at model level even when it inherits a container from a parent concept
+			// (AcmeMetaModel's CodingTaskType extends MetaModel's TaskType, itself nested in ProcessType) -
+			// getApplicableContainerFlexoConcept() is the accessor that walks parents. And the assignability test was
+			// written the wrong way round, which additionally rejected any container that was a SPECIALIZATION of the
+			// required one.
+			FlexoConcept requiredContainerConcept = concept.getApplicableContainerFlexoConcept();
+			if (requiredContainerConcept == null || !requiredContainerConcept.isAssignableFrom(container.getFlexoConcept())) {
+				throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
+			}
 		}
 
 		// Then create the new FlexoConceptInstance
