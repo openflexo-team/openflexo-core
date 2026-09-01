@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -260,6 +261,16 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 		@Override
 		public final AT execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			List<? extends T> computedValues = performExecute(evaluationContext);
+			if (computedValues == null) {
+				// A fetch request that cannot be applied returns null rather than an empty list: see
+				// AbstractSelectFlexoConceptInstance.performExecute(), which warns "Cannot find virtual model instance on which to
+				// apply SelectFlexoConceptInstance" and returns null - typically when the model slot being selected from is not
+				// resolved (an unresolved reflected model slot after deserialization, for instance).
+				// Dereferencing it turned that diagnosable situation into a raw NullPointerException thrown from the engine, with a
+				// stack trace pointing here instead of at the unresolved slot. Report no result instead.
+				logger.warning(getStringRepresentation() + " : could not be executed, returning no result");
+				computedValues = Collections.emptyList();
+			}
 			if (this instanceof UniqueFetchRequest) {
 				if (computedValues.size() > 1) {
 					logger.warning("More than one value found for a UNIQUE request, return first one: " + computedValues);
