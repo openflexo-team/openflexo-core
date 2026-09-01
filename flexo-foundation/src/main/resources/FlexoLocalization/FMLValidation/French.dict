@@ -1,3 +1,5 @@
+'renderer'_binding_must_be_valid='renderer'_binding_must_be_valid
+'renderer'_binding_must_be_valid_description='renderer'_binding_must_be_valid_description
 'resource_name'_binding_is_required_and_must_be_valid='resource_name'_binding_is_required_and_must_be_valid
 'resource_name'_binding_is_required_and_must_be_valid_description='resource_name'_binding_is_required_and_must_be_valid_description
 ($reason)=($reason)

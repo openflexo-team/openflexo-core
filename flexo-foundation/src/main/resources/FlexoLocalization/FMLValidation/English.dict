@@ -1,3 +1,5 @@
+'renderer'_binding_must_be_valid='renderer' binding must be valid
+'renderer'_binding_must_be_valid_description=Expression declared by the @Renderer annotation must be a valid String expression
 'resource_name'_binding_is_required_and_must_be_valid='resource name' binding is required and must be valid
 'resource_name'_binding_is_required_and_must_be_valid_description='resource name' binding is required and must be valid description
 ($reason)=($reason)
