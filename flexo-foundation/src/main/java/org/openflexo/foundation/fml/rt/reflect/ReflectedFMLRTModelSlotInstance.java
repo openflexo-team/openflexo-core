@@ -138,8 +138,23 @@ public interface ReflectedFMLRTModelSlotInstance<
 			this.reflectedResource = reflectedResource;
 		}
 
+		/**
+		 * Return the reflected {@link VirtualModelInstance} this model slot gives access to, rebuilding it when required.
+		 *
+		 * <p>
+		 * A reflected instance is a live view over a foreign artifact and is never serialized: the {@code .fml.rt} only carries the URI of
+		 * the reflected resource. So after deserialization the field is null and has to be rebuilt from that URI, by replaying the
+		 * technology-specific reflection - otherwise the model slot, and every role holding instances it contains, silently reads null.
+		 * This mirrors {@code ResourceBasedModelSlotInstanceImpl.getAccessedResourceData()}, which rebuilds from its own resource.
+		 */
 		@Override
 		public VMI getAccessedResourceData() {
+			if (accessedResourceData == null && getReflectedResource() != null && getModelSlot() != null) {
+				accessedResourceData = getModelSlot().reflectVirtualModelInstance(getReflectedResource());
+				if (accessedResourceData == null) {
+					logger.warning("Could not reflect resource " + getReflectedResourceURI() + " through model slot " + getModelSlot());
+				}
+			}
 			return accessedResourceData;
 		}
 
