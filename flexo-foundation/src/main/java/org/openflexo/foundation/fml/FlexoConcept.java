@@ -72,6 +72,7 @@ import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
+import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
@@ -2605,6 +2606,35 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			performSuperSetter(VISIBILITY_KEY, visibility);
 			System.out.println("FML: " + getFMLPrettyPrint());
 		}*/
+	}
+
+	/**
+	 * Checks the renderer of this {@link FlexoConcept}, as declared in FML with the {@code @Renderer(...)} annotation.
+	 *
+	 * The renderer is optional, but when it is set it must be a valid String expression: an invalid one is silently ignored at run-time
+	 * ({@link FlexoConcept#getApplicableRenderer()} returns null and instances fall back to their default representation), which gives no
+	 * clue that the annotation was rejected. Beware that Connie types the '+' operator from its LEFT operand, so
+	 * {@code @Renderer(this.anObject + " suffix")} evaluates as Object and is NOT a valid renderer, whereas
+	 * {@code @Renderer("prefix " + this.anObject)} is.
+	 */
+	@DefineValidationRule
+	public static class RendererBindingMustBeValid extends BindingMustBeValid<FlexoConcept> {
+		public RendererBindingMustBeValid() {
+			super("'renderer'_binding_must_be_valid", FlexoConcept.class);
+		}
+
+		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
+		}
+
+		@Override
+		public DataBinding<String> getBinding(FlexoConcept object) {
+			if (object.getInspector() == null) {
+				return null;
+			}
+			return object.getInspector().getRenderer();
+		}
 	}
 
 	@DefineValidationRule
