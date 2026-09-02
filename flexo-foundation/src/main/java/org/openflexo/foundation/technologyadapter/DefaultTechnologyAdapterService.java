@@ -282,6 +282,22 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
+	 * Called to stop the service: forward the stop to the {@link TechnologyContextManager} of every activated
+	 * {@link TechnologyAdapter}, so that each technological space may release what it registered outside of the scope of this service
+	 * (JVM-global registries, class loaders, etc.)
+	 */
+	@Override
+	public void stop() {
+		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
+			TechnologyContextManager<?> technologyContextManager = ta.getTechnologyContextManager();
+			if (technologyContextManager != null) {
+				technologyContextManager.stop();
+			}
+		}
+		status = Status.Stopped;
+	}
+
+	/**
 	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager}, related to
 	 * technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
