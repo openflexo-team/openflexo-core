@@ -89,6 +89,7 @@ import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.fml.rt.reflect.ReflectedFMLRTModelSlotInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.logging.FlexoLogger;
@@ -241,6 +242,29 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public void removeFromActors(ActorReference<?> anActorReference);
 
 	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
+
+	/**
+	 * Refresh the reflected model slot named <code>modelSlotName</code>: its artefact is re-read from disk and the reflected
+	 * {@link VirtualModelInstance} rebuilt from it, picking up changes made OUTSIDE Openflexo.
+	 *
+	 * <p>
+	 * Callable from FML, so a model can offer its own refresh behaviour:
+	 *
+	 * <pre>
+	 * public refresh() {
+	 * 	this.refreshModelSlot("maintenance");
+	 * 	this.synchronize();
+	 * }
+	 * </pre>
+	 *
+	 * The call to the synchronization behaviour is NOT optional: refreshing rebuilds the reflected instances, but the roles pointing at
+	 * them still hold the previous ones until they are re-attached.
+	 *
+	 * @param modelSlotName
+	 *            name of the model slot to refresh
+	 * @return true when a reflected model slot of that name was found and refreshed
+	 */
+	public boolean refreshModelSlot(String modelSlotName);
 
 	/**
 	 * Initialize default values for a newly created instance
@@ -1509,6 +1533,24 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 			return returned;
+		}
+
+		@Override
+		public boolean refreshModelSlot(String modelSlotName) {
+			// Deliberately not going through getModelSlotInstance(String): that one compares names with ==.
+			for (ModelSlotInstance<?, ?> modelSlotInstance : getModelSlotInstances()) {
+				ModelSlot<?, ?> modelSlot = modelSlotInstance.getModelSlot();
+				if (modelSlot != null && modelSlot.getName() != null && modelSlot.getName().equals(modelSlotName)) {
+					if (modelSlotInstance instanceof ReflectedFMLRTModelSlotInstance) {
+						((ReflectedFMLRTModelSlotInstance<?, ?, ?, ?>) modelSlotInstance).refresh();
+						return true;
+					}
+					logger.warning("Model slot '" + modelSlotName + "' of " + this + " is not a reflected one: nothing to refresh");
+					return false;
+				}
+			}
+			logger.warning("No model slot named '" + modelSlotName + "' on " + this);
+			return false;
 		}
 
 		@SuppressWarnings("unchecked")

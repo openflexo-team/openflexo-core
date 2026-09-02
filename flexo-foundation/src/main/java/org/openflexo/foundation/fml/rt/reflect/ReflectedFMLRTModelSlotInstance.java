@@ -99,6 +99,21 @@ public interface ReflectedFMLRTModelSlotInstance<
 
 	public void setReflectedResource(R reflectedResource);
 
+	/**
+	 * Discard the reflected {@link VirtualModelInstance} and the data it was built from, so that both are rebuilt from the artefact on the
+	 * next access.
+	 *
+	 * <p>
+	 * Use this when the underlying artefact was modified OUTSIDE Openflexo (a workbook edited in Excel, for instance). The reflected
+	 * instances read their values straight from the artefact objects they wrap, and their number follows the artefact's content, so a
+	 * changed value AND an added row are both handled - by throwing the view away rather than trying to patch it.
+	 *
+	 * <p>
+	 * Beware: this only refreshes the reflected view. Roles of other concepts still point at the OLD reflected instances, so the owning
+	 * {@link VirtualModelInstance} must re-run whatever behaviour re-attaches them (in FML, the synchronization behaviour).
+	 */
+	public void refresh();
+
 	public static abstract class ReflectedFMLRTModelSlotInstanceImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends ModelSlotInstanceImpl<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI>
 			implements ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> {
@@ -161,6 +176,22 @@ public interface ReflectedFMLRTModelSlotInstance<
 		@Override
 		public void setAccessedResourceData(VMI accessedResourceData) {
 			this.accessedResourceData = accessedResourceData;
+		}
+
+		@Override
+		public void refresh() {
+			R resource = getReflectedResource();
+			if (resource == null) {
+				logger.warning("Cannot refresh " + this + ": no reflected resource for " + getReflectedResourceURI());
+				return;
+			}
+			// Drop the loaded artefact: the reflected instances read their values from the artefact objects
+			// (POI rows, for a workbook), so keeping them would keep serving the values read at load time.
+			if (resource.isLoaded()) {
+				resource.unloadResourceData(false);
+			}
+			// Drop the view. getAccessedResourceData() rebuilds it - and reloads the artefact on the way.
+			accessedResourceData = null;
 		}
 
 		/*@Override
