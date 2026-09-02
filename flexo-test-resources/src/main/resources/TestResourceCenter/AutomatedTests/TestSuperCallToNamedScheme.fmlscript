@@ -1,0 +1,25 @@
+// The two spellings of a super constructor call: super(...) reaches an ANONYMOUS parent creation
+// scheme, super.<name>(...) reaches a NAMED one.
+//
+// This is a language rule, not a defect. The invalid spelling - super(...) toward a parent that has
+// only a named scheme - is a validation error, pinned by TestInvalidSuperCall.fml and
+// TestInvalidSuperCallIsReported. It is quiet at runtime, so the diagnostic is what catches it.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestSuperCallToNamedScheme.fml"];
+assert virtualModel != null;
+
+service ResourceCenterService add_temp_rc;
+myVMI = new TestSuperCallToNamedScheme() with (name="testSuperCall");
+assert myVMI != null;
+
+// Anonymous parent scheme, reached with super(...).
+anon = myVMI.newAnonDerived("A");
+assert anon != null;
+assert anon.label == "A";
+
+// Named parent scheme (create::init), reached with super.init(...).
+named = myVMI.newNamedDerived("N");
+assert named != null;
+assert named.label == "N";
+
+log "Test PASSED: super(...) reaches an anonymous parent scheme, super.<name>(...) a named one";

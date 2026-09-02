@@ -1,0 +1,37 @@
+// A model that EXTENDS another can instantiate the concepts it inherits.
+//
+// Guards the two inverted checks in FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance
+// (declaring compilation unit, and container). Both failed SILENTLY: the FMLExecutionException is
+// swallowed upstream and the factory returned null, leaving holes in the model.
+// See TestInheritedConcepts.fml for the full analysis.
+
+baseModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestBaseModelForInheritance.fml"];
+assert baseModel != null;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestInheritedConcepts.fml"];
+assert virtualModel != null;
+
+service ResourceCenterService add_temp_rc;
+myVMI = new TestInheritedConcepts() with (name="testInheritedConcepts");
+assert myVMI != null;
+
+// Guard 1 - a concept declared in the EXTENDED model, instantiated on a subclass instance.
+plain = myVMI.newPlain("p1");
+assert plain != null;
+assert plain.name == "p1";
+
+// Selection across the inheritance always worked; it must keep working.
+assert myVMI.allPlains().size == 1;
+
+// Guard 2 - a concept declared in THIS model, inheriting its container (Box) from the base model's
+// nested Item, instantiated into a Box instance.
+box = myVMI.newBox("b1");
+assert box != null;
+item = box.newItem("i1");
+assert item != null;
+assert item.name == "i1";
+
+special = myVMI.newSpecializedItem(box, "i2");
+assert special != null;
+assert special.name == "i2";
+
+log "Test PASSED: an extending VirtualModel can instantiate its parent's concepts, nested ones included";

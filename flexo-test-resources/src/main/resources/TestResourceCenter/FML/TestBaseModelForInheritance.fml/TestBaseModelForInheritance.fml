@@ -1,0 +1,59 @@
+/**
+ * Base model for TestInheritedConcepts: it declares the concepts that a model EXTENDING it must be
+ * able to instantiate. Kept deliberately minimal - see TestInheritedConcepts.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestBaseModelForInheritance.fml")
+public model TestBaseModelForInheritance {
+
+	public Plain newPlain(String name) {
+		return new Plain(parameters.name);
+	}
+
+	public Box newBox(String name) {
+		return new Box(parameters.name);
+	}
+
+	public List<Plain> allPlains() {
+		return select Plain from this;
+	}
+
+	/** A model-level concept of the BASE model. */
+	public concept Plain {
+		String name;
+		create(String name) {
+			name = parameters.name;
+		}
+		delete() {
+		}
+	}
+
+	/** A container: Item is NESTED inside Box, so an Item instance is contained by a Box instance. */
+	public concept Box {
+
+		String name;
+		Item[0,*] items with ConceptInstance(virtualModelInstance=container);
+
+		create(String name) {
+			name = parameters.name;
+		}
+
+		delete() {
+		}
+
+		public Item newItem(String name) {
+			Item returned = this.new Item(parameters.name);
+			items.add(returned);
+			return returned;
+		}
+
+		public concept Item {
+			String name;
+			create(String name) {
+				name = parameters.name;
+			}
+			delete() {
+			}
+		}
+	}
+}

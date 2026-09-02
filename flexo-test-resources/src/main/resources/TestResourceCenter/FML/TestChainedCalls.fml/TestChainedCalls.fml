@@ -1,0 +1,82 @@
+/**
+ * A call chained onto the result of another call must resolve.
+ *
+ * Regression fixture for a defect in connie: the KIND of a method path element is chosen by the
+ * BindingFactory at CONSTRUCTION time, from the type of its parent, and a FunctionPathElement has no
+ * type until it is resolved. So when the parent was itself a call, the factory fell back to a Java
+ * method element - which can never become a behaviour element afterwards: its resolve() found the
+ * right FML behaviour through retrieveFunction and discarded it as "Unexpected ActionScheme".
+ *
+ * Properties never had the problem: UnresolvedSimplePathElement.attemptResolvingFromParent(), driven
+ * from BindingPath, already re-decided their kind once the parent was known. Calls now get the
+ * symmetrical UnresolvedFunctionPathElement.
+ *
+ * chainedCall() below is the shape that used to validate with zero errors and evaluate to null.
+ * See TestChainedCalls.fmlscript, which also exercises it from the script surface, where the same
+ * binding used to be rejected outright as "unresolved path element describe()".
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestChainedCalls.fml")
+public model TestChainedCalls {
+
+	public Outer newOuter(String tag) {
+		return new Outer(parameters.tag);
+	}
+
+	public concept Outer {
+
+		String tag;
+		Kid[0,*] kids with ConceptInstance(virtualModelInstance=container);
+		Kid theKid with ConceptInstance(virtualModelInstance=container);
+
+		create(String tag) {
+			tag = parameters.tag;
+		}
+
+		delete() {
+		}
+
+		public Kid makeKid(String tag) {
+			Kid k = this.new Kid(parameters.tag);
+			kids.add(k);
+			theKid = k;
+			return k;
+		}
+
+		public Kid getKid() {
+			for (Kid k : kids) {
+				return k;
+			}
+			return null;
+		}
+
+		/** The shape that used to return null: a call chained onto a call. */
+		public String chainedCall() {
+			return this.getKid().describe();
+		}
+
+		/** Control: the same call reached through a local. Always worked. */
+		public String viaLocal() {
+			Kid k = this.getKid();
+			return k.describe();
+		}
+
+		/** Control: a PROPERTY chained onto a call result. Always worked. */
+		public String chainedProperty() {
+			return this.getKid().derived;
+		}
+
+		public concept Kid {
+			String tag;
+			String derived values "d:" + tag;
+			create(String tag) {
+				tag = parameters.tag;
+			}
+			delete() {
+			}
+			public String describe() {
+				return "kid:" + tag;
+			}
+		}
+	}
+}

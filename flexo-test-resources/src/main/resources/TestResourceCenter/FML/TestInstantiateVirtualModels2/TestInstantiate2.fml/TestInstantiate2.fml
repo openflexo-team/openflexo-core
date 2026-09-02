@@ -2,9 +2,9 @@ use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 import ["http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/VirtualModelToInstantiate.fml"];
 
-@URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/TestInstantiate.fml")
+@URI("http://openflexo.org/test/TestResourceCenter/FML/TestInstantiateVirtualModels2/TestInstantiate2.fml")
 @Author("sylvainguerin")
-public model TestInstantiate {
+public model TestInstantiate2 {
 
 	concept Foo {
 		public VirtualModelToInstantiate newProcess(required String vmiName) {

@@ -1,0 +1,60 @@
+/**
+ * The two spellings of a super constructor call.
+ *
+ * TestSuperCall.fml already covers super(...) toward an ANONYMOUS parent creation scheme. This one
+ * covers the other half: super.<name>(...), which is how a NAMED parent creation scheme is reached.
+ *
+ * A parent declaring only create::init(...) has no anonymous scheme, so super(...) cannot reach it -
+ * that spelling is a validation error, pinned separately by TestInvalidSuperCall.fml. The failure is
+ * quiet at runtime (the invalid binding is simply not executed, so the parent's fields stay null),
+ * which is why the diagnostic matters. See TestSuperCallToNamedScheme.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestSuperCallToNamedScheme.fml")
+public model TestSuperCallToNamedScheme {
+
+	public NamedDerived newNamedDerived(String label) {
+		return new NamedDerived(parameters.label);
+	}
+
+	public AnonDerived newAnonDerived(String label) {
+		return new AnonDerived(parameters.label);
+	}
+
+	/** Only a NAMED creation scheme - nothing anonymous to fall back on. */
+	public concept NamedBase {
+		String label;
+		create::init(String label) {
+			label = parameters.label;
+		}
+		delete() {
+		}
+	}
+
+	/** Reaches its parent's named scheme through super.init(...). */
+	public concept NamedDerived extends NamedBase {
+		create(String label) {
+			super.init(parameters.label);
+		}
+		delete() {
+		}
+	}
+
+	/** Control group: anonymous parent scheme, reached with super(...). */
+	public concept AnonBase {
+		String label;
+		create(String label) {
+			label = parameters.label;
+		}
+		delete() {
+		}
+	}
+
+	public concept AnonDerived extends AnonBase {
+		create(String label) {
+			super(parameters.label);
+		}
+		delete() {
+		}
+	}
+}
