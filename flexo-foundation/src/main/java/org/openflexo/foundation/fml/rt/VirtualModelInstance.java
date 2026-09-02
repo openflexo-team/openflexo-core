@@ -1588,7 +1588,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public List<? extends FlexoConceptInstance> selectFlexoConceptInstances(FlexoConcept conceptType, FlexoConceptInstance container,
 				List<FetchRequestCondition> conditions, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-			System.err.println("SELECT FCI " + conceptType.getName() + " from " + this + " container=" + container);
+			// System.err.println("SELECT FCI " + conceptType.getName() + " from " + this + " container=" + container);
 
 			if (isIndexable(container)) {
 				List<FlexoConceptInstance> returned;
