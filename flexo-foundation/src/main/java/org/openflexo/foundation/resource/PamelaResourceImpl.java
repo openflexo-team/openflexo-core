@@ -277,26 +277,23 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 */
 	@Override
 	public void updateResourceData() {
-		System.out.println("OK on met a jour la resource avec sa resource data qu'on reloade");
+		// Beware: do NOT trace the resource data through getFactory().stringRepresentation() here.
+		// That serializes the data as PAMELA XML, which only works for resources that HAVE an XML mapping:
+		// on any other one (an Excel workbook read through POI, for instance) it throws
+		// ModelDefinitionException "No XML element for interface ...", aborting the update before
+		// updateWith() ever runs - a debug statement breaking the very feature it was watching.
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("Updating " + this + " from its modified serialization artefact");
+		}
 		RD reloadedResourceData;
 		try {
-
-			System.out.println("On recharge la resource");
 			// Reload resource data
 			reloadedResourceData = performLoad();
 			reloadedResourceData.setResource(this);
 
-			System.out.println("On obtient " + getFactory().stringRepresentation(reloadedResourceData));
-
-			System.out.println("Et ensuite on update");
-
 			// Now perform PAMELA updating with reloaded resource data
 			// Existing model will be updated and notified
 			resourceData.updateWith(reloadedResourceData);
-
-			System.out.println("Hop");
-
-			System.out.println("Apres le updateWith " + getFactory().stringRepresentation(resourceData));
 
 		} catch (IOException e) {
 			e.printStackTrace();
