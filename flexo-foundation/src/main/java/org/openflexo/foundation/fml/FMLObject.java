@@ -698,9 +698,19 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			}
 			Class<?> implementedInterface = getImplementedInterface(modelFactory);
 			if (modelFactory.getModelContext().getModelEntity(implementedInterface) == null) {
-				return getFMLEntity();
+				// Supplied factory does not know this entity: retry once with our own factory, but never
+				// with the same one, nor with one that does not know it either (would recurse infinitely)
+				FMLModelFactory ownFactory = getFMLModelFactory();
+				if (ownFactory != null && ownFactory != modelFactory
+						&& ownFactory.getModelContext().getModelEntity(implementedInterface) != null) {
+					return FMLModelContext.getFMLEntity((Class) implementedInterface, ownFactory);
+				}
+				logger.warning("Cannot find FMLEntity for " + implementedInterface
+						+ ": this entity is not declared in the model context of " + modelFactory
+						+ ". Check 'uses' declarations of " + getDeclaringCompilationUnit());
+				return null;
 			}
-			return FMLModelContext.getFMLEntity((Class) getImplementedInterface(modelFactory), modelFactory);
+			return FMLModelContext.getFMLEntity((Class) implementedInterface, modelFactory);
 		}
 
 		@Override
