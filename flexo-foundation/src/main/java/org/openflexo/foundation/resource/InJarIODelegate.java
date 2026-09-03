@@ -100,6 +100,13 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 
 		@Override
 		public InputStream getInputStream() {
+			if (getInJarResource() == null) {
+				// No serialization artefact was found in the jar when this delegate was built: see
+				// JarResourceCenter.makeDirectoryBasedFlexoIODelegate(), which already warned about it.
+				// Return null rather than raising a NPE far away from the actual cause
+				logger.warning("No in-jar resource for " + this + ": cannot open input stream");
+				return null;
+			}
 			return getInJarResource().openInputStream();
 		}
 
