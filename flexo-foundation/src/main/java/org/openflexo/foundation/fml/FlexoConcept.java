@@ -69,6 +69,8 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.md.MetaDataKeyValue;
+import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.rm.FIBComponentResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -897,6 +899,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String UI_METADATA = "UI";
 
 	/**
+	 * Key naming the default variant inside a multi-valued <code>@UI</code> / <code>@Inspector</code> annotation:
+	 * <code>@UI(default="Screen.fib", compact="Compact.fib")</code>
+	 */
+	public static final String DEFAULT_VARIANT = "default";
+
+	/**
 	 * Metadata key of the annotation overriding the inspector convention: <code>@Inspector("Compact.inspector")</code>
 	 */
 	public static final String INSPECTOR_METADATA = "Inspector";
@@ -931,6 +939,33 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public FIBComponentResource getUIComponentFlexoResource();
 
 	/**
+	 * Return the named <b>variant</b> of the user interface of this {@link FlexoConcept}, or null when it declares none under that name.<br>
+	 *
+	 * Variants are declared by a multi-valued annotation, which the FML annotation grammar already supports:
+	 *
+	 * <pre>
+	 * &#64;UI(default="Screen.fib", compact="Compact.fib")
+	 * </pre>
+	 *
+	 * The single-valued form <code>@UI("Screen.fib")</code> keeps its meaning and declares the default variant alone. Variants are inherited
+	 * one by one: a concept may declare only <code>compact</code> and take the rest from its parent.
+	 *
+	 * @param variant
+	 *            name of the variant; {@link #DEFAULT_VARIANT} yields what {@link #getUIComponentResource()} returns
+	 */
+	public Resource getUIComponentResource(String variant);
+
+	public FIBComponentResource getUIComponentFlexoResource(String variant);
+
+	/**
+	 * Return the names of the user interface variants available for this {@link FlexoConcept} - its own and those it inherits - the default
+	 * one first, or an empty list when it drives no user interface at all.<br>
+	 *
+	 * This is what lets a view offer the reader a choice when there is more than one.
+	 */
+	public List<String> getUIComponentVariants();
+
+	/**
 	 * Return the GINA component serializing the inspector of the instances of this {@link FlexoConcept}, following the same rules as
 	 * {@link #getUIComponentResource()} with the <code>.inspector</code> extension and the <code>@Inspector("…")</code> annotation.
 	 *
@@ -943,6 +978,18 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * {@link #getUIComponentFlexoResource()}.
 	 */
 	public FIBComponentResource getInspectorComponentFlexoResource();
+
+	/**
+	 * Named variant of the inspector, following the same rules as {@link #getUIComponentResource(String)}.
+	 */
+	public Resource getInspectorComponentResource(String variant);
+
+	public FIBComponentResource getInspectorComponentFlexoResource(String variant);
+
+	/**
+	 * Names of the inspector variants, following the same rules as {@link #getUIComponentVariants()}.
+	 */
+	public List<String> getInspectorComponentVariants();
 
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept, PropertyChangeListener {
 
@@ -2503,24 +2550,197 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public Resource getUIComponentResource() {
-			return getContainedComponentResource(UI_METADATA, ".fib");
+			return getUIComponentResource(DEFAULT_VARIANT);
+		}
+
+		@Override
+		public Resource getInspectorComponentResource() {
+			return getInspectorComponentResource(DEFAULT_VARIANT);
+		}
+
+		@Override
+		public Resource getUIComponentResource(String variant) {
+			return getContainedComponentResource(UI_METADATA, ".fib", variant);
+		}
+
+		@Override
+		public Resource getInspectorComponentResource(String variant) {
+			return getContainedComponentResource(INSPECTOR_METADATA, ".inspector", variant);
+		}
+
+		@Override
+		public List<String> getUIComponentVariants() {
+			return getComponentVariants(UI_METADATA, ".fib");
+		}
+
+		@Override
+		public List<String> getInspectorComponentVariants() {
+			return getComponentVariants(INSPECTOR_METADATA, ".inspector");
 		}
 
 		@Override
 		public FIBComponentResource getUIComponentFlexoResource() {
-			return componentResourceFor(getUIComponentResource());
+			return getUIComponentFlexoResource(DEFAULT_VARIANT);
 		}
 
 		@Override
 		public FIBComponentResource getInspectorComponentFlexoResource() {
-			return componentResourceFor(getInspectorComponentResource());
+			return getInspectorComponentFlexoResource(DEFAULT_VARIANT);
+		}
+
+		@Override
+		public FIBComponentResource getUIComponentFlexoResource(String variant) {
+			return componentResourceFor(getUIComponentResource(variant));
+		}
+
+		@Override
+		public FIBComponentResource getInspectorComponentFlexoResource(String variant) {
+			return componentResourceFor(getInspectorComponentResource(variant));
+		}
+
+		/**
+		 * Factored resolution of a component of this concept: an explicit annotation wins over the naming convention, which in turn wins over
+		 * what the concept inherits.
+		 *
+		 * <p>
+		 * The default variant is, in order: the single-valued form <code>@UI("X.fib")</code>, the <code>default</code> key of the
+		 * multi-valued form, the naming convention <code>&lt;ConceptName&gt;.&lt;extension&gt;</code>, and finally the first variant
+		 * declared - so a concept declaring only named variants still has something to show.
+		 *
+		 * @param metadataKey
+		 *            key of the annotation overriding the convention
+		 * @param extension
+		 *            extension of the searched component, dot included
+		 * @param variant
+		 *            name of the searched variant
+		 */
+		private Resource getContainedComponentResource(String metadataKey, String extension, String variant) {
+
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+			boolean isDefault = DEFAULT_VARIANT.equals(variant);
+
+			if (compilationUnit != null) {
+
+				// An explicit annotation wins, and is NOT searched in the concept hierarchy: naming a component is
+				// saying which one this concept uses, not which one its children use.
+				String declaredName = declaredComponentName(metadataKey, variant);
+				if (StringUtils.isNotEmpty(declaredName)) {
+					// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
+					return compilationUnit.getContainedArtefact(declaredName);
+				}
+
+				if (isDefault && StringUtils.isNotEmpty(getName())) {
+					Resource returned = compilationUnit.getContainedArtefact(getName() + extension);
+					if (returned != null) {
+						return returned;
+					}
+				}
+			}
+
+			// Not declared here: inherit from the most specialized parent concept that declares THIS variant
+			List<FlexoConcept> parentConceptsWithAComponent = new ArrayList<>();
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				if (parent != this && resolveComponentResource(parent, metadataKey, variant) != null) {
+					parentConceptsWithAComponent.add(parent);
+				}
+			}
+			if (parentConceptsWithAComponent.size() > 0) {
+				return resolveComponentResource(FMLUtils.getMostSpecializedConcept(parentConceptsWithAComponent), metadataKey, variant);
+			}
+
+			// Last resort for the default variant only, and AFTER inheritance: a concept declaring nothing but named
+			// variants still has something to show. Trying this earlier would make a concept that declares one variant
+			// shadow the default it inherits.
+			if (isDefault) {
+				String firstDeclared = firstDeclaredVariant(metadataKey);
+				if (firstDeclared != null) {
+					return getContainedComponentResource(metadataKey, extension, firstDeclared);
+				}
+			}
+
+			return null;
+		}
+
+		/**
+		 * The file name supplied annotation gives for supplied variant, or null. Handles both shapes under the same key: the accessors of
+		 * {@link FMLObject} are guarded by an <code>instanceof</code>, so a single-valued and a multi-valued annotation cohabit safely.
+		 */
+		private String declaredComponentName(String metadataKey, String variant) {
+
+			if (!hasMetaData(metadataKey)) {
+				return null;
+			}
+
+			if (getMultiValuedMetaData(metadataKey) != null) {
+				return getMultiValuedMetaData(metadataKey).getValue(variant, String.class);
+			}
+
+			// @UI("Screen.fib") declares the default variant, and only that one
+			return DEFAULT_VARIANT.equals(variant) ? getSingleMetaData(metadataKey, String.class) : null;
+		}
+
+		/** First variant of a multi-valued annotation, in declaration order, or null. */
+		private String firstDeclaredVariant(String metadataKey) {
+			MultiValuedMetaData metaData = getMultiValuedMetaData(metadataKey);
+			if (metaData != null) {
+				for (MetaDataKeyValue<?> keyValue : metaData.getKeyValues()) {
+					return keyValue.getKey();
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * The variants available for this concept - the default one first, then its own declared ones, then those it inherits.
+		 */
+		private List<String> getComponentVariants(String metadataKey, String extension) {
+
+			List<String> returned = new ArrayList<>();
+
+			if (getContainedComponentResource(metadataKey, extension, DEFAULT_VARIANT) != null) {
+				returned.add(DEFAULT_VARIANT);
+			}
+
+			MultiValuedMetaData metaData = getMultiValuedMetaData(metadataKey);
+			if (metaData != null) {
+				for (MetaDataKeyValue<?> keyValue : metaData.getKeyValues()) {
+					if (!returned.contains(keyValue.getKey())) {
+						returned.add(keyValue.getKey());
+					}
+				}
+			}
+
+			// Variants are inherited one by one, so the set a concept offers is the union with its parents'
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				if (parent != this) {
+					for (String inherited : variantsOf(parent, metadataKey)) {
+						if (!returned.contains(inherited)) {
+							returned.add(inherited);
+						}
+					}
+				}
+			}
+
+			return returned;
+		}
+
+		/**
+		 * Dispatch to the accessor matching supplied metadata key, so that the hierarchy walk goes through the interface rather than assuming
+		 * an implementation class.
+		 */
+		private static Resource resolveComponentResource(FlexoConcept concept, String metadataKey, String variant) {
+			return UI_METADATA.equals(metadataKey) ? concept.getUIComponentResource(variant) : concept.getInspectorComponentResource(variant);
+		}
+
+		private static List<String> variantsOf(FlexoConcept concept, String metadataKey) {
+			return UI_METADATA.equals(metadataKey) ? concept.getUIComponentVariants() : concept.getInspectorComponentVariants();
 		}
 
 		/**
 		 * The registered {@link FIBComponentResource} serialized by supplied artefact.<br>
-		 * The artefacts of a container are registered by {@link FIBComponentResourceFactory} and linked into the contents of the enclosing
-		 * compilation unit resource, so the lookup is a scan of those contents rather than a URI resolution - a component has no URI of its
-		 * own to guess.
+		 * The artefacts of a container are registered by <code>FIBComponentResourceFactory</code> and linked into the contents of the
+		 * enclosing compilation unit resource, so the lookup is a scan of those contents rather than a URI resolution - a component has no
+		 * URI of its own to guess.
 		 */
 		private FIBComponentResource componentResourceFor(Resource artefact) {
 
@@ -2553,66 +2773,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private static boolean serializes(FIBComponentResource componentResource, Resource artefact) {
 			return componentResource.getIODelegate() != null
 					&& artefact.equals(componentResource.getIODelegate().getSerializationArtefactAsResource());
-		}
-
-		@Override
-		public Resource getInspectorComponentResource() {
-			return getContainedComponentResource(INSPECTOR_METADATA, ".inspector");
-		}
-
-		/**
-		 * Factored implementation of {@link #getUIComponentResource()} and {@link #getInspectorComponentResource()}: an explicit annotation
-		 * wins over the naming convention, which in turn wins over what the concept inherits.
-		 *
-		 * @param metadataKey
-		 *            key of the annotation overriding the convention
-		 * @param extension
-		 *            extension of the searched component, dot included
-		 */
-		private Resource getContainedComponentResource(String metadataKey, String extension) {
-
-			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
-
-			if (compilationUnit != null) {
-
-				// An explicit annotation wins, and is NOT searched in the concept hierarchy: naming a component is
-				// saying which one this concept uses, not which one its children use.
-				if (hasMetaData(metadataKey)) {
-					String declaredName = getSingleMetaData(metadataKey, String.class);
-					if (StringUtils.isNotEmpty(declaredName)) {
-						// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
-						return compilationUnit.getContainedArtefact(declaredName);
-					}
-				}
-
-				if (StringUtils.isNotEmpty(getName())) {
-					Resource returned = compilationUnit.getContainedArtefact(getName() + extension);
-					if (returned != null) {
-						return returned;
-					}
-				}
-			}
-
-			// Not declared here: inherit from the most specialized parent concept that does declare one
-			List<FlexoConcept> parentConceptsWithAComponent = new ArrayList<>();
-			for (FlexoConcept parent : getParentFlexoConcepts()) {
-				if (parent != this && resolveComponentResource(parent, metadataKey) != null) {
-					parentConceptsWithAComponent.add(parent);
-				}
-			}
-			if (parentConceptsWithAComponent.size() > 0) {
-				return resolveComponentResource(FMLUtils.getMostSpecializedConcept(parentConceptsWithAComponent), metadataKey);
-			}
-
-			return null;
-		}
-
-		/**
-		 * Dispatch to the accessor matching supplied metadata key, so that the hierarchy walk of
-		 * {@link #getContainedComponentResource(String, String)} goes through the interface rather than assuming an implementation class.
-		 */
-		private static Resource resolveComponentResource(FlexoConcept concept, String metadataKey) {
-			return UI_METADATA.equals(metadataKey) ? concept.getUIComponentResource() : concept.getInspectorComponentResource();
 		}
 
 		/**

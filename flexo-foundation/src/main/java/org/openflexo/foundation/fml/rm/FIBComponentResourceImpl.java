@@ -159,8 +159,23 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 		return null;
 	}
 
+	/**
+	 * Every variant counts, not just the default one: a concept may drive this component under a name such as
+	 * <code>compact</code>, and the editor still has to know which concept types its <code>data</code>.
+	 */
 	private boolean isDrivenBy(FlexoConcept concept) {
-		return this == concept.getUIComponentFlexoResource() || this == concept.getInspectorComponentFlexoResource();
+
+		for (String variant : concept.getUIComponentVariants()) {
+			if (this == concept.getUIComponentFlexoResource(variant)) {
+				return true;
+			}
+		}
+		for (String variant : concept.getInspectorComponentVariants()) {
+			if (this == concept.getInspectorComponentFlexoResource(variant)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

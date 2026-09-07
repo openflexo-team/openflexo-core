@@ -42,6 +42,27 @@ public model TestContainerUI {
 	public concept BrokenDeclaration {
 	}
 
+	/**
+	 * Named variants: the multi-valued form of the annotation. Its 'default' key names what an
+	 * unqualified lookup returns, and the reader may switch to any other name at runtime.
+	 */
+	@UI(default="Screen.fib",compact="Compact.fib")
+	public concept WithVariants {
+	}
+
+	/** Declares only ONE named variant, and inherits the others: variants are inherited one by one. */
+	@UI(compact="OtherCompact.fib")
+	public concept InheritingVariants extends WithVariants {
+	}
+
+	/**
+	 * Declares named variants but no 'default' key, and its name matches no file: the default falls
+	 * back on the first variant declared, so the concept still has something to show.
+	 */
+	@UI(large="Screen.fib")
+	public concept WithoutDefaultVariant {
+	}
+
 	/** Neither convention nor annotation nor parent: no component at all. */
 	public concept WithoutAnyComponent {
 	}

@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openflexo.connie.DataBinding;
@@ -57,7 +58,7 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 
 		// A failed parse leaves an EMPTY compilation unit behind, which then validates with zero errors:
 		// assert the concepts were actually parsed before asserting anything about them.
-		assertEquals("The fixture did not parse", 7, virtualModel.getFlexoConcepts().size());
+		assertEquals("The fixture did not parse", 10, virtualModel.getFlexoConcepts().size());
 	}
 
 	/** A VirtualModel is a FlexoConcept, so the convention gives it its own view as Xxx.fml/Xxx.fib. */
@@ -80,8 +81,8 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 		CompilationUnitResource resource = (CompilationUnitResource) virtualModel.getDeclaringCompilationUnit().getResource();
 		List<FIBComponentResource> components = resource.getContents(FIBComponentResource.class);
 
-		// The five artefacts at the root of the container; UI/NestedScreen.fib sits one level deeper
-		assertEquals("Unexpected components linked into " + resource.getURI() + ": " + components, 5, components.size());
+		// The artefacts at the root of the container; UI/NestedScreen.fib sits one level deeper
+		assertEquals("Unexpected components linked into " + resource.getURI() + ": " + components, 8, components.size());
 
 		assertNotNull(virtualModel.getUIComponentFlexoResource());
 		assertNotNull(virtualModel.getInspectorComponentFlexoResource());
@@ -182,6 +183,71 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 
 		// A concept declaring none gets none, rather than an empty binding carried by a lazily created inspector
 		assertNull(concept("Simple").getApplicableRenderer());
+	}
+
+	/**
+	 * A multi-valued <code>@UI</code> declares named variants; its <code>default</code> key is what an unqualified lookup returns.
+	 */
+	@Test
+	@TestOrder(13)
+	public void test12NamedVariantsAreResolved() {
+
+		FlexoConcept withVariants = concept("WithVariants");
+
+		assertResolvesTo("Screen.fib", withVariants.getUIComponentResource());
+		assertResolvesTo("Screen.fib", withVariants.getUIComponentResource(FlexoConcept.DEFAULT_VARIANT));
+		assertResolvesTo("Compact.fib", withVariants.getUIComponentResource("compact"));
+
+		assertNull(withVariants.getUIComponentResource("noSuchVariant"));
+
+		assertEquals(Arrays.asList(FlexoConcept.DEFAULT_VARIANT, "compact"), withVariants.getUIComponentVariants());
+	}
+
+	/** Variants are inherited one by one: a concept may override just one and take the rest from its parent. */
+	@Test
+	@TestOrder(14)
+	public void test13VariantsAreInheritedOneByOne() {
+
+		FlexoConcept inheriting = concept("InheritingVariants");
+
+		assertResolvesTo("OtherCompact.fib", inheriting.getUIComponentResource("compact"));
+		// not redeclared here, so taken from WithVariants
+		assertResolvesTo("Screen.fib", inheriting.getUIComponentResource());
+
+		assertTrue(inheriting.getUIComponentVariants().containsAll(Arrays.asList(FlexoConcept.DEFAULT_VARIANT, "compact")));
+	}
+
+	/** Declaring only named variants still leaves a default: the first one declared. */
+	@Test
+	@TestOrder(15)
+	public void test14FirstVariantStandsInForAMissingDefault() {
+
+		FlexoConcept withoutDefault = concept("WithoutDefaultVariant");
+
+		assertResolvesTo("Screen.fib", withoutDefault.getUIComponentResource());
+		assertResolvesTo("Screen.fib", withoutDefault.getUIComponentResource("large"));
+	}
+
+	/** The single-valued form keeps its meaning, and declares the default variant alone. */
+	@Test
+	@TestOrder(16)
+	public void test15SingleValuedFormDeclaresOnlyTheDefault() {
+
+		FlexoConcept annotated = concept("Annotated");
+
+		assertResolvesTo("CustomScreen.fib", annotated.getUIComponentResource());
+		assertEquals(Arrays.asList(FlexoConcept.DEFAULT_VARIANT), annotated.getUIComponentVariants());
+		assertNull(annotated.getUIComponentResource("compact"));
+	}
+
+	/** Every variant is a component of the container, and each knows the concept driving it. */
+	@Test
+	@TestOrder(17)
+	public void test16EveryVariantKnowsItsDrivingConcept() {
+
+		FlexoConcept withVariants = concept("WithVariants");
+
+		assertEquals(withVariants, withVariants.getUIComponentFlexoResource("compact").getDrivingConcept());
 	}
 
 	private static FlexoConcept concept(String name) {
