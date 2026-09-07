@@ -5,6 +5,11 @@ dependencies {
   api pamela()
   // Still to be removed
   implementation flexoGraphicUtils() // used for icon mgt in FlexoConcept
+  // gina sits BELOW openflexo-core in the layering (connie -> pamela -> gina/diana -> openflexo-core),
+  // and gina-api depends on nothing above connie/pamela. FIBComponentResource makes a .fib / .inspector
+  // stored in a Xxx.fml/ container a first-class platform resource, the way a .fml.rt already is.
+  // 'api' rather than 'implementation': FIBComponent leaks into the signature of FIBComponentResource.
+  api ginaApi()
 
   // external dep
   api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.8.0.202006091008-r'

@@ -69,6 +69,9 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.rm.FIBComponentResource;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
@@ -914,17 +917,32 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * <code>@UI("…")</code> annotation overrides that convention, and may name a nested artefact. A concept declaring neither inherits the
 	 * component of its most specialized parent concept.
 	 *
-	 * @return the resource of the component, which is NOT loaded here: this layer has no dependency on GINA
+	 * @return the resource of the component, or null
 	 */
 	public Resource getUIComponentResource();
+
+	/**
+	 * Return the {@link FIBComponentResource} of the user interface of this {@link FlexoConcept}, resolved as
+	 * {@link #getUIComponentResource()} describes, or null when this concept drives no user interface.<br>
+	 *
+	 * Prefer this over {@link #getUIComponentResource()} wherever the component is going to be loaded: the resource is registered, shared,
+	 * and knows how to deserialize a FML-driven component.
+	 */
+	public FIBComponentResource getUIComponentFlexoResource();
 
 	/**
 	 * Return the GINA component serializing the inspector of the instances of this {@link FlexoConcept}, following the same rules as
 	 * {@link #getUIComponentResource()} with the <code>.inspector</code> extension and the <code>@Inspector("…")</code> annotation.
 	 *
-	 * @return the resource of the component, which is NOT loaded here: this layer has no dependency on GINA
+	 * @return the resource of the component, or null
 	 */
 	public Resource getInspectorComponentResource();
+
+	/**
+	 * Return the {@link FIBComponentResource} of the inspector of this {@link FlexoConcept}, following the same rules as
+	 * {@link #getUIComponentFlexoResource()}.
+	 */
+	public FIBComponentResource getInspectorComponentFlexoResource();
 
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept, PropertyChangeListener {
 
@@ -2486,6 +2504,55 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public Resource getUIComponentResource() {
 			return getContainedComponentResource(UI_METADATA, ".fib");
+		}
+
+		@Override
+		public FIBComponentResource getUIComponentFlexoResource() {
+			return componentResourceFor(getUIComponentResource());
+		}
+
+		@Override
+		public FIBComponentResource getInspectorComponentFlexoResource() {
+			return componentResourceFor(getInspectorComponentResource());
+		}
+
+		/**
+		 * The registered {@link FIBComponentResource} serialized by supplied artefact.<br>
+		 * The artefacts of a container are registered by {@link FIBComponentResourceFactory} and linked into the contents of the enclosing
+		 * compilation unit resource, so the lookup is a scan of those contents rather than a URI resolution - a component has no URI of its
+		 * own to guess.
+		 */
+		private FIBComponentResource componentResourceFor(Resource artefact) {
+
+			if (artefact == null || getDeclaringCompilationUnit() == null || getDeclaringCompilationUnit().getResource() == null) {
+				return null;
+			}
+
+			// Fast path: a component at the root of the container is linked into the contents of its compilation unit
+			for (FIBComponentResource componentResource : getDeclaringCompilationUnit().getResource()
+					.getContents(FIBComponentResource.class)) {
+				if (serializes(componentResource, artefact)) {
+					return componentResource;
+				}
+			}
+
+			// A component named by an annotation may sit deeper (@UI("UI/MyScreen.fib")); it is registered all the same,
+			// just not as a content of the compilation unit, whose contents only hold what its own directory carries.
+			FlexoResourceCenter<?> resourceCenter = getDeclaringCompilationUnit().getResource().getResourceCenter();
+			if (resourceCenter != null) {
+				for (FlexoResource<?> resource : resourceCenter.getAllResources()) {
+					if (resource instanceof FIBComponentResource && serializes((FIBComponentResource) resource, artefact)) {
+						return (FIBComponentResource) resource;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private static boolean serializes(FIBComponentResource componentResource, Resource artefact) {
+			return componentResource.getIODelegate() != null
+					&& artefact.equals(componentResource.getIODelegate().getSerializationArtefactAsResource());
 		}
 
 		@Override

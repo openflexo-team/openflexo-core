@@ -12,7 +12,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.List;
+
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.rm.FIBComponentResource;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -66,6 +69,26 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 		assertResolvesTo("TestContainerUI.inspector", virtualModel.getInspectorComponentResource());
 	}
 
+	/**
+	 * A component at the root of the container is a registered resource, LINKED INTO the contents of its compilation unit resource - which
+	 * is what makes it show up under its VirtualModel in the browsers, and what gets it deleted with it.
+	 */
+	@Test
+	@TestOrder(12)
+	public void test11ComponentsAreContentsOfTheCompilationUnitResource() {
+
+		CompilationUnitResource resource = (CompilationUnitResource) virtualModel.getDeclaringCompilationUnit().getResource();
+		List<FIBComponentResource> components = resource.getContents(FIBComponentResource.class);
+
+		// The five artefacts at the root of the container; UI/NestedScreen.fib sits one level deeper
+		assertEquals("Unexpected components linked into " + resource.getURI() + ": " + components, 5, components.size());
+
+		assertNotNull(virtualModel.getUIComponentFlexoResource());
+		assertNotNull(virtualModel.getInspectorComponentFlexoResource());
+		assertEquals(virtualModel.getUIComponentResource(),
+				virtualModel.getUIComponentFlexoResource().getIODelegate().getSerializationArtefactAsResource());
+	}
+
 	/** &lt;ConceptName&gt;.fib and &lt;ConceptName&gt;.inspector, at the root of the container. */
 	@Test
 	@TestOrder(3)
@@ -106,6 +129,10 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 	public void test5AnnotationMayNameANestedArtefact() {
 
 		assertResolvesTo("NestedScreen.fib", concept("Nested").getUIComponentResource());
+
+		// Registered as a resource all the same, though it is not a content of the compilation unit: the contents of a
+		// compilation unit hold what its own directory carries, and this one sits one level deeper.
+		assertNotNull(concept("Nested").getUIComponentFlexoResource());
 	}
 
 	/** A declaration naming a component that does not exist resolves to null rather than to something else. */
