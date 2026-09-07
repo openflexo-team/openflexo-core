@@ -888,6 +888,44 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public String getPresentationName();
 
+	/**
+	 * Metadata key of the annotation overriding the user interface convention: <code>@UI("MyScreen.fib")</code>
+	 */
+	public static final String UI_METADATA = "UI";
+
+	/**
+	 * Metadata key of the annotation overriding the inspector convention: <code>@Inspector("Compact.inspector")</code>
+	 */
+	public static final String INSPECTOR_METADATA = "Inspector";
+
+	/**
+	 * Metadata key of the annotation giving the string representation of the instances of this concept:
+	 * <code>@Renderer(someExpression)</code>.<br>
+	 * This is where a renderer is actually STORED - {@link FlexoConceptInspector#getRenderer()} only reads it back.
+	 */
+	public static final String RENDERER_METADATA = "Renderer";
+
+	/**
+	 * Return the GINA component serializing the user interface of the instances of this {@link FlexoConcept}, as stored in the container
+	 * directory of the {@link FMLCompilationUnit} declaring it, or null when this concept has no such user interface.<br>
+	 *
+	 * By convention that component is <code>&lt;ConceptName&gt;.fib</code>, at the root of the <code>Xxx.fml/</code> container. Since a
+	 * {@link VirtualModel} is a {@link FlexoConcept}, the same rule gives a VirtualModel its own view as <code>Xxx.fml/Xxx.fib</code>. An
+	 * <code>@UI("…")</code> annotation overrides that convention, and may name a nested artefact. A concept declaring neither inherits the
+	 * component of its most specialized parent concept.
+	 *
+	 * @return the resource of the component, which is NOT loaded here: this layer has no dependency on GINA
+	 */
+	public Resource getUIComponentResource();
+
+	/**
+	 * Return the GINA component serializing the inspector of the instances of this {@link FlexoConcept}, following the same rules as
+	 * {@link #getUIComponentResource()} with the <code>.inspector</code> extension and the <code>@Inspector("…")</code> annotation.
+	 *
+	 * @return the resource of the component, which is NOT loaded here: this layer has no dependency on GINA
+	 */
+	public Resource getInspectorComponentResource();
+
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept, PropertyChangeListener {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
@@ -2414,8 +2452,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public DataBinding<String> getApplicableRenderer() {
-			if (getInspector() != null && getInspector().getRenderer() != null && getInspector().getRenderer().isSet()
-					&& getInspector().getRenderer().isValid()) {
+			// A renderer is stored as @Renderer metadata; asking the deprecated inspector for one when the concept
+			// declares none would lazily create an empty inspector for nothing.
+			if (hasMetaData(RENDERER_METADATA) && getInspector() != null && getInspector().getRenderer() != null
+					&& getInspector().getRenderer().isSet() && getInspector().getRenderer().isValid()) {
 				return getInspector().getRenderer();
 			}
 			else if (getParentFlexoConcepts().size() > 0) {
@@ -2441,6 +2481,71 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				return getName();
 			}
 
+		}
+
+		@Override
+		public Resource getUIComponentResource() {
+			return getContainedComponentResource(UI_METADATA, ".fib");
+		}
+
+		@Override
+		public Resource getInspectorComponentResource() {
+			return getContainedComponentResource(INSPECTOR_METADATA, ".inspector");
+		}
+
+		/**
+		 * Factored implementation of {@link #getUIComponentResource()} and {@link #getInspectorComponentResource()}: an explicit annotation
+		 * wins over the naming convention, which in turn wins over what the concept inherits.
+		 *
+		 * @param metadataKey
+		 *            key of the annotation overriding the convention
+		 * @param extension
+		 *            extension of the searched component, dot included
+		 */
+		private Resource getContainedComponentResource(String metadataKey, String extension) {
+
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+
+			if (compilationUnit != null) {
+
+				// An explicit annotation wins, and is NOT searched in the concept hierarchy: naming a component is
+				// saying which one this concept uses, not which one its children use.
+				if (hasMetaData(metadataKey)) {
+					String declaredName = getSingleMetaData(metadataKey, String.class);
+					if (StringUtils.isNotEmpty(declaredName)) {
+						// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
+						return compilationUnit.getContainedArtefact(declaredName);
+					}
+				}
+
+				if (StringUtils.isNotEmpty(getName())) {
+					Resource returned = compilationUnit.getContainedArtefact(getName() + extension);
+					if (returned != null) {
+						return returned;
+					}
+				}
+			}
+
+			// Not declared here: inherit from the most specialized parent concept that does declare one
+			List<FlexoConcept> parentConceptsWithAComponent = new ArrayList<>();
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				if (parent != this && resolveComponentResource(parent, metadataKey) != null) {
+					parentConceptsWithAComponent.add(parent);
+				}
+			}
+			if (parentConceptsWithAComponent.size() > 0) {
+				return resolveComponentResource(FMLUtils.getMostSpecializedConcept(parentConceptsWithAComponent), metadataKey);
+			}
+
+			return null;
+		}
+
+		/**
+		 * Dispatch to the accessor matching supplied metadata key, so that the hierarchy walk of
+		 * {@link #getContainedComponentResource(String, String)} goes through the interface rather than assuming an implementation class.
+		 */
+		private static Resource resolveComponentResource(FlexoConcept concept, String metadataKey) {
+			return UI_METADATA.equals(metadataKey) ? concept.getUIComponentResource() : concept.getInspectorComponentResource();
 		}
 
 		/**

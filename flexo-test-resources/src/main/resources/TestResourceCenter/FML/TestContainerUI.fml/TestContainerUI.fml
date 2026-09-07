@@ -1,0 +1,62 @@
+/**
+ * Fixture for the container-based user interface lookup: the .fib / .inspector components of a
+ * VirtualModel and of its concepts are stored in the TestContainerUI.fml/ container itself, and
+ * resolved by naming convention (see FlexoConcept.getUIComponentResource()).
+ *
+ * The container ships, alongside this file:
+ *   TestContainerUI.fib / TestContainerUI.inspector  - the components of the VirtualModel itself
+ *   Simple.fib / Simple.inspector                    - the components of concept Simple
+ *   CustomScreen.fib                                 - named by the @UI annotation of Annotated
+ *   UI/NestedScreen.fib                              - named by a NESTED @UI annotation
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestContainerUI.fml")
+public model TestContainerUI {
+
+	/** Components resolved by the naming convention: Simple.fib and Simple.inspector. */
+	public concept Simple {
+		String name;
+		create(String name) {
+			name = parameters.name;
+		}
+		delete() {
+		}
+	}
+
+	/** Declares no component of its own: inherits those of Simple. */
+	public concept InheritingFromSimple extends Simple {
+	}
+
+	/** An explicit annotation overrides the convention, and is NOT inherited from Simple. */
+	@UI("CustomScreen.fib")
+	public concept Annotated extends Simple {
+	}
+
+	/** An annotation may name a nested artefact. */
+	@UI("UI/NestedScreen.fib")
+	public concept Nested {
+	}
+
+	/** The annotation names a component that does NOT exist: resolution yields null. */
+	@UI("ThisComponentDoesNotExist.fib")
+	public concept BrokenDeclaration {
+	}
+
+	/** Neither convention nor annotation nor parent: no component at all. */
+	public concept WithoutAnyComponent {
+	}
+
+	/**
+	 * The string representation of an instance comes from an FML annotation rather than from the
+	 * deprecated FlexoConceptInspector, which has no textual FML form.
+	 */
+	@Renderer(name)
+	public concept Presented {
+		String name;
+		create(String name) {
+			name = parameters.name;
+		}
+		delete() {
+		}
+	}
+}

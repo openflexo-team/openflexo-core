@@ -361,6 +361,30 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	public LocalizedDelegate getLocalizedDictionary();
 
+	/**
+	 * Return the directory serializing this {@link FMLCompilationUnit} (the <code>Xxx.fml/</code> container), or null when this compilation
+	 * unit has no resource yet.<br>
+	 *
+	 * Beyond the <code>Xxx.fml</code> core file, the contained VirtualModels and the <code>Localized/</code> dictionaries, that container is
+	 * free space: it is where the user interfaces of this compilation unit live (see {@link FlexoConcept#getUIComponentResource()} and
+	 * {@link FlexoConcept#getInspectorComponentResource()}).
+	 *
+	 * @return
+	 */
+	public Resource getContainerDirectoryResource();
+
+	/**
+	 * Return the artefact named <code>name</code> stored in the container directory of this {@link FMLCompilationUnit}, or null when no such
+	 * artefact exists.<br>
+	 *
+	 * <code>name</code> may denote a nested artefact, using <code>/</code> as a separator (<code>"UI/MyScreen.fib"</code>).
+	 *
+	 * @param name
+	 *            simple name of the searched artefact, extension included
+	 * @return
+	 */
+	public Resource getContainedArtefact(String name);
+
 	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
@@ -990,8 +1014,66 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		private LocalizedDelegateImpl localized;
 
+		@Override
+		public Resource getContainerDirectoryResource() {
+			if (getResource() == null) {
+				return null;
+			}
+			return getResource().getDirectory();
+		}
+
+		@Override
+		public Resource getContainedArtefact(String name) {
+
+			if (name == null || name.length() == 0) {
+				return null;
+			}
+
+			Resource container = getContainerDirectoryResource();
+			if (container == null) {
+				return null;
+			}
+
+			if (name.indexOf('/') >= 0) {
+				// A nested artefact ("UI/MyScreen.fib") can only be reached by walking the containment tree, since
+				// getContents() does not report directories on a file-based resource center. locateResource() does that
+				// walk, and its warning-on-miss is appropriate here: a nested path is only ever named explicitly.
+				return container.locateResource(name);
+			}
+
+			// Flat lookup, used to PROBE for artefacts that are legitimately absent most of the time. Deliberately not
+			// locateResource(), which logs a warning for every miss on a jar-based resource center.
+			// getContents(false) reports files only on a file-based resource center, which is exactly the population
+			// searched here, and makes this lookup behave identically over a jar.
+			for (Resource child : container.getContents(false)) {
+				if (hasSimpleName(child, name)) {
+					return child;
+				}
+			}
+
+			return null;
+		}
+
+		/**
+		 * Return whether supplied resource is named <code>name</code>.<br>
+		 * {@link Resource#getRelativePath()} is a '/'-separated path whose base differs between a file-based and a jar-based resource
+		 * center, so only its last element may be compared.
+		 */
+		private static boolean hasSimpleName(Resource resource, String name) {
+			String path = resource.getRelativePath();
+			if (path == null) {
+				return false;
+			}
+			int lastSeparator = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+			return name.equals(lastSeparator < 0 ? path : path.substring(lastSeparator + 1));
+		}
+
 		private Resource getLocalizedDirectoryResource() {
-			Resource virtualModelDirectory = getResource().getIODelegate().getSerializationArtefactAsResource().getContainer();
+			Resource virtualModelDirectory = getContainerDirectoryResource();
+			if (virtualModelDirectory == null) {
+				logger.warning("Cannot find localized directory for " + this + ": no container directory");
+				return null;
+			}
 			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile(".*/Localized"), false);
 			if (localizedDirs.size() > 0) {
 				return localizedDirs.get(0);

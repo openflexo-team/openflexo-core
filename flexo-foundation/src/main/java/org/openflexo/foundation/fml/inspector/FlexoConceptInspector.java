@@ -74,14 +74,25 @@ import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Represents inspector associated with a FlexoConcept
- * 
+ *
+ * @deprecated <b>Replaced by the container convention.</b> The inspector of a concept is now an ordinary GINA component stored beside the
+ *             FML source, in the <code>Xxx.fml/</code> container, and resolved by {@link FlexoConcept#getInspectorComponentResource()}. This
+ *             entity has no textual FML form - it never had one - so it survives only in the deprecated <code>.fml.xml</code>
+ *             serialization, and every VirtualModel migrated to textual FML has already lost its {@link InspectorEntry} list.
+ *             <p>
+ *             What is worth keeping was moved out: a renderer is stored as {@link FlexoConcept#RENDERER_METADATA} metadata (this class only
+ *             reads it back), and a title as {@link FlexoConcept#INSPECTOR_TITLE_METADATA}.
+ *             <p>
+ *             NOT deleted yet: <code>free-modelling-editor</code> still builds {@link InspectorEntry} at runtime
+ *             (<code>CreateNewFMEProperty</code>), and must be ported first.
+ *
  * @author sylvain
  * 
  */
 @ModelEntity
 @ImplementationClass(FlexoConceptInspector.FlexoConceptInspectorImpl.class)
 @XMLElement(xmlTag = "Inspector")
-@Deprecated // Will be replaced by dedicated .inspector (FIB component)
+@Deprecated // Replaced by a dedicated .inspector in the Xxx.fml/ container - see FlexoConcept.getInspectorComponentResource()
 public interface FlexoConceptInspector extends FlexoConceptObject {
 
 	public static final String FORMATTER_INSTANCE_PROPERTY = "instance";
@@ -284,7 +295,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 			notifyChange(ENTRIES_KEY, null, entries);
 		}
 
-		protected static final String RENDERER = "Renderer";
+		protected static final String RENDERER = FlexoConcept.RENDERER_METADATA;
 
 		private DataBinding<String> retrieveRendererFromMetadata() {
 			DataBinding<String> returned = getFlexoConcept().getSingleMetaData(RENDERER, DataBinding.class);

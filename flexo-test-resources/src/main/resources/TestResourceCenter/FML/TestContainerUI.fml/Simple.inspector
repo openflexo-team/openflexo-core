@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the container-based inspector lookup. -->
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols" name="SimpleInspector"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.inspector.FIBInspectorController">
+	<TabPanel name="Tab">
+		<Tab title="SimpleInspector" layout="twocols" index="0" name="SimpleInspectorTab" />
+	</TabPanel>
+</Panel>
