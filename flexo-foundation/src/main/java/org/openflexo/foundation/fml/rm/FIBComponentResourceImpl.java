@@ -46,7 +46,9 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.FlexoResourceImpl;
+import org.openflexo.foundation.resource.FileWritingLock;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.StreamIODelegate;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.FIBLibrary;
@@ -54,7 +56,6 @@ import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.pamela.factory.PamelaModelFactory;
 import org.openflexo.rm.Resource;
 
 /**
@@ -71,20 +72,6 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 
 	private static final Logger logger = Logger.getLogger(FIBComponentResourceImpl.class.getPackage().getName());
 
-	/**
-	 * The holder is a PAMELA entity (it has to be a FlexoObject), but it carries no state of its own and no serialization, so one factory
-	 * for the whole platform is enough.
-	 */
-	private static final PamelaModelFactory HOLDER_FACTORY = makeHolderFactory();
-
-	private static PamelaModelFactory makeHolderFactory() {
-		try {
-			return new PamelaModelFactory(FMLFIBComponent.class);
-		} catch (ModelDefinitionException e) {
-			throw new IllegalStateException("Cannot build the FMLFIBComponent factory", e);
-		}
-	}
-
 	@Override
 	public FMLTechnologyAdapter getTechnologyAdapter() {
 		if (getServiceManager() != null) {
@@ -96,6 +83,39 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 	@Override
 	public Class<FMLFIBComponent> getResourceDataClass() {
 		return FMLFIBComponent.class;
+	}
+
+	/**
+	 * Notify that this resource now holds data.
+	 *
+	 * <p>
+	 * {@link FlexoResourceImpl#setResourceData} does NOT notify - the call is commented out there - and
+	 * <code>PamelaResourceImpl</code> is what does it for every other resource. Without this the browsers keep rendering the resource as
+	 * unloaded, greyed out, whichever way it got its data: loaded from disk, or created with empty contents by
+	 * <code>FlexoResourceFactory.createEmptyContents()</code>. Doing it here covers both paths, which is why neither caller does it.
+	 */
+	@Override
+	public void setResourceData(FMLFIBComponent resourceData) {
+		super.setResourceData(resourceData);
+		if (resourceData != null) {
+			notifyResourceLoaded();
+		}
+	}
+
+	/**
+	 * Tell the browsers this resource now has data.
+	 *
+	 * <p>
+	 * {@link FlexoResourceImpl#notifyResourceLoaded()} only goes through the legacy Observable mechanism, which the FIB browsers do not
+	 * watch: an element is re-evaluated on a <b>PropertyChangeSupport</b> event. This is why
+	 * <code>CompilationUnitResourceImpl</code> fires <code>compilationUnit</code> on top of calling super, and why a resource that does not
+	 * would stay greyed out - its <code>enabled="resource.isLoaded"</code> binding never re-read.
+	 */
+	@Override
+	public void notifyResourceLoaded() {
+		super.notifyResourceLoaded();
+		getPropertyChangeSupport().firePropertyChange("component", null, getLoadedResourceData());
+		getPropertyChangeSupport().firePropertyChange("isLoaded", false, true);
 	}
 
 	@Override
@@ -123,14 +143,9 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 			throw new FlexoException("Could not load GINA component " + getURI());
 		}
 
-		FMLFIBComponent returned = HOLDER_FACTORY.newInstance(FMLFIBComponent.class);
-		returned.setComponent(component);
+		FMLFIBComponent returned = FMLFIBComponent.newInstance(component);
 		returned.setResource(this);
 		setResourceData(returned);
-
-		// FlexoResourceImpl.setResourceData() does NOT notify (the call is commented out there), and PamelaResourceImpl
-		// is what does it for every other resource. Without this the browser keeps rendering the resource as unloaded.
-		notifyResourceLoaded();
 
 		return returned;
 	}
@@ -180,10 +195,28 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 
 	@Override
 	public void save() throws SaveResourceException {
-		if (getComponent() != null && getIODelegate() != null) {
-			getFIBLibrary().save(getComponent(), getIODelegate().getSerializationArtefactAsResource());
-			notifyResourceSaved();
+
+		if (getComponent() == null || getIODelegate() == null) {
+			return;
 		}
+
+		// The write MUST be bracketed by the IO delegate's protocol. willWriteOnDisk() is what tells the resource center
+		// that this file is being written BY the platform, so its DirectoryWatcher ignores it. Writing behind that
+		// protocol makes the watcher discover the file as if a stranger had dropped it there, and register a SECOND
+		// resource for the same artefact - which shows up as a duplicate in the browsers and throws
+		// DuplicateURIException.
+		FileWritingLock lock = getIODelegate() instanceof StreamIODelegate ? ((StreamIODelegate<?>) getIODelegate()).willWriteOnDisk()
+				: null;
+
+		try {
+			getFIBLibrary().save(getComponent(), getIODelegate().getSerializationArtefactAsResource());
+		} finally {
+			if (lock != null) {
+				((StreamIODelegate<?>) getIODelegate()).hasWrittenOnDisk(lock);
+			}
+		}
+
+		notifyResourceSaved();
 	}
 
 	/**

@@ -15,6 +15,8 @@ import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
  * The resource data of a {@link FIBComponentResource}: a holder around the GINA {@link FIBComponent} the file describes.
@@ -52,6 +54,29 @@ public interface FMLFIBComponent extends TechnologyObject<FMLTechnologyAdapter>,
 	 */
 	@Override
 	public FIBComponentResource getResource();
+
+	/**
+	 * Build a holder around supplied component.
+	 *
+	 * <p>
+	 * The holder is a PAMELA entity (it has to be a FlexoObject) but carries no state of its own and no serialization, so one factory for the
+	 * whole platform is enough.
+	 */
+	public static FMLFIBComponent newInstance(FIBComponent component) {
+		FMLFIBComponent returned = HOLDER_FACTORY.newInstance(FMLFIBComponent.class);
+		returned.setComponent(component);
+		return returned;
+	}
+
+	static final PamelaModelFactory HOLDER_FACTORY = makeHolderFactory();
+
+	static PamelaModelFactory makeHolderFactory() {
+		try {
+			return new PamelaModelFactory(FMLFIBComponent.class);
+		} catch (ModelDefinitionException e) {
+			throw new IllegalStateException("Cannot build the FMLFIBComponent factory", e);
+		}
+	}
 
 	public static abstract class FMLFIBComponentImpl extends FlexoObjectImpl implements FMLFIBComponent {
 

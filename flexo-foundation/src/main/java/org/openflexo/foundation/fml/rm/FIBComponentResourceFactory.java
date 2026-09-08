@@ -38,12 +38,17 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
+import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.model.container.FIBPanel;
+import org.openflexo.gina.model.container.FIBPanel.Layout;
+import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
@@ -77,8 +82,20 @@ public class FIBComponentResourceFactory
 
 	@Override
 	public FMLFIBComponent makeEmptyResourceData(FIBComponentResource resource) {
-		// A component is authored in the FIB editor, never created empty from here
-		return null;
+		// An empty two-column panel: what a component starts as, before the editor or a generator fills it.
+		// Deliberately bare - building a MEANINGFUL default belongs to the UI layer, which is the only one able to ask
+		// each technology adapter controller for the widget matching a property's type.
+		try {
+			FIBModelFactory factory = new FIBModelFactory(null, resource.getServiceManager().getTechnologyAdapterService(),
+					FIBInspector.class);
+			FIBPanel panel = factory.newFIBPanel();
+			panel.setLayout(Layout.twocols);
+			panel.setUseScrollBar(true);
+			return FMLFIBComponent.newInstance(panel);
+		} catch (ModelDefinitionException e) {
+			logger.log(Level.WARNING, "Could not build an empty component for " + resource.getURI(), e);
+			return null;
+		}
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.rm.FIBComponentResource;
@@ -81,8 +82,25 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 		CompilationUnitResource resource = (CompilationUnitResource) virtualModel.getDeclaringCompilationUnit().getResource();
 		List<FIBComponentResource> components = resource.getContents(FIBComponentResource.class);
 
-		// The artefacts at the root of the container; UI/NestedScreen.fib sits one level deeper
-		assertEquals("Unexpected components linked into " + resource.getURI() + ": " + components, 8, components.size());
+		// Computed rather than hard-coded: EVERY component at the root of the container must be linked, and the fixture
+		// grows whenever the create-inspector action is exercised in the running application, which writes into
+		// src/main/resources. UI/NestedScreen.fib sits one level deeper and is deliberately not a content.
+		TreeSet<String> atContainerRoot = new TreeSet<>();
+		for (Resource artefact : virtualModel.getDeclaringCompilationUnit().getContainerDirectoryResource().getContents(false)) {
+			String path = artefact.getRelativePath();
+			if (path != null && (path.endsWith(".fib") || path.endsWith(".inspector"))) {
+				atContainerRoot.add(path.substring(path.lastIndexOf('/') + 1));
+			}
+		}
+
+		TreeSet<String> linked = new TreeSet<>();
+		for (FIBComponentResource component : components) {
+			String path = component.getIODelegate().getSerializationArtefactAsResource().getRelativePath();
+			linked.add(path.substring(path.lastIndexOf('/') + 1));
+		}
+
+		assertEquals("Every component of the container must be linked into " + resource.getURI(), atContainerRoot, linked);
+		assertTrue("The fixture lost its components", linked.size() >= 8);
 
 		assertNotNull(virtualModel.getUIComponentFlexoResource());
 		assertNotNull(virtualModel.getInspectorComponentFlexoResource());

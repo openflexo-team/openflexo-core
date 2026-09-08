@@ -13,8 +13,14 @@
 @URI("http://openflexo.org/test/TestResourceCenter/TestContainerUI.fml")
 public model TestContainerUI {
 
-	/** Components resolved by the naming convention: Simple.fib and Simple.inspector. */
+	/**
+	 * Components resolved by the naming convention: Simple.fib and Simple.inspector.
+	 *
+	 * Carries one public and one non-public property, so that what a generated inspector proposes by
+	 * default - only the public ones - is exercised both ways.
+	 */
 	public concept Simple {
+		public String description;
 		String name;
 		create(String name) {
 			name = parameters.name;
