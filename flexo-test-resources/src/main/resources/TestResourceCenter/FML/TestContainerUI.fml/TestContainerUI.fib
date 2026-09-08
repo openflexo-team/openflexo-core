@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Fixture of the container-based user interface lookup. Deliberately a PLAIN Panel: the container
-     mechanism reads ordinary GINA components, not the <GINAFIBComponent> wrapper of gina-ta. -->
-<Panel layout="twocols" name="TestContainerUI"
-	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
-	controllerClassName="org.openflexo.gina.controller.FIBController">
-	<Label label="TestContainerUI" name="TestContainerUILabel" />
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.gina.controller.FIBController" name="TestContainerUI">
+  <Label id="1" label="TestContainerUI" align="left" constraints="twocols()" name="TestContainerUILabel" />
+  <FIBVariable id="2" type="org.openflexo.foundation.fml.rt.FlexoConceptInstance" name="data" />
 </Panel>

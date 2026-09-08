@@ -8,6 +8,23 @@
  *   Simple.fib / Simple.inspector                    - the components of concept Simple
  *   CustomScreen.fib                                 - named by the @UI annotation of Annotated
  *   UI/NestedScreen.fib                              - named by a NESTED @UI annotation
+ *   Screen.fib / Compact.fib / OtherCompact.fib      - named by multi-valued @UI annotations
+ *
+ * Those components are stored in TWO shapes on purpose, and TestContainerUIComponentSerialization
+ * asserts both:
+ *   - the two components OF THIS VIRTUAL MODEL are in the CANONICAL shape, i.e. the exact bytes
+ *     FIBComponentResource.save() writes. They are generated, never hand-edited: an attribute the
+ *     serializer adds or an entity it cannot name shows up as a failing test rather than as a
+ *     surprise in a diff, months later, the day someone saves from the FIB editor;
+ *   - everything else is in the LEGACY shape - <Panel className="…FIBInspector" dataClassName="…">
+ *     - which is how the 400-odd .inspector files of the infrastructure are written, and what
+ *     migrating a modeller to the container mechanism keeps feeding us. Nothing else covers the
+ *     reading of that shape.
+ *
+ * A component named by SEVERAL concepts (Screen.fib is the default variant of WithVariants AND the
+ * 'large' one of WithoutDefaultVariant) is deliberately among the legacy ones: the canonical shape
+ * of a component carries the type of its 'data' variable, and there would be no honest value to
+ * write there.
  */
 
 @URI("http://openflexo.org/test/TestResourceCenter/TestContainerUI.fml")

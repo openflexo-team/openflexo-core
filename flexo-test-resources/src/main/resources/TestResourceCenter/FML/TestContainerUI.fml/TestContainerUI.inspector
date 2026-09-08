@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Fixture of the container-based inspector lookup. -->
-<Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols" name="TestContainerUIInspector"
-	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
-	controllerClassName="org.openflexo.inspector.FIBInspectorController">
-	<TabPanel name="Tab">
-		<Tab title="TestContainerUIInspector" layout="twocols" index="0" name="TestContainerUIInspectorTab" />
-	</TabPanel>
-</Panel>
+<Inspector id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.inspector.FIBInspectorController" name="TestContainerUIInspector">
+  <TabPanel id="1" constraints="twocols()" name="Tab">
+    <Tab id="2" title="TestContainerUIInspector" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" index="0" name="TestContainerUIInspectorTab" />
+  </TabPanel>
+  <FIBVariable id="3" type="org.openflexo.foundation.fml.rt.FlexoConceptInstance" name="data" />
+</Inspector>

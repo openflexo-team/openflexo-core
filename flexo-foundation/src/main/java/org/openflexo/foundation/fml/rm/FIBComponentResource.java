@@ -38,10 +38,12 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
@@ -77,4 +79,14 @@ public interface FIBComponentResource extends TechnologyAdapterResource<FMLFIBCo
 	 * <code>data</code> it is shown with is an instance of that concept, not a bare FlexoConceptInstance.
 	 */
 	public FlexoConcept getDrivingConcept();
+
+	/**
+	 * A model factory able to read AND write this component.
+	 *
+	 * <p>
+	 * Both directions must go through it: the entities it declares beyond the ones reachable from {@link FIBComponent} - a
+	 * <code>FIBInspector</code> - are known to it alone, and a component serialized by any other factory would be written as its upper
+	 * entity, with a <code>p:modelEntity</code> attribute standing in for what that factory could not name.
+	 */
+	public FIBModelFactory makeModelFactory() throws FlexoException;
 }

@@ -137,7 +137,7 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 			throw new FlexoException("No serialization artefact for " + getURI());
 		}
 
-		FIBComponent component = getFIBLibrary().retrieveFIBComponent(artefact, false, makeFIBModelFactory(artefact));
+		FIBComponent component = getFIBLibrary().retrieveFIBComponent(artefact, false, makeModelFactory());
 		if (component == null) {
 			// retrieveFIBComponent only prints the stack trace of what went wrong, and answers null
 			throw new FlexoException("Could not load GINA component " + getURI());
@@ -209,7 +209,13 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 				: null;
 
 		try {
-			getFIBLibrary().save(getComponent(), getIODelegate().getSerializationArtefactAsResource());
+			// The SAME factory the component was read with. Without it FIBLibrary builds one knowing the entities reachable from
+			// FIBComponent only, and a FIBInspector - which is not one of them - comes back out as its upper entity FIBPanel, under a
+			// p:modelEntity attribute standing in for the name that factory could not resolve. Reading and writing a component are
+			// symmetric operations and take the same factory.
+			getFIBLibrary().save(getComponent(), getIODelegate().getSerializationArtefactAsResource(), makeModelFactory());
+		} catch (FlexoException e) {
+			throw new SaveResourceException(getIODelegate(), e);
 		} finally {
 			if (lock != null) {
 				((StreamIODelegate<?>) getIODelegate()).hasWrittenOnDisk(lock);
@@ -239,7 +245,14 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 	 * The factory is rooted at the container so a relative reference the component carries resolves inside the <code>Xxx.fml/</code>
 	 * directory.
 	 */
-	private FIBModelFactory makeFIBModelFactory(Resource artefact) throws FlexoException {
+	@Override
+	public FIBModelFactory makeModelFactory() throws FlexoException {
+
+		Resource artefact = getIODelegate() != null ? getIODelegate().getSerializationArtefactAsResource() : null;
+		if (artefact == null) {
+			throw new FlexoException("No serialization artefact for " + getURI());
+		}
+
 		try {
 			return new FIBModelFactory(artefact.getContainer(), getServiceManager().getTechnologyAdapterService(), FIBInspector.class);
 		} catch (ModelDefinitionException e) {
