@@ -80,7 +80,7 @@ public class TestContainerUIComponentSerialization extends OpenflexoTestCase {
 
 		virtualModel = resource.getCompilationUnit().getVirtualModel();
 		assertNotNull(virtualModel);
-		assertEquals("The fixture did not parse", 10, virtualModel.getFlexoConcepts().size());
+		assertEquals("The fixture did not parse", 11, virtualModel.getFlexoConcepts().size());
 	}
 
 	/**

@@ -4,6 +4,11 @@
 	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
 	controllerClassName="org.openflexo.inspector.FIBInspectorController">
 	<TabPanel name="Tab">
-		<Tab title="SimpleInspector" layout="twocols" index="0" name="SimpleInspectorTab" />
+		<Tab title="SimpleInspector" layout="twocols" index="0" name="SimpleInspectorTab">
+			<Label label="description" name="descriptionLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)" />
+			<TextField data="data.description" name="descriptionWidget"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)" />
+		</Tab>
 	</TabPanel>
 </Panel>

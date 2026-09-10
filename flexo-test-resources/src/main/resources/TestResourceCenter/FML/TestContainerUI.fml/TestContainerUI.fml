@@ -9,6 +9,7 @@
  *   CustomScreen.fib                                 - named by the @UI annotation of Annotated
  *   UI/NestedScreen.fib                              - named by a NESTED @UI annotation
  *   Screen.fib / Compact.fib / OtherCompact.fib      - named by multi-valued @UI annotations
+ *   Plain.inspector                                  - a PLAIN inspector, with no TabPanel
  *
  * Those components are stored in TWO shapes on purpose, and TestContainerUIComponentSerialization
  * asserts both:
@@ -102,5 +103,15 @@ public model TestContainerUI {
 		}
 		delete() {
 		}
+	}
+
+	/**
+	 * Ships a PLAIN inspector: a two-column panel with no TabPanel, which is what the CreateInspector
+	 * action generates by default. Merged into the inspector of the FlexoConceptInstance class, such
+	 * a panel has to become a tab of its own - appended as it is, its first label lands in front of
+	 * the TabPanel of the class inspector, and FIBInspector.getTabPanel() fails on it.
+	 */
+	public concept Plain {
+		public String description;
 	}
 }

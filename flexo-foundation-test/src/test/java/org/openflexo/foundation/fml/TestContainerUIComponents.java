@@ -59,7 +59,7 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 
 		// A failed parse leaves an EMPTY compilation unit behind, which then validates with zero errors:
 		// assert the concepts were actually parsed before asserting anything about them.
-		assertEquals("The fixture did not parse", 10, virtualModel.getFlexoConcepts().size());
+		assertEquals("The fixture did not parse", 11, virtualModel.getFlexoConcepts().size());
 	}
 
 	/** A VirtualModel is a FlexoConcept, so the convention gives it its own view as Xxx.fml/Xxx.fib. */
