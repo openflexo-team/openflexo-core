@@ -249,9 +249,22 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void setResourceData(RD resourceData) {
+		boolean wasLoaded = isLoaded();
 		this.resourceData = resourceData;
 		// notifyResourceLoaded();
+		// Not the whole of notifyResourceLoaded() - it also reaches the resource manager - but its loaded state has to be told. A browser
+		// shows a resource greyed until it is loaded, through a binding such as enabled="resource.isLoaded", re-read on a
+		// PropertyChangeSupport event only. Loading and unloading tell it already: ResourceLoaded / ResourceUnloaded carry that very
+		// property name, and FlexoObservable.notifyObservers relays every DataModification to the PropertyChangeSupport. But a resource
+		// CREATED with empty contents gets its data here and nowhere else - after FlexoResourceFactory.makeResource has registered it,
+		// i.e. after a browser has built its row and read it as unloaded. Without this, that row stays greyed.
+		if (wasLoaded != isLoaded()) {
+			getPropertyChangeSupport().firePropertyChange(IS_LOADED_KEY, wasLoaded, isLoaded());
+		}
 	}
+
+	/** The name the loaded state is notified under: what a binding such as <code>resource.isLoaded</code> listens to. */
+	private static final String IS_LOADED_KEY = "isLoaded";
 
 	/**
 	 * Rename resource

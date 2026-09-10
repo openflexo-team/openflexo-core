@@ -86,13 +86,13 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 	}
 
 	/**
-	 * Notify that this resource now holds data.
+	 * Notify that this resource now holds data, whichever way it got it.
 	 *
 	 * <p>
-	 * {@link FlexoResourceImpl#setResourceData} does NOT notify - the call is commented out there - and
-	 * <code>PamelaResourceImpl</code> is what does it for every other resource. Without this the browsers keep rendering the resource as
-	 * unloaded, greyed out, whichever way it got its data: loaded from disk, or created with empty contents by
-	 * <code>FlexoResourceFactory.createEmptyContents()</code>. Doing it here covers both paths, which is why neither caller does it.
+	 * {@link FlexoResourceImpl#setResourceData} tells the listeners of <code>isLoaded</code>, but not the rest of what
+	 * {@link #notifyResourceLoaded()} reaches - among which <code>component</code>, below. And this resource gets its data here on BOTH
+	 * paths: loaded from disk (see {@link #loadResourceData()}), and created with empty contents by
+	 * <code>FlexoResourceFactory.createEmptyContents()</code>, which notifies nothing itself.
 	 */
 	@Override
 	public void setResourceData(FMLFIBComponent resourceData) {
@@ -103,19 +103,13 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 	}
 
 	/**
-	 * Tell the browsers this resource now has data.
-	 *
-	 * <p>
-	 * {@link FlexoResourceImpl#notifyResourceLoaded()} only goes through the legacy Observable mechanism, which the FIB browsers do not
-	 * watch: an element is re-evaluated on a <b>PropertyChangeSupport</b> event. This is why
-	 * <code>CompilationUnitResourceImpl</code> fires <code>compilationUnit</code> on top of calling super, and why a resource that does not
-	 * would stay greyed out - its <code>enabled="resource.isLoaded"</code> binding never re-read.
+	 * On top of what {@link FlexoResourceImpl#notifyResourceLoaded()} tells - <code>isLoaded</code> among others - the property the
+	 * browsers read a component through, the same way <code>CompilationUnitResourceImpl</code> fires <code>compilationUnit</code>.
 	 */
 	@Override
 	public void notifyResourceLoaded() {
 		super.notifyResourceLoaded();
 		getPropertyChangeSupport().firePropertyChange("component", null, getLoadedResourceData());
-		getPropertyChangeSupport().firePropertyChange("isLoaded", false, true);
 	}
 
 	@Override
