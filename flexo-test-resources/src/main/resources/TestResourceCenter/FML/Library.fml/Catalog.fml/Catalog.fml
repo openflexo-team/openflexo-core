@@ -7,6 +7,9 @@ use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 public model Catalog {
 
+	create() {
+	}
+
 	public concept Entry {
 
 		String reference;

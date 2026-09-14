@@ -1,22 +1,30 @@
 /**
  * A library holding shelves of books.
  *
- * Example model of the FML meta-model javadoc in flexo-foundation (package org.openflexo.foundation.fml,
- * FMLCompilationUnit, VirtualModel, FlexoConcept): the excerpts quoted there are taken from this file and
- * from its contained Catalog.fml. See TestLibrary.fmlscript.
+ * Example model of the FML meta-model javadoc in flexo-foundation (packages org.openflexo.foundation.fml,
+ * fml.controlgraph and fml.editionaction): the excerpts quoted there are taken from this file and from its
+ * contained Catalog.fml. See TestLibrary.fmlscript.
  */
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 import java.util.List;
+import ["http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml"];
 
 @URI("http://openflexo.org/test/TestResourceCenter/Library.fml")
 @Version("1.0")
 @Description("A library holding shelves of books")
 public model Library {
 
+	Catalog catalog;
+
+	public Catalog createCatalog() {
+		catalog = new Catalog() with (name="catalog");
+		return catalog;
+	}
+
 	public Shelf newShelf(String label) {
-		return new Shelf(parameters.label);
+		return new Shelf(parameters.label, 20);
 	}
 
 	public List<Shelf> allShelves() {
@@ -26,20 +34,54 @@ public model Library {
 	public concept Shelf {
 
 		String label;
+		int capacity;
+		Book[0,*] books;
+		int bookCount values books.size;
 
-		create(String label) {
+		String displayName {
+			String get() {
+				return "Shelf " + label;
+			}
+			set(String value) {
+				label = value;
+			}
+		};
+
+		create(required String label, int capacity=10) {
 			label = parameters.label;
+			capacity = parameters.capacity;
 		}
 
 		delete() {
 		}
 
-		public Book newBook(String title) {
-			return new Book(parameters.title);
+		@UI(
+			@TextField(value="title", label="book_title")
+		)
+		public Book newBook(required String title) {
+			Book book = new Book(parameters.title);
+			books.add(book);
+			return book;
 		}
 
 		public Novel newNovel(String title, String author) {
-			return new Novel(parameters.title, parameters.author);
+			Novel novel = new Novel(parameters.title, parameters.author);
+			books.add(novel);
+			return novel;
+		}
+
+		public rename(String newName) {
+			displayName = parameters.newName;
+		}
+
+		public int countNovels() {
+			int count = 0;
+			for (Book book : books) {
+				if (book instanceof Novel) {
+					count = count + 1;
+				}
+			}
+			return count;
 		}
 
 		public concept Book {

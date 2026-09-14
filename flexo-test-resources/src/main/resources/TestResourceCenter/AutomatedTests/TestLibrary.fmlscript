@@ -1,7 +1,7 @@
 // Library is the example model of the FML meta-model javadoc in flexo-foundation
-// (org.openflexo.foundation.fml package-info, FMLCompilationUnit, VirtualModel, FlexoConcept).
+// (packages org.openflexo.foundation.fml, fml.controlgraph and fml.editionaction).
 // This script keeps what that javadoc states true: nested concepts, concept inheritance, URIs,
-// and a contained VirtualModel.
+// a contained VirtualModel, the kinds of properties, behaviour parameters and control structures.
 
 virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Library.fml"];
 assert virtualModel != null;
@@ -29,14 +29,20 @@ catalog = load -r ["http://openflexo.org/test/TestResourceCenter/Library.fml/Cat
 assert catalog != null;
 assert catalog.containerVirtualModel == virtualModel;
 
-// Run-time: a nested concept instance is created from its container instance
+// Run-time
 service ResourceCenterService add_temp_rc;
 library = new Library() with (name="library");
 assert library != null;
 
+// Creation scheme with a required parameter and a parameter declaring a default value
+shelfCreation = shelf.getCreationSchemes().get(0);
+assert shelfCreation.getSignature() == "create(label,capacity)";
+assert shelfCreation.getParameter("label").getIsRequired();
+assert shelfCreation.getParameter("capacity").getIsRequired() == false;
 fiction = library.newShelf("Fiction");
 assert fiction != null;
 assert fiction.label == "Fiction";
+assert fiction.capacity == 20;
 assert library.allShelves().size == 1;
 
 // Inside a behaviour of Shelf, "new Book(...)" creates a Book contained in that Shelf instance
@@ -51,4 +57,20 @@ assert dune.title == "Dune";
 assert dune.author == "Frank Herbert";
 assert dune.container == fiction;
 
-log "Test PASSED: Library instantiates, with nested and inherited concepts and a contained VirtualModel";
+// Concept instance role with multiple cardinality, and expression property (read-only)
+assert shelf.getDeclaredProperty("books").cardinality.toString() == "ZeroMany";
+assert shelf.getDeclaredProperty("bookCount").isReadOnly();
+assert shelf.getDeclaredProperty("label").getURI() == "http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf.label";
+assert fiction.books.size == 2;
+assert fiction.bookCount == 2;
+
+// Get/set property: the getter computes, the setter (called by rename) writes the label
+assert fiction.displayName == "Shelf Fiction";
+fiction.rename("Classics");
+assert fiction.label == "Classics";
+assert fiction.displayName == "Shelf Classics";
+
+// Iteration and conditional
+assert fiction.countNovels() == 1;
+
+log "Test PASSED: Library instantiates, with nested and inherited concepts, properties, parameters and control structures";
