@@ -51,6 +51,43 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * A constructor of a concept, declared in FML with {@code create(...)} (anonymous, see {@link #isAnonymous()}) or
+ * {@code create::name(...)} (named).
+ * <p>
+ * An instance is created with {@code new Concept(...)}, which reaches the anonymous creation scheme, or with
+ * {@code new Concept::name(...)}, which reaches a named one. In a concept extending another one, the creation scheme of the parent is
+ * called with {@code super(...)} (anonymous) or {@code super.name(...)} (named).
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public model Library {
+ *
+ *     public Shelf newSmallShelf(String label) {
+ *         return new Shelf::withDefaultCapacity(parameters.label);
+ *     }
+ *
+ *     public concept Shelf {
+ *         String label;
+ *         int capacity;
+ *
+ *         create(required String label, int capacity=10) {
+ *             label = parameters.label;
+ *             capacity = parameters.capacity;
+ *         }
+ *
+ *         create::withDefaultCapacity(String label) {
+ *             label = parameters.label;
+ *             capacity = 10;
+ *         }
+ *     }
+ * }
+ * </pre>
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(CreationScheme.CreationSchemeImpl.class)
 @XMLElement

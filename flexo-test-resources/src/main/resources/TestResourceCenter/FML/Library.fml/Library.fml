@@ -27,8 +27,17 @@ public model Library {
 		return new Shelf(parameters.label, 20);
 	}
 
+	public Shelf newSmallShelf(String label) {
+		return new Shelf::withDefaultCapacity(parameters.label);
+	}
+
 	public List<Shelf> allShelves() {
 		return select Shelf from this;
+	}
+
+	public abstract concept Publication {
+
+		abstract String code;
 	}
 
 	public concept Shelf {
@@ -37,6 +46,7 @@ public model Library {
 		int capacity;
 		Book[0,*] books;
 		int bookCount values books.size;
+		private String notes;
 
 		String displayName {
 			String get() {
@@ -50,6 +60,11 @@ public model Library {
 		create(required String label, int capacity=10) {
 			label = parameters.label;
 			capacity = parameters.capacity;
+		}
+
+		create::withDefaultCapacity(String label) {
+			label = parameters.label;
+			capacity = 10;
 		}
 
 		delete() {
@@ -84,9 +99,10 @@ public model Library {
 			return count;
 		}
 
-		public concept Book {
+		public concept Book extends Publication {
 
 			String title;
+			String code values "B-" + title;
 
 			create(String title) {
 				title = parameters.title;

@@ -45,7 +45,6 @@ import org.openflexo.connie.DataBinding.CachingStrategy;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeActionFactory;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -55,8 +54,9 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
- * Abstract behaviour being called on an existing {@link VirtualModelInstance}
- * 
+ * Base of the behaviours executed on an existing {@link FlexoConceptInstance} ({@link ActionScheme}, {@link DeletionScheme},
+ * {@link NavigationScheme}...), as opposed to the creation schemes (see {@link AbstractCreationScheme}).
+ *
  * @author sylvain
  *
  */

@@ -58,10 +58,11 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A primitive property, whose value is serialized at run-time
- * 
- * Type of such property might be an enum value of {@link PrimitiveType}
- * 
+ * A role storing a primitive value, whose type is a primitive type, {@code String} or {@code Date} (see {@link PrimitiveType}). Its value
+ * is persisted with the instance.
+ * <p>
+ * Declared in FML as a property of such a type, possibly with an initial value, e.g. {@code String label;} or {@code int capacity = 10;}.
+ *
  * @author sylvain
  *
  * @param <T>

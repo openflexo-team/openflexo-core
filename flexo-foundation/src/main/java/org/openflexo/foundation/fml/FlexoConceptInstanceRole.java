@@ -67,6 +67,30 @@ import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * A role referencing instances of a {@link FlexoConcept} (see {@link #getFlexoConceptType()}).
+ * <p>
+ * Declared in FML either with the short form, a property typed with a concept ({@code Book[0,*] books;}), or with the explicit form
+ * {@code Book[0,*] books with ConceptInstance(virtualModelInstance=...);}. The optional {@link #getVirtualModelInstance()} binding
+ * designates the {@link VirtualModelInstance} in which the referenced instances live.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public concept Shelf {
+ *     Book[0,*] books;
+ *
+ *     public Book newBook(required String title) {
+ *         Book book = new Book(parameters.title);
+ *         books.add(book);
+ *         return book;
+ *     }
+ * }
+ * </pre>
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceRole.FlexoConceptInstanceRoleImpl.class)
 @XMLElement
@@ -106,8 +130,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	/**
-	 * This binding define the {@link FMLRTVirtualModelInstance} where addressed {@link FlexoConceptInstance} "lives"
-	 * 
+	 * This optional binding defines the {@link VirtualModelInstance} in which the referenced {@link FlexoConceptInstance}s live
+	 *
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
@@ -119,16 +143,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance);
 
 	/**
-	 * Return type of VirtualModel where this role may access to a FlexoConceptInstance<br>
-	 * This data is infered from eventual analyzed type of FMLRTVirtualModelInstance binding
-	 * 
+	 * Return the VirtualModel of the instance in which the referenced instances live<br>
+	 * It is inferred from the analyzed type of the {@link #getVirtualModelInstance()} binding, and is null when this binding is not set
+	 *
 	 * @return
 	 */
 	public VirtualModel getVirtualModelType();
-
-	/*public AbstractFMLRTModelSlot<?, ?> getVirtualModelModelSlot();
-	
-	public void setVirtualModelModelSlot(AbstractFMLRTModelSlot<?, ?> modelSlot);*/
 
 	@Override
 	public FlexoConceptInstanceType buildType(String serializedType);

@@ -60,10 +60,12 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A java property which type is any type of Java language
- * 
- * Take care that this property is transient: value cannot be serialized at run-time
- * 
+ * A role storing a value of any other Java type (a type which is neither primitive, {@code String}, {@code Date}, a concept nor a
+ * VirtualModel), e.g. {@code List<String> tags;}.
+ * <p>
+ * Its value is persisted as a String, through the string encoder of the model factory (see
+ * {@link org.openflexo.foundation.fml.rt.JavaActorReference}): a value whose type cannot be converted to a String is not persisted.
+ *
  * @author sylvain
  *
  * @param <T>

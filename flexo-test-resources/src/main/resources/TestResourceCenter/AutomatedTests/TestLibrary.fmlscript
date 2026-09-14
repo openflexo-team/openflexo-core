@@ -81,4 +81,22 @@ assert fiction.displayName == "Shelf Classics";
 // Iteration and conditional
 assert fiction.countNovels() == 1;
 
+// Abstract property: Publication declares code, Book implements it with an expression property
+publication = virtualModel.getFlexoConcept("Publication");
+assert publication != null;
+assert publication.isAbstract();
+assert publication.isSuperConceptOf(book);
+assert emma.code == "B-Emma";
+assert dune.code == "B-Dune";
+
+// Named creation scheme, reached with new Shelf::withDefaultCapacity(...)
+small = library.newSmallShelf("Poetry");
+assert small != null;
+assert small.label == "Poetry";
+assert small.capacity == 10;
+
+// Visibility: no keyword means Default
+assert shelf.getDeclaredProperty("notes").visibility.toString() == "Private";
+assert shelf.getDeclaredProperty("label").visibility.toString() == "Default";
+
 log "Test PASSED: Library instantiates, with nested and inherited concepts, properties, parameters and control structures";

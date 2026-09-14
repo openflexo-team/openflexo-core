@@ -53,12 +53,14 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A {@link AbstractProperty} represents a pure declaration of a {@link FlexoProperty} with no implementation<br>
- * This property must be overriden in child {@link FlexoConcept}
- * 
- * 
+ * A pure declaration of a {@link FlexoProperty}, with no implementation, declared in FML as {@code abstract Type name;}.
+ * <p>
+ * A concept declaring an {@link AbstractProperty} must be abstract (see {@link FlexoConcept#abstractRequired()}), and the property is
+ * implemented by a property with the same name in a child concept (for instance an {@link ExpressionProperty}, see its documentation for
+ * an example).
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(AbstractProperty.AbstractPropertyImpl.class)

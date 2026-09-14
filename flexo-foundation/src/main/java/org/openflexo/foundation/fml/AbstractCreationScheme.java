@@ -44,6 +44,13 @@ import org.openflexo.connie.binding.AbstractConstructor;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
+/**
+ * Base of the behaviours creating a new instance of their concept ({@link CreationScheme}, {@link CloningScheme}); the type of the
+ * created instance is {@link #getNewInstanceType()}, which is also the return type of the behaviour.
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreationScheme.AbstractCreationSchemeImpl.class)
 public abstract interface AbstractCreationScheme extends FlexoBehaviour, AbstractConstructor {

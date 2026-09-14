@@ -49,6 +49,16 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * A destructor of a concept, declared in FML with {@code delete(...)} (anonymous, see {@link #isAnonymous()}) or
+ * {@code delete::name(...)} (named).
+ * <p>
+ * Deleting an instance executes a deletion scheme of its concept (see {@link FlexoConcept#getDefaultDeletionScheme()}), or a deletion
+ * scheme generated on the fly when the concept declares none.
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(DeletionScheme.DeletionSchemeImpl.class)
 @XMLElement
