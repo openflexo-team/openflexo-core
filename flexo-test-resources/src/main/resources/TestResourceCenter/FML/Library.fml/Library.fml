@@ -1,0 +1,70 @@
+/**
+ * A library holding shelves of books.
+ *
+ * Example model of the FML meta-model javadoc in flexo-foundation (package org.openflexo.foundation.fml,
+ * FMLCompilationUnit, VirtualModel, FlexoConcept): the excerpts quoted there are taken from this file and
+ * from its contained Catalog.fml. See TestLibrary.fmlscript.
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/Library.fml")
+@Version("1.0")
+@Description("A library holding shelves of books")
+public model Library {
+
+	public Shelf newShelf(String label) {
+		return new Shelf(parameters.label);
+	}
+
+	public List<Shelf> allShelves() {
+		return select Shelf from this;
+	}
+
+	public concept Shelf {
+
+		String label;
+
+		create(String label) {
+			label = parameters.label;
+		}
+
+		delete() {
+		}
+
+		public Book newBook(String title) {
+			return new Book(parameters.title);
+		}
+
+		public Novel newNovel(String title, String author) {
+			return new Novel(parameters.title, parameters.author);
+		}
+
+		public concept Book {
+
+			String title;
+
+			create(String title) {
+				title = parameters.title;
+			}
+
+			delete() {
+			}
+		}
+
+		public concept Novel extends Book {
+
+			String author;
+
+			create(String title, String author) {
+				super(parameters.title);
+				author = parameters.author;
+			}
+
+			delete() {
+			}
+		}
+	}
+}

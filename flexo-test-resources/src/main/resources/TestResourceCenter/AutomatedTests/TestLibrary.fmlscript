@@ -1,0 +1,54 @@
+// Library is the example model of the FML meta-model javadoc in flexo-foundation
+// (org.openflexo.foundation.fml package-info, FMLCompilationUnit, VirtualModel, FlexoConcept).
+// This script keeps what that javadoc states true: nested concepts, concept inheritance, URIs,
+// and a contained VirtualModel.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Library.fml"];
+assert virtualModel != null;
+assert virtualModel.name == "Library";
+
+// Nested concepts: Book and Novel live in Shelf, which is a root concept
+shelf = virtualModel.getFlexoConcept("Shelf");
+assert shelf != null;
+book = virtualModel.getFlexoConcept("Book");
+assert book != null;
+assert shelf.isRoot();
+assert book.isRoot() == false;
+assert book.containerFlexoConcept == shelf;
+assert book.getURI() == "http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf#Book";
+
+// Concept inheritance: Novel extends Book
+novel = virtualModel.getFlexoConcept("Novel");
+assert novel != null;
+assert book.isSuperConceptOf(novel);
+
+// Contained VirtualModel: Catalog is stored in Library.fml/, its URI is computed from Library's one
+assert virtualModel.getVirtualModels(true).size == 1;
+assert virtualModel.getVirtualModels(true).get(0).getURI() == "http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml";
+catalog = load -r ["http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml"];
+assert catalog != null;
+assert catalog.containerVirtualModel == virtualModel;
+
+// Run-time: a nested concept instance is created from its container instance
+service ResourceCenterService add_temp_rc;
+library = new Library() with (name="library");
+assert library != null;
+
+fiction = library.newShelf("Fiction");
+assert fiction != null;
+assert fiction.label == "Fiction";
+assert library.allShelves().size == 1;
+
+// Inside a behaviour of Shelf, "new Book(...)" creates a Book contained in that Shelf instance
+emma = fiction.newBook("Emma");
+assert emma != null;
+assert emma.title == "Emma";
+assert emma.container == fiction;
+
+dune = fiction.newNovel("Dune", "Frank Herbert");
+assert dune != null;
+assert dune.title == "Dune";
+assert dune.author == "Frank Herbert";
+assert dune.container == fiction;
+
+log "Test PASSED: Library instantiates, with nested and inherited concepts and a contained VirtualModel";
