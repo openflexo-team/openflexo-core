@@ -39,7 +39,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
