@@ -73,3 +73,82 @@ pruneWithMethod() {
    runs it on each unmatched instance.
 
 **Workaround.** Only use `unmatched: delete()`, on a concept declaring exactly ONE deletion scheme (see `CORE-F-2`).
+
+---
+
+## FML properties
+
+### CORE-D-3 — The parameter name declared in a `set(...)` block is ignored  ·  `TODO`
+
+**Symptom.** In a get/set property, the value assigned through the `set` block is only reachable as `value`, whatever name is
+declared in `set(Type name)`. Using the declared name gives an invalid binding (`BindingVariable <name> does not exist`, logged at
+parse time) and, at run-time, the assignment silently does nothing. `parameters.<name>` does not work either.
+
+**Reproduction (verified 2026-09 by execution).** After `setBoth("X")`, `a` is still null while `b` is `"X"`:
+
+```fml
+public concept Holder {
+	String a;
+	String b;
+	String viaDeclaredName {
+		String get() { return a; }
+		set(String aName) { a = aName; }    // invalid binding: aName does not exist
+	};
+	String viaValue {
+		String get() { return b; }
+		set(String aName) { b = value; }    // works, although the parameter is named aName
+	};
+	public setBoth(String x) {
+		viaDeclaredName = parameters.x;
+		viaValue = parameters.x;
+	}
+}
+```
+
+**Mechanism — verified in the code.**
+1. The variable exposed in the `set` block is a `SetValueBindingVariable`, named after `GetSetProperty.getValueVariableName()`
+   (`ControlGraphBindingModel.handleSetValueBindingVariable()`), whose default value is `value`.
+2. Nothing in fml-parser calls `GetSetProperty.setValueVariableName()`: the name declared in the `set_decl` production is never
+   transferred to the model (see `GetSetPropertyNode`).
+
+**Workaround.** Always declare the setter parameter as `value` (`set(String value) { label = value; }`), as done in
+`flexo-test-resources` `FML/Library.fml`.
+
+---
+
+## FML behaviours
+
+### CORE-D-4 — A parameter default value does not allow omitting the argument in `new`  ·  `TODO`
+
+**Symptom.** A creation scheme parameter declaring a default value (`int capacity=10`) must still be passed explicitly: a `new`
+expression omitting it does not resolve, and evaluates silently to null at run-time. Whether default values are meant to allow
+omitting arguments, or only to pre-fill the parameters user interface, has to be decided as part of the fix.
+
+**Reproduction (verified 2026-09 by execution).** With the following concept, `newShelf("Fiction")` returns null; the parser logs
+`cannot find constructor null for type Shelf with arguments [parameters.label]`, then
+`DataBinding new Shelf(parameters.label) still invalid at the end of process`. Passing both arguments
+(`new Shelf(parameters.label, 20)`) works.
+
+```fml
+public model Library {
+	public Shelf newShelf(String label) {
+		return new Shelf(parameters.label);
+	}
+	public concept Shelf {
+		String label;
+		int capacity;
+		create(required String label, int capacity=10) {
+			label = parameters.label;
+			capacity = parameters.capacity;
+		}
+	}
+}
+```
+
+**Mechanism — not investigated yet.** The constructor lookup performed while resolving the `new` binding
+(`CreationSchemePathElement`, fml-parser binding factory) apparently matches creation schemes on the number of supplied arguments,
+without considering parameters with a default value; to be confirmed in the code.
+
+**Workaround.** Pass every argument explicitly, or declare a named creation scheme with fewer parameters
+(`create::withDefaultCapacity(String label)`, reached with `new Shelf::withDefaultCapacity(...)`), as done in `flexo-test-resources`
+`FML/Library.fml`.
