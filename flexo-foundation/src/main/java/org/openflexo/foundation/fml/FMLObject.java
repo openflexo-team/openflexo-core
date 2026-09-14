@@ -85,19 +85,21 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * This is the root class for all objects involved in an {@link VirtualModel} (a FML "program").<br>
- * A {@link FMLObject} has a name, a description and can be identified by an URI
- * 
- * It represents an object which is part of a FML model.<br>
- * As such, you securely access to the {@link VirtualModel} in which this object "lives" using {@link #getResourceData()}<br>
- * 
- * A {@link FMLObject} is a {@link Bindable} as conforming to CONNIE binding scheme<br>
- * A {@link FMLObject} is a {@link InnerResourceData} (in a VirtualModel)<br>
- * A {@link FMLObject} is a {@link TechnologyObject} (powered with {@link FMLTechnologyAdapter})
- * 
- * 
+ * Root of every object of the FML meta-model, from the {@link FMLCompilationUnit} down to the most elementary edition action.
+ * <p>
+ * A {@link FMLObject} is:
+ * <ul>
+ * <li>an {@link InnerResourceData} of the {@link FMLCompilationUnit} declaring it: {@link #getResourceData()} and
+ * {@link #getDeclaringCompilationUnit()} both return that compilation unit (not the {@link VirtualModel})</li>
+ * <li>a {@link Bindable}: it provides the binding model in which the Connie expressions it declares are resolved</li>
+ * <li>a {@link TechnologyObject} of the {@link FMLTechnologyAdapter}</li>
+ * </ul>
+ * The annotations preceding a declaration in FML source ({@code @URI}, {@code @Version}, {@code @Author}, {@code @Description}...) are
+ * stored as {@link FMLMetaData} (see {@link #getMetaData()}). Some properties exposed through dedicated accessors are in fact read from and
+ * written to this metadata, {@link #getDescription()} for instance.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
@@ -131,6 +133,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	@Setter(AUTHOR_KEY)
 	public void setAuthor(String author);
 
+	/**
+	 * Return the description of this object, stored as the {@code @Description("...")} annotation of its FML declaration.<br>
+	 * A documentation comment preceding the declaration in FML source is ignored by the parser: it does not provide the description.
+	 */
 	@Getter(value = DESCRIPTION_KEY)
 	@XMLAttribute
 	public String getDescription();
@@ -141,9 +147,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public boolean hasDescription();
 
 	/**
-	 * Return list of meta-data declared for this object
-	 * 
-	 * @return
+	 * Return the metadata of this object: the annotations ({@code @Xxx}, {@code @Xxx(value)}, {@code @Xxx(key=value,...)}) preceding its
+	 * declaration in FML source
 	 */
 	// TODO: ignoreForEquality to be removed once conversion from XML to FML is done
 	@Getter(value = META_DATA_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY, ignoreForEquality = true)

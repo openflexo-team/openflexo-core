@@ -107,6 +107,45 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * The object form of a FML source file ({@code Xxx.fml}): the {@link ResourceData} of a {@link CompilationUnitResource}.
+ * <p>
+ * In the order imposed by the grammar, a compilation unit declares:
+ * <ol>
+ * <li>namespaces ({@link NamespaceDeclaration})</li>
+ * <li>used model slot types ({@link UseModelSlotDeclaration})</li>
+ * <li>imports of Java classes ({@link JavaImportDeclaration}) or of FML elements addressed by URI ({@link ElementImportDeclaration})</li>
+ * <li>type aliases ({@link TypeDeclaration})</li>
+ * <li>exactly one {@link VirtualModel} (see {@link #getVirtualModel()})</li>
+ * </ol>
+ * Example (header of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+ *
+ * import java.util.List;
+ *
+ * &#64;URI("http://openflexo.org/test/TestResourceCenter/Library.fml")
+ * &#64;Version("1.0")
+ * &#64;Description("A library holding shelves of books")
+ * public model Library {
+ *     ...
+ * }
+ * </pre>
+ *
+ * A compilation unit has no URI of its own: {@link #getURI()} and {@link #setURI(String)} delegate to its {@link VirtualModel}. It holds the
+ * {@link FMLTypingSpace} in which the types of its declarations are resolved.
+ * <p>
+ * A compilation unit is stored in a container directory {@code Xxx.fml/} (see {@link #getContainerDirectoryResource()}), which also holds
+ * the compilation units of its contained virtual models (one {@code Yyy.fml/} directory each), its localized dictionary and its user
+ * interface components.
+ * <p>
+ * Code building or modifying FML programmatically should rely on the {@code ensureXxx(...)} methods and on {@link #manageImports()}, so that
+ * the required declarations are present when the compilation unit is pretty-printed.
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(FMLCompilationUnit.FMLCompilationUnitImpl.class)
 public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, ResourceData<FMLCompilationUnit>, BindingEvaluationContext {

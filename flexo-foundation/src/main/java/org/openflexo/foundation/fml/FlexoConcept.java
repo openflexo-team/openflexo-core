@@ -113,18 +113,64 @@ import org.openflexo.swing.ImageUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
- * GUI, etcâ¦). Each such element is associated with a {@link FlexoRole}.
- * 
- * A FlexoRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in different
- * metamodels.
- * 
- * An {@link FlexoConceptInstance} is an instance of an {@link FlexoConcept} .
- * 
- * Instances of modelling elements in an {@link FlexoConceptInstance} are called Pattern Actors. They play given Pattern Roles.
- * 
+ * A {@link FlexoConcept} is the modelling unit of FML: it federates data coming from heterogeneous sources, together with the behaviour
+ * operating on them.
+ * <p>
+ * Declared with the {@code concept} keyword ({@link FlexoEvent}, {@link FlexoEnum} and {@link VirtualModel} are specializations, declared
+ * with {@code event}, {@code enum} and {@code model}), a {@link FlexoConcept} declares:
+ * <ul>
+ * <li>{@link FlexoProperty properties}: typed data, expressions, or {@link FlexoRole roles} referencing objects of other technological spaces
+ * through a {@link ModelSlot}</li>
+ * <li>{@link FlexoBehaviour behaviours}: creation, deletion and action schemes...</li>
+ * <li>invariants ({@link AbstractInvariant})</li>
+ * <li>nested concepts</li>
+ * </ul>
+ * At run-time, a {@link FlexoConcept} is instantiated as {@link FlexoConceptInstance}s, typed by {@link #getInstanceType()}.
+ * <p>
+ * Two independent relations structure concepts:
+ * <ul>
+ * <li><b>inheritance</b> ({@code concept B extends A1, A2}), possibly multiple: {@code getDeclaredXxx()} methods only return what is declared
+ * in this concept, whereas {@code getAccessibleXxx()} methods also return what is inherited, except elements shadowed by a more specialized
+ * declaration</li>
+ * <li><b>containment</b>: a concept nested in another one (see {@link #getEmbeddedFlexoConcepts()} and {@link #getContainerFlexoConcept()}).
+ * An instance of a nested concept lives inside an instance of its container: it is created by {@code new B(...)} in a behaviour of the
+ * container, or by {@code a.new B(...)} from outside. A concept without container is a root concept ({@link #isRoot()}).</li>
+ * </ul>
+ * The URI of a {@link FlexoConcept} is the URI of its container concept (or of its {@link VirtualModel} for a root concept), followed by
+ * {@code #} and its name, e.g. {@code http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf#Book} in the example below.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center), where {@code Book} and
+ * {@code Novel} are nested in {@code Shelf}, and {@code Novel} extends {@code Book}:
+ *
+ * <pre>
+ * public model Library {
+ *
+ *     public concept Shelf {
+ *         String label;
+ *         create(String label) { ... }
+ *
+ *         public Novel newNovel(String title, String author) {
+ *             return new Novel(parameters.title, parameters.author);
+ *         }
+ *
+ *         public concept Book {
+ *             String title;
+ *             create(String title) { ... }
+ *         }
+ *
+ *         public concept Novel extends Book {
+ *             String author;
+ *             create(String title, String author) {
+ *                 super(parameters.title);
+ *                 author = parameters.author;
+ *             }
+ *         }
+ *     }
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)

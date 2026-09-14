@@ -98,16 +98,38 @@ import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An {@link VirtualModel} is the specification of a model which will be instantied as a set of federated models.
- * 
- * The base modelling element of a {@link VirtualModel} is provided by {@link FlexoConcept} concept.
- * 
- * A {@link VirtualModel} instance contains a set of {@link FlexoConceptInstance}.
- * 
- * A {@link VirtualModel} is itself an {@link FlexoConcept}
- * 
+ * A {@link VirtualModel} is the root {@link FlexoConcept} of a {@link FMLCompilationUnit}, declared with the {@code model} keyword.
+ * <p>
+ * As a {@link FlexoConcept}, it declares properties, behaviours and concepts. At run-time it is instantiated as a
+ * {@link org.openflexo.foundation.fml.rt.VirtualModelInstance}, which is itself a {@link FlexoConceptInstance} and contains the instances of
+ * the concepts declared in the {@link VirtualModel}.
+ * <p>
+ * Two distinct relations must not be confused:
+ * <ul>
+ * <li><b>inheritance</b> ({@code model B extends A}), as for any {@link FlexoConcept}: see {@link #getParentFlexoConcepts()}</li>
+ * <li><b>containment</b>: a contained {@link VirtualModel} is declared in its own compilation unit, stored inside the {@code Xxx.fml/}
+ * directory of its container, and not nested in the source of its container. See {@link #getContainerVirtualModel()} and
+ * {@link #getVirtualModels(boolean)}. Note that {@link #getOwner()} returns the container {@link VirtualModel}.</li>
+ * </ul>
+ * The URI of a {@link VirtualModel} (see {@link #getURI()}) is:
+ * <ul>
+ * <li>for a contained {@link VirtualModel}: the URI of its container, followed by {@code /} and its name suffixed with {@code .fml}</li>
+ * <li>otherwise, the value of its {@code @URI("...")} annotation when present</li>
+ * <li>otherwise, the URI of its resource</li>
+ * </ul>
+ * Example ({@code Library} and its contained {@code Catalog}, in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * Library.fml/
+ *     Library.fml        model Library    http://openflexo.org/test/TestResourceCenter/Library.fml               (from &#64;URI)
+ *     Catalog.fml/
+ *         Catalog.fml    model Catalog    http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml   (computed)
+ * </pre>
+ *
+ * {@link #getVersion()} is stored as the {@code @Version("...")} annotation.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(VirtualModel.VirtualModelImpl.class)
