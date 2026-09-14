@@ -56,11 +56,12 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * This is the run-time object for a {@link ModelSlot}
- * 
- * It concretized the effective binding of a {@link ModelSlot} to its data<br>
- * A {@link ModelSlotInstance} persists the connection of a {@link ModelSlot} at run-time
- * 
+ * The value of a {@link ModelSlot} in a {@link FlexoConceptInstance}: the {@link ActorReference} persisting the connection of the model slot
+ * to the data it gives access to.
+ * <p>
+ * The accessed data ({@link #getAccessedResourceData()}) is generally loaded from the connected resource on demand. The implementation
+ * depends on the kind of model slot: {@link FreeModelSlotInstance}, {@link TypeAwareModelSlotInstance}, {@link FMLRTModelSlotInstance}.
+ *
  * @param <MS>
  *            type of {@link ModelSlot} beeing connected
  * @param <RD>

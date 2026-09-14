@@ -103,15 +103,19 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link VirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself a
- * {@link FlexoConceptInstance}.<br>
- * 
- * Note that this is a base implementation, common for FMLRTVirtualModelInstance (native implementation managed by the
- * {@link FMLRTTechnologyAdapter}) and InferedVirtualModelInstance (managed through a ModelSlot by a {@link TechnologyAdapter})<br>
- * 
+ * A {@link VirtualModelInstance} is an instance of a {@link VirtualModel}, at run-time. It is itself a {@link FlexoConceptInstance} whose
+ * concept is the {@link VirtualModel} ({@link #getVirtualModel()} returns {@link #getFlexoConcept()}), and it holds the instances of the
+ * concepts of this {@link VirtualModel} ({@link #getFlexoConceptInstances()}).
+ * <p>
+ * There are two implementations: {@link FMLRTVirtualModelInstance}, the native implementation managed by the {@link FMLRTTechnologyAdapter}
+ * and stored in its own {@code .fml.rt} resource, and {@link org.openflexo.foundation.fml.rt.reflect.ReflectedVirtualModelInstance}, which
+ * presents the data of a technology-specific resource as instances of concepts.
+ * <p>
+ * Virtual model instances may be contained in each other (see {@link #getContainerVirtualModelInstance()} and
+ * {@link #getVirtualModelInstances()}).
+ *
  * @author sylvain
- * 
+ *
  * @param <VMI>
  *            Type of reflected {@link VirtualModelInstance}
  * @param <TA>
@@ -145,24 +149,17 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public static final String VIRTUAL_MODEL_INSTANCES_KEY = "virtualModelInstances";
 
 	/**
-	 * Returns URI for this {@link VirtualModelInstance}.<br>
-	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, URI is computed from URI of
-	 * container VirtualModel
-	 * 
-	 * The convention for URI are following:
-	 * <container_virtual_model_instance_uri>/<virtual_model_instance_name >#<flexo_concept_instance_id> <br>
-	 * eg<br>
-	 * http://www.mydomain.org/MyVirtuaModelInstance1/MyVirtualModelInstance2#ID
-	 * 
+	 * Returns URI for this {@link VirtualModelInstance}: for a contained instance, the URI of its container followed by {@code /} and its
+	 * name suffixed with {@code .fml.rt}; otherwise, the URI of its resource
+	 *
 	 * @return String representing unique URI of this object
 	 */
-	// @Override
 	public String getURI();
 
 	/**
-	 * Sets URI for this {@link VirtualModelInstance}<br>
-	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, this method will be unefficient
-	 * 
+	 * Sets URI for this {@link VirtualModelInstance}, by setting the URI of its resource<br>
+	 * This has no effect on a contained {@link VirtualModelInstance}, whose URI is computed from the URI of its container
+	 *
 	 * @param anURI
 	 */
 	public void setURI(String anURI);
@@ -200,10 +197,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setVirtualModelURI(String virtualModelURI);
 
 	/**
-	 * Return all {@link FlexoConceptInstance} defined in this {@link FMLRTVirtualModelInstance} which have no container (contaiment
-	 * semantics)<br>
-	 * (where container is the virtual model instance itself)
-	 * 
+	 * Return all {@link FlexoConceptInstance} registered in this {@link VirtualModelInstance} which have no container instance
+	 * (containment semantics)
+	 *
 	 * @return
 	 */
 	public List<FlexoConceptInstance> getAllRootFlexoConceptInstances();

@@ -120,13 +120,29 @@ import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link FlexoConceptInstance} is the run-time concept (instance) of an {@link FlexoConcept}.<br>
- * 
- * As such, a {@link FlexoConceptInstance} is instantiated inside a {@link FMLRTVirtualModelInstance} (only
- * {@link FMLRTVirtualModelInstance} objects might leave outside an other {@link FMLRTVirtualModelInstance}).<br>
- * 
+ * A {@link FlexoConceptInstance} is an instance of a {@link FlexoConcept}, at run-time (FML@RT).
+ * <p>
+ * The values of its roles are stored as {@link ActorReference}s (see {@link #getActors()}); its other properties are computed (see
+ * {@link #getFlexoPropertyValue(FlexoProperty)}).
+ * <p>
+ * Each instance is registered in a {@link VirtualModelInstance} ({@link #getOwningVirtualModelInstance()}). An instance of a nested concept
+ * also has a container instance ({@link #getContainerFlexoConceptInstance()}): {@link #getContainer()} returns the container instance when
+ * any, the owning {@link VirtualModelInstance} otherwise.
+ * <p>
+ * Deleting an instance executes the default deletion scheme of its concept, or a deletion scheme generated on the fly. A
+ * {@link FlexoConceptInstance} is also the {@link RunTimeEvaluationContext} in which the expressions of its concept are evaluated.
+ * <p>
+ * Example (excerpt of {@code AutomatedTests/TestLibrary.fmlscript} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * library = new Library() with (name="library");
+ * fiction = library.newShelf("Fiction");
+ * emma = fiction.newBook("Emma");
+ * assert emma.container == fiction;
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
@@ -152,16 +168,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	@PropertyIdentifier(type = ActorReference.class, cardinality = Cardinality.LIST)
 	public static final String ACTORS_KEY = "actors";
 
-	// @PropertyIdentifier(type = List.class)
-	// public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
-
 	@PropertyIdentifier(type = FMLRTVirtualModelInstance.class)
 	public static final String OWNING_VIRTUAL_MODEL_INSTANCE_KEY = "owningVirtualModelInstance";
 
 	/**
-	 * Return the {@link FMLRTVirtualModelInstance} where this FlexoConceptInstance is instantiated (result might be different from
-	 * {@link #getVirtualModelInstance()}, which is The {@link VirtualModelInstanceObject} API)
-	 * 
+	 * Return the {@link VirtualModelInstance} in which this FlexoConceptInstance is registered (result might be different from
+	 * {@link #getVirtualModelInstance()}, which is the {@link VirtualModelInstanceObject} API)
+	 *
 	 * @return
 	 */
 	@Getter(value = OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
@@ -199,8 +212,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public List<FlexoConceptInstance> getEmbeddedFlexoConceptInstances(FlexoConcept flexoConcept);
 
 	/**
-	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
-	 * 
+	 * Return all {@link FlexoConceptInstance} contained in this {@link FlexoConceptInstance}
+	 *
 	 * @return
 	 */
 	@Getter(value = EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, cardinality = Cardinality.LIST, inverse = CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY)
@@ -220,8 +233,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public void removeFromEmbeddedFlexoConceptInstances(FlexoConceptInstance aFlexoConcept);
 
 	/**
-	 * Return boolean indicating whether this concept instance has a FlexoConceptInstance for container (containment semantics)<br>
-	 * 
+	 * Return boolean indicating whether this concept instance has no container FlexoConceptInstance (containment semantics)<br>
+	 *
 	 * @return
 	 */
 	public boolean isRoot();
@@ -277,8 +290,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public String debug();
 
 	/**
-	 * Compute value associated with supplied property
-	 * 
+	 * Compute value associated with supplied property: the actor(s) of a role, the evaluated expression of an expression property...<br>
+	 * When the property belongs to the concept of a container instance, or to the {@link VirtualModel} of the owning
+	 * {@link VirtualModelInstance}, its value is looked up there
+	 *
 	 * @param flexoProperty
 	 *            the property to lookup
 	 */
@@ -325,8 +340,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * Return actor associated with supplied role name, asserting cardinality of supplied property is SINGLE.<br>
 	 * If cardinality of supplied property is MULTIPLE, return first found value
 	 * 
-	 * @param flexoPropertyName
-	 *            the property to lookup
+	 * @param flexoRoleName
+	 *            the role to lookup
 	 */
 	public <T> T getFlexoActor(String flexoRoleName);
 
@@ -335,8 +350,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * If cardinality of supplied property is SINGLE, return a singleton list<br>
 	 * If no value are defined for this property, return an empty list
 	 * 
-	 * @param flexoProperty
-	 *            the property to lookup
+	 * @param flexoRole
+	 *            the role to lookup
 	 */
 	public <T> List<T> getFlexoActorList(FlexoRole<T> flexoRole);
 
@@ -345,20 +360,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * If cardinality of supplied property is SINGLE, return a singleton list<br>
 	 * If no value are defined for this property, return an empty list
 	 * 
-	 * @param flexoPropertyName
-	 *            the property to lookup
+	 * @param flexoRoleName
+	 *            the role to lookup
 	 */
 	public <T> List<T> getFlexoActorList(String flexoRoleName);
 
 	/**
-	 * Return actor associated with supplied property, asserting cardinality of supplied property is SINGLE.<br>
-	 * If cardinality of supplied property is MULTIPLE, replace all existing value with supplied object. If no value is found, add supplied
+	 * Sets actor associated with supplied role, asserting cardinality of supplied role is SINGLE.<br>
+	 * If cardinality of supplied role is MULTIPLE, replace all existing value with supplied object. If no value is found, add supplied
 	 * object.
-	 * 
+	 *
 	 * @param object
-	 *            the object to be registered as actor for supplied property
-	 * @param flexoProperty
-	 *            the property to be considered
+	 *            the object to be registered as actor for supplied role
+	 * @param flexoRole
+	 *            the role to be considered
 	 */
 	public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole);
 

@@ -54,7 +54,8 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 
 /**
- * Implements {@link ActorReference} for primitive types as modelling elements.<br>
+ * Implements {@link ActorReference} for Java objects which are not {@link org.openflexo.foundation.FlexoObject}s, as values of a
+ * {@link org.openflexo.foundation.fml.JavaRole}.<br>
  * 
  * @author sylvain
  * 

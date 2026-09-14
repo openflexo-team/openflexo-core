@@ -57,12 +57,11 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Implementation of an instance of a plain {@link VirtualModel} natively managed by the {@link FMLRTTechnologyAdapter}<br>
- * 
- * Such {@link VirtualModel} instance might be serialized using XML
- * 
+ * A {@link VirtualModelInstance} reflecting the data of a technology-specific resource: the objects of the resource are presented as
+ * instances of the concepts of a {@link VirtualModel}. It is accessed through a {@link ReflectedFMLRTModelSlot}.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(ReflectedVirtualModelInstance.ReflectedVirtualModelInstanceImpl.class)

@@ -53,18 +53,21 @@ import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * Abstract class representing an {@link EditionAction} with the particularity of returning a value which can be assigned<br>
- * This value is of type T.<br>
- * An {@link AssignableAction} might be embedded in an {@link AbstractAssignationAction} ({@link AssignationAction} or
- * {@link DeclarationAction}) as right-hand side.
- * 
+ * An {@link EditionAction} producing a value of type T, which can be assigned<br>
+ * An {@link AssignableAction} might be embedded as right-hand side in an {@link AbstractAssignationAction} ({@link AssignationAction} or
+ * {@link DeclarationAction}), in an {@link AddToListAction} or in a {@link ReturnStatement}. For instance, in {@code Book book = new
+ * Book(parameters.title);} the right-hand side is an {@link ExpressionAction} (an {@link AssignableAction}) held by a
+ * {@link DeclarationAction}.
+ * <p>
+ * The type of the produced value is {@link #getAssignableType()}. Note that {@link #getInferedType()} returns {@code Void}: the produced
+ * value only becomes the return value of a control graph through a {@link ReturnStatement}.
+ *
  * @author sylvain
- * 
+ *
  * @param <T>
  *            type of assignable
  */
@@ -73,8 +76,8 @@ import org.openflexo.pamela.annotations.ModelEntity;
 public abstract interface AssignableAction<T> extends EditionAction {
 
 	/**
-	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
-	 * 
+	 * Execute this action in supplied run-time context, and return the produced value
+	 *
 	 * @param evaluationContext
 	 * @return
 	 */
@@ -109,30 +112,36 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	public Type getIteratorType();
 
 	/**
-	 * Used to declare a new variable and assigning assignableAction to it
-	 * 
-	 * @param cg
+	 * Replace this action, in the control graph of its owner, by a new {@link DeclarationAction} declaring a variable assigned with this
+	 * action
+	 *
+	 * @param variableName
+	 * @return the new {@link DeclarationAction}, now holding this action
 	 */
 	public DeclarationAction<T> declaresNewVariable(String variableName);
 
 	/**
-	 * Used to instantiate AssignationAction while value set to this action
-	 * 
-	 * @param cg
+	 * Replace this action, in the control graph of its owner, by a new {@link AssignationAction} assigning supplied binding with this
+	 * action
+	 *
+	 * @param assignation
+	 * @return the new {@link AssignationAction}, now holding this action
 	 */
 	public AssignationAction<T> assignTo(DataBinding<? super T> assignation);
 
 	/**
-	 * Used to instantiate {@link AddToListAction} while added value set to this action
-	 * 
-	 * @param cg
+	 * Replace this action, in the control graph of its owner, by a new {@link AddToListAction} adding the value of this action to supplied
+	 * list
+	 *
+	 * @param assignation
+	 * @return the new {@link AddToListAction}, now holding this action
 	 */
 	public AddToListAction<T> addToList(DataBinding<? extends List<T>> assignation);
 
 	/**
-	 * Used to instantiate {@link ReturnStatement} while returning current assignable action
-	 * 
-	 * @param cg
+	 * Replace this action, in the control graph of its owner, by a new {@link ReturnStatement} returning the value of this action
+	 *
+	 * @return the new {@link ReturnStatement}, now holding this action
 	 */
 	public ReturnStatement<T> addReturnStatement();
 
@@ -188,20 +197,9 @@ public abstract interface AssignableAction<T> extends EditionAction {
 			return Object.class;
 		}
 
-		/**
-		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
-		 * 
-		 * @param evaluationContext
-		 * @return
-		 */
 		@Override
 		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
-		/**
-		 * Used to instantiate AssignationAction while value set to this action
-		 * 
-		 * @param cg
-		 */
 		@Override
 		public AssignationAction<T> assignTo(DataBinding<? super T> assignation) {
 			FMLModelFactory factory = getFMLModelFactory();
@@ -229,11 +227,6 @@ public abstract interface AssignableAction<T> extends EditionAction {
 
 		}
 
-		/**
-		 * Used to declare a new variable and assigning assignableAction to it
-		 * 
-		 * @param cg
-		 */
 		@Override
 		public DeclarationAction<T> declaresNewVariable(String variableName) {
 			FMLModelFactory factory = getFMLModelFactory();
@@ -260,11 +253,6 @@ public abstract interface AssignableAction<T> extends EditionAction {
 
 		}
 
-		/**
-		 * Used to instantiate {@link AddToListAction} while added value set to this action
-		 * 
-		 * @param cg
-		 */
 		@Override
 		public AddToListAction<T> addToList(DataBinding<? extends List<T>> list) {
 			FMLModelFactory factory = getFMLModelFactory();
@@ -293,11 +281,6 @@ public abstract interface AssignableAction<T> extends EditionAction {
 
 		}
 
-		/**
-		 * Used to instantiate {@link ReturnStatement} while returning current assignable action
-		 * 
-		 * @param cg
-		 */
 		@Override
 		public ReturnStatement<T> addReturnStatement() {
 			FMLModelFactory factory = getFMLModelFactory();

@@ -59,7 +59,6 @@ import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
@@ -80,12 +79,15 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Abstract class representing a primitive to be executed as an atomic action of a {@link FMLControlGraph}
- * 
- * An edition action adresses a {@link ModelSlot}
- * 
+ * An action of a control graph ({@link FMLControlGraph}), executed with {@link #execute(RunTimeEvaluationContext)}: either an atomic action
+ * (declaration, assignation, expression, instance creation, fetch request...) or a control structure
+ * ({@link org.openflexo.foundation.fml.controlgraph.ControlStructureAction}).
+ * <p>
+ * Most edition actions are technology-independent: only technology-specific actions ({@link TechnologySpecificAction}) address a
+ * {@link ModelSlot}. See the package documentation for the mapping between FML statements and edition actions.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
@@ -103,8 +105,8 @@ import org.openflexo.toolbox.StringUtils;
 public abstract interface EditionAction extends FMLControlGraph {
 
 	/**
-	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
-	 * 
+	 * Execute this action in supplied run-time context
+	 *
 	 * @param evaluationContext
 	 * @return
 	 */
@@ -120,13 +122,6 @@ public abstract interface EditionAction extends FMLControlGraph {
 
 		private ControlGraphBindingModel<?> bindingModel;
 
-		/**
-		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
-		 * Note than returned object will be used to be further reinjected in finalizer
-		 * 
-		 * @param evaluationContext
-		 * @return
-		 */
 		@Override
 		public abstract Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException;
 
