@@ -60,7 +60,6 @@ import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.reflect.ReflectedFMLRTModelSlot;
@@ -147,11 +146,6 @@ public interface VirtualModel extends FlexoConcept {
 	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 
-	// @PropertyIdentifier(type = VirtualModel.class)
-	// public static final String CONTAINER_VIRTUAL_MODEL_KEY = "containerVirtualModel";
-	// @PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
-	// String VIRTUAL_MODELS_KEY = "virtualModels";
-
 	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_NATURE_CLASS_KEY = "modelSlotNatureClass";
 
@@ -195,17 +189,10 @@ public interface VirtualModel extends FlexoConcept {
 	@Override
 	public FMLModelFactory getFMLModelFactory();
 
-	/*@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = FMLLocalizedDictionary.OWNER_KEY)
-	@XMLElement
-	FMLLocalizedDictionary getDeprecatedLocalizedDictionary();
-	
-	@Setter(LOCALIZED_DICTIONARY_KEY)
-	void setDeprecatedLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);*/
-
 	/**
 	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
-	 * It includes the list of uses declarations accessible from parent and container
-	 * 
+	 * It includes the use declarations accessible from its container {@link VirtualModel} (recursively)
+	 *
 	 * @return
 	 */
 	@Deprecated
@@ -227,9 +214,6 @@ public interface VirtualModel extends FlexoConcept {
 	@Deprecated
 	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
 	public List<UseModelSlotDeclaration> getUseDeclarations();
-
-	// @Setter(USE_DECLARATIONS_KEY)
-	// public void setUseDeclarations(List<UseModelSlotDeclaration> useDecls);
 
 	@Adder(USE_DECLARATIONS_KEY)
 	@PastingPoint
@@ -286,54 +270,63 @@ public interface VirtualModel extends FlexoConcept {
 
 	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
-	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 * Return the {@link FlexoConcept} whose name, URI or local URI matches the supplied string, searched in this order:
+	 * <ul>
+	 * <li>among the concepts of this {@link VirtualModel}</li>
+	 * <li>among the virtual models known by its compilation unit (see {@link #getVirtualModelNamed(String)})</li>
+	 * <li>for a URI containing {@code #}, in the compilation unit whose URI is the part preceding {@code #}, loaded when needed</li>
+	 * <li>otherwise through the {@link VirtualModelLibrary}</li>
+	 * </ul>
+	 * Prefer {@link #lookupFlexoConceptWithName(String)} to resolve a name in the context of this {@link VirtualModel}.
 	 *
-	 * Look in contained VirtualModel and contained FlexoConcept, and examine dependencies (imports)<br>
-	 * TODO: presents algorithm (semantics of first found concept, think of inheritance and embedding)
-	 * 
 	 * @param flexoConceptNameOrURI
 	 * @return
 	 */
 	public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI);
 
 	/**
-	 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
-	 * 
-	 * @param uri
+	 * Return true when supplied concept URI (a local name) is a valid Java identifier, not already used in the metamodel identified by
+	 * {@code ontologyURI}
+	 *
+	 * @param ontologyURI
+	 *            URI of the metamodel in which unicity is checked (see {@link #getMetaModel(String)})
+	 * @param conceptURI
+	 *            local name to check
 	 * @return
 	 */
 	public boolean testValidURI(String ontologyURI, String conceptURI);
 
 	/**
-	 * Return true if URI is duplicated in the context of this project
-	 * 
-	 * @param uri
+	 * Return true when the metamodel identified by {@code modelURI} (see {@link #getMetaModel(String)}) already contains an object whose URI
+	 * is {@code modelURI#conceptURI}
+	 *
+	 * @param modelURI
+	 * @param conceptURI
 	 * @return
 	 */
 	public boolean isDuplicatedURI(String modelURI, String conceptURI);
 
 	/**
-	 * Retrieve metamodel referenced by its URI<br>
-	 * Note that search is performed in the scope of current project only
-	 * 
-	 * @param modelURI
+	 * Retrieve, among the metamodels referenced by the model slots of this {@link VirtualModel}, the one with supplied URI
+	 *
+	 * @param metaModelURI
 	 * @return
 	 */
 	public FlexoMetaModel<?> getMetaModel(String metaModelURI);
 
 	/**
-	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no container (contaiment semantics)<br>
-	 * (where container is the virtual model itself)
-	 * 
+	 * Return the non-abstract root concepts of this {@link VirtualModel}: those with no container concept, neither declared nor inherited
+	 * from their parents, together with those whose container is declared in another compilation unit
+	 *
 	 * @return
 	 */
 	@NotificationUnsafe
 	public List<FlexoConcept> getAllRootFlexoConcepts();
 
 	/**
-	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no container (contaiment semantics)<br>
-	 * (where container is the virtual model itself).
-	 * 
+	 * Return the root concepts of this {@link VirtualModel}: those with no container concept, neither declared nor inherited from their
+	 * parents, together with those whose container is declared in another compilation unit
+	 *
 	 * @param includeParents
 	 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
 	 * @param includeAbstractConcepts
@@ -344,18 +337,20 @@ public interface VirtualModel extends FlexoConcept {
 	public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts);
 
 	/**
-	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
-	 * 
+	 * Return the concepts of this {@link VirtualModel} none of whose parent concepts (inheritance semantics) is declared in this
+	 * {@link VirtualModel} (see {@link FlexoConcept#isSuperConceptOfContainerVirtualModel()})
+	 *
 	 * @return
 	 */
 	@NotificationUnsafe
 	public List<FlexoConcept> getAllSuperFlexoConcepts();
 
 	/**
-	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
-	 * 
+	 * Same as {@link #getAllSuperFlexoConcepts()} when {@code includeParents} is false.<br>
+	 * When {@code includeParents} is true, return instead the top-level super concepts of all the concepts of this {@link VirtualModel}
+	 * (see {@link FlexoConcept#getTopLevelSuperConcepts()}), which may be declared in other virtual models
+	 *
 	 * @param includeParents
-	 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
 	 * @return
 	 */
 	@NotificationUnsafe
@@ -367,14 +362,8 @@ public interface VirtualModel extends FlexoConcept {
 	public VirtualModelBindingModel getBindingModel();
 
 	/**
-	 * Returns URI for this {@link VirtualModel}.<br>
-	 * Note that if this {@link VirtualModel} is contained in another {@link VirtualModel}, URI is computed from URI of container
-	 * VirtualModel
-	 * 
-	 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name> <br>
-	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept. MyEditionScheme
-	 * 
+	 * Return the URI of this {@link VirtualModel}, computed as described in the class documentation: from the URI of its container when it
+	 * is contained, from its {@code @URI} annotation otherwise, or from the URI of its resource
 	 */
 	@Override
 	@Getter(value = URI_KEY)
@@ -383,9 +372,9 @@ public interface VirtualModel extends FlexoConcept {
 	public abstract String getURI();
 
 	/**
-	 * Sets URI for this {@link VirtualModel}<br>
-	 * Note that if this {@link VirtualModel} is contained in another {@link VirtualModel}, this method will be unefficient
-	 * 
+	 * Sets URI for this {@link VirtualModel}: stored as its {@code @URI} annotation, and applied to its resource<br>
+	 * This has no effect on a contained {@link VirtualModel}, whose URI is computed from the URI of its container
+	 *
 	 * @param anURI
 	 */
 	@Setter(URI_KEY)
@@ -399,57 +388,34 @@ public interface VirtualModel extends FlexoConcept {
 	public void setVersion(FlexoVersion version);
 
 	/**
-	 * Retrieves the type of a {@link FMLRTVirtualModelInstance} conform to this {@link VirtualModel}
+	 * Retrieves the type of the instances of this {@link VirtualModel}
 	 */
 	VirtualModelInstanceType getVirtualModelInstanceType();
 
 	/**
 	 * Return the container VirtualModel<br>
-	 * This is the VirtualModel in which this VirtualModel is declared, it's might be null if this VirtualModel is at the root level
-	 * 
+	 * This is the VirtualModel in whose directory this VirtualModel is stored, it might be null if this VirtualModel is at the root level
+	 *
 	 * @return
 	 */
-	// @Getter(value = CONTAINER_VIRTUAL_MODEL_KEY)
 	public VirtualModel getContainerVirtualModel();
 
 	/**
-	 * Sets container VirtualModel
-	 * 
-	 * @param aVirtualModel
-	 */
-	// @Setter(CONTAINER_VIRTUAL_MODEL_KEY)
-	// public void setContainerVirtualModel(VirtualModel aVirtualModel);
-
-	/**
-	 * Return all loaded {@link VirtualModel} defined in this {@link VirtualModel}<br>
+	 * Return all loaded {@link VirtualModel} contained in this {@link VirtualModel}<br>
 	 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
 	 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
-	 * 
+	 *
 	 * @return
 	 */
-	/*@Getter(
-			value = VIRTUAL_MODELS_KEY,
-			cardinality = Cardinality.LIST,
-			inverse = VirtualModel.CONTAINER_VIRTUAL_MODEL_KEY,
-			ignoreType = true)*/
 	public List<VirtualModel> getVirtualModels();
 
 	/**
-	 * Return all {@link VirtualModel} defined in this {@link VirtualModel}<br>
+	 * Return all {@link VirtualModel} contained in this {@link VirtualModel}<br>
 	 * When forceLoad set to true, force the loading of all virtual models
-	 * 
+	 *
 	 * @return
 	 */
 	public List<VirtualModel> getVirtualModels(boolean forceLoad);
-
-	// @Setter(VIRTUAL_MODELS_KEY)
-	// void setVirtualModels(List<VirtualModel> virtualModels);
-
-	/*@Adder(VIRTUAL_MODELS_KEY)
-	void addToVirtualModels(VirtualModel virtualModel);
-	
-	@Remover(VIRTUAL_MODELS_KEY)
-	void removeFromVirtualModels(VirtualModel virtualModel);*/
 
 	/**
 	 * Return boolean indicating in this {@link VirtualModel} is contained in supplied {@link VirtualModel} with the recursive semantics
@@ -474,15 +440,14 @@ public interface VirtualModel extends FlexoConcept {
 
 	/**
 	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link VirtualModel}<br>
-	 * 
-	 * Lookup algorithm follows:
+	 *
+	 * Lookup algorithm follows, the first match being returned:
 	 * <ul>
-	 * <li>If name matches declared {@link VirtualModel} return this {@link VirtualModel}</li>
-	 * <li>If name matches any container {@link VirtualModel} (recursively from current to container), return related
-	 * {@link VirtualModel}</li>
-	 * <li>If name matches any parent {@link VirtualModel} (inheritance semantics), return related {@link VirtualModel}</li>
-	 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}</li>
-	 * <li>Lookup up also in contained and loaded {@link VirtualModel}</li>
+	 * <li>the algorithm of {@link FlexoConcept#lookupFlexoConceptWithName(String)} applied to this {@link VirtualModel} (its own name, its
+	 * container {@link VirtualModel}, its parent virtual models)</li>
+	 * <li>its container {@link VirtualModel}, recursively</li>
+	 * <li>its contained and loaded virtual models, recursively</li>
+	 * <li>its concepts</li>
 	 * </ul>
 	 * 
 	 * @param conceptName
@@ -1017,12 +982,6 @@ public interface VirtualModel extends FlexoConcept {
 			return conceptURI.equals(JavaUtils.getJavaName(conceptURI)) && !isDuplicatedURI(ontologyURI, conceptURI);
 		}
 
-		/**
-		 * Return true if URI is duplicated in the context of this project
-		 * 
-		 * @param uri
-		 * @return
-		 */
 		@Override
 		public boolean isDuplicatedURI(String modelURI, String conceptURI) {
 			FlexoMetaModel<?> m = getMetaModel(modelURI);
@@ -1032,13 +991,6 @@ public interface VirtualModel extends FlexoConcept {
 			return false;
 		}
 
-		/**
-		 * Retrieve metamodel referenced by its URI<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param modelURI
-		 * @return
-		 */
 		@Override
 		public FlexoMetaModel<?> getMetaModel(String metaModelURI) {
 			for (FlexoMetaModel<?> m : getAllReferencedMetaModels()) {

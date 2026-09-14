@@ -167,15 +167,13 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
 
 	/**
-	 * Returns URI for this {@link FMLCompilationUnit}<br>
-	 * Note that if this {@link FMLCompilationUnit} is contained in another {@link FMLCompilationUnit}, URI is computed from URI of
-	 * container FMLCompilationUnit
+	 * Return the URI of the {@link VirtualModel} of this compilation unit (see {@link VirtualModel#getURI()}), or null when it has none
 	 */
 	public abstract String getURI();
 
 	/**
-	 * Sets URI for this {@link FMLCompilationUnit}<br>
-	 * 
+	 * Sets the URI of the {@link VirtualModel} of this compilation unit (see {@link VirtualModel#setURI(String)})
+	 *
 	 * @param anURI
 	 */
 	public void setURI(String anURI);
@@ -295,15 +293,15 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	/**
 	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link FMLCompilationUnit}<br>
-	 * It includes the list of uses declarations accessible from parent and container
-	 * 
+	 * It includes the use declarations accessible from its container compilation unit (recursively)
+	 *
 	 * @return
 	 */
 	public List<UseModelSlotDeclaration> getAccessibleUseDeclarations();
 
 	/**
-	 * Return list of {@link UseModelSlotDeclaration} explicitely declared in this {@link VirtualModel}
-	 * 
+	 * Return list of {@link UseModelSlotDeclaration} explicitely declared in this {@link FMLCompilationUnit}
+	 *
 	 * @return
 	 */
 	@Getter(value = USE_DECLARATIONS_KEY, cardinality = Cardinality.LIST, inverse = UseModelSlotDeclaration.COMPILATION_UNIT_KEY)
@@ -311,9 +309,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<UseModelSlotDeclaration> getUseDeclarations();
-
-	// @Setter(USE_DECLARATIONS_KEY)
-	// public void setUseDeclarations(List<UseModelSlotDeclaration> useDecls);
 
 	@Adder(USE_DECLARATIONS_KEY)
 	@PastingPoint
@@ -326,7 +321,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public void moveUseModelSlotDeclarationToIndex(UseModelSlotDeclaration useModelSlotDeclaration, int index);
 
 	/**
-	 * Return boolean indicating if this VirtualModel uses supplied modelSlotClass
+	 * Return boolean indicating if this compilation unit uses supplied modelSlotClass
 	 * 
 	 * @param modelSlotClass
 	 * @return
@@ -343,35 +338,35 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public <MS extends ModelSlot<?, ?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
-	 * Return resource for this virtual model
-	 * 
+	 * Return the resource storing this compilation unit
+	 *
 	 * @return
 	 */
 	@Override
 	@Getter(value = RESOURCE, ignoreType = true)
-	// @CloningStrategy(value = StrategyType.FACTORY, factory = "cloneResource()")
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoResource<FMLCompilationUnit> getResource();
 
 	/**
-	 * Sets resource for this virtual model
-	 * 
-	 * @param aName
+	 * Sets the resource storing this compilation unit
+	 *
+	 * @param aCompilationUnitResource
 	 */
 	@Override
 	@Setter(value = RESOURCE)
 	public void setResource(FlexoResource<FMLCompilationUnit> aCompilationUnitResource);
 
 	/**
-	 * Convenient method used to retrieved {@link CompilationUnitResource}
-	 * 
+	 * Return the resource storing this compilation unit, typed as a {@link CompilationUnitResource}
+	 *
 	 * @return
 	 */
 	public CompilationUnitResource getVirtualModelResource();
 
 	/**
-	 * Version of encoded {@link VirtualModel}
-	 * 
+	 * Return the version of the {@link VirtualModel} of this compilation unit (its {@code @Version} annotation), or the version of its
+	 * resource when it has no {@link VirtualModel}
+	 *
 	 * @return
 	 */
 	@Getter(value = VERSION_KEY, isStringConvertable = true)
@@ -380,18 +375,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	@Setter(VERSION_KEY)
 	public void setVersion(FlexoVersion version);
-
-	/**
-	 * Version of FML meta-model
-	 * 
-	 * @return
-	 */
-	/*@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
-	public FlexoVersion getModelVersion();*/
-
-	/*@Setter(MODEL_VERSION_KEY)
-	public void setModelVersion(FlexoVersion modelVersion);*/
 
 	/**
 	 * The localizer of this compilation unit: the dictionary stored in its <code>Xxx.fml/Localized/</code> directory when it has one (see
@@ -448,11 +431,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
-	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 * Return the {@link FlexoConcept} whose name or URI matches the supplied string: the {@link VirtualModel} of this compilation unit
+	 * itself, then the concepts found by {@link VirtualModel#getFlexoConcept(String)}, then the elements imported by this compilation unit.
+	 * <br>
+	 * Prefer {@link #lookupFlexoConceptWithName(String)} or {@link #lookupFlexoConceptWithURI(String)}.
 	 *
-	 * Look in contained VirtualModel and contained FlexoConcept, and examine dependencies (imports)<br>
-	 * TODO: presents algorithm (semantics of first found concept, think of inheritance and embedding)
-	 * 
 	 * @param flexoConceptNameOrURI
 	 * @return
 	 */
@@ -461,10 +444,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	/**
 	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FMLCompilationUnit}<br>
-	 * 
+	 *
 	 * Lookup algorithm follows:
 	 * <ul>
-	 * <li>First lookup in contained {@link VirtualModel}</li>
+	 * <li>First lookup in the {@link VirtualModel} of this compilation unit (see {@link VirtualModel#lookupFlexoConceptWithName(String)})</li>
 	 * <li>When not found, apply the same algorithm for each FMLCompilationUnit import of this {@link FMLCompilationUnit} (in the order they
 	 * are declared : the first found is returned)</li>
 	 * </ul>
@@ -483,8 +466,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public FlexoConcept lookupFlexoConceptWithURI(String conceptURI);
 
 	/**
-	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModel}
-	 * 
+	 * Return the list of {@link TechnologyAdapter} required by this compilation unit: those of the model slots of its {@link VirtualModel},
+	 * and those required by its contained compilation units (which are loaded by this call)
+	 *
 	 * @return
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
@@ -562,9 +546,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public Class<?> lookupClassInUseDeclarations(String className);
 
 	/**
-	 * Perform a full revalidation on all {@link DataBinding} declared in this {@link FMLCompilationUnit}
-	 * 
-	 * Recursively call
+	 * Perform a full revalidation on all {@link DataBinding} declared in this {@link FMLCompilationUnit}, by calling
+	 * {@link FMLObject#revalidateBindings()} on every object declared in it
 	 */
 	public void revalidateAllBindings();
 

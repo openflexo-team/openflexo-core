@@ -177,16 +177,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public ListMetaData getListMetaData(String key);
 
-	/**
-	 * Return the URI of the {@link NamedFMLObject}<br>
-	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
-	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
-	 * 
-	 * @return String representing unique URI of this object
-	 */
-	// public String getURI();
-
 	@Override
 	public FlexoServiceManager getServiceManager();
 
@@ -212,10 +202,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 */
 	public String getStringRepresentation();
 
-	// public void notifyBindingModelChanged();
-
-	// public FMLLocalizedDictionary getLocalizedDictionary();
-
 	@DeserializationInitializer
 	public void initializeDeserialization(FMLModelFactory factory);
 
@@ -224,24 +210,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public void finalizeDeserialization();
 
 	/**
-	 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
-	 * The container is the {@link ResourceData} of this object.<br>
-	 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link VirtualModel})
-	 * 
-	 * @return
-	 */
-	// @Override
-	// public VirtualModel getResourceData();
-
-	/**
-	 * Hook called when scope of a FMLObject changed.<br>
-	 * 
-	 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-	 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
-	 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
-	 * 
-	 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...
-	 * 
+	 * Hook called when the scope of this {@link FMLObject} changed, giving it a chance to update its bindings (some of them might become
+	 * valid or invalid).<br>
+	 * It happens for example when a {@link VirtualModel} becomes contained in another {@link VirtualModel} (its binding factory relies on
+	 * the enclosing context), or when an edition action is moved from a control graph to another one.
 	 */
 	public void notifiedScopeChanged();
 
@@ -501,17 +473,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public final FMLCompilationUnit getDeclaringCompilationUnit() {
 			return getResourceData();
 		}
-
-		/**
-		 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
-		 * If container of this object is a {@link VirtualModel}, return this ViewPoint<br>
-		 * Otherwise, container of this object is a {@link VirtualModel}, return ViewPoint of VirtualModel
-		 * 
-		 */
-		/*@Override
-		public VirtualModel getDeclaringCompilationUnit() {
-			return getResourceData();
-		}*/
 
 		@Override
 		public CompilationUnitResource getDeclaringCompilationUnitResource() {

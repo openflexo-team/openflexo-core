@@ -229,13 +229,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setName(String name) throws InvalidNameException;
 
 	/**
-	 * Return the URI of this {@link FlexoConcept}<br>
-	 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
-	 * eg<br>
-	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
-	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
-	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept#AnInnerConcept.MyBehaviour
-	 * 
+	 * Return the URI of this {@link FlexoConcept}: the URI of its container concept, or of its owning {@link VirtualModel} for a root
+	 * concept, followed by {@code #} and its name (e.g. {@code http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf#Book})
+	 *
 	 * @return String representing unique URI of this object
 	 */
 	public String getURI();
@@ -265,8 +261,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * Sets container {@link FlexoConcept} (relative to containment).
 	 * 
 	 * Note that this is an explicit declaration. When unspecified (let to null), this containment is inherited from its parent concepts
-	 * 
-	 * @param name
+	 *
+	 * @param container
 	 */
 	@Setter(CONTAINER_FLEXO_CONCEPT_KEY)
 	public void setContainerFlexoConcept(FlexoConcept container);
@@ -279,9 +275,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	/**
 	 * Sets applicable container {@link FlexoConcept} (relative to containment).
-	 * 
-	 * 
-	 * @param name
+	 *
+	 * @param concept
 	 */
 	public void setApplicableContainerFlexoConcept(FlexoConcept concept);
 
@@ -376,8 +371,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	/**
 	 * Return most specialized anonymous {@link AbstractCreationScheme} matching supplied signature (expressed with types)<br>
-	 * 
-	 * @param behaviourName
+	 *
 	 * @param arguments
 	 * @return
 	 */
@@ -403,11 +397,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... arguments);
 
 	/**
-	 * Return {@link FlexoBehaviour} matching supplied signature (expressed with types), which are declared for this concept. Result does
-	 * not include inherited behaviours.
-	 * 
-	 * @param behaviourName
-	 * @param parameters
+	 * Return the {@link FlexoBehaviour} declared in this concept whose signature (see {@link FlexoBehaviour#getSignature()}) equals the
+	 * supplied one. Result does not include inherited behaviours.
+	 *
+	 * @param signature
 	 * @return
 	 */
 	public FlexoBehaviour getDeclaredFlexoBehaviour(String signature);
@@ -524,9 +517,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
 	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
 	 * This means that only leaf nodes of inheritance graph inferred by this {@link FlexoConcept} hierarchy will be returned.
-	 * 
-	 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
-	 * 
+	 *
+	 * The result is cached (see {@link #retrieveAccessibleProperties(boolean)} for the uncached computation).
+	 *
 	 * @return
 	 */
 	public List<FlexoProperty<?>> getAccessibleProperties();
@@ -580,8 +573,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public List<FlexoProperty<?>> getAccessibleKeyProperties();
 
 	/**
-	 * Build and return the list of all declared {@link FlexoProperty} with supplied type
-	 * 
+	 * Build and return the list of all accessible {@link FlexoProperty} with supplied type
+	 *
 	 * @param type
 	 * @return
 	 */
@@ -611,8 +604,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	/**
 	 * Return {@link FlexoRole} identified by supplied name, which is to be retrieved in all accessible properties<br>
 	 * Note that returned role is not necessary one of declared role, but might be inherited.
-	 * 
-	 * @param propertyName
+	 *
+	 * @param roleName
 	 * @return
 	 * @see #getAccessibleRoles()
 	 */
@@ -702,16 +695,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public List<IterationInvariant> getIterationInvariants();
 
 	/**
-	 * Return boolean indicating whether this concept has a FlexoConcept for container (containment semantics)<br>
-	 * 
+	 * Return boolean indicating whether this concept has no declared container concept (containment semantics)<br>
+	 *
 	 * @return
 	 */
 	public boolean isRoot();
 
 	/**
-	 * Return boolean indicating whether this concept has no parent in this VirtualModel (inheritance semantics), or have parents
-	 * exclusively outside container {@link VirtualModel}
-	 * 
+	 * Return boolean indicating whether none of the parent concepts of this concept (inheritance semantics) is declared in the same
+	 * {@link VirtualModel} (in particular when it has no parent at all)
+	 *
 	 * @return
 	 */
 	public boolean isSuperConceptOfContainerVirtualModel();
@@ -820,13 +813,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	/**
 	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FlexoConcept}<br>
 	 * 
-	 * Lookup algorithm follows:
+	 * Lookup algorithm follows, the first match being returned:
 	 * <ul>
-	 * <li>If name matches declared {@link FlexoConcept} return this {@link FlexoConcept}</li>
-	 * <li>If name matches any container {@link VirtualModel} or {@link FlexoConcept} (recursively from current to container), return
-	 * related {@link FlexoConcept}</li>
-	 * <li>If name matches any parent {@link FlexoConcept} (inheritance semantics), return related {@link VirtualModel}</li>
-	 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}</li>
+	 * <li>this {@link FlexoConcept}, when its name matches</li>
+	 * <li>its owning {@link VirtualModel} (see {@link VirtualModel#lookupFlexoConceptWithName(String)})</li>
+	 * <li>its container {@link FlexoConcept}, recursively</li>
+	 * <li>its parent concepts (inheritance semantics), recursively</li>
+	 * <li>its nested concepts, recursively</li>
 	 * </ul>
 	 * 
 	 * @param conceptName
@@ -1351,9 +1344,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public List<FlexoProperty<?>> getAccessibleKeyProperties() {
 
-			// Implements a cache
-			// Do not recompute accessible properties when not required
-
 			List<FlexoProperty<?>> accessibleKeyProperties = new ArrayList<>();
 			for (FlexoProperty<?> p : getAccessibleProperties()) {
 				if (p.isKeyProperty()) {
@@ -1429,8 +1419,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Build and return the list of all accessible roles from this {@link FlexoConcept}
-		 * 
+		 * Build and return the list of all accessible {@link AbstractProperty} from this {@link FlexoConcept}
+		 *
 		 * @return
 		 */
 		@Override
@@ -1584,8 +1574,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public List<FlexoConcept> getAccessibleEmbeddedFlexoConcepts() {
 
-			// Implements a cache
-
 			List<FlexoConcept> returned = new ArrayList<>();
 			returned.addAll(getEmbeddedFlexoConcepts());
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
@@ -1601,8 +1589,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer() {
-
-			// Implements a cache
 
 			List<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept flexoConcept : getDeclaringCompilationUnit().getVirtualModel().getFlexoConcepts()) {
