@@ -501,6 +501,12 @@ public abstract class CompilationUnitResourceImpl
 	}
 
 	@Override
+	public LocalizedDictionaryResource getLocalizedDictionaryResource() {
+		List<LocalizedDictionaryResource> dictionaries = getContents(LocalizedDictionaryResource.class);
+		return dictionaries.isEmpty() ? null : dictionaries.get(0);
+	}
+
+	@Override
 	public VirtualModelLibrary getVirtualModelLibrary() {
 		VirtualModelLibrary returned = (VirtualModelLibrary) performSuperGetter(VIRTUAL_MODEL_LIBRARY);
 		if (returned == null && getServiceManager() != null) {

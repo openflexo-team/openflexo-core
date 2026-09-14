@@ -949,19 +949,12 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
-		if (newlyCreatedObject instanceof FMLCompilationUnitImpl) {
-			// Always create a LocalizedDictionary for a VirtualModel
-			((FMLCompilationUnitImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
-		}
+		// No localized dictionary is created here any more: a compilation unit gets one on demand, through "Localize..."
 	}
 
 	@Override
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
-		if (newlyCreatedObject instanceof FMLCompilationUnitImpl) {
-			// Always create a LocalizedDictionary for a VirtualModel
-			((FMLCompilationUnitImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
-		}
 	}
 
 	public TypeConverter getTypeConverter() {

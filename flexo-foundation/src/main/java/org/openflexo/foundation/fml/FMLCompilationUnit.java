@@ -38,16 +38,13 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
@@ -70,6 +67,7 @@ import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
+import org.openflexo.foundation.fml.rm.LocalizedDictionaryResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.CannotRenameException;
@@ -81,7 +79,6 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -105,8 +102,6 @@ import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.JavaUtils;
@@ -359,7 +354,34 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	/*@Setter(MODEL_VERSION_KEY)
 	public void setModelVersion(FlexoVersion modelVersion);*/
 
+	/**
+	 * The localizer of this compilation unit: the dictionary stored in its <code>Xxx.fml/Localized/</code> directory when it has one (see
+	 * {@link #getLocalizedDictionaryResource()}), a localizer held in memory otherwise.<br>
+	 * A compilation unit only gets a stored dictionary on demand, through the "Localize..." action.
+	 *
+	 * @return
+	 */
 	public LocalizedDelegate getLocalizedDictionary();
+
+	/**
+	 * The resource storing the localized dictionary of this compilation unit, or null when it has none.
+	 *
+	 * @return
+	 */
+	public LocalizedDictionaryResource getLocalizedDictionaryResource();
+
+	/**
+	 * The localizer the dictionary of this compilation unit falls back to: the one of the container VirtualModel, or the platform's when
+	 * this compilation unit is not contained.
+	 *
+	 * @return
+	 */
+	public LocalizedDelegate getParentLocales();
+
+	/**
+	 * Register in the localizer of this compilation unit every localizable key it declares.
+	 */
+	public void searchNewLocalizedEntries();
 
 	/**
 	 * Return the directory serializing this {@link FMLCompilationUnit} (the <code>Xxx.fml/</code> container), or null when this compilation
@@ -1012,7 +1034,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return null;
 		}
 
-		private LocalizedDelegateImpl localized;
+		/**
+		 * The localizer used as long as this compilation unit has no stored dictionary. Kept, so that what it collected is still there when
+		 * "Localize..." creates the dictionary.
+		 */
+		private FMLLocalizedDelegate localesInMemory;
 
 		@Override
 		public Resource getContainerDirectoryResource() {
@@ -1068,83 +1094,42 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return name.equals(lastSeparator < 0 ? path : path.substring(lastSeparator + 1));
 		}
 
-		private Resource getLocalizedDirectoryResource() {
-			Resource virtualModelDirectory = getContainerDirectoryResource();
-			if (virtualModelDirectory == null) {
-				logger.warning("Cannot find localized directory for " + this + ": no container directory");
-				return null;
-			}
-			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile(".*/Localized"), false);
-			if (localizedDirs.size() > 0) {
-				return localizedDirs.get(0);
-			}
-			if (virtualModelDirectory instanceof FileResourceImpl) {
-				try {
-					return new FileResourceImpl(virtualModelDirectory.getLocator(),
-							new File(((FileResourceImpl) virtualModelDirectory).getFile(), "Localized"));
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (LocatorNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			logger.warning("Cannot find localized directory for " + this);
-			return null;
-		}
-
-		private LocalizedDelegateImpl instantiateOrLoadLocales() {
-			if (getResource() != null) {
-				Resource localizedDirectoryResource = getLocalizedDirectoryResource();
-				if (localizedDirectoryResource == null) {
-					return null;
-				}
-				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
-				logger.info("Reading locales from " + localizedDirectoryResource);
-				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource,
-						getVirtualModel().getContainerVirtualModel() != null ? getVirtualModel().getContainerVirtualModel().getLocales()
-								: getServiceManager().getLocalizationService().getFlexoLocalizer(),
-						editSupport, editSupport);
-				returned.setLocalizationRetriever(new Runnable() {
-					@Override
-					public void run() {
-						searchNewLocalizedEntries();
-					}
-				});
-				return returned;
-
-			}
-			return null;
+		@Override
+		public LocalizedDictionaryResource getLocalizedDictionaryResource() {
+			return getResource() instanceof CompilationUnitResource
+					? ((CompilationUnitResource) getResource()).getLocalizedDictionaryResource()
+					: null;
 		}
 
 		@Override
-		public LocalizedDelegate getLocalizedDictionary() {
-			if (localized == null) {
-				localized = instantiateOrLoadLocales();
-				if (localized == null) {
-					// Cannot load locales
-					if (getServiceManager() != null) {
-						return getServiceManager().getLocalizationService().getFlexoLocalizer();
-					}
-					return null;
-				}
-				// Converting old dictionaries
-				/*if (getDeprecatedLocalizedDictionary() != null) {
-					for (FMLLocalizedEntry fmlLocalizedEntry : getDeprecatedLocalizedDictionary().getLocalizedEntries()) {
-						localized.registerNewEntry(fmlLocalizedEntry.getKey(), Language.get(fmlLocalizedEntry.getLanguage()),
-								fmlLocalizedEntry.getValue());
-					}
-				}*/
+		public LocalizedDelegate getParentLocales() {
+			if (getVirtualModel() != null && getVirtualModel().getContainerVirtualModel() != null) {
+				return getVirtualModel().getContainerVirtualModel().getLocales();
 			}
-			return localized;
+			if (getServiceManager() != null && getServiceManager().getLocalizationService() != null) {
+				return getServiceManager().getLocalizationService().getFlexoLocalizer();
+			}
+			return null;
 		}
 
-		public void createLocalizedDictionaryWhenNonExistant() {
-			if (localized == null) {
-				logger.fine("createLocalizedDictionary for " + this);
-				localized = instantiateOrLoadLocales();
+		/**
+		 * The stored dictionary when there is one, the localizer held in memory otherwise.<br>
+		 * Looked up at each call rather than cached: the dictionary may be created - by "Localize..." - after this compilation unit started
+		 * localizing.
+		 */
+		@Override
+		public LocalizedDelegate getLocalizedDictionary() {
+			LocalizedDictionaryResource dictionaryResource = getLocalizedDictionaryResource();
+			if (dictionaryResource != null) {
+				LocalizedDelegate dictionary = dictionaryResource.getDictionary();
+				if (dictionary != null) {
+					return dictionary;
+				}
 			}
+			if (localesInMemory == null) {
+				localesInMemory = new FMLLocalizedDelegate(() -> this);
+			}
+			return localesInMemory;
 		}
 
 		/*@Override
@@ -1169,7 +1154,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 		}
 
-		private void searchNewLocalizedEntries() {
+		@Override
+		public void searchNewLocalizedEntries() {
 			logger.info("Search new entries for " + this);
 
 			CompoundEdit ce = null;

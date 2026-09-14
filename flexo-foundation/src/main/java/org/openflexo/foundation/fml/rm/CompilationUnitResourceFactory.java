@@ -426,6 +426,10 @@ public class CompilationUnitResourceFactory
 
 		for (I child : resourceCenter.getContents(serializationArtefact)) {
 			String childName = resourceCenter.retrieveName(child);
+			if (LocalizedDictionaryResourceFactory.DIRECTORY_NAME.equals(childName) && resourceCenter.isDirectory(child)) {
+				retrieveLocalizedDictionaryResource(child, virtualModelResource);
+				continue;
+			}
 			if (isValidArtefact(child, resourceCenter)) {
 				// Following code is deprecated, as it is based on XML version
 				I xmlFile = resourceCenter.getEntry(childName + ".xml", child);
@@ -459,6 +463,62 @@ public class CompilationUnitResourceFactory
 			}
 
 		}
+	}
+
+	/**
+	 * Retrieve the localized dictionary stored in the container of supplied compilation unit, and link it to that compilation unit.
+	 *
+	 * <p>
+	 * Done here because nothing else ever sees that directory: {@link FMLTechnologyAdapter#isIgnorable} ignores every directory inside a
+	 * <code>.fml</code> container, so the exploration of the resource center never offers it to {@link LocalizedDictionaryResourceFactory}.
+	 */
+	@SuppressWarnings("unchecked")
+	private <I> void retrieveLocalizedDictionaryResource(I directory, CompilationUnitResource compilationUnitResource) {
+
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) compilationUnitResource.getResourceCenter();
+		LocalizedDictionaryResourceFactory factory = getTechnologyAdapter(resourceCenter.getServiceManager())
+				.getResourceFactory(LocalizedDictionaryResourceFactory.class);
+		if (factory == null || factory.getRegisteredResource(directory) != null) {
+			return;
+		}
+
+		try {
+			LocalizedDictionaryResource dictionaryResource = factory.retrieveResource(directory, resourceCenter);
+			if (dictionaryResource.getContainer() == null) {
+				compilationUnitResource.addToContents(dictionaryResource);
+			}
+		} catch (ModelDefinitionException | IOException e) {
+			logger.warning("Could not retrieve the localized dictionary of " + compilationUnitResource.getURI() + ": " + e);
+		}
+	}
+
+	/**
+	 * The compilation unit serialized in supplied <code>Xxx.fml/</code> directory, or null when none is registered there.
+	 *
+	 * <p>
+	 * Compares containers of serialization artefacts, the one primitive that behaves identically over a file-based and a jar-based resource
+	 * center - unlike a lookup through <code>RepositoryFolder</code>.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <I> CompilationUnitResource getCompilationUnitResourceSerializedIn(I directory, FlexoResourceCenter<I> resourceCenter) {
+
+		if (directory == null || resourceCenter.getServiceManager() == null) {
+			return null;
+		}
+
+		FMLTechnologyAdapter fmlTA = resourceCenter.getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		if (fmlTA == null) {
+			return null;
+		}
+
+		for (CompilationUnitResource compilationUnitResource : fmlTA.getVirtualModelRepository(resourceCenter).getAllResources()) {
+			I serializationArtefact = (I) compilationUnitResource.getIODelegate().getSerializationArtefact();
+			if (directory.equals(resourceCenter.getContainer(serializationArtefact))) {
+				return compilationUnitResource;
+			}
+		}
+		return null;
 	}
 
 	/*private static class VirtualModelInfo {

@@ -109,6 +109,12 @@ public interface CompilationUnitResource
 
 	public List<CompilationUnitResource> getContainedCompilationUnitResources();
 
+	/**
+	 * The localized dictionary of this compilation unit - the <code>Localized/</code> directory of its container - or null when it has none
+	 * yet. See {@link LocalizedDictionaryResource}.
+	 */
+	public LocalizedDictionaryResource getLocalizedDictionaryResource();
+
 	public CompilationUnitResource getCompilationUnitResource(String virtualModelNameOrURI);
 
 	@Getter(value = VIRTUAL_MODEL_LIBRARY, ignoreType = true)

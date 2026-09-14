@@ -120,7 +120,8 @@ public class FIBComponentResourceFactory
 			return resource;
 		}
 
-		CompilationUnitResource compilationUnitResource = compilationUnitIn(container, resourceCenter);
+		CompilationUnitResource compilationUnitResource = CompilationUnitResourceFactory.getCompilationUnitResourceSerializedIn(container,
+				resourceCenter);
 		if (compilationUnitResource != null) {
 			compilationUnitResource.addToContents(resource);
 		}
@@ -134,25 +135,5 @@ public class FIBComponentResourceFactory
 
 	private static boolean endsWithFMLSuffix(String name) {
 		return name != null && name.endsWith(CompilationUnitResourceFactory.FML_SUFFIX);
-	}
-
-	/**
-	 * The compilation unit serialized in supplied directory, or null when there is none.
-	 */
-	@SuppressWarnings("unchecked")
-	private <I> CompilationUnitResource compilationUnitIn(I directory, FlexoResourceCenter<I> resourceCenter) {
-
-		FMLTechnologyAdapter fmlTA = getTechnologyAdapter(resourceCenter.getServiceManager());
-		if (fmlTA == null) {
-			return null;
-		}
-
-		for (CompilationUnitResource compilationUnitResource : fmlTA.getVirtualModelRepository(resourceCenter).getAllResources()) {
-			I serializationArtefact = (I) compilationUnitResource.getIODelegate().getSerializationArtefact();
-			if (directory.equals(resourceCenter.getContainer(serializationArtefact))) {
-				return compilationUnitResource;
-			}
-		}
-		return null;
 	}
 }

@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rm.FIBComponentResourceFactory;
+import org.openflexo.foundation.fml.rm.LocalizedDictionaryResourceFactory;
 import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.foundation.fml.ta.FMLTechnologyContextManager;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
@@ -71,7 +72,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  * 
  */
 @DeclareModelSlots({ FMLModelSlot.class })
-@DeclareResourceFactories({ CompilationUnitResourceFactory.class, FIBComponentResourceFactory.class })
+@DeclareResourceFactories({ CompilationUnitResourceFactory.class, FIBComponentResourceFactory.class,
+		LocalizedDictionaryResourceFactory.class })
 @DeclareTechnologySpecificTypes({ FlexoConceptType.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter> {
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
