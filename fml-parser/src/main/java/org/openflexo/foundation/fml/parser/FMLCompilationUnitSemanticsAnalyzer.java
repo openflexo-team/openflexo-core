@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTypingSpace;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
@@ -262,6 +263,17 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		logger.warning("-------->>>>> Compilation issue: " + errorMessage + " "
 				+ (fragment != null ? fragment.getStartPosition() : startPosition));
 		getCompilationUnitNode().throwIssue(modelObject, errorMessage, fragment);
+	}
+
+	@Override
+	public void throwWarning(Object modelObject, String warningMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		super.throwWarning(modelObject, warningMessage, fragment, startPosition);
+		getCompilationUnitNode().addSemanticAnalysisWarning(modelObject, warningMessage, fragment);
+	}
+
+	@Override
+	public List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		return getCompilationUnitNode().getSemanticAnalysisWarnings();
 	}
 
 	@Override

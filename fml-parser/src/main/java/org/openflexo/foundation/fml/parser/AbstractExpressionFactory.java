@@ -15,6 +15,7 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
@@ -182,6 +183,21 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 		if (getParentAnalyzer() != null) {
 			getParentAnalyzer().throwIssue(modelObject, errorMessage, fragment, startPosition);
 		}
+	}
+
+	@Override
+	public void throwWarning(Object modelObject, String warningMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		if (getParentAnalyzer() != null) {
+			getParentAnalyzer().throwWarning(modelObject, warningMessage, fragment, startPosition);
+		}
+	}
+
+	@Override
+	public List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getSemanticAnalysisWarnings();
+		}
+		return super.getSemanticAnalysisWarnings();
 	}
 
 	@Override

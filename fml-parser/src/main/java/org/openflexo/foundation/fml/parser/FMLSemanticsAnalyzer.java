@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLEnumPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
@@ -236,6 +237,28 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	 * @return
 	 */
 	public abstract List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
+
+	/**
+	 * Raise a warning: the FML is accepted, but not interpreted exactly as written<br>
+	 * Default implementation only logs the warning
+	 *
+	 * @param modelObject
+	 * @param warningMessage
+	 * @param fragment
+	 * @param startPosition
+	 */
+	public void throwWarning(Object modelObject, String warningMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		logger.warning(warningMessage + " " + (fragment != null ? fragment.getStartPosition() : startPosition));
+	}
+
+	/**
+	 * Return a list of all semantics analyzing warnings found in the context of this {@link FMLSemanticsAnalyzer}
+	 *
+	 * @return
+	 */
+	public List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		return Collections.emptyList();
+	}
 
 	// Not sure it is still required
 	// TODO: check this

@@ -47,7 +47,18 @@ package org.openflexo.foundation.fml;
  * <li><tt>ZeroMany</tt>: means that the value is represented by a list which is eventually empty</li>
  * <li><tt>OneMany</tt>: means that the value is represented by a non-empty list</li>
  * </ul>
- * 
+ * In FML, the cardinality is written after the type of the property:
+ * <ul>
+ * <li>no cardinality, or {@code [0,1]}: <tt>ZeroOne</tt></li>
+ * <li>{@code [1,1]}: <tt>One</tt></li>
+ * <li>{@code [1,*]}: <tt>OneMany</tt></li>
+ * <li>{@code [0,*]} or {@code ...} (e.g. {@code String... tags;}): <tt>ZeroMany</tt></li>
+ * </ul>
+ * Other bounds (e.g. {@code [2,8]}) are not represented: they are read as <tt>ZeroMany</tt> (<tt>OneMany</tt> for {@code [1,n]}),
+ * and the parser raises a warning.<br>
+ * The normalized pretty-print writes the canonical form: nothing for <tt>ZeroOne</tt>, {@code [1,1]}, {@code [0,*]} and
+ * {@code [1,*]}. The syntax-preserving pretty-print keeps the parsed text as long as it denotes the current cardinality.
+ *
  * @author sylvain
  * 
  */

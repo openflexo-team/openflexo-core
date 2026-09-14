@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -83,6 +84,7 @@ import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.TypeDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
@@ -218,6 +220,8 @@ import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.p2pp.DerivedRawSource;
+import org.openflexo.p2pp.DynamicContents;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
 import org.openflexo.p2pp.RawSource;
@@ -807,6 +811,45 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	protected PropertyCardinality getCardinality(PCardinality cardinality) {
+		return decodeCardinality(cardinality);
+	}
+
+	/**
+	 * Decode supplied cardinality for supplied model object, raising a warning when bounds cannot be represented by a
+	 * {@link PropertyCardinality} (e.g. <tt>[2,8]</tt>)
+	 *
+	 * @param cardinality
+	 * @param modelObject
+	 * @return
+	 */
+	protected PropertyCardinality getCardinality(PCardinality cardinality, Object modelObject) {
+		PropertyCardinality returned = decodeCardinality(cardinality);
+		if (cardinality != null && !isRepresentableCardinality(cardinality)) {
+			RawSourceFragment fragment = getFragment(cardinality);
+			throwWarning(modelObject, "Cardinality " + (fragment != null ? fragment.getRawText() : cardinality.toString().trim())
+					+ " is not supported, read as " + serializeCardinality(returned), fragment);
+		}
+		return returned;
+	}
+
+	private boolean isRepresentableCardinality(PCardinality cardinality) {
+		if (cardinality instanceof AWithExplicitBoundsCardinality) {
+			Integer lower = getLiteralValue(((AWithExplicitBoundsCardinality) cardinality).getLower());
+			Integer upper = getLiteralValue(((AWithExplicitBoundsCardinality) cardinality).getUpper());
+			return lower != null && upper != null && (lower == 0 || lower == 1) && upper == 1;
+		}
+		if (cardinality instanceof AWithLowerBoundsCardinality) {
+			Integer lower = getLiteralValue(((AWithLowerBoundsCardinality) cardinality).getLower());
+			return lower != null && (lower == 0 || lower == 1);
+		}
+		if (cardinality instanceof AWithUpperBoundsCardinality) {
+			return false;
+		}
+		// [*,*] and ...
+		return true;
+	}
+
+	private PropertyCardinality decodeCardinality(PCardinality cardinality) {
 		if (cardinality == null) {
 			return PropertyCardinality.ZeroOne;
 		}
@@ -857,7 +900,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		}
 		switch (cardinality) {
 			case One:
-				return "";
+				return "[1,1]";
 			case ZeroOne:
 				return "";
 			case ZeroMany:
@@ -868,6 +911,34 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				return "";
 		}
 
+	}
+
+	/**
+	 * Build pretty-printable contents for a cardinality<br>
+	 *
+	 * Normalized representation always uses the canonical form (see {@link #serializeCardinality(PropertyCardinality)}). The
+	 * syntax-preserving representation keeps the parsed text (e.g. <tt>...</tt> or <tt>[0,1]</tt>) as long as it still denotes the
+	 * current cardinality of the model object
+	 *
+	 * @param cardinality
+	 *            supplies current cardinality of the model object
+	 * @param parsedCardinality
+	 *            supplies the parsed cardinality, null when none was parsed
+	 * @return
+	 */
+	protected DynamicContents<N, T> cardinalityContents(Supplier<PropertyCardinality> cardinality,
+			Supplier<PCardinality> parsedCardinality) {
+		return new DynamicContents<N, T>(this, null, () -> serializeCardinality(cardinality.get()), null, null) {
+			@Override
+			public void updatePrettyPrint(DerivedRawSource derivedRawSource, PrettyPrintContext context) {
+				if (getFragment() != null && parsedCardinality.get() != null
+						&& decodeCardinality(parsedCardinality.get()) == cardinality.get()) {
+					// Parsed text still denotes the current cardinality: keep it as is
+					return;
+				}
+				super.updatePrettyPrint(derivedRawSource, context);
+			}
+		};
 	}
 
 	protected TLidentifier getName(PVariableDeclarator variableDeclarator) {
@@ -1035,6 +1106,14 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	@Override
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
 		return getSemanticsAnalyzer().getSemanticAnalysisIssues();
+	}
+
+	protected final void throwWarning(Object modelObject, String warningMessage, RawSourceFragment fragment) {
+		getSemanticsAnalyzer().throwWarning(modelObject, warningMessage, fragment, getStartPosition());
+	}
+
+	public List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		return getSemanticsAnalyzer().getSemanticAnalysisWarnings();
 	}
 
 	@Override

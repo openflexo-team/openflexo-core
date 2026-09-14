@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.TypeDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -127,10 +128,25 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	private List<SemanticAnalysisIssue> semanticAnalysisIssues = new ArrayList<>();
+	private List<SemanticAnalysisWarning> semanticAnalysisWarnings = new ArrayList<>();
 
 	@Override
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
 		return semanticAnalysisIssues;
+	}
+
+	@Override
+	public List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		return semanticAnalysisWarnings;
+	}
+
+	public void addSemanticAnalysisWarning(Object modelObject, String warningMessage, RawSourceFragment fragment) {
+		if (modelObject instanceof DataBinding) {
+			// In this case, DataBinding is not the Validable, try the owner (a Bindable)
+			modelObject = ((DataBinding) modelObject).getOwner();
+		}
+		semanticAnalysisWarnings.add(
+				new SemanticAnalysisWarning(modelObject instanceof Validable ? (Validable) modelObject : null, warningMessage, fragment));
 	}
 
 	/*@Override

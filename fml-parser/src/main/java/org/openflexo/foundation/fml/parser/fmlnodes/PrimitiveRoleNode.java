@@ -74,7 +74,8 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
-		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
+		append(cardinalityContents(() -> getModelObject().getCardinality(), () -> getASTNode() != null ? getASTNode().getCardinality() : null),
+				getCardinalityFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
 		when(() -> getModelObject().getDefaultValue().isSet()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultValueFragment());
@@ -92,7 +93,7 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 		}
 		returned.setPrimitiveType(
 				PrimitiveType.toPrimitiveType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace())));
-		returned.setCardinality(getCardinality(astNode.getCardinality()));
+		returned.setCardinality(getCardinality(astNode.getCardinality(), returned));
 
 		PExpression initializerExpression = getInitializerExpression(astNode.getVariableDeclarator());
 		if (initializerExpression != null) {

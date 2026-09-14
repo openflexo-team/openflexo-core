@@ -111,7 +111,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + (getLidentifierName().getText()));
 		}
-		returned.setCardinality(getCardinality(getPCardinality()));
+		returned.setCardinality(getCardinality(getPCardinality(), returned));
 
 		// If the type is unresolved for a AbstractFMLRTModelSlot, manage an unresolved VirtualModelInstanceType to keep track of initial name
 		if (AbstractFMLRTModelSlot.class.isAssignableFrom(roleClass) && type instanceof UnresolvedType) {
@@ -138,7 +138,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		// @formatter:off
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
-		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
+		append(cardinalityContents(() -> getModelObject().getCardinality(), () -> getPCardinality()), getCardinalityFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "with", SPACE), getWithFragment());
 		when(() -> isFullQualified()).thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())

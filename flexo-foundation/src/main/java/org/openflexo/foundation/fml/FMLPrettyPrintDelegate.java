@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.p2pp.PrettyPrintDelegate;
@@ -71,6 +72,15 @@ public interface FMLPrettyPrintDelegate<T> extends PrettyPrintDelegate<T> {
 	public RawSourcePosition getEndLocation();
 
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
+
+	/**
+	 * Return warnings raised during semantics analysis: the FML was accepted, but not interpreted exactly as written
+	 *
+	 * @return
+	 */
+	public default List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		return Collections.emptyList();
+	}
 
 	public boolean hasSource();
 
