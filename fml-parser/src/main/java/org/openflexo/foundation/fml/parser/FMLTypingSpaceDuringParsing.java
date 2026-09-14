@@ -78,6 +78,7 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * FML typing space, related to a {@link FMLCompilationUnit} beeing parsed
@@ -293,9 +294,17 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 						// Otherwise, look in the VirtualModelInfo
 						VirtualModelInfo info = cuResource.getVirtualModelInfo(resource.getResourceCenter());
 						if (info != null) {
+							// Use the URI of the resource, not the one of the VirtualModelInfo: the latter only reflects
+							// an explicit @URI annotation, and is null when the URI is computed (for instance for a
+							// contained VirtualModel). A type built on an empty URI is considered as resolved and would
+							// never be resolved again.
+							String importedVirtualModelURI = cuResource.getURI();
+							if (StringUtils.isEmpty(importedVirtualModelURI)) {
+								logger.warning("Imported resource " + cuResource + " has no URI: cannot build type " + typeAsString);
+							}
 							if (info.getName().equals(typeAsString)) {
 								// Found type as a VirtualModel
-								VirtualModelInstanceType vmiType = new VirtualModelInstanceType(info.getURI(),
+								VirtualModelInstanceType vmiType = new VirtualModelInstanceType(importedVirtualModelURI,
 										new VirtualModelInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
 												(CompilationUnitResource) resource));
 								unresolvedTypes.add(vmiType);
@@ -311,7 +320,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 								}
 
 								if (conceptLocalURI.equals(typeAsString) || conceptName.equals(typeAsString)) {
-									FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(info.getURI() + "#" + conceptLocalURI,
+									FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(importedVirtualModelURI + "#" + conceptLocalURI,
 											new FlexoConceptInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
 													(CompilationUnitResource) resource));
 									unresolvedTypes.add(fciType);

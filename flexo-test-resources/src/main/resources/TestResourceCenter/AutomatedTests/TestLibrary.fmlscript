@@ -34,6 +34,14 @@ service ResourceCenterService add_temp_rc;
 library = new Library() with (name="library");
 assert library != null;
 
+// Inside a behaviour of Library, "new Catalog() with (name=...)" creates a VirtualModelInstance of the
+// contained VirtualModel, itself contained in the Library instance
+libraryCatalog = library.createCatalog();
+assert libraryCatalog != null;
+assert libraryCatalog.name == "catalog";
+assert libraryCatalog.containerVirtualModelInstance == library;
+assert library.catalog == libraryCatalog;
+
 // Creation scheme with a required parameter and a parameter declaring a default value
 shelfCreation = shelf.getCreationSchemes().get(0);
 assert shelfCreation.getSignature() == "create(label,capacity)";
