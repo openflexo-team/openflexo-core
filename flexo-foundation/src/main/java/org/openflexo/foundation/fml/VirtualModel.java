@@ -940,7 +940,7 @@ public interface VirtualModel extends FlexoConcept {
 				}
 			}
 
-			// Is that a concept outside of scope of current ViewPoint ?
+			// Is that a concept outside of scope of current VirtualModel ?
 			// NPE Protection when de-serializing
 			if (getVirtualModelLibrary() == null) {
 				return null;
@@ -1156,14 +1156,7 @@ public interface VirtualModel extends FlexoConcept {
 		}
 
 		/**
-		 * Hook called when scope of a FMLObject changed.<br>
-		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
-		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
-		 * 
-		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
-		 * 
+		 * Propagates the notification to the concepts of this {@link VirtualModel}
 		 */
 		@Override
 		public void notifiedScopeChanged() {

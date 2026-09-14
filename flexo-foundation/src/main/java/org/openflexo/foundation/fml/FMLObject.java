@@ -533,14 +533,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		/**
-		 * Hook called when scope of a FMLObject changed.<br>
-		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
-		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
-		 * 
-		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
-		 * 
 		 * Default implementation does nothing
 		 */
 		@Override

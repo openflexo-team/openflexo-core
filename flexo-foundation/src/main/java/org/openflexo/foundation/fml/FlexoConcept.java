@@ -192,9 +192,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
 	@PropertyIdentifier(type = FlexoProperty.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_PROPERTIES_KEY = "flexoProperties";
-	@PropertyIdentifier(type = FlexoConceptInspector.class)
-	public static final String KEY_PROPERTIES_KEY = "keyProperties";
 	@PropertyIdentifier(type = FlexoProperty.class, cardinality = Cardinality.LIST)
+	public static final String KEY_PROPERTIES_KEY = "keyProperties";
+	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = String.class)
 	public static final String PARENT_FLEXO_CONCEPTS_LIST_KEY = "parentFlexoConceptsList";
@@ -2345,14 +2345,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Hook called when scope of a FMLObject changed.<br>
-		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
-		 * to objects that rely on ViewPoint instantiation context to update their bindings (some bindings might becomes valid)<br>
-		 * 
-		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
-		 * 
+		 * Propagates the notification to the behaviours of this {@link FlexoConcept}
 		 */
 		@Override
 		public void notifiedScopeChanged() {
