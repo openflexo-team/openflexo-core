@@ -61,6 +61,28 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * The FML assignation statement {@code target = value;}.
+ * <p>
+ * The target ({@link #getAssignation()}) is a binding which can be written: a property of the enclosing concept, a local variable, or a
+ * property of another object ({@code other.label}). The value is computed by the right-hand side ({@link #getAssignableAction()}), an
+ * expression or an FML action such as a fetch request. Execution returns the assigned value.
+ * <p>
+ * Only the {@code =} operator is supported: in a statement such as {@code n += 2;}, the operator is ignored (known defect
+ * {@code CORE-D-7}). A collection cannot be assigned to a role of multiple cardinality: add the items one by one.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * create(required String label, int capacity=10) {
+ *     label = parameters.label;
+ *     capacity = parameters.capacity;
+ * }
+ * </pre>
+ *
+ * @param <T>
+ *            type of the assigned value
+ */
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
 @XMLElement
@@ -77,6 +99,12 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	@Setter(ASSIGNATION_KEY)
 	public void setAssignation(DataBinding<? super T> assignation);
 
+	/**
+	 * Return the property of the enclosing concept assigned by this action, when the target is the bare name of such a property
+	 *
+	 * @return the assigned property; null when the target is not a bare property name (a local variable, {@code this.label},
+	 *         {@code other.label}...)
+	 */
 	@Override
 	public FlexoProperty<T> getAssignedFlexoProperty();
 
@@ -101,8 +129,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		public void setAssignation(DataBinding<? super T> assignation) {
 			if (assignation != null) {
 				this.assignation = assignation;
-				// this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
-				// DataBinding.BindingDefinitionType.GET_SET);
 				this.assignation.setOwner(this);
 				this.assignation.setBindingName("assignation");
 				this.assignation.setMandatory(true);
@@ -177,10 +203,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 			Type expected = assignation.getAssignation().getAnalyzedType();
 			Type analyzed = assignation.getAssignableType();
-
-			// System.out.println("On verifie l'assignation " + assignation.getFMLPrettyPrint());
-			// System.out.println("Expected: " + expected);
-			// System.out.println("Analyzed: " + analyzed);
 
 			if (!TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
 				return new NotCompatibleTypesIssue(this, assignation, expected, analyzed);

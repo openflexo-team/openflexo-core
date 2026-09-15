@@ -48,13 +48,30 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Return statement<br>
- * Note that the root control graph in which this action is embedded should be typed with a compatible type
- * 
- * 
+ * The FML return statement: {@code return value;} or {@code return;}.
+ * <p>
+ * Execution evaluates the value ({@link #getAssignableAction()}, null for {@code return;}) and throws a {@link ReturnException} carrying
+ * it: the exception leaves the enclosing blocks and loops, and the execution of the behaviour turns it into the returned value. The
+ * inferred type of a control graph ({@link org.openflexo.foundation.fml.controlgraph.FMLControlGraph#getInferedType()}) is given by the
+ * return statements it contains.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public Book findBook(String title) {
+ *     for (Book book : books) {
+ *         if (book.title == parameters.title) {
+ *             return book;
+ *         }
+ *     }
+ *     return null;
+ * }
+ * </pre>
+ *
  * @author sylvain
  *
  * @param <T>
+ *            type of the returned value
  */
 @ModelEntity
 @ImplementationClass(ReturnStatement.ReturnActionImpl.class)

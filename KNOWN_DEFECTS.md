@@ -142,6 +142,30 @@ public concept Holder {
 **Workaround.** Always declare the setter parameter as `value` (`set(String value) { label = value; }`), as done in
 `flexo-test-resources` `FML/Library.fml`.
 
+### CORE-D-11 — An expression property read once keeps its old value  ·  `TODO`
+
+**Symptom.** Once an expression property (`values …`) has been read, a later read returns the same value although what it depends on
+has changed.
+
+**Reproduction (verified 2026-09-15 by execution).** With the following concept, from a script: after creating two items, reading
+`box.itemCount` (2), then calling `box.removeOnly(a)`, `box.items.size` is 1 but `box.itemCount` is still 2. Without the first read,
+`box.itemCount` is 1 after the removal. Deleting the item as well (`delete parameters.item;`) changes nothing.
+
+```fml
+concept Box {
+	Item[0,*] items;
+	int itemCount values items.size;
+	public removeOnly(Item item) {
+		items.remove(parameters.item);
+	}
+}
+```
+
+**Mechanism — not investigated yet.** Presumably a value cached on first evaluation and not invalidated when the role changes; where
+the value is cached (the expression property, its binding path element, or the concept instance) is to be found.
+
+**Workaround.** None at FML level for a value read from outside; inside a behaviour, compute the value directly (`items.size`).
+
 ---
 
 ## FML behaviours
@@ -180,3 +204,126 @@ without considering parameters with a default value; to be confirmed in the code
 **Workaround.** Pass every argument explicitly, or declare a named creation scheme with fewer parameters
 (`create::withDefaultCapacity(String label)`, reached with `new Shelf::withDefaultCapacity(...)`), as done in `flexo-test-resources`
 `FML/Library.fml`.
+
+---
+
+## FML control structures and edition actions
+
+### CORE-D-6 — A `do … while` loop executes its body once and ignores its condition  ·  `TODO`
+
+**Symptom.** `do { … } while (condition);` parses without any warning, but the body is executed exactly once, whatever the condition.
+
+**Reproduction (verified 2026-09-15 by execution).** The following behaviour returns 1 instead of 3:
+
+```fml
+public int doWhileCount() {
+	int n = 0;
+	do {
+		n = n + 1;
+	} while (n < 3);
+	return n;
+}
+```
+
+**Mechanism — verified in the code.**
+1. `ControlGraphFactory.inADoStatementStatementWithoutTrailingSubstatement()` (fml-parser) builds no node for the `do_statement`
+   production: only its inner statement ends up in the control graph, and the condition is dropped.
+2. `WhileAction` supports the post-condition form (`setEvaluateConditionAfterCycle(true)`), but nothing in fml-parser sets it.
+
+**Workaround.** Use a `while` loop.
+
+### CORE-D-7 — A compound assignment statement ignores its operator  ·  `TODO`
+
+**Symptom.** In a statement `x += value;` (and likewise `-=`, `*=`, `/=`…), the operator is ignored: `x` receives `value`.
+
+**Reproduction (verified 2026-09-15 by execution).** The following behaviour returns 2 instead of 7:
+
+```fml
+public int plusAssign() {
+	int n = 5;
+	n += 2;
+	return n;
+}
+```
+
+**Mechanism — verified in the code.** `AssignationActionNode.buildModelObjectFromAST()` (fml-parser) builds a plain
+`AssignationAction` from the left-hand side and the right-hand side; the `assignment_operator` is only used to locate a source
+fragment, and the pretty-print always writes `=` (`AssignationAction` carries `// TODO: manage assignment operator`). The operator
+inside an expression, as in `i = i += 2`, is evaluated by Connie and is not affected.
+
+**Workaround.** Write the full expression: `n = n + 2;`.
+
+### CORE-D-8 — An invalid condition is evaluated as true by `if` and `while`  ·  `TODO`
+
+**Symptom.** When the condition of an `if` is invalid (unresolved binding), its `then` branch is executed; a `while` with an invalid
+condition loops forever. Nothing is reported at run-time.
+
+**Reproduction (verified 2026-09-15 by execution for `if`).** The following behaviour returns `"then"`:
+
+```fml
+public String invalidCondition() {
+	String r = "none";
+	if (zzUnknownVariable.foo) {
+		r = "then";
+	}
+	else {
+		r = "else";
+	}
+	return r;
+}
+```
+
+**Mechanism — verified in the code.**
+1. `ConditionalActionImpl.evaluateCondition()` returns `true` when the condition is not set or not valid, and when its evaluation
+   throws a `TypeMismatchException` or a `ReflectiveOperationException`; it returns `false` for a null value or a
+   `NullReferenceException`.
+2. `WhileActionImpl.evaluateCondition()` has the same code, except that a `NullReferenceException` also yields `true`. The `while`
+   case was read in the code, not executed (it would not terminate).
+
+**Workaround.** Validate the compilation unit: the invalid condition is reported by the validation rule
+`ConditionBindingIsRequiredAndMustBeValid`.
+
+### CORE-D-9 — A `for (init; ; update)` loop without condition makes its behaviour disappear  ·  `TODO`
+
+**Symptom.** A behaviour containing a classic `for` loop whose condition is omitted is not built: the compilation unit loads, but
+the behaviour is missing, and any call to it is an unresolved binding (evaluated as null).
+
+**Reproduction (verified 2026-09-15 by execution).** Calling `forWithoutCondition()` from a script gives
+`Invalid binding value: vmi.forWithoutCondition()`; the log shows a `NullPointerException`.
+
+```fml
+public int forWithoutCondition() {
+	int n = 0;
+	for (int i=0; ; i++) {
+		n = n + 1;
+		if (i > 5) {
+			return n;
+		}
+	}
+	return n;
+}
+```
+
+**Mechanism — verified in the code.**
+1. `ExpressionIterationActionNode.buildModelObjectFromAST()` (fml-parser) passes the null condition of the `for_basic` production to
+   `ExpressionFactory.makeDataBinding()`, which throws a `NullPointerException` (line 105).
+2. Even if the node were built, `ExpressionIterationActionImpl.evaluateCondition()` returns `false` for an unset condition, so the
+   body would never be executed — unlike Java, where a missing condition means `true`.
+
+**Workaround.** Always write the condition; to loop until a `return`, use `while (true)`.
+
+### CORE-D-10 — Deleting a concept instance leaves it in the multiple roles referencing it  ·  `TODO`
+
+**Symptom.** After `delete x;`, the deleted instance is still an element of a multiple-cardinality role (`Book[0,*] books`) holding
+it: the role keeps its size, and the element is a deleted instance whose concept is null.
+
+**Reproduction (verified 2026-09-15 by execution).** With a concept `Box` declaring `Item[0,*] items` and two items `a` and `b`,
+after `delete parameters.item;` called with `a`, `box.items.size` is still 2 and `box.items.contains(a)` is true. The deletion
+scheme of `Item` did run.
+
+**Mechanism — partially verified in the code.** `DeleteAction.execute()` calls `FlexoConceptInstance.delete()`, which runs the
+deletion scheme (`deleteWithScheme()`), then removes the instance from its container and from its VirtualModelInstance only. Nothing
+removes it from the roles of other instances; where such a clean-up should happen is not investigated yet.
+
+**Workaround.** Remove the instance from the role before deleting it — `books.remove(parameters.book); delete parameters.book;`,
+as done in `flexo-test-resources` `FML/Library.fml` (`Shelf.removeBook`).

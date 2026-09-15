@@ -69,8 +69,16 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * Encodes a sequence as a sequential definition of two control graphs
- * 
+ * Two control graphs executed one after the other.
+ * <p>
+ * A block of statements {@code { a; b; c; }} is represented as nested sequences, each one holding two control graphs:
+ * {@link #getFlattenedSequence()} returns the statements of such a structure as a flat list. A variable declared by the first control
+ * graph (a {@link org.openflexo.foundation.fml.editionaction.DeclarationAction}) is visible in the second one.
+ * <p>
+ * A well-formed sequence always holds both control graphs (validation rules {@link ControlGraph1IsRequired} and
+ * {@link ControlGraph2IsRequired}). Executing a sequence gives no value: a value only leaves a control graph through a
+ * {@link org.openflexo.foundation.fml.editionaction.ReturnStatement}.
+ *
  * @author sylvain
  * 
  */
@@ -206,7 +214,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 					return getControlGraph1().getInferedBindingModel();
 				}
 				return getBindingModel();
-				// return getControlGraph1().getInferedBindingModel();
 			}
 			return null;
 		}
@@ -364,10 +371,10 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	}
 
 	// NB: there is deliberately no "infered types must be compatible" rule here, unlike
-	// ConditionalAction. A Sequence models ordered execution of two statements: the value of
-	// controlGraph1 is discarded and only controlGraph2 contributes to the sequence value. Requiring
-	// the two inferred types to be compatible (a copy of the conditional-branch rule) is wrong and
-	// wrongly rejected valid FML such as two consecutive statements of unrelated types (e.g. two
-	// 'connect' statements binding an XMLModel then an ExcelWorkbook model slot).
+	// ConditionalAction. The two control graphs of a Sequence are consecutive statements, not
+	// alternative branches. Requiring their inferred types to be compatible (a copy of the
+	// conditional-branch rule) wrongly rejected valid FML such as two consecutive statements of
+	// unrelated types (e.g. two 'connect' statements binding an XMLModel then an ExcelWorkbook
+	// model slot).
 
 }

@@ -62,6 +62,25 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * The FML declaration of a local variable: {@code Type name = value;}.
+ * <p>
+ * Execution evaluates the right-hand side ({@link #getAssignableAction()}) and declares the variable {@link #getVariableName()} with that
+ * value in the evaluation context; the statements following the declaration in the same block can use it.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public Book newBook(required String title) {
+ *     Book book = new Book(parameters.title);
+ *     books.add(book);
+ *     return book;
+ * }
+ * </pre>
+ *
+ * @param <T>
+ *            type of the declared value
+ */
 @ModelEntity
 @ImplementationClass(DeclarationAction.DeclarationActionImpl.class)
 @XMLElement
@@ -79,6 +98,14 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 	@Setter(VARIABLE_NAME_KEY)
 	public void setVariableName(String variableName);
 
+	/**
+	 * Return the declared type of the variable.
+	 * <p>
+	 * When no type was explicitly declared (which the FML parser never produces), return the analyzed type of the right-hand side,
+	 * converted to a primitive type when it is a wrapper class.
+	 *
+	 * @return the declared type of the variable
+	 */
 	@FMLMigration("ignoreForEquality=true to be removed")
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
 	@XMLAttribute
@@ -89,18 +116,34 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 	/**
 	 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
-	 * 
+	 *
 	 * @param type
+	 *            the declared type, possibly expressed in another typing space
 	 */
 	@Updater(DECLARED_TYPE_KEY)
 	public void updateDeclaredType(Type type);
 
+	/**
+	 * Return the type of the value computed by the right-hand side
+	 *
+	 * @return the type of the right-hand side, {@code Object} when there is none
+	 */
 	public Type getAnalyzedType();
 
 	public Type getType();
 
+	/**
+	 * Return the simple representation of the type of the right-hand side. Beware: this is not the declared type of the variable.
+	 *
+	 * @return the type of the right-hand side, {@code "null"} when there is none
+	 */
 	public String getDeclarationTypeAsString();
 
+	/**
+	 * Return the full qualified representation of the type of the right-hand side. Beware: this is not the declared type of the variable.
+	 *
+	 * @return the type of the right-hand side, {@code "null"} when there is none
+	 */
 	public String getFullQualifiedDeclarationTypeAsString();
 
 	public static abstract class DeclarationActionImpl<T> extends AbstractAssignationActionImpl<T> implements DeclarationAction<T> {
@@ -120,29 +163,6 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			}
 			return returned;
 		}
-
-		/*@Override
-		public void setVariableName(String variableName) {
-			if (variableName.equals("model")) {
-				setVariableName("_model");
-			}
-			else {
-				performSuperSetter(VARIABLE_NAME_KEY, variableName);
-			}
-		}*/
-
-		/*@Override
-		public void setAssignableAction(AssignableAction<T> assignableAction) {
-			performSuperSetter(ASSIGNABLE_ACTION_KEY, assignableAction);
-			if (assignableAction instanceof AddVirtualModelInstance) {
-				System.out.println("--------> Virer ce truc !!!!");
-				Thread.dumpStack();
-				ElementImportDeclaration importDeclaration = getFMLModelFactory().newElementImportDeclaration();
-				importDeclaration.setResourceReference(
-						new DataBinding<>('"' + ((AddVirtualModelInstance) assignableAction).getVirtualModelType().getURI() + '"'));
-				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
-			}
-		}*/
 
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
@@ -197,8 +217,9 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
 		 * 
 		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
-		 * 
+		 *
 		 * @param type
+		 *            the declared type, possibly expressed in another typing space
 		 */
 		@Override
 		public void updateDeclaredType(Type type) {
@@ -308,7 +329,6 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 	}
 
-	// @DefineValidationRule
 	// TODO: check variable name and validity
 	// TODO: check type compatibility
 }

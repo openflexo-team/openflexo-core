@@ -64,10 +64,27 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * An {@link EditionAction} which can be represented as an expression
- * 
+ * An expression used as an FML action.
+ * <p>
+ * An expression action is built for an expression written as a statement, such as a method call ({@code books.add(book);}) or an
+ * instance creation, and for an expression used as the value of a declaration, of an assignation or of a return statement, or as the
+ * iterated list of a {@code for (Type item : expression)} loop. Execution evaluates the expression ({@link #getExpression()}) and returns
+ * its value; the type of that value ({@link #getAssignableType()}) is the analyzed type of the expression.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public Book newBook(required String title) {
+ *     Book book = new Book(parameters.title);  // the value new Book(parameters.title) is an expression action
+ *     books.add(book);                         // an expression action used as a statement
+ *     return book;                             // the value book is an expression action
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
+ * @param <T>
+ *            type of the value of the expression
  */
 @ModelEntity
 @ImplementationClass(ExpressionAction.ExpressionActionImpl.class)

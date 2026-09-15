@@ -64,6 +64,15 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * A loop over a numeric range: from {@link #getStartValue()} (inclusive) to {@link #getExclusiveEndValue()} (exclusive), by steps of
+ * {@link #getIncrement()}.
+ * <p>
+ * This action is not produced by the FML parser: a loop such as {@code for (int i = 0; i < n; i++)} is an
+ * {@link ExpressionIterationAction}.
+ *
+ * @deprecated replaced by {@link ExpressionIterationAction}
+ */
 @ModelEntity
 @ImplementationClass(IncrementalIterationAction.IncrementalIterationActionImpl.class)
 @XMLElement
@@ -255,7 +264,6 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 			if (TypeUtils.isTypeAssignableFrom(Integer.class, getItemType(), true)) {
 				for (long currentValue = startValue.longValue(); currentValue < exclusiveEndValue.longValue(); currentValue = currentValue
 						+ increment.longValue()) {
-					// System.out.println("> working with " + getIteratorName() + "=" + currentValue);
 					evaluationContext.declareVariable(getIteratorName(), currentValue);
 					try {
 						getControlGraph().execute(evaluationContext);
@@ -268,7 +276,6 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 			else {
 				for (double currentValue = startValue.doubleValue(); currentValue < exclusiveEndValue
 						.doubleValue(); currentValue = currentValue + increment.doubleValue()) {
-					// System.out.println("> working with " + getIteratorName() + "=" + currentValue);
 					evaluationContext.declareVariable(getIteratorName(), currentValue);
 					try {
 						getControlGraph().execute(evaluationContext);
@@ -292,7 +299,6 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
 			if (controlGraph == getControlGraph()) {
 				return getInferedBindingModel();
-				// return getControlGraph().getBindingModel();
 			}
 			logger.warning("Unexpected control graph: " + controlGraph);
 			return null;

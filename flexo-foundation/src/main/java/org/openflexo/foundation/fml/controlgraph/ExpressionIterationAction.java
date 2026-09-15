@@ -72,16 +72,28 @@ import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
- * This construction implements a <code>for</code> loop<br>
- * 
- * General syntax is :<br>
- * <code> 
- * for (Type var=[initValue:expression] : [condition:expression] : [statement]) {<br> 
- * 		// code lock to be executed<br>
- * }<br>
- * </code>
- * 
- * 
+ * The FML classic loop {@code for (Type i = init; condition; update)}.
+ * <p>
+ * The iterator variable is declared with the value of {@link #getInitExpression()}. Then, as long as {@link #getConditionExpression()}
+ * evaluates to true, the body ({@link #getControlGraph()}) is executed, followed by {@link #getStatementExpression()}, a control graph
+ * such as {@code i++} or {@code i = i + 2}. The iterator variable must be declared, with its type, in the initialization part.
+ * <p>
+ * Unlike Java, the condition cannot be omitted (known defect {@code CORE-D-9}). This action replaces the deprecated
+ * {@link IncrementalIterationAction}.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public int totalCapacity() {
+ *     List&lt;Shelf&gt; shelves = select Shelf from this;
+ *     int total = 0;
+ *     for (int i = 0; i &lt; shelves.size; i++) {
+ *         total = total + shelves.get(i).capacity;
+ *     }
+ *     return total;
+ * }
+ * </pre>
+ *
  * @author sylvain
  *
  */
@@ -203,8 +215,6 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 
 		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
 			DataBinding<Boolean> conditionExpression = getConditionExpression();
-			// System.out.println("conditionExpression=" + conditionExpression);
-			// System.out.println("valid=" + conditionExpression.isValid() + " reason: " + conditionExpression.invalidBindingReason());
 			if (conditionExpression.isSet() && conditionExpression.isValid()) {
 				try {
 					Boolean returned = conditionExpression.getBindingValue(evaluationContext);
@@ -228,8 +238,6 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
-
-			// System.out.println("Execute iteration");
 
 			// Initialize iterator
 			Object initValue = evaluateInitExpression(evaluationContext);
@@ -302,7 +310,6 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 			else if (controlGraph == getStatementExpression()) {
 				return getInferedBindingModel();
 			}
-			// logger.warning("Unexpected control graph: " + controlGraph);
 			return null;
 		}
 

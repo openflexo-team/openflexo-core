@@ -62,6 +62,14 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * Base of the FML loops declaring an iterator variable: {@link IterationAction} ({@code for (Type item : expression)}) and
+ * {@link ExpressionIterationAction} ({@code for (Type i = init; condition; update)}). {@link IncrementalIterationAction} is deprecated.
+ * <p>
+ * The iterator variable, named {@link #getIteratorName()} ({@code item} by default) and typed {@link #getItemType()}, is declared in
+ * the evaluation context while the body ({@link #getControlGraph()}) is executed, and dereferenced after the loop. A return statement
+ * executed in the body leaves the loop and the enclosing behaviour.
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractIterationAction.AbstractIterationActionImpl.class)
 public interface AbstractIterationAction extends ControlStructureAction, FMLControlGraphOwner {
@@ -90,31 +98,31 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 
 	/**
 	 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
-	 * 
+	 *
 	 * @param type
+	 *            the declared type, possibly expressed in another typing space
 	 */
 	@Updater(DECLARED_TYPE_KEY)
 	public void updateDeclaredType(Type type);
 
 	/**
-	 * Return type of item, which is the declared type if explicitely defined, or the analyzed type if type is not specified and this
-	 * infered
-	 * 
-	 * @return
+	 * Return the type of the iterator variable: the declared type when set, the analyzed type otherwise
+	 *
+	 * @return the type of the iterator variable
 	 */
 	public Type getItemType();
 
 	/**
-	 * Return infered item type (type of item on which we iterate)
-	 * 
-	 * @return
+	 * Return the type of the iterator variable as inferred from the iteration itself
+	 *
+	 * @return the inferred type of the iterator variable
 	 */
 	public Type getAnalyzedType();
 
 	/**
-	 * Returns the control graph on which we iterate
-	 * 
-	 * @return
+	 * Return the body of the loop, executed at each iteration
+	 *
+	 * @return the body of the loop
 	 */
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
@@ -142,7 +150,6 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 			if (this.iteratorName == null || !this.iteratorName.equals(iteratorName)) {
 				String oldValue = this.iteratorName;
 				this.iteratorName = iteratorName;
-				// rebuildInferedBindingModel();
 				getPropertyChangeSupport().firePropertyChange(ITERATOR_NAME_KEY, oldValue, iteratorName);
 			}
 		}
@@ -159,8 +166,9 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 		 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
 		 * 
 		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
-		 * 
+		 *
 		 * @param type
+		 *            the declared type, possibly expressed in another typing space
 		 */
 		@Override
 		public void updateDeclaredType(Type type) {

@@ -47,9 +47,15 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * 
- * Represents an {@link EditionAction} which address a specific technology referenced by a {@link ModelSlot} class<br>
- * 
+ * An edition action contributed by a technology adapter, written {@code TA::Action(name=value, ...)} in FML: {@code TA} is the
+ * identifier under which the model slot class of the technology adapter is used in the compilation unit
+ * ({@code use ... as TA;}), and {@code Action} the name of the action declared by that model slot class.
+ * <p>
+ * The type argument {@code MS} designates that model slot class ({@link #getModelSlotClass()}), from which the technology adapter is
+ * retrieved ({@link #getModelSlotTechnologyAdapter()}). An action which cannot be resolved while parsing is kept as an
+ * {@link UnresolvedTechnologySpecificAction}. The actions applying on a given object, written with a clause {@code in (receiver)}, are
+ * {@link TechnologySpecificActionDefiningReceiver}s; fetch requests ({@link AbstractFetchRequest}) are among them.
+ *
  * @author sylvain
  *
  * @param <MS>
@@ -62,25 +68,27 @@ import org.openflexo.pamela.annotations.ModelEntity;
 public abstract interface TechnologySpecificAction<MS extends ModelSlot<?,?>, T> extends AssignableAction<T> {
 
 	/**
-	 * Return the {@link TechnologyAdapter} were this {@link EditionAction} was registered
-	 * 
-	 * @return
+	 * Return the {@link TechnologyAdapter} of the model slot class declaring this action
+	 *
+	 * @return the technology adapter, null when no service manager is available
 	 */
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
 	/**
-	 * Return {@link Class} of model slot were this {@link EditionAction} was registered
-	 * 
-	 * @return
+	 * Return the model slot class declaring this action, given by the type argument {@code MS}
+	 *
+	 * @return the model slot class
 	 */
 	public Class<? extends MS> getModelSlotClass();
 
 	/**
-	 * Compute and return assigned model slot asserting this action is assigned to requested {@link ModelSlot}<br>
-	 * 
-	 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link ModelSlot}<br>
-	 * 
-	 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+	 * Return the model slot assigned by this action, when this action is the right-hand side of an assignation whose target is a model
+	 * slot of type {@code MS}.
+	 * <p>
+	 * Beware: this method must only be called when this action is the right-hand side of the assignation of a property (see
+	 * {@link #getAssignedFlexoProperty()}); otherwise it throws a {@link NullPointerException}.
+	 *
+	 * @return the assigned model slot, null when the assigned property is not a model slot of type {@code MS}
 	 */
 	public MS getAssignedModelSlot();
 
@@ -90,17 +98,9 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?,?>, T>
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		/*@Override
-		public LocalizedDelegate getLocales() {
-			if (getModelSlotTechnologyAdapter() != null) {
-				return getModelSlotTechnologyAdapter().getLocales();
-			}
-			return super.getLocales();
-		}*/
-
 		/**
 		 * Return a string representation suitable for a common user<br>
-		 * This representation will used in all GUIs
+		 * This representation will be used in all GUIs
 		 */
 		@Override
 		public String getStringRepresentation() {
@@ -114,22 +114,12 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?,?>, T>
 			return "FML";
 		}
 
-		/**
-		 * Return {@link Class} of model slot were this {@link EditionAction} was registered
-		 * 
-		 * @return
-		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public final Class<? extends MS> getModelSlotClass() {
 			return (Class<? extends MS>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 0));
 		}
 
-		/**
-		 * Return the {@link TechnologyAdapter} were this {@link EditionAction} was registered
-		 * 
-		 * @return
-		 */
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
 			if (getServiceManager() != null) {
@@ -138,13 +128,6 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?,?>, T>
 			return null;
 		}
 
-		/**
-		 * Compute and return assigned model slot asserting this action is assigned to requested {@link ModelSlot}<br>
-		 * 
-		 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link ModelSlot}<br>
-		 * 
-		 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
-		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public MS getAssignedModelSlot() {
