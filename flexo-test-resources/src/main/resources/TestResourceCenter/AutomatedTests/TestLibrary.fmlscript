@@ -50,6 +50,8 @@ assert shelfCreation.getParameter("capacity").getIsRequired() == false;
 fiction = library.newShelf("Fiction");
 assert fiction != null;
 assert fiction.label == "Fiction";
+// newShelf fires a ShelfCreated event, received by the listener declared in Library
+assert library.lastCreatedShelf == "Fiction";
 assert fiction.capacity == 20;
 assert library.allShelves().size == 1;
 

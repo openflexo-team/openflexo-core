@@ -17,6 +17,7 @@ import ["http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml"];
 public model Library {
 
 	Catalog catalog;
+	String lastCreatedShelf;
 
 	public Catalog createCatalog() {
 		catalog = new Catalog() with (name="catalog");
@@ -24,7 +25,20 @@ public model Library {
 	}
 
 	public Shelf newShelf(String label) {
-		return new Shelf(parameters.label, 20);
+		Shelf shelf = new Shelf(parameters.label, 20);
+		fire new ShelfCreated(parameters.label);
+		return shelf;
+	}
+
+	listen ShelfCreated from this {
+		lastCreatedShelf = evt.label;
+	}
+
+	event ShelfCreated {
+		String label;
+		create(String label) {
+			label = parameters.label;
+		}
 	}
 
 	public Shelf newSmallShelf(String label) {
