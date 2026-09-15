@@ -76,6 +76,34 @@ pruneWithMethod() {
 
 ---
 
+## FML types
+
+### CORE-D-5 — A `FlexoConceptInstanceType` built with an empty URI is reported as resolved  ·  `TODO`
+
+**Symptom.** A `FlexoConceptInstanceType` created with a null or empty concept URI and no concept (typically when the URI of the
+concept could not be determined while parsing) is considered resolved, so it is never resolved later and stays an
+`UndefinedFlexoConceptInstanceType(null)`. Every binding using that type stays invalid, and at run-time the corresponding expressions
+silently evaluate to null.
+
+**Known occurrence (fixed).** Imported VirtualModels whose URI is computed (no `@URI`) were typed with an empty URI by
+`FMLTypingSpaceDuringParsing.resolveType` (fml-parser), so `new Catalog() with (name=...)` in `flexo-test-resources`
+`FML/Library.fml` silently returned null. That cause was fixed by using the URI of the compilation unit resource; the rule below,
+which turned it into a silent failure, remains.
+
+**Mechanism — verified in the code** (`FlexoConceptInstanceType`, flexo-foundation).
+1. `isResolved()` returns `flexoConcept != null || StringUtils.isEmpty(conceptURI)`: an empty URI counts as resolved.
+2. `resolve()` only acts when `flexoConcept == null && StringUtils.isNotEmpty(conceptURI) && customTypeFactory != null`, so such a type
+   is never resolved either.
+3. Nothing reports the situation: the only visible trace is the unresolved binding logged by `attemptToFixInvalidBindings`.
+
+**To decide as part of the fix.** Whether a type with neither concept nor URI must be reported as unresolved (and warned about), or
+rejected at construction; check the callers relying on the current rule (e.g. the `UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE` constant,
+built with a null concept).
+
+**Workaround.** None at FML level; when this symptom appears, look for the place where the type is built with an empty URI.
+
+---
+
 ## FML properties
 
 ### CORE-D-3 — The parameter name declared in a `set(...)` block is ignored  ·  `TODO`

@@ -43,6 +43,35 @@ degraded form.
 - The normalized pretty-print writes the bounds and a round trip preserves them (extend `TestFMLPrettyPrint11`).
 - `ZeroOne` / `One` / `ZeroMany` / `OneMany` behave as before; pretty-print tests and AutomatedTests stay green.
 
+### CORE-F-3 — Reference an enumeration value in FML expressions  ·  `TODO`
+
+**Problem.** FML can declare an enumeration (`enum Genre { NOVEL, POETRY }`) and a property typed with it (`Genre genre;`), but an
+FML expression cannot designate one of its values, so such a property can neither be assigned nor compared from FML.
+
+**Current state (verified 2026-09 by execution, on a throwaway fixture).**
+- `genre = Genre.POETRY;` and `Genre.enumValues` do not parse: the grammar only accepts lower-case path prefixes
+  (`identifier_prefix = lidentifier dot` in `fml.sablecc`), so a type name cannot start a path. The parse error empties the whole
+  compilation unit.
+- `genre = POETRY;` parses (`composite_ident`, `{constant}` form) but does not resolve (`BindingVariable POETRY does not exist`); the
+  property stays null.
+- `enumValues` is only offered on an expression already typed with the enumeration (`FMLBindingFactory`, `EnumValuesPathElement`), e.g.
+  `genre.enumValues`, which requires to already hold a value.
+- No test executes an enumeration: `TestEnum.fml` (flexo-test-resources) is only parsed.
+
+**Existing machinery.** `FlexoEnum` / `FlexoEnumValue` (each value is a `FlexoConcept`), run-time `FlexoEnumInstance`s shared by the
+whole application (`FlexoEnum.getInstances()`), `FlexoEnumType`, `FlexoEnumValueActorReference` persisting a value in an instance.
+
+**To decide.**
+- Syntax: qualified access (`Genre.POETRY`, which requires accepting a type name as path prefix), bare constant resolved against the
+  expected type (`genre = POETRY`), or both.
+- Binding resolution: a path element or binding variable resolving to the shared `FlexoEnumInstance`; typing as `FlexoEnumType`.
+- Comparison semantics (`genre == POETRY`) and use in `select … where`.
+
+**Acceptance criteria.**
+- A value can be assigned to and compared with an enumeration-typed property from an FML behaviour, and read back from a script.
+- The value is persisted and reloaded with the instance.
+- An fmlscript in `AutomatedTests` exercises it; pretty-print round trip preserves the syntax.
+
 ### CORE-F-2 — Remove or redefine the "default" deletion scheme of a concept  ·  `TODO`
 
 **Problem.** `FlexoConcept.getDefaultDeletionScheme()` returns the first accessible deletion scheme, so which scheme is "the default"
