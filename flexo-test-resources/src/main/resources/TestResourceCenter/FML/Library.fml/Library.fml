@@ -49,6 +49,15 @@ public model Library {
 		return select Shelf from this;
 	}
 
+	public int totalCapacity() {
+		List<Shelf> shelves = select Shelf from this;
+		int total = 0;
+		for (int i = 0; i < shelves.size; i++) {
+			total = total + shelves.get(i).capacity;
+		}
+		return total;
+	}
+
 	public abstract concept Publication {
 
 		abstract String code;
@@ -111,6 +120,34 @@ public model Library {
 				}
 			}
 			return count;
+		}
+
+		public Book findBook(String title) {
+			for (Book book : books) {
+				if (book.title == parameters.title) {
+					return book;
+				}
+			}
+			return null;
+		}
+
+		public Book findBookByTitle(String title) {
+			return select unique Book from (this) where (selected.title == parameters.title);
+		}
+
+		public int freeSlots() {
+			int free = 0;
+			int filled = bookCount;
+			while (filled < capacity) {
+				filled = filled + 1;
+				free = free + 1;
+			}
+			return free;
+		}
+
+		public removeBook(Book book) {
+			books.remove(parameters.book);
+			delete parameters.book;
 		}
 
 		public concept Book extends Publication {

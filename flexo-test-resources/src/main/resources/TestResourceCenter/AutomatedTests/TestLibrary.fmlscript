@@ -83,6 +83,17 @@ assert fiction.displayName == "Shelf Classics";
 // Iteration and conditional
 assert fiction.countNovels() == 1;
 
+// Early return from an iteration
+assert fiction.findBook("Dune") == dune;
+assert fiction.findBook("Ulysses") == null;
+
+// Fetch request with a where clause
+assert fiction.findBookByTitle("Emma") == emma;
+assert fiction.findBookByTitle("Ulysses") == null;
+
+// While loop
+assert fiction.freeSlots() == 18;
+
 // Abstract property: Publication declares code, Book implements it with an expression property
 publication = virtualModel.getFlexoConcept("Publication");
 assert publication != null;
@@ -96,6 +107,14 @@ small = library.newSmallShelf("Poetry");
 assert small != null;
 assert small.label == "Poetry";
 assert small.capacity == 10;
+
+// Classic for loop, over the shelves Fiction (20) and Poetry (10)
+assert library.totalCapacity() == 30;
+
+// Deletion: the book is removed from the multiple role, then deleted
+fiction.removeBook(emma);
+assert fiction.books.size == 1;
+assert fiction.findBook("Emma") == null;
 
 // Visibility: no keyword means Default
 assert shelf.getDeclaredProperty("notes").visibility.toString() == "Private";
