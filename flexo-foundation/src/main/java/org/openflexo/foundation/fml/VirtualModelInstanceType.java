@@ -48,8 +48,10 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Represent the type of an instance of a {@link VirtualModel}
- * 
+ * Represent the type of an instance of a {@link VirtualModel}, denoted in FML by the name of the VirtualModel (e.g.
+ * {@code Catalog catalog;}, which declares a model slot)<br>
+ * Note that its base class is {@link FMLRTVirtualModelInstance}, although instances of a VirtualModel may also be reflected instances
+ *
  * @author sylvain
  * 
  */

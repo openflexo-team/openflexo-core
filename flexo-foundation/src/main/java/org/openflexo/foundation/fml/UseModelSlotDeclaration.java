@@ -55,8 +55,12 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * 
- * 
+ * The declaration of a model slot type used by a {@link FMLCompilationUnit}, written in FML as {@code use <model slot class> as ABBREV;},
+ * e.g. {@code use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;}.
+ * <p>
+ * The abbreviation ({@link #getAbbrev()}) is the identifier used to reach the roles, edition actions and behaviours of the corresponding
+ * technology, as in {@code ABBREV::SomeRole(...)} or {@code ABBREV::SomeAction(...)}.
+ *
  * @author sylvain
  *
  */

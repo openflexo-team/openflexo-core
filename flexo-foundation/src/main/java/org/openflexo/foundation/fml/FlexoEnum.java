@@ -63,10 +63,21 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * An {@link FlexoEnum} represent an enumeration reflected by a {@link FlexoConcept}
- * 
- * It defines an arbitrary and immutable set of {@link FlexoEnumValue} representing each value this enumeration can take
- * 
+ * An enumeration, represented as a {@link FlexoConcept} and declared in FML with {@code enum}, in a VirtualModel or in a concept:
+ *
+ * <pre>
+ * enum Genre {
+ *     NOVEL,
+ *     POETRY
+ * }
+ * </pre>
+ *
+ * It defines an immutable set of {@link FlexoEnumValue}s, each value this enumeration can take. A property can be typed with an
+ * enumeration ({@code Genre genre;}), whose type is a {@link FlexoEnumType}.
+ * <p>
+ * Note that FML expressions cannot designate an enumeration value yet (neither {@code Genre.POETRY} nor {@code POETRY}): see
+ * {@code CORE-F-3} in {@code BACKLOG.md} of openflexo-core.
+ *
  * @author sylvain
  * 
  */

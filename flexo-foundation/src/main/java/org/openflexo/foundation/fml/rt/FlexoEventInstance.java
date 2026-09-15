@@ -50,12 +50,12 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A {@link FlexoEventInstance} is the run-time concept (instance) of an {@link FlexoEvent}.<br>
- * 
- * As such, a {@link FlexoEventInstance} is instantiated inside a {@link FMLRTVirtualModelInstance}.<br>
- * 
+ * An instance of a {@link FlexoEvent}, created and fired with {@code fire new EventType(...)}.<br>
+ * It knows the {@link VirtualModelInstance} from which it was fired ({@link #getSourceVirtualModelInstance()}), but is not registered in
+ * any virtual model instance: its life is restricted to its propagation to the listeners.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(FlexoEventInstance.FlexoEventInstanceImpl.class)
@@ -66,8 +66,8 @@ public interface FlexoEventInstance extends FlexoConceptInstance {
 	public static final String SOURCE_VIRTUAL_MODEL_INSTANCE_KEY = "sourceVirtualModelInstance";
 
 	/**
-	 * Return the {@link FMLRTVirtualModelInstance} where this FlexoEventInstance was fired
-	 * 
+	 * Return the {@link VirtualModelInstance} from which this FlexoEventInstance was fired
+	 *
 	 * @return
 	 */
 	@Getter(value = SOURCE_VIRTUAL_MODEL_INSTANCE_KEY)

@@ -76,8 +76,19 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * 
- * 
+ * The import of an element addressed by URI in a {@link FMLCompilationUnit}: a resource (typically another VirtualModel), or an object in
+ * a resource. It is written in FML in one of the following forms:
+ * <ul>
+ * <li>{@code import ["http://.../AnOtherModel.fml"];}: anonymous import of a resource (see {@link #isAnonymous()})</li>
+ * <li>{@code import ["http://.../AResource":"objectId"];}: anonymous import of an object in a resource</li>
+ * <li>{@code import Type name from ["http://.../AResource"(:"objectId")];}: named import, whose name ({@link #getAbbrev()}) and declared
+ * type ({@link #getDeclaredType()}) can be used in the compilation unit</li>
+ * </ul>
+ * The URIs are expressions, which may use the namespaces of the compilation unit (e.g. {@code [NS+"AnOtherModel.fml"]}, see
+ * {@link NamespaceDeclaration}). The referenced object is retrieved on demand (see {@link #getReferencedObject()}).
+ * <p>
+ * Importing a VirtualModel is required to use its name as a type, including for a VirtualModel contained in the importing one.
+ *
  * @author sylvain
  *
  */

@@ -52,8 +52,12 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * 
- * 
+ * The import of a Java class in a {@link FMLCompilationUnit}, written in FML as {@code import java.util.List;}, or
+ * {@code import a.b.C as Alias;} to give the class another name.
+ * <p>
+ * {@link #getClassName()} returns the alias when there is one, the simple class name otherwise; {@link #getJavaClass()} loads the class
+ * from its full qualified name.
+ *
  * @author sylvain
  *
  */
