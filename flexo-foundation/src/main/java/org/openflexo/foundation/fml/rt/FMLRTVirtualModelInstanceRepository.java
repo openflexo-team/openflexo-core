@@ -52,7 +52,12 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * A repository storing {@link FMLRTVirtualModelInstanceResource} for a resource center
+ * The repository of the {@link FMLRTVirtualModelInstanceResource}s found in a given resource center: the instances of virtual models stored
+ * there.
+ * <p>
+ * The {@link FMLRTTechnologyAdapter} holds one per resource center. An instance contained in another one is held by its container, so
+ * {@link #getTopLevelVirtualModelInstanceResources()} returns only those which have no container. This repository also looks instances up
+ * by URI or by name, and lists those conform to a given VirtualModel.
  * 
  * @author sylvain
  * 

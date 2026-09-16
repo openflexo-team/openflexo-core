@@ -46,21 +46,28 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 
+/**
+ * The technology context manager of the FML technology adapter: it keeps the {@link CompilationUnitResource}s registered for that
+ * technology, indexed by URI.
+ * 
+ * @author sylvain
+ * 
+ */
 public class FMLTechnologyContextManager extends TechnologyContextManager<FMLTechnologyAdapter> {
 
-	protected Map<String, CompilationUnitResource> virtualModels = new HashMap<>();
+	protected Map<String, CompilationUnitResource> compilationUnits = new HashMap<>();
 
 	public FMLTechnologyContextManager(FMLTechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
 		super(adapter, resourceCenterService);
 	}
 
-	public CompilationUnitResource getViewPointResource(String uri) {
-		return virtualModels.get(uri);
+	public CompilationUnitResource getCompilationUnitResource(String uri) {
+		return compilationUnits.get(uri);
 	}
 
-	public void registerViewPoint(CompilationUnitResource virtualModelResource) {
-		registerResource(virtualModelResource);
-		virtualModels.put(virtualModelResource.getURI(), virtualModelResource);
+	public void registerCompilationUnit(CompilationUnitResource compilationUnitResource) {
+		registerResource(compilationUnitResource);
+		compilationUnits.put(compilationUnitResource.getURI(), compilationUnitResource);
 	}
 
 }

@@ -52,7 +52,12 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * A {@link CompilationUnitRepository} references {@link CompilationUnitResource} stored in a given {@link FlexoResourceCenter}
+ * The repository of the {@link CompilationUnitResource}s found in a given {@link FlexoResourceCenter}: it reflects the folders of that
+ * resource center, and is the structure the browsers display.
+ * <p>
+ * The {@link FMLTechnologyAdapter} holds one per resource center, and fills it while exploring. Compilation units contained in another one
+ * are held by their container, so {@link #getTopLevelCompilationUnitResources()} returns only those which have no container. Resolution by
+ * URI is not done here but in the {@link VirtualModelLibrary}.
  * 
  * @author sylvain
  * 

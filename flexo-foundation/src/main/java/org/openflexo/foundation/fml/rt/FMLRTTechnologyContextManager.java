@@ -45,21 +45,28 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 
+/**
+ * The technology context manager of the FML@RT technology adapter: it keeps the {@link FMLRTVirtualModelInstanceResource}s registered for
+ * that technology, indexed by URI.
+ * 
+ * @author sylvain
+ * 
+ */
 public class FMLRTTechnologyContextManager extends TechnologyContextManager<FMLRTTechnologyAdapter> {
 
-	protected Map<String, FMLRTVirtualModelInstanceResource> views = new HashMap<>();
+	protected Map<String, FMLRTVirtualModelInstanceResource> virtualModelInstances = new HashMap<>();
 
 	public FMLRTTechnologyContextManager(FMLRTTechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
 		super(adapter, resourceCenterService);
 	}
 
 	public FMLRTVirtualModelInstanceResource getVirtualModelInstanceResource(String uri) {
-		return views.get(uri);
+		return virtualModelInstances.get(uri);
 	}
 
-	public void registerVirtualModelInstance(FMLRTVirtualModelInstanceResource viewResource) {
-		registerResource(viewResource);
-		views.put(viewResource.getURI(), viewResource);
+	public void registerVirtualModelInstance(FMLRTVirtualModelInstanceResource virtualModelInstanceResource) {
+		registerResource(virtualModelInstanceResource);
+		virtualModelInstances.put(virtualModelInstanceResource.getURI(), virtualModelInstanceResource);
 	}
 
 }

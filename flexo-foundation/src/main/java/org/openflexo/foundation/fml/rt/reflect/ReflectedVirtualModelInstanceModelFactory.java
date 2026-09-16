@@ -70,7 +70,12 @@ import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link PamelaModelFactory} used to handle {@link ReflectedVirtualModelInstance} models<br>
+ * The {@link PamelaModelFactory} building the objects of a {@link ReflectedVirtualModelInstance}: the concept instances reflecting the
+ * objects of a technology-specific resource, and the actor references holding the values of their roles.
+ * <p>
+ * Unlike the factory of a native instance, this one is not attached to a resource of its own: it keeps the reflected resource
+ * ({@link #getReflectedResource()}), which is the real storage of the data. Each technology providing a
+ * {@link ReflectedFMLRTModelSlot} subclasses it.
  * 
  * @author sylvain
  * 

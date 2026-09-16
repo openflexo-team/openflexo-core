@@ -45,7 +45,6 @@ import java.util.Vector;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.pamela.annotations.Adder;
@@ -62,43 +61,61 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * This action is used to execute arbitrary FML code on a {@link FlexoConceptInstance}
+ * An action meant to execute FML on a {@link VirtualModelInstance}, written {@code FMLRT::ExecuteFML(...)}.
+ * <p>
+ * Beware: this action does nothing. Its implementation returns null without executing anything, and it is only known by the user interface,
+ * which offers it among the actions of the FML@RT model slot.
  * 
  * @author sylvain
+ * 
+ * @param <T>
+ *            type of the returned value
+ * @param <VMI>
+ *            type of the VirtualModelInstance this action applies on
+ * @deprecated write the FML statements directly in the behaviour body
  */
 @ModelEntity
 @ImplementationClass(ExecuteFML.ExecuteFMLImpl.class)
 @XMLElement
 @FML("ExecuteFML")
+@Deprecated
 public interface ExecuteFML<T, VMI extends VirtualModelInstance<VMI, ?>>
 		extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<VMI, ?, ?>, VMI, T> {
 
+	@Deprecated
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
+	@Deprecated
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = CreateFlexoConceptInstanceParameter.ACTION_KEY)
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<CreateFlexoConceptInstanceParameter> getParameters();
 
+	@Deprecated
 	@Setter(PARAMETERS_KEY)
 	public void setParameters(List<CreateFlexoConceptInstanceParameter> parameters);
 
+	@Deprecated
 	@Adder(PARAMETERS_KEY)
 	public void addToParameters(CreateFlexoConceptInstanceParameter aParameter);
 
+	@Deprecated
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(CreateFlexoConceptInstanceParameter aParameter);
 
+	@Deprecated
 	public static abstract class ExecuteFMLImpl<T, VMI extends VirtualModelInstance<VMI, ?>>
 			extends TechnologySpecificActionDefiningReceiverImpl<AbstractFMLRTModelSlot<VMI, ?, ?>, VMI, T> implements ExecuteFML<T, VMI> {
 
+		@Deprecated
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) {
 			return null;
 		}
 
+		@Deprecated
 		@Override
 		public Type getAssignableType() {
 			return Object.class;

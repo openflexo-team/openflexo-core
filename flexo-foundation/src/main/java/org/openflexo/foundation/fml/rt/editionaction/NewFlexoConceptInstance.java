@@ -67,7 +67,34 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * This edition primitive allows to dynamically instantiate a {@link FlexoConceptInstance}
+ * The reflective instantiation action, written {@code FMLRT::NewInstance(conceptType=..., container=..., args=...)}: it instantiates a
+ * {@link FlexoConceptInstance} whose concept is only known at run-time.
+ * <p>
+ * The concept to instantiate is given as a value of type {@code Concept<...>}
+ * ({@link org.openflexo.foundation.fml.ta.FlexoConceptType}), obtained for instance from {@code someInstance.conceptType}. The arguments of
+ * the creation scheme are passed as a list ({@link #getArguments()}): the creation scheme executed is the one whose parameters match that
+ * list, in number and in type; when none matches, execution fails with an {@link org.openflexo.foundation.fml.rt.FMLExecutionException}.
+ * When no container is given, the instance is created in the VirtualModelInstance of the receiver.
+ * <p>
+ * Example (excerpt of {@code FML/TestFMLReflection.fml} in the {@code flexo-test-resources} test resource center, run by
+ * {@code AutomatedTests/TestFMLReflection.fmlscript}):
+ *
+ * <pre>
+ * Concept&lt;Foo&gt; fooConcept = aFoo.conceptType;
+ *
+ * test() {
+ *     aFoo = FMLRT::NewInstance(conceptType=fooConcept, container=this);
+ * }
+ *
+ * Foo test2(String aString) {
+ *     List&lt;?&gt; arguments = new ArrayList();
+ *     arguments.add(parameters.aString);
+ *     return FMLRT::NewInstance(conceptType=fooConcept, container=this, args=arguments);
+ * }
+ * </pre>
+ *
+ * Unlike the deprecated {@link AddFlexoConceptInstance}, this action is produced by the FML parser and used by the corpus: it is the FML
+ * form of a dynamic instantiation, where {@code new Foo(...)} names its concept statically.
  * 
  * @author sylvain
  * 
