@@ -63,10 +63,27 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
- * Primitive used to fire a new {@link FlexoEvent}.<br>
- * Life-cycle of event is somewhat different from {@link FlexoConcept} instance, since it's life is restricted to the propagation of the
- * event
- * 
+ * The FML statement {@code fire expression;}, firing an event declared by a {@link FlexoEvent}.
+ * <p>
+ * The expression ({@link #getEventInstance()}) is typically the creation of an event instance, {@code new ShelfCreated(...)}. Execution
+ * evaluates it and fires the event instance on the VirtualModelInstance of the evaluation context, where it is received by the listeners
+ * declared with {@code listen ShelfCreated from ...}. Unlike a {@link FlexoConcept} instance, an event instance is not stored in any
+ * VirtualModelInstance: its life is restricted to the propagation of the event.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public Shelf newShelf(String label) {
+ *     Shelf shelf = new Shelf(parameters.label, 20);
+ *     fire new ShelfCreated(parameters.label);
+ *     return shelf;
+ * }
+ *
+ * listen ShelfCreated from this {
+ *     lastCreatedShelf = evt.label;
+ * }
+ * </pre>
+ *
  * @author sylvain
  */
 @ModelEntity
@@ -124,9 +141,6 @@ public interface FireEvent extends EditionAction {
 			}
 
 			VirtualModelInstance<?, ?> vmi = evaluationContext.getVirtualModelInstance();
-
-			// VMI vmi = getVirtualModelInstance(evaluationContext);
-			// FlexoEventInstance returned = (FlexoEventInstance) super.execute(evaluationContext);
 
 			// And we fire the new event to the listening FMLRunTimeEngine(s)
 			if (vmi != null) {

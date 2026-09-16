@@ -80,19 +80,23 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * This action is used to explicitely delete a new {@link FlexoConceptInstance}<br>
- * This action overrides DeleteAction by proposing the choice of the DeletionScheme to use
- * 
+ * An action deleting a {@link FlexoConceptInstance} with a chosen deletion scheme ({@link #getDeletionScheme()}, by default the default
+ * deletion scheme of its concept), executed with the values of {@link #getParameters()}. When the instance is a
+ * {@link FMLRTVirtualModelInstance}, its resource is deleted too.
+ * <p>
+ * This action is not produced by the FML parser: the FML statement {@code delete expression;} is a {@link DeleteAction}.
+ *
  * @author sylvain
- * 
- * @param <M>
- * @param <MM>
+ *
+ * @param <VMI>
+ *            type of the VirtualModelInstance holding the deleted instance
+ * @deprecated use the FML deletion statement {@code delete expression;} ({@link DeleteAction})
  */
-
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("DeleteFlexoConceptInstance")
+@Deprecated
 public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>> extends DeleteAction<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
@@ -237,20 +241,11 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
-			// logger.info("Perform performDeleteFlexoConceptInstance " + evaluationContext);
-			// Unused VirtualModelInstance<?, ?> vmInstance = null; // getVirtualModelInstance(evaluationContext);
-
-			// DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
 
 			try {
 				FlexoConceptInstance objectToDelete = getObject().getBindingValue(evaluationContext);
 				// if VmInstance is null, use the one of the EPI
 				if (objectToDelete != null) {
-					// Unused vmInstance = objectToDelete.getVirtualModelInstance();
-
-					// logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
-					// logger.info("FMLRTVirtualModelInstance: " + vmInstance);
-					// logger.info("deletionScheme: " + getDeletionScheme());
 
 					if (getDeletionScheme() == null) {
 						logger.warning("No deletion scheme !");
@@ -387,19 +382,5 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return null;
 		}
 	}
-
-	/*@DefineValidationRule
-	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid
-			extends BindingIsRequiredAndMustBeValid<DeleteFlexoConceptInstance> {
-		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
-			super("'virtual_model_instance'_binding_is_not_valid", DeleteFlexoConceptInstance.class);
-		}
-	
-		@Override
-		public DataBinding<VirtualModelInstance<?, ?>> getBinding(DeleteFlexoConceptInstance object) {
-			return object.getVirtualModelInstance();
-		}
-	
-	}*/
 
 }

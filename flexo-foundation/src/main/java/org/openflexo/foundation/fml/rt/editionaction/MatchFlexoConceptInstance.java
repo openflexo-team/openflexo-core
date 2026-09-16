@@ -89,16 +89,40 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 
 /**
- * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given
- * {@link FMLRTVirtualModelInstance}.<br>
- * The matching is performed on some pattern roles, with some values retrieved from an expression.<br>
- * If target {@link FlexoConceptInstance} could not been looked up, then a new {@link FlexoConceptInstance} is created using supplied
- * {@link CreationScheme} and some parameters
- * 
+ * The FML statement {@code match Concept [in matchingSet] from (container) where (property=value, ...) unmatched: new Concept(...);}.
+ * <p>
+ * Execution looks, among the instances of the matching set ({@link #getMatchingSet()}) which have not been matched yet, for an instance
+ * whose properties are equal to all the criteria ({@link #getMatchingCriterias()}). When one is found, it is marked as matched and returned;
+ * otherwise the {@code unmatched} expression ({@link #getNewInstance()}), the creation of an instance of the matched concept, is evaluated
+ * and the new instance is returned. A matching set is typically opened by {@code begin match} ({@link InitiateMatching}) and closed by
+ * {@code end match} ({@link FinalizeMatching}), which processes the instances which have not been matched: a synchronization written
+ * this way can be executed again without creating duplicates.
+ * <p>
+ * Beware:
+ * <ul>
+ * <li>a criterion whose value is null is ignored: it does not restrict the match;</li>
+ * <li>an instance is matched at most once in a matching set: a second match with the same criteria creates a new instance;</li>
+ * <li>without {@code in}, the match uses the default matching set of the executing behaviour, whose unmatched instances are deleted when
+ * the behaviour ends, and which is typed by the first match executed (known defect {@code CORE-D-1}): prefer an explicit matching
+ * set.</li>
+ * </ul>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public int synchronizeIndex() {
+ *     MatchingSet&lt;IndexEntry&gt; entries = begin match IndexEntry from this;
+ *     for (Shelf shelf : select Shelf from this) {
+ *         for (Book b : shelf.books) {
+ *             match IndexEntry in entries from this where (book=b) unmatched: new IndexEntry(b);
+ *         }
+ *     }
+ *     end match IndexEntry in entries unmatched: delete();
+ *     List&lt;IndexEntry&gt; all = select IndexEntry from this;
+ *     return all.size;
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
- * @param <M>
- * @param <MM>
  */
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
@@ -448,7 +472,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 		private synchronized void updateMatchingCriterias() {
 
-			// Unused isUpdatingMatchingCriterias = true;
 			if (getFlexoConceptType() == null) {
 				for (MatchingCriteria criteriaToRemove : new ArrayList<>(getMatchingCriterias())) {
 					removeFromMatchingCriterias(criteriaToRemove);
@@ -463,10 +486,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						criteriasToRemove.remove(existingCriteria);
 					}
 					else {
-						// System.out.println("ADD " + property.getName() + " updateMatchingCriterias for " +
-						// Integer.toHexString(hashCode()));
-						// addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(property));
-						// System.out.println("addToMatchingCriterias for " + property);
 					}
 				}
 				for (MatchingCriteria removeThis : criteriasToRemove) {
@@ -477,7 +496,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				}
 
 			}
-			// Unused isUpdatingMatchingCriterias = false;
 
 		}
 
@@ -621,9 +639,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		private boolean isAnalyzingContainer = false;
 
 		/**
-		 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
-		 * 
-		 * @return
+		 * Return the {@link VirtualModel} addressed by this action: the type of the receiver binding when it is set; otherwise the
+		 * enclosing VirtualModel, the VirtualModel accessed by the inferred model slot, or the owning VirtualModel
+		 *
+		 * @return the addressed VirtualModel
 		 */
 		@Override
 		public VirtualModel getAddressedVirtualModel() {

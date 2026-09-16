@@ -84,8 +84,16 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Primitive used to finalize a {@link MatchingSet}
- * 
+ * The FML statement {@code end match Concept in matchingSet unmatched: delete();}, closing a {@link MatchingSet}.
+ * <p>
+ * Execution runs a behaviour ({@link #getFlexoBehaviour()}) on each instance of the concept which has not been matched in the matching set.
+ * With {@code unmatched: delete()}, this behaviour is the default deletion scheme of the concept (see backlog {@code CORE-F-2}), which
+ * deletes the instance; a deleted instance is not removed from the roles of multiple cardinality holding it (known defect
+ * {@code CORE-D-10}).
+ * <p>
+ * {@code unmatched: method()} is not supported by the parser (known defect {@code CORE-D-2}). For a complete example, see
+ * {@link MatchFlexoConceptInstance}.
+ *
  * @author sylvain
  */
 @ModelEntity
@@ -140,6 +148,14 @@ public interface FinalizeMatching extends EditionAction {
 	@Setter(FLEXO_BEHAVIOUR_URI_KEY)
 	public void setFlexoBehaviourURI(String flexoBehaviourURI);
 
+	/**
+	 * Return the behaviour executed on the instances which have not been matched.
+	 * <p>
+	 * Beware: when none was set, the first action scheme of the concept is returned ({@link #getAvailableFlexoBehaviours()}), which may be a
+	 * deletion scheme (known defect {@code CORE-D-2}).
+	 *
+	 * @return the behaviour executed on unmatched instances
+	 */
 	public FlexoBehaviour getFlexoBehaviour();
 
 	public void setFlexoBehaviour(FlexoBehaviour flexoBehaviour);
@@ -320,8 +336,6 @@ public interface FinalizeMatching extends EditionAction {
 		@Override
 		public List<? extends FlexoBehaviour> getAvailableFlexoBehaviours() {
 			if (getFlexoConceptType() != null) {
-				// return new ConcatenedList<>(getFlexoConceptType().getAccessibleDeletionSchemes(),
-				// getFlexoConceptType().getAccessibleAbstractActionSchemes());
 				return getFlexoConceptType().getAccessibleAbstractActionSchemes();
 			}
 			return null;
@@ -412,18 +426,6 @@ public interface FinalizeMatching extends EditionAction {
 
 		@Override
 		public MatchingSet execute(RunTimeEvaluationContext evaluationContext) {
-			/*try {
-				System.out.println("Finalizing MatchingSet " + getMatchingSet() + " pour " + getFlexoConceptType() + " dans "
-						+ getContainer().getBindingValue(evaluationContext));
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}*/
-
-			// System.out.println("evaluationContext=" + evaluationContext);
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -444,14 +446,11 @@ public interface FinalizeMatching extends EditionAction {
 									(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 						}
 						for (ExecuteBehaviourParameter p : getParameters()) {
-							// FlexoBehaviourParameter param = p.getParam();
 							Object value = p.evaluateParameterValue(evaluationContext);
 							if (value != null) {
-								// System.out.println("Param " + p.getParam() + " = " + value);
-								behaviourAction.setParameterValue(p.getParam(), value/*p.evaluateParameterValue(action)*/);
+								behaviourAction.setParameterValue(p.getParam(), value);
 							}
 						}
-						// System.out.println("executing " + behaviourAction.getFlexoBehaviour().getSignature() + " for " + fci);
 						if (behaviourAction != null) {
 							behaviourAction.doAction();
 							if (behaviourAction.hasActionExecutionSucceeded()) {

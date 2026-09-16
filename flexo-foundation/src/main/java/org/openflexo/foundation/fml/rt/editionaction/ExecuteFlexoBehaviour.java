@@ -76,20 +76,26 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * This action is used to execute a FlexoBehaviour in a {@link FlexoConceptInstance}
- * 
+ * An action executing an action scheme ({@link #getFlexoBehaviour()}) on a {@link FlexoConceptInstance}, its receiver, and returning the
+ * value returned by the action scheme.
+ * <p>
+ * This action is not produced by the FML parser, where a behaviour call is an expression ({@code shelf.rename("Classics")}); it can only
+ * be written {@code FMLRT::ExecuteFlexoBehaviour(...)}. Beware: its arguments ({@link #getParameters()}) are not passed to the action
+ * scheme.
+ *
  * @author sylvain
+ *
+ * @param <T>
+ *            type of the returned value
+ * @deprecated use a behaviour call expression, such as {@code shelf.rename("Classics")}
  */
 @ModelEntity
 @ImplementationClass(ExecuteFlexoBehaviour.ExecuteFlexoBehaviourImpl.class)
 @XMLElement
 @FML("ExecuteFlexoBehaviour")
+@Deprecated
 public interface ExecuteFlexoBehaviour<T>
 		extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<?, ?, ?>, FlexoConceptInstance, T> {
-
-	// <FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
-	// public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
-	// extends TechnologySpecificActionDefiningReceiver<AbstractFMLRTModelSlot<VMI, ?>, VMI, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String FLEXO_BEHAVIOUR_KEY = "flexoBehaviour";
@@ -191,15 +197,6 @@ public interface ExecuteFlexoBehaviour<T>
 							editor);
 				}
 			}
-			// TODO
-			/*for (FlexoBehaviourParameter p : actionScheme.getParameters()) {
-				DataBinding<?> param = getParameter(p);
-				Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
-				// logger.fine("For parameter " + param + " value is " + paramValue);
-				if (paramValue != null) {
-					actionSchemeAction.setParameterValue(p, paramValue);
-				}
-			}*/
 			actionSchemeAction.doAction();
 
 			if (actionSchemeAction.hasActionExecutionSucceeded()) {
