@@ -74,6 +74,27 @@ pruneWithMethod() {
 
 **Workaround.** Only use `unmatched: delete()`, on a concept declaring exactly ONE deletion scheme (see `CORE-F-2`).
 
+### CORE-D-12 — The `where` clause of `begin match` is ignored  ·  `TODO`
+
+**Symptom.** `begin match X from this where (condition)` parses without any warning, but the matching set holds every instance of `X`,
+whatever the condition. An `end match … unmatched: delete()` then deletes instances the condition was meant to exclude.
+
+**Reproduction (verified 2026-09-15 by execution).** With two `Mirror` instances labelled `"keep"` and `"drop"`, after
+`pruneKeepTagged()` no `Mirror` is left, instead of the `"drop"` one:
+
+```fml
+public pruneKeepTagged() {
+	MatchingSet<Mirror> mirrors = begin match Mirror from this where (selected.label == "keep");
+	end match Mirror in mirrors unmatched: delete();
+}
+```
+
+**Mechanism — verified in the code.** `BeginMatchActionNode.buildModelObjectFromAST()` (fml-parser) reads the concept name and the
+`from` clause, but never the `where_clause` of the `begin_match_action` production: no `MatchCondition` is added to the
+`InitiateMatching`, although `MatchingSet(InitiateMatching, …)` does filter the instances with those conditions.
+
+**Workaround.** Filter in the matches instead: iterate over the relevant sources only, and match on criteria.
+
 ---
 
 ## FML types
