@@ -111,9 +111,16 @@ assert small.capacity == 10;
 // Classic for loop, over the shelves Fiction (20) and Poetry (10)
 assert library.totalCapacity() == 30;
 
+// Matching: one index entry per book; running the synchronization again creates no duplicate
+assert library.synchronizeIndex() == 2;
+assert library.synchronizeIndex() == 2;
+
 // Deletion: the book is removed from the multiple role, then deleted
 fiction.removeBook(emma);
 assert fiction.books.size == 1;
+
+// Matching: the entry of the deleted book is not matched any more, and is deleted by end match
+assert library.synchronizeIndex() == 1;
 assert fiction.findBook("Emma") == null;
 
 // Visibility: no keyword means Default

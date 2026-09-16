@@ -58,6 +58,30 @@ public model Library {
 		return total;
 	}
 
+	public int synchronizeIndex() {
+		MatchingSet<IndexEntry> entries = begin match IndexEntry from this;
+		for (Shelf shelf : select Shelf from this) {
+			for (Book b : shelf.books) {
+				match IndexEntry in entries from this where (book=b) unmatched: new IndexEntry(b);
+			}
+		}
+		end match IndexEntry in entries unmatched: delete();
+		List<IndexEntry> all = select IndexEntry from this;
+		return all.size;
+	}
+
+	public concept IndexEntry {
+
+		Book book;
+
+		create(Book book) {
+			book = parameters.book;
+		}
+
+		delete() {
+		}
+	}
+
 	public abstract concept Publication {
 
 		abstract String code;
