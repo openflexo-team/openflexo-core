@@ -169,7 +169,6 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 			if (virtualModelResource == null && StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getVirtualModelLibrary() != null) {
 				virtualModelResource = getVirtualModelLibrary().getCompilationUnitResource(getAccessedVirtualModelURI());
 				if (virtualModelResource != null) {
-					// logger.info("Looked-up " + virtualModelResource);
 					if (!isNotifying) {
 						try {
 							isNotifying = true;
@@ -275,16 +274,6 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 				return null;
 
 				// Do not load virtual model when unloaded
-				// return getAccessedVirtualModelResource().getLoadedResourceData();
-				/*try {
-					return getAccessedVirtualModelResource().getResourceData().getVirtualModel();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					e.printStackTrace();
-				}*/
 			}
 			if (type != null && type.isResolved()) {
 				return type.getVirtualModel();
@@ -304,9 +293,13 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 		}
 
 		/**
-		 * 
-		 * @param msInstance
+		 * Return the URI of an object of the accessed VirtualModelInstance. To be refined by child classes: this implementation logs a
+		 * warning and returns null.
+		 *
+		 * @param resourceData
+		 *            the accessed VirtualModelInstance
 		 * @param o
+		 *            the object whose URI is requested
 		 * @return URI as String
 		 */
 		@Override
@@ -316,8 +309,13 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 		}
 
 		/**
-		 * @param msInstance
+		 * Return the object of the accessed VirtualModelInstance identified by supplied URI. To be refined by child classes: this
+		 * implementation logs a warning and returns null.
+		 *
+		 * @param resourceData
+		 *            the accessed VirtualModelInstance
 		 * @param objectURI
+		 *            URI of the requested object
 		 * @return the Object
 		 */
 		@Override
@@ -335,17 +333,6 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 		protected String getFMLRepresentationForConformToStatement() {
 			return "conformTo " + getAccessedVirtualModelURI() + " ";
 		}
-
-		/*@SuppressWarnings("unchecked")
-		@Override
-		public FMLRTModelSlotInstance<VMI, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
-			FMLRTModelSlotInstance<VMI, TA> returned = factory.newInstance(FMLRTModelSlotInstance.class);
-			returned.setModelSlot(this);
-			returned.setFlexoConceptInstance(fci);
-			returned.setVirtualModelInstanceURI(object.getURI());
-			return returned;
-		}*/
 
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
@@ -430,7 +417,6 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 
 					@Override
 					public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
-						// System.out.println("Resolving VirtualModel " + typeToResolve);
 						if (getDeclaringCompilationUnit() != null) {
 							for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
 								if (elementImportDeclaration.isReferencedObjectLoaded()) {
@@ -442,14 +428,12 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 											if (typeToResolve == type) {
 												setAccessedVirtualModel(referencedCompilationUnit.getVirtualModel());
 											}
-											// System.out.println("Found: " + referencedCompilationUnit.getVirtualModel());
 											return referencedCompilationUnit.getVirtualModel();
 										}
 									}
 								}
 							}
 						}
-						// System.out.println("Not found " + typeToResolve);
 						return null;
 
 					}

@@ -17,7 +17,6 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package org.openflexo.foundation.fml.rt.rm;
 
 import java.io.IOException;
@@ -43,8 +42,12 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 
 /**
- * The resource factory for {@link FMLRTVirtualModelInstanceResource}
- * 
+ * The factory creating and retrieving the {@link FMLRTVirtualModelInstanceResource}s: the resources of the instances of virtual models.
+ * <p>
+ * A valid artefact is a directory whose name ends with {@link #FML_RT_SUFFIX}. Such a resource may be created at top level or inside
+ * another instance resource; an instance stored in the {@code .fml} directory of a VirtualModel is registered as a resource contained in
+ * that compilation unit ({@link CompilationUnitResource#getContainedVMI()}).
+ *
  * @author sylvain
  *
  */
@@ -365,7 +368,6 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		public String virtualModelURI;
 		@SuppressWarnings("unused")
 		public String virtualModelVersion;
-		// Unused public String name;
 		public String uri;
 		public String version;
 		public String modelVersion;
@@ -382,7 +384,6 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		}
 
 		if (xmlRootElementInfo.getName().equals("FMLRTVirtualModelInstance")) {
-			// Unused returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.virtualModelURI = xmlRootElementInfo.getAttribute("virtualModelURI");
 			returned.virtualModelVersion = xmlRootElementInfo.getAttribute("virtualModelVersion");

@@ -62,11 +62,16 @@ import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link PamelaModelFactory} used to handle {@link VirtualModelInstance} models<br>
- * Only one instance of this class should be used in a session
- * 
+ * The {@link PamelaModelFactory} building the objects of a {@link FMLRTVirtualModelInstance}: the instance itself, its concept instances,
+ * its event instances and the actor references holding the values of their roles.
+ * <p>
+ * Its PAMELA meta-model exposes the model slot classes of all technology adapters and the actor references they declare, since an instance
+ * may hold actors of any technology. Instantiating a concept goes through {@link #makeNewFlexoConceptInstance}, which checks the concept
+ * against the VirtualModel of the instance and against the required container, initializes the default values, then executes the creation
+ * scheme.
+ *
  * @author sylvain
- * 
+ *
  */
 public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResourceModelFactory<FMLRTVirtualModelInstanceResource>
 		implements AbstractVirtualModelInstanceModelFactory {
@@ -192,7 +197,6 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 
 		// Preferably use supplied evaluation context
 		if (evaluationContext == null) {
-			// evaluationContext = returned;
 			logger.warning("makeNewFlexoConceptInstance() with null evaluationContext");
 		}
 

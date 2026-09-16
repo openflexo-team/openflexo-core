@@ -66,10 +66,18 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
- * This class defines and implements the FML technology adapter (Flexo Modelling Language)
- * 
+ * The technology adapter of FML itself (Flexo Modelling Language), under the identifier {@code FML}.
+ * <p>
+ * It declares the resources of the language — compilation units ({@code .fml}), the user interface components and the localized
+ * dictionaries stored in their directory (see {@link org.openflexo.foundation.fml.rm}) — the {@link FMLModelSlot} giving reflective access
+ * to a compilation unit, and the FML types (concept instance, VirtualModel instance, concept, resource). It also holds, per resource
+ * center, the {@link CompilationUnitRepository} of the compilation units found there.
+ * <p>
+ * Exploration ignores any directory nested in a {@code .fml} one: the VirtualModels contained in a compilation unit are not discovered on
+ * their own, but explored from their container.
+ *
  * @author sylvain
- * 
+ *
  */
 @DeclareModelSlots({ FMLModelSlot.class })
 @DeclareResourceFactories({ CompilationUnitResourceFactory.class, FIBComponentResourceFactory.class,
@@ -118,7 +126,6 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 
 	private FlexoResourceTypeFactory resourceTypeFactory;
 	private DefaultFlexoConceptInstanceTypeFactory fciFactory;
-	// private FlexoEnumTypeFactory enumFactory;
 	private DefaultVirtualModelInstanceTypeFactory vmiFactory;
 	private DefaultFlexoConceptTypeFactory fmlTypeFactory;
 
@@ -126,7 +133,6 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 		taService.registerTypeClass(FlexoResourceType.class, getFlexoResourceTypeFactory());
 		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
-		// taService.registerTypeClass(FlexoEnumType.class, getFlexoEnumTypeFactory());
 		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
 		taService.registerTypeClass(FlexoConceptType.class, getFlexoConceptTypeFactory());
 	}
@@ -137,13 +143,6 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		}
 		return resourceTypeFactory;
 	}
-
-	/*public FlexoEnumTypeFactory getFlexoEnumTypeFactory() {
-		if (enumFactory == null) {
-			enumFactory = new FlexoEnumTypeFactory(this);
-		}
-		return enumFactory;
-	}*/
 
 	public DefaultFlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
 		if (fciFactory == null) {

@@ -132,9 +132,6 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 			getContainer().getVirtualModelInstance().addToVirtualModelInstances(returned);
 		}
 		returned.clearIsModified();
-		/*if (returned.isSynchronizable()) {
-			returned.synchronize(null);
-		}*/
 		// And, we notify a deserialization stop
 		stopDeserializing();
 		if (!containerWasDeserializing) {
@@ -144,12 +141,6 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 		}
 
 		returned.reindexAllConceptInstances();
-
-		/*if (!getContainer().isDeserializing()) {
-			if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
-				getLoadedResourceData().synchronize(null);
-			}
-		}*/
 
 		if (returned.getFMLRunTimeEngine() != null) {
 			// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
@@ -183,11 +174,6 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 		}
 	}
 
-	/*@Override
-	public FMLRTVirtualModelInstanceResource getContainer() {
-		return (FMLRTVirtualModelInstanceResource) performSuperGetter(CONTAINER);
-	}*/
-
 	@Override
 	public boolean delete(Object... context) {
 		// gets service manager before deleting otherwise the service manager is null
@@ -212,7 +198,6 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 	 */
 	@Override
 	public String getDisplayName() {
-		// logger.info("VMI " + getName() + " isLoading=" + isLoading() + " isLoaded=" + isLoaded());
 		if (isLoading()) {
 			return super.getDisplayName() + "[Loading]";
 		}

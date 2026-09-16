@@ -57,12 +57,18 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
 
 /**
- * This class defines and implements the Openflexo built-in FML@runtime technology adapter<br>
- * 
- * This adapter allows to manage {@link VirtualModelInstance} and {@link FMLRTVirtualModelInstance} resources in Openflexo infrastructure.
- * 
+ * The technology adapter of FML@RT, under the identifier {@code FML@RT}: it manages the instances of virtual models.
+ * <p>
+ * It declares the {@link FMLRTModelSlot} — the model slot giving access to a {@link FMLRTVirtualModelInstance}, written
+ * {@code use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;} in FML — the resource of a {@code .fml.rt} instance (see
+ * {@link org.openflexo.foundation.fml.rt.rm}), and the instance types. It also holds, per resource center, the repository of the instances
+ * found there.
+ * <p>
+ * Exploration ignores any directory nested in a {@code .fml.rt} one: a contained instance is not discovered on its own, but explored from
+ * its container.
+ *
  * @author sylvain
- * 
+ *
  */
 @DeclareModelSlots({ FMLRTModelSlot.class })
 @DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
@@ -139,81 +145,6 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAda
 		}
 		return returned;
 	}
-
-	/*@Override
-	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
-	
-		final FMLRTVirtualModelInstanceRepository viewRepository = this.getViewRepository(resourceCenter);
-	
-		// Iterate
-		Iterator<I> it = resourceCenter.iterator();
-	
-		while (it.hasNext()) {
-			final I item = it.next();
-			if (!this.isIgnorable(resourceCenter, item)) {
-				if (item instanceof File) {
-					final File candidateFile = (File) item;
-					if (this.isValidViewDirectory(candidateFile)) {
-						final ViewResource vRes = this.analyseAsView(candidateFile, viewRepository);
-						if (vRes != null) {
-							this.referenceResource(vRes, resourceCenter);
-						}
-					}
-				}
-			}
-		}
-	
-		// Call it to update the current repositories
-		notifyRepositoryStructureChanged();
-	}*/
-
-	/**
-	 * Return boolean indicating if supplied {@link File} has the general form of a ViewPoint directory
-	 * 
-	 * @param candidateFile
-	 * @return
-	 */
-	/*private boolean isValidViewDirectory(final File candidateFile) {
-		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
-				&& candidateFile.getName().endsWith(ViewResource.VIEW_SUFFIX)) {
-			if (candidateFile.getParentFile().getName().endsWith(ViewResource.VIEW_SUFFIX)) {
-				// We dont try to interpret here a sub-view in a view
-				return false;
-			}
-			final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewResource.VIEW_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();
-		}
-		return false;
-	}*/
-
-	/**
-	 * Build and return {@link ViewResource} from a candidate file (a .view directory)<br>
-	 * Register this {@link ViewResource} in the supplied {@link Viewepository} as well as in the {@link ViewLibrary} (repository for a
-	 * FlexoProject)
-	 * 
-	 * @param candidateFile
-	 * @param viewPointRepository
-	 * @return the newly created {@link ViewPointResource}
-	 */
-	/*private ViewResource analyseAsView(final File candidateFile, final FMLRTVirtualModelInstanceRepository viewRepository) {
-		if (viewRepository instanceof ViewLibrary && this.isValidViewDirectory(candidateFile)) {
-			final RepositoryFolder<ViewResource> folder = this.retrieveRepositoryFolder(viewRepository, candidateFile);
-			final ViewResource vRes = ViewResourceImpl.retrieveViewResource(candidateFile, folder, (ViewLibrary) viewRepository);
-			if (vRes != null) {
-				logger.info("Found and register view " + vRes.getURI() + vRes.getFlexoIODelegate().toString());
-				viewRepository.registerResource(vRes, folder);
-				return vRes;
-			}
-			else {
-				logger.warning("While exploring resource center looking for views : cannot retrieve resource for file "
-						+ candidateFile.getAbsolutePath());
-			}
-		}
-	
-		return null;
-	}*/
 
 	@Override
 	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
