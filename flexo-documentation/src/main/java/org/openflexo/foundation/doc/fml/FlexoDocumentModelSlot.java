@@ -64,8 +64,14 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, TA>, R extend
 	@Setter(TEMPLATE_DOCUMENT_URI_KEY)
 	public void setTemplateDocumentURI(String templateDocumentURI);
 
+	/**
+	 * Template this slot generates a document from, when it does generate one.
+	 *
+	 * Not required: a document slot may instead receive, at run-time, a document the user supplies (an imported .docx for instance),
+	 * in which case no template is involved.
+	 */
 	@Getter(value = TEMPLATE_DOCUMENT_KEY, ignoreType = true)
-	@FMLAttribute(value = TEMPLATE_DOCUMENT_KEY, required = true)
+	@FMLAttribute(TEMPLATE_DOCUMENT_KEY)
 	public FlexoDocument<D, TA> getTemplateDocument();
 
 	@Setter(TEMPLATE_DOCUMENT_KEY)
