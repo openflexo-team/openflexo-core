@@ -79,6 +79,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
 		}
+		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		// getTypeFactory().setDeserializedVirtualModel(returned);
 		buildParentConcepts(returned, astNode.getSuperClause());
@@ -125,6 +126,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 		// @formatter:off
 		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		when(() -> isAbstract(), "Abstract").thenAppend(staticContents("", "abstract", SPACE), getAbstractFragment());
 		append(staticContents("", "model", SPACE), getModelFragment());
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 
@@ -165,6 +167,23 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 	protected RawSourceFragment getVisibilityFragment() {
 		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
+		}
+		return null;
+	}
+
+	public boolean isAbstract() {
+		if (getModelObject() != null) {
+			return getModelObject().isAbstract();
+		}
+		if (getASTNode() != null) {
+			return getASTNode().getKwAbstract() != null;
+		}
+		return false;
+	}
+
+	protected RawSourceFragment getAbstractFragment() {
+		if (getASTNode() != null && getASTNode().getKwAbstract() != null) {
+			return getFragment(getASTNode().getKwAbstract());
 		}
 		return null;
 	}

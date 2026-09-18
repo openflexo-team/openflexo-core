@@ -95,7 +95,8 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 
 		@Override
 		public boolean isSyntaxicallyValid() {
-			return expression != null && expression.isValid() && TypeUtils.isBoolean(expression.getAnalyzedType());
+			// We provide dynamic typing
+			return expression != null /*&& expression.isValid() && TypeUtils.isBoolean(expression.getAnalyzedType())*/;
 		}
 
 		@Override
@@ -119,11 +120,18 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 			output.clear();
 			String cmdOutput;
 
+			// We provide dynamic typing
+			// The expression may be valid now, so we revalidate
+			// TODO: this should have been automatically handled by Connie with the observable scheme and should be no more necessary
+			if (!expression.isValid()) {
+				expression.revalidate();
+			}
+
 			if (isSyntaxicallyValid()) {
 				Boolean value;
 				try {
-					value 		= (Boolean) expression.getBindingValue(getCommandInterpreter());
-					cmdOutput 	= "Executed " + expression + " <- " + value;
+					value = (Boolean) expression.getBindingValue(getCommandInterpreter());
+					cmdOutput = "Executed " + expression + " <- " + value;
 
 					output.add(cmdOutput);
 					getOutStream().println(cmdOutput);

@@ -55,7 +55,6 @@ import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
@@ -68,16 +67,17 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
- * Abstract definition of a control graph node in control flow graph paradigm.<br>
- * 
- * In a control flow graph each node in the graph represents a basic block, i.e. a straight-line piece of code without any jumps or jump
- * targets; jump targets start a block, and jumps end a block (from http://en.wikipedia.org/wiki/Control_flow_graph)
- * 
- * A {@link FMLControlGraph} might be typed. In this case, use {@link #getType()} and {@link #setType(Type)} methods. Return statements are
- * only usable in typed control graph (a {@link FMLControlGraph} with a non-null {@link #getType()}
- * 
+ * A node of a control graph: the body of a {@link org.openflexo.foundation.fml.FlexoBehaviour}, of the get or set block of a property, or of
+ * an invariant.
+ * <p>
+ * A block of statements is represented by nested {@link Sequence}s; control structures ({@code if}, {@code while}, {@code for}) and atomic
+ * actions are {@link EditionAction}s. See the package documentation for the mapping between FML statements and control graph classes.
+ * <p>
+ * Each node is held by its owner ({@link #getOwner()}) in a slot identified by {@link #getOwnerContext()}. Its type is inferred from the
+ * return statements it contains ({@link #getInferedType()}), and is {@code Void} when there is none.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLControlGraph.FMLControlGraphImpl.class)
@@ -88,8 +88,6 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String OWNER_CONTEXT_KEY = "ownerContext";
-	// @PropertyIdentifier(type = Type.class)
-	// public static final String TYPE_KEY = "type";
 
 	@Getter(value = OWNER_KEY, isDerived = true)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -98,6 +96,12 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	@Setter(OWNER_KEY)
 	public void setOwner(FMLControlGraphOwner owner);
 
+	/**
+	 * Return the key identifying the slot in which this control graph is held by its owner: for instance the first or second control graph
+	 * of a {@link Sequence}, the then or else branch of a conditional, or the get or set block of a property
+	 *
+	 * @return
+	 */
 	@Getter(value = OWNER_CONTEXT_KEY)
 	@XMLAttribute
 	public String getOwnerContext();
@@ -107,8 +111,11 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 
 	/**
 	 * Sequentially append supplied control graph to this control graph<br>
-	 * This method is generic and will be handled differently by subclasses to perform the most adapted job to the sequential semantics
-	 * 
+	 * This method is generic and will be handled differently by subclasses to perform the most adapted job to the sequential semantics:
+	 * generally, this control graph is replaced, in its owner, by a new {@link Sequence} holding both control graphs.<br>
+	 * After this call, supplied control graph is already owned by the enclosing {@link Sequence}: do not call
+	 * {@link #setOwner(FMLControlGraphOwner)} on it, as this would detach it from the sequence and break the structure of the control graph
+	 *
 	 * @param controlGraph
 	 */
 	public void sequentiallyAppend(FMLControlGraph controlGraph);
@@ -142,8 +149,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	public FMLControlGraphOwner getRootOwner();
 
 	/**
-	 * Execute this control graph in the context provided by supplied {@link FlexoBehaviourAction}<br>
-	 * 
+	 * Execute this control graph in supplied run-time context<br>
+	 *
 	 * @param evaluationContext
 	 * @return
 	 */

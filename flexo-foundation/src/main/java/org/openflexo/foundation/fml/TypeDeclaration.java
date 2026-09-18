@@ -54,8 +54,13 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * 
- * 
+ * The declaration of a type alias in a {@link FMLCompilationUnit}, written in FML as {@code typedef <type> as Alias;}. It is typically
+ * used to name a technology-specific type, e.g. {@code typedef EMFObjectIndividualType(eClass=CITY2_CITY) as City2City;} (from the
+ * city-mapping use case of openflexo-integration-tests).
+ * <p>
+ * The alias ({@link #getAbbrev()}) can then be used as a type in the compilation unit: it is resolved by the typing space as a proxy type
+ * on {@link #getReferencedType()} (see {@link AbstractFMLTypingSpace}).
+ *
  * @author sylvain
  *
  */

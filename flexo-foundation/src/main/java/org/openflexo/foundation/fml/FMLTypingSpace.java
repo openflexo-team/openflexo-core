@@ -47,10 +47,12 @@ import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoServiceManager;
 
 /**
- * FML typing space, related to a {@link FMLCompilationUnit}
- * 
- * Support FMLCompilationUnit context and imports semantics
- * 
+ * The typing space of a {@link FMLCompilationUnit}, in which the type names used in its declarations are resolved.
+ * <p>
+ * On top of {@link AbstractFMLTypingSpace}, a type name is resolved as a {@link FlexoConcept} found in the context of the compilation unit
+ * (see {@link FMLCompilationUnit#lookupFlexoConceptWithName(String)}), then as a class exposed by the model slots it uses. During
+ * parsing, the parser uses its own typing space ({@code FMLTypingSpaceDuringParsing}, in fml-parser).
+ *
  * @author sylvain
  *
  */

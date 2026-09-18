@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.gina.controller.FIBController" name="TestContainerUI">
+  <Label id="1" label="TestContainerUI" align="left" constraints="twocols()" name="TestContainerUILabel" />
+  <FIBVariable id="2" type="org.openflexo.foundation.fml.rt.FlexoConceptInstance" name="data" />
+</Panel>

@@ -1,0 +1,42 @@
+/**
+ * A model EXTENDING another must be able to instantiate the concepts it inherits.
+ *
+ * Regression fixture for two inverted guards in FMLRTVirtualModelInstanceModelFactory
+ * .makeNewFlexoConceptInstance. isAssignableFrom(x) walks x's parents, so A.isAssignableFrom(B)
+ * means "B is an A"; both guards had receiver and argument the wrong way round:
+ *
+ *   1. the DECLARING compilation unit check rejected every concept inherited from an extended
+ *      VirtualModel (the declaring model is the ancestor, not the descendant);
+ *   2. the CONTAINER check rejected a container that specializes the required one, and consulted
+ *      getContainerFlexoConcept() - the DECLARED container, null for a concept declared at model
+ *      level - instead of getApplicableContainerFlexoConcept(), which walks parents.
+ *
+ * SpecializedItem below is exactly that second case: declared at model level here, but inheriting
+ * its container (Box) from the base model's nested Item.
+ *
+ * Both failures were SILENT: the FMLExecutionException is swallowed upstream and the factory simply
+ * returned null. See TestInheritedConcepts.fmlscript.
+ */
+
+import ["http://openflexo.org/test/TestResourceCenter/TestBaseModelForInheritance.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestInheritedConcepts.fml")
+public model TestInheritedConcepts extends TestBaseModelForInheritance {
+
+	public SpecializedItem newSpecializedItem(Box box, String name) {
+		return parameters.box.new SpecializedItem(parameters.name);
+	}
+
+	/** Declared at model level HERE, but inherits its container (Box) from the base model's Item. */
+	public concept SpecializedItem extends Item {
+
+		String extra;
+
+		create(String name) {
+			super(parameters.name);
+		}
+
+		delete() {
+		}
+	}
+}

@@ -66,13 +66,24 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * The resource storing a {@link FMLCompilationUnit}
- * 
+ * The resource storing a {@link FMLCompilationUnit}: a {@code Xxx.fml/} directory holding the FML source {@code Xxx.fml}.
+ * <p>
+ * That directory also holds the resources contained in the compilation unit: the VirtualModels it contains (each one a
+ * {@link CompilationUnitResource} of its own), the instances stored with it ({@link #getContainedVMI()}), the user interface components,
+ * and the localized dictionary ({@link #getLocalizedDictionaryResource()}).
+ * <p>
+ * The URI of the compilation unit is the one declared by {@code @URI}; without it, the URI is computed from the resource center (default
+ * base URI followed by the relative path of the directory). Before the source is parsed, {@link #getVirtualModelInfo(FlexoResourceCenter)}
+ * gives the information read from its header (URI, version, used model slots, concepts), which tells which technology adapters must be
+ * activated and which {@link FMLModelFactory} to build.
+ * <p>
+ * When parsing fails, the resource keeps the source as {@link #getUnparseableContents()} ({@link #isUnparseable()} then returns true) and
+ * the compilation unit is empty — beware that an empty compilation unit reports no validation error.
+ *
  * @author sylvain
  *
  */
 @ModelEntity
-// @ImplementationClass(CompilationUnitResourceImpl.class)
 public interface CompilationUnitResource
 		extends PamelaResource<FMLCompilationUnit, FMLModelFactory>, DirectoryContainerResource<FMLCompilationUnit>,
 		TechnologyAdapterResource<FMLCompilationUnit, FMLTechnologyAdapter>, ResourceWithPotentialCrossReferences<FMLCompilationUnit> {
@@ -93,14 +104,12 @@ public interface CompilationUnitResource
 	public void setFactory(FMLModelFactory factory);
 
 	/**
-	 * Return virtual model stored by this resource when loaded<br>
-	 * Force the resource data to be loaded when unloaded
+	 * Return the compilation unit stored by this resource, loading the resource when it is not loaded yet
 	 */
 	public FMLCompilationUnit getCompilationUnit();
 
 	/**
-	 * Return virtual model stored by this resource when loaded<br>
-	 * Do not force the resource data to be loaded
+	 * Return the compilation unit stored by this resource, or null when the resource is not loaded: does not trigger any loading
 	 */
 	public FMLCompilationUnit getLoadedCompilationUnit();
 
@@ -108,6 +117,12 @@ public interface CompilationUnitResource
 	public CompilationUnitResource getContainer();
 
 	public List<CompilationUnitResource> getContainedCompilationUnitResources();
+
+	/**
+	 * The localized dictionary of this compilation unit - the <code>Localized/</code> directory of its container - or null when it has none
+	 * yet. See {@link LocalizedDictionaryResource}.
+	 */
+	public LocalizedDictionaryResource getLocalizedDictionaryResource();
 
 	public CompilationUnitResource getCompilationUnitResource(String virtualModelNameOrURI);
 

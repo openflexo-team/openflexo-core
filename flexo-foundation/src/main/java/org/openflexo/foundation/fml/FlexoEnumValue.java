@@ -52,10 +52,12 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A {@link FlexoEnumValue} represent the possible value of a {@link FlexoEnum}
+ * A possible value of a {@link FlexoEnum}, identified by its name (see {@link #getName()}); {@link #getIndex()} gives its position in the
+ * enumeration.
+ * <p>
+ * Note that a {@link FlexoEnumValue} is itself a {@link FlexoConcept}. At run-time, each value is represented by a single
+ * {@link org.openflexo.foundation.fml.rt.FlexoEnumInstance}, shared by the whole application (see {@link FlexoEnum#getInstances()}).
  *
- * A {@link FlexoEnumValue} is identified by its name (see {@link #getName()})
- * 
  * @author sylvain
  * 
  */

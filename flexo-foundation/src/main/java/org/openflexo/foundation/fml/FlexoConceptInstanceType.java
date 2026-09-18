@@ -55,10 +55,18 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represent the type of a FlexoConceptInstance of a given FlexoConcept
- * 
+ * The type of the instances of a given {@link FlexoConcept}, denoted in FML by the name of the concept (e.g. {@code Book book;}), or by
+ * {@code Model$Concept} for a concept declared in another VirtualModel.
+ * <p>
+ * A type may be built from the URI of its concept before this concept is known, and resolved later (see {@link #isResolved()} and
+ * {@link #resolve()}); {@link #translateTo(TypingSpace)} translates it into another typing space. Specializations are
+ * {@link VirtualModelInstanceType} and {@link FlexoEnumType}.
+ * <p>
+ * Note that a type built with an empty URI and no concept is reported as resolved, and is therefore never resolved (known defect
+ * {@code CORE-D-5}, see {@code KNOWN_DEFECTS.md} in openflexo-core).
+ *
  * @author sylvain
- * 
+ *
  */
 public class FlexoConceptInstanceType implements FMLRTType, TechnologySpecificType<FMLRTTechnologyAdapter>, PropertyChangeListener {
 

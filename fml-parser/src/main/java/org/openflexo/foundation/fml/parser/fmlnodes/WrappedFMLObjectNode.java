@@ -105,8 +105,10 @@ public class WrappedFMLObjectNode<T extends FMLObject>
 			}
 		}
 
-		T object = getFactory().newInstance(objectClass);
-		returned.setObject(object);
+		if (objectClass != null) {
+			T object = getFactory().newInstance(objectClass);
+			returned.setObject(object);
+		}
 
 		return returned;
 	}

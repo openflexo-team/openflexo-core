@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -69,25 +70,41 @@ import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Abstract class representing a fetch request, which is a primitive allowing to browse in the model while configuring requests
- * 
- * Note the presence of isUnique property:
+ * Base of the fetch requests: the FML actions {@code select [unique] Type from (expression) [where (condition, ...)]}.
+ * <p>
+ * A fetch request retrieves the objects of type {@link #getFetchedType()} found in the object given by its {@code from} clause (the
+ * receiver, {@link #getReceiver()}; for concept instances, the container), then keeps those satisfying all its conditions
+ * ({@link #getConditions()}). In a condition, {@code selected} denotes the candidate object.
  * <ul>
- * <li>if isUnique set to false (default), manage a non-null list of values (might be empty)</li>
- * <li>if isUnique set to true, manage a single value (if none value were found, value is null, when many values match conditions, return
- * first found). Unicity must be guaranteed by business logic (semantics of build models).
+ * <li>a {@link FetchRequest} ({@code select}) returns a list, possibly empty;</li>
+ * <li>a {@link UniqueFetchRequest} ({@code select unique}) returns a single object: null when nothing matches, the first one (with a
+ * logged warning) when several do. Unicity must be guaranteed by the model.</li>
  * </ul>
- * 
+ * When the request cannot be executed (for instance when the model slot it selects from is not resolved), a warning is logged and it
+ * gives no result.
+ * <p>
+ * Technology adapters contribute their own fetch requests; the requests on concept instances and on VirtualModelInstances are
+ * {@link org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance} and
+ * {@link org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance}.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public Book findBookByTitle(String title) {
+ *     return select unique Book from (this) where (selected.title == parameters.title);
+ * }
+ * </pre>
+ *
  * @author sylvain
  *
  * @param <MS>
  *            Type of model slot which contractualize access to a given technology resource on which this action applies
- * @param <R>
- *            Type of receiver on this action (the precise technology object on which this action apply)
+ * @param <RD>
+ *            Type of the resource data the model slot gives access to
  * @param <T>
  *            Type of fetched value
  * @param <AT>
- *            Type of assigned value, T if the FetchRequest is unique, or List<T> if the FetchRequest is multiple
+ *            Type of assigned value, T if the FetchRequest is unique, or List&lt;T&gt; if the FetchRequest is multiple
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractFetchRequest.AbstractFetchRequestImpl.class)
@@ -140,8 +157,9 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 
 	/**
 	 * We define an updater for FETCHED_TYPE property because we need to translate supplied Type to valid TypingSpace
-	 * 
+	 *
 	 * @param type
+	 *            the fetched type, possibly expressed in another typing space
 	 */
 	@Updater(FETCHED_TYPE_KEY)
 	public void updateFetchedType(Type type);
@@ -150,8 +168,6 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, AT> implements AbstractFetchRequest<MS, RD, T, AT> {
 
 		private static final Logger logger = Logger.getLogger(AbstractFetchRequestImpl.class.getPackage().getName());
-
-		// private Type fetchedType;
 
 		protected String getWhereClausesFMLRepresentation() {
 			if (getConditions().size() > 0) {
@@ -177,22 +193,13 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 			return getFetchedType();
 		}
 
-		/*@Override
-		public Type getFetchedType() {
-			return fetchedType;
-		}
-		
-		@Override
-		public void setFetchedType(Type type) {
-			this.fetchedType = type;
-		}*/
-
 		/**
 		 * We define an updater for FETCHED_TYPE property because we need to translate supplied Type to valid TypingSpace
-		 * 
+		 *
 		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
-		 * 
+		 *
 		 * @param type
+		 *            the fetched type, possibly expressed in another typing space
 		 */
 		@Override
 		public void updateFetchedType(Type type) {
@@ -237,14 +244,11 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 				for (FetchRequestCondition condition : getConditions()) {
 					if (!condition.evaluateCondition(proposedFetchResult, evaluationContext)) {
 						takeIt = false;
-						// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
-						// + condition.getCondition().isValid());
 						break;
 					}
 				}
 				if (takeIt) {
 					returned.add(proposedFetchResult);
-					// System.out.println("I take " + proposedFetchResult);
 				}
 				else {
 				}
@@ -259,7 +263,17 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 
 		@Override
 		public final AT execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
-			List<T> computedValues = performExecute(evaluationContext);
+			List<? extends T> computedValues = performExecute(evaluationContext);
+			if (computedValues == null) {
+				// A fetch request that cannot be applied returns null rather than an empty list: see
+				// AbstractSelectFlexoConceptInstance.performExecute(), which warns "Cannot find virtual model instance on which to
+				// apply SelectFlexoConceptInstance" and returns null - typically when the model slot being selected from is not
+				// resolved (an unresolved reflected model slot after deserialization, for instance).
+				// Dereferencing it turned that diagnosable situation into a raw NullPointerException thrown from the engine, with a
+				// stack trace pointing here instead of at the unresolved slot. Report no result instead.
+				logger.warning(getStringRepresentation() + " : could not be executed, returning no result");
+				computedValues = Collections.emptyList();
+			}
 			if (this instanceof UniqueFetchRequest) {
 				if (computedValues.size() > 1) {
 					logger.warning("More than one value found for a UNIQUE request, return first one: " + computedValues);
@@ -279,7 +293,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 
 		}
 
-		protected abstract List<T> performExecute(RunTimeEvaluationContext evaluationContext);
+		protected abstract List<? extends T> performExecute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 		@Override
 		public void revalidateBindings() {

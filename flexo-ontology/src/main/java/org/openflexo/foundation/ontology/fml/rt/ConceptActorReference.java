@@ -40,10 +40,12 @@ package org.openflexo.foundation.ontology.fml.rt;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -68,11 +70,20 @@ import org.openflexo.pamela.annotations.XMLElement;
 public interface ConceptActorReference<T extends IFlexoOntologyObject> extends ActorReference<T> {
 
 	@PropertyIdentifier(type = String.class)
+	public static final String RESOURCE_URI_KEY = "resourceURI";
+	@PropertyIdentifier(type = String.class)
 	public static final String CONCEPT_URI_KEY = "conceptURI";
+
+	@Getter(value = RESOURCE_URI_KEY)
+	@XMLAttribute
+	public String getResourceURI();
+
+	@Setter(RESOURCE_URI_KEY)
+	public void setResourceURI(String resourceURI);
 
 	@Getter(value = CONCEPT_URI_KEY)
 	@XMLAttribute
-	@FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>URI of the concept</html>")
+	// @FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>Local URI of the concept</html>")
 	public String getConceptURI();
 
 	@Setter(CONCEPT_URI_KEY)
@@ -84,14 +95,17 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 		private static final Logger logger = FlexoLogger.getLogger(ConceptActorReference.class.getPackage().toString());
 
 		private T concept;
+		private String resourceURI;
 		private String conceptURI;
 
 		/**
 		 * Default constructor
 		 */
-		public ConceptActorReferenceImpl() {
+		/*public ConceptActorReferenceImpl() {
 			super();
-		}
+			System.err.println("Tiens, qui me cree ?");
+			Thread.dumpStack();
+		}*/
 
 		/*public ConceptActorReferenceImpl(T o, OntologicObjectRole<T> aPatternRole, FlexoConceptInstance epi) {
 			super(epi.getProject());
@@ -117,21 +131,41 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 		@Override
 		public T getModellingElement(boolean forceLoading) {
 			if (concept == null) {
-				ModelSlotInstance msInstance = getModelSlotInstance();
+				if (resourceURI != null) {
+					FlexoResource<?> resource = getServiceManager().getResourceManager().getResource(resourceURI);
+
+					/*String identifier = objectURI.contains("/") ? objectURI.substring(objectURI.lastIndexOf("/")) : objectURI;
+					
+					String userIdentifier = null;
+					String objectIdentifier;
+					
+					if (identifier.contains("-")) {
+						userIdentifier = identifier.substring(0, identifier.indexOf("-"));
+						objectIdentifier = identifier.substring(identifier.indexOf("-") + 1);
+					}
+					else {
+						objectIdentifier = identifier;
+					}
+					return diagram.getResource().findObject(objectIdentifier, userIdentifier);*/
+
+					if (resource != null) {
+						concept = (T) resource.findObject(conceptURI, null);
+					}
+				}
+				/*ModelSlotInstance msInstance = getModelSlotInstance();
 				if (msInstance == null) {
 					logger.warning("Could not access model slot instance while looking up " + getConceptURI() + " role=" + getFlexoRole());
 				}
 				else {
 					if (msInstance.getResourceData() != null) {
-						// object = (T) getProject().getObject(objectURI);
-						/** Model Slot is responsible for URI mapping */
+						// Model Slot is responsible for URI mapping
 						concept = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance.getAccessedResourceData(), conceptURI);
 					}
 					else {
 						logger.warning("Could not access to model in model slot " + getModelSlotInstance());
 						// logger.warning("Searched " + getModelSlotInstance().getModelURI());
 					}
-				}
+				}*/
 			}
 			if (concept == null) {
 				logger.warning("Could not retrieve object " + conceptURI);
@@ -141,9 +175,30 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 
 		@Override
 		public String getConceptURI() {
-			ModelSlotInstance msInstance = getModelSlotInstance();
+			/*ModelSlotInstance msInstance = getModelSlotInstance();
+			
+			System.err.println("Pour le FlexoRole: " + getFlexoRole() + " FML=" + getFlexoRole().getFMLPrettyPrint());
+			System.err.println("concept URI = " + concept.getURI());
+			
+			FlexoResource<?> resource = null;
+			if (concept instanceof ResourceData) {
+				resource = ((ResourceData) concept).getResource();
+			}
+			else if (concept instanceof InnerResourceData) {
+				resource = ((InnerResourceData) concept).getResourceData().getResource();
+			}
+			
+			if (resource != null) {
+				System.err.println("Hop la resource est : " + resource);
+			}
+			
 			if (concept != null && msInstance != null) {
 				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance.getAccessedResourceData(), concept);
+			}
+			return conceptURI;*/
+
+			if (concept != null) {
+				return concept.getURI();
 			}
 			return conceptURI;
 		}
@@ -151,6 +206,29 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 		@Override
 		public void setConceptURI(String objectURI) {
 			this.conceptURI = objectURI;
+		}
+
+		private FlexoResource<?> getConceptResource() {
+			if (concept instanceof ResourceData) {
+				return ((ResourceData) concept).getResource();
+			}
+			else if (concept instanceof InnerResourceData) {
+				return ((InnerResourceData) concept).getResourceData().getResource();
+			}
+			return null;
+		}
+
+		@Override
+		public String getResourceURI() {
+			if (getConceptResource() != null) {
+				return getConceptResource().getURI();
+			}
+			return resourceURI;
+		}
+
+		@Override
+		public void setResourceURI(String resourceURI) {
+			this.resourceURI = resourceURI;
 		}
 
 	}

@@ -23,7 +23,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -41,6 +48,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.CommandTokenType;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
@@ -49,9 +57,9 @@ import org.openflexo.foundation.fml.cli.command.DeclareDirective;
 import org.openflexo.foundation.fml.cli.command.DeclareDirectives;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -105,7 +113,6 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	private Map<BindingVariable, Object> values = new HashMap<>();
 	private List<String> output;
-
 
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
@@ -736,7 +743,17 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	public void setVariableValue(BindingVariable variable, Object value) {
+
 		if (variable != null) {
+
+			// We want to provide dynamic typing to FML script
+			// So, we infer the type of actual value to set the BindingVariable type with this actual type
+			// This may lead to revalidate some DataBindings
+
+			// Type oldType = variable.getType();
+			Type inferedType = FMLUtils.inferType(value);
+			variable.setType(inferedType);
+
 			setValue(value, variable);
 		}
 		else {
@@ -936,7 +953,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		getErrStream().println(message);
 	}
 
-	public List<String> getOutput(){
+	public List<String> getOutput() {
 		return output;
 	}
 

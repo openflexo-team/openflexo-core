@@ -49,7 +49,7 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
 public class MoveVirtualModelInstance extends FlexoAction<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>>
@@ -78,7 +78,7 @@ public class MoveVirtualModelInstance extends FlexoAction<MoveVirtualModelInstan
 
 	};
 
-	private RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder;
+	private RepositoryFolder<FMLRTVirtualModelInstanceResource, ?> folder;
 
 	static {
 		FlexoObjectImpl.addActionForClass(actionType, VirtualModelInstance.class);
@@ -105,17 +105,17 @@ public class MoveVirtualModelInstance extends FlexoAction<MoveVirtualModelInstan
 		}
 	}
 
-	private void moveToFolder(VirtualModelInstance<?, ?> v, RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder) {
+	private void moveToFolder(VirtualModelInstance<?, ?> v, RepositoryFolder<FMLRTVirtualModelInstanceResource, ?> folder) {
 		// TODO: reimplement this
 		// RepositoryFolder<AbstractVirtualModelInstanceResource<?,?>, ?> oldFolder = v.getFolder();
 		// v.getViewLibrary().moveResource((ViewResource) v.getResource(), (RepositoryFolder) oldFolder, (RepositoryFolder) folder);
 	}
 
-	public RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> getFolder() {
+	public RepositoryFolder<FMLRTVirtualModelInstanceResource, ?> getFolder() {
 		return folder;
 	}
 
-	public void setFolder(RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder) {
+	public void setFolder(RepositoryFolder<FMLRTVirtualModelInstanceResource, ?> folder) {
 		this.folder = folder;
 	}
 }

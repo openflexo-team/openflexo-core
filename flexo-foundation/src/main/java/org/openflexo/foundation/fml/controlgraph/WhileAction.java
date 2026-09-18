@@ -64,6 +64,30 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * The FML loop {@code while (condition) ...}: the body ({@link #getControlGraph()}) is executed as long as the condition
+ * ({@link #getCondition()}) evaluates to true. A return statement executed in the body leaves the loop and the enclosing behaviour.
+ * <p>
+ * When {@link #getEvaluateConditionAfterCycle()} is true, the condition is evaluated after each execution of the body, as in a
+ * {@code do ... while} loop. The FML parser never sets it: a {@code do ... while} statement is parsed, but its body is executed once and
+ * its condition ignored (known defect {@code CORE-D-6}).
+ * <p>
+ * Beware of an invalid condition, which is evaluated as true: see {@link #evaluateCondition(BindingEvaluationContext)}.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public int freeSlots() {
+ *     int free = 0;
+ *     int filled = bookCount;
+ *     while (filled &lt; capacity) {
+ *         filled = filled + 1;
+ *         free = free + 1;
+ *     }
+ *     return free;
+ * }
+ * </pre>
+ */
 @ModelEntity
 @ImplementationClass(WhileAction.WhileActionImpl.class)
 @XMLElement
@@ -99,6 +123,16 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 	@Setter(EVALUATE_CONDITION_AFTER_CYCLE_KEY)
 	public void setEvaluateConditionAfterCycle(boolean evaluateAfter);
 
+	/**
+	 * Evaluate the condition in supplied context.
+	 * <p>
+	 * A null value yields {@code false}. Beware: a condition which is not set or not valid, or whose evaluation raises an exception, yields
+	 * {@code true}, which makes the loop endless (known defect {@code CORE-D-8}).
+	 *
+	 * @param evaluationContext
+	 *            context in which the condition is evaluated
+	 * @return the value of the condition
+	 */
 	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
 
 	public static abstract class WhileActionImpl extends ControlStructureActionImpl implements WhileAction {

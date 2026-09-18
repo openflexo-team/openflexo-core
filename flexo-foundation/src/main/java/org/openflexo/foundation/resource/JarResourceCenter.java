@@ -725,7 +725,20 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 					retrieveName(serializationArtefact).length() - directoryExtension.length());
 
 			InJarResourceImpl directory = getDirectory(baseName + directoryExtension, getContainer(serializationArtefact));
+			if (directory == null) {
+				logger.warning("Cannot build IO delegate for " + serializationArtefact + " in " + getJarResourceImpl()
+						+ ": no " + baseName + directoryExtension + " directory in this jar");
+				return null;
+			}
+
 			InJarResourceImpl file = getEntry(baseName + fileExtension, directory);
+			if (file == null) {
+				// Legacy resources may still be readable through their deprecated XML artefact, so this is
+				// not fatal here. But the IO delegate has no input stream: everything reading it must cope
+				// with a null stream. See InJarIODelegate.getInputStream()
+				logger.warning("No " + baseName + fileExtension + " in " + directory + " (jar " + getJarResourceImpl()
+						+ "): resource has no readable serialization artefact");
+			}
 
 			return makeDirectoryBasedFlexoIODelegate(directory, file, resourceFactory);
 		}

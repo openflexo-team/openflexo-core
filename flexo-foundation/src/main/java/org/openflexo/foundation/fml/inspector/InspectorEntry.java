@@ -78,6 +78,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity()
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
 @XMLElement(xmlTag = "InspectorEntry", deprecatedXMLTags = "GenericInspectorEntry")
+@Deprecated // Replaced by the widgets of a .inspector stored in the Xxx.fml/ container
 public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)

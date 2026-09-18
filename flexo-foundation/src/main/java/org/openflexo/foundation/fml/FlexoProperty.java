@@ -71,15 +71,48 @@ import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link FlexoProperty} is a structural element of a FlexoConcept, which contractualize the access to a typed data<br>
- * More formerly, a {@link FlexoProperty} is the specification of a data accessed at run-time (inside an {@link FlexoConcept} instance)<br>
- * A {@link FlexoProperty} formalizes a contract for accessing to a data.<br>
- * A {@link FlexoProperty} is abstract and might be implemented by a sub-class of {@link FlexoProperty} (a {@link FlexoRole} is for instance
- * a direct reference to a modelling element stored in an external resource accessed by a {@link ModelSlot})
- * 
- * 
+ * A {@link FlexoProperty} is a structural feature of a {@link FlexoConcept}: it gives a typed access to a data of the instances of this
+ * concept.
+ * <p>
+ * The kind of property depends on its FML declaration:
+ * <ul>
+ * <li>a primitive, {@code String} or {@code Date} type ({@code String label;}) declares a {@link PrimitiveRole}, another Java type declares a
+ * {@link JavaRole}</li>
+ * <li>a concept type ({@code Book[0,*] books;}) declares a {@link FlexoConceptInstanceRole}</li>
+ * <li>{@code X x with TA::Role(...)} declares a technology-specific {@link FlexoRole}, or a {@link ModelSlot}</li>
+ * <li>{@code int bookCount values books.size;} declares an {@link ExpressionProperty}</li>
+ * <li>{@code abstract int n;} declares an {@link AbstractProperty}</li>
+ * <li>a declaration with a {@code get()} block, and optionally a {@code set(...)} block, declares a {@link GetProperty} or a
+ * {@link GetSetProperty}</li>
+ * </ul>
+ * Only {@link FlexoRole}s store a value in the instance; the other kinds compute it, or are abstract. Flags such as {@link #isReadOnly()} or
+ * {@link #isNotificationSafe()} depend on the kind of property.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public concept Shelf {
+ *     String label;
+ *     int capacity;
+ *     Book[0,*] books;
+ *     int bookCount values books.size;
+ *
+ *     String displayName {
+ *         String get() {
+ *             return "Shelf " + label;
+ *         }
+ *         set(String value) {
+ *             label = value;
+ *         }
+ *     };
+ *     ...
+ * }
+ * </pre>
+ *
+ * In the {@code set} block of a get/set property, the assigned value is accessed as {@code value}, not through {@code parameters}.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoProperty.FlexoPropertyImpl.class)
@@ -106,6 +139,9 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
+	/**
+	 * Same as {@link #getName()}
+	 */
 	@Getter(value = PROPERTY_NAME_KEY)
 	public String getPropertyName();
 
@@ -149,8 +185,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public String getTypeDescription();
 
 	/**
-	 * Encodes the default deletion strategy
-	 * 
+	 * Return a flag indicating if, by default, the object referenced through this property is deleted when the concept instance is deleted
+	 *
 	 * @return
 	 */
 	public abstract boolean defaultBehaviourIsToBeDeleted();
@@ -164,9 +200,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public List<? extends FlexoProperty<?>> getSuperProperties();
 
 	/**
-	 * Return the full hierarchy of properties of this property<br>
-	 * A super property is a {@link FlexoProperty} declared in any ancestor {@link FlexoConcept}, which is overriden by this property
-	 * 
+	 * Return all the super properties of this property, recursively (see {@link #getSuperProperties()})
+	 *
 	 * @return
 	 */
 	public List<? extends FlexoProperty<?>> getAllSuperProperties();
@@ -204,21 +239,17 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	 */
 	public boolean isNotificationSafe();
 
-	// public void handleTypeDeclarationInImports();
-
 	/**
 	 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring FlexoConcept)
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isKeyProperty();
 
 	/**
-	 * Return the URI of the {@link NamedFMLObject}<br>
-	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
-	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
-	 * 
+	 * Return the URI of this property: the URI of its concept, followed by {@code .} and its name (e.g.
+	 * {@code http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf.label})
+	 *
 	 * @return String representing unique URI of this object
 	 */
 	public String getURI();
@@ -452,12 +483,6 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 			return returned;
 		}
 
-		/**
-		 * Return the full hiearchy of properties of this property<br>
-		 * A super property is a {@link FlexoProperty} declared in any ancestor {@link FlexoConcept}, which is overriden by this property
-		 * 
-		 * @return
-		 */
 		@Override
 		public List<FlexoProperty<?>> getAllSuperProperties() {
 			List<FlexoProperty<?>> returned = new ArrayList<>();

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the named-variant lookup. -->
+<Panel layout="twocols" name="Compact"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.gina.controller.FIBController">
+	<Label label="Compact" name="CompactLabel" />
+</Panel>

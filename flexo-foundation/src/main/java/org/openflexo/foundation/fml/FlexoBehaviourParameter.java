@@ -80,10 +80,34 @@ import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents a parameter definition of a {@link FlexoBehaviour}
- * 
+ * A parameter of a {@link FlexoBehaviour}, declared in FML as {@code [required] Type name [= defaultValue]}, and read in the body of the
+ * behaviour as {@code parameters.name}.
+ * <p>
+ * The widget used to enter its value ({@link #getWidget()}) is not stored on the parameter: it is read from the {@code @UI(...)} annotation
+ * of its behaviour, whose entries reference parameters by name. When no entry is declared, a default widget depending on the type of the
+ * parameter is used.
+ * <p>
+ * {@link #isValid(FlexoBehaviourAction, Object)} only checks the {@code required} flag: a required value must be non null, and non empty for
+ * a String.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * create(required String label, int capacity=10) {
+ *     label = parameters.label;
+ *     capacity = parameters.capacity;
+ * }
+ *
+ * &#64;UI(
+ *     &#64;TextField(value="title", label="book_title")
+ * )
+ * public Book newBook(required String title) {
+ *     ...
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(FlexoBehaviourParameter.FlexoBehaviourParameterImpl.class)

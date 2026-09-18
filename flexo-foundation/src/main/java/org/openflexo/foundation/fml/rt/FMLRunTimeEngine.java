@@ -42,14 +42,20 @@ package org.openflexo.foundation.fml.rt;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
- * Represents an instance of FML@runtime engine<br>
- * 
- * Manages a list of {@link FMLRTVirtualModelInstance} beeing monitored and executed by current engine instance<br>
- * Provides an execution semantics for FML
- * 
- * 
+ * The FML@RT execution engine, obtained from the editor (see {@link RunTimeEvaluationContext#getFMLRunTimeEngine()}); the default editor
+ * uses a {@link SynchronousFMLRunTimeEngine}, which executes FML in the calling thread.
+ * <p>
+ * The engine:
+ * <ul>
+ * <li>registers the virtual model instances being executed ({@link #addToExecutionContext(VirtualModelInstance, RunTimeEvaluationContext)}),
+ * which starts the listening of the event listeners ({@code listen Event from expression}) declared by their virtual model and its
+ * concepts</li>
+ * <li>executes behaviours ({@link #execute(FlexoBehaviourAction)})</li>
+ * <li>dispatches the fired events to the listeners subscribed to them ({@link #receivedEvent(FlexoEventInstance)})</li>
+ * </ul>
+ *
  * @author sylvain
- * 
+ *
  */
 public interface FMLRunTimeEngine {
 

@@ -71,9 +71,16 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Primitive used to match as a result set some {@link FlexoConceptInstance} in a container, matching a type and some conditions<br>
- * Result is computed ans returned as a {@link MatchingSet}
- * 
+ * The FML action {@code begin match Concept from (container)}, opening a {@link MatchingSet}, as in
+ * {@code MatchingSet<IndexEntry> entries = begin match IndexEntry from this;}.
+ * <p>
+ * The matching set holds the instances of the concept found in the container: the instances of a VirtualModelInstance, or the instances
+ * embedded in a concept instance. The following {@code match ... in entries} statements ({@link MatchFlexoConceptInstance}) mark them as
+ * matched, and {@code end match ... in entries} ({@link FinalizeMatching}) processes the others.
+ * <p>
+ * The {@code where} clause of {@code begin match} is parsed but ignored (known defect {@code CORE-D-12}): the conditions
+ * ({@link #getConditions()}) are only set programmatically. For a complete example, see {@link MatchFlexoConceptInstance}.
+ *
  * @author sylvain
  */
 @ModelEntity
@@ -234,12 +241,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		}
 
 		@Override
-		public String getStringRepresentation() {
-			return getHeaderContext() + getContainer() + ".initiateMatching("
-					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : null) + ")";
-		}
-
-		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {
 			if (container == null) {
 				container = new DataBinding<>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
@@ -286,9 +287,7 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 		@Override
 		public MatchingSet execute(RunTimeEvaluationContext evaluationContext) {
-			// System.out.println("Computing MatchingSet for " + getFlexoConceptType() + " on " + getContainer());
 			MatchingSet returned = new MatchingSet(this, evaluationContext);
-			// System.out.println("Matching set with " + returned.getAllInstances());
 			return returned;
 		}
 
@@ -296,6 +295,11 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		public void revalidateBindings() {
 			super.revalidateBindings();
 			getContainer().rebuild();
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			return "begin match " + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "?") + " from " + getContainer();
 		}
 
 	}

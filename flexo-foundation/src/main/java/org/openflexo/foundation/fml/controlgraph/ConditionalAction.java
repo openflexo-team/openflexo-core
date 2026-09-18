@@ -74,6 +74,25 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * The FML conditional statement {@code if (condition) ... [else ...]}.
+ * <p>
+ * The then branch ({@link #getThenControlGraph()}) is executed when the condition ({@link #getCondition()}) evaluates to true,
+ * otherwise the optional else branch ({@link #getElseControlGraph()}). The inferred type of the conditional combines the inferred types
+ * of its branches, which must be compatible (validation rule {@link InferedTypesMustBeCompatible}).
+ * <p>
+ * Beware of an invalid condition, which is evaluated as true: see {@link #evaluateCondition(BindingEvaluationContext)}.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * for (Book book : books) {
+ *     if (book instanceof Novel) {
+ *         count = count + 1;
+ *     }
+ * }
+ * </pre>
+ */
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
 @XMLElement
@@ -111,6 +130,17 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 	@Setter(ELSE_CONTROL_GRAPH_KEY)
 	public void setElseControlGraph(FMLControlGraph aControlGraph);
 
+	/**
+	 * Evaluate the condition in supplied context.
+	 * <p>
+	 * A null value, or a {@code NullReferenceException} raised by the evaluation, yields {@code false}. Beware: a condition which is not
+	 * set or not valid, or whose evaluation raises another exception, yields {@code true}, so that the then branch is executed (known
+	 * defect {@code CORE-D-8}).
+	 *
+	 * @param evaluationContext
+	 *            context in which the condition is evaluated
+	 * @return the value of the condition
+	 */
 	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
 
 	public static abstract class ConditionalActionImpl extends ControlStructureActionImpl implements ConditionalAction {
@@ -196,13 +226,6 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 				try {
 					Boolean returned = condition.getBindingValue(evaluationContext);
 					if (returned == null) {
-						/*System.out.println("Evaluation of " + getCondition() + " returns null");
-						DataBinding db1 = new DataBinding<Object>("city1.name", getCondition().getOwner(), Object.class,
-								BindingDefinitionType.GET);
-						DataBinding db2 = new DataBinding<Object>("city2.mayor.name", getCondition().getOwner(), Object.class,
-								BindingDefinitionType.GET);
-						System.out.println("city1.name=" + db1.getBindingValue(action));
-						System.out.println("city2.mayor.name=" + db2.getBindingValue(action));*/
 						return false;
 					}
 					return returned;

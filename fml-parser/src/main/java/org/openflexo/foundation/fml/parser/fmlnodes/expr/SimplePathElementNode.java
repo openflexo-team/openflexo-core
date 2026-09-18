@@ -55,10 +55,13 @@ import org.openflexo.foundation.fml.parser.node.Token;
 public class SimplePathElementNode extends AbstractBindingPathElementNode<Token, SimplePathElement<?>> {
 
 	private IBindingPathElement parent;
+	private boolean escapedSerialization = false;
 
-	public SimplePathElementNode(Token astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent, Bindable bindable) {
+	public SimplePathElementNode(Token astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent, Bindable bindable,
+			boolean escapedSerialization) {
 		super(astNode, analyzer, bindable);
 		this.parent = parent;
+		this.escapedSerialization = escapedSerialization;
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
@@ -71,11 +74,25 @@ public class SimplePathElementNode extends AbstractBindingPathElementNode<Token,
 	@Override
 	public SimplePathElement<?> buildModelObjectFromAST(Token astNode) {
 		if (parent != null && getBindable() != null) {
-			SimplePathElement<?> pathElement = getBindingFactory().makeSimplePathElement(parent, astNode.getText(), getBindable());
+			SimplePathElement<?> pathElement;
+			if (escapedSerialization) {
+				// In this cas token is a TLitString
+				String text = astNode.getText().substring(1, astNode.getText().length() - 1);
+				pathElement = getBindingFactory().makeSimplePathElement(parent, text, getBindable());
+				pathElement.setEscapedSerialization(true);
+			}
+			else {
+				pathElement = getBindingFactory().makeSimplePathElement(parent, astNode.getText(), getBindable());
+			}
+
 			return pathElement;
 		}
 		return null;
 		// return new NormalBindingPathElement(astNode.getText());
+	}
+
+	public final boolean getEscapedSerialization() {
+		return escapedSerialization;
 	}
 
 }

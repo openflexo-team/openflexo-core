@@ -49,12 +49,11 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A {@link FlexoEnumInstance} is the run-time concept (instance) of an {@link FlexoFlexoEnum}.<br>
- * 
- * This is the run-time concept of a {@link FlexoEnumValue}
- * 
- * Take care that resource or owner {@link VirtualModelInstance} is here null
- * 
+ * The run-time representation of a value of a {@link FlexoEnum}: its concept is the {@link FlexoEnumValue} it represents (see
+ * {@link #getValue()}).<br>
+ * A single instance exists for each value, shared by the whole application (see {@link FlexoEnum#getInstances()}); consequently, it has
+ * neither resource nor owning {@link VirtualModelInstance}.
+ *
  * @author sylvain
  * 
  */
@@ -122,7 +121,7 @@ public interface FlexoEnumInstance extends FlexoConceptInstance {
 		@Override
 		public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci) {
 
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FlexoEnumValueActorReference returned = factory.newInstance(FlexoEnumValueActorReference.class);
 			returned.setFlexoRole(role);
 			returned.setFlexoConceptInstance(fci);

@@ -39,21 +39,42 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.foundation.FlexoObject;
 
 /**
  * Implemented by all objects specific to a given technology
- * 
+ *
  * @author sylvain
- * 
+ *
  */
 public interface TechnologyObject<TA extends TechnologyAdapter<TA>> extends FlexoObject {
 
 	/**
 	 * Return the {@link TechnologyAdapter} of technical space where this concept exists
-	 * 
+	 *
 	 * @return
 	 */
 	public TA getTechnologyAdapter();
+
+	/**
+	 * Return the technology-specific type reflecting this object in FML type system, or null when this object does not expose a dedicated
+	 * type (in which case its raw Java type is used).<br>
+	 *
+	 * This is used to provide dynamic typing in FML-script: when a value is assigned to a variable, its type is infered from the actual
+	 * value (see {@link org.openflexo.foundation.fml.FMLUtils#inferType(Object)}). Technology objects carrying a dedicated FML type (eg a
+	 * typed XML individual) should override this method to return that type.<br>
+	 *
+	 * <b>Beware:</b> this must NOT be named {@code getInstanceType()}: {@link org.openflexo.foundation.fml.FlexoConcept} already declares a
+	 * {@code getInstanceType()} with the opposite meaning (the type of the <i>instances</i> of the concept, not the type of the concept
+	 * object itself), and since {@code FMLObject} is a {@link TechnologyObject} that collision would mis-type every FlexoConcept/VirtualModel
+	 * value handled by {@code inferType}.
+	 *
+	 * @return
+	 */
+	default Type getFMLType() {
+		return null;
+	}
 
 }

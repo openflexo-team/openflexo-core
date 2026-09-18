@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the container-based user interface lookup. Deliberately a PLAIN Panel: the container
+     mechanism reads ordinary GINA components, not the <GINAFIBComponent> wrapper of gina-ta. -->
+<Panel layout="twocols" name="NestedScreen"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.gina.controller.FIBController">
+	<Label label="NestedScreen" name="NestedScreenLabel" />
+</Panel>

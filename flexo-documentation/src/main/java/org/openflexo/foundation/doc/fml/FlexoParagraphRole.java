@@ -131,7 +131,7 @@ public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extend
 
 		@Override
 		public ParagraphActorReference<P> makeActorReference(P paragraph, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			ParagraphActorReference<P> returned = factory.newInstance(ParagraphActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

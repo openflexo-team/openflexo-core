@@ -89,6 +89,7 @@ import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.fml.rt.reflect.ReflectedFMLRTModelSlotInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.logging.FlexoLogger;
@@ -119,13 +120,29 @@ import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link FlexoConceptInstance} is the run-time concept (instance) of an {@link FlexoConcept}.<br>
- * 
- * As such, a {@link FlexoConceptInstance} is instantiated inside a {@link FMLRTVirtualModelInstance} (only
- * {@link FMLRTVirtualModelInstance} objects might leave outside an other {@link FMLRTVirtualModelInstance}).<br>
- * 
+ * A {@link FlexoConceptInstance} is an instance of a {@link FlexoConcept}, at run-time (FML@RT).
+ * <p>
+ * The values of its roles are stored as {@link ActorReference}s (see {@link #getActors()}); its other properties are computed (see
+ * {@link #getFlexoPropertyValue(FlexoProperty)}).
+ * <p>
+ * Each instance is registered in a {@link VirtualModelInstance} ({@link #getOwningVirtualModelInstance()}). An instance of a nested concept
+ * also has a container instance ({@link #getContainerFlexoConceptInstance()}): {@link #getContainer()} returns the container instance when
+ * any, the owning {@link VirtualModelInstance} otherwise.
+ * <p>
+ * Deleting an instance executes the default deletion scheme of its concept, or a deletion scheme generated on the fly. A
+ * {@link FlexoConceptInstance} is also the {@link RunTimeEvaluationContext} in which the expressions of its concept are evaluated.
+ * <p>
+ * Example (excerpt of {@code AutomatedTests/TestLibrary.fmlscript} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * library = new Library() with (name="library");
+ * fiction = library.newShelf("Fiction");
+ * emma = fiction.newBook("Emma");
+ * assert emma.container == fiction;
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
@@ -151,16 +168,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	@PropertyIdentifier(type = ActorReference.class, cardinality = Cardinality.LIST)
 	public static final String ACTORS_KEY = "actors";
 
-	// @PropertyIdentifier(type = List.class)
-	// public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
-
 	@PropertyIdentifier(type = FMLRTVirtualModelInstance.class)
 	public static final String OWNING_VIRTUAL_MODEL_INSTANCE_KEY = "owningVirtualModelInstance";
 
 	/**
-	 * Return the {@link FMLRTVirtualModelInstance} where this FlexoConceptInstance is instantiated (result might be different from
-	 * {@link #getVirtualModelInstance()}, which is The {@link VirtualModelInstanceObject} API)
-	 * 
+	 * Return the {@link VirtualModelInstance} in which this FlexoConceptInstance is registered (result might be different from
+	 * {@link #getVirtualModelInstance()}, which is the {@link VirtualModelInstanceObject} API)
+	 *
 	 * @return
 	 */
 	@Getter(value = OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
@@ -198,8 +212,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public List<FlexoConceptInstance> getEmbeddedFlexoConceptInstances(FlexoConcept flexoConcept);
 
 	/**
-	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
-	 * 
+	 * Return all {@link FlexoConceptInstance} contained in this {@link FlexoConceptInstance}
+	 *
 	 * @return
 	 */
 	@Getter(value = EMBEDDED_FLEXO_CONCEPT_INSTANCE_KEY, cardinality = Cardinality.LIST, inverse = CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY)
@@ -219,8 +233,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public void removeFromEmbeddedFlexoConceptInstances(FlexoConceptInstance aFlexoConcept);
 
 	/**
-	 * Return boolean indicating whether this concept instance has a FlexoConceptInstance for container (containment semantics)<br>
-	 * 
+	 * Return boolean indicating whether this concept instance has no container FlexoConceptInstance (containment semantics)<br>
+	 *
 	 * @return
 	 */
 	public boolean isRoot();
@@ -243,6 +257,29 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
 
 	/**
+	 * Refresh the reflected model slot named <code>modelSlotName</code>: its artefact is re-read from disk and the reflected
+	 * {@link VirtualModelInstance} rebuilt from it, picking up changes made OUTSIDE Openflexo.
+	 *
+	 * <p>
+	 * Callable from FML, so a model can offer its own refresh behaviour:
+	 *
+	 * <pre>
+	 * public refresh() {
+	 * 	this.refreshModelSlot("maintenance");
+	 * 	this.synchronize();
+	 * }
+	 * </pre>
+	 *
+	 * The call to the synchronization behaviour is NOT optional: refreshing rebuilds the reflected instances, but the roles pointing at
+	 * them still hold the previous ones until they are re-attached.
+	 *
+	 * @param modelSlotName
+	 *            name of the model slot to refresh
+	 * @return true when a reflected model slot of that name was found and refreshed
+	 */
+	public boolean refreshModelSlot(String modelSlotName);
+
+	/**
 	 * Initialize default values for a newly created instance
 	 * 
 	 * @param evaluationContext
@@ -253,8 +290,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public String debug();
 
 	/**
-	 * Compute value associated with supplied property
-	 * 
+	 * Compute value associated with supplied property: the actor(s) of a role, the evaluated expression of an expression property...<br>
+	 * When the property belongs to the concept of a container instance, or to the {@link VirtualModel} of the owning
+	 * {@link VirtualModelInstance}, its value is looked up there
+	 *
 	 * @param flexoProperty
 	 *            the property to lookup
 	 */
@@ -301,8 +340,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * Return actor associated with supplied role name, asserting cardinality of supplied property is SINGLE.<br>
 	 * If cardinality of supplied property is MULTIPLE, return first found value
 	 * 
-	 * @param flexoPropertyName
-	 *            the property to lookup
+	 * @param flexoRoleName
+	 *            the role to lookup
 	 */
 	public <T> T getFlexoActor(String flexoRoleName);
 
@@ -311,8 +350,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * If cardinality of supplied property is SINGLE, return a singleton list<br>
 	 * If no value are defined for this property, return an empty list
 	 * 
-	 * @param flexoProperty
-	 *            the property to lookup
+	 * @param flexoRole
+	 *            the role to lookup
 	 */
 	public <T> List<T> getFlexoActorList(FlexoRole<T> flexoRole);
 
@@ -321,20 +360,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * If cardinality of supplied property is SINGLE, return a singleton list<br>
 	 * If no value are defined for this property, return an empty list
 	 * 
-	 * @param flexoPropertyName
-	 *            the property to lookup
+	 * @param flexoRoleName
+	 *            the role to lookup
 	 */
 	public <T> List<T> getFlexoActorList(String flexoRoleName);
 
 	/**
-	 * Return actor associated with supplied property, asserting cardinality of supplied property is SINGLE.<br>
-	 * If cardinality of supplied property is MULTIPLE, replace all existing value with supplied object. If no value is found, add supplied
+	 * Sets actor associated with supplied role, asserting cardinality of supplied role is SINGLE.<br>
+	 * If cardinality of supplied role is MULTIPLE, replace all existing value with supplied object. If no value is found, add supplied
 	 * object.
-	 * 
+	 *
 	 * @param object
-	 *            the object to be registered as actor for supplied property
-	 * @param flexoProperty
-	 *            the property to be considered
+	 *            the object to be registered as actor for supplied role
+	 * @param flexoRole
+	 *            the role to be considered
 	 */
 	public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole);
 
@@ -415,7 +454,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public boolean hasValidRenderer();
 
 	@DeserializationInitializer
-	public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory);
+	public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory factory);
 
 	@DeserializationFinalizer
 	public void finalizeDeserialization();
@@ -536,7 +575,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @param factory
 	 * @return
 	 */
-	public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory);
+	public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory factory);
 
 	/**
 	 * An {@link #equals(Object)} implementation for {@link FlexoConceptInstance}, focused on roles
@@ -1511,6 +1550,24 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return returned;
 		}
 
+		@Override
+		public boolean refreshModelSlot(String modelSlotName) {
+			// Deliberately not going through getModelSlotInstance(String): that one compares names with ==.
+			for (ModelSlotInstance<?, ?> modelSlotInstance : getModelSlotInstances()) {
+				ModelSlot<?, ?> modelSlot = modelSlotInstance.getModelSlot();
+				if (modelSlot != null && modelSlot.getName() != null && modelSlot.getName().equals(modelSlotName)) {
+					if (modelSlotInstance instanceof ReflectedFMLRTModelSlotInstance) {
+						((ReflectedFMLRTModelSlotInstance<?, ?, ?, ?>) modelSlotInstance).refresh();
+						return true;
+					}
+					logger.warning("Model slot '" + modelSlotName + "' of " + this + " is not a reflected one: nothing to refresh");
+					return false;
+				}
+			}
+			logger.warning("No model slot named '" + modelSlotName + "' on " + this);
+			return false;
+		}
+
 		@SuppressWarnings("unchecked")
 		private <MS extends ModelSlot<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<?>> void setModelSlotValue(MS ms,
 				Object value) {
@@ -2029,10 +2086,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return returned;
 		}
 
-		private AbstractVirtualModelInstanceModelFactory<?> storedFactoryAfterDeletion;
+		private AbstractVirtualModelInstanceModelFactory storedFactoryAfterDeletion;
 
 		@Override
-		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
+		public AbstractVirtualModelInstanceModelFactory getFactory() {
 			if (isDeleted()) {
 				return storedFactoryAfterDeletion;
 			}
@@ -2274,10 +2331,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return this;
 		}
 
-		private AbstractVirtualModelInstanceModelFactory<?> deserializationFactory;
+		private AbstractVirtualModelInstanceModelFactory deserializationFactory;
 
 		@Override
-		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory<?> factory) {
+		public void initializeDeserialization(AbstractVirtualModelInstanceModelFactory factory) {
 			deserializationFactory = factory;
 		}
 
@@ -2286,7 +2343,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			deserializationFactory = null;
 		}
 
-		public AbstractVirtualModelInstanceModelFactory<?> getDeserializationFactory() {
+		public AbstractVirtualModelInstanceModelFactory getDeserializationFactory() {
 			return deserializationFactory;
 		}
 
@@ -2330,7 +2387,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = getFactory();
 			if (factory == null) {
 				return null;
 			}
@@ -2392,7 +2449,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory) {
+		public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory factory) {
 			FlexoConceptInstance clone = factory.newInstance(FlexoConceptInstance.class);
 			clone.setFlexoConcept(getFlexoConcept());
 			clone.setLocalFactory(factory);

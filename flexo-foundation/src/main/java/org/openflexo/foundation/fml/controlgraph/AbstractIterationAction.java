@@ -41,18 +41,35 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.ConnieType;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
+import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * Base of the FML loops declaring an iterator variable: {@link IterationAction} ({@code for (Type item : expression)}) and
+ * {@link ExpressionIterationAction} ({@code for (Type i = init; condition; update)}). {@link IncrementalIterationAction} is deprecated.
+ * <p>
+ * The iterator variable, named {@link #getIteratorName()} ({@code item} by default) and typed {@link #getItemType()}, is declared in
+ * the evaluation context while the body ({@link #getControlGraph()}) is executed, and dereferenced after the loop. A return statement
+ * executed in the body leaves the loop and the enclosing behaviour.
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractIterationAction.AbstractIterationActionImpl.class)
 public interface AbstractIterationAction extends ControlStructureAction, FMLControlGraphOwner {
@@ -61,6 +78,8 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 	public static final String ITERATOR_NAME_KEY = "iteratorName";
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
+	@PropertyIdentifier(type = Type.class)
+	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = ITERATOR_NAME_KEY)
 	@XMLAttribute
@@ -69,12 +88,41 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 	@Setter(ITERATOR_NAME_KEY)
 	public void setIteratorName(String iteratorName);
 
+	@FMLMigration("ignoreForEquality=true to be removed")
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
+	@XMLAttribute
+	public Type getDeclaredType();
+
+	@Setter(DECLARED_TYPE_KEY)
+	public void setDeclaredType(Type type);
+
+	/**
+	 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
+	 *
+	 * @param type
+	 *            the declared type, possibly expressed in another typing space
+	 */
+	@Updater(DECLARED_TYPE_KEY)
+	public void updateDeclaredType(Type type);
+
+	/**
+	 * Return the type of the iterator variable: the declared type when set, the analyzed type otherwise
+	 *
+	 * @return the type of the iterator variable
+	 */
 	public Type getItemType();
 
 	/**
-	 * Returns the control graph on which we iterate
-	 * 
-	 * @return
+	 * Return the type of the iterator variable as inferred from the iteration itself
+	 *
+	 * @return the inferred type of the iterator variable
+	 */
+	public Type getAnalyzedType();
+
+	/**
+	 * Return the body of the loop, executed at each iteration
+	 *
+	 * @return the body of the loop
 	 */
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
@@ -102,8 +150,34 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 			if (this.iteratorName == null || !this.iteratorName.equals(iteratorName)) {
 				String oldValue = this.iteratorName;
 				this.iteratorName = iteratorName;
-				// rebuildInferedBindingModel();
 				getPropertyChangeSupport().firePropertyChange(ITERATOR_NAME_KEY, oldValue, iteratorName);
+			}
+		}
+
+		@Override
+		public final Type getItemType() {
+			if (getDeclaredType() != null) {
+				return getDeclaredType();
+			}
+			return getAnalyzedType();
+		}
+
+		/**
+		 * We define an updater for DECLARED_TYPE property because we need to translate supplied Type to valid TypingSpace
+		 * 
+		 * This updater is called during updateWith() processing (generally applied during the FML parsing phases)
+		 *
+		 * @param type
+		 *            the declared type, possibly expressed in another typing space
+		 */
+		@Override
+		public void updateDeclaredType(Type type) {
+
+			if (getDeclaringCompilationUnit() != null && type instanceof ConnieType) {
+				setDeclaredType(((ConnieType) type).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setDeclaredType(type);
 			}
 		}
 
@@ -165,6 +239,86 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 			if (getControlGraph() != null) {
 				getControlGraph().accept(visitor);
 			}
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeMustBeResolved extends TypeMustBeResolved<AbstractIterationAction> {
+		public DeclaredTypeMustBeResolved() {
+			super("declared_type_must_be_resolved", AbstractIterationAction.class);
+		}
+
+		@Override
+		public Type getType(AbstractIterationAction declaration) {
+			return declaration.getDeclaredType();
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class TypeMustBeValid extends ValidationRule<TypeMustBeValid, AbstractIterationAction> {
+
+		public TypeMustBeValid() {
+			super(AbstractIterationAction.class, "declared_type_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<TypeMustBeValid, AbstractIterationAction> applyValidation(AbstractIterationAction iteration) {
+			if (iteration.getDeclaredType() == null) {
+				return new ValidationError<>(this, iteration, "type_must_be_declared");
+			}
+			if (TypeUtils.isVoid(iteration.getDeclaredType())) {
+				return new ValidationError<>(this, iteration, "declared_type_cannot_be_void");
+			}
+			return null;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
+			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, AbstractIterationAction> {
+
+		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
+			super(AbstractIterationAction.class, "declared_types_and_analyzed_types_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, AbstractIterationAction> applyValidation(
+				AbstractIterationAction iteration) {
+
+			Type expected = iteration.getDeclaredType();
+			Type analyzed = iteration.getAnalyzedType();
+
+			if (expected != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+				return new NotCompatibleTypesIssue(this, iteration, expected, analyzed);
+			}
+
+			return null;
+		}
+
+		public static class NotCompatibleTypesIssue
+				extends ValidationError<DeclaredTypeShouldBeCompatibleWithAnalyzedType, AbstractIterationAction> {
+
+			private Type expectedType;
+			private Type analyzedType;
+
+			public NotCompatibleTypesIssue(DeclaredTypeShouldBeCompatibleWithAnalyzedType rule, AbstractIterationAction anObject,
+					Type expected, Type analyzed) {
+				super(rule, anObject, "types_are_not_compatible_in_declaration_:_($expectedType)_is_not_assignable_from_($analyzedType)");
+				this.analyzedType = analyzed;
+				this.expectedType = expected;
+			}
+
+			public String getExpectedType() {
+				return TypeUtils.simpleRepresentation(expectedType);
+			}
+
+			public String getAnalyzedType() {
+				return TypeUtils.simpleRepresentation(analyzedType);
+			}
+
 		}
 
 	}

@@ -128,14 +128,17 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 		logger.info("Add flexo concept instance in container " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
 		if (creationSchemeAction != null) {
+
 			creationSchemeAction.doAction();
 			fciBeingCreated = creationSchemeAction.getFlexoConceptInstance();
 		}
 		else {
 
 			if (getFocusedObject().getVirtualModelInstance() instanceof FMLRTVirtualModelInstance) {
-				fciBeingCreated = ((FMLRTVirtualModelInstance) getFocusedObject().getVirtualModelInstance())
-						.makeNewFlexoConceptInstance(getFlexoConcept(), getContainer(), getCreationScheme(), null);
+
+				fciBeingCreated = ((FMLRTVirtualModelInstance) getFocusedObject().getVirtualModelInstance()).makeNewFlexoConceptInstance(
+						getFlexoConcept(), getContainer(), getCreationScheme(),
+						getContainer() != null ? getContainer() : getFocusedObject().getVirtualModelInstance());
 			}
 			else {
 				logger.warning("Not implemented feature for "

@@ -57,15 +57,18 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * This action is used to explicitely instanciate a new {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance} with some
- * parameters
- * 
+ * An action instantiating a {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}, with a creation scheme and its
+ * arguments (see {@link AbstractAddFlexoConceptInstance}).
+ * <p>
+ * This action is not produced by the FML parser, where an instance creation is an expression ({@code new Book(parameters.title)}); it can
+ * only be written {@code FMLRT::AddFlexoConceptInstance(...)}.
+ *
  * @author sylvain
- * 
- * @param <M>
- * @param <MM>
+ *
+ * @param <VMI>
+ *            type of the VirtualModelInstance in which the instance is created
+ * @deprecated use an instance creation expression, such as {@code new Book(parameters.title)}
  */
-
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement

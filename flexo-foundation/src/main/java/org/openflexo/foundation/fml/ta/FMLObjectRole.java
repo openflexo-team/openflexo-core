@@ -90,7 +90,7 @@ public interface FMLObjectRole<T extends FMLObject> extends FlexoRole<T> {
 		 */
 		@Override
 		public FMLObjectActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FMLObjectActorReference<T> returned = factory.newInstance(FMLObjectActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

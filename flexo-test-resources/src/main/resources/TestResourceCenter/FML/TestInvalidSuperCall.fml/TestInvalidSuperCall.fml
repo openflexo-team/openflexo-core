@@ -1,0 +1,43 @@
+/**
+ * DELIBERATELY INVALID. This model pins a DIAGNOSTIC, not a behaviour - do not "fix" it.
+ *
+ * super(...) targets the parent's ANONYMOUS creation scheme. NamedBase declares only a NAMED one
+ * (create::init), so there is nothing for super(...) to reach, and FML validation must say so:
+ *
+ *     Invalid binding value: super(parameters.label)
+ *         reason: unresolved path element super(parameters.label)
+ *
+ * TestInvalidSuperCallIsReported asserts exactly that. Should someone later make super(...) fall
+ * back to a named scheme by signature, that test turns red and the change gets discussed rather than
+ * slipping in - the two spellings are meant to be distinct (TestSuperCallToNamedScheme.fml shows the
+ * correct one).
+ *
+ * The failure is quiet at runtime: the invalid binding is not executed, the instance is created, and
+ * the parent's fields stay null. The diagnostic is the only thing that catches it.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestInvalidSuperCall.fml")
+public model TestInvalidSuperCall {
+
+	public NamedDerived newNamedDerived(String label) {
+		return new NamedDerived(parameters.label);
+	}
+
+	/** Only a NAMED creation scheme - nothing anonymous for super(...) to reach. */
+	public concept NamedBase {
+		String label;
+		create::init(String label) {
+			label = parameters.label;
+		}
+		delete() {
+		}
+	}
+
+	public concept NamedDerived extends NamedBase {
+		create(String label) {
+			super(parameters.label);
+		}
+		delete() {
+		}
+	}
+}

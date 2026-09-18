@@ -59,7 +59,7 @@ public interface TextSelectionRole<D extends FlexoDocument<D, TA>, TA extends Te
 
 		@Override
 		public TextSelectionActorReference<D, TA> makeActorReference(TextSelection<D, TA> textSelection, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			TextSelectionActorReference<D, TA> returned = factory.newInstance(TextSelectionActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

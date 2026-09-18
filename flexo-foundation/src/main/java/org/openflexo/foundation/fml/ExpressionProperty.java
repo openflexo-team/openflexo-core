@@ -60,13 +60,27 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * A {@link ExpressionProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data using an expression<br>
- * Access to data is read-only or read-write depending on expression settable property
- * 
- * 
- * 
+ * A {@link FlexoProperty} whose value is computed from an expression, each time it is accessed.
+ * <p>
+ * Declared in FML with {@code values}, e.g. {@code int bookCount values books.size;}. {@link #getDeclaredType()} is the declared type,
+ * {@link #getAnalyzedType()} the type of the expression. The property is read-only unless its expression is settable.
+ * <p>
+ * An {@link ExpressionProperty} may implement an {@link AbstractProperty} of a parent concept (excerpt of {@code FML/Library.fml} in the
+ * {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public abstract concept Publication {
+ *     abstract String code;
+ * }
+ *
+ * public concept Book extends Publication {
+ *     String title;
+ *     String code values "B-" + title;
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(ExpressionProperty.ExpressionPropertyImpl.class)

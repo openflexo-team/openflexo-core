@@ -1,0 +1,62 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestCreationScheme.fml")
+@Version("0.1")
+model TestCreationScheme { 
+	
+	Foo1 testInstanciateFoo1 () {
+		return new Foo1();
+	}
+	
+	Foo2 testInstanciateFoo2 () {
+		return new Foo2();
+	}
+
+	Foo3 testInstanciateFoo3 () {
+		return new Foo3::constructor1();
+	}
+
+	Foo1 testMatchFoo1() {
+		return match Foo1 from this where(name="xxx") unmatched: new Foo1();
+	}
+	
+	Foo2 testMatchFoo2() {
+		return match Foo2 from this where(name="xxx") unmatched: new Foo2();
+	}
+	
+	Foo3 testMatchFoo3() {
+		return match Foo3 from this where(name="xxx") unmatched: new Foo3::constructor2();
+	}
+	
+	Foo2 testMatchFoo2Again() {
+		return match Foo2 from this where() unmatched: new Foo2();
+	}
+
+	
+	// No constructor
+	concept Foo1 {
+		String name="Foo1";
+ 	}
+	
+	// Default anonymous constructor
+	concept Foo2 {
+		String name;
+		
+		create() {
+			this.name="Foo2";
+		}
+		
+	}
+	
+	// Two named constructors
+	concept Foo3 {
+		String name;
+		
+		create::constructor1() {
+			this.name="Foo3withConstructor1";
+		}
+
+		create::constructor2() {
+			this.name="Foo3withConstructor2";
+		}
+		
+	}
+}

@@ -51,8 +51,11 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * 
- * 
+ * The declaration of a namespace in a {@link FMLCompilationUnit}, written in FML as {@code namespace "http://www.openflexo.org/test/" as NS;}.
+ * <p>
+ * The abbreviation ({@link #getAbbrev()}) denotes the namespace URI ({@link #getValue()}) in the URI expressions of the compilation unit,
+ * e.g. {@code import [NS+"AnOtherModel.fml"];} (see {@link ElementImportDeclaration}).
+ *
  * @author sylvain
  *
  */

@@ -157,7 +157,7 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			ConceptActorReference<T> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);
@@ -182,7 +182,7 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 
 		@Override
 		public TypeAwareModelSlot<?, ?, ?> getModelSlot() {
-			TypeAwareModelSlot<?, ?, ?> returned = super.getModelSlot();
+			TypeAwareModelSlot<?, ?, ?> returned = (TypeAwareModelSlot<?, ?, ?>) super.getModelSlot();
 			if (returned == null) {
 				if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
 					return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);

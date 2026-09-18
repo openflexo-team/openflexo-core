@@ -1,0 +1,130 @@
+// Library is the example model of the FML meta-model javadoc in flexo-foundation
+// (packages org.openflexo.foundation.fml, fml.controlgraph and fml.editionaction).
+// This script keeps what that javadoc states true: nested concepts, concept inheritance, URIs,
+// a contained VirtualModel, the kinds of properties, behaviour parameters and control structures.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Library.fml"];
+assert virtualModel != null;
+assert virtualModel.name == "Library";
+
+// Nested concepts: Book and Novel live in Shelf, which is a root concept
+shelf = virtualModel.getFlexoConcept("Shelf");
+assert shelf != null;
+book = virtualModel.getFlexoConcept("Book");
+assert book != null;
+assert shelf.isRoot();
+assert book.isRoot() == false;
+assert book.containerFlexoConcept == shelf;
+assert book.getURI() == "http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf#Book";
+
+// Concept inheritance: Novel extends Book
+novel = virtualModel.getFlexoConcept("Novel");
+assert novel != null;
+assert book.isSuperConceptOf(novel);
+
+// Contained VirtualModel: Catalog is stored in Library.fml/, its URI is computed from Library's one
+assert virtualModel.getVirtualModels(true).size == 1;
+assert virtualModel.getVirtualModels(true).get(0).getURI() == "http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml";
+catalog = load -r ["http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml"];
+assert catalog != null;
+assert catalog.containerVirtualModel == virtualModel;
+
+// Run-time
+service ResourceCenterService add_temp_rc;
+library = new Library() with (name="library");
+assert library != null;
+
+// Inside a behaviour of Library, "new Catalog() with (name=...)" creates a VirtualModelInstance of the
+// contained VirtualModel, itself contained in the Library instance
+libraryCatalog = library.createCatalog();
+assert libraryCatalog != null;
+assert libraryCatalog.name == "catalog";
+assert libraryCatalog.containerVirtualModelInstance == library;
+assert library.catalog == libraryCatalog;
+
+// Creation scheme with a required parameter and a parameter declaring a default value
+shelfCreation = shelf.getCreationSchemes().get(0);
+assert shelfCreation.getSignature() == "create(label,capacity)";
+assert shelfCreation.getParameter("label").getIsRequired();
+assert shelfCreation.getParameter("capacity").getIsRequired() == false;
+fiction = library.newShelf("Fiction");
+assert fiction != null;
+assert fiction.label == "Fiction";
+// newShelf fires a ShelfCreated event, received by the listener declared in Library
+assert library.lastCreatedShelf == "Fiction";
+assert fiction.capacity == 20;
+assert library.allShelves().size == 1;
+
+// Inside a behaviour of Shelf, "new Book(...)" creates a Book contained in that Shelf instance
+emma = fiction.newBook("Emma");
+assert emma != null;
+assert emma.title == "Emma";
+assert emma.container == fiction;
+
+dune = fiction.newNovel("Dune", "Frank Herbert");
+assert dune != null;
+assert dune.title == "Dune";
+assert dune.author == "Frank Herbert";
+assert dune.container == fiction;
+
+// Concept instance role with multiple cardinality, and expression property (read-only)
+assert shelf.getDeclaredProperty("books").cardinality.toString() == "ZeroMany";
+assert shelf.getDeclaredProperty("bookCount").isReadOnly();
+assert shelf.getDeclaredProperty("label").getURI() == "http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf.label";
+assert fiction.books.size == 2;
+assert fiction.bookCount == 2;
+
+// Get/set property: the getter computes, the setter (called by rename) writes the label
+assert fiction.displayName == "Shelf Fiction";
+fiction.rename("Classics");
+assert fiction.label == "Classics";
+assert fiction.displayName == "Shelf Classics";
+
+// Iteration and conditional
+assert fiction.countNovels() == 1;
+
+// Early return from an iteration
+assert fiction.findBook("Dune") == dune;
+assert fiction.findBook("Ulysses") == null;
+
+// Fetch request with a where clause
+assert fiction.findBookByTitle("Emma") == emma;
+assert fiction.findBookByTitle("Ulysses") == null;
+
+// While loop
+assert fiction.freeSlots() == 18;
+
+// Abstract property: Publication declares code, Book implements it with an expression property
+publication = virtualModel.getFlexoConcept("Publication");
+assert publication != null;
+assert publication.isAbstract();
+assert publication.isSuperConceptOf(book);
+assert emma.code == "B-Emma";
+assert dune.code == "B-Dune";
+
+// Named creation scheme, reached with new Shelf::withDefaultCapacity(...)
+small = library.newSmallShelf("Poetry");
+assert small != null;
+assert small.label == "Poetry";
+assert small.capacity == 10;
+
+// Classic for loop, over the shelves Fiction (20) and Poetry (10)
+assert library.totalCapacity() == 30;
+
+// Matching: one index entry per book; running the synchronization again creates no duplicate
+assert library.synchronizeIndex() == 2;
+assert library.synchronizeIndex() == 2;
+
+// Deletion: the book is removed from the multiple role, then deleted
+fiction.removeBook(emma);
+assert fiction.books.size == 1;
+
+// Matching: the entry of the deleted book is not matched any more, and is deleted by end match
+assert library.synchronizeIndex() == 1;
+assert fiction.findBook("Emma") == null;
+
+// Visibility: no keyword means Default
+assert shelf.getDeclaredProperty("notes").visibility.toString() == "Private";
+assert shelf.getDeclaredProperty("label").visibility.toString() == "Default";
+
+log "Test PASSED: Library instantiates, with nested and inherited concepts, properties, parameters and control structures";

@@ -69,18 +69,10 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 
 	private BindingPathElementOwner bindingPathElementOwner;
 
+	private boolean escapedSerialization = false;
+
 	public static final String NAME_PROPERTY = "propertyName";
 	public static final String TYPE_PROPERTY = "type";
-
-	public AbstractFMLPathElementImpl() {
-	}
-
-	/*public AbstractFMLPathElementImpl(IBindingPathElement parent, String parsed, Bindable bindable) {
-		this();
-		setParent(parent);
-		setParsed(parsed);
-		setBindable(bindable);
-	}*/
 
 	@Override
 	public Bindable getBindable() {
@@ -268,6 +260,16 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 			return getParent().getRelativePath() + "." + getSerializationRepresentation();
 		}
 		return getSerializationRepresentation();
+	}
+
+	@Override
+	public boolean getEscapedSerialization() {
+		return escapedSerialization;
+	}
+
+	@Override
+	public void setEscapedSerialization(boolean escapedSerialization) {
+		this.escapedSerialization = escapedSerialization;
 	}
 
 }

@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.inspector;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -51,6 +53,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FlexoConceptFormatterBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptInspectorBindingModel;
+import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
@@ -70,14 +73,26 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Represents inspector associated with an Edition Pattern
- * 
+ * Represents inspector associated with a FlexoConcept
+ *
+ * @deprecated <b>Replaced by the container convention.</b> The inspector of a concept is now an ordinary GINA component stored beside the
+ *             FML source, in the <code>Xxx.fml/</code> container, and resolved by {@link FlexoConcept#getInspectorComponentResource()}. This
+ *             entity has no textual FML form - it never had one - so it survives only in the deprecated <code>.fml.xml</code>
+ *             serialization, and every VirtualModel migrated to textual FML has already lost its {@link InspectorEntry} list.
+ *             <p>
+ *             What is worth keeping was moved out: a renderer is stored as {@link FlexoConcept#RENDERER_METADATA} metadata (this class only
+ *             reads it back), and a title as {@link FlexoConcept#INSPECTOR_TITLE_METADATA}.
+ *             <p>
+ *             NOT deleted yet: <code>free-modelling-editor</code> still builds {@link InspectorEntry} at runtime
+ *             (<code>CreateNewFMEProperty</code>), and must be ported first.
+ *
  * @author sylvain
  * 
  */
 @ModelEntity
 @ImplementationClass(FlexoConceptInspector.FlexoConceptInspectorImpl.class)
 @XMLElement(xmlTag = "Inspector")
+@Deprecated // Replaced by a dedicated .inspector in the Xxx.fml/ container - see FlexoConcept.getInspectorComponentResource()
 public interface FlexoConceptInspector extends FlexoConceptObject {
 
 	public static final String FORMATTER_INSTANCE_PROPERTY = "instance";
@@ -280,11 +295,40 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 			notifyChange(ENTRIES_KEY, null, entries);
 		}
 
+		protected static final String RENDERER = FlexoConcept.RENDERER_METADATA;
+
+		private DataBinding<String> retrieveRendererFromMetadata() {
+			DataBinding<String> returned = getFlexoConcept().getSingleMetaData(RENDERER, DataBinding.class);
+			returned.setOwner(formatter);
+			returned.setDeclaredType(String.class);
+			returned.setBindingDefinitionType(BindingDefinitionType.GET);
+			returned.setBindingName("renderer");
+			return returned;
+		}
+
 		@Override
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
-				renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
-				renderer.setBindingName("renderer");
+				if (getFlexoConcept() != null && getFlexoConcept().hasMetaData(RENDERER)) {
+
+					getFlexoConcept().getMetaData(RENDERER).getPropertyChangeSupport()
+							.addPropertyChangeListener(new PropertyChangeListener() {
+								@Override
+								public void propertyChange(PropertyChangeEvent evt) {
+									if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
+										renderer = retrieveRendererFromMetadata();
+										// System.err.println("New renderer: " + renderer + " valid: " + renderer.isValid()
+										// + " reason: " + renderer.invalidBindingReason());
+									}
+								}
+							});
+
+					renderer = retrieveRendererFromMetadata();
+				}
+				else {
+					renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
+					renderer.setBindingName("renderer");
+				}
 			}
 			return renderer;
 		}
@@ -299,6 +343,16 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 			}
 			this.renderer = renderer;
 			notifiedBindingChanged(this.renderer);
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == renderer) {
+				if (getFlexoConcept() != null) {
+					getFlexoConcept().setSingleMetaData(RENDERER, renderer, DataBinding.class);
+				}
+			}
 		}
 
 		@Override

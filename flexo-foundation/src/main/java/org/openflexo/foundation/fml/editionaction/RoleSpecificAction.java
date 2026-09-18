@@ -52,12 +52,21 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * Represents an {@link TechnologySpecificAction} which address a specific technology object accessible as a {@link FlexoRole}
- * 
- * Such action must access via the {@link #getReceiver()} property to an object whose type match type declared by the {@link FlexoRole}
- * 
+ * A {@link TechnologySpecificActionDefiningReceiver} whose receiver ({@link #getReceiver()}) is a technology object reached through a
+ * {@link FlexoRole}: the receiver and the action both have the type of the objects played by that role. The type argument {@code R}
+ * designates the class of the role ({@link #getFlexoRoleClass()}).
+ * <p>
+ * Such actions are contributed by technology adapters, for instance the actions on paragraphs, tables and images of the docx technology
+ * adapter.
+ *
  * @author sylvain
- * 
+ *
+ * @param <R>
+ *            type of the role through which the receiver is reached
+ * @param <MS>
+ *            type of the model slot class declaring this action
+ * @param <T>
+ *            type of the receiver, which is also the type of the assigned value
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(RoleSpecificAction.RoleSpecificActionImpl.class)
@@ -65,26 +74,27 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 		extends TechnologySpecificActionDefiningReceiver<MS, T, T> {
 
 	/**
-	 * Compute and return infered {@link FlexoRole} from getReceiver() binding<br>
-	 * Please note that infered role might be null if receiver value is not given through a {@link FlexoRole}
-	 * 
-	 * @return role beeing addressed
+	 * Return the role through which the receiver is reached, when the receiver binding ends with a role
+	 *
+	 * @return the role addressed by the receiver, null when the receiver is not given through a {@link FlexoRole}
 	 */
 	public R getInferedFlexoRole();
 
 	/**
-	 * Compute and return assigned flexo role asserting this action is assigned to requested {@link FlexoRole}<br>
-	 * 
-	 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link FlexoRole}<br>
-	 * 
-	 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+	 * Return the role assigned by this action, when this action is the right-hand side of an assignation whose target is a role of type
+	 * {@code R}.
+	 * <p>
+	 * Beware: this method must only be called when this action is the right-hand side of the assignation of a property (see
+	 * {@link #getAssignedFlexoProperty()}); otherwise it throws a {@link NullPointerException}.
+	 *
+	 * @return the assigned role, null when the assigned property is not a role of type {@code R}
 	 */
 	public R getAssignedFlexoRole();
 
 	/**
-	 * Return type of {@link FlexoRole} this {@link EditionAction} refer to
-	 * 
-	 * @return
+	 * Return the class of the role addressed by this action, given by the type argument {@code R}
+	 *
+	 * @return the role class
 	 */
 	public Class<? extends R> getFlexoRoleClass();
 
@@ -95,19 +105,13 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 
 		/**
 		 * Return a string representation suitable for a common user<br>
-		 * This representation will used in all GUIs
+		 * This representation will be used in all GUIs
 		 */
 		@Override
 		public String getStringRepresentation() {
 			return (getInferedFlexoRole() != null ? getInferedFlexoRole().getName() + "." : "") + super.getStringRepresentation();
 		}
 
-		/**
-		 * Compute and return infered {@link FlexoRole} from getReceiver() binding<br>
-		 * Please not that infered role might be null if receiver value is not given through a {@link FlexoRole}
-		 * 
-		 * @return role beeing addressed
-		 */
 		@Override
 		public R getInferedFlexoRole() {
 			if (getReceiver().isSet() && getReceiver().isValid() && getReceiver().isBindingPath()) {
@@ -124,24 +128,12 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 			return null;
 		}
 
-		/**
-		 * Return type of {@link FlexoRole} this {@link EditionAction} refer to
-		 * 
-		 * @return
-		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public final Class<? extends R> getFlexoRoleClass() {
 			return (Class<? extends R>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), RoleSpecificAction.class, 0));
 		}
 
-		/**
-		 * Compute and return assigned flexo role asserting this action is assigned to requested {@link FlexoRole}<br>
-		 * 
-		 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link FlexoRole}<br>
-		 * 
-		 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
-		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public R getAssignedFlexoRole() {

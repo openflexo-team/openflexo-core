@@ -102,7 +102,8 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 
 		for (ElementImportDeclaration importDeclaration : compilationUnit.getElementImports()) {
 			try {
-				String importedResourceURI = importDeclaration.getResourceReference().getBindingValue(compilationUnit);
+				String importedResourceURI = importDeclaration.getResourceReference()
+						.getBindingValue(compilationUnit.getReflectedBindingEvaluationContext());
 				// System.out.println("Found import " + importedResourceURI);
 				if (StringUtils.isNotEmpty(importedResourceURI)) {
 					info.addToDependencies(importedResourceURI);
@@ -139,9 +140,9 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
 		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		for (String msClassName : usedModelSlots) {
-			Class<? extends ModelSlot<?,?>> msClass;
+			Class<? extends ModelSlot<?, ?>> msClass;
 			try {
-				msClass = (Class<? extends ModelSlot<?,?>>) Class.forName(msClassName);
+				msClass = (Class<? extends ModelSlot<?, ?>>) Class.forName(msClassName);
 				TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
 				if (!requiredTAList.contains(requiredTA)) {
 					requiredTAList.add(requiredTA);
@@ -252,9 +253,9 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAUseDecl(AUseDecl node) {
 		super.inAUseDecl(node);
-		Class<? extends ModelSlot<?,?>> modelSlotClass = null;
+		Class<? extends ModelSlot<?, ?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?,?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?, ?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
 			info.addToRequiredModelSlot(modelSlotClass.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

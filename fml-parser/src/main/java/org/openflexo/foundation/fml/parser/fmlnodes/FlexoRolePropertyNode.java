@@ -106,7 +106,7 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + (getLidentifierName().getText()));
 		}
-		returned.setCardinality(getCardinality(getPCardinality()));
+		returned.setCardinality(getCardinality(getPCardinality(), returned));
 		returned.setType(type);
 		return returned;
 	}
@@ -122,7 +122,7 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		// @formatter:off
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
-		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
+		append(cardinalityContents(() -> getModelObject().getCardinality(), () -> getPCardinality()), getCardinalityFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName(), SPACE), getNameFragment());
 
 		// TODO : handle case where no parameter is required and where no 'with' clause is required

@@ -69,9 +69,15 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.md.MetaDataKeyValue;
+import org.openflexo.foundation.fml.md.MultiValuedMetaData;
+import org.openflexo.foundation.fml.rm.FIBComponentResource;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
+import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
@@ -107,18 +113,64 @@ import org.openflexo.swing.ImageUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
- * GUI, etcâ¦). Each such element is associated with a {@link FlexoRole}.
- * 
- * A FlexoRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in different
- * metamodels.
- * 
- * An {@link FlexoConceptInstance} is an instance of an {@link FlexoConcept} .
- * 
- * Instances of modelling elements in an {@link FlexoConceptInstance} are called Pattern Actors. They play given Pattern Roles.
- * 
+ * A {@link FlexoConcept} is the modelling unit of FML: it federates data coming from heterogeneous sources, together with the behaviour
+ * operating on them.
+ * <p>
+ * Declared with the {@code concept} keyword ({@link FlexoEvent}, {@link FlexoEnum} and {@link VirtualModel} are specializations, declared
+ * with {@code event}, {@code enum} and {@code model}), a {@link FlexoConcept} declares:
+ * <ul>
+ * <li>{@link FlexoProperty properties}: typed data, expressions, or {@link FlexoRole roles} referencing objects of other technological spaces
+ * through a {@link ModelSlot}</li>
+ * <li>{@link FlexoBehaviour behaviours}: creation, deletion and action schemes...</li>
+ * <li>invariants ({@link AbstractInvariant})</li>
+ * <li>nested concepts</li>
+ * </ul>
+ * At run-time, a {@link FlexoConcept} is instantiated as {@link FlexoConceptInstance}s, typed by {@link #getInstanceType()}.
+ * <p>
+ * Two independent relations structure concepts:
+ * <ul>
+ * <li><b>inheritance</b> ({@code concept B extends A1, A2}), possibly multiple: {@code getDeclaredXxx()} methods only return what is declared
+ * in this concept, whereas {@code getAccessibleXxx()} methods also return what is inherited, except elements shadowed by a more specialized
+ * declaration</li>
+ * <li><b>containment</b>: a concept nested in another one (see {@link #getEmbeddedFlexoConcepts()} and {@link #getContainerFlexoConcept()}).
+ * An instance of a nested concept lives inside an instance of its container: it is created by {@code new B(...)} in a behaviour of the
+ * container, or by {@code a.new B(...)} from outside. A concept without container is a root concept ({@link #isRoot()}).</li>
+ * </ul>
+ * The URI of a {@link FlexoConcept} is the URI of its container concept (or of its {@link VirtualModel} for a root concept), followed by
+ * {@code #} and its name, e.g. {@code http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf#Book} in the example below.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center), where {@code Book} and
+ * {@code Novel} are nested in {@code Shelf}, and {@code Novel} extends {@code Book}:
+ *
+ * <pre>
+ * public model Library {
+ *
+ *     public concept Shelf {
+ *         String label;
+ *         create(String label) { ... }
+ *
+ *         public Novel newNovel(String title, String author) {
+ *             return new Novel(parameters.title, parameters.author);
+ *         }
+ *
+ *         public concept Book {
+ *             String title;
+ *             create(String title) { ... }
+ *         }
+ *
+ *         public concept Novel extends Book {
+ *             String author;
+ *             create(String title, String author) {
+ *                 super(parameters.title);
+ *                 author = parameters.author;
+ *             }
+ *         }
+ *     }
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
@@ -140,9 +192,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
 	@PropertyIdentifier(type = FlexoProperty.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_PROPERTIES_KEY = "flexoProperties";
-	@PropertyIdentifier(type = FlexoConceptInspector.class)
-	public static final String KEY_PROPERTIES_KEY = "keyProperties";
 	@PropertyIdentifier(type = FlexoProperty.class, cardinality = Cardinality.LIST)
+	public static final String KEY_PROPERTIES_KEY = "keyProperties";
+	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = String.class)
 	public static final String PARENT_FLEXO_CONCEPTS_LIST_KEY = "parentFlexoConceptsList";
@@ -177,13 +229,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setName(String name) throws InvalidNameException;
 
 	/**
-	 * Return the URI of this {@link FlexoConcept}<br>
-	 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
-	 * eg<br>
-	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
-	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
-	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept#AnInnerConcept.MyBehaviour
-	 * 
+	 * Return the URI of this {@link FlexoConcept}: the URI of its container concept, or of its owning {@link VirtualModel} for a root
+	 * concept, followed by {@code #} and its name (e.g. {@code http://openflexo.org/test/TestResourceCenter/Library.fml#Shelf#Book})
+	 *
 	 * @return String representing unique URI of this object
 	 */
 	public String getURI();
@@ -213,8 +261,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * Sets container {@link FlexoConcept} (relative to containment).
 	 * 
 	 * Note that this is an explicit declaration. When unspecified (let to null), this containment is inherited from its parent concepts
-	 * 
-	 * @param name
+	 *
+	 * @param container
 	 */
 	@Setter(CONTAINER_FLEXO_CONCEPT_KEY)
 	public void setContainerFlexoConcept(FlexoConcept container);
@@ -227,9 +275,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	/**
 	 * Sets applicable container {@link FlexoConcept} (relative to containment).
-	 * 
-	 * 
-	 * @param name
+	 *
+	 * @param concept
 	 */
 	public void setApplicableContainerFlexoConcept(FlexoConcept concept);
 
@@ -324,8 +371,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	/**
 	 * Return most specialized anonymous {@link AbstractCreationScheme} matching supplied signature (expressed with types)<br>
-	 * 
-	 * @param behaviourName
+	 *
 	 * @param arguments
 	 * @return
 	 */
@@ -351,11 +397,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... arguments);
 
 	/**
-	 * Return {@link FlexoBehaviour} matching supplied signature (expressed with types), which are declared for this concept. Result does
-	 * not include inherited behaviours.
-	 * 
-	 * @param behaviourName
-	 * @param parameters
+	 * Return the {@link FlexoBehaviour} declared in this concept whose signature (see {@link FlexoBehaviour#getSignature()}) equals the
+	 * supplied one. Result does not include inherited behaviours.
+	 *
+	 * @param signature
 	 * @return
 	 */
 	public FlexoBehaviour getDeclaredFlexoBehaviour(String signature);
@@ -472,9 +517,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
 	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
 	 * This means that only leaf nodes of inheritance graph inferred by this {@link FlexoConcept} hierarchy will be returned.
-	 * 
-	 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
-	 * 
+	 *
+	 * The result is cached (see {@link #retrieveAccessibleProperties(boolean)} for the uncached computation).
+	 *
 	 * @return
 	 */
 	public List<FlexoProperty<?>> getAccessibleProperties();
@@ -528,8 +573,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public List<FlexoProperty<?>> getAccessibleKeyProperties();
 
 	/**
-	 * Build and return the list of all declared {@link FlexoProperty} with supplied type
-	 * 
+	 * Build and return the list of all accessible {@link FlexoProperty} with supplied type
+	 *
 	 * @param type
 	 * @return
 	 */
@@ -559,8 +604,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	/**
 	 * Return {@link FlexoRole} identified by supplied name, which is to be retrieved in all accessible properties<br>
 	 * Note that returned role is not necessary one of declared role, but might be inherited.
-	 * 
-	 * @param propertyName
+	 *
+	 * @param roleName
 	 * @return
 	 * @see #getAccessibleRoles()
 	 */
@@ -577,7 +622,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public <MS extends ModelSlot<?,?>> List<MS> getModelSlots(Class<MS> msType);
 
-	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY, ignoreForEquality = true)
+	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY/*, ignoreForEquality = true*/)
 	@XMLElement(xmlTag = "Inspector")
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
@@ -650,16 +695,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public List<IterationInvariant> getIterationInvariants();
 
 	/**
-	 * Return boolean indicating whether this concept has a FlexoConcept for container (containment semantics)<br>
-	 * 
+	 * Return boolean indicating whether this concept has no declared container concept (containment semantics)<br>
+	 *
 	 * @return
 	 */
 	public boolean isRoot();
 
 	/**
-	 * Return boolean indicating whether this concept has no parent in this VirtualModel (inheritance semantics), or have parents
-	 * exclusively outside container {@link VirtualModel}
-	 * 
+	 * Return boolean indicating whether none of the parent concepts of this concept (inheritance semantics) is declared in the same
+	 * {@link VirtualModel} (in particular when it has no parent at all)
+	 *
 	 * @return
 	 */
 	public boolean isSuperConceptOfContainerVirtualModel();
@@ -768,13 +813,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	/**
 	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FlexoConcept}<br>
 	 * 
-	 * Lookup algorithm follows:
+	 * Lookup algorithm follows, the first match being returned:
 	 * <ul>
-	 * <li>If name matches declared {@link FlexoConcept} return this {@link FlexoConcept}</li>
-	 * <li>If name matches any container {@link VirtualModel} or {@link FlexoConcept} (recursively from current to container), return
-	 * related {@link FlexoConcept}</li>
-	 * <li>If name matches any parent {@link FlexoConcept} (inheritance semantics), return related {@link VirtualModel}</li>
-	 * <li>If name matches any contained {@link FlexoConcept}, return related {@link FlexoConcept}</li>
+	 * <li>this {@link FlexoConcept}, when its name matches</li>
+	 * <li>its owning {@link VirtualModel} (see {@link VirtualModel#lookupFlexoConceptWithName(String)})</li>
+	 * <li>its container {@link FlexoConcept}, recursively</li>
+	 * <li>its parent concepts (inheritance semantics), recursively</li>
+	 * <li>its nested concepts, recursively</li>
 	 * </ul>
 	 * 
 	 * @param conceptName
@@ -886,6 +931,104 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public DataBinding<String> getApplicableRenderer();
 
 	public String getPresentationName();
+
+	/**
+	 * Metadata key of the annotation overriding the user interface convention: <code>@UI("MyScreen.fib")</code>
+	 */
+	public static final String UI_METADATA = "UI";
+
+	/**
+	 * Key naming the default variant inside a multi-valued <code>@UI</code> / <code>@Inspector</code> annotation:
+	 * <code>@UI(default="Screen.fib", compact="Compact.fib")</code>
+	 */
+	public static final String DEFAULT_VARIANT = "default";
+
+	/**
+	 * Metadata key of the annotation overriding the inspector convention: <code>@Inspector("Compact.inspector")</code>
+	 */
+	public static final String INSPECTOR_METADATA = "Inspector";
+
+	/**
+	 * Metadata key of the annotation giving the string representation of the instances of this concept:
+	 * <code>@Renderer(someExpression)</code>.<br>
+	 * This is where a renderer is actually STORED - {@link FlexoConceptInspector#getRenderer()} only reads it back.
+	 */
+	public static final String RENDERER_METADATA = "Renderer";
+
+	/**
+	 * Return the GINA component serializing the user interface of the instances of this {@link FlexoConcept}, as stored in the container
+	 * directory of the {@link FMLCompilationUnit} declaring it, or null when this concept has no such user interface.<br>
+	 *
+	 * By convention that component is <code>&lt;ConceptName&gt;.fib</code>, at the root of the <code>Xxx.fml/</code> container. Since a
+	 * {@link VirtualModel} is a {@link FlexoConcept}, the same rule gives a VirtualModel its own view as <code>Xxx.fml/Xxx.fib</code>. An
+	 * <code>@UI("…")</code> annotation overrides that convention, and may name a nested artefact. A concept declaring neither inherits the
+	 * component of its most specialized parent concept.
+	 *
+	 * @return the resource of the component, or null
+	 */
+	public Resource getUIComponentResource();
+
+	/**
+	 * Return the {@link FIBComponentResource} of the user interface of this {@link FlexoConcept}, resolved as
+	 * {@link #getUIComponentResource()} describes, or null when this concept drives no user interface.<br>
+	 *
+	 * Prefer this over {@link #getUIComponentResource()} wherever the component is going to be loaded: the resource is registered, shared,
+	 * and knows how to deserialize a FML-driven component.
+	 */
+	public FIBComponentResource getUIComponentFlexoResource();
+
+	/**
+	 * Return the named <b>variant</b> of the user interface of this {@link FlexoConcept}, or null when it declares none under that name.<br>
+	 *
+	 * Variants are declared by a multi-valued annotation, which the FML annotation grammar already supports:
+	 *
+	 * <pre>
+	 * &#64;UI(default="Screen.fib", compact="Compact.fib")
+	 * </pre>
+	 *
+	 * The single-valued form <code>@UI("Screen.fib")</code> keeps its meaning and declares the default variant alone. Variants are inherited
+	 * one by one: a concept may declare only <code>compact</code> and take the rest from its parent.
+	 *
+	 * @param variant
+	 *            name of the variant; {@link #DEFAULT_VARIANT} yields what {@link #getUIComponentResource()} returns
+	 */
+	public Resource getUIComponentResource(String variant);
+
+	public FIBComponentResource getUIComponentFlexoResource(String variant);
+
+	/**
+	 * Return the names of the user interface variants available for this {@link FlexoConcept} - its own and those it inherits - the default
+	 * one first, or an empty list when it drives no user interface at all.<br>
+	 *
+	 * This is what lets a view offer the reader a choice when there is more than one.
+	 */
+	public List<String> getUIComponentVariants();
+
+	/**
+	 * Return the GINA component serializing the inspector of the instances of this {@link FlexoConcept}, following the same rules as
+	 * {@link #getUIComponentResource()} with the <code>.inspector</code> extension and the <code>@Inspector("…")</code> annotation.
+	 *
+	 * @return the resource of the component, or null
+	 */
+	public Resource getInspectorComponentResource();
+
+	/**
+	 * Return the {@link FIBComponentResource} of the inspector of this {@link FlexoConcept}, following the same rules as
+	 * {@link #getUIComponentFlexoResource()}.
+	 */
+	public FIBComponentResource getInspectorComponentFlexoResource();
+
+	/**
+	 * Named variant of the inspector, following the same rules as {@link #getUIComponentResource(String)}.
+	 */
+	public Resource getInspectorComponentResource(String variant);
+
+	public FIBComponentResource getInspectorComponentFlexoResource(String variant);
+
+	/**
+	 * Names of the inspector variants, following the same rules as {@link #getUIComponentVariants()}.
+	 */
+	public List<String> getInspectorComponentVariants();
 
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept, PropertyChangeListener {
 
@@ -1201,9 +1344,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public List<FlexoProperty<?>> getAccessibleKeyProperties() {
 
-			// Implements a cache
-			// Do not recompute accessible properties when not required
-
 			List<FlexoProperty<?>> accessibleKeyProperties = new ArrayList<>();
 			for (FlexoProperty<?> p : getAccessibleProperties()) {
 				if (p.isKeyProperty()) {
@@ -1279,8 +1419,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Build and return the list of all accessible roles from this {@link FlexoConcept}
-		 * 
+		 * Build and return the list of all accessible {@link AbstractProperty} from this {@link FlexoConcept}
+		 *
 		 * @return
 		 */
 		@Override
@@ -1388,37 +1528,37 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		public List<ModelSlot<?,?>> getModelSlots() {
+		public List<ModelSlot<?, ?>> getModelSlots() {
 			return (List) getAccessibleProperties(ModelSlot.class);
 		}
 
 		@Override
-		public void addToModelSlots(ModelSlot<?,?> aModelSlot) {
+		public void addToModelSlots(ModelSlot<?, ?> aModelSlot) {
 			addToFlexoProperties(aModelSlot);
 		}
 
 		@Override
-		public void removeFromModelSlots(ModelSlot<?,?> aModelSlot) {
+		public void removeFromModelSlots(ModelSlot<?, ?> aModelSlot) {
 			removeFromFlexoProperties(aModelSlot);
 		}
 
 		@Override
-		public ModelSlot<?,?> getModelSlot(String modelSlotName) {
+		public ModelSlot<?, ?> getModelSlot(String modelSlotName) {
 			FlexoProperty<?> returned = getAccessibleProperty(modelSlotName);
 			if (returned instanceof ModelSlot) {
-				return (ModelSlot<?,?>) returned;
+				return (ModelSlot<?, ?>) returned;
 			}
 			return null;
 		}
 
 		@Override
-		public <MS extends ModelSlot<?,?>> List<MS> getModelSlots(Class<MS> msType) {
+		public <MS extends ModelSlot<?, ?>> List<MS> getModelSlots(Class<MS> msType) {
 			return getAccessibleProperties(msType);
 		}
 
-		public List<ModelSlot<?,?>> getRequiredModelSlots() {
-			List<ModelSlot<?,?>> requiredModelSlots = new ArrayList<>();
-			for (ModelSlot<?,?> modelSlot : getModelSlots()) {
+		public List<ModelSlot<?, ?>> getRequiredModelSlots() {
+			List<ModelSlot<?, ?>> requiredModelSlots = new ArrayList<>();
+			for (ModelSlot<?, ?> modelSlot : getModelSlots()) {
 				if (modelSlot.getIsRequired()) {
 					requiredModelSlots.add(modelSlot);
 				}
@@ -1433,8 +1573,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public List<FlexoConcept> getAccessibleEmbeddedFlexoConcepts() {
-
-			// Implements a cache
 
 			List<FlexoConcept> returned = new ArrayList<>();
 			returned.addAll(getEmbeddedFlexoConcepts());
@@ -1451,8 +1589,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer() {
-
-			// Implements a cache
 
 			List<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept flexoConcept : getDeclaringCompilationUnit().getVirtualModel().getFlexoConcepts()) {
@@ -2209,14 +2345,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Hook called when scope of a FMLObject changed.<br>
-		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
-		 * to objects that rely on ViewPoint instantiation context to update their bindings (some bindings might becomes valid)<br>
-		 * 
-		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
-		 * 
+		 * Propagates the notification to the behaviours of this {@link FlexoConcept}
 		 */
 		@Override
 		public void notifiedScopeChanged() {
@@ -2413,8 +2542,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public DataBinding<String> getApplicableRenderer() {
-			if (getInspector() != null && getInspector().getRenderer() != null && getInspector().getRenderer().isSet()
-					&& getInspector().getRenderer().isValid()) {
+			// A renderer is stored as @Renderer metadata; asking the deprecated inspector for one when the concept
+			// declares none would lazily create an empty inspector for nothing.
+			if (hasMetaData(RENDERER_METADATA) && getInspector() != null && getInspector().getRenderer() != null
+					&& getInspector().getRenderer().isSet() && getInspector().getRenderer().isValid()) {
 				return getInspector().getRenderer();
 			}
 			else if (getParentFlexoConcepts().size() > 0) {
@@ -2440,6 +2571,233 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				return getName();
 			}
 
+		}
+
+		@Override
+		public Resource getUIComponentResource() {
+			return getUIComponentResource(DEFAULT_VARIANT);
+		}
+
+		@Override
+		public Resource getInspectorComponentResource() {
+			return getInspectorComponentResource(DEFAULT_VARIANT);
+		}
+
+		@Override
+		public Resource getUIComponentResource(String variant) {
+			return getContainedComponentResource(UI_METADATA, ".fib", variant);
+		}
+
+		@Override
+		public Resource getInspectorComponentResource(String variant) {
+			return getContainedComponentResource(INSPECTOR_METADATA, ".inspector", variant);
+		}
+
+		@Override
+		public List<String> getUIComponentVariants() {
+			return getComponentVariants(UI_METADATA, ".fib");
+		}
+
+		@Override
+		public List<String> getInspectorComponentVariants() {
+			return getComponentVariants(INSPECTOR_METADATA, ".inspector");
+		}
+
+		@Override
+		public FIBComponentResource getUIComponentFlexoResource() {
+			return getUIComponentFlexoResource(DEFAULT_VARIANT);
+		}
+
+		@Override
+		public FIBComponentResource getInspectorComponentFlexoResource() {
+			return getInspectorComponentFlexoResource(DEFAULT_VARIANT);
+		}
+
+		@Override
+		public FIBComponentResource getUIComponentFlexoResource(String variant) {
+			return componentResourceFor(getUIComponentResource(variant));
+		}
+
+		@Override
+		public FIBComponentResource getInspectorComponentFlexoResource(String variant) {
+			return componentResourceFor(getInspectorComponentResource(variant));
+		}
+
+		/**
+		 * Factored resolution of a component of this concept: an explicit annotation wins over the naming convention, which in turn wins over
+		 * what the concept inherits.
+		 *
+		 * <p>
+		 * The default variant is, in order: the single-valued form <code>@UI("X.fib")</code>, the <code>default</code> key of the
+		 * multi-valued form, the naming convention <code>&lt;ConceptName&gt;.&lt;extension&gt;</code>, and finally the first variant
+		 * declared - so a concept declaring only named variants still has something to show.
+		 *
+		 * @param metadataKey
+		 *            key of the annotation overriding the convention
+		 * @param extension
+		 *            extension of the searched component, dot included
+		 * @param variant
+		 *            name of the searched variant
+		 */
+		private Resource getContainedComponentResource(String metadataKey, String extension, String variant) {
+
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+			boolean isDefault = DEFAULT_VARIANT.equals(variant);
+
+			if (compilationUnit != null) {
+
+				// An explicit annotation wins, and is NOT searched in the concept hierarchy: naming a component is
+				// saying which one this concept uses, not which one its children use.
+				String declaredName = declaredComponentName(metadataKey, variant);
+				if (StringUtils.isNotEmpty(declaredName)) {
+					// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
+					return compilationUnit.getContainedArtefact(declaredName);
+				}
+
+				if (isDefault && StringUtils.isNotEmpty(getName())) {
+					Resource returned = compilationUnit.getContainedArtefact(getName() + extension);
+					if (returned != null) {
+						return returned;
+					}
+				}
+			}
+
+			// Not declared here: inherit from the most specialized parent concept that declares THIS variant
+			List<FlexoConcept> parentConceptsWithAComponent = new ArrayList<>();
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				if (parent != this && resolveComponentResource(parent, metadataKey, variant) != null) {
+					parentConceptsWithAComponent.add(parent);
+				}
+			}
+			if (parentConceptsWithAComponent.size() > 0) {
+				return resolveComponentResource(FMLUtils.getMostSpecializedConcept(parentConceptsWithAComponent), metadataKey, variant);
+			}
+
+			// Last resort for the default variant only, and AFTER inheritance: a concept declaring nothing but named
+			// variants still has something to show. Trying this earlier would make a concept that declares one variant
+			// shadow the default it inherits.
+			if (isDefault) {
+				String firstDeclared = firstDeclaredVariant(metadataKey);
+				if (firstDeclared != null) {
+					return getContainedComponentResource(metadataKey, extension, firstDeclared);
+				}
+			}
+
+			return null;
+		}
+
+		/**
+		 * The file name supplied annotation gives for supplied variant, or null. Handles both shapes under the same key: the accessors of
+		 * {@link FMLObject} are guarded by an <code>instanceof</code>, so a single-valued and a multi-valued annotation cohabit safely.
+		 */
+		private String declaredComponentName(String metadataKey, String variant) {
+
+			if (!hasMetaData(metadataKey)) {
+				return null;
+			}
+
+			if (getMultiValuedMetaData(metadataKey) != null) {
+				return getMultiValuedMetaData(metadataKey).getValue(variant, String.class);
+			}
+
+			// @UI("Screen.fib") declares the default variant, and only that one
+			return DEFAULT_VARIANT.equals(variant) ? getSingleMetaData(metadataKey, String.class) : null;
+		}
+
+		/** First variant of a multi-valued annotation, in declaration order, or null. */
+		private String firstDeclaredVariant(String metadataKey) {
+			MultiValuedMetaData metaData = getMultiValuedMetaData(metadataKey);
+			if (metaData != null) {
+				for (MetaDataKeyValue<?> keyValue : metaData.getKeyValues()) {
+					return keyValue.getKey();
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * The variants available for this concept - the default one first, then its own declared ones, then those it inherits.
+		 */
+		private List<String> getComponentVariants(String metadataKey, String extension) {
+
+			List<String> returned = new ArrayList<>();
+
+			if (getContainedComponentResource(metadataKey, extension, DEFAULT_VARIANT) != null) {
+				returned.add(DEFAULT_VARIANT);
+			}
+
+			MultiValuedMetaData metaData = getMultiValuedMetaData(metadataKey);
+			if (metaData != null) {
+				for (MetaDataKeyValue<?> keyValue : metaData.getKeyValues()) {
+					if (!returned.contains(keyValue.getKey())) {
+						returned.add(keyValue.getKey());
+					}
+				}
+			}
+
+			// Variants are inherited one by one, so the set a concept offers is the union with its parents'
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				if (parent != this) {
+					for (String inherited : variantsOf(parent, metadataKey)) {
+						if (!returned.contains(inherited)) {
+							returned.add(inherited);
+						}
+					}
+				}
+			}
+
+			return returned;
+		}
+
+		/**
+		 * Dispatch to the accessor matching supplied metadata key, so that the hierarchy walk goes through the interface rather than assuming
+		 * an implementation class.
+		 */
+		private static Resource resolveComponentResource(FlexoConcept concept, String metadataKey, String variant) {
+			return UI_METADATA.equals(metadataKey) ? concept.getUIComponentResource(variant) : concept.getInspectorComponentResource(variant);
+		}
+
+		private static List<String> variantsOf(FlexoConcept concept, String metadataKey) {
+			return UI_METADATA.equals(metadataKey) ? concept.getUIComponentVariants() : concept.getInspectorComponentVariants();
+		}
+
+		/**
+		 * The registered {@link FIBComponentResource} serialized by supplied artefact.<br>
+		 * The artefacts of a container are registered by <code>FIBComponentResourceFactory</code> and linked into the contents of the
+		 * enclosing compilation unit resource, so the lookup is a scan of those contents rather than a URI resolution - a component has no
+		 * URI of its own to guess.
+		 */
+		private FIBComponentResource componentResourceFor(Resource artefact) {
+
+			if (artefact == null || getDeclaringCompilationUnit() == null || getDeclaringCompilationUnit().getResource() == null) {
+				return null;
+			}
+
+			// Fast path: a component at the root of the container is linked into the contents of its compilation unit
+			for (FIBComponentResource componentResource : getDeclaringCompilationUnit().getResource()
+					.getContents(FIBComponentResource.class)) {
+				if (serializes(componentResource, artefact)) {
+					return componentResource;
+				}
+			}
+
+			// A component named by an annotation may sit deeper (@UI("UI/MyScreen.fib")); it is registered all the same,
+			// just not as a content of the compilation unit, whose contents only hold what its own directory carries.
+			FlexoResourceCenter<?> resourceCenter = getDeclaringCompilationUnit().getResource().getResourceCenter();
+			if (resourceCenter != null) {
+				for (FlexoResource<?> resource : resourceCenter.getAllResources()) {
+					if (resource instanceof FIBComponentResource && serializes((FIBComponentResource) resource, artefact)) {
+						return (FIBComponentResource) resource;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private static boolean serializes(FIBComponentResource componentResource, Resource artefact) {
+			return componentResource.getIODelegate() != null
+					&& artefact.equals(componentResource.getIODelegate().getSerializationArtefactAsResource());
 		}
 
 		/**
@@ -2605,6 +2963,35 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			performSuperSetter(VISIBILITY_KEY, visibility);
 			System.out.println("FML: " + getFMLPrettyPrint());
 		}*/
+	}
+
+	/**
+	 * Checks the renderer of this {@link FlexoConcept}, as declared in FML with the {@code @Renderer(...)} annotation.
+	 *
+	 * The renderer is optional, but when it is set it must be a valid String expression: an invalid one is silently ignored at run-time
+	 * ({@link FlexoConcept#getApplicableRenderer()} returns null and instances fall back to their default representation), which gives no
+	 * clue that the annotation was rejected. Beware that Connie types the '+' operator from its LEFT operand, so
+	 * {@code @Renderer(this.anObject + " suffix")} evaluates as Object and is NOT a valid renderer, whereas
+	 * {@code @Renderer("prefix " + this.anObject)} is.
+	 */
+	@DefineValidationRule
+	public static class RendererBindingMustBeValid extends BindingMustBeValid<FlexoConcept> {
+		public RendererBindingMustBeValid() {
+			super("'renderer'_binding_must_be_valid", FlexoConcept.class);
+		}
+
+		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
+		}
+
+		@Override
+		public DataBinding<String> getBinding(FlexoConcept object) {
+			if (object.getInspector() == null) {
+				return null;
+			}
+			return object.getInspector().getRenderer();
+		}
 	}
 
 	@DefineValidationRule

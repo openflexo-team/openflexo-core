@@ -46,14 +46,39 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * An {@link FlexoEvent} represent an event beeing emitted by an instance of {@link VirtualModel}, and might be listened by an other
- * instance of {@link FlexoConcept}<br>
- * 
- * Life-cycle of event is somewhat different from {@link FlexoConcept} instance, since it's life is restricted to the propagation of the
- * event
- * 
+ * A {@link FlexoConcept} representing an event, declared in FML with {@code event}.
+ * <p>
+ * An event is created and fired with {@code fire new EventType(...)}; it is then received by the {@link EventListener}s listening to the
+ * {@link VirtualModel} instance from which it was fired. An event instance ({@link org.openflexo.foundation.fml.rt.FlexoEventInstance}) is
+ * not registered in any virtual model instance: its life is restricted to its propagation.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public model Library {
+ *     String lastCreatedShelf;
+ *
+ *     public Shelf newShelf(String label) {
+ *         Shelf shelf = new Shelf(parameters.label, 20);
+ *         fire new ShelfCreated(parameters.label);
+ *         return shelf;
+ *     }
+ *
+ *     listen ShelfCreated from this {
+ *         lastCreatedShelf = evt.label;
+ *     }
+ *
+ *     event ShelfCreated {
+ *         String label;
+ *         create(String label) {
+ *             label = parameters.label;
+ *         }
+ *     }
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(FlexoEvent.FlexoEventImpl.class)

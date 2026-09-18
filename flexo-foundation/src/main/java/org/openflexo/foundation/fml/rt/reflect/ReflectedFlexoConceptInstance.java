@@ -39,8 +39,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * A {@link FlexoConceptInstance} reflecting a given object (the support object) as a {@link FlexoConceptInstance}
@@ -52,11 +54,14 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ImplementationClass(ReflectedFlexoConceptInstance.ReflectedFlexoConceptInstanceImpl.class)
 public interface ReflectedFlexoConceptInstance<S> extends FlexoConceptInstance {
 
+	String SUPPORT_OBJECT_KEY = "supportObject";
+
 	/**
 	 * Return {@link Row} support object
 	 * 
 	 * @return
 	 */
+	@Getter(value = SUPPORT_OBJECT_KEY, ignoreType = true)
 	public S getSupportObject();
 
 	/**
@@ -64,6 +69,7 @@ public interface ReflectedFlexoConceptInstance<S> extends FlexoConceptInstance {
 	 * 
 	 * @return
 	 */
+	@Setter(SUPPORT_OBJECT_KEY)
 	public void setSupportObject(S supportObject);
 
 	/**

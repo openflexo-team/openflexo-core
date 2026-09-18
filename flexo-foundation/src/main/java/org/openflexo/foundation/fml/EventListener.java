@@ -62,6 +62,19 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * A behaviour executed each time an event is received, declared in FML with {@code listen EventType from expression { ... }}.
+ * <p>
+ * The expression designates the listened {@link VirtualModelInstance} (see {@link #getListenedVirtualModelInstance()}): the behaviour is
+ * executed for each event of the listened type ({@link #getEventType()}), or of a sub-type, fired from that instance. In the body of the
+ * behaviour, the received event is available as {@code evt}.
+ * <p>
+ * Listening is started by the {@link org.openflexo.foundation.fml.rt.FMLRunTimeEngine} when the listening instance is registered in its
+ * execution context. See {@link FlexoEvent} for an example.
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(EventListener.EventListenerImpl.class)
 @XMLElement

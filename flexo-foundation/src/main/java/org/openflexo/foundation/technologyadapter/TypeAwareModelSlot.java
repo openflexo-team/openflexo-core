@@ -138,7 +138,7 @@ public interface TypeAwareModelSlot<
 		@Override
 		public TypeAwareModelSlotInstance<M, MM, ?, ?, ?> makeActorReference(M object, FlexoConceptInstance fci) {
 
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			TypeAwareModelSlotInstance returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);

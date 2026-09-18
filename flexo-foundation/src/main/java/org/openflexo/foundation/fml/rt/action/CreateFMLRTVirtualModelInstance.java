@@ -38,22 +38,33 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
+import java.security.InvalidParameterException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoObservable;
+import org.openflexo.foundation.FlexoObserver;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.toolbox.JavaUtils;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * This action is called to create a regular {@link FMLRTVirtualModelInstance} either as top level in a repository folder, or as a contained
@@ -65,9 +76,21 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
  *            type of container (a repository folder or a container FMLRTVirtualModelInstance)
  */
 public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtualModelInstance<A>>
-		extends AbstractCreateVirtualModelInstance<A, FlexoObject, FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
+		extends FlexoAction<A, FlexoObject, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(CreateFMLRTVirtualModelInstance.class.getPackage().getName());
+
+	private FMLRTVirtualModelInstance newVirtualModelInstance;
+
+	private String newVirtualModelInstanceName;
+	private String newVirtualModelInstanceTitle;
+	private VirtualModel virtualModel;
+	private CreationScheme creationScheme;
+	private CreationSchemeAction creationSchemeAction;
+
+	private boolean skipChoosePopup = false;
+
+	private boolean openAfterCreation = true;
 
 	protected CreateFMLRTVirtualModelInstance(FlexoActionFactory<A, FlexoObject, FlexoObject> actionType, FlexoObject focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
@@ -75,6 +98,346 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 	}
 
 	@Override
+	protected void doAction(Object context) throws FlexoException {
+		logger.info("Add virtual model instance in view " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
+
+		// System.out.println("VirtualModelBeeing created: " + getVirtualModel());
+		/*if (creationSchemeAction != null && creationSchemeAction.getCreationScheme() != null) {
+			System.out.println("FML: " + creationSchemeAction.getCreationScheme().getFMLRepresentation());
+		}*/
+
+		// System.out.println("getNewVirtualModelInstanceName()=" + getNewVirtualModelInstanceName());
+		// System.out.println("getNewVirtualModelInstanceTitle()=" + getNewVirtualModelInstanceTitle());
+
+		if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
+			throw new InvalidParameterException("virtual model instance name is undefined");
+		}
+
+		/*int index = 1;
+		String baseName = getNewVirtualModelInstanceName();
+		while (!isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
+			newVirtualModelInstanceName = baseName + index;
+			index++;
+		}*/
+
+		FMLRTVirtualModelInstanceResource newVirtualModelInstanceResource = makeVirtualModelInstanceResource();
+
+		newVirtualModelInstance = newVirtualModelInstanceResource.getVirtualModelInstance();
+
+		if (getContainerVirtualModelInstance() != null) {
+			newVirtualModelInstance.initializeDefaultValues(getContainerVirtualModelInstance());
+		}
+		else {
+			newVirtualModelInstance.initializeDefaultValues(newVirtualModelInstance);
+		}
+
+		logger.info("Added virtual model instance " + newVirtualModelInstance + " in container " + getFocusedObject());
+
+		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
+		// System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + "
+		// delegate="
+		// + newVirtualModelInstanceResource.getIODelegate().stringRepresentation());
+
+		// System.out.println("creationSchemeAction=" + creationSchemeAction);
+
+		// We init the new VMI using a creation scheme
+		if (creationSchemeAction != null) {
+
+			// System.out.println("We now execute " + creationSchemeAction);
+			// System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
+
+			creationSchemeAction.assignNewFlexoConceptInstance(newVirtualModelInstance);
+			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
+			creationSchemeAction.doAction();
+			if (creationSchemeAction.getThrownException() != null) {
+				throw creationSchemeAction.getThrownException();
+			}
+
+		}
+
+		// We add the FMLRTVirtualModelInstance to the view
+		if (getContainerVirtualModelInstance() != null) {
+			getContainerVirtualModelInstance().addToVirtualModelInstances(newVirtualModelInstance);
+		}
+
+		// System.out.println("Now, we try to synchronize the new virtual model instance");
+
+		if (newVirtualModelInstance.isSynchronizable()) {
+			// System.out.println("Go for it");
+			newVirtualModelInstance.synchronize(getEditor());
+		}
+
+		// System.out.println("Saving file again...");
+		newVirtualModelInstanceResource.save();
+	}
+
+	public int getStepsNumber() {
+		if (virtualModel == null) {
+			return 1;
+		}
+		else if (!getVirtualModel().hasCreationScheme()) {
+			return virtualModel.getModelSlots().size() + 1;
+		}
+		else {
+			return virtualModel.getModelSlots().size() + 2;
+		}
+	}
+
+	@Override
+	public boolean isValid() {
+		if (getVirtualModel() == null) {
+			return false;
+		}
+		if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
+			return false;
+		}
+
+		if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
+			return false;
+		}
+
+		if (!isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public FMLRTVirtualModelInstance getNewVirtualModelInstance() {
+		return newVirtualModelInstance;
+	}
+
+	public VirtualModel getVirtualModel() {
+		return virtualModel;
+	}
+
+	public void setVirtualModel(VirtualModel virtualModel) {
+		if (virtualModel != this.virtualModel) {
+			this.virtualModel = virtualModel;
+			setChanged();
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
+		}
+	}
+
+	/**
+	 * Return a boolean indicating if all options are enough to execute the action
+	 * 
+	 * @return
+	 */
+	public boolean isActionValidable() {
+
+		if (!isValid()) {
+			return false;
+		}
+		if (getVirtualModel() == null) {
+			return false;
+		}
+		if (getVirtualModel().hasCreationScheme()) {
+			if (getCreationScheme() == null) {
+				return false;
+			}
+			if (getCreationSchemeAction() == null) {
+				return false;
+			}
+			if (!getCreationSchemeAction().areRequiredParametersSetAndValid()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public String getNewVirtualModelInstanceName() {
+		if (StringUtils.isEmpty(newVirtualModelInstanceName) && StringUtils.isNotEmpty(newVirtualModelInstanceTitle)) {
+			return JavaUtils.getClassName(newVirtualModelInstanceTitle);
+		}
+		return newVirtualModelInstanceName;
+	}
+
+	public void setNewVirtualModelInstanceName(String newVirtualModelInstanceName) {
+		String oldVirtualModelInstanceTitle = getNewVirtualModelInstanceTitle();
+		String oldVirtualModelInstanceName = getNewVirtualModelInstanceName();
+		this.newVirtualModelInstanceName = newVirtualModelInstanceName;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldVirtualModelInstanceName,
+				getNewVirtualModelInstanceName());
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldVirtualModelInstanceTitle,
+				getNewVirtualModelInstanceTitle());
+	}
+
+	public String getNewVirtualModelInstanceTitle() {
+		if (newVirtualModelInstanceTitle == null) {
+			return getNewVirtualModelInstanceName();
+		}
+		return newVirtualModelInstanceTitle;
+	}
+
+	public void setNewVirtualModelInstanceTitle(String newVirtualModelInstanceTitle) {
+		String oldVirtualModelInstanceTitle = getNewVirtualModelInstanceTitle();
+		String oldVirtualModelInstanceName = getNewVirtualModelInstanceName();
+		this.newVirtualModelInstanceTitle = newVirtualModelInstanceTitle;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldVirtualModelInstanceTitle,
+				getNewVirtualModelInstanceTitle());
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldVirtualModelInstanceName,
+				getNewVirtualModelInstanceName());
+	}
+
+	public CreationScheme getCreationScheme() {
+		return creationScheme;
+	}
+
+	public void setCreationScheme(CreationScheme creationScheme) {
+		boolean wasValidable = isActionValidable();
+		this.creationScheme = creationScheme;
+		if (creationScheme != null) {
+			creationSchemeAction = new CreationSchemeAction(creationScheme,
+					getFocusedObject() instanceof FMLRTVirtualModelInstance ? (VirtualModelInstance<?, ?>) getFocusedObject() : null, null,
+					this);
+			/*creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(
+					getFocusedObject() instanceof FMLRTVirtualModelInstance ? (VirtualModelInstance<?, ?>) getFocusedObject() : null, null,
+					this);
+			creationSchemeAction.setCreationScheme(creationScheme);*/
+			creationSchemeAction.addObserver(this);
+			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
+		}
+		else {
+			creationSchemeAction = null;
+		}
+		getPropertyChangeSupport().firePropertyChange("creationScheme", null, creationScheme);
+		getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationScheme);
+		getPropertyChangeSupport().firePropertyChange("isActionValidable", wasValidable, isActionValidable());
+
+	}
+
+	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
+		if (creationSchemeAction != null) {
+			creationSchemeAction.setParameterValue(parameter, value);
+		}
+	}
+
+	@Override
+	public void update(FlexoObservable observable, DataModification<?> dataModification) {
+		if (dataModification.propertyName().equals(FlexoBehaviourAction.PARAMETER_VALUE_CHANGED)) {
+			setChanged();
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
+		}
+	}
+
+	public CreationSchemeAction getCreationSchemeAction() {
+		return creationSchemeAction;
+	}
+
+	/**
+	 * Return the VirtualModel of the container of currently created {@link FMLRTVirtualModelInstance}.<br>
+	 * Note that if we are creating a top-level FMLRTVirtualModelInstance, container might be null, and this method will return null
+	 * 
+	 * @return
+	 */
+	public VirtualModel getContainerVirtualModel() {
+		if (getContainerVirtualModelInstance() != null) {
+			return getContainerVirtualModelInstance().getVirtualModel();
+		}
+		return null;
+	}
+
+	/**
+	 * Return the VirtualModel resource of the container of currently created {@link FMLRTVirtualModelInstance}.<br>
+	 * Note that if we are creating a top-level FMLRTVirtualModelInstance, container might be null, and this method will return null
+	 * 
+	 * @return
+	 */
+	public CompilationUnitResource getContainerVirtualModelResource() {
+		if (getContainerVirtualModel() != null) {
+			return getContainerVirtualModel().getResource();
+		}
+		return null;
+	}
+
+	/**
+	 * Return the {@link VirtualModelInstance} acting as container of currently created {@link VirtualModelInstance}.<br>
+	 * 
+	 * Note that if we are creating a plain FMLRTVirtualModelInstance (in a folder for example), container might be null
+	 * 
+	 * @return
+	 */
+	public VirtualModelInstance<?, ?> getContainerVirtualModelInstance() {
+		if (getFocusedObject() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance<?, ?>) getFocusedObject();
+		}
+		return null;
+	}
+
+	/**
+	 * Return the folder in which the new {@link VirtualModelInstance} is to be created
+	 * 
+	 * @return
+	 */
+	public <I> RepositoryFolder<FMLRTVirtualModelInstanceResource, I> getFolder() {
+		if (getFocusedObject() instanceof RepositoryFolder) {
+			return (RepositoryFolder<FMLRTVirtualModelInstanceResource, I>) getFocusedObject();
+		}
+		return null;
+	}
+
+	/*public boolean isVisible(VirtualModel virtualModel) {
+		return true;
+	}*/
+
+	/**
+	 * Return resource center on which this action applies
+	 * 
+	 * @return
+	 */
+	public FlexoResourceCenter<?> getResourceCenter() {
+		if (getContainerVirtualModelInstance() != null) {
+			return getContainerVirtualModelInstance().getResource().getResourceCenter();
+		}
+		if (getFolder() != null) {
+			return getFolder().getResourceRepository().getResourceCenter();
+		}
+		return null;
+	}
+
+	public boolean skipChoosePopup() {
+		return skipChoosePopup;
+	}
+
+	public void setSkipChoosePopup(boolean skipChoosePopup) {
+		this.skipChoosePopup = skipChoosePopup;
+	}
+
+	public boolean openAfterCreation() {
+		return openAfterCreation;
+	}
+
+	public void setOpenAfterCreation(boolean openAfterCreation) {
+		if (openAfterCreation != this.openAfterCreation) {
+			this.openAfterCreation = openAfterCreation;
+			getPropertyChangeSupport().firePropertyChange("openAfterCreation", !openAfterCreation, openAfterCreation);
+		}
+	}
+
+	/**
+	 * Return boolean indicating if proposed name is a valid as name for the new FMLRTVirtualModelInstance
+	 * 
+	 * @param proposedName
+	 * @return
+	 */
+	public boolean isValidVirtualModelInstanceName(String proposedName) {
+		if (getContainerVirtualModelInstance() != null) {
+			return getContainerVirtualModelInstance().isValidVirtualModelInstanceName(proposedName);
+		}
+		if (getFolder() != null) {
+			return getFolder().getResourceWithName(proposedName) == null;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Effective build of the resource to be created
+	 * 
+	 * @return
+	 * @throws SaveResourceException
+	 */
 	public FMLRTVirtualModelInstanceResource makeVirtualModelInstanceResource() throws SaveResourceException {
 
 		FMLRTTechnologyAdapter fmlRTTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
@@ -85,14 +448,13 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 		try {
 			if (getContainerVirtualModelInstance() != null) {
 				returned = factory.makeContainedFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(),
-						(CompilationUnitResource) getVirtualModel().getResource(),
-						(AbstractVirtualModelInstanceResource<?, ?>) getContainerVirtualModelInstance().getResource(),
+						getVirtualModel().getResource(),
+						(FMLRTVirtualModelInstanceResource) getContainerVirtualModelInstance().getResource(),
 						fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
 			}
 			else if (getFolder() != null) {
 				returned = factory.makeTopLevelFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(), null,
-						// Let URI be automatically computed
-						(CompilationUnitResource) getVirtualModel().getResource(), getFolder(), true);
+						getVirtualModel().getResource(), getFolder(), true);
 			}
 
 			if (returned != null) {
@@ -107,11 +469,6 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 
 		// return FMLRTVirtualModelInstanceImpl.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
 		// getVirtualModel(), getFocusedObject());
-	}
-
-	@Override
-	public <I> RepositoryFolder<FMLRTVirtualModelInstanceResource, I> getFolder() {
-		return (RepositoryFolder<FMLRTVirtualModelInstanceResource, I>) super.getFolder();
 	}
 
 	public boolean isVisible(VirtualModel virtualModel) {

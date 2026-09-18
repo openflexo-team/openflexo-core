@@ -10,6 +10,7 @@ import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
@@ -189,6 +190,16 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void throwIssue(Object modelObject, String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
 		getCompilationUnitAnalyzer().throwIssue(modelObject, errorMessage, fragment, startPosition);
+	}
+
+	@Override
+	public void throwWarning(Object modelObject, String warningMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		getCompilationUnitAnalyzer().throwWarning(modelObject, warningMessage, fragment, startPosition);
+	}
+
+	@Override
+	public List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		return getCompilationUnitAnalyzer().getSemanticAnalysisWarnings();
 	}
 
 	@Override

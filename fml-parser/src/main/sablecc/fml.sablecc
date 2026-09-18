@@ -290,6 +290,7 @@ Tokens
    {normal} kw_then = 'then';
    {normal} kw_typedef = 'typedef';
    {normal,binding} kw_unique = 'unique';
+   {normal} kw_unmatched = 'unmatched';
    {normal -> binding} kw_use = 'use';
    {normal} kw_using = 'using';
    {normal -> binding} kw_values = 'values';
@@ -313,6 +314,7 @@ Tokens
    // --------------------------------------------------------------------------------------
    lit_string = '"' string_character* '"';
    lit_character = ''' (single_character | escape_sequence) ''';
+   //escaped_identifier = ''' single_character string_character+ ''';
    lit_float =
      digit+ '.' digit* exponent_part? float_type_suffix?
    | '.' digit+ exponent_part? float_type_suffix?
@@ -337,6 +339,8 @@ Tokens
    uidentifier = uppercase_letter letter_or_digit*;
    // path_identifier = path_letter*;
 
+   //escaped_identifier = '{' ''' single_character string_character+ ''' '}';
+ 
    // --------------------------------------------------------------------------------------
    // White space and comments
    // --------------------------------------------------------------------------------------
@@ -486,12 +490,82 @@ Productions
    // General rules
    // --------------------------------------------------------------------------------------
 
-   identifier_prefix = lidentifier dot;
-   //   {lower_case} lidentifier dot
-   // | {upper_case} uidentifier dot;
+   escaped_identifier = l_brc lit_string r_brc;
+
+   identifier_prefix = 
+     {normal} lidentifier dot |
+    // {kw} authorized_kw_in_composite_ident dot |
+     {escaped} escaped_identifier dot;
+    //   {lower_case} lidentifier dot
+    // | {upper_case} uidentifier dot;
+  
+    authorized_kw_in_composite_ident =
+   //  {abstract} kw_abstract |
+     {concept} kw_concept |
+     {create} kw_create |
+   //  {delete} kw_delete |
+     {get} kw_get |
+     {model} kw_model |
+     {set} kw_set;
+  
+  // TODO : check if other keywords should be included
+  /* authorized_kw_in_composite_ident =
+     {abstract} kw_abstract |
+     {as} kw_as |
+     //{assert} kw_assert |
+     {begin} kw_begin |
+     {concept} kw_concept |
+     //{connect} kw_connect |
+     {create} kw_create |
+     {default} kw_default |
+     //{delete} kw_delete |
+     //{do} kw_do |
+     {else} kw_else |
+     {end} kw_end |
+     {enum} kw_enum |
+     {event} kw_event |
+     {extends} kw_extends |
+     //{fire} kw_fire |
+     {for} kw_for |
+     {from} kw_from |
+     {get} kw_get |
+     {if} kw_if |
+     {import} kw_import |
+     {in} kw_in |
+     {inside} kw_inside |
+     //{instanceof} kw_instanceof |
+     {listen} kw_listen |
+     //{log} kw_log |
+     {match} kw_match |
+     {model} kw_model |
+     {namespace} kw_namespace |
+     //{notify} kw_notify |
+     //{new} kw_new |
+     {onfailure} kw_onfailure |
+     {private} kw_private |
+     {protected} kw_protected |
+     {public} kw_public |
+     {required} kw_required |
+     {return} kw_return |
+     {select} kw_select |
+     {set} kw_set |
+     //{super} kw_super |
+     {then} kw_then |
+     {typedef} kw_typedef |
+     
+     {unique} kw_unique |
+     {use} kw_use |
+     {using} kw_using |
+     {values} kw_values |
+     {where} kw_where |
+     {while} kw_while |
+     {with} kw_with;*/
+     
    
    composite_ident = 
+     {kw}   [prefixes]:identifier_prefix* [identifier]:authorized_kw_in_composite_ident |
      {normal}   [prefixes]:identifier_prefix* [identifier]:lidentifier |
+     {escaped}  [prefixes]:identifier_prefix* [identifier]:escaped_identifier |
      {constant} [prefixes]:identifier_prefix* [identifier]:cidentifier;
  
    composite_tident_suffix = dollar uidentifier;
@@ -942,12 +1016,17 @@ Productions
      | {fire_action}                           kw_fire expression
      | {notify_action}                         kw_notify expression in_clause?
      | {begin_match_action}                    kw_begin kw_match [concept_name]:uidentifier from_clause where_clause?
-     | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? create_clause
-     | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause abstract_action_clause
+     | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? kw_unmatched colon new_instance
+     | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause kw_unmatched colon end_match_action_clause
      | {parenthesed}                           l_par fml_action_exp r_par
      ;
        
-       
+   end_match_action_clause =
+   	 // TODO : this has to be refactored (see EndMatchActionNode.java)
+     | {simple}  kw_delete l_par argument_list? r_par
+     | {complex}  method_invocation
+     ;
+     
    select_type =
      | {normal} reference_type
      | {fml}    technology_specific_type
@@ -958,35 +1037,7 @@ Productions
    with_clause = kw_with uidentifier fml_parameters;
     // | {simple}  		 kw_with [identifier]:uidentifier fml_parameters
     // | {fully_qualified} kw_with [ta_id]:cidentifier colon_colon [identifier]:uidentifier fml_parameters; 
-    
-   create_clause = kw_create colon_colon [constructor_name]:lidentifier l_par argument_list? r_par;
-
-   delete_clause = kw_delete colon_colon [destructor_name]:lidentifier l_par argument_list? r_par;
-
-   action_clause = kw_action colon_colon [action_name]:lidentifier l_par argument_list? r_par;
-    
-   // reduce/reduce conflict
-   /*create_clause = 
-     | {named_constructor}      kw_create colon_colon [constructor_name]:lidentifier l_par argument_list? r_par
-     | {anonymous_constructor}  kw_create l_par argument_list? r_par
-     ;
-
-   delete_clause = 
-     | {named_destructor}       kw_delete colon_colon [destructor_name]:lidentifier l_par argument_list? r_par
-     | {anonymous_destructor}   kw_delete l_par argument_list? r_par
-     ;
-     
-   action_clause = 
-     | {named_action}           kw_action colon_colon [action_name]:lidentifier l_par argument_list? r_par
-     | {anonymous_action}       kw_action l_par argument_list? r_par
-     ;
-    */
-    
-   abstract_action_clause =
-     | {normal}  				action_clause
-     | {delete}  				delete_clause
-     ;
-    
+        
    new_containment_clause = composite_ident dot;
 
    argument_list =
@@ -1012,9 +1063,15 @@ Productions
    qualified_argument =
        {simple}         [arg_name]:lidentifier assign expression
      | {type}           [arg_name]:lidentifier assign reference_type
+     | {enum}           [arg_name]:lidentifier assign enum_value_argument
      | {instance}       [arg_name]:lidentifier assign qualified_instance
      | {list_instances} [arg_name]:lidentifier assign l_brc qualified_argument_list_instances? r_brc
      ;
+
+	enum_value_argument =
+		{lower} dollar lidentifier
+	 |	{upper} dollar uidentifier
+	 ;
 
    fml_parameters =
        {full_qualified} l_par qualified_argument_list? r_par
@@ -1030,6 +1087,7 @@ Productions
        {super} kw_super dot lidentifier
      | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:lidentifier
      | {primary} primary_no_id dot lidentifier
+     | {kw} primary_no_id dot authorized_kw_in_composite_ident
      ;
 
    literal =

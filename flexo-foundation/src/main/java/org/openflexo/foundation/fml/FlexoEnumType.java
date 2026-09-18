@@ -44,8 +44,9 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.rt.FlexoEnumInstance;
 
 /**
- * Represent the type of an instance of a {@link FlexoEnum}
- * 
+ * Represent the type of an instance of a {@link FlexoEnum}: the type of a property declared with an enumeration type (e.g.
+ * {@code Genre genre;}), whose values are {@link FlexoEnumInstance}s
+ *
  * @author sylvain
  * 
  */

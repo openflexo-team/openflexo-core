@@ -39,14 +39,19 @@
 package org.openflexo.foundation.fml;
 
 /**
- * Visibility for FML elements ({@link VirtualModel}, {@link FlexoConcept}, {@link FlexoProperty}, {@link FlexoBehaviour})
- * 
+ * Visibility of FML elements ({@link VirtualModel}, {@link FlexoConcept}, {@link FlexoProperty}, {@link FlexoBehaviour}), declared with the
+ * {@code public}, {@code protected} and {@code private} keywords; an element declared without keyword has the {@link #Default}
+ * visibility.
+ * <p>
+ * The tooling relies on the {@link #Public} visibility: for instance, only public behaviours are proposed in the contextual menu of an
+ * instance, and only public properties are selected by default in a generated inspector.
+ *
  * @author sylvain
  *
  */
 public enum Visibility {
 	/**
-	 * Default visibility: limited to FML scope, not available from public API
+	 * Visibility of an element declared without visibility keyword
 	 */
 	Default {
 		@Override
@@ -55,8 +60,8 @@ public enum Visibility {
 		}
 	},
 	/**
-	 * Public visibility: behaviours are accessible from everywhere. In the whole tooling, it means that for example behaviours are
-	 * available through right-clicking on instances
+	 * Public visibility ({@code public}): the element is exposed by the tooling, e.g. behaviours are available through right-clicking on
+	 * instances
 	 */
 	Public {
 		@Override
@@ -65,7 +70,7 @@ public enum Visibility {
 		}
 	},
 	/**
-	 * Visibility restricted to current VirtualModel/FlexoConcept hierarchy
+	 * Protected visibility ({@code protected})
 	 */
 	Protected {
 		@Override
@@ -74,7 +79,7 @@ public enum Visibility {
 		}
 	},
 	/**
-	 * Visibility restricted to current FlexoConcept
+	 * Private visibility ({@code private})
 	 */
 	Private {
 		@Override

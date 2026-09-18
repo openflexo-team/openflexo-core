@@ -1,0 +1,24 @@
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestCardinalities.fml")
+public model TestCardinalities {
+
+	public concept Target {
+		String name;
+	}
+
+	public concept Holder {
+		String optional;
+		String[0,1] explicitlyOptional;
+		String[1,1] mandatory;
+		String[1,*] atLeastOne;
+		String[0,*] many;
+		String... ellipsis;
+		String[2,8] bounded;
+		Target optionalTarget with ConceptInstance(virtualModelInstance=container);
+		Target[1,1] mandatoryTarget with ConceptInstance(virtualModelInstance=container);
+		Target[0,*] targets with ConceptInstance(virtualModelInstance=container);
+	}
+}

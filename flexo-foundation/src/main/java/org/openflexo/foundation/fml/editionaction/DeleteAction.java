@@ -63,6 +63,30 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * The FML deletion statement {@code delete expression;}.
+ * <p>
+ * Execution evaluates the expression ({@link #getObject()}) and deletes the resulting object, which is returned; nothing happens when it
+ * is null.
+ * <ul>
+ * <li>For a {@link FlexoConceptInstance}, the deletion scheme of its concept is executed (its default deletion scheme, or one generated on
+ * the fly), then the instance is removed from its container and from its VirtualModelInstance. It is NOT removed from the roles of
+ * multiple cardinality holding it (known defect {@code CORE-D-10}): remove it first, as in the example below.</li>
+ * <li>{@code delete this} deletes the instance without executing any deletion scheme.</li>
+ * <li>When the object is a {@link ResourceData}, such as a VirtualModelInstance, its resource is deleted too.</li>
+ * </ul>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public removeBook(Book book) {
+ *     books.remove(parameters.book);
+ *     delete parameters.book;
+ * }
+ * </pre>
+ *
+ * @param <T>
+ *            type of the deleted object
+ */
 @ModelEntity
 @ImplementationClass(DeleteAction.DeleteActionImpl.class)
 @XMLElement

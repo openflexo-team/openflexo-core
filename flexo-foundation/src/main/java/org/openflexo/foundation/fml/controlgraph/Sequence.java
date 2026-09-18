@@ -69,8 +69,16 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * Encodes a sequence as a sequential definition of two control graphs
- * 
+ * Two control graphs executed one after the other.
+ * <p>
+ * A block of statements {@code { a; b; c; }} is represented as nested sequences, each one holding two control graphs:
+ * {@link #getFlattenedSequence()} returns the statements of such a structure as a flat list. A variable declared by the first control
+ * graph (a {@link org.openflexo.foundation.fml.editionaction.DeclarationAction}) is visible in the second one.
+ * <p>
+ * A well-formed sequence always holds both control graphs (validation rules {@link ControlGraph1IsRequired} and
+ * {@link ControlGraph2IsRequired}). Executing a sequence gives no value: a value only leaves a control graph through a
+ * {@link org.openflexo.foundation.fml.editionaction.ReturnStatement}.
+ *
  * @author sylvain
  * 
  */
@@ -138,6 +146,14 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		@Override
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 
+			if (getControlGraph2() == null) {
+				// A well-formed Sequence always has a controlGraph2 (see ControlGraph2IsRequired
+				// validation rule). A null here means the tree was corrupted by a caller, typically
+				// by reassigning the owner of an inner control graph after it was appended. Fail with
+				// an explicit message rather than an opaque NullPointerException.
+				throw new IllegalStateException(
+						"Cannot sequentially append to a corrupted Sequence: controlGraph2 is null (" + this + ")");
+			}
 			getControlGraph2().sequentiallyAppend(controlGraph);
 			getOwner().controlGraphChanged(this);
 		}
@@ -198,7 +214,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 					return getControlGraph1().getInferedBindingModel();
 				}
 				return getBindingModel();
-				// return getControlGraph1().getInferedBindingModel();
 			}
 			return null;
 		}
@@ -355,33 +370,11 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		}
 	}
 
-	@DefineValidationRule
-	public static class InferedTypesMustBeCompatible extends ValidationRule<InferedTypesMustBeCompatible, Sequence> {
-		public InferedTypesMustBeCompatible() {
-			super(Sequence.class, "infered_types_must_be_compatible_in_a_sequence");
-		}
-
-		@Override
-		public ValidationIssue<InferedTypesMustBeCompatible, Sequence> applyValidation(Sequence sequence) {
-
-			if (sequence.getControlGraph1() == null || sequence.getControlGraph2() == null) {
-				return null;
-			}
-
-			Type inferedType1 = sequence.getControlGraph1().getInferedType();
-			Type inferedType2 = sequence.getControlGraph2().getInferedType();
-
-			if (!(inferedType1.equals(Void.class)) && !(inferedType2.equals(Void.class))
-					&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
-					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)
-					&& !(inferedType1 instanceof FlexoConceptInstanceType && inferedType2 instanceof FlexoConceptInstanceType)) {
-				System.out.println("Types are not compatible in:");
-				System.out.println(sequence.getFMLPrettyPrint());
-				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)
-						+ " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
-			}
-			return null;
-		}
-	}
+	// NB: there is deliberately no "infered types must be compatible" rule here, unlike
+	// ConditionalAction. The two control graphs of a Sequence are consecutive statements, not
+	// alternative branches. Requiring their inferred types to be compatible (a copy of the
+	// conditional-branch rule) wrongly rejected valid FML such as two consecutive statements of
+	// unrelated types (e.g. two 'connect' statements binding an XMLModel then an ExcelWorkbook
+	// model slot).
 
 }

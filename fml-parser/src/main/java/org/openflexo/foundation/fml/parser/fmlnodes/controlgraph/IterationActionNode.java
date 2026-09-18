@@ -44,9 +44,11 @@ import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedFmlActionStatement;
 import org.openflexo.foundation.fml.parser.node.PStatement;
+import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -81,6 +83,10 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 		IterationAction returned = getFactory().newIterationAction();
 
 		returned.setIteratorName(getIteratorName(astNode));
+
+		if (getDeclaredType() != null) {
+			returned.setDeclaredType(TypeFactory.makeType(getDeclaredType(), getSemanticsAnalyzer().getTypingSpace()));
+		}
 
 		ControlGraphNode<?, ?> iterationActionCGNode = getIterationActionCGNode(astNode);
 		if (iterationActionCGNode.getModelObject() instanceof AssignableAction) {
@@ -250,6 +256,16 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 		}
 		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
 			return ((AForEnhancedFmlActionStatement) getASTNode()).getStatement();
+		}
+		return null;
+	}
+
+	protected PType getDeclaredType() {
+		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
+			return ((AForEnhancedExpressionStatement) getASTNode()).getType();
+		}
+		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
+			return ((AForEnhancedFmlActionStatement) getASTNode()).getType();
 		}
 		return null;
 	}

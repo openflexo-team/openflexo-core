@@ -68,11 +68,29 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Model slot allowing to access a {@link FMLRTVirtualModelInstance} (native implementation of a {@link VirtualModel} instance in Openflexo
- * infrastructure)
- * 
+ * The model slot giving access to a {@link FMLRTVirtualModelInstance}, the native implementation of a {@link VirtualModel} instance, stored
+ * in its own {@code .fml.rt} resource.
+ * <p>
+ * In FML it is declared by typing a property with a VirtualModel, once its model slot class is used:
+ *
+ * <pre>
+ * use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+ *
+ * public model Library {
+ *     Catalog catalog;                                        // an FMLRTModelSlot
+ *
+ *     public Catalog createCatalog() {
+ *         catalog = new Catalog() with (name="catalog");
+ *         return catalog;
+ *     }
+ * }
+ * </pre>
+ *
+ * It provides the roles, edition actions and fetch requests of FML@RT (concept instance roles, {@code select}, matching...), and connects an
+ * instance to the property through a {@link FMLRTModelSlotInstance}.
+ *
  * @author sylvain
- * 
+ *
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
 @DeclareEditionActions({ AddFlexoConceptInstance.class, CreateTopLevelVirtualModelInstance.class, AddVirtualModelInstance.class,
@@ -112,7 +130,7 @@ public interface FMLRTModelSlot
 
 		@Override
 		public FMLRTModelSlotInstance makeActorReference(FMLRTVirtualModelInstance object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FMLRTModelSlotInstance returned = factory.newInstance(FMLRTModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);

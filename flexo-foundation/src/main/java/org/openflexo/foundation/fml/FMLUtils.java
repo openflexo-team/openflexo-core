@@ -38,13 +38,24 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.expr.BinaryOperatorExpression;
+import org.openflexo.connie.expr.Expression;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
+import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 
 /**
  * Utility class provinding usefull methods in FML context
@@ -232,4 +243,125 @@ public class FMLUtils {
 
 	}
 
+	public static Expression getIndexableTerm(FetchRequestCondition condition) {
+		if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
+			BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
+			Expression leftTerm = binaryExpression.getLeftArgument();
+			boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
+			Expression rightTerm = binaryExpression.getRightArgument();
+			boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
+			if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
+				if (leftTermUsesSelectedBindingVariable) {
+					if (rightTermUsesSelectedBindingVariable) {
+						return null;
+					}
+					return leftTerm;
+				}
+				if (rightTermUsesSelectedBindingVariable) {
+					return rightTerm;
+				}
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public static Expression getOppositeTerm(FetchRequestCondition condition) {
+		if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
+			BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
+			Expression leftTerm = binaryExpression.getLeftArgument();
+			boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
+			Expression rightTerm = binaryExpression.getRightArgument();
+			boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
+			if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
+				if (leftTermUsesSelectedBindingVariable) {
+					if (rightTermUsesSelectedBindingVariable)
+						return null;
+					return rightTerm;
+				}
+				if (rightTermUsesSelectedBindingVariable)
+					return leftTerm;
+				return null;
+			}
+		}
+		return null;
+	}
+
+	public static boolean isIndexableCondition(FetchRequestCondition condition) {
+		return getIndexableTerm(condition) != null;
+	}
+
+	public static boolean expressionUsesSelectedBindingVariable(Expression exp) {
+		List<BindingVariable> allBVs = exp.getAllBindingVariables();
+		for (BindingVariable v : allBVs) {
+			if (v instanceof FetchRequestConditionSelectedBindingVariable) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * An utility method used to infer types from actual object Take that this method could be very costfull since collections may be
+	 * exhaustively explored
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public static Type inferType(Object object) {
+		if (object == null) {
+			return null;
+		}
+		if (object instanceof FlexoConceptInstance) {
+			return ((FlexoConceptInstance) object).getFlexoConcept().getInstanceType();
+		}
+		else if (object instanceof TechnologyObject) {
+			// A technology object may expose a dedicated FML type (eg a typed XML individual)
+			Type fmlType = ((TechnologyObject<?>) object).getFMLType();
+			if (fmlType != null) {
+				return fmlType;
+			}
+			return object.getClass();
+		}
+		else if (object instanceof Collection) {
+			// inferCommonType accepts any Collection: do not cast to List here, the actual value may be a Set (eg a HashSet)
+			return new ParameterizedTypeImpl(object.getClass(), inferCommonType((Collection<?>) object));
+		}
+		else {
+			return object.getClass();
+		}
+	}
+
+	public static Type inferCommonType(Collection<?> list) {
+		Type common = null;
+		for (Object element : list) {
+			if (element == null) {
+				continue;
+			}
+			Type elementType = inferType(element);
+			if (elementType instanceof Class) {
+				common = (common == null) ? elementType : commonSuperclass((Class<?>) common, (Class<?>) elementType);
+				if (common == Object.class) {
+					break; // no need to go further
+				}
+			}
+			else if (elementType instanceof FlexoConceptInstanceType) {
+				common = (common == null) ? elementType
+						: commonSupertype((FlexoConceptInstanceType) common, (FlexoConceptInstanceType) elementType);
+			}
+		}
+		return common;
+	}
+
+	private static Class<?> commonSuperclass(Class<?> a, Class<?> b) {
+		Class<?> ancestor = a;
+		while (!ancestor.isAssignableFrom(b)) {
+			ancestor = ancestor.getSuperclass();
+		}
+		return ancestor;
+	}
+
+	private static FlexoConceptInstanceType commonSupertype(FlexoConceptInstanceType a, FlexoConceptInstanceType b) {
+		return getMostSpecializedAncestor(a.getFlexoConcept(), b.getFlexoConcept()).getInstanceType();
+	}
 }

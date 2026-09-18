@@ -65,6 +65,28 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
+/**
+ * The FML loop over the items of a list: {@code for (Type item : expression)}, including {@code for (Type item : select ...)}.
+ * <p>
+ * The iteration ({@link #getIterationAction()}) is an {@link AssignableAction} producing a {@link List}: an expression, or an FML action
+ * such as a fetch request. It is evaluated once; the body is then executed for each item of a copy of that list, so that the body may
+ * modify the iterated list. A null list gives no iteration.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public Book findBook(String title) {
+ *     for (Book book : books) {
+ *         if (book.title == parameters.title) {
+ *             return book;
+ *         }
+ *     }
+ *     return null;
+ * }
+ * </pre>
+ *
+ * The iteration is the expression {@code books}; the return statement leaves both the loop and the behaviour.
+ */
 @ModelEntity
 @ImplementationClass(IterationAction.IterationActionImpl.class)
 @XMLElement
@@ -93,7 +115,7 @@ public interface IterationAction extends AbstractIterationAction {
 		private DataBinding<List<?>> iteration;
 
 		@Override
-		public Type getItemType() {
+		public Type getAnalyzedType() {
 			if (getIterationAction() != null) {
 				return getIterationAction().getIteratorType();
 			}
@@ -110,16 +132,9 @@ public interface IterationAction extends AbstractIterationAction {
 
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
-
-			// System.out.println("Execute iteration");
-			// System.out.println("InferedBM=" + getInferedBindingModel());
-			// IterationActionBindingVariable bv = ((IterationActionBindingModel) getInferedBindingModel()).getIteratorBindingVariable();
-			// System.out.println("bv=" + bv + " type=" + bv.getType());
 			List<?> items = evaluateIteration(evaluationContext);
-			// System.out.println("items=" + items);
 			if (items != null) {
 				for (Object item : new ArrayList<Object>(items)) {
-					// System.out.println("> working with " + getIteratorName() + "=" + item);
 					evaluationContext.declareVariable(getIteratorName(), item);
 					try {
 						getControlGraph().execute(evaluationContext);
@@ -187,7 +202,6 @@ public interface IterationAction extends AbstractIterationAction {
 			else if (controlGraph == getIterationAction()) {
 				return getBindingModel();
 			}
-			// logger.warning("Unexpected control graph: " + controlGraph);
 			return null;
 		}
 
@@ -230,15 +244,6 @@ public interface IterationAction extends AbstractIterationAction {
 				return new ValidationError<>(this, action, "iteration_action_does_not_define_a_valid_iteration");
 			}
 			if (!action.getIterationAction().isIterable()) {
-				/*System.out.println("iteration_action_is_not_iterable a cause de ");
-				System.out.println("action=" + action.getIterationAction());
-				System.out.println("FML=" + action.getIterationAction());
-				if (action.getIterationAction() instanceof ExpressionAction) {
-					ExpressionAction exp = (ExpressionAction) action.getIterationAction();
-					System.out.println("exp " + exp.getExpression());
-					System.out.println("valide? " + exp.getExpression().isValid());
-					System.out.println("reason " + exp.getExpression().invalidBindingReason());
-				}*/
 				return new ValidationError<>(this, action, "iteration_action_is_not_iterable");
 			}
 

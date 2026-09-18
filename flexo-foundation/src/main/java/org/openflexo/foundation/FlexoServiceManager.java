@@ -238,6 +238,10 @@ public abstract class FlexoServiceManager {
 		return getService(ScreenshotService.class);
 	}
 
+	public BugReportService getBugReportService() {
+		return getService(BugReportService.class);
+	}
+
 	public class ServiceRegistered implements ServiceNotification {
 	}
 

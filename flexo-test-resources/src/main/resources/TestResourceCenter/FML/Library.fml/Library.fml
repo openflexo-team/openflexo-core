@@ -1,0 +1,203 @@
+/**
+ * A library holding shelves of books.
+ *
+ * Example model of the FML meta-model javadoc in flexo-foundation (packages org.openflexo.foundation.fml,
+ * fml.controlgraph and fml.editionaction): the excerpts quoted there are taken from this file and from its
+ * contained Catalog.fml. See TestLibrary.fmlscript.
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.util.List;
+import ["http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/Library.fml")
+@Version("1.0")
+@Description("A library holding shelves of books")
+public model Library {
+
+	Catalog catalog;
+	String lastCreatedShelf;
+
+	public Catalog createCatalog() {
+		catalog = new Catalog() with (name="catalog");
+		return catalog;
+	}
+
+	public Shelf newShelf(String label) {
+		Shelf shelf = new Shelf(parameters.label, 20);
+		fire new ShelfCreated(parameters.label);
+		return shelf;
+	}
+
+	listen ShelfCreated from this {
+		lastCreatedShelf = evt.label;
+	}
+
+	event ShelfCreated {
+		String label;
+		create(String label) {
+			label = parameters.label;
+		}
+	}
+
+	public Shelf newSmallShelf(String label) {
+		return new Shelf::withDefaultCapacity(parameters.label);
+	}
+
+	public List<Shelf> allShelves() {
+		return select Shelf from this;
+	}
+
+	public int totalCapacity() {
+		List<Shelf> shelves = select Shelf from this;
+		int total = 0;
+		for (int i = 0; i < shelves.size; i++) {
+			total = total + shelves.get(i).capacity;
+		}
+		return total;
+	}
+
+	public int synchronizeIndex() {
+		MatchingSet<IndexEntry> entries = begin match IndexEntry from this;
+		for (Shelf shelf : select Shelf from this) {
+			for (Book b : shelf.books) {
+				match IndexEntry in entries from this where (book=b) unmatched: new IndexEntry(b);
+			}
+		}
+		end match IndexEntry in entries unmatched: delete();
+		List<IndexEntry> all = select IndexEntry from this;
+		return all.size;
+	}
+
+	public concept IndexEntry {
+
+		Book book;
+
+		create(Book book) {
+			book = parameters.book;
+		}
+
+		delete() {
+		}
+	}
+
+	public abstract concept Publication {
+
+		abstract String code;
+	}
+
+	public concept Shelf {
+
+		String label;
+		int capacity;
+		Book[0,*] books;
+		int bookCount values books.size;
+		private String notes;
+
+		String displayName {
+			String get() {
+				return "Shelf " + label;
+			}
+			set(String value) {
+				label = value;
+			}
+		};
+
+		create(required String label, int capacity=10) {
+			label = parameters.label;
+			capacity = parameters.capacity;
+		}
+
+		create::withDefaultCapacity(String label) {
+			label = parameters.label;
+			capacity = 10;
+		}
+
+		delete() {
+		}
+
+		@UI(
+			@TextField(value="title", label="book_title")
+		)
+		public Book newBook(required String title) {
+			Book book = new Book(parameters.title);
+			books.add(book);
+			return book;
+		}
+
+		public Novel newNovel(String title, String author) {
+			Novel novel = new Novel(parameters.title, parameters.author);
+			books.add(novel);
+			return novel;
+		}
+
+		public rename(String newName) {
+			displayName = parameters.newName;
+		}
+
+		public int countNovels() {
+			int count = 0;
+			for (Book book : books) {
+				if (book instanceof Novel) {
+					count = count + 1;
+				}
+			}
+			return count;
+		}
+
+		public Book findBook(String title) {
+			for (Book book : books) {
+				if (book.title == parameters.title) {
+					return book;
+				}
+			}
+			return null;
+		}
+
+		public Book findBookByTitle(String title) {
+			return select unique Book from (this) where (selected.title == parameters.title);
+		}
+
+		public int freeSlots() {
+			int free = 0;
+			int filled = bookCount;
+			while (filled < capacity) {
+				filled = filled + 1;
+				free = free + 1;
+			}
+			return free;
+		}
+
+		public removeBook(Book book) {
+			books.remove(parameters.book);
+			delete parameters.book;
+		}
+
+		public concept Book extends Publication {
+
+			String title;
+			String code values "B-" + title;
+
+			create(String title) {
+				title = parameters.title;
+			}
+
+			delete() {
+			}
+		}
+
+		public concept Novel extends Book {
+
+			String author;
+
+			create(String title, String author) {
+				super(parameters.title);
+				author = parameters.author;
+			}
+
+			delete() {
+			}
+		}
+	}
+}

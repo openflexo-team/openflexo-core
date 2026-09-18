@@ -66,13 +66,14 @@ import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link GetProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data using a typed control graph<br>
- * Access to data is read-only
- * 
- * 
- * 
+ * A read-only {@link FlexoProperty} whose value is computed by a control graph, declared in FML with a {@code get()} block (see
+ * {@link #getGetControlGraph()}).
+ * <p>
+ * A {@link GetProperty} is not notification-safe: the bindings reading it are not cached. Prefer an {@link ExpressionProperty} when the
+ * value is a single expression. With an additional {@code set(...)} block, the property is a {@link GetSetProperty}.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(GetProperty.GetPropertyImpl.class)

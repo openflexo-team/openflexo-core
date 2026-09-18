@@ -41,10 +41,9 @@ package org.openflexo.foundation.fml.rt.reflect;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -57,17 +56,16 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Implementation of an instance of a plain {@link VirtualModel} natively managed by the {@link FMLRTTechnologyAdapter}<br>
- * 
- * Such {@link VirtualModel} instance might be serialized using XML
- * 
+ * A {@link VirtualModelInstance} reflecting the data of a technology-specific resource: the objects of the resource are presented as
+ * instances of the concepts of a {@link VirtualModel}. It is accessed through a {@link ReflectedFMLRTModelSlot}.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(ReflectedVirtualModelInstance.ReflectedVirtualModelInstanceImpl.class)
 @XMLElement
-public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends VirtualModelInstance<VMI, TA> {
 
 	@PropertyIdentifier(type = TechnologyAdapterResource.class)
@@ -87,7 +85,7 @@ public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<
 	@Setter(REFLECTED_MODEL_FACTORY)
 	public void setReflectedModelFactory(ReflectedVirtualModelInstanceModelFactory<R, RD, TA, ?> factory);
 
-	public static abstract class ReflectedVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+	public static abstract class ReflectedVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends VirtualModelInstanceImpl<VMI, TA> implements ReflectedVirtualModelInstance<VMI, R, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(ReflectedVirtualModelInstance.class.getPackage().getName());
@@ -107,6 +105,12 @@ public interface ReflectedVirtualModelInstance<VMI extends VirtualModelInstance<
 			}
 			return null;
 		}
+
+		@Override
+		public AbstractVirtualModelInstanceModelFactory getFactory() {
+			return getReflectedModelFactory();
+		}
+
 	}
 
 }

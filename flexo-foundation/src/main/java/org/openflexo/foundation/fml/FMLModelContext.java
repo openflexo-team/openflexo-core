@@ -298,12 +298,17 @@ public class FMLModelContext {
 				case Value:
 					return modelFactory.newSimplePropertyValue(this, object, value);
 				case Type:
-					FMLTypePropertyValue returned = modelFactory.newTypePropertyValue();
-					returned.setProperty(this);
-					returned.setObject(object);
-					returned.setType((Type) value);
-					return returned;
-				// return object.getFMLModelFactory().newTypePropertyValue(this, object, value);
+					FMLTypePropertyValue returnedType = modelFactory.newTypePropertyValue();
+					returnedType.setProperty(this);
+					returnedType.setObject(object);
+					returnedType.setType((Type) value);
+					return returnedType;
+				case Enum:
+					FMLEnumPropertyValue returnedEnum = modelFactory.newEnumPropertyValue();
+					returnedEnum.setProperty(this);
+					returnedEnum.setObject(object);
+					returnedEnum.setEnumValue((Enum) value);
+					return returnedEnum;
 				case Instance:
 					if (value instanceof FMLObject) {
 						FMLInstancePropertyValue returnedInstance = modelFactory.newInstancePropertyValue((FMLProperty) this, object);

@@ -71,12 +71,42 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
- * A model slot is a named object providing access to a particular data encoded in a given technology<br>
- * 
- * A model slot formalizes a contract for accessing to a data, it is connected at run-time to a given resource and exposes a resource data
- * 
- * It is defined at FML level. <br>
- * 
+ * A {@link ModelSlot} is a {@link FlexoRole} giving access to a data of a given technological space (a model, a document, an instance of
+ * another VirtualModel...), exposed as a {@link ResourceData}. At run-time, it is connected to a resource (see
+ * {@link #connectTo(FlexoResource, FlexoConceptInstance)}), and its value in a {@link FlexoConceptInstance} is a
+ * {@link ModelSlotInstance}.
+ * <p>
+ * A model slot is declared in FML with {@code X x with TA::SomeModelSlot(...)}. A property typed with a VirtualModel declares a
+ * {@link org.openflexo.foundation.fml.rt.FMLRTModelSlot}, giving access to an instance of that VirtualModel.
+ * <p>
+ * The main kinds of model slots are:
+ * <ul>
+ * <li>{@link TypeAwareModelSlot}: access to a model conforming to a metamodel</li>
+ * <li>{@link FreeModelSlot}: access to any data source</li>
+ * <li>{@link AbstractFMLRTModelSlot}: access to a {@link org.openflexo.foundation.fml.rt.VirtualModelInstance}, either native
+ * ({@link org.openflexo.foundation.fml.rt.FMLRTModelSlot}) or reflected from a technology-specific resource
+ * ({@link org.openflexo.foundation.fml.rt.reflect.ReflectedFMLRTModelSlot})</li>
+ * </ul>
+ * A model slot also provides the technology-specific roles, edition actions, fetch requests and behaviours available through it (see the
+ * {@code getAvailableXxxTypes()} methods).
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center), where {@code Catalog} is a
+ * VirtualModel contained in {@code Library}:
+ *
+ * <pre>
+ * import ["http://openflexo.org/test/TestResourceCenter/Library.fml/Catalog.fml"];
+ *
+ * public model Library {
+ *     Catalog catalog;    // FMLRTModelSlot
+ *
+ *     public Catalog createCatalog() {
+ *         catalog = new Catalog() with (name="catalog");
+ *         return catalog;
+ *     }
+ *     ...
+ * }
+ * </pre>
+ *
  * @param <RD>
  *            Type of resource data exposed by this {@link ModelSlot}
  * @param <R>

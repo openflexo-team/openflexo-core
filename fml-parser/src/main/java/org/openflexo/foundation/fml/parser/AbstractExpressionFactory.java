@@ -15,12 +15,14 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.node.AConditionalExpression;
 import org.openflexo.foundation.fml.parser.node.AExpressionPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ALiteralPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.APostDecrementPostfixExp;
 import org.openflexo.foundation.fml.parser.node.APostIncrementPostfixExp;
 import org.openflexo.foundation.fml.parser.node.APostfixUnaryExpNotPlusMinus;
@@ -184,6 +186,21 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
+	public void throwWarning(Object modelObject, String warningMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		if (getParentAnalyzer() != null) {
+			getParentAnalyzer().throwWarning(modelObject, warningMessage, fragment, startPosition);
+		}
+	}
+
+	@Override
+	public List<SemanticAnalysisWarning> getSemanticAnalysisWarnings() {
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getSemanticAnalysisWarnings();
+		}
+		return super.getSemanticAnalysisWarnings();
+	}
+
+	@Override
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
 		if (getParentAnalyzer() != null) {
 			return getParentAnalyzer().getSemanticAnalysisIssues();
@@ -289,8 +306,11 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 					return getExpression(((APrimaryUriExpression) n).getUriExpressionPrimary());
 				}
 				/*if (n instanceof ALitteralUriExpressionPrimary) {
-					return getExpression(((ALitteralUriExpressionPrimary) n).getLitString());
+				return getExpression(((ALitteralUriExpressionPrimary) n).getLitString());
 				}*/
+				if (n instanceof ANewInstancePrimaryNoId) {
+					return getExpression(((ANewInstancePrimaryNoId) n).getNewInstance());
+				}
 
 				// This may be NOT an issue
 				// logger.warning("In expressionFactory: " + this + " : no expression registered for " + n + " of " + n.getClass());

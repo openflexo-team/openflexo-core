@@ -154,6 +154,9 @@ public abstract class FMLSimplePathElementImpl<P extends Property> extends Abstr
 
 	@Override
 	public String getSerializationRepresentation() {
+		if (getEscapedSerialization()) {
+			return "{" + '"' + getPropertyName() + '"' + "}";
+		}
 		return getPropertyName();
 	}
 

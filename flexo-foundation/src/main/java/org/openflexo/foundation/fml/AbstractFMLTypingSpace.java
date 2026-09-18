@@ -56,10 +56,11 @@ import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.foundation.resource.ResourceData;
 
 /**
- * FML typing space, build on top of {@link JavaTypingSpace}
- * 
- * Support import of VirtualModels
- * 
+ * Base FML typing space, built on top of {@link JavaTypingSpace}.
+ * <p>
+ * Before the Java resolution, it resolves the FML keywords {@code ConceptInstance} and {@code MatchingSet}, and the aliases declared with
+ * {@code typedef} in the compilation unit (see {@link TypeDeclaration}), which are resolved as proxy types.
+ *
  * @author sylvain
  *
  */
@@ -145,9 +146,11 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 	}
 
 	/**
-	 * Attempt to resolve unresolved parameterized types
-	 * 
-	 * @param baseType
+	 * Attempt to resolve a parameterized type whose base type name is not a Java class: {@code Resource<X>} (X being a resource data
+	 * class) is resolved as the corresponding resource type, and {@code Concept<X>} as a {@link FlexoConceptType}; any other parameterized
+	 * type is kept as a parameterized type on the unresolved base type
+	 *
+	 * @param unresolvedBaseType
 	 * @param typeArguments
 	 * @return
 	 */

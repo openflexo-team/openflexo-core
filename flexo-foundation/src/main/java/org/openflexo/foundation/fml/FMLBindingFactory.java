@@ -437,6 +437,27 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			}
 
 			if (parent.getType() instanceof FlexoConceptInstanceType) {
+				// This commits to an FML behaviour element on the strength of the parent's TYPE alone, without checking
+				// that a behaviour of that name exists. Consequence: no Java method of a FlexoConceptInstance (nor of a
+				// VirtualModelInstance) is reachable from FML - k.toString(), k.hashCode(), k.getStringRepresentation()
+				// are all invalid bindings. retrieveFunction() below DOES fall back to Java and returns a perfectly
+				// good JavaInstanceMethodDefinition, but FlexoBehaviourPathElement.resolve() then discards it
+				// ("Inconsistant data : function is not a behaviour"), and a path element cannot change nature
+				// afterwards. String concatenation is unaffected ("" + k works), since it goes through evaluation
+				// rather than binding resolution - which is why this rarely bites in practice.
+				//
+				// Do NOT "fix" it by querying concept.getFlexoBehaviour(methodName, args) here. Measured: that breaks
+				// 8 core inheritance tests (TestSingleInheritance, TestMultipleInheritance). Reduced to the bare call
+				// plus a println, returning the very same element as today, the failures persist - 16/16 with this
+				// code, 12/16 with the call added, same test selection. Querying the model from inside the factory at
+				// CONSTRUCTION time is itself what perturbs behaviour resolution; re-entrancy is the likely cause but
+				// was not proven.
+				//
+				// The viable route is to decide at RESOLUTION time instead: have FlexoBehaviourPathElement.resolve()
+				// record that the retrieved function is not a behaviour and stay unresolved, and let BindingPath build
+				// a Java element for that case - retrieveFunction is already safe to call there, it is what runs there
+				// today. Note that toString() would remain out of reach even then: FlexoConceptInstance is a PAMELA
+				// interface, and Class.getMethods() on an interface does not expose java.lang.Object's methods.
 				return new FlexoBehaviourPathElement(parent, methodName, args, bindable);
 			}
 		}

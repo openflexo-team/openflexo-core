@@ -53,7 +53,7 @@ public class FlexoEnumValueConverter extends Converter<FlexoEnumInstance> {
 	@Override
 	public FlexoEnumInstance convertFromString(String value, PamelaModelFactory factory) throws InvalidDataException {
 		if (factory instanceof AbstractVirtualModelInstanceModelFactory) {
-			FlexoServiceManager sm = ((AbstractVirtualModelInstanceModelFactory) factory).getResource().getServiceManager();
+			FlexoServiceManager sm = ((AbstractVirtualModelInstanceModelFactory) factory).getServiceManager();
 			String enumURI = value.substring(0, value.lastIndexOf("#"));
 			String enumValueURI = value.substring(value.lastIndexOf("#") + 1);
 			FlexoEnum flexoEnum = (FlexoEnum) sm.getVirtualModelLibrary().getFlexoConcept(enumURI, false);

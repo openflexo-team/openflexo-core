@@ -87,10 +87,42 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * An FlexoBehaviour represents a behavioural feature attached to an FlexoConcept
- * 
+ * A {@link FlexoBehaviour} is a behavioural feature of a {@link FlexoConcept}; its body is a control graph (see {@link #getControlGraph()}).
+ * <p>
+ * The kind of behaviour depends on its FML declaration:
+ * <ul>
+ * <li>{@code create(...)} or {@code create::name(...)} declares a {@link CreationScheme}</li>
+ * <li>{@code delete(...)} or {@code delete::name(...)} declares a {@link DeletionScheme}</li>
+ * <li>{@code listen Event from expression} declares an {@link EventListener}</li>
+ * <li>{@code name(...) with TA::Behaviour(...)} declares a technology-specific behaviour</li>
+ * <li>any other method {@code [Type] name(...)} declares an {@link ActionScheme}</li>
+ * </ul>
+ * Its parameters are {@link FlexoBehaviourParameter}s, read in the body as {@code parameters.name}. Its return type is the declared one when
+ * present ({@link #getDeclaredType()}), the type inferred from the return statements of its body otherwise ({@link #getAnalyzedReturnType()}).
+ * <p>
+ * Behaviours are inherited and may be overridden: {@link #getMostSpecializedBehaviour(FlexoConcept)} returns the behaviour to be executed
+ * in the context of a given concept (dynamic binding).
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public concept Shelf {
+ *     ...
+ *     create(required String label, int capacity=10) {
+ *         label = parameters.label;
+ *         capacity = parameters.capacity;
+ *     }
+ *
+ *     public Book newBook(required String title) {
+ *         Book book = new Book(parameters.title);
+ *         books.add(book);
+ *         return book;
+ *     }
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoBehaviour.FlexoBehaviourImpl.class)
@@ -102,8 +134,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
-	// @PropertyIdentifier(type = String.class)
-	// public static final String LABEL_KEY = "label";
 	@PropertyIdentifier(type = Visibility.class)
 	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = boolean.class)
@@ -182,13 +212,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@Setter(NAME_KEY)
 	public void setName(String name) throws InvalidNameException;
 
-	/*@Getter(value = LABEL_KEY)
-	@XMLAttribute
-	public String getLabel();
-	
-	@Setter(LABEL_KEY)
-	public void setLabel(String label);*/
-
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
 	@XMLAttribute
 	public Visibility getVisibility();
@@ -249,15 +272,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@Deprecated
 	public void setHeight(int height);
 
-	/*@Override
-	@Getter(value = DESCRIPTION_KEY)
-	@XMLElement
-	public String getDescription();
-	
-	@Override
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);*/
-
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
 	@Embedded
 	@XMLElement
@@ -288,6 +302,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	public FlexoBehaviourParametersValuesType getFlexoBehaviourParametersValuesType();
 
+	/**
+	 * Return the signature of this behaviour, built from its name and the <b>names</b> (not the types) of its parameters (e.g.
+	 * {@code create(label,capacity)})
+	 *
+	 * @return
+	 */
 	public String getSignature();
 
 	public Type[] getParameterTypes();
@@ -310,9 +330,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	/**
 	 * Return flag indicating if this behaviour overrides supplied behaviour<br>
-	 * Return true if and only if name and signature equals, and if both declared concepts are not the same and if there are directely
-	 * connected without any intermediate implementation
-	 * 
+	 * Return true if and only if supplied behaviour is declared in an ancestor concept of the concept of this behaviour, with the same name
+	 * and the same parameter types
+	 *
 	 * @param behaviour
 	 * @return
 	 */
@@ -327,10 +347,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public boolean isOverridenInContext(FlexoConcept context);
 
 	/**
-	 * Return the most specialized behaviour to execute matching supplied behaviour name and signature<br>
-	 * (dynamic binding: can be only supplied behaviour or an other behaviour overriding supplied behaviour)
-	 * 
-	 * @param behaviour
+	 * Return the most specialized behaviour to execute in supplied context, matching the name and parameter types of this behaviour<br>
+	 * (dynamic binding: can be this behaviour or an other behaviour overriding it)
+	 *
 	 * @param context
 	 * @return
 	 */
@@ -345,8 +364,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public boolean supportParameters();
 
 	/**
-	 * Return boolean indicating if this property overrides at least one property
-	 * 
+	 * Return boolean indicating if this behaviour overrides at least one behaviour of a parent concept
+	 *
 	 * @return
 	 */
 	public boolean overrides();
@@ -356,11 +375,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourParameter parameter, boolean ensureExistence);
 
 	/**
-	 * Return the URI of the {@link NamedFMLObject}<br>
-	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
-	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
-	 * 
+	 * Return the URI of this behaviour: the URI of its concept, followed by {@code .} and its signature (see {@link #getSignature()})
+	 *
 	 * @return String representing unique URI of this object
 	 */
 	public String getURI();
@@ -476,14 +492,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			return "";
 		}
 
-		/**
-		 * Return the URI of the {@link NamedFMLObject}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
-		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme
-		 * 
-		 * @return String representing unique URI of this object
-		 */
 		@Override
 		public String getURI() {
 			if (getFlexoConcept() != null) {
@@ -514,7 +522,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				List<FMLMetaData> allMetaData = md.getMultipleMetaData(FlexoBehaviourParameterImpl.AVAILABLE_ANNOTATIONS);
 				for (FMLMetaData metaData : allMetaData) {
 					if (metaData instanceof MultiValuedMetaData) {
-						if (parameter.getName().equals(((MultiValuedMetaData) metaData).getValue("value", String.class))) {
+						if (parameter.getName() != null
+								&& parameter.getName().equals(((MultiValuedMetaData) metaData).getValue("value", String.class))) {
 							return (MultiValuedMetaData) metaData;
 						}
 					}
@@ -825,14 +834,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		}
 
-		/**
-		 * Return the most specialized behaviour to execute matching supplied behaviour name and signature<br>
-		 * (dynamic binding: can be only supplied behaviour or an other behaviour overriding supplied behaviour)
-		 * 
-		 * @param behaviour
-		 * @param context
-		 * @return
-		 */
 		@Override
 		public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context) {
 			if (context == null) {
@@ -867,14 +868,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		/**
-		 * Hook called when scope of a FMLObject changed.<br>
-		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
-		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
-		 * 
-		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
-		 * 
+		 * Propagates the notification to all the nodes of the control graph of this behaviour
 		 */
 		@Override
 		public void notifiedScopeChanged() {

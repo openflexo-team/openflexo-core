@@ -1,0 +1,117 @@
+/**
+ * Fixture for the container-based user interface lookup: the .fib / .inspector components of a
+ * VirtualModel and of its concepts are stored in the TestContainerUI.fml/ container itself, and
+ * resolved by naming convention (see FlexoConcept.getUIComponentResource()).
+ *
+ * The container ships, alongside this file:
+ *   TestContainerUI.fib / TestContainerUI.inspector  - the components of the VirtualModel itself
+ *   Simple.fib / Simple.inspector                    - the components of concept Simple
+ *   CustomScreen.fib                                 - named by the @UI annotation of Annotated
+ *   UI/NestedScreen.fib                              - named by a NESTED @UI annotation
+ *   Screen.fib / Compact.fib / OtherCompact.fib      - named by multi-valued @UI annotations
+ *   Plain.inspector                                  - a PLAIN inspector, with no TabPanel
+ *
+ * Those components are stored in TWO shapes on purpose, and TestContainerUIComponentSerialization
+ * asserts both:
+ *   - the two components OF THIS VIRTUAL MODEL are in the CANONICAL shape, i.e. the exact bytes
+ *     FIBComponentResource.save() writes. They are generated, never hand-edited: an attribute the
+ *     serializer adds or an entity it cannot name shows up as a failing test rather than as a
+ *     surprise in a diff, months later, the day someone saves from the FIB editor;
+ *   - everything else is in the LEGACY shape - <Panel className="…FIBInspector" dataClassName="…">
+ *     - which is how the 400-odd .inspector files of the infrastructure are written, and what
+ *     migrating a modeller to the container mechanism keeps feeding us. Nothing else covers the
+ *     reading of that shape.
+ *
+ * A component named by SEVERAL concepts (Screen.fib is the default variant of WithVariants AND the
+ * 'large' one of WithoutDefaultVariant) is deliberately among the legacy ones: the canonical shape
+ * of a component carries the type of its 'data' variable, and there would be no honest value to
+ * write there.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestContainerUI.fml")
+public model TestContainerUI {
+
+	/**
+	 * Components resolved by the naming convention: Simple.fib and Simple.inspector.
+	 *
+	 * Carries one public and one non-public property, so that what a generated inspector proposes by
+	 * default - only the public ones - is exercised both ways.
+	 */
+	public concept Simple {
+		public String description;
+		String name;
+		create(String name) {
+			name = parameters.name;
+		}
+		delete() {
+		}
+	}
+
+	/** Declares no component of its own: inherits those of Simple. */
+	public concept InheritingFromSimple extends Simple {
+	}
+
+	/** An explicit annotation overrides the convention, and is NOT inherited from Simple. */
+	@UI("CustomScreen.fib")
+	public concept Annotated extends Simple {
+	}
+
+	/** An annotation may name a nested artefact. */
+	@UI("UI/NestedScreen.fib")
+	public concept Nested {
+	}
+
+	/** The annotation names a component that does NOT exist: resolution yields null. */
+	@UI("ThisComponentDoesNotExist.fib")
+	public concept BrokenDeclaration {
+	}
+
+	/**
+	 * Named variants: the multi-valued form of the annotation. Its 'default' key names what an
+	 * unqualified lookup returns, and the reader may switch to any other name at runtime.
+	 */
+	@UI(default="Screen.fib",compact="Compact.fib")
+	public concept WithVariants {
+	}
+
+	/** Declares only ONE named variant, and inherits the others: variants are inherited one by one. */
+	@UI(compact="OtherCompact.fib")
+	public concept InheritingVariants extends WithVariants {
+	}
+
+	/**
+	 * Declares named variants but no 'default' key, and its name matches no file: the default falls
+	 * back on the first variant declared, so the concept still has something to show.
+	 */
+	@UI(large="Screen.fib")
+	public concept WithoutDefaultVariant {
+	}
+
+	/** Neither convention nor annotation nor parent: no component at all. */
+	public concept WithoutAnyComponent {
+	}
+
+	/**
+	 * The string representation of an instance comes from an FML annotation rather than from the
+	 * deprecated FlexoConceptInspector, which has no textual FML form.
+	 */
+	@Renderer(name)
+	public concept Presented {
+		String name;
+		create(String name) {
+			name = parameters.name;
+		}
+		delete() {
+		}
+	}
+
+	/**
+	 * Ships a PLAIN inspector: a two-column panel with no TabPanel, which is what the CreateInspector
+	 * action generates by default. Merged into the inspector of the FlexoConceptInstance class, such
+	 * a panel has to become a tab of its own - appended as it is, its first label lands in front of
+	 * the TabPanel of the class inspector, and FIBInspector.getTabPanel() fails on it.
+	 */
+	public concept Plain {
+		public String description;
+	}
+}

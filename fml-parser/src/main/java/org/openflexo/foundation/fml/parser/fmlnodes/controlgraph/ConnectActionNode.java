@@ -84,9 +84,9 @@ public class ConnectActionNode extends ControlGraphNode<AConnectActionFmlActionE
 		// returned.setLogString(logString);
 		// returned.setLogLevel(LogLevel.INFO);
 
-		System.out.println("Hop");
-		System.out.println("connectObject=" + connectObject + " of " + connectObject.getAnalyzedType());
-		System.out.println("usingObject=" + usingObject + " of " + usingObject.getAnalyzedType());
+		// System.out.println("Hop");
+		// System.out.println("connectObject=" + connectObject + " of " + connectObject.getAnalyzedType());
+		// System.out.println("usingObject=" + usingObject + " of " + usingObject.getAnalyzedType());
 
 		returned.setConnect(connectObject);
 		returned.setUsing(usingObject);

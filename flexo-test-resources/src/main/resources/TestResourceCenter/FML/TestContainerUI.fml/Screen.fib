@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the named-variant lookup. -->
+<Panel layout="twocols" name="Screen"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.gina.controller.FIBController">
+	<Label label="Screen" name="ScreenLabel" />
+</Panel>

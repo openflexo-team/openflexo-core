@@ -59,6 +59,14 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * A criterion of a {@code match} statement ({@link MatchFlexoConceptInstance}): one {@code property=value} of its {@code where} clause, as
+ * {@code book=b} in {@code match IndexEntry in entries from this where (book=b) unmatched: new IndexEntry(b);}.
+ * <p>
+ * The value ({@link #getValue()}) is evaluated in the context of the executing behaviour, and a matching instance must hold that value for
+ * the property ({@link #getFlexoProperty()}). A value which is not set, not valid, or evaluated to null is ignored: the criterion does not
+ * restrict the match.
+ */
 @ModelEntity
 @ImplementationClass(MatchingCriteria.MatchingCriteriaImpl.class)
 @XMLElement
@@ -72,12 +80,17 @@ public interface MatchingCriteria extends FlexoConceptObject {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
-	@Getter(value = ACTION_KEY /*, inverse = MatchFlexoConceptInstance.MATCHING_CRITERIAS_KEY*/)
+	@Getter(value = ACTION_KEY)
 	public MatchFlexoConceptInstance getAction();
 
 	@Setter(ACTION_KEY)
 	public void setAction(MatchFlexoConceptInstance action);
 
+	/**
+	 * Return the name of the property of this criterion, under its serialization name inherited from the former "pattern role" vocabulary
+	 *
+	 * @return the name of the property
+	 */
 	@Getter(value = PATTERN_ROLE_NAME_KEY)
 	@XMLAttribute
 	// TODO: name kept for compatibility, implements oldXMLTag / newXMLTag
@@ -97,6 +110,13 @@ public interface MatchingCriteria extends FlexoConceptObject {
 
 	public void setFlexoProperty(FlexoProperty<?> property);
 
+	/**
+	 * Evaluate the value of this criterion in supplied context
+	 *
+	 * @param evaluationContext
+	 *            context of the executing behaviour
+	 * @return the value, null when it is not set or not valid
+	 */
 	public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext);
 
 	@Override
@@ -105,8 +125,6 @@ public interface MatchingCriteria extends FlexoConceptObject {
 	public static abstract class MatchingCriteriaImpl extends FlexoConceptObjectImpl implements MatchingCriteria {
 
 		private static final Logger logger = Logger.getLogger(MatchingCriteria.class.getPackage().getName());
-
-		// private MatchFlexoConceptInstance action;
 
 		private FlexoProperty<?> flexoProperty;
 		private String propertyName;
@@ -118,11 +136,6 @@ public interface MatchingCriteria extends FlexoConceptObject {
 		public MatchingCriteriaImpl() {
 			super();
 		}
-
-		/*public MatchingCriteriaImpl(FlexoProperty<?> flexoProperty) {
-			super();
-			this.flexoProperty = flexoProperty;
-		}*/
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
@@ -156,17 +169,6 @@ public interface MatchingCriteria extends FlexoConceptObject {
 		@Override
 		public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext) {
 			if (getValue() == null || getValue().isUnset()) {
-				/*logger.info("Binding for " + param.getName() + " is not set");
-				if (param instanceof URIParameter) {
-					logger.info("C'est une URI, de base " + ((URIParameter) param).getBaseURI());
-					logger.info("Je retourne " + ((URIParameter) param).getBaseURI().getBinding().getBindingValue(action));
-					return ((URIParameter) param).getBaseURI().getBinding().getBindingValue(action);
-				} else if (param.getDefaultValue() != null && param.getDefaultValue().isSet() && param.getDefaultValue().isValid()) {
-					return param.getDefaultValue().getBinding().getBindingValue(action);
-				}
-				if (param.getIsRequired()) {
-					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
-				}*/
 				return null;
 			}
 			else if (getValue().isValid()) {

@@ -97,7 +97,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		@Override
 		public TypeAwareModelSlotInstance<M, MM, ?, ?, ?> makeActorReference(M object, FlexoConceptInstance fci) {
 
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			FlexoOntologyModelSlotInstance returned = factory.newInstance(FlexoOntologyModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);

@@ -39,7 +39,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -47,24 +46,28 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 
 /**
- * This interface is implemented by all classes defining a run-time context for FML execution<br>
- * The main purpose of this context is to provide read access to some {@link BindingVariable}
- * 
+ * A run-time context in which FML is executed: it gives access to the variables of the execution (such as {@code this}, the behaviour
+ * {@code parameters}, or the local variables declared with {@link #declareVariable(String, Object)}), to the {@link FlexoConceptInstance}
+ * and the {@link VirtualModelInstance} on which it works, to the editor and its {@link FMLRunTimeEngine}, and to the FML console.
+ * <p>
+ * Main implementations are the execution of a behaviour ({@link FlexoBehaviourAction}), a {@link FlexoConceptInstance} itself, and the
+ * fetch requests (which declare the {@code selected} variable).
+ *
  * @author sylvain
- * 
+ *
  */
 public interface RunTimeEvaluationContext extends SettableBindingEvaluationContext {
 
 	/**
-	 * Return execution engine attached to this editor, when any
-	 * 
+	 * Return execution engine attached to the editor of this context, when any
+	 *
 	 * @return
 	 */
 	public FMLRunTimeEngine getFMLRunTimeEngine();
 
 	/**
-	 * Return execution engine attached to this editor, when any
-	 * 
+	 * Return the editor in which FML is executed, when any
+	 *
 	 * @return
 	 */
 	public FlexoEditor getEditor();
@@ -84,10 +87,9 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	public VirtualModelInstance<?, ?> getVirtualModelInstance();
 
 	/**
-	 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoBehaviourAction} instance in
-	 * the context of its implementation of {@link RunTimeEvaluationContext}.<br>
+	 * Calling this method will register a new variable in this run-time context.<br>
 	 * Variable is initialized with supplied name and value
-	 * 
+	 *
 	 * @param variableName
 	 * @param value
 	 */

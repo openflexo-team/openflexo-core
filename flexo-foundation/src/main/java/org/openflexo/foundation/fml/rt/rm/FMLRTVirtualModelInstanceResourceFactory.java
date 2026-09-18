@@ -17,7 +17,6 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package org.openflexo.foundation.fml.rt.rm;
 
 import java.io.IOException;
@@ -35,6 +34,7 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.TechnologySpecificPamelaResourceFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
@@ -42,15 +42,21 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 
 /**
- * The resource factory for {@link FMLRTVirtualModelInstanceResource}
- * 
+ * The factory creating and retrieving the {@link FMLRTVirtualModelInstanceResource}s: the resources of the instances of virtual models.
+ * <p>
+ * A valid artefact is a directory whose name ends with {@link #FML_RT_SUFFIX}. Such a resource may be created at top level or inside
+ * another instance resource; an instance stored in the {@code .fml} directory of a VirtualModel is registered as a resource contained in
+ * that compilation unit ({@link CompilationUnitResource#getContainedVMI()}).
+ *
  * @author sylvain
  *
  */
 public class FMLRTVirtualModelInstanceResourceFactory extends
-		AbstractVirtualModelInstanceResourceFactory<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter, FMLRTVirtualModelInstanceResource> {
+		TechnologySpecificPamelaResourceFactory<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, FMLRTTechnologyAdapter, FMLRTVirtualModelInstanceModelFactory> {
 
 	private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceResourceFactory.class.getPackage().getName());
+
+	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 
 	public static final FlexoVersion CURRENT_FML_RT_VERSION = new FlexoVersion("1.0");
 	public static final String FML_RT_SUFFIX = ".fml.rt";
@@ -120,7 +126,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws ModelDefinitionException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource makeContainedFMLRTVirtualModelInstanceResource(String baseName,
-			CompilationUnitResource virtualModelResource, AbstractVirtualModelInstanceResource<?, ?> containerResource,
+			CompilationUnitResource virtualModelResource, FMLRTVirtualModelInstanceResource containerResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
 			throws SaveResourceException, ModelDefinitionException {
 
@@ -185,7 +191,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws IOException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource retrieveContainedFMLRTVirtualModelInstanceResource(I serializationArtefact,
-			AbstractVirtualModelInstanceResource<?, ?> containerResource) throws ModelDefinitionException, IOException {
+			FMLRTVirtualModelInstanceResource containerResource) throws ModelDefinitionException, IOException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);
@@ -362,7 +368,6 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		public String virtualModelURI;
 		@SuppressWarnings("unused")
 		public String virtualModelVersion;
-		// Unused public String name;
 		public String uri;
 		public String version;
 		public String modelVersion;
@@ -379,7 +384,6 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		}
 
 		if (xmlRootElementInfo.getName().equals("FMLRTVirtualModelInstance")) {
-			// Unused returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.virtualModelURI = xmlRootElementInfo.getAttribute("virtualModelURI");
 			returned.virtualModelVersion = xmlRootElementInfo.getAttribute("virtualModelVersion");

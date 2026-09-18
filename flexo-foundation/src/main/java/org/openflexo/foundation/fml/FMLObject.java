@@ -85,19 +85,21 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * This is the root class for all objects involved in an {@link VirtualModel} (a FML "program").<br>
- * A {@link FMLObject} has a name, a description and can be identified by an URI
- * 
- * It represents an object which is part of a FML model.<br>
- * As such, you securely access to the {@link VirtualModel} in which this object "lives" using {@link #getResourceData()}<br>
- * 
- * A {@link FMLObject} is a {@link Bindable} as conforming to CONNIE binding scheme<br>
- * A {@link FMLObject} is a {@link InnerResourceData} (in a VirtualModel)<br>
- * A {@link FMLObject} is a {@link TechnologyObject} (powered with {@link FMLTechnologyAdapter})
- * 
- * 
+ * Root of every object of the FML meta-model, from the {@link FMLCompilationUnit} down to the most elementary edition action.
+ * <p>
+ * A {@link FMLObject} is:
+ * <ul>
+ * <li>an {@link InnerResourceData} of the {@link FMLCompilationUnit} declaring it: {@link #getResourceData()} and
+ * {@link #getDeclaringCompilationUnit()} both return that compilation unit (not the {@link VirtualModel})</li>
+ * <li>a {@link Bindable}: it provides the binding model in which the Connie expressions it declares are resolved</li>
+ * <li>a {@link TechnologyObject} of the {@link FMLTechnologyAdapter}</li>
+ * </ul>
+ * The annotations preceding a declaration in FML source ({@code @URI}, {@code @Version}, {@code @Author}, {@code @Description}...) are
+ * stored as {@link FMLMetaData} (see {@link #getMetaData()}). Some properties exposed through dedicated accessors are in fact read from and
+ * written to this metadata, {@link #getDescription()} for instance.
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
@@ -131,6 +133,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	@Setter(AUTHOR_KEY)
 	public void setAuthor(String author);
 
+	/**
+	 * Return the description of this object, stored as the {@code @Description("...")} annotation of its FML declaration.<br>
+	 * A documentation comment preceding the declaration in FML source is ignored by the parser: it does not provide the description.
+	 */
 	@Getter(value = DESCRIPTION_KEY)
 	@XMLAttribute
 	public String getDescription();
@@ -141,9 +147,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public boolean hasDescription();
 
 	/**
-	 * Return list of meta-data declared for this object
-	 * 
-	 * @return
+	 * Return the metadata of this object: the annotations ({@code @Xxx}, {@code @Xxx(value)}, {@code @Xxx(key=value,...)}) preceding its
+	 * declaration in FML source
 	 */
 	// TODO: ignoreForEquality to be removed once conversion from XML to FML is done
 	@Getter(value = META_DATA_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY, ignoreForEquality = true)
@@ -172,16 +177,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public ListMetaData getListMetaData(String key);
 
-	/**
-	 * Return the URI of the {@link NamedFMLObject}<br>
-	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
-	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
-	 * 
-	 * @return String representing unique URI of this object
-	 */
-	// public String getURI();
-
 	@Override
 	public FlexoServiceManager getServiceManager();
 
@@ -207,10 +202,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 */
 	public String getStringRepresentation();
 
-	// public void notifyBindingModelChanged();
-
-	// public FMLLocalizedDictionary getLocalizedDictionary();
-
 	@DeserializationInitializer
 	public void initializeDeserialization(FMLModelFactory factory);
 
@@ -219,24 +210,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public void finalizeDeserialization();
 
 	/**
-	 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
-	 * The container is the {@link ResourceData} of this object.<br>
-	 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link VirtualModel})
-	 * 
-	 * @return
-	 */
-	// @Override
-	// public VirtualModel getResourceData();
-
-	/**
-	 * Hook called when scope of a FMLObject changed.<br>
-	 * 
-	 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-	 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
-	 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
-	 * 
-	 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...
-	 * 
+	 * Hook called when the scope of this {@link FMLObject} changed, giving it a chance to update its bindings (some of them might become
+	 * valid or invalid).<br>
+	 * It happens for example when a {@link VirtualModel} becomes contained in another {@link VirtualModel} (its binding factory relies on
+	 * the enclosing context), or when an edition action is moved from a control graph to another one.
 	 */
 	public void notifiedScopeChanged();
 
@@ -497,17 +474,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return getResourceData();
 		}
 
-		/**
-		 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
-		 * If container of this object is a {@link VirtualModel}, return this ViewPoint<br>
-		 * Otherwise, container of this object is a {@link VirtualModel}, return ViewPoint of VirtualModel
-		 * 
-		 */
-		/*@Override
-		public VirtualModel getDeclaringCompilationUnit() {
-			return getResourceData();
-		}*/
-
 		@Override
 		public CompilationUnitResource getDeclaringCompilationUnitResource() {
 			if (getDeclaringCompilationUnit() != null) {
@@ -567,14 +533,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		/**
-		 * Hook called when scope of a FMLObject changed.<br>
-		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
-		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
-		 * 
-		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
-		 * 
 		 * Default implementation does nothing
 		 */
 		@Override
@@ -698,9 +656,19 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			}
 			Class<?> implementedInterface = getImplementedInterface(modelFactory);
 			if (modelFactory.getModelContext().getModelEntity(implementedInterface) == null) {
-				return getFMLEntity();
+				// Supplied factory does not know this entity: retry once with our own factory, but never
+				// with the same one, nor with one that does not know it either (would recurse infinitely)
+				FMLModelFactory ownFactory = getFMLModelFactory();
+				if (ownFactory != null && ownFactory != modelFactory
+						&& ownFactory.getModelContext().getModelEntity(implementedInterface) != null) {
+					return FMLModelContext.getFMLEntity((Class) implementedInterface, ownFactory);
+				}
+				logger.warning("Cannot find FMLEntity for " + implementedInterface
+						+ ": this entity is not declared in the model context of " + modelFactory
+						+ ". Check 'uses' declarations of " + getDeclaringCompilationUnit());
+				return null;
 			}
-			return FMLModelContext.getFMLEntity((Class) getImplementedInterface(modelFactory), modelFactory);
+			return FMLModelContext.getFMLEntity((Class) implementedInterface, modelFactory);
 		}
 
 		@Override

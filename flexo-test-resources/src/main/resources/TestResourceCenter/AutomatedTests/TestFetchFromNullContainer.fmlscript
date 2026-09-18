@@ -1,0 +1,27 @@
+// A fetch request whose container cannot be resolved reports no result, it does not blow up.
+//
+// Regression test for a defect found while making a serialized instance reload:
+// "select X from <null>" threw a raw NullPointerException straight out of the engine.
+// AbstractSelectFlexoConceptInstance.performExecute() warns "Cannot find virtual model instance on
+// which to apply SelectFlexoConceptInstance" and returns null; AbstractFetchRequest.execute() then
+// called size() on it. The stack trace pointed at the engine and never named the unresolved
+// container, which made the real cause (an unresolved model slot) hard to see.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestFetchFromNullContainer.fml"];
+assert virtualModel != null;
+
+service ResourceCenterService add_temp_rc;
+myVMI = new TestFetchFromNullContainer() with (name="testFetchFromNullContainer");
+assert myVMI != null;
+
+myVMI.newItem("a");
+myVMI.newItem("b");
+
+// Control: selecting from a resolved container finds both instances.
+assert myVMI.selectItemsFrom(myVMI).size == 2;
+
+// The fix: an unresolvable container yields an empty result instead of a NullPointerException.
+assert myVMI.selectItemsFrom(null) != null;
+assert myVMI.selectItemsFrom(null).size == 0;
+
+log "Test PASSED: a fetch from an unresolvable container returns no result instead of throwing";

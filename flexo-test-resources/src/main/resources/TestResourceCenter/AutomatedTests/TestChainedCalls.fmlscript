@@ -1,0 +1,31 @@
+// A call chained onto the result of another call resolves, in an FML behaviour body and in a script.
+// See TestChainedCalls.fml for the analysis.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestChainedCalls.fml"];
+assert virtualModel != null;
+
+service ResourceCenterService add_temp_rc;
+myVMI = new TestChainedCalls() with (name="testChainedCalls");
+assert myVMI != null;
+
+outer = myVMI.newOuter("O");
+kid = outer.makeKid("K");
+assert kid != null;
+
+// Inside an FML behaviour body: the chained form and the through-a-local form now agree.
+// The first used to return null while the second worked.
+assert outer.chainedCall() == "kid:K";
+assert outer.viaLocal() == "kid:K";
+assert outer.chainedProperty() == "d:K";
+
+// In the script itself: an FML behaviour chained onto a call returning a concept instance.
+// This binding used to be rejected statically as "unresolved path element describe()".
+assert outer.getKid().describe() == "kid:K";
+
+// Controls that always worked, kept so a regression narrows quickly.
+assert outer.theKid.describe() == "kid:K";
+assert outer.getKid().tag == "K";
+kidLocal = outer.getKid();
+assert kidLocal.describe().length() == 5;
+
+log "Test PASSED: a behaviour chained onto a call result resolves, in FML and in a script";

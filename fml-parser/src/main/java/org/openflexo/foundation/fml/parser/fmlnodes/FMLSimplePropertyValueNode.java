@@ -120,11 +120,25 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		}
 		else if (value.isConstant()) {
 			Object constantValue = ((Constant) value.getExpression()).getValue();
+
 			if (constantValue != null) {
 				if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
 					// logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
 					// fmlProperty.set(constantValue, modelObject);
 					getModelObject().setValue((T) constantValue);
+				}
+				else if (constantValue instanceof String) {
+
+					try {
+						T deserializedValue = getFactory().getStringEncoder().fromString((Class<T>) fmlProperty.getType(),
+								(String) constantValue);
+						// System.err.println("Deserialized " + constantValue + " for " + fmlProperty + " -> " + deserializedValue);
+						getModelObject().setValue(deserializedValue);
+					} catch (InvalidDataException e) {
+						logger.warning("Don't know how to convert " + propertyName);
+						e.printStackTrace();
+						return null;
+					}
 				}
 				else {
 					logger.warning("Invalid value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
@@ -208,7 +222,30 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport(castType(value), false);
 				return importDeclaration.getAbbrev();
 			}
+
+			// Is that type convertable natively into a String ?
+			else if (getFactory().getStringEncoder().isConvertable(TypeUtils.getBaseClass(getModelObject().getProperty().getType()))) {
+				try {
+					String returned = getFactory().getStringEncoder().toString(value);
+					if (value instanceof String) {
+						returned = "\"" + returned + "\"";
+					}
+					return returned;
+
+				} catch (InvalidDataException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			else {
+				logger.warning("While serializing property " + getModelObject().getProperty() + " don't know what to do with " + value);
+				return null;
+			}
 		}
+
+		logger.warning("While serializing property " + getModelObject().getProperty() + " no compilation unit");
+		return null;
 
 		/*if (value instanceof FlexoResource && getCompilationUnit() != null) {
 			try {
@@ -227,7 +264,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		
 		}*/
 
-		String returned;
+		/*String returned;
 		try {
 			returned = getFactory().getStringEncoder().toString(value);
 			if (value instanceof String) {
@@ -238,8 +275,8 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			e.printStackTrace();
 			return null;
 		}
-
-		return returned;
+		
+		return returned;*/
 	}
 
 	private RawSourceFragment getArgNameFragment() {

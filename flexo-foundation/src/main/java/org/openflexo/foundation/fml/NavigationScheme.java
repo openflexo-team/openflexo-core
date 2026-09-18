@@ -59,6 +59,17 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * A behaviour navigating from an instance to a target object (see {@link #getTargetObject()}), which the tooling then displays (see
+ * {@link #getDisplayNature(FlexoObject)}).
+ * <p>
+ * Core FML has no dedicated syntax for it: technology adapters make specializations of it available on their model slots (see
+ * {@link org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours}), for instance the navigation scheme of the diagram model
+ * slots.
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(NavigationScheme.NavigationSchemeImpl.class)
 @XMLElement

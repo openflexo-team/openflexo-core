@@ -90,7 +90,7 @@ public class TestBindingPathParser extends ExpressionParserTestCase {
 	@Test
 	public void testExpressionWithBindings2() {
 		tryToParse("beginDate.toString.substring(0,(beginDate.toString.length - 9))",
-		 "beginDate.toString.substring(0,beginDate.toString.length - 9)", BindingPath.class, null, serviceManager, false);
+				"beginDate.toString.substring(0,beginDate.toString.length - 9)", BindingPath.class, null, serviceManager, false);
 	}
 
 	@Test
@@ -145,5 +145,30 @@ public class TestBindingPathParser extends ExpressionParserTestCase {
 	public void testClassMethod2() {
 		tryToParse("java.Class.forName(\"Toto\")", "toto--", BindingPath.class, null, false);
 	}*/
+
+	@Test
+	public void testEscapedPaths() {
+		tryToParse("a.{\"AnUpperCaseProperty\"}.c", "a.{\"AnUpperCaseProperty\"}.c", BindingPath.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testEscapedPathsWithFunction() {
+		tryToParse("a.{\"get\"}(2).c", "a.{\"get\"}(2).c", BindingPath.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testUseOfFMLKeywords() {
+		tryToParse("myList.get(2)", "myList.get(2)", BindingPath.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testUseOfFMLKeywords2() {
+		tryToParse("myList.get(2).tutu.model", "myList.get(2).tutu.model", BindingPath.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testUseOfFMLKeywords3() {
+		tryToParse("myList.get(2).tutu.get(2)", "myList.get(2).tutu.get(2)", BindingPath.class, null, serviceManager, false);
+	}
 
 }

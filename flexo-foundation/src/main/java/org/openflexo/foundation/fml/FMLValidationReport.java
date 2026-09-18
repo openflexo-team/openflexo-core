@@ -160,6 +160,17 @@ public class FMLValidationReport extends ValidationReport {
 		notifyChange();
 	}
 
+	public void appendSemanticAnalysisWarning(SemanticAnalysisWarning<?, ?> semanticsWarning) {
+		ValidationNode<?> validationNode = getValidationNode(semanticsWarning.getValidable());
+		if (validationNode != null) {
+			validationNode.addToValidationIssues((SemanticAnalysisWarning) semanticsWarning);
+		}
+		else {
+			getRootNode().addToValidationIssues((SemanticAnalysisWarning) semanticsWarning);
+		}
+		notifyChange();
+	}
+
 	public void appendValidationError(ValidationError error, int line) {
 		getRootNode().addToValidationIssues(error);
 		// setLineNumber(parseError, line);
@@ -190,6 +201,9 @@ public class FMLValidationReport extends ValidationReport {
 		}
 		if (issue instanceof SemanticAnalysisIssue) {
 			return ((SemanticAnalysisIssue) issue).getLine();
+		}
+		if (issue instanceof SemanticAnalysisWarning) {
+			return ((SemanticAnalysisWarning) issue).getLine();
 		}
 		RawSourceFragment fragment = getFragment(issue);
 		if (fragment != null) {

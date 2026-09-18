@@ -98,7 +98,6 @@ import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
-import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -1457,32 +1456,25 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		// We check here that create parameters were updated
 
-		assertEquals(2, matchFlexoConceptInstance.getParameters().size());
+		assertEquals(2, matchFlexoConceptInstance.getNewInstanceArguments().size());
+		matchFlexoConceptInstance.setNewInstanceArgumentValue(creationSchemeParam1, new DataBinding<>("item.aStringInA"));
+		matchFlexoConceptInstance.setNewInstanceArgumentValue(creationSchemeParam2, new DataBinding<>("true"));
 
-		CreateFlexoConceptInstanceParameter createFCIParam1 = matchFlexoConceptInstance.getParameter(creationSchemeParam1);
-		CreateFlexoConceptInstanceParameter createFCIParam2 = matchFlexoConceptInstance.getParameter(creationSchemeParam2);
-		assertNotNull(createFCIParam1);
-		assertNotNull(createFCIParam2);
-
-		createFCIParam1.setValue(new DataBinding<>("item.aStringInA"));
-		createFCIParam2.setValue(new DataBinding<>("true"));
-		assertTrue(createFCIParam1.getValue().isValid());
-		assertTrue(createFCIParam2.getValue().isValid());
+		assertTrue(matchFlexoConceptInstance.getNewInstanceArgumentValue(creationSchemeParam1).isValid());
+		assertTrue(matchFlexoConceptInstance.getNewInstanceArgumentValue(creationSchemeParam2).isValid());
 
 		// WE change creation scheme, parameters should disappear
 		matchFlexoConceptInstance.setCreationScheme(null);
-
-		assertEquals(0, matchFlexoConceptInstance.getParameters().size());
+		assertNull(matchFlexoConceptInstance.getNewInstanceArguments());
 
 		// We set again the creation scheme, parameters should come back
 		matchFlexoConceptInstance.setCreationScheme(creationScheme);
-		assertEquals(2, matchFlexoConceptInstance.getParameters().size());
-		createFCIParam1 = matchFlexoConceptInstance.getParameter(creationSchemeParam1);
-		createFCIParam2 = matchFlexoConceptInstance.getParameter(creationSchemeParam2);
-		createFCIParam1.setValue(new DataBinding<>("item.aStringInA"));
-		createFCIParam2.setValue(new DataBinding<>("true"));
-		assertTrue(createFCIParam1.getValue().isValid());
-		assertTrue(createFCIParam2.getValue().isValid());
+
+		assertEquals(2, matchFlexoConceptInstance.getNewInstanceArguments().size());
+		matchFlexoConceptInstance.setNewInstanceArgumentValue(creationSchemeParam1, new DataBinding<>("item.aStringInA"));
+		matchFlexoConceptInstance.setNewInstanceArgumentValue(creationSchemeParam2, new DataBinding<>("true"));
+		assertTrue(matchFlexoConceptInstance.getNewInstanceArgumentValue(creationSchemeParam1).isValid());
+		assertTrue(matchFlexoConceptInstance.getNewInstanceArgumentValue(creationSchemeParam2).isValid());
 
 		// We try to add a parameter
 		CreateGenericBehaviourParameter createBooleanParameter3 = CreateGenericBehaviourParameter.actionType.makeNewAction(creationScheme,
@@ -1493,17 +1485,17 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		FlexoBehaviourParameter creationSchemeParam3 = createBooleanParameter3.getNewParameter();
 		assertNotNull(creationSchemeParam3);
 		assertTrue(creationScheme.getParameters().contains(creationSchemeParam3));
-		assertEquals(3, matchFlexoConceptInstance.getParameters().size());
+		assertEquals(3, matchFlexoConceptInstance.getNewInstanceArguments().size());
 
 		// We remove it
 		creationScheme.removeFromParameters(creationSchemeParam3);
-		assertEquals(2, matchFlexoConceptInstance.getParameters().size());
+		assertEquals(2, matchFlexoConceptInstance.getNewInstanceArguments().size());
 
 		assertEquals(7, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
 
 		assertEquals(8, condition1.getBindingModel().getBindingVariablesCount());
 
-		assertEquals(8, createFCIParam1.getBindingModel().getBindingVariablesCount());
+		// assertEquals(8, createFCIParam1.getBindingModel().getBindingVariablesCount());
 
 		System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 

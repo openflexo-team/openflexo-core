@@ -70,13 +70,15 @@ import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.ACompositeTidentSuffix;
 import org.openflexo.foundation.fml.parser.node.ADiamondTypeArguments;
 import org.openflexo.foundation.fml.parser.node.ADoublePrimitiveType;
+import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
+import org.openflexo.foundation.fml.parser.node.AEscapedIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AExtendsWildcardBounds;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AFmlType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
-import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIntPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.ALongPrimitiveType;
+import org.openflexo.foundation.fml.parser.node.ANormalIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.ANormalTypeDeclType;
 import org.openflexo.foundation.fml.parser.node.APrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AReferenceType;
@@ -328,7 +330,16 @@ public class TypeFactory extends DepthFirstAdapter {
 			ACompositeTident node = (ACompositeTident) aPCompositeTident;
 			StringBuffer fullQualifiedName = new StringBuffer();
 			for (PIdentifierPrefix identifierPrefix : node.getPrefixes()) {
-				fullQualifiedName.append(((AIdentifierPrefix) identifierPrefix).getLidentifier().getText() + ".");
+				if (identifierPrefix instanceof ANormalIdentifierPrefix) {
+					fullQualifiedName.append(((ANormalIdentifierPrefix) identifierPrefix).getLidentifier().getText() + ".");
+				}
+				if (identifierPrefix instanceof AEscapedIdentifierPrefix) {
+					AEscapedIdentifier escapedIdentifier = (AEscapedIdentifier) ((AEscapedIdentifierPrefix) identifierPrefix)
+							.getEscapedIdentifier();
+
+					// fullQualifiedName.append(((AEscapedIdentifierPrefix) identifierPrefix).getEscapedIdentifier().getText() + ".");
+					fullQualifiedName.append(escapedIdentifier.getLitString().getText());
+				}
 			}
 			fullQualifiedName.append(node.getIdentifier().getText());
 			for (PCompositeTidentSuffix pCompositeTidentSuffix : node.getSuffixes()) {

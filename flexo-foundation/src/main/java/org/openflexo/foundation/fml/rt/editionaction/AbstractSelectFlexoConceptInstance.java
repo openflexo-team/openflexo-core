@@ -40,29 +40,23 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
-import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
+import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -81,11 +75,31 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * Generic {@link AbstractFetchRequest} allowing to retrieve a selection of some {@link FlexoConceptInstance} matching some conditions and a
- * given {@link FlexoConcept}.<br>
- * 
+ * The fetch request retrieving concept instances: {@code select [unique] Concept from (expression) [where (condition, ...)]}.
+ * <p>
+ * The {@code from} clause gives the container ({@link #getContainer()}): when it is a VirtualModelInstance, the instances of the concept
+ * ({@link #getFlexoConceptType()}) are searched in that VirtualModelInstance; when it is a concept instance, among the instances embedded
+ * in it. They are then filtered by the conditions, in which {@code selected} denotes the candidate instance. When no VirtualModelInstance
+ * can be found, a warning is logged and the request gives no result.
+ * <p>
+ * Example (excerpts of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public List&lt;Shelf&gt; allShelves() {                   // in the model Library
+ *     return select Shelf from this;
+ * }
+ *
+ * public Book findBookByTitle(String title) {         // in the concept Shelf, where Book is nested
+ *     return select unique Book from (this) where (selected.title == parameters.title);
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
+ * @param <VMI>
+ *            type of the VirtualModelInstance in which instances are searched
+ * @param <AT>
+ *            type of the assigned value: an instance for {@code select unique}, a list of instances otherwise
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractSelectFlexoConceptInstance.AbstractSelectFlexoConceptInstanceImpl.class)
@@ -116,9 +130,10 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	/**
-	 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
-	 * 
-	 * @return
+	 * Return the {@link VirtualModel} addressed by this action: the type of the receiver binding when it is set; otherwise the enclosing
+	 * VirtualModel, the VirtualModel accessed by the inferred model slot, or the owning VirtualModel
+	 *
+	 * @return the addressed VirtualModel
 	 */
 	public VirtualModel getAddressedVirtualModel();
 
@@ -174,6 +189,42 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		@Override
 		public FlexoConceptInstanceType getFetchedType() {
 			return getType();
+		}
+
+		/**
+		 * For a select action, the fetched type IS the concept type (see {@link #getFetchedType()} returning
+		 * {@link #getType()}), so route the fetched-type setter to the {@code type} field. This keeps the type carried by
+		 * the modern {@code Type}-valued {@code fetchedType} property (with its translating {@code @Updater}) rather than
+		 * by the deprecated String {@code flexoConceptTypeURI} property (XML-era serialization).
+		 */
+		@Override
+		public void setFetchedType(Type aType) {
+			if (aType == null || aType instanceof FlexoConceptInstanceType) {
+				setType((FlexoConceptInstanceType) aType);
+			}
+			else {
+				performSuperSetter(FETCHED_TYPE_KEY, aType);
+			}
+		}
+
+		/**
+		 * Called during {@code updateWith()} (interactive re-parse): translate the concept type into the current typing
+		 * space (receiver-independent) and store it in the {@code type} field, instead of leaving it in the disconnected
+		 * base slot. Rebuilding the type through the deprecated {@code flexoConceptTypeURI} setter would resolve it via
+		 * {@link #getAddressedVirtualModel()} (receiver-dependent), which yields an UndefinedFlexoConceptInstanceType
+		 * before the receiver binding is re-analyzed. Same rationale as {@code DeclarationAction.updateDeclaredType}.
+		 */
+		@Override
+		public void updateFetchedType(Type aType) {
+			if (aType instanceof ConnieType && getDeclaringCompilationUnit() != null) {
+				setType((FlexoConceptInstanceType) ((ConnieType) aType).translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else if (aType == null || aType instanceof FlexoConceptInstanceType) {
+				setType((FlexoConceptInstanceType) aType);
+			}
+			else {
+				super.updateFetchedType(aType);
+			}
 		}
 
 		@Override
@@ -246,11 +297,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		private boolean isAnalyzingContainer = false;
 
-		/**
-		 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
-		 * 
-		 * @return
-		 */
 		@Override
 		public VirtualModel getAddressedVirtualModel() {
 			if (getReceiver() != null && getReceiver().isSet()) {
@@ -311,41 +357,9 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			return null;
 		}
 
-		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition, VirtualModelInstance<?, ?> vmi,
-				RunTimeEvaluationContext evaluationContext)
-				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
-			Expression indexableTerm = getIndexableTerm(indexableCondition);
-			Expression oppositeTerm = getOppositeTerm(indexableCondition);
-
-			// System.out.println("indexable term = " + indexableTerm);
-			// System.out.println("opposite term = " + oppositeTerm);
-
-			DataBinding<?> indexableTermBinding = new DataBinding<>(indexableTerm.toString(), indexableCondition, Object.class,
-					BindingDefinitionType.GET);
-			indexableTermBinding.setBindingName("indexableTerm");
-
-			DataBinding<?> valueBinding = new DataBinding<>(oppositeTerm.toString(), indexableCondition, Object.class,
-					BindingDefinitionType.GET);
-			valueBinding.setBindingName("expectedValue");
-
-			Object expectedValue = valueBinding.getBindingValue(evaluationContext);
-			// System.out.println("Searching" + indexableTerm + " = " + expectedValue);
-
-			Map<Object, List<FlexoConceptInstance>> index = vmi.getIndex(getFlexoConceptType().getInstanceType(), indexableTermBinding);
-
-			if (index != null) {
-				List<FlexoConceptInstance> returned = index.get(expectedValue);
-				if (returned != null) {
-					return returned;
-				}
-				return Collections.emptyList();
-			}
-
-			return Collections.emptyList();
-		}
-
 		@Override
-		protected List<FlexoConceptInstance> performExecute(RunTimeEvaluationContext evaluationContext) {
+		protected List<? extends FlexoConceptInstance> performExecute(RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
 
 			VirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
 			FlexoConceptInstance container = getContainer(evaluationContext);
@@ -365,134 +379,12 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 			if (vmi != null) {
 
-				// System.out.println("SELECT FCI " + getFlexoConceptType().getName() + " from " + vmi + " container=" + container);
+				return vmi.selectFlexoConceptInstances(getFlexoConceptType(), container, getConditions(), evaluationContext);
 
-				if (isIndexable(container)) {
-					List<FlexoConceptInstance> returned;
-					try {
-						// Compute returned as result of filter for first condition to apply
-						returned = getIndexedMatchingList(getConditions().get(0), vmi, evaluationContext);
-
-						// More than one condition, we need to merge multiple filters
-						for (int i = 1; i < getConditions().size(); i++) {
-							List<FlexoConceptInstance> filtered = getIndexedMatchingList(getConditions().get(i), vmi, evaluationContext);
-							Iterator<FlexoConceptInstance> it = returned.iterator();
-							while (it.hasNext()) {
-								FlexoConceptInstance fci = it.next();
-								if (!filtered.contains(fci)) {
-									// fci is not in the filtered list, we discard it
-									it.remove();
-								}
-							}
-						}
-
-						return returned;
-					} catch (TypeMismatchException e) {
-						e.printStackTrace();
-					} catch (NullReferenceException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					} catch (ReflectiveOperationException e) {
-						e.printStackTrace();
-					}
-				}
-
-				// Otherwise, we do it brute force !!!
-
-				List<FlexoConceptInstance> fciList = null;
-				if (container instanceof VirtualModelInstance) {
-					fciList = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(getFlexoConceptType());
-				}
-				else {
-					fciList = container.getEmbeddedFlexoConceptInstances(getFlexoConceptType());
-				}
-				// System.out.println("Unfiltered FCI list for " + getFlexoConceptType() + " : " + fciList);
-				return filterWithConditions(fciList, evaluationContext);
 			}
 			logger.warning(
 					getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
-			/*
-			logger.warning("evaluationContext=" + evaluationContext);
-			logger.warning("isSet=" + getVirtualModelInstance().isSet());
-			logger.warning("isValid=" + getVirtualModelInstance().isValid());
-			logger.warning("fci=" + evaluationContext.getFlexoConceptInstance());
-			logger.warning("vmi=" + evaluationContext.getVirtualModelInstance());
-			 */
-			// logger.warning(getOwner().getFMLRepresentation());
 			return null;
-		}
-
-		public boolean isIndexable(FlexoConceptInstance container) {
-			// Temporary desactivate indexes caching
-			/*if (container instanceof FMLRTVirtualModelInstance && getConditions().size() > 0) {
-				for (FetchRequestCondition condition : getConditions()) {
-					if (!isIndexableCondition(condition)) {
-						return false;
-					}
-				}
-				return true;
-			}*/
-			return false;
-
-		}
-
-		private static boolean isIndexableCondition(FetchRequestCondition condition) {
-			return getIndexableTerm(condition) != null;
-		}
-
-		private static Expression getIndexableTerm(FetchRequestCondition condition) {
-			if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
-				BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
-				Expression leftTerm = binaryExpression.getLeftArgument();
-				boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
-				Expression rightTerm = binaryExpression.getRightArgument();
-				boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
-				if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
-					if (leftTermUsesSelectedBindingVariable) {
-						if (rightTermUsesSelectedBindingVariable) {
-							return null;
-						}
-						return leftTerm;
-					}
-					if (rightTermUsesSelectedBindingVariable) {
-						return rightTerm;
-					}
-					return null;
-				}
-			}
-			return null;
-		}
-
-		private static Expression getOppositeTerm(FetchRequestCondition condition) {
-			if (condition.getCondition() != null && condition.getCondition().getExpression() instanceof BinaryOperatorExpression) {
-				BinaryOperatorExpression binaryExpression = (BinaryOperatorExpression) condition.getCondition().getExpression();
-				Expression leftTerm = binaryExpression.getLeftArgument();
-				boolean leftTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(leftTerm);
-				Expression rightTerm = binaryExpression.getRightArgument();
-				boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
-				if (binaryExpression.getOperator() == FMLBooleanBinaryOperator.EQUALS) {
-					if (leftTermUsesSelectedBindingVariable) {
-						if (rightTermUsesSelectedBindingVariable)
-							return null;
-						return rightTerm;
-					}
-					if (rightTermUsesSelectedBindingVariable)
-						return leftTerm;
-					return null;
-				}
-			}
-			return null;
-		}
-
-		private static boolean expressionUsesSelectedBindingVariable(Expression exp) {
-			List<BindingVariable> allBVs = exp.getAllBindingVariables();
-			for (BindingVariable v : allBVs) {
-				if (v instanceof FetchRequestConditionSelectedBindingVariable) {
-					return true;
-				}
-			}
-			return false;
 		}
 
 		@Override
@@ -514,6 +406,12 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			getContainer().rebuild();
 		}
 
+		@Override
+		public String getStringRepresentation() {
+			return "select " + (this instanceof UniqueFetchRequest ? "unique " : "")
+					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "?") + " from " + getContainer();
+		}
+
 	}
 
 	@DefineValidationRule
@@ -533,92 +431,5 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			return null;
 		}
 	}
-
-	/*@DefineValidationRule
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid
-			extends BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance> {
-		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
-			super("'receiver'_binding_is_not_valid", AbstractSelectFlexoConceptInstance.class);
-		}
-	
-		@Override
-		public DataBinding<VirtualModelInstance<?, ?>> getBinding(AbstractSelectFlexoConceptInstance object) {
-			return object.getReceiver();
-		}
-	
-		@Override
-		public ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> applyValidation(
-				AbstractSelectFlexoConceptInstance object) {
-			ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> returned = super.applyValidation(
-					object);
-			if (returned instanceof UndefinedRequiredBindingIssue) {
-				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
-			}
-			else {
-				DataBinding<VirtualModelInstance<?, ?>> binding = getBinding(object);
-				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
-					if (object.getFlexoConceptType().getOwner() != ((VirtualModelInstanceType) binding.getAnalyzedType())
-							.getVirtualModel()) {
-						returned = new ValidationError(this, object, "incompatible_virtual_model_type");
-						// Attempt to find some solutions...
-	
-						if (object.getOwningVirtualModel() != null) {
-							for (AbstractFMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class)) {
-								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
-									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
-								}
-							}
-						}
-	
-						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (AbstractFMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
-									.getModelSlots(AbstractFMLRTModelSlot.class)) {
-								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
-									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
-								}
-							}
-						}
-	
-					}
-				}
-			}
-			return returned;
-		}
-	
-		protected static class UseLocalVirtualModelInstance extends
-				FixProposal<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> {
-	
-			public UseLocalVirtualModelInstance() {
-				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
-			}
-	
-			@Override
-			protected void fixAction() {
-				AbstractSelectFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<>("virtualModelInstance"));
-			}
-		}
-	
-		protected static class UseFMLRTModelSlot extends
-				FixProposal<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> {
-	
-			private final AbstractFMLRTModelSlot modelSlot;
-	
-			public UseFMLRTModelSlot(AbstractFMLRTModelSlot modelSlot) {
-				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
-				this.modelSlot = modelSlot;
-			}
-	
-			@Override
-			protected void fixAction() {
-				AbstractSelectFlexoConceptInstance action = getValidable();
-				action.setReceiver(new DataBinding<>(modelSlot.getName()));
-			}
-		}
-	
-	}*/
 
 }

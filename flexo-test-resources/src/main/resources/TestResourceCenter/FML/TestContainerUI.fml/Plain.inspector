@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the merge of a PLAIN container inspector: no TabPanel, the shape the CreateInspector
+     action generates by default. -->
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols" name="PlainInspector"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.inspector.FIBInspectorController">
+	<Label label="description" name="descriptionLabel"
+		constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)" />
+	<TextField data="data.description" name="descriptionWidget"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)" />
+</Panel>

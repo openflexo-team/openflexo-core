@@ -38,28 +38,68 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
+import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
+import org.openflexo.pamela.converter.DataBindingConverter;
+import org.openflexo.pamela.converter.FlexoVersionConverter;
+import org.openflexo.pamela.converter.RelativePathResourceConverter;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link PamelaModelFactory} used to handle {@link VirtualModelInstance} models<br>
- * Only one instance of this class should be used in a session
- * 
+ * The {@link PamelaModelFactory} building the objects of a {@link FMLRTVirtualModelInstance}: the instance itself, its concept instances,
+ * its event instances and the actor references holding the values of their roles.
+ * <p>
+ * Its PAMELA meta-model exposes the model slot classes of all technology adapters and the actor references they declare, since an instance
+ * may hold actors of any technology. Instantiating a concept goes through {@link #makeNewFlexoConceptInstance}, which checks the concept
+ * against the VirtualModel of the instance and against the required container, initializes the default values, then executes the creation
+ * scheme.
+ *
  * @author sylvain
- * 
+ *
  */
-public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelInstanceModelFactory<FMLRTVirtualModelInstanceResource> {
+public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResourceModelFactory<FMLRTVirtualModelInstanceResource>
+		implements AbstractVirtualModelInstanceModelFactory {
+
+	private final FlexoServiceManager serviceManager;
+	private RelativePathResourceConverter relativePathResourceConverter;
 
 	public FMLRTVirtualModelInstanceModelFactory(FMLRTVirtualModelInstanceResource resource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(resource, FMLRTVirtualModelInstance.class, editingContext, taService);
+		super(resource, allClassesForModelContext(FMLRTVirtualModelInstance.class, taService));
+		serviceManager = taService.getServiceManager();
+		setEditingContext(editingContext);
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
+		addConverter(new FlexoObjectReferenceConverter(taService.getServiceManager().getResourceManager()));
+		addConverter(new FlexoEnumValueConverter());
+
+		addConverter(relativePathResourceConverter = new RelativePathResourceConverter(null));
+		if (resource != null && resource.getIODelegate() != null && resource.getIODelegate().getSerializationArtefactAsResource() != null) {
+			relativePathResourceConverter
+					.setContainerResource(resource.getIODelegate().getSerializationArtefactAsResource().getContainer());
+		}
+
+	}
+
+	@Override
+	public FlexoServiceManager getServiceManager() {
+		return serviceManager;
 	}
 
 	/**
@@ -113,17 +153,35 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 		if (ownerVirtualModelInstance == null) {
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance in null ownerVirtualModelInstance");
 		}
-		if (!ownerVirtualModelInstance.getVirtualModel().isAssignableFrom(concept.getDeclaringCompilationUnit().getVirtualModel())) {
+		// The concept must be declared either by the VirtualModel of this VirtualModelInstance, or by one of its
+		// ancestors: with "model Child extends Parent", a Child instance legitimately instantiates Parent's concepts.
+		// isAssignableFrom(x) walks x's parents, so the DECLARING VirtualModel is the receiver here. This test used to
+		// be written the other way round, which rejected every inherited concept and made "model extends model"
+		// unusable as soon as anything was instantiated - the FMLExecutionException is swallowed upstream, so the
+		// symptom was a silently null result and roles quietly filled with nulls.
+		VirtualModel declaringVirtualModel = concept.getDeclaringCompilationUnit() != null
+				? concept.getDeclaringCompilationUnit().getVirtualModel()
+				: null;
+		if (declaringVirtualModel == null || !declaringVirtualModel.isAssignableFrom(ownerVirtualModelInstance.getVirtualModel())) {
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept declaring compilation unit");
 		}
 		if (container == null && !concept.isRoot()) {
 			// check that the FlexoConcept is root
 			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : not root FlexoConcept");
 		}
-		if (container != null && container != ownerVirtualModelInstance
-				&& !container.getFlexoConcept().isAssignableFrom(concept.getContainerFlexoConcept())) {
-			// check that the container is valid
-			throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
+		if (container != null && container != ownerVirtualModelInstance) {
+			// Check that the container is valid: the concept of the ACTUAL container must be the container concept
+			// required by the instantiated concept, or a specialization of it.
+			// Two things used to be wrong here. getContainerFlexoConcept() returns only the DECLARED container, which
+			// is null for a concept declared at model level even when it inherits a container from a parent concept
+			// (AcmeMetaModel's CodingTaskType extends MetaModel's TaskType, itself nested in ProcessType) -
+			// getApplicableContainerFlexoConcept() is the accessor that walks parents. And the assignability test was
+			// written the wrong way round, which additionally rejected any container that was a SPECIALIZATION of the
+			// required one.
+			FlexoConcept requiredContainerConcept = concept.getApplicableContainerFlexoConcept();
+			if (requiredContainerConcept == null || !requiredContainerConcept.isAssignableFrom(container.getFlexoConcept())) {
+				throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
+			}
 		}
 
 		// Then create the new FlexoConceptInstance
@@ -139,7 +197,7 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 
 		// Preferably use supplied evaluation context
 		if (evaluationContext == null) {
-			// evaluationContext = returned;
+			logger.warning("makeNewFlexoConceptInstance() with null evaluationContext");
 		}
 
 		// Initialize default values
@@ -181,6 +239,61 @@ public class FMLRTVirtualModelInstanceModelFactory extends AbstractVirtualModelI
 		returned.setFlexoConcept(concept);
 
 		return returned;
+	}
+
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
+	 * parts, and return a newly created PamelaMetaModel dedicated to {@link VirtualModel} manipulations
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	public static List<Class<?>> allClassesForModelContext(Class<? extends VirtualModelInstance<?, ?>> baseVMIClass,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
+		List<Class<?>> classes = new ArrayList<>();
+		classes.add(baseVMIClass);
+		if (taService != null) {
+			for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
+				for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+					classes.add(modelSlotClass);
+					DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
+					if (arDeclarations != null) {
+						for (Class<? extends ActorReference> arClass : arDeclarations.value()) {
+							classes.add(arClass);
+						}
+					}
+				}
+			}
+		}
+
+		return classes;
+	}
+
+	protected void executeCreationScheme(FlexoConceptInstance newInstance, AbstractCreationScheme creationScheme,
+			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+		if (evaluationContext instanceof AbstractCreationSchemeAction) {
+			// Special case here
+			// FlexoConceptInstance has been created, but need to be assigned to be taken under account in creation scheme
+			((AbstractCreationSchemeAction) evaluationContext).assignNewFlexoConceptInstance(newInstance);
+		}
+
+		// Perform execute creation scheme
+		if (creationScheme != null && creationScheme.getControlGraph() != null) {
+			try {
+				creationScheme.getControlGraph().execute(evaluationContext);
+			} catch (ReturnException e) {
+				logger.warning("CreationScheme is not supposed to return any values: " + e);
+				System.err.println(creationScheme.getFMLPrettyPrint());
+				throw new FMLExecutionException("CreationScheme is not supposed to return any value");
+			} catch (FMLExecutionException e) {
+				logger.warning("Unexpected exception while executing FML control graph: " + e);
+				System.err.println(creationScheme.getFMLPrettyPrint());
+				e.printStackTrace();
+				throw e;
+			}
+
+		}
 	}
 
 }

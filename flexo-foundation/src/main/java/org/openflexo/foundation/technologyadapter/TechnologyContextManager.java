@@ -114,4 +114,14 @@ public class TechnologyContextManager<TA extends TechnologyAdapter<TA>> {
 		return resources.get(uri);
 	}
 
+	/**
+	 * Called when the {@link TechnologyAdapterService} is stopped.<br>
+	 * Gives this {@link TechnologyContextManager} a chance to release what it registered beyond its own scope, typically in the JVM-global
+	 * registries or class loaders of the underlying technological space: those outlive the {@link FlexoServiceManager}, so whatever is left
+	 * there would be inherited by the next {@link FlexoServiceManager} of the same JVM.<br>
+	 * Default implementation does nothing.
+	 */
+	public void stop() {
+	}
+
 }

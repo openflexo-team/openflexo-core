@@ -13,45 +13,54 @@ model MatchingVM2 {
 		_model = parameters._model;
 	}
 
-	synchronize () {
+	/*synchronize () {
 		MatchingSet matchingSet = begin match MatchedConceptA from this;
 		for (ConceptA conceptA : select ConceptA from _model) {
 			MatchedConceptA matchedA = match MatchedConceptA in matchingSet from this where (conceptA=conceptA) create::_create(conceptA.nameA + "-matched",conceptA);
 			matchedA.synchronize();
 		}
 		end match MatchedConceptA in matchingSet delete::_delete();
+	}*/
+
+	// New syntax
+	synchronize () {
+		MatchingSet matchingSet = begin match MatchedConceptA from this;
+		for (ConceptA conceptA : select ConceptA from _model) {
+			MatchedConceptA matchedA = match MatchedConceptA in matchingSet from this where (conceptA=conceptA) unmatched: new MatchedConceptA(conceptA.nameA + "-matched",conceptA);
+			matchedA.synchronize();
+		}
+		end match MatchedConceptA in matchingSet unmatched: delete();
 	}
 
 	concept MatchedConceptA {
 		ConceptA conceptA with ConceptInstance(virtualModelInstance = _model);
 		String name;
-		@UI(
-			@TextField(value="aName")
-		)
-		create::_create (required String aName, required ConceptA aConceptA) {
+
+		create(required String aName, required ConceptA aConceptA) {
 			conceptA = parameters.aConceptA;
 			name = parameters.aName;
 		}
-		delete::_delete () {
+		
+		delete() {
 		}
+		
 		synchronize () {
 			MatchingSet matchingSet = begin match MatchedConceptB from this;
 			for (ConceptB conceptB : select ConceptB from conceptA) {
-				MatchedConceptB matchedConceptB = match MatchedConceptB in matchingSet from this where (conceptB=conceptB) create::_create(conceptB.nameB + "-matched",conceptB);
+				MatchedConceptB matchedConceptB = match MatchedConceptB in matchingSet from this where (conceptB=conceptB) unmatched: new MatchedConceptB(conceptB.nameB + "-matched",conceptB);
 			}
-			end match MatchedConceptB in matchingSet delete::_delete();
+			end match MatchedConceptB in matchingSet unmatched: delete();
 		}
+		
 		concept MatchedConceptB {
 			ConceptB conceptB with ConceptInstance(virtualModelInstance = _model);
 			String name;
-			@UI(
-				@TextField(value="aName")
-			)
-			create::_create (required String aName, required ConceptB aConceptB) {
+
+			create(required String aName, required ConceptB aConceptB) {
 				conceptB = parameters.aConceptB;
 				name = parameters.aName;
 			}
-			delete::_delete () {
+			delete() {
 			}
 		}
 	}

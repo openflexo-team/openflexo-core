@@ -1,0 +1,24 @@
+/**
+ * The catalog of the Library: a VirtualModel contained in Library, stored in the Library.fml/ directory.
+ * It declares no @URI: its URI is computed from the one of its container. See TestLibrary.fmlscript.
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+public model Catalog {
+
+	create() {
+	}
+
+	public concept Entry {
+
+		String reference;
+
+		create(String reference) {
+			reference = parameters.reference;
+		}
+
+		delete() {
+		}
+	}
+}

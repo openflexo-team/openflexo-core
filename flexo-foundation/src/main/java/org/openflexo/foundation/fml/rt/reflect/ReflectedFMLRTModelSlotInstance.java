@@ -43,8 +43,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance.ModelSlotInstanceImpl;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -82,7 +80,7 @@ import org.openflexo.toolbox.StringUtils;
 public interface ReflectedFMLRTModelSlotInstance<
 //@formatter:off
 	VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, 
-	R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, 
+	R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, 
 	TA extends TechnologyAdapter<TA>>
 		extends ModelSlotInstance<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI> {
 	//@formatter:on
@@ -101,7 +99,22 @@ public interface ReflectedFMLRTModelSlotInstance<
 
 	public void setReflectedResource(R reflectedResource);
 
-	public static abstract class ReflectedFMLRTModelSlotInstanceImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+	/**
+	 * Discard the reflected {@link VirtualModelInstance} and the data it was built from, so that both are rebuilt from the artefact on the
+	 * next access.
+	 *
+	 * <p>
+	 * Use this when the underlying artefact was modified OUTSIDE Openflexo (a workbook edited in Excel, for instance). The reflected
+	 * instances read their values straight from the artefact objects they wrap, and their number follows the artefact's content, so a
+	 * changed value AND an added row are both handled - by throwing the view away rather than trying to patch it.
+	 *
+	 * <p>
+	 * Beware: this only refreshes the reflected view. Roles of other concepts still point at the OLD reflected instances, so the owning
+	 * {@link VirtualModelInstance} must re-run whatever behaviour re-attaches them (in FML, the synchronization behaviour).
+	 */
+	public void refresh();
+
+	public static abstract class ReflectedFMLRTModelSlotInstanceImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends ModelSlotInstanceImpl<ReflectedFMLRTModelSlot<VMI, R, RD, TA>, VMI>
 			implements ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> {
 
@@ -140,14 +153,45 @@ public interface ReflectedFMLRTModelSlotInstance<
 			this.reflectedResource = reflectedResource;
 		}
 
+		/**
+		 * Return the reflected {@link VirtualModelInstance} this model slot gives access to, rebuilding it when required.
+		 *
+		 * <p>
+		 * A reflected instance is a live view over a foreign artifact and is never serialized: the {@code .fml.rt} only carries the URI of
+		 * the reflected resource. So after deserialization the field is null and has to be rebuilt from that URI, by replaying the
+		 * technology-specific reflection - otherwise the model slot, and every role holding instances it contains, silently reads null.
+		 * This mirrors {@code ResourceBasedModelSlotInstanceImpl.getAccessedResourceData()}, which rebuilds from its own resource.
+		 */
 		@Override
 		public VMI getAccessedResourceData() {
+			if (accessedResourceData == null && getReflectedResource() != null && getModelSlot() != null) {
+				accessedResourceData = getModelSlot().reflectVirtualModelInstance(getReflectedResource());
+				if (accessedResourceData == null) {
+					logger.warning("Could not reflect resource " + getReflectedResourceURI() + " through model slot " + getModelSlot());
+				}
+			}
 			return accessedResourceData;
 		}
 
 		@Override
 		public void setAccessedResourceData(VMI accessedResourceData) {
 			this.accessedResourceData = accessedResourceData;
+		}
+
+		@Override
+		public void refresh() {
+			R resource = getReflectedResource();
+			if (resource == null) {
+				logger.warning("Cannot refresh " + this + ": no reflected resource for " + getReflectedResourceURI());
+				return;
+			}
+			// Drop the loaded artefact: the reflected instances read their values from the artefact objects
+			// (POI rows, for a workbook), so keeping them would keep serving the values read at load time.
+			if (resource.isLoaded()) {
+				resource.unloadResourceData(false);
+			}
+			// Drop the view. getAccessedResourceData() rebuilds it - and reloads the artefact on the way.
+			accessedResourceData = null;
 		}
 
 		/*@Override

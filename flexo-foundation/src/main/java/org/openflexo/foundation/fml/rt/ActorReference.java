@@ -54,11 +54,22 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents run-time-level object encoding reference to object considered as a modelling element<br>
- * An {@link ActorReference} is always attached to a {@link FlexoConceptInstance}
- * 
+ * The value of a {@link FlexoRole} in a {@link FlexoConceptInstance}: a run-time object referencing the object playing the role (the
+ * modelling element), and persisted with the instance.
+ * <p>
+ * The kind of reference depends on the role (see {@link FlexoRole#makeActorReference(Object, FlexoConceptInstance)}):
+ * <ul>
+ * <li>{@link PrimitiveActorReference} for a {@link org.openflexo.foundation.fml.PrimitiveRole}</li>
+ * <li>{@link ModelObjectActorReference} for a {@link org.openflexo.foundation.fml.FlexoConceptInstanceRole}, or for a
+ * {@link org.openflexo.foundation.fml.JavaRole} whose value is a {@link org.openflexo.foundation.FlexoObject}</li>
+ * <li>{@link JavaActorReference} for a {@link org.openflexo.foundation.fml.JavaRole} whose value is another Java object</li>
+ * <li>{@link FlexoEnumValueActorReference} for an enumeration value</li>
+ * <li>{@link ModelSlotInstance} for a {@link org.openflexo.foundation.technologyadapter.ModelSlot}</li>
+ * </ul>
+ * {@link #getModellingElement(boolean)} allows to get the referenced object without forcing the loading of its resource.
+ *
  * @author sylvain
- * 
+ *
  * @param <T>
  *            type of modelling element referenced by this ActorReference
  */

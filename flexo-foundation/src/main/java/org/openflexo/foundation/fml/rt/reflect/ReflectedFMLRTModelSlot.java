@@ -48,10 +48,8 @@ import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot.AbstractFMLRTModelSlotImpl;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -80,17 +78,43 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @DeclareActorReferences({ ReflectedFMLRTModelSlotInstance.class }) // TODO : this declaration is not taken under account
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ReflectedFMLRTModelSlot.ReflectedFMLRTModelSlotImpl.class)
-public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> /*& PamelaResource<RD, ?>*/, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends AbstractFMLRTModelSlot<VMI, R, TA> {
 
-	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, ?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
+	/**
+	 * Build the {@link ReflectedVirtualModelInstance} reflecting supplied resource through this model slot's {@link VirtualModel} contract.
+	 *
+	 * <p>
+	 * This is the technology-specific part of {@link #connectTo(TechnologyAdapterResource, FlexoConceptInstance)}, isolated so that it can
+	 * also be replayed on DESERIALIZATION: a reflected {@link VirtualModelInstance} is never serialized (it is a view over a foreign
+	 * artifact), only the URI of the reflected resource is, so {@link ReflectedFMLRTModelSlotInstance#getAccessedResourceData()} has to
+	 * rebuild it. A technology which does not implement this cannot survive a round-trip.
+	 *
+	 * @param resource
+	 *            the technology-specific resource to reflect
+	 * @return the reflected {@link VirtualModelInstance}, or null when this model slot cannot build one
+	 */
+	public VMI reflectVirtualModelInstance(R resource);
+
+	public static abstract class ReflectedFMLRTModelSlotImpl<VMI extends ReflectedVirtualModelInstance<VMI, R, RD, TA>, R extends TechnologyAdapterResource<RD, TA> /*& PamelaResource<RD, ?>*/, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends AbstractFMLRTModelSlotImpl<VMI, R, TA> implements ReflectedFMLRTModelSlot<VMI, R, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(ReflectedFMLRTModelSlot.class.getPackage().getName());
 
+		/**
+		 * Default implementation: this technology cannot rebuild a reflected {@link VirtualModelInstance} from its resource alone. Such a
+		 * model slot still works in memory, but the roles it feeds come back null after deserialization.
+		 */
+		@Override
+		public VMI reflectVirtualModelInstance(R resource) {
+			logger.warning("reflectVirtualModelInstance() is not implemented by " + getClass().getSimpleName()
+					+ ": the reflected instance over " + resource + " cannot be rebuilt after deserialization");
+			return null;
+		}
+
 		@Override
 		public ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> makeActorReference(VMI accessedResourceData, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory factory = fci.getFactory();
 			ReflectedFMLRTModelSlotInstance<VMI, R, RD, TA> returned = factory.newInstance(ReflectedFMLRTModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);

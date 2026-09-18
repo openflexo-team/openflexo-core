@@ -36,7 +36,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
-import org.openflexo.foundation.resource.TechnologySpecificPamelaResourceFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
@@ -44,9 +43,15 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 
 /**
- * Implementation of {@link TechnologySpecificPamelaResourceFactory} for {@link CompilationUnitResource}<br>
- * 
- * This factory is responsible to create or retrieve {@link VirtualModel} objects
+ * The factory creating and retrieving the {@link CompilationUnitResource}s: the resources of FML compilation units.
+ * <p>
+ * A valid artefact is a readable directory whose name ends with {@link #FML_SUFFIX}. Such a resource may be created at top level
+ * ({@code makeTopLevelCompilationUnitResource}) or inside another compilation unit ({@code makeContainedCompilationUnitResource}).
+ * Registering a resource also registers it in the {@link org.openflexo.foundation.fml.CompilationUnitRepository} of its resource center and
+ * in the {@link org.openflexo.foundation.fml.VirtualModelLibrary}, then explores the VirtualModels it contains.
+ * <p>
+ * Note that the implementation of {@link CompilationUnitResource} lives in another module (flexo-foundation-rm) and is bound reflectively by
+ * this factory.
  * 
  * @author sylvain
  *
@@ -55,7 +60,6 @@ public class CompilationUnitResourceFactory
 		extends TechnologySpecificFlexoResourceFactory<CompilationUnitResource, FMLCompilationUnit, FMLTechnologyAdapter> {
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
-	// public static final FlexoVersion CURRENT_FML_VERSION = new FlexoVersion("2.0");
 	public static final String FML_SUFFIX = ".fml";
 	public static final String FML_XML_SUFFIX = ".fml.xml";
 
@@ -82,7 +86,6 @@ public class CompilationUnitResourceFactory
 	/**
 	 * Build and return model factory to use for resource data managing
 	 */
-	// @Override
 	public FMLModelFactory makeModelFactory(CompilationUnitResource resource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 		return new FMLModelFactory(resource, technologyContextManager.getServiceManager());
@@ -96,10 +99,6 @@ public class CompilationUnitResourceFactory
 	 */
 	@Override
 	public FMLCompilationUnit makeEmptyResourceData(CompilationUnitResource resource) {
-		/*if (resource.getSpecializedResourceDataClass() != null) {
-			// System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
-			return resource.getFactory().newInstance(resource.getSpecializedResourceDataClass());
-		}*/
 		FMLCompilationUnit returned = resource.getFactory().newCompilationUnit();
 		VirtualModel virtualModel = resource.getFactory().newVirtualModel();
 		try {
@@ -116,9 +115,6 @@ public class CompilationUnitResourceFactory
 	@Override
 	protected FMLCompilationUnit createEmptyContents(CompilationUnitResource resource) {
 		FMLCompilationUnit returned = super.createEmptyContents(resource);
-		/*if (resource.getContainer() != null) {
-			resource.getContainer().getCompilationUnit().getVirtualModel().addToVirtualModels(returned.getVirtualModel());
-		}*/
 		return returned;
 	}
 
@@ -261,7 +257,6 @@ public class CompilationUnitResourceFactory
 		CompilationUnitResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 
 		returned.setVersion(INITIAL_REVISION);
-		// returned.setModelVersion(CURRENT_FML_VERSION);
 
 		return returned;
 	}
@@ -280,10 +275,7 @@ public class CompilationUnitResourceFactory
 		// We initiate a first factory (that may evolve regarding requiredModelSlotList
 		returned.setFactory(makeModelFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
 
-		// VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
 		VirtualModelInfo vpi = returned.getVirtualModelInfo(resourceCenter);
-
-		// logger.fine("Found " + vpi.name + " uri=" + vpi.uri + " version=" + vpi.version + " " + vpi.requiredModelSlotList);
 
 		if (vpi != null) {
 			returned.setURI(vpi.getURI());
@@ -327,7 +319,6 @@ public class CompilationUnitResourceFactory
 		else {
 			logger.warning("Cannot retrieve info from " + serializationArtefact);
 			returned.setVersion(INITIAL_REVISION);
-			// returned.setModelVersion(CURRENT_FML_VERSION);
 		}
 
 		return returned;
@@ -352,10 +343,6 @@ public class CompilationUnitResourceFactory
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact) && (resourceCenter.retrieveName(serializationArtefact).endsWith(FML_SUFFIX)
 				/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX + "/")*/)) {
-			/*final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewPointResource.VIEWPOINT_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();*/
 			return true;
 		}
 		return false;
@@ -426,6 +413,10 @@ public class CompilationUnitResourceFactory
 
 		for (I child : resourceCenter.getContents(serializationArtefact)) {
 			String childName = resourceCenter.retrieveName(child);
+			if (LocalizedDictionaryResourceFactory.DIRECTORY_NAME.equals(childName) && resourceCenter.isDirectory(child)) {
+				retrieveLocalizedDictionaryResource(child, virtualModelResource);
+				continue;
+			}
 			if (isValidArtefact(child, resourceCenter)) {
 				// Following code is deprecated, as it is based on XML version
 				I xmlFile = resourceCenter.getEntry(childName + ".xml", child);
@@ -461,115 +452,60 @@ public class CompilationUnitResourceFactory
 		}
 	}
 
-	/*private static class VirtualModelInfo {
-		public String uri;
-		public String version;
-		public String name;
-		// public String modelVersion;
-		public String requiredModelSlotList;
-		public String virtualModelClassName;
-	
-		VirtualModelInfo() {
+	/**
+	 * Retrieve the localized dictionary stored in the container of supplied compilation unit, and link it to that compilation unit.
+	 *
+	 * <p>
+	 * Done here because nothing else ever sees that directory: {@link FMLTechnologyAdapter#isIgnorable} ignores every directory inside a
+	 * <code>.fml</code> container, so the exploration of the resource center never offers it to {@link LocalizedDictionaryResourceFactory}.
+	 */
+	@SuppressWarnings("unchecked")
+	private <I> void retrieveLocalizedDictionaryResource(I directory, CompilationUnitResource compilationUnitResource) {
+
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) compilationUnitResource.getResourceCenter();
+		LocalizedDictionaryResourceFactory factory = getTechnologyAdapter(resourceCenter.getServiceManager())
+				.getResourceFactory(LocalizedDictionaryResourceFactory.class);
+		if (factory == null || factory.getRegisteredResource(directory) != null) {
+			return;
 		}
-	
-		VirtualModelInfo(String uri, String version, String name, String requiredModelSlotList,
-				String virtualModelClassName) {
-			super();
-			this.uri = uri;
-			this.version = version;
-			this.name = name;
-			// this.modelVersion = modelVersion;
-			this.requiredModelSlotList = requiredModelSlotList;
-			this.virtualModelClassName = virtualModelClassName;
+
+		try {
+			LocalizedDictionaryResource dictionaryResource = factory.retrieveResource(directory, resourceCenter);
+			if (dictionaryResource.getContainer() == null) {
+				compilationUnitResource.addToContents(dictionaryResource);
+			}
+		} catch (ModelDefinitionException | IOException e) {
+			logger.warning("Could not retrieve the localized dictionary of " + compilationUnitResource.getURI() + ": " + e);
 		}
 	}
-	
-	private static <I> VirtualModelInfo findVirtualModelInfo(CompilationUnitResource resource, FlexoResourceCenter<I> resourceCenter) {
-	
-		if (resourceCenter instanceof FlexoProject) {
-			resourceCenter = ((FlexoProject<I>) resourceCenter).getDelegateResourceCenter();
-		}
-	
-		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
-			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
-			File file = (File) resource.getIODelegate().getSerializationArtefact();
-	
-			System.out.println("Je cherche les metadonnees de " + file);
-			System.out.println("file.lastModified()=" + file.lastModified());
-			System.out.println("metaDataManager.metaDataLastModified(file)=" + metaDataManager.metaDataLastModified(file));
-	
-			if (file.lastModified() < metaDataManager.metaDataLastModified(file)) {
-				// OK, in this case the metadata file is there and more recent than .fml.xml file
-				// Attempt to retrieve metadata from cache
-				String uri = metaDataManager.getProperty("uri", file);
-				String name = metaDataManager.getProperty("name", file);
-				String version = metaDataManager.getProperty("version", file);
-				// String modelVersion = metaDataManager.getProperty("modelVersion", file);
-				String requiredModelSlotList = metaDataManager.getProperty("requiredModelSlotList", file);
-				String virtualModelClassName = metaDataManager.getProperty("virtualModelClassName", file);
-				if (uri != null && name != null && version != null && requiredModelSlotList != null) {
-					// Metadata are present, take it from cache
-					return new VirtualModelInfo(uri, version, name, requiredModelSlotList, virtualModelClassName);
-				}
-				System.out.println("prout");
-			}
-			else {
-				// No way, metadata are either not present or older than file version, we should parse XML file, continuing...
-			}
-		}
-	
-		VirtualModelInfo returned = new VirtualModelInfo();
-		XMLRootElementInfo xmlRootElementInfo = resourceCenter
-				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact(), true, "UseModelSlotDeclaration");
-		if (xmlRootElementInfo == null) {
+
+	/**
+	 * The compilation unit serialized in supplied <code>Xxx.fml/</code> directory, or null when none is registered there.
+	 *
+	 * <p>
+	 * Compares containers of serialization artefacts, the one primitive that behaves identically over a file-based and a jar-based resource
+	 * center - unlike a lookup through <code>RepositoryFolder</code>.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <I> CompilationUnitResource getCompilationUnitResourceSerializedIn(I directory, FlexoResourceCenter<I> resourceCenter) {
+
+		if (directory == null || resourceCenter.getServiceManager() == null) {
 			return null;
 		}
-	
-		returned.uri = xmlRootElementInfo.getAttribute("uri");
-		returned.name = xmlRootElementInfo.getAttribute("name");
-		returned.version = xmlRootElementInfo.getAttribute("version");
-		// returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
-		returned.virtualModelClassName = xmlRootElementInfo.getAttribute("virtualModelClass");
-	
-		if (StringUtils.isEmpty(returned.name)) {
-			if (StringUtils.isNotEmpty(returned.uri)) {
-				if (returned.uri.indexOf("/") > -1) {
-					returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
-				}
-				else if (returned.uri.indexOf("\\") > -1) {
-					returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
-				}
-				else {
-					returned.name = returned.uri;
-				}
+
+		FMLTechnologyAdapter fmlTA = resourceCenter.getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLTechnologyAdapter.class);
+		if (fmlTA == null) {
+			return null;
+		}
+
+		for (CompilationUnitResource compilationUnitResource : fmlTA.getVirtualModelRepository(resourceCenter).getAllResources()) {
+			I serializationArtefact = (I) compilationUnitResource.getIODelegate().getSerializationArtefact();
+			if (directory.equals(resourceCenter.getContainer(serializationArtefact))) {
+				return compilationUnitResource;
 			}
 		}
-	
-		String requiredModelSlotList = "";
-		boolean isFirst = true;
-		for (XMLElementInfo elInfo : xmlRootElementInfo.getElements()) {
-			requiredModelSlotList = requiredModelSlotList + (isFirst ? "" : ",") + elInfo.getAttribute("modelSlotClass");
-			isFirst = false;
-		}
-	
-		returned.requiredModelSlotList = requiredModelSlotList;
-	
-		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
-			// Save metadata !!!
-			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
-			File file = (File) resource.getIODelegate().getSerializationArtefact();
-	
-			metaDataManager.setProperty("uri", returned.uri, file, false);
-			metaDataManager.setProperty("name", returned.name, file, false);
-			metaDataManager.setProperty("version", returned.version, file, false);
-			// metaDataManager.setProperty("modelVersion", returned.modelVersion, file, false);
-			metaDataManager.setProperty("requiredModelSlotList", returned.requiredModelSlotList, file, false);
-			metaDataManager.setProperty("virtualModelClassName", returned.virtualModelClassName, file, false);
-	
-			metaDataManager.saveMetaDataProperties(file);
-		}
-	
-		return returned;
-	}*/
+		return null;
+	}
 
 }

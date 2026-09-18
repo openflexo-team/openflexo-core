@@ -53,14 +53,24 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A {@link GetSetProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data for reading and writing using
- * a typed control graph<br>
- * Access to data is read-write
- * 
- * 
- * 
+ * A {@link GetProperty} which can also be written, declared in FML with a {@code get()} block and a {@code set(...)} block (see
+ * {@link #getSetControlGraph()}). It is read-only as long as it has no {@code set} block.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * String displayName {
+ *     String get() {
+ *         return "Shelf " + label;
+ *     }
+ *     set(String value) {
+ *         label = value;
+ *     }
+ * };
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity
 @ImplementationClass(GetSetProperty.GetSetPropertyImpl.class)
@@ -73,6 +83,14 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String SET_CONTROL_GRAPH_KEY = "setControlGraph";
 
+	/**
+	 * Return the name of the variable holding the assigned value in the {@code set} block: {@code value}<br>
+	 * Note that the parser does not use the parameter name declared in {@code set(...)}: in the body of the {@code set} block, the assigned
+	 * value is always accessed as {@code value}, neither through the declared name nor through {@code parameters} (known defect
+	 * {@code CORE-D-3}, see {@code KNOWN_DEFECTS.md} in openflexo-core)
+	 *
+	 * @return
+	 */
 	@Getter(value = VALUE_VARIABLE_NAME_KEY, defaultValue = "value")
 	@XMLAttribute
 	public String getValueVariableName();

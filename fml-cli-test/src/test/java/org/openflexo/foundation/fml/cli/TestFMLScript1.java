@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.cli;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -51,6 +52,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssertException;
 import org.openflexo.foundation.fml.cli.test.FMLScriptParserTestCase;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -139,7 +141,11 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 	public void executeScript() throws ParseException, ModelDefinitionException, IOException, FMLCommandExecutionException {
 		log("Execute script");
 
-		script.execute();
+		try {
+			script.execute();
+		} catch (FMLAssertException e) {
+			fail(e.getMessage());
+		}
 	}
 
 }

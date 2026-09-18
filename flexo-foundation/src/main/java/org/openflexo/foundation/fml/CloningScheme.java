@@ -45,8 +45,12 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A CloningScheme represents a behavioural feature encoding the cloning of an FlexoConcept
- * 
+ * A behaviour creating an instance of a concept by cloning an existing one; the type of the created instance is the type inferred from
+ * the return statements of its body.
+ * <p>
+ * Core FML has no dedicated syntax for it: it can only be made available by a model slot declaring it (see
+ * {@link org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours}).
+ *
  * @author sylvain
  * 
  */

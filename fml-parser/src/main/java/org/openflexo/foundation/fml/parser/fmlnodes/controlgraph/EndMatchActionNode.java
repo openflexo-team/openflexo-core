@@ -45,24 +45,20 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.ActionScheme;
-import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
-import org.openflexo.foundation.fml.parser.node.AActionClause;
-import org.openflexo.foundation.fml.parser.node.ADeleteAbstractActionClause;
-import org.openflexo.foundation.fml.parser.node.ADeleteClause;
+import org.openflexo.foundation.fml.parser.node.AComplexEndMatchActionClause;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AInClause;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
-import org.openflexo.foundation.fml.parser.node.ANormalAbstractActionClause;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
-import org.openflexo.foundation.fml.parser.node.PAbstractActionClause;
+import org.openflexo.foundation.fml.parser.node.ASimpleEndMatchActionClause;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
+import org.openflexo.foundation.fml.parser.node.PEndMatchActionClause;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PInClause;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
@@ -86,6 +82,11 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	private static final Logger logger = Logger.getLogger(EndMatchActionNode.class.getPackage().getName());
 
 	private FlexoConceptInstanceType conceptType;
+	// The 'unmatched:' clause of an end-match action, parsed in buildModelObjectFromAST and resolved
+	// to a concrete FlexoBehaviour in finalizeDeserialization:
+	// - 'unmatched: delete(args?)' -> deleteClause == true, resolved to the concept default DeletionScheme
+	// - 'unmatched: someBehaviour(args)' -> behaviourName set, resolved to the matching behaviour
+	private boolean deleteClause;
 	private String behaviourName;
 	private List<DataBinding<?>> behaviourArgs;
 
@@ -131,8 +132,17 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			FlexoConcept flexoConceptType = conceptType.getFlexoConcept();
 			if (flexoConceptType != null) {
 				getModelObject().setFlexoConceptType(flexoConceptType);
-				getModelObject().setFlexoBehaviour(flexoConceptType.getFlexoBehaviour(behaviourName));
-				if (getModelObject().getFlexoBehaviour() != null) {
+				// Resolve the behaviour of the 'unmatched:' clause. 'delete(...)' maps to the concept
+				// default DeletionScheme; a named method maps to the matching behaviour. When nothing was
+				// parsed (empty/unsupported clause) the behaviour is left null so that FinalizeMatching
+				// generates no parameter (avoids the former spurious "binding required" validation error).
+				if (deleteClause) {
+					getModelObject().setFlexoBehaviour(flexoConceptType.getDefaultDeletionScheme());
+				}
+				else if (behaviourName != null) {
+					getModelObject().setFlexoBehaviour(flexoConceptType.getFlexoBehaviour(behaviourName));
+				}
+				if (getModelObject().getFlexoBehaviour() != null && behaviourArgs != null) {
 					int index = 0;
 					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getFlexoBehaviour().getParameters()) {
 						ExecuteBehaviourParameter arg = getModelObject().getParameter(flexoBehaviourParameter);
@@ -178,17 +188,20 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 			returned.setMatchingSet(matchingSet);
 		}
-		if (astNode.getAbstractActionClause() instanceof ANormalAbstractActionClause) {
-			AActionClause actionClause = (AActionClause) ((ANormalAbstractActionClause) astNode.getAbstractActionClause())
-					.getActionClause();
-			behaviourName = actionClause.getActionName().getText();
-			handleArguments(actionClause.getArgumentList(), returned);
+
+		PEndMatchActionClause clause = astNode.getEndMatchActionClause();
+		if (clause instanceof ASimpleEndMatchActionClause) {
+			// 'unmatched: delete(args?)' -> resolved to the concept default DeletionScheme in finalizeDeserialization
+			deleteClause = true;
+			handleArguments(((ASimpleEndMatchActionClause) clause).getArgumentList(), returned);
 		}
-		if (astNode.getAbstractActionClause() instanceof ADeleteAbstractActionClause) {
-			ADeleteClause actionClause = (ADeleteClause) ((ADeleteAbstractActionClause) astNode.getAbstractActionClause())
-					.getDeleteClause();
-			behaviourName = actionClause.getDestructorName().getText();
-			handleArguments(actionClause.getArgumentList(), returned);
+		else if (clause instanceof AComplexEndMatchActionClause) {
+			// 'unmatched: someBehaviour(args)'. Restoring this branch requires decomposing a
+			// method_invocation (not a PExpression) into behaviour name + arguments. Not re-supported
+			// yet: leave the behaviour unresolved rather than binding an arbitrary behaviour (which used
+			// to happen through getFlexoBehaviour(null) and surfaced as a spurious validation error).
+			logger.warning("'end match ... unmatched: <method invocation>' is not yet supported by the parser; "
+					+ "the unmatched behaviour call is ignored");
 		}
 		return returned;
 
@@ -213,7 +226,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		append(dynamicContents(SPACE,() -> getInAsString()), getInExpressionFragment());
 		//append(staticContents(")"), getRParInFragment());
 
-		when(() -> isNormalAction()).thenAppend(staticContents(SPACE, "action", ""), getActionFragment())
+		/*when(() -> isNormalAction()).thenAppend(staticContents(SPACE, "action", ""), getActionFragment())
 				.thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getFlexoBehaviour().getName()), getBehaviourNameFragment())
 				.thenAppend(staticContents("("), getAbstractActionLParFragment())
@@ -227,13 +240,13 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 				.thenAppend(staticContents("("), getAbstractActionLParFragment())
 				.thenAppend(dynamicContents(() -> serializeArguments(getModelObject().getParameters())),
 						getAbstractActionArgumentsFragment())
-				.thenAppend(staticContents(")"), getAbstractActionRParFragment());
+				.thenAppend(staticContents(")"), getAbstractActionRParFragment());*/
 
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on
 	}
 
-	private boolean isNormalAction() {
+	/*private boolean isNormalAction() {
 		if (getModelObject() != null) {
 			return getModelObject().getFlexoBehaviour() instanceof ActionScheme;
 		}
@@ -241,7 +254,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			return getASTNode() != null && getASTNode().getAbstractActionClause() instanceof ANormalAbstractActionClause;
 		}
 	}
-
+	
 	private boolean isDeleteAction() {
 		if (getModelObject() != null) {
 			return getModelObject().getFlexoBehaviour() instanceof DeletionScheme;
@@ -249,7 +262,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		else {
 			return getASTNode() != null && getASTNode().getAbstractActionClause() instanceof ADeleteAbstractActionClause;
 		}
-	}
+	}*/
 
 	private String getConceptName() {
 		if (getASTNode() != null) {
@@ -326,7 +339,21 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		return null;
 	}
 
-	private AActionClause getActionClause() {
+	private RawSourceFragment getUnmatchedFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getKwUnmatched());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getColonFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getColon());
+		}
+		return null;
+	}
+
+	/*private AActionClause getActionClause() {
 		if (getASTNode() != null) {
 			PAbstractActionClause abstractActionClause = getASTNode().getAbstractActionClause();
 			if (abstractActionClause instanceof ANormalAbstractActionClause) {
@@ -335,7 +362,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		}
 		return null;
 	}
-
+	
 	private ADeleteClause getDeleteClause() {
 		if (getASTNode() != null) {
 			PAbstractActionClause abstractActionClause = getASTNode().getAbstractActionClause();
@@ -344,23 +371,23 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			}
 		}
 		return null;
-	}
+	}*/
 
-	private RawSourceFragment getActionFragment() {
+	/*private RawSourceFragment getActionFragment() {
 		if (getActionClause() != null) {
 			return getFragment(getActionClause().getKwAction());
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getDeleteFragment() {
 		if (getDeleteClause() != null) {
 			return getFragment(getDeleteClause().getKwDelete());
 		}
 		return null;
-	}
+	}*/
 
-	private RawSourceFragment getColonColonFragment() {
+	/*private RawSourceFragment getColonColonFragment() {
 		if (getActionClause() != null) {
 			return getFragment(getActionClause().getColonColon());
 		}
@@ -369,7 +396,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getBehaviourNameFragment() {
 		if (getActionClause() != null) {
 			return getFragment(getActionClause().getActionName());
@@ -379,7 +406,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getAbstractActionLParFragment() {
 		if (getActionClause() != null) {
 			return getFragment(getActionClause().getLPar());
@@ -389,7 +416,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getAbstractActionArgumentsFragment() {
 		if (getActionClause() != null) {
 			return getFragment(getActionClause().getArgumentList());
@@ -399,7 +426,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		}
 		return null;
 	}
-
+	
 	private RawSourceFragment getAbstractActionRParFragment() {
 		if (getActionClause() != null) {
 			return getFragment(getActionClause().getRPar());
@@ -408,7 +435,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			return getFragment(getDeleteClause().getRPar());
 		}
 		return null;
-	}
+	}*/
 
 	private String serializeArguments(List<ExecuteBehaviourParameter> arguments) {
 		StringBuffer sb = new StringBuffer();

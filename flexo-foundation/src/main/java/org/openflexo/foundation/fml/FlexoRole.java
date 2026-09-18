@@ -84,15 +84,27 @@ import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link FlexoRole} is a particular implementation of a {@link FlexoProperty}<br>
- * As such, {@link FlexoRole} is a structural element of an FlexoConcept, which plays a property in this {@link FlexoConcept}<br>
- * A {@link FlexoRole} is a direct reference to a modelling element stored in an external resource accessed by a {@link ModelSlot}<br>
- * More formerly, a {@link FlexoRole} is the specification of an object accessed at run-time (inside an {@link FlexoConcept} instance)<br>
- * A {@link ModelSlot} formalizes a contract for accessing to a data
- * 
- * 
+ * A {@link FlexoRole} is a {@link FlexoProperty} whose value is stored in the {@link FlexoConceptInstance}: at run-time, each value is held
+ * by an {@link ActorReference} (see {@link #makeActorReference(Object, FlexoConceptInstance)}).
+ * <p>
+ * Depending on its type, a role references a primitive value ({@link PrimitiveRole}), a Java object ({@link JavaRole}), an instance of a
+ * concept ({@link FlexoConceptInstanceRole}), or an object of another technological space, declared with {@code with TA::Role(...)} and
+ * accessed through a {@link ModelSlot} (see {@link #getModelSlot()}). A {@link ModelSlot} is itself a {@link FlexoRole}.
+ * <p>
+ * A role has a cardinality ({@link #getCardinality()}), and may declare a default value and a container.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public concept Shelf {
+ *     String label;       // PrimitiveRole
+ *     Book[0,*] books;    // FlexoConceptInstanceRole, with cardinality ZeroMany
+ *     ...
+ * }
+ * </pre>
+ *
  * @author sylvain
- * 
+ *
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoRole.FlexoRoleImpl.class)
@@ -117,12 +129,21 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	@PropertyIdentifier(type = boolean.class)
 	String IS_REQUIRED_KEY = "isRequired";
 
+	/**
+	 * Same as {@link #getName()}
+	 */
 	@Getter(value = ROLE_NAME_KEY)
 	String getRoleName();
 
 	@Setter(ROLE_NAME_KEY)
 	void setRoleName(String patternRoleName) throws InvalidNameException;
 
+	/**
+	 * Return the {@link ModelSlot} through which the objects referenced by this role are accessed<br>
+	 * When not explicitly set, it is inferred from the binding path of the container of this role (see {@link #getContainer()})
+	 *
+	 * @return
+	 */
 	@Getter(value = MODEL_SLOT_KEY)
 	@Embedded // TODO Why this property is embedded ?
 	ModelSlot<?, ?> getModelSlot();
@@ -142,8 +163,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	/**
 	 * Sets cardinality of this property
-	 * 
-	 * @return
+	 *
+	 * @param cardinality
 	 */
 	@Setter(CARDINALITY_KEY)
 	void setCardinality(PropertyCardinality cardinality);
@@ -196,8 +217,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass();
 
 	/**
-	 * Return cloning strategy to be applied for this property
-	 * 
+	 * Return cloning strategy to be applied for this property, when an instance is copied and pasted
+	 *
 	 * @return
 	 */
 	@Getter(CLONING_STRATEGY_KEY)
@@ -206,8 +227,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	/**
 	 * Sets cloning strategy to be applied for this property
-	 * 
-	 * @return
+	 *
+	 * @param cloningStrategy
 	 */
 	@Setter(CLONING_STRATEGY_KEY)
 	void setCloningStrategy(RoleCloningStrategy cloningStrategy);

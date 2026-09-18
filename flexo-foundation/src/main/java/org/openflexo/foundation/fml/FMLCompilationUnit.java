@@ -38,16 +38,13 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
@@ -70,6 +67,7 @@ import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
+import org.openflexo.foundation.fml.rm.LocalizedDictionaryResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.CannotRenameException;
@@ -81,7 +79,6 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -105,13 +102,50 @@ import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * The object form of a FML source file ({@code Xxx.fml}): the {@link ResourceData} of a {@link CompilationUnitResource}.
+ * <p>
+ * In the order imposed by the grammar, a compilation unit declares:
+ * <ol>
+ * <li>namespaces ({@link NamespaceDeclaration})</li>
+ * <li>used model slot types ({@link UseModelSlotDeclaration})</li>
+ * <li>imports of Java classes ({@link JavaImportDeclaration}) or of FML elements addressed by URI ({@link ElementImportDeclaration})</li>
+ * <li>type aliases ({@link TypeDeclaration})</li>
+ * <li>exactly one {@link VirtualModel} (see {@link #getVirtualModel()})</li>
+ * </ol>
+ * Example (header of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+ *
+ * import java.util.List;
+ *
+ * &#64;URI("http://openflexo.org/test/TestResourceCenter/Library.fml")
+ * &#64;Version("1.0")
+ * &#64;Description("A library holding shelves of books")
+ * public model Library {
+ *     ...
+ * }
+ * </pre>
+ *
+ * A compilation unit has no URI of its own: {@link #getURI()} and {@link #setURI(String)} delegate to its {@link VirtualModel}. It holds the
+ * {@link FMLTypingSpace} in which the types of its declarations are resolved.
+ * <p>
+ * A compilation unit is stored in a container directory {@code Xxx.fml/} (see {@link #getContainerDirectoryResource()}), which also holds
+ * the compilation units of its contained virtual models (one {@code Yyy.fml/} directory each), its localized dictionary and its user
+ * interface components.
+ * <p>
+ * Code building or modifying FML programmatically should rely on the {@code ensureXxx(...)} methods and on {@link #manageImports()}, so that
+ * the required declarations are present when the compilation unit is pretty-printed.
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(FMLCompilationUnit.FMLCompilationUnitImpl.class)
 public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, ResourceData<FMLCompilationUnit>, BindingEvaluationContext {
@@ -133,15 +167,13 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
 
 	/**
-	 * Returns URI for this {@link FMLCompilationUnit}<br>
-	 * Note that if this {@link FMLCompilationUnit} is contained in another {@link FMLCompilationUnit}, URI is computed from URI of
-	 * container FMLCompilationUnit
+	 * Return the URI of the {@link VirtualModel} of this compilation unit (see {@link VirtualModel#getURI()}), or null when it has none
 	 */
 	public abstract String getURI();
 
 	/**
-	 * Sets URI for this {@link FMLCompilationUnit}<br>
-	 * 
+	 * Sets the URI of the {@link VirtualModel} of this compilation unit (see {@link VirtualModel#setURI(String)})
+	 *
 	 * @param anURI
 	 */
 	public void setURI(String anURI);
@@ -261,15 +293,15 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	/**
 	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link FMLCompilationUnit}<br>
-	 * It includes the list of uses declarations accessible from parent and container
-	 * 
+	 * It includes the use declarations accessible from its container compilation unit (recursively)
+	 *
 	 * @return
 	 */
 	public List<UseModelSlotDeclaration> getAccessibleUseDeclarations();
 
 	/**
-	 * Return list of {@link UseModelSlotDeclaration} explicitely declared in this {@link VirtualModel}
-	 * 
+	 * Return list of {@link UseModelSlotDeclaration} explicitely declared in this {@link FMLCompilationUnit}
+	 *
 	 * @return
 	 */
 	@Getter(value = USE_DECLARATIONS_KEY, cardinality = Cardinality.LIST, inverse = UseModelSlotDeclaration.COMPILATION_UNIT_KEY)
@@ -277,9 +309,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<UseModelSlotDeclaration> getUseDeclarations();
-
-	// @Setter(USE_DECLARATIONS_KEY)
-	// public void setUseDeclarations(List<UseModelSlotDeclaration> useDecls);
 
 	@Adder(USE_DECLARATIONS_KEY)
 	@PastingPoint
@@ -292,7 +321,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public void moveUseModelSlotDeclarationToIndex(UseModelSlotDeclaration useModelSlotDeclaration, int index);
 
 	/**
-	 * Return boolean indicating if this VirtualModel uses supplied modelSlotClass
+	 * Return boolean indicating if this compilation unit uses supplied modelSlotClass
 	 * 
 	 * @param modelSlotClass
 	 * @return
@@ -309,35 +338,35 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public <MS extends ModelSlot<?, ?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
-	 * Return resource for this virtual model
-	 * 
+	 * Return the resource storing this compilation unit
+	 *
 	 * @return
 	 */
 	@Override
 	@Getter(value = RESOURCE, ignoreType = true)
-	// @CloningStrategy(value = StrategyType.FACTORY, factory = "cloneResource()")
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoResource<FMLCompilationUnit> getResource();
 
 	/**
-	 * Sets resource for this virtual model
-	 * 
-	 * @param aName
+	 * Sets the resource storing this compilation unit
+	 *
+	 * @param aCompilationUnitResource
 	 */
 	@Override
 	@Setter(value = RESOURCE)
 	public void setResource(FlexoResource<FMLCompilationUnit> aCompilationUnitResource);
 
 	/**
-	 * Convenient method used to retrieved {@link CompilationUnitResource}
-	 * 
+	 * Return the resource storing this compilation unit, typed as a {@link CompilationUnitResource}
+	 *
 	 * @return
 	 */
 	public CompilationUnitResource getVirtualModelResource();
 
 	/**
-	 * Version of encoded {@link VirtualModel}
-	 * 
+	 * Return the version of the {@link VirtualModel} of this compilation unit (its {@code @Version} annotation), or the version of its
+	 * resource when it has no {@link VirtualModel}
+	 *
 	 * @return
 	 */
 	@Getter(value = VERSION_KEY, isStringConvertable = true)
@@ -348,26 +377,65 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public void setVersion(FlexoVersion version);
 
 	/**
-	 * Version of FML meta-model
-	 * 
+	 * The localizer of this compilation unit: the dictionary stored in its <code>Xxx.fml/Localized/</code> directory when it has one (see
+	 * {@link #getLocalizedDictionaryResource()}), a localizer held in memory otherwise.<br>
+	 * A compilation unit only gets a stored dictionary on demand, through the "Localize..." action.
+	 *
 	 * @return
 	 */
-	/*@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
-	public FlexoVersion getModelVersion();*/
-
-	/*@Setter(MODEL_VERSION_KEY)
-	public void setModelVersion(FlexoVersion modelVersion);*/
-
 	public LocalizedDelegate getLocalizedDictionary();
+
+	/**
+	 * The resource storing the localized dictionary of this compilation unit, or null when it has none.
+	 *
+	 * @return
+	 */
+	public LocalizedDictionaryResource getLocalizedDictionaryResource();
+
+	/**
+	 * The localizer the dictionary of this compilation unit falls back to: the one of the container VirtualModel, or the platform's when
+	 * this compilation unit is not contained.
+	 *
+	 * @return
+	 */
+	public LocalizedDelegate getParentLocales();
+
+	/**
+	 * Register in the localizer of this compilation unit every localizable key it declares.
+	 */
+	public void searchNewLocalizedEntries();
+
+	/**
+	 * Return the directory serializing this {@link FMLCompilationUnit} (the <code>Xxx.fml/</code> container), or null when this compilation
+	 * unit has no resource yet.<br>
+	 *
+	 * Beyond the <code>Xxx.fml</code> core file, the contained VirtualModels and the <code>Localized/</code> dictionaries, that container is
+	 * free space: it is where the user interfaces of this compilation unit live (see {@link FlexoConcept#getUIComponentResource()} and
+	 * {@link FlexoConcept#getInspectorComponentResource()}).
+	 *
+	 * @return
+	 */
+	public Resource getContainerDirectoryResource();
+
+	/**
+	 * Return the artefact named <code>name</code> stored in the container directory of this {@link FMLCompilationUnit}, or null when no such
+	 * artefact exists.<br>
+	 *
+	 * <code>name</code> may denote a nested artefact, using <code>/</code> as a separator (<code>"UI/MyScreen.fib"</code>).
+	 *
+	 * @param name
+	 *            simple name of the searched artefact, extension included
+	 * @return
+	 */
+	public Resource getContainedArtefact(String name);
 
 	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
-	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 * Return the {@link FlexoConcept} whose name or URI matches the supplied string: the {@link VirtualModel} of this compilation unit
+	 * itself, then the concepts found by {@link VirtualModel#getFlexoConcept(String)}, then the elements imported by this compilation unit.
+	 * <br>
+	 * Prefer {@link #lookupFlexoConceptWithName(String)} or {@link #lookupFlexoConceptWithURI(String)}.
 	 *
-	 * Look in contained VirtualModel and contained FlexoConcept, and examine dependencies (imports)<br>
-	 * TODO: presents algorithm (semantics of first found concept, think of inheritance and embedding)
-	 * 
 	 * @param flexoConceptNameOrURI
 	 * @return
 	 */
@@ -376,10 +444,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	/**
 	 * Search and return {@link FlexoConcept} with supplied local name, given the context of this {@link FMLCompilationUnit}<br>
-	 * 
+	 *
 	 * Lookup algorithm follows:
 	 * <ul>
-	 * <li>First lookup in contained {@link VirtualModel}</li>
+	 * <li>First lookup in the {@link VirtualModel} of this compilation unit (see {@link VirtualModel#lookupFlexoConceptWithName(String)})</li>
 	 * <li>When not found, apply the same algorithm for each FMLCompilationUnit import of this {@link FMLCompilationUnit} (in the order they
 	 * are declared : the first found is returned)</li>
 	 * </ul>
@@ -398,8 +466,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public FlexoConcept lookupFlexoConceptWithURI(String conceptURI);
 
 	/**
-	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModel}
-	 * 
+	 * Return the list of {@link TechnologyAdapter} required by this compilation unit: those of the model slots of its {@link VirtualModel},
+	 * and those required by its contained compilation units (which are loaded by this call)
+	 *
 	 * @return
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
@@ -477,9 +546,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public Class<?> lookupClassInUseDeclarations(String className);
 
 	/**
-	 * Perform a full revalidation on all {@link DataBinding} declared in this {@link FMLCompilationUnit}
-	 * 
-	 * Recursively call
+	 * Perform a full revalidation on all {@link DataBinding} declared in this {@link FMLCompilationUnit}, by calling
+	 * {@link FMLObject#revalidateBindings()} on every object declared in it
 	 */
 	public void revalidateAllBindings();
 
@@ -988,81 +1056,102 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return null;
 		}
 
-		private LocalizedDelegateImpl localized;
+		/**
+		 * The localizer used as long as this compilation unit has no stored dictionary. Kept, so that what it collected is still there when
+		 * "Localize..." creates the dictionary.
+		 */
+		private FMLLocalizedDelegate localesInMemory;
 
-		private Resource getLocalizedDirectoryResource() {
-			Resource virtualModelDirectory = getResource().getIODelegate().getSerializationArtefactAsResource().getContainer();
-			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile(".*/Localized"), false);
-			if (localizedDirs.size() > 0) {
-				return localizedDirs.get(0);
+		@Override
+		public Resource getContainerDirectoryResource() {
+			if (getResource() == null) {
+				return null;
 			}
-			if (virtualModelDirectory instanceof FileResourceImpl) {
-				try {
-					return new FileResourceImpl(virtualModelDirectory.getLocator(),
-							new File(((FileResourceImpl) virtualModelDirectory).getFile(), "Localized"));
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (LocatorNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			logger.warning("Cannot find localized directory for " + this);
-			return null;
-		}
-
-		private LocalizedDelegateImpl instantiateOrLoadLocales() {
-			if (getResource() != null) {
-				Resource localizedDirectoryResource = getLocalizedDirectoryResource();
-				if (localizedDirectoryResource == null) {
-					return null;
-				}
-				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
-				logger.info("Reading locales from " + localizedDirectoryResource);
-				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource,
-						getVirtualModel().getContainerVirtualModel() != null ? getVirtualModel().getContainerVirtualModel().getLocales()
-								: getServiceManager().getLocalizationService().getFlexoLocalizer(),
-						editSupport, editSupport);
-				returned.setLocalizationRetriever(new Runnable() {
-					@Override
-					public void run() {
-						searchNewLocalizedEntries();
-					}
-				});
-				return returned;
-
-			}
-			return null;
+			return getResource().getDirectory();
 		}
 
 		@Override
-		public LocalizedDelegate getLocalizedDictionary() {
-			if (localized == null) {
-				localized = instantiateOrLoadLocales();
-				if (localized == null) {
-					// Cannot load locales
-					if (getServiceManager() != null) {
-						return getServiceManager().getLocalizationService().getFlexoLocalizer();
-					}
-					return null;
-				}
-				// Converting old dictionaries
-				/*if (getDeprecatedLocalizedDictionary() != null) {
-					for (FMLLocalizedEntry fmlLocalizedEntry : getDeprecatedLocalizedDictionary().getLocalizedEntries()) {
-						localized.registerNewEntry(fmlLocalizedEntry.getKey(), Language.get(fmlLocalizedEntry.getLanguage()),
-								fmlLocalizedEntry.getValue());
-					}
-				}*/
+		public Resource getContainedArtefact(String name) {
+
+			if (name == null || name.length() == 0) {
+				return null;
 			}
-			return localized;
+
+			Resource container = getContainerDirectoryResource();
+			if (container == null) {
+				return null;
+			}
+
+			if (name.indexOf('/') >= 0) {
+				// A nested artefact ("UI/MyScreen.fib") can only be reached by walking the containment tree, since
+				// getContents() does not report directories on a file-based resource center. locateResource() does that
+				// walk, and its warning-on-miss is appropriate here: a nested path is only ever named explicitly.
+				return container.locateResource(name);
+			}
+
+			// Flat lookup, used to PROBE for artefacts that are legitimately absent most of the time. Deliberately not
+			// locateResource(), which logs a warning for every miss on a jar-based resource center.
+			// getContents(false) reports files only on a file-based resource center, which is exactly the population
+			// searched here, and makes this lookup behave identically over a jar.
+			for (Resource child : container.getContents(false)) {
+				if (hasSimpleName(child, name)) {
+					return child;
+				}
+			}
+
+			return null;
 		}
 
-		public void createLocalizedDictionaryWhenNonExistant() {
-			if (localized == null) {
-				logger.fine("createLocalizedDictionary for " + this);
-				localized = instantiateOrLoadLocales();
+		/**
+		 * Return whether supplied resource is named <code>name</code>.<br>
+		 * {@link Resource#getRelativePath()} is a '/'-separated path whose base differs between a file-based and a jar-based resource
+		 * center, so only its last element may be compared.
+		 */
+		private static boolean hasSimpleName(Resource resource, String name) {
+			String path = resource.getRelativePath();
+			if (path == null) {
+				return false;
 			}
+			int lastSeparator = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+			return name.equals(lastSeparator < 0 ? path : path.substring(lastSeparator + 1));
+		}
+
+		@Override
+		public LocalizedDictionaryResource getLocalizedDictionaryResource() {
+			return getResource() instanceof CompilationUnitResource
+					? ((CompilationUnitResource) getResource()).getLocalizedDictionaryResource()
+					: null;
+		}
+
+		@Override
+		public LocalizedDelegate getParentLocales() {
+			if (getVirtualModel() != null && getVirtualModel().getContainerVirtualModel() != null) {
+				return getVirtualModel().getContainerVirtualModel().getLocales();
+			}
+			if (getServiceManager() != null && getServiceManager().getLocalizationService() != null) {
+				return getServiceManager().getLocalizationService().getFlexoLocalizer();
+			}
+			return null;
+		}
+
+		/**
+		 * The stored dictionary when there is one, the localizer held in memory otherwise.<br>
+		 * Looked up at each call rather than cached: the dictionary may be created - by "Localize..." - after this compilation unit started
+		 * localizing.
+		 */
+		@Override
+		public LocalizedDelegate getLocalizedDictionary() {
+			LocalizedDictionaryResource dictionaryResource = getLocalizedDictionaryResource();
+			if (dictionaryResource != null) {
+				LocalizedDelegate dictionary = dictionaryResource.getDictionary();
+				if (dictionary != null) {
+					return dictionary;
+				}
+			}
+			if (localesInMemory == null) {
+				localesInMemory = new FMLLocalizedDelegate(() -> this);
+			}
+			return localesInMemory;
 		}
 
 		/*@Override
@@ -1087,7 +1176,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 		}
 
-		private void searchNewLocalizedEntries() {
+		@Override
+		public void searchNewLocalizedEntries() {
 			logger.info("Search new entries for " + this);
 
 			CompoundEdit ce = null;

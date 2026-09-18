@@ -1,0 +1,35 @@
+/**
+ * A fetch request whose container cannot be resolved must report no result, not blow up.
+ *
+ * Regression fixture: "select X from <something null>" used to throw a raw NullPointerException out
+ * of the engine. AbstractSelectFlexoConceptInstance.performExecute() warns "Cannot find virtual
+ * model instance on which to apply SelectFlexoConceptInstance" and returns null, and
+ * AbstractFetchRequest.execute() then called size() on that null. The stack trace pointed at the
+ * engine and never named the unresolved container, which made the real cause - an unresolved model
+ * slot - hard to see.
+ *
+ * See TestFetchFromNullContainer.fmlscript.
+ */
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestFetchFromNullContainer.fml")
+public model TestFetchFromNullContainer {
+
+	public Item newItem(String tag) {
+		return new Item(parameters.tag);
+	}
+
+	public List<Item> selectItemsFrom(TestFetchFromNullContainer container) {
+		return select Item from parameters.container;
+	}
+
+	public concept Item {
+		String tag;
+		create(String tag) {
+			tag = parameters.tag;
+		}
+		delete() {
+		}
+	}
+}

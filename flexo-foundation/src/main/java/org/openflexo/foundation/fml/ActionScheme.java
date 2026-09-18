@@ -44,6 +44,27 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * A method of a concept, declared in FML as {@code [visibility] [Type] name(...) { ... }}; its return type is the declared type, or the
+ * type inferred from the return statements of its body.
+ * <p>
+ * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
+ *
+ * <pre>
+ * public int countNovels() {
+ *     int count = 0;
+ *     for (Book book : books) {
+ *         if (book instanceof Novel) {
+ *             count = count + 1;
+ *         }
+ *     }
+ *     return count;
+ * }
+ * </pre>
+ *
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(ActionScheme.ActionSchemeImpl.class)
 @XMLElement

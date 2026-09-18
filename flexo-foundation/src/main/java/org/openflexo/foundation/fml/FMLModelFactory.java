@@ -52,7 +52,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
-import org.openflexo.foundation.fml.FMLCompilationUnit.FMLCompilationUnitImpl;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
@@ -129,11 +128,17 @@ import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
 /**
- * {@link PamelaModelFactory} used to handle VirtualModel models<br>
- * One instance is declared for a {@link CompilationUnitResource}
- * 
+ * The {@link PamelaModelFactory} building the objects of an FML compilation unit: one instance per {@link CompilationUnitResource}.
+ * <p>
+ * Its PAMELA meta-model is not fixed: it is computed from the model slots used by that compilation unit ({@code use ... as ...;}), adding
+ * for each of them the roles, behaviours, edition actions and fetch requests it declares by annotation. A compilation unit using a new
+ * technology therefore needs a new factory, which {@link CompilationUnitResource#updateFMLModelFactory(java.util.List)} builds.
+ * <p>
+ * This factory also carries the converters used to (de)serialize types, bindings, versions, resource paths and object references, and it
+ * provides the {@code newXxx()} methods with which the parser and the editor build every FML object.
+ *
  * @author sylvain
- * 
+ *
  */
 public class FMLModelFactory extends PamelaModelFactory implements PamelaResourceModelFactory<CompilationUnitResource> {
 
@@ -164,8 +169,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 				? retrieveTechnologySpecificClasses(compilationUnitResource.getVirtualModelClass(),
 						compilationUnitResource.getUsedModelSlots())
 				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService())));
-		// System.out.println("******** Initialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
-		// + " in thread " + Thread.currentThread());
 		this.serviceManager = serviceManager;
 		if (taService == null) {
 			taService = serviceManager.getTechnologyAdapterService();
@@ -188,22 +191,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 		// Init technology specific type registering
 		// TODO: do it only for required technology adapters
-		/*for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			ta.initTechnologySpecificTypes(typeConverter);
-		}*/
 
-		/*Set<Class<? extends TechnologySpecificType<?>>> allTypesToConsider = new HashSet<Class<? extends TechnologySpecificType<?>>>();
-		allTypesToConsider.add(FlexoConceptInstanceType.class);
-		allTypesToConsider.add(VirtualModelInstanceType.class);
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			for (Class<? extends TechnologySpecificType<?>> typeClass : ta.getAvailableTechnologySpecificTypes()) {
-				allTypesToConsider.add(typeClass);
-			}
-		}
-		System.out.println("les types pour " + virtualModelResource);
-		for (Class<? extends TechnologySpecificType<?>> typeClass : allTypesToConsider) {
-			typeConverter.registerTypeClass(typeClass);
-		}*/
 	}
 
 	public FlexoServiceManager getServiceManager() {
@@ -220,11 +208,12 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 	}
 
 	/**
-	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
-	 * parts, and return a newly created list of classes dedicated to {@link VirtualModel} manipulations
-	 * 
+	 * Return the classes to expose in the PAMELA meta-model for ALL model slots of all technology adapters: the model slot classes
+	 * themselves and, for each of them, the roles, behaviours, edition actions and fetch requests it declares by annotation
+	 *
 	 * @param taService
-	 * @return
+	 *            the technology adapter service providing the technology adapters to consider
+	 * @return the classes to expose
 	 * @throws ModelDefinitionException
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
@@ -233,7 +222,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
 		retrieveTechnologySpecificClassesForModelSlot(FMLRTModelSlot.class, classes);
 		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
-			for (Class<? extends ModelSlot<?,?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
+			for (Class<? extends ModelSlot<?, ?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				if (modelSlotClass != null) {
 					retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 				}
@@ -244,21 +233,25 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 	}
 
 	/**
-	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved for a list of used model slots, and
-	 * return a newly created list of classes dedicated to {@link VirtualModel} manipulations
-	 * 
-	 * @param taService
-	 * @return
+	 * Return the classes to expose in the PAMELA meta-model for the supplied USED model slots only: each model slot class and the roles,
+	 * behaviours, edition actions and fetch requests it declares by annotation. This is the variant used for a compilation unit, whose used
+	 * model slots are known from its {@code use} declarations.
+	 *
+	 * @param baseClass
+	 *            the {@link VirtualModel} class of the compilation unit
+	 * @param usedModelSlots
+	 *            the model slot classes used by the compilation unit
+	 * @return the classes to expose
 	 * @throws ModelDefinitionException
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(Class<? extends VirtualModel> baseClass,
-			List<Class<? extends ModelSlot<?,?>>> usedModelSlots) throws ModelDefinitionException {
+			List<Class<? extends ModelSlot<?, ?>>> usedModelSlots) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(FMLCompilationUnit.class);
 		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
 		retrieveTechnologySpecificClassesForModelSlot(FMLRTModelSlot.class, classes);
 		if (usedModelSlots != null) {
-			for (Class<? extends ModelSlot<?,?>> modelSlotClass : usedModelSlots) {
+			for (Class<? extends ModelSlot<?, ?>> modelSlotClass : usedModelSlots) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 			}
 		}
@@ -266,7 +259,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return classes;
 	}
 
-	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?,?>> modelSlotClass,
+	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?, ?>> modelSlotClass,
 			List<Class<?>> classes) {
 		classes.add(modelSlotClass);
 
@@ -369,7 +362,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?,?>> UseModelSlotDeclaration newUseModelSlotDeclaration(Class<MS> modelSlotClass) {
+	public <MS extends ModelSlot<?, ?>> UseModelSlotDeclaration newUseModelSlotDeclaration(Class<MS> modelSlotClass) {
 		UseModelSlotDeclaration returned = newInstance(UseModelSlotDeclaration.class);
 		returned.setModelSlotClass(modelSlotClass);
 		return returned;
@@ -767,7 +760,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?,?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot,
+	public <MS extends ModelSlot<?, ?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot,
 			Bindable bindable) {
 		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
 		returned.setParent(parent);
@@ -776,7 +769,7 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?,?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName,
+	public <MS extends ModelSlot<?, ?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName,
 			Bindable bindable) {
 		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
 		returned.setParent(parent);
@@ -784,29 +777,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		returned.setBindable(bindable);
 		return returned;
 	}
-
-	/*public <CSPE extends CreationSchemePathElement<?>> CSPE newAbstractCreationSchemePathElement(Class<CSPE> abstractCreationSchemeClass,
-			FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName, List<DataBinding<?>> args,
-			Bindable bindable) {
-		CSPE returned = newInstance(abstractCreationSchemeClass);
-		returned.setType(type);
-		returned.setParent(parent);
-		returned.setMethodName(constructorName);
-		returned.setBindable(bindable);
-		returned.setArguments(args);
-		return returned;
-	}
-	
-	public <CS extends AbstractCreationScheme, CSPE extends CreationSchemePathElement<CS>> CSPE newAbstractCreationSchemePathElement(
-			Class<CSPE> abstractCreationSchemeClass, IBindingPathElement parent, CS creationScheme, List<DataBinding<?>> args,
-			Bindable bindable) {
-		CSPE returned = newInstance(abstractCreationSchemeClass);
-		returned.setParent(parent);
-		returned.setFunction(creationScheme);
-		returned.setBindable(bindable);
-		returned.setArguments(args);
-		return returned;
-	}*/
 
 	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
 			String constructorName, List<DataBinding<?>> args, Bindable bindable) {
@@ -856,6 +826,11 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		returned.setProperty(property);
 		returned.setObject(object);
 		returned.setType(value);
+		return returned;
+	}
+
+	public <M extends FMLObject, E extends Enum<E>> FMLEnumPropertyValue<M, E> newEnumPropertyValue() {
+		FMLEnumPropertyValue<M, E> returned = newInstance(FMLEnumPropertyValue.class);
 		return returned;
 	}
 
@@ -916,7 +891,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
 			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
 			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits(getResource()));
-			// System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + resource.getURI());
 		}
 
 	}
@@ -928,7 +902,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 		if (ignoreHandler != null) {
 			undoManager.removeFromIgnoreHandlers(ignoreHandler);
-			// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + resource.getURI());
 		}
 
 	}
@@ -944,19 +917,12 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
-		if (newlyCreatedObject instanceof FMLCompilationUnitImpl) {
-			// Always create a LocalizedDictionary for a VirtualModel
-			((FMLCompilationUnitImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
-		}
+		// No localized dictionary is created here any more: a compilation unit gets one on demand, through "Localize..."
 	}
 
 	@Override
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
-		if (newlyCreatedObject instanceof FMLCompilationUnitImpl) {
-			// Always create a LocalizedDictionary for a VirtualModel
-			((FMLCompilationUnitImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
-		}
 	}
 
 	public TypeConverter getTypeConverter() {

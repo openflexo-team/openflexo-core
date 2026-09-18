@@ -25,12 +25,12 @@ import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 
 /**
  * Generic abstract concept representing an object beeing part of a text-based document at root level<br>
@@ -131,6 +131,10 @@ public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends Tech
 	 */
 	public int getIndex();
 
+	public FlexoDocElement<D, TA> getNextElement();
+
+	public <E> E getNextElement(Class<E> elementType);
+
 	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocElement<D, TA> {
 
@@ -188,6 +192,28 @@ public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends Tech
 			}
 			return -1;
 		}
+
+		@Override
+		public FlexoDocElement<D, TA> getNextElement() {
+			int index = getIndex();
+			if (index + 1 < getContainer().getElements().size()) {
+				return getContainer().getElements().get(index + 1);
+			}
+			return null;
+		}
+
+		@Override
+		public <E> E getNextElement(Class<E> elementType) {
+			FlexoDocElement<D, TA> current = getNextElement();
+			while (!elementType.isAssignableFrom(current.getImplementedInterface())) {
+				current = current.getNextElement();
+				if (current == null) {
+					return null;
+				}
+			}
+			return (E) current;
+		}
+
 	}
 
 }
