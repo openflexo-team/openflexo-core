@@ -1,0 +1,66 @@
+/**
+ * Behaviours with parameters, overloading, conditions, recursion and a side effect.
+ * See TestTalker.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/Talker.fml")
+public model Talker {
+
+	String last;
+
+	create() {
+	}
+
+	public String greet() {
+		return "hello";
+	}
+
+	public String greet(String who) {
+		return "hello " + parameters.who;
+	}
+
+	public int fact(int n) {
+		if (parameters.n <= 1) {
+			return 1;
+		}
+		return parameters.n * this.fact(parameters.n - 1);
+	}
+
+	public String pick(int n) {
+		if (parameters.n > 0) {
+			return "positive";
+		}
+		else {
+			return "not positive";
+		}
+	}
+
+	public int add(int a, int b) {
+		return parameters.a + parameters.b;
+	}
+
+	public remember(String text) {
+		last = parameters.text;
+	}
+
+	public Note addNote(String text) {
+		return new Note(parameters.text);
+	}
+
+	public removeNote(Note note) {
+		delete parameters.note;
+	}
+
+	public concept Note {
+
+		String text;
+
+		create(String text) {
+			text = parameters.text;
+		}
+
+		delete() {
+			container.last = "note deleted";
+		}
+	}
+}

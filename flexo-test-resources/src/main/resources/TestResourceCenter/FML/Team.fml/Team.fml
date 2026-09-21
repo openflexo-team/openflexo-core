@@ -1,0 +1,104 @@
+/**
+ * Matching: a set of Badge instances kept in step with the Member instances. See TestTeam.fmlscript.
+ */
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/Team.fml")
+public model Team {
+
+	create() {
+	}
+
+	public Member newMember(String name) {
+		return new Member(parameters.name);
+	}
+
+	public Squad newSquad(String label) {
+		return new Squad(parameters.label);
+	}
+
+	public removeMember(Member member) {
+		delete parameters.member;
+	}
+
+	public Badge badgeOf(Member member) {
+		return select unique Badge from (this) where (selected.member == parameters.member);
+	}
+
+	public int syncBadges() {
+		MatchingSet<Badge> badges = begin match Badge from this;
+		for (Member m : select Member from this) {
+			Badge b = match Badge in badges from this where (member = m) unmatched: new Badge(m);
+			b.text = m.name;
+		}
+		end match Badge in badges unmatched: delete();
+		List<Badge> all = select Badge from this;
+		return all.size;
+	}
+
+	public int syncBoth() {
+		MatchingSet<Badge> badges = begin match Badge from this;
+		MatchingSet<SquadTag> tags = begin match SquadTag from this;
+		for (Member m : select Member from this) {
+			match Badge in badges from this where (member = m) unmatched: new Badge(m);
+		}
+		for (Squad s : select Squad from this) {
+			match SquadTag in tags from this where (squad = s) unmatched: new SquadTag(s);
+		}
+		end match Badge in badges unmatched: delete();
+		end match SquadTag in tags unmatched: delete();
+		List<Badge> allBadges = select Badge from this;
+		List<SquadTag> allTags = select SquadTag from this;
+		return allBadges.size * 10 + allTags.size;
+	}
+
+	public concept Member {
+
+		String name;
+
+		create(String name) {
+			name = parameters.name;
+		}
+
+		delete() {
+		}
+	}
+
+	public concept Squad {
+
+		String label;
+
+		create(String label) {
+			label = parameters.label;
+		}
+
+		delete() {
+		}
+	}
+
+	public concept Badge {
+
+		Member member;
+		String text;
+
+		create(Member member) {
+			member = parameters.member;
+		}
+
+		delete() {
+		}
+	}
+
+	public concept SquadTag {
+
+		Squad squad;
+
+		create(Squad squad) {
+			squad = parameters.squad;
+		}
+
+		delete() {
+		}
+	}
+}

@@ -24,4 +24,8 @@ assert pen.localAndProperty() == "local/Pen";
 assert pen.parameter("Arg") == "Arg/Pen";
 assert pen.bareParameter("Arg") == null;
 
+// A behaviour of the same concept is called on this; a bare call gives null
+assert pen.thisCall() == "twin";
+assert pen.bareCall() == null;
+
 log "Test PASSED: names resolve as the language tour states";

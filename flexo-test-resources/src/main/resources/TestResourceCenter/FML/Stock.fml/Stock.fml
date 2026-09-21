@@ -1,0 +1,99 @@
+/**
+ * Queries with select: conditions, unique, the scope of the from clause and the effect of deletion.
+ * See TestStock.fmlscript.
+ */
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/Stock.fml")
+public model Stock {
+
+	create() {
+	}
+
+	public Article newArticle(String name, String kind, int quantity) {
+		return new Article(parameters.name, parameters.kind, parameters.quantity);
+	}
+
+	public Crate newCrate(String label) {
+		return new Crate(parameters.label);
+	}
+
+	public List<Article> allArticles() {
+		return select Article from this;
+	}
+
+	public List<Article> ofKind(String kind) {
+		return select Article from (this) where (selected.kind == parameters.kind);
+	}
+
+	public List<Article> ofKindAndAtLeast(String kind, int quantity) {
+		return select Article from (this) where (selected.kind == parameters.kind, selected.quantity >= parameters.quantity);
+	}
+
+	public List<Article> ofKindAndAtLeastOperator(String kind, int quantity) {
+		return select Article from (this) where (selected.kind == parameters.kind && selected.quantity >= parameters.quantity);
+	}
+
+	public List<Article> fruitOrVegetable() {
+		return select Article from (this) where (selected.kind == "fruit" || selected.kind == "vegetable");
+	}
+
+	public Article named(String name) {
+		return select unique Article from (this) where (selected.name == parameters.name);
+	}
+
+	public Article firstOfKind(String kind) {
+		return select unique Article from (this) where (selected.kind == parameters.kind);
+	}
+
+	public List<Part> allParts() {
+		return select Part from this;
+	}
+
+	public removeArticle(Article article) {
+		delete parameters.article;
+	}
+
+	public concept Article {
+
+		String name;
+		String kind;
+		int quantity;
+
+		create(String name, String kind, int quantity) {
+			name = parameters.name;
+			kind = parameters.kind;
+			quantity = parameters.quantity;
+		}
+
+		delete() {
+		}
+	}
+
+	public concept Crate {
+
+		String label;
+
+		create(String label) {
+			label = parameters.label;
+		}
+
+		public Part newPart(String code) {
+			return new Part(parameters.code);
+		}
+
+		public List<Part> parts() {
+			return select Part from this;
+		}
+
+		public concept Part {
+
+			String code;
+
+			create(String code) {
+				code = parameters.code;
+			}
+		}
+	}
+}

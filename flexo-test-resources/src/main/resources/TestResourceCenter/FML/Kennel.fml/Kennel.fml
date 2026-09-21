@@ -1,0 +1,95 @@
+/**
+ * Declaring a model and its concepts: annotations, an abstract concept, inheritance (single and multiple),
+ * overriding and dynamic binding. See TestKennel.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/Kennel.fml")
+@Version("1.0")
+@Description("A kennel")
+public model Kennel {
+
+	public Dog newDog(String name) {
+		return new Dog(parameters.name);
+	}
+
+	public Cat newCat(String name) {
+		return new Cat(parameters.name);
+	}
+
+	public Guard newGuard(String name) {
+		return new Guard(parameters.name);
+	}
+
+	public ServiceDog newServiceDog(String name, String trick) {
+		return new ServiceDog(parameters.name, parameters.trick);
+	}
+
+	public String chorus() {
+		String all = "";
+		for (Creature c : select Creature from this) {
+			all = all + c.sound() + ";";
+		}
+		return all;
+	}
+
+	public abstract concept Creature {
+
+		String name;
+
+		create(String name) {
+			name = parameters.name;
+		}
+
+		abstract String sound();
+
+		public String describe() {
+			return name + " says " + this.sound();
+		}
+	}
+
+	public concept Dog extends Creature {
+
+		create(String name) {
+			super(parameters.name);
+		}
+
+		public String sound() {
+			return "Woof";
+		}
+	}
+
+	public concept Cat extends Creature {
+
+		create(String name) {
+			super(parameters.name);
+		}
+
+		public String sound() {
+			return "Meow";
+		}
+	}
+
+	public concept Trained {
+
+		String trick;
+	}
+
+	public concept Guard extends Dog {
+
+		create(String name) {
+			super(parameters.name);
+		}
+
+		public String sound() {
+			return "Alert " + super.sound();
+		}
+	}
+
+	public concept ServiceDog extends Dog, Trained {
+
+		create(String name, String trick) {
+			super(parameters.name);
+			trick = parameters.trick;
+		}
+	}
+}

@@ -64,5 +64,17 @@ public model NameLookup {
 		public String bareParameter(String other) {
 			return other;
 		}
+
+		public String twin() {
+			return "twin";
+		}
+
+		public String bareCall() {
+			return twin();
+		}
+
+		public String thisCall() {
+			return this.twin();
+		}
 	}
 }
