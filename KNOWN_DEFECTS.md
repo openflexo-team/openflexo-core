@@ -333,6 +333,33 @@ public int forWithoutCondition() {
 
 **Workaround.** Always write the condition; to loop until a `return`, use `while (true)`.
 
+### CORE-D-18 — An increment or decrement used as a statement makes its behaviour return null  ·  `TODO`
+
+**Symptom.** A behaviour containing `n++;`, `++n;`, `n--;` or `--n;` as a statement returns null, whatever it returns and whatever the
+variable is (a local variable or a property). Nothing is reported. The same operator works in the update part of a `for`
+(`for (int i = 1; i <= n; i++)`) and inside an expression (`int m = n++;`).
+
+**Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** The following behaviour, called from a script,
+returns null instead of 7:
+
+```fml
+public int constAfterInc() {
+	int n = 1;
+	n++;
+	return 7;
+}
+```
+
+Also measured: `n++; return n;`, `++n; return n;` and `n--; return n;` give null too, and so does `touched = 3; touched++; return touched;`
+on a property. `int m = n++; return n;` gives 2.
+
+**Mechanism — read in the code, not confirmed by execution.** `ControlGraphFactory` (fml-parser) builds a node for the alternatives
+`assignment`, `new_instance`, `method_invocation` and the action expressions of `statement_expression`, and has no handler for
+`pre_increment`, `pre_decrement`, `post_increment` and `post_decrement` (they only appear in a comment listing the production).
+What happens to the behaviour instead is not established.
+
+**Workaround.** Write the assignment: `n = n + 1;`.
+
 ### CORE-D-10 — Deleting a concept instance leaves it in the multiple roles referencing it  ·  `TODO`
 
 **Symptom.** After `delete x;`, the deleted instance is still an element of a multiple-cardinality role (`Book[0,*] books`) holding
@@ -499,3 +526,60 @@ by inheritance is declared by the parent. Not read: how the scheme gets chosen a
 **Impact.** Silent: no error at load or at execution of the `new`; the wrong type shows up later, as unresolved paths or `null`.
 
 **Workaround.** Declare a creation scheme in the child, even an empty `create() { }`.
+
+---
+
+## Inheritance
+
+### CORE-D-17 — `super.<behaviour>()` gives null when the concept extends several concepts  ·  `TODO`
+
+**Symptom.** In a concept with several parents, `super.<behaviour>()` evaluates to null, so a `return "x" + super.hello();` returns null
+(a `+` with a null operand gives null). No error is reported at validation or at execution. With a single parent, the same call works,
+over several levels.
+
+**Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** One model, one behaviour called from a script:
+
+```fml
+@URI("http://openflexo.org/test/TestResourceCenter/Pairing.fml")
+public model Pairing {
+
+	public Left newLeft() {
+		return new Left();
+	}
+
+	public concept Base {
+		create() {
+		}
+		public String hello() {
+			return "hello";
+		}
+	}
+
+	public concept Other {
+	}
+
+	public concept Left extends Base, Other {
+		create() {
+			super();
+		}
+		public String hello() {
+			return "left " + super.hello();
+		}
+	}
+}
+```
+
+```
+p = new Pairing() with (name="p");
+log "left=" + p.newLeft().hello();
+```
+
+The log line prints `left=null`; expected `left=left hello`. Reversing the parents (`extends Other, Base`) gives null as well. With
+`concept Left extends Base` alone the result is `left hello`, and `concept Guard extends Dog` where `Dog extends Creature` (two levels)
+works too. `Other` declares nothing: the second parent is enough. The properties of both parents are inherited normally (a
+`ServiceDog extends Dog, Trained` reads `name` and `trick`), and `super(...)` in `create` runs in the same concepts.
+
+**Mechanism — not investigated.** The resolution of `super.<name>()` presumably picks one parent, or none when there are several.
+
+**Workaround.** Put the logic to reuse in a separate behaviour of the parent and call it on `this`: with
+`public String baseHello() { return "hello"; }` in `Base`, `return "left " + this.baseHello();` gives `left hello` (verified).
