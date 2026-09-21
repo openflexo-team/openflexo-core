@@ -1,0 +1,27 @@
+// How a name is resolved inside a behaviour, as stated by the "language tour" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/NameLookup.fml"];
+service ResourceCenterService add_temp_rc;
+shop = new NameLookup() with (name="shop");
+pen = shop.addItem("Pen");
+
+// A bare name is a property of the concept, this.name too
+assert pen.bare() == "Pen";
+assert pen.viaThis() == "Pen";
+
+// A property of the enclosing model is reached by its bare name, or through container
+assert pen.ofTheModel() == "Ann";
+assert pen.viaContainer() == "of the model";
+
+// Same name in the concept and in its model: the concept's own property wins
+assert pen.sameNameInBoth() == "of the item";
+
+// A local variable hides the property, this.name still reaches it
+assert pen.local() == "local";
+assert pen.localAndProperty() == "local/Pen";
+
+// A parameter is read through parameters; a bare parameter name is null
+assert pen.parameter("Arg") == "Arg/Pen";
+assert pen.bareParameter("Arg") == null;
+
+log "Test PASSED: names resolve as the language tour states";

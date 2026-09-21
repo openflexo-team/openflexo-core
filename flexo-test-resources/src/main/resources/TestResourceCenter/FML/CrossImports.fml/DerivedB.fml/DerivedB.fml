@@ -1,0 +1,14 @@
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Core.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Base.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/DerivedA.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/CrossImports.fml/DerivedB.fml")
+public model DerivedB extends Base {
+
+	DerivedA derivedA with ModelInstance();
+
+	create(DerivedA derivedA) {
+		derivedA = parameters.derivedA;
+		declaringElement = derivedA.declaringElement;
+	}
+}

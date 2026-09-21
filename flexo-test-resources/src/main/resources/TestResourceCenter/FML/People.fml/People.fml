@@ -1,0 +1,20 @@
+/**
+ * A model with one concept, imported by Reception and ReceptionWithoutImport. See TestImports.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/People.fml")
+public model People {
+
+	public Person newPerson(String name) {
+		return new Person(parameters.name);
+	}
+
+	public concept Person {
+
+		String name;
+
+		create(String name) {
+			name = parameters.name;
+		}
+	}
+}

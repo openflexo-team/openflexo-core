@@ -1,0 +1,43 @@
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/DerivedA.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/DerivedB.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Core.fml")
+public model Core {
+
+	Element rootElement with ConceptInstance();
+
+	create::init() {
+		rootElement = new Element("Root");
+	}
+
+	public concept Element {
+
+		String name;
+
+		/** The DerivedA model declared on this element */
+		DerivedA applicableDerivedA {
+			DerivedA get() {
+				return select unique DerivedA from container.container where (selected.declaringElement == this);
+			}
+		};
+
+		/** The DerivedB model declared on this element */
+		DerivedB applicableDerivedB {
+			DerivedB get() {
+				return select unique DerivedB from container.container where (selected.declaringElement == this);
+			}
+		};
+
+		public DerivedA createDerivedA() {
+			return container.container.new DerivedA(this) with (name=name + "-DerivedA");
+		}
+
+		public DerivedB createDerivedB() {
+			return container.container.new DerivedB(applicableDerivedA) with (name=name + "-DerivedB");
+		}
+
+		create(String name) {
+			name = parameters.name;
+		}
+	}
+}

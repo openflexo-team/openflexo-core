@@ -1,0 +1,35 @@
+// Compilation units importing each other (CrossImports.fml: Core types its members with DerivedA and DerivedB, which extend Base,
+// which types its own member with a concept of Core).
+//
+// Guards CORE-D-14, two defects of the loading of such units:
+// - a unit already loading higher in the stack was parsed a second time as a cross-reference dependency, which made the loading
+//   never end on a real project;
+// - a unit finalized before a unit it references (still loading higher in the stack) kept the bindings it had analyzed against the
+//   partial content of that unit: selected.declaringElement, inherited from Base, stayed unresolved, and the where clause silently
+//   selected nothing.
+
+service ResourceCenterService add_temp_rc;
+
+crossImports = load -r ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml"];
+assert crossImports != null;
+
+project = new CrossImports() with (name="TestCrossImports");
+assert project != null;
+root = project.core.rootElement;
+assert root != null;
+assert root.applicableDerivedA == null;
+assert root.applicableDerivedB == null;
+
+derivedA = root.createDerivedA();
+assert derivedA != null;
+assert derivedA.declaringElement == root;
+assert root.applicableDerivedA == derivedA;
+
+derivedB = root.createDerivedB();
+assert derivedB != null;
+assert derivedB.declaringElement == root;
+assert root.applicableDerivedB == derivedB;
+
+assert project.derivedModels().size == 2;
+
+log "Test PASSED: cross imports";

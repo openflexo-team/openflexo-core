@@ -407,3 +407,95 @@ fails line 31, `root.applicableDerivedB[null] == derivedB`. First met in `formod
    type (`(EMFObjectIndividualType(eClass=TASK)) x` becomes an `EMFObjectIndividual`), and the typing space of a unit built before
    the unit knew its service manager makes that re-parse fail with a `NullPointerException` (`TypeFactory`, measured on
    `modelers/bpmn-modeler`).
+
+### CORE-D-16 — A namespace alias is not resolved in an annotation: `@URI(NS+"…")` silently registers the model under another address  ·  `TODO`
+
+**Symptom.** A compilation unit that declares `namespace "…" as NS;` and uses the alias in its `@URI` annotation is loaded without any
+error, but under a different address than the one it declares: `load -r ["<declared address>"]` then gives nothing, and any script
+line using the result fails with `Invalid binding value: virtualModel reason: currentType is null`. The alias does resolve in an
+`import [NS+"…"]` (the documented use, see `ElementImportDeclaration`). Whether other annotations are meant to accept it is a question
+for the maintainers; what is certain is that the failure is silent.
+
+**Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** One file, no import, no inheritance:
+
+```fml
+namespace "http://openflexo.org/test/TestResourceCenter/" as TRC;
+
+@URI(TRC+"ReproNs.fml")
+public model ReproNs {
+	String s;
+}
+```
+
+`resources;` in an FML-script lists the unit under its default address,
+`http://openflexo.org/test/flexo-test-resources/TestResourceCenter/FML/ReproNs.fml` (resource center base URI + path), not under
+`http://openflexo.org/test/TestResourceCenter/ReproNs.fml`; `virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ReproNs.fml"];`
+then gives no model. The same file with the literal `@URI("http://openflexo.org/test/TestResourceCenter/ReproNs.fml")` loads normally.
+A lower-case alias (`as trc` … `trc+"…"`) behaves the same, and so does another annotation:
+`@Description(TRC+"desc")` logs `DataBinding TRC + "desc" still invalid at the end of process, reason: Invalid binding value: TRC
+reason: BindingVariable TRC does not exist` (`FMLSemanticsAnalyzer.attemptToFixInvalidBindings`).
+
+**Mechanism — partly verified.** The namespaces are added to the compilation unit by `VirtualModelInfoExplorer.inANamespaceDecl()`, and
+`ElementImportDeclaration` documents them as usable in its URI expressions; nothing was found that makes them a binding variable in an
+annotation's expression. Not checked: at which point the `@URI` value is evaluated, and why its failure is not reported.
+
+**Note.** `FMLParsingExamples/TestNamespaces.fml` uses `@URI(local+"MyModel.fml")` after declaring `LOCAL` (different case). That file is
+only parsed by `TestFMLParser`, never loaded, so it does not exercise this.
+
+**Workaround.** Write the address of `@URI` in full; keep the alias for `import`.
+
+---
+
+## Instantiation
+
+### CORE-D-15 — `new Child()` creates an instance of the parent when the child virtual model only inherits its creation scheme  ·  `TODO`
+
+**Symptom.** A virtual model that `extends` another and declares no creation scheme of its own, while its parent declares one, is
+instantiated as the **parent**: none of the members declared by the child resolve on the result (`unresolved path element hello()`),
+although the members inherited from the parent do.
+
+**Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** Two files:
+
+```fml
+@URI("http://openflexo.org/test/TestResourceCenter/Parent.fml")
+public model Parent {
+	create() {
+	}
+}
+```
+
+```fml
+import ["http://openflexo.org/test/TestResourceCenter/Parent.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/Son.fml")
+public model Son extends Parent {
+	public String hello() {
+		return "hello";
+	}
+}
+```
+
+```
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Son.fml"];
+service ResourceCenterService add_temp_rc;
+c = new Son() with (name="x");
+assert c.hello() == "hello";
+```
+
+The assert fails (with `log "…" + c.hello()` the line is reported as an invalid binding, `unresolved path element hello()`), and
+`c.flexoConcept.name` gives `Parent`. Isolating the trigger, each measured on its own: a parent with no creation scheme, with a property
+only, with a behaviour only, or with a concept only works; a parent with a `create()` fails, with or without a property; a `Son` that
+declares its own `create() { }` works; the base and the child loaded in either order, and the alias or the plain address in the
+import, make no difference. The same shape between two **concepts** of one model (`concept Animal { create() { } }`,
+`concept Dog extends Animal { … }`, instantiated by `new Dog()` from a behaviour of the model) works: only inheritance between
+virtual models is affected.
+
+**Mechanism — read in the code, consistent with every observation, not confirmed with a debugger.**
+`AbstractAddFlexoConceptInstanceImpl.getFlexoConceptType()` returns `getCreationScheme().getFlexoConcept()` as soon as a creation
+scheme is set, i.e. the concept that **declares** the scheme; `AbstractAddVirtualModelInstance` derives both its result type
+(`FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType())`) and `getVirtualModelType()` from it. A scheme reached
+by inheritance is declared by the parent. Not read: how the scheme gets chosen at parse time (`AddVirtualModelInstanceNode`).
+
+**Impact.** Silent: no error at load or at execution of the `new`; the wrong type shows up later, as unresolved paths or `null`.
+
+**Workaround.** Declare a creation scheme in the child, even an empty `create() { }`.

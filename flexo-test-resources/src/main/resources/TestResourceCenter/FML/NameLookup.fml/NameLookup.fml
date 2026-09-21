@@ -1,0 +1,68 @@
+/**
+ * How a name is resolved inside a behaviour. See TestNameLookup.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/NameLookup.fml")
+public model NameLookup {
+
+	String owner;
+	String label;
+
+	create() {
+		owner = "Ann";
+		label = "of the model";
+	}
+
+	public Item addItem(String name) {
+		return new Item(parameters.name);
+	}
+
+	public concept Item {
+
+		String name;
+		String label;
+
+		create(String name) {
+			name = parameters.name;
+			label = "of the item";
+		}
+
+		public String bare() {
+			return name;
+		}
+
+		public String viaThis() {
+			return this.name;
+		}
+
+		public String ofTheModel() {
+			return owner;
+		}
+
+		public String viaContainer() {
+			return container.label;
+		}
+
+		public String sameNameInBoth() {
+			return label;
+		}
+
+		public String local() {
+			String name = "local";
+			return name;
+		}
+
+		public String localAndProperty() {
+			String name = "local";
+			return name + "/" + this.name;
+		}
+
+		public String parameter(String name) {
+			return parameters.name + "/" + this.name;
+		}
+
+		public String bareParameter(String other) {
+			return other;
+		}
+	}
+}

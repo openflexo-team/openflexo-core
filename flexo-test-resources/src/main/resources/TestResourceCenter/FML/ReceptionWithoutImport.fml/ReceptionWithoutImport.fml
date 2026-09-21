@@ -1,0 +1,14 @@
+/**
+ * Same as Reception, without the import of People: Person is not in the typing space.
+ * See TestImports.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/ReceptionWithoutImport.fml")
+public model ReceptionWithoutImport {
+
+	Person guest;
+
+	public String guestName() {
+		return guest.name;
+	}
+}

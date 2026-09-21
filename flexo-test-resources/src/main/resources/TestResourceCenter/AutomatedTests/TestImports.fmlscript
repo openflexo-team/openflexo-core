@@ -1,0 +1,25 @@
+// The imports of the "language tour" page of the user guide: a property typed with a concept of another
+// model, imported through a namespace, and the silent null obtained when the import is missing.
+
+people = load -r ["http://openflexo.org/test/TestResourceCenter/People.fml"];
+reception = load -r ["http://openflexo.org/test/TestResourceCenter/Reception.fml"];
+withoutImport = load -r ["http://openflexo.org/test/TestResourceCenter/ReceptionWithoutImport.fml"];
+assert reception != null;
+assert withoutImport != null;
+
+service ResourceCenterService add_temp_rc;
+directory = new People() with (name="directory");
+ann = directory.newPerson("Ann");
+assert ann.name == "Ann";
+
+desk = new Reception() with (name="desk");
+desk.guest = ann;
+assert desk.guestName() == "Ann";
+assert desk.guest.name == "Ann";
+
+// Without the import, Person is not a known type: nothing is reported and the path gives null
+oldDesk = new ReceptionWithoutImport() with (name="oldDesk");
+oldDesk.guest = ann;
+assert oldDesk.guestName() == null;
+
+log "Test PASSED: imports put the concepts of another model in the typing space";

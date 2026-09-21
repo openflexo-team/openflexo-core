@@ -1,0 +1,29 @@
+// The to-do list of the "FML in ten minutes" page of the user guide: every excerpt of the page is taken
+// from TaskList.fml, and this script keeps the values the page states true.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TaskList.fml"];
+assert virtualModel != null;
+assert virtualModel.name == "TaskList";
+assert virtualModel.getFlexoConcept("Task") != null;
+
+service ResourceCenterService add_temp_rc;
+list = new TaskList() with (name="groceries");
+assert list.taskCount == 0;
+
+milk = list.addTask("Buy milk");
+bread = list.addTask("Buy bread");
+assert milk.label == "Buy milk";
+assert milk.done == false;
+assert milk.status == "open";
+assert milk.container == list;
+assert list.taskCount == 2;
+assert list.openTasks().size == 2;
+
+milk.complete();
+assert milk.done;
+assert milk.status == "done";
+assert list.taskCount == 2;
+assert list.openTasks().size == 1;
+assert list.openTasks().get(0) == bread;
+
+log "Test PASSED: the TaskList model of the user guide behaves as documented";

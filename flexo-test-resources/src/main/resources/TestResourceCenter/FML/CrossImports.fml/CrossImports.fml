@@ -1,0 +1,25 @@
+/**
+ * Compilation units importing each other, as a project model often does between its core model and the models built on it:
+ * Core types its members with DerivedA and DerivedB, which extend Base, which types its own member with a concept of Core.
+ * See TestCrossImports.fmlscript (CORE-D-14).
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.util.List;
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Core.fml"];
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Base.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/CrossImports.fml")
+public model CrossImports {
+
+	Core core with ModelInstance(isRequired=true);
+
+	public List<Base> derivedModels() {
+		return select Base from this;
+	}
+
+	create() {
+		core = new Core::init() with (name="Core");
+	}
+}
