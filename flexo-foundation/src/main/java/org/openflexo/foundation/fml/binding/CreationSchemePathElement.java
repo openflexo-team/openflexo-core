@@ -479,9 +479,11 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						VirtualModel vm = (VirtualModel) parentContext;
 						if (getFlexoConcept() instanceof VirtualModel) {
 							// A VirtualModel inside another VirtualModel
-							if (!(((VirtualModel) getFlexoConcept()).getContainerVirtualModel()).isAssignableFrom(vm)) {
-								check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName()
-										+ " in " + parentContext.getName();
+							// A root VirtualModel declares no container, and may be instantiated in any VirtualModelInstance
+							VirtualModel containerVirtualModel = ((VirtualModel) getFlexoConcept()).getContainerVirtualModel();
+							if (containerVirtualModel != null && !containerVirtualModel.isAssignableFrom(vm)) {
+								check.invalidBindingReason = "cannot instantiate " + getFlexoConcept().getName() + " in "
+										+ parentContext.getName();
 								check.valid = false;
 								return check;
 							}

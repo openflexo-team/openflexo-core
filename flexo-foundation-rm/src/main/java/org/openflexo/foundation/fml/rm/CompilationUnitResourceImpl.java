@@ -347,11 +347,42 @@ public abstract class CompilationUnitResourceImpl
 
 	private boolean isLoading;
 
+	/**
+	 * Flag indicating that the second loading pass of this resource is done
+	 */
+	private boolean isFinalized = false;
+
+	/**
+	 * The compilation units finalized while this one was not yet (compilation units importing each other), and to revalidate once it is
+	 */
+	private final List<CompilationUnitResourceImpl> resourcesToRevalidateOnceFinalized = new ArrayList<>();
+
 	@Override
 	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
 		if (cuNode != null) {
 			cuNode.getSemanticsAnalyzer().finalizeDeserialization(true);
+		}
+		isFinalized = true;
+		// A compilation unit referenced by this one, but not finalized yet, is still loading higher in the stack: the bindings of this
+		// unit were analyzed against its partial content (members not declared yet are unresolved), and those found invalid must be
+		// analyzed again once it is complete (CORE-D-14)
+		for (FlexoResource<?> dependency : getCrossReferenceDependencies()) {
+			if (dependency instanceof CompilationUnitResourceImpl && !((CompilationUnitResourceImpl) dependency).isFinalized) {
+				((CompilationUnitResourceImpl) dependency).resourcesToRevalidateOnceFinalized.add(this);
+			}
+		}
+		if (!resourcesToRevalidateOnceFinalized.isEmpty()) {
+			List<CompilationUnitResourceImpl> resourcesToRevalidate = new ArrayList<>(resourcesToRevalidateOnceFinalized);
+			resourcesToRevalidateOnceFinalized.clear();
+			for (CompilationUnitResourceImpl resource : resourcesToRevalidate) {
+				FMLCompilationUnitNode node = resource.getLoadedResourceData() != null
+						? (FMLCompilationUnitNode) resource.getLoadedResourceData().getPrettyPrintDelegate()
+						: null;
+				if (node != null) {
+					node.getSemanticsAnalyzer().attemptToFixInvalidBindings(false);
+				}
+			}
 		}
 		notifyResourceLoaded();
 	}
@@ -374,6 +405,7 @@ public abstract class CompilationUnitResourceImpl
 			return resourceData;
 		}
 
+		isFinalized = false;
 		setLoading(true);
 
 		// Now we have to activate all required technologies
