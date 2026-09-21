@@ -348,3 +348,62 @@ removes it from the roles of other instances; where such a clean-up should happe
 
 **Workaround.** Remove the instance from the role before deleting it — `books.remove(parameters.book); delete parameters.book;`,
 as done in `flexo-test-resources` `FML/Library.fml` (`Shelf.removeBook`).
+
+### CORE-D-13 — `new Concept::behaviour()` resolves only when the concept declares no creation scheme  ·  `TODO`
+
+**Symptom.** A call naming a behaviour whose parameters are supplied elsewhere — typically a diagram palette binding, where the drop
+dialog asks the user for them — is reported as an invalid binding: `Invalid binding value: new FunctionalGoalGR::createFunctionalGoal()
+reason: unresolved path element new FunctionalGoalGR::createFunctionalGoal()`. The very same call on a sibling concept validates.
+
+**Reproduction (verified 2026-09-17 by execution).** In `formod-rc`, `SysMLKaos/SysMLKaos.fml/GoalModelingDiagram.fml`, nine palette
+bindings call drop schemes with no argument. Eight validate, including `new ContributionGoalGR::createContributionGoal()` whose drop
+scheme takes three parameters. The ninth, `new FunctionalGoalGR::createFunctionalGoal()`, does not — and `FunctionalGoalGR` is the
+only one of the nine concepts that also declares creation schemes (`create::createTopFunctionalGoal`, `create::representTopFunctionalGoal`).
+
+**Mechanism — verified in the code.** `CreationSchemePathElement.resolve()` asks `FMLBindingFactory.retrieveConstructor()`, which ends
+in `FlexoConcept.getCreationScheme(name, arguments)`; that one requires `cs.getParameters().size() == arguments.length`, so a
+parameterless call never matches a parameterized drop scheme. What saves the other eight is the fallback right below: when the concept
+`!hasCreationScheme()`, `resolve()` sets `resolvedAsNoConstructorIsDefined` and the path element counts as resolved although no
+behaviour was found. So the binding is not really resolved anywhere; `FMLDiagramPaletteElementBinding.getDropScheme()` then falls back
+to "the first DropScheme declared by the bound concept", which is right by luck and wrong as soon as a concept has several.
+
+**Workaround.** Pass the arguments explicitly in the call — `new FunctionalGoalGR::createFunctionalGoal("Goal", "", "")` — which makes
+the arity match. They then act as the values the drop dialog starts from.
+
+---
+
+## FML compilation unit loading
+
+### CORE-D-14 — Compilation units importing each other load forever, or keep bindings analyzed against partial types  ·  `DONE`
+
+**Symptom.** Two defects of the loading of compilation units which import each other — typically a core model whose members are
+typed by the models built on it, while those models type their own members with concepts of the core model:
+1. loading never ends. The thread spends its time in `P2PPNode.getTextualRepresentation()` / `DerivedRawSource`, called from
+   `CreationSchemePathElement.resolve()` while `CompilationUnitResourceImpl.finalizeLoadResourceData()` analyzes the bindings;
+2. once the first defect is fixed, a binding of the unit finalized first which reaches a member of the other one, not declared yet at
+   that time — in particular a member inherited from a third unit — stays invalid (`unresolved path element declaringElement`).
+   Validation does not report it; at run-time the binding evaluates to null, so `select unique X from … where
+   (selected.declaringElement == this)` silently selects nothing.
+
+**Reproduction (verified 2026-09-18 by execution).** `flexo-test-resources`, `FML/CrossImports.fml` (Core types two computed
+properties with DerivedA and DerivedB, which extend Base, whose `declaringElement` is an element of Core), exercised by
+`AutomatedTests/TestCrossImports.fmlscript` in `fml-cli-test`. Without the first fix the script never ends; without the second it
+fails line 31, `root.applicableDerivedB[null] == derivedB`. First met in `formod-rc` (`FormoseCore` and the Formose methodologies).
+
+**Mechanism — verified by execution.**
+1. `PamelaResourceWithPotentialCrossReferencesImpl.performLoadResourceData()` ran the first loading pass on every cross-reference
+   dependency not loaded yet, including one whose load was in progress higher in the stack: that unit was parsed a second time, and
+   the pretty-print nodes of the objects shared by both parses were initialized twice. Their contents double at each level, so
+   computing a textual representation is exponential.
+2. When units import each other, one of them is necessarily finalized before a unit it references: its bindings are analyzed against
+   the partial content of that unit, and a `DataBinding` found invalid is cached as such.
+
+**Fix.**
+1. A cross-reference dependency whose load is in progress (`isLoading()`) is left to that load, which runs both passes on it.
+2. `CompilationUnitResourceImpl.finalizeLoadResourceData()` registers the unit with each referenced unit not finalized yet; when that
+   one is, the bindings of the registered units still invalid at the end of their semantics analyzing are analyzed again
+   (`FMLSemanticsAnalyzer.attemptToFixInvalidBindings()`). Rebuilding all their bindings (`FMLCompilationUnit.revalidateAllBindings()`)
+   is not an option: re-parsing an expression out of its compilation unit loses the parameters of a cast to a technology specific
+   type (`(EMFObjectIndividualType(eClass=TASK)) x` becomes an `EMFObjectIndividual`), and the typing space of a unit built before
+   the unit knew its service manager makes that re-parse fail with a `NullPointerException` (`TypeFactory`, measured on
+   `modelers/bpmn-modeler`).
