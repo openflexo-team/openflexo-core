@@ -380,7 +380,12 @@ public abstract class CompilationUnitResourceImpl
 						? (FMLCompilationUnitNode) resource.getLoadedResourceData().getPrettyPrintDelegate()
 						: null;
 				if (node != null) {
+					// Analyzing a binding again is part of loading, not an edition: it must not leave the unit modified
+					boolean wasModified = resource.getLoadedResourceData().isModified();
 					node.getSemanticsAnalyzer().attemptToFixInvalidBindings(false);
+					if (!wasModified) {
+						resource.getLoadedResourceData().clearIsModified();
+					}
 				}
 			}
 		}
