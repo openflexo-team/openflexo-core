@@ -583,3 +583,68 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 
 **Workaround.** Put the logic to reuse in a separate behaviour of the parent and call it on `this`: with
 `public String baseHello() { return "hello"; }` in `Base`, `return "left " + this.baseHello();` gives `left hello` (verified).
+
+---
+
+## FML expressions
+
+### CORE-D-19 — A method call on a string literal gives null  ·  `TODO`
+
+**Symptom.** A Java method called directly on a string literal evaluates to null, without any message: `"hello".length()` is null
+instead of 5. The same methods work on a variable or a parameter holding the same string.
+
+**Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** Called from a script, the following behaviour
+returns null instead of 5, and so do `"abc".toUpperCase()`, `"kiwi-banana".substring(5)`, `"EQ-12-3".replace("EQ-", "")` and
+`"ab".equals("a" + "b")` written as `return` expressions:
+
+```fml
+public int lengthLiteral() {
+	return "hello".length();
+}
+```
+
+Measured in the same model: with the string in a local variable, `String s = "abc"; return s.toUpperCase();` gives `ABC` and
+`String s = "EQ-12-3"; return s.replace("EQ-", "").replace("-", "");` gives `123`; with a parameter, `parameters.s.length()` gives 5.
+
+**Mechanism — not investigated.**
+
+**Workaround.** Put the literal in a local variable first.
+
+---
+
+## FML-script
+
+### CORE-D-20 — Reassigning a script variable makes every later read of it give null  ·  `TODO`
+
+**Symptom.** In a `.fmlscript`, assigning a name that already holds a value (`x = "a"; x = "b";`) does not report
+anything, but every read of that name after the second assignment gives `null` — not `"b"`, and not `"a"` either.
+Reading the name **before** the second assignment gives the correct first value. The variable is not otherwise
+broken: it can be assigned again, but it never reads back anything but `null` from then on.
+
+**Reproduction (verified 2026-09-22 by execution, against `HelloWorld.fmlscript`'s resource center).** Three
+independent scripts, run through the platform's script runner:
+
+```
+x = "a";
+log "before=" + x;   // "a"
+x = "b";
+log "after=" + x;    // null, not "b"
+```
+
+```
+n = 1;
+n = n + 1;
+log "n=" + n;         // null, not 2
+```
+
+A third assignment does not recover it either (`x = "c";` after the above still reads `null`), and the same
+happens with `int`, not only `String`.
+
+**Mechanism — not investigated; one lead.** `AbstractFMLAssignation.execute()` (fml-cli) has two branches: when the
+assignment's binding `isValid()` (the name is already known), it calls `assignation.setBindingValue(…)`; when it
+is a new declaration, it calls `getCommandInterpreter().declareVariable(…)` then `.setVariableValue(…)`. A first
+assignment to a new name takes the second path; every later assignment to the same name takes the first. Whether
+the two paths write to the same storage the later reads look at was not checked.
+
+**Workaround.** Give every new value a name of its own; do not reassign a script variable, and do not accumulate
+into one across several statements.
