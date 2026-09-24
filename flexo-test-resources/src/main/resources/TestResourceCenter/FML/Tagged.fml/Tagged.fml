@@ -1,0 +1,50 @@
+/**
+ * Annotations of the four shapes on a model, a concept, a property and a behaviour, and a renderer.
+ * See TestTagged.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/Tagged.fml")
+@Version("2")
+@Marker
+@Note("hello")
+@Owner(name="Ann", team="core")
+@Groups(
+	@Member("a")
+	@Member("b")
+)
+public model Tagged {
+
+	create() {
+	}
+
+	public Card newCard(String name) {
+		return new Card(parameters.name);
+	}
+
+	public Gold newGold(String name) {
+		return new Gold(parameters.name);
+	}
+
+	@Renderer(name + "!")
+	public concept Card {
+
+		@Hint("on a property")
+		String name;
+
+		create(String name) {
+			name = parameters.name;
+		}
+
+		@Hint("on a behaviour")
+		public String greet() {
+			return "hi";
+		}
+	}
+
+	public concept Gold extends Card {
+
+		create(String name) {
+			super(parameters.name);
+		}
+	}
+}

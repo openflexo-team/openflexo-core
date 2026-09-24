@@ -1,0 +1,123 @@
+/**
+ * Expressions: operators, numbers, strings, null, Java calls, casts and conditionals.
+ * See TestCalc.fmlscript.
+ */
+
+import java.lang.Double;
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/Calc.fml")
+public model Calc {
+
+	create() {
+	}
+
+	public double intDiv() {
+		return 7 / 2;
+	}
+
+	public double evenDiv() {
+		return 6 / 3;
+	}
+
+	public double intMod() {
+		return 7 % 2;
+	}
+
+	public int precedence() {
+		return 2 + 3 * 4;
+	}
+
+	public int parens() {
+		return (2 + 3) * 4;
+	}
+
+	public double mixed() {
+		return 3 * 1.5;
+	}
+
+	public int negate() {
+		int n = 4;
+		return -n;
+	}
+
+	public boolean notTrue() {
+		return !true;
+	}
+
+	public boolean diff() {
+		return 3 != 4;
+	}
+
+	public String concatNumber() {
+		return "a" + 1;
+	}
+
+	public String nullConcat() {
+		String n = null;
+		return "x" + n;
+	}
+
+	public boolean isNull() {
+		String n = null;
+		return n == null;
+	}
+
+	public boolean stringEq() {
+		String a = "ab";
+		String b = "a" + "b";
+		return a == b;
+	}
+
+	public String upperLocal() {
+		String s = "abc";
+		return s.toUpperCase();
+	}
+
+	public String replaceLocal() {
+		String s = "EQ-12-3";
+		return s.replace("EQ-", "").replace("-", "");
+	}
+
+	public boolean equalsLocal() {
+		String s = "ab";
+		return s.equals("ab");
+	}
+
+	public int lengthOf(String s) {
+		return parameters.s.length();
+	}
+
+	public double parsed() {
+		return Double.parseDouble("4.5") * 2;
+	}
+
+	public int castInt() {
+		double d = 3.7;
+		return (int) d;
+	}
+
+	public String ternary(int n) {
+		return parameters.n > 0 ? "pos" : (parameters.n < 0 ? "neg" : "zero");
+	}
+
+	public int listSize() {
+		List<String> l = new ArrayList<String>();
+		l.add("a");
+		l.add("b");
+		return l.size();
+	}
+
+	public String listGet() {
+		List<String> l = new ArrayList<String>();
+		l.add("a");
+		l.add("b");
+		return l.get(1);
+	}
+
+	public boolean listContains() {
+		List<String> l = new ArrayList<String>();
+		l.add("a");
+		return l.contains("a");
+	}
+}

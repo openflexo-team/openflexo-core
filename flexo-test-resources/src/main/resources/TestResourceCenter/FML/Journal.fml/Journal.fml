@@ -1,0 +1,18 @@
+/**
+ * A model whose only creation scheme is named: instantiated from a script with new X::name(…).
+ * See TestJournal.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/Journal.fml")
+public model Journal {
+
+	String title;
+
+	create::start(String title) {
+		title = parameters.title;
+	}
+
+	public String label() {
+		return title;
+	}
+}
