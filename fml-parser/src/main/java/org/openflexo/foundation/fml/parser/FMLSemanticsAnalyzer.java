@@ -360,6 +360,11 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	public String getText(Node node) {
+		if (getRawSource() == null || getFragmentManager() == null) {
+			// An expression parsed on its own (a binding of a user interface, rebuilt from its text) has no raw source to take a
+			// fragment from: the node carries its text (SableCC separates the tokens of a production by a space)
+			return node instanceof Token ? ((Token) node).getText() : node.toString().trim();
+		}
 		return getFragment(node).getRawText();
 	}
 
