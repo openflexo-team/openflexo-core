@@ -385,9 +385,15 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		// unload resources from resource center
+		// Unloading, not deleting: deleting the resource data would run the deletion schemes of every loaded instance, which change
+		// other models (CORE-D-21).
+		// The one exception is the data of a project resource, the FlexoProject itself: it runs no behaviour, and deleting it detaches
+		// the resources of the project from the resource center the project resource keeps. Reopening the project then builds and
+		// registers them again; otherwise the old resources are found again as they are, and the repositories of the reopened project
+		// stay empty.
 		for (FlexoResource<?> resource : resourceCenter.getAllResources()) {
 			if (resource.isLoaded()) {
-				resource.unloadResourceData(true);
+				resource.unloadResourceData(resource instanceof FlexoProjectResource);
 			}
 		}
 		// TODO: dereference all resources registered in this ResourceCenter

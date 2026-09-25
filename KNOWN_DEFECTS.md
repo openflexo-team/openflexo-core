@@ -648,3 +648,171 @@ the two paths write to the same storage the later reads look at was not checked.
 
 **Workaround.** Give every new value a name of its own; do not reassign a script variable, and do not accumulate
 into one across several statements.
+
+---
+
+## Resources: unloading and deletion
+
+`CORE-D-21`, `CORE-D-22` and `CORE-D-23` were found and fixed together; `CORE-D-24` is what the same measurement left open. The
+regression test of all four is `flexo-foundation-test`, `TestUnloadDoesNotDelete`, over the fixtures `FML/UnloadLedger.fml` and
+`FML/UnloadProbe.fml` of `flexo-test-resources`: an `Item` whose deletion scheme increments a counter of a ledger held in another
+resource, and whose renderer reads that ledger.
+
+### CORE-D-21 — Closing a project runs the deletion schemes of every loaded instance  ·  `DONE`
+
+**Symptom.** Closing a project, or removing any resource center, executes the FML deletion scheme of every loaded concept instance
+of that resource center. Deletion schemes are business logic that change other models; unloading must not run them. In Formose,
+closing the project runs the `deleteWithBItem()` rules of the B methodology, which fail with `NullReferenceException while
+evaluating container.context.componentResource.bComponent.removeFromSets(bSet)`.
+
+**Reproduction (verified 2026-09-21 by execution).** `formod`, module `formod-module`, uiTest `TestBMethology.testReloadProject`;
+reduced in `TestUnloadDoesNotDelete.testClosingProjectDoesNotRunDeletionSchemes`, which fails as soon as the fix is reverted.
+
+**Mechanism — verified by execution.**
+1. `FlexoProjectImpl.close()` removes the project's resource center.
+2. `DefaultResourceCenterService.removeFromResourceCenters()` called `resource.unloadResourceData(true)` on every loaded resource.
+   That `true` came with 964643eba4 (2017-04-26), after the parameter itself (187e4894f, 2015, "Improved unload support with/without
+   deletion"); nothing says why deleting was wanted there.
+3. `PamelaResourceImpl.unloadResourceData(true)` therefore deleted the resource data: `VirtualModelInstance.delete()`, then PAMELA's
+   cascade over the embedded instances, each `FlexoConceptInstanceImpl.delete()` running its concept's deletion scheme.
+
+The likely reason for `true` — releasing the unloaded objects — does not hold: measured, `delete()` released almost nothing either.
+And `unloadResourceData(false)` released nothing at all. After unloading a probe instance, the following still referenced its items:
+- the index of the resource itself, `PamelaResourceImpl.objects` (FlexoID → object), never emptied — its reset in `indexResource()`
+  is commented out;
+- listeners on the ledger, another resource, growing at each load/unload cycle (10, 15, 24, 25 in the measurement): the
+  `rendererChangeListener` of `FlexoConceptInstanceImpl`, never stopped, even by `delete()`; and the listener the renderer's
+  `DataBinding` caches per evaluation context;
+- that renderer `DataBinding`, which belongs to the VirtualModel: its `cachedValues` and `cachedBindingValueChangeListeners` are
+  strong maps keyed by the instance. Connie had no way to drop a context from them (`clearCacheForBindingEvaluationContext()` only
+  drops the value), and `BindingPathChangeListener.delete()` did not unregister the listener;
+- the `BindingPath`s of any expression evaluated on an item (`CORE-D-23`).
+
+PAMELA offers no disposal protocol distinct from deletion: `destroy()` only empties the properties and makes the object unusable;
+the registrations are Connie's and flexo-foundation's, which PAMELA does not see. So the fix is not in PAMELA.
+
+**Fix.**
+1. `removeFromResourceCenters()` unloads with `false` — except the data of a `FlexoProjectResource`, the `FlexoProject` itself, still
+   deleted. That deletion runs no behaviour, and it is what reopening a project relies on: `ProjectLoader` keeps the project resource,
+   and the resource center it delegates to, across a close; deleting the `FlexoProject` (a `ResourceRepository`) detaches the old
+   resources from that resource center, so that reopening builds and registers new ones. Measured: unloading it with `false` too,
+   every `testReloadProject` finds the reopened project's repositories empty (`TestPopulateVirtualModelInstance`,
+   `TestFlexoRoleCardinality`, `city-mapping`…). This is probably why `true` was chosen in 2017; dereferencing the resources of a
+   removed resource center properly — the `TODO` left in `removeFromResourceCenters()` — would remove the need for it.
+2. A release path distinct from deletion: `ReleasableObject.release()` undoes the registrations an object made outside of its
+   resource data, and runs no behaviour, changes no property, notifies no deletion. `PamelaResourceImpl.unloadResourceData(false)`
+   releases the resource data, which releases the objects it contains; with or without deletion it then empties the index.
+   `FlexoConceptInstance` releases its `rendererChangeListener` and what the renderer of its concept caches for it;
+   `VirtualModelInstance` releases its concept instances and its indexes (`FlexoConceptInstanceIndex.release()`). Deleting an
+   instance releases it too. The release must NOT walk PAMELA's embedding closure: computing it calls getters such as
+   `VirtualModelInstance.getVirtualModelInstances()`, which load the contained virtual model instances — unloading a view then
+   loaded its children again, depending on the order of `getAllResources()` (measured: an intermittent `testReloadProject` red).
+   `FMLRTVirtualModelInstanceResourceImpl` still removes the instance from the run-time engine, as before.
+3. Connie: `DataBinding.releaseEvaluationContext(context)` drops the cached value and deletes the listener for a context;
+   `BindingPathChangeListener.delete()` stops observing first; `DataBinding.delete()` and a change of caching strategy release every
+   context.
+
+Asserted directly: after an unload, no listener of an item is left on the ledger and the item is garbage collected. In formod,
+`TestBMethology.testReloadProject` no longer runs any deletion scheme on close (40 `NullReferenceException`s before, none after); it
+stays red for a reason of its own — expected 8 contained instances, 5 on reload, as before the fix — because `instantiateBMethodology`
+aborts its save loop on the jar resource center's `DocumentLibrary` (`SaveResourcePermissionDeniedException`), leaving 3 instances
+unsaved.
+
+**Not covered.** The undo history keeps the edits of the actions that created objects, hence those objects, after they are unloaded.
+Resources that are not `PamelaResource`s (technology adapters over `FlexoResourceImpl`) get no release: an adapter whose objects
+register listeners elsewhere must release them in its own `unloadResourceData()`.
+
+### CORE-D-22 — Deleting a virtual model instance runs the deletion schemes of its instances without their container  ·  `DONE`
+
+**Symptom.** Deleting a virtual model instance — in particular deleting its resource — runs the deletion scheme of each instance it
+holds with `container` already null: a scheme that navigates through its container fails with `NullReferenceException while
+evaluating BindingPath container…: null occured when evaluating container`, and its side effects are lost.
+
+**Reproduction (verified 2026-09-24 by execution).** `TestUnloadDoesNotDelete.testDeletingTheResourceRunsDeletionSchemesWithTheirContainer`:
+deleting the probe resource with two items must add 2 to the ledger; with the fix disabled it adds nothing (expected 3, was 1).
+The same failure showed while measuring `CORE-D-21`, on `unloadResourceData(true)`.
+
+**Mechanism — verified by execution.** `FlexoConceptInstanceImpl.deleteWithScheme()` ran the scheme of the instance being deleted,
+then detached it and called `performSuperDelete()`: PAMELA nullifies the properties first, the inverse `owningVirtualModelInstance`
+/ `containerFlexoConceptInstance` of the embedded instances included, and deletes those embedded instances afterwards — running
+their schemes with no container left.
+
+**Fix.** `deleteWithScheme()` runs the scheme, then deletes the contained instances itself, each with its own default deletion
+scheme and while it is still attached, and only then detaches and deletes the instance (`deleteContainedFlexoConceptInstances()`;
+a `VirtualModelInstance` deletes its root instances, each deleting the instances it contains).
+
+### CORE-D-23 — Every evaluation of an expression leaves listeners on its owner  ·  `DONE`
+
+**Symptom.** `FlexoConceptInstance.execute(String)` — and more generally every `DataBinding` built from a string in an FML context —
+leaves listeners registered on the owner of the binding and on its binding variables, for good: two more on the instance at each
+call. They keep the binding and its owner alive, and are notified at every change.
+
+**Reproduction (verified 2026-09-24 by execution).** `TestUnloadDoesNotDelete.testExecuteLeavesNoListener`: the number of listeners
+of the ledger after 5 calls of `ledger.execute("this.deletions")`.
+
+**Mechanism — verified by execution.** Three causes, the first one also able to unregister the WRONG listener:
+1. `DataBinding` registered itself on its owner, binding model and binding variables, and `BindingPath` itself on its binding
+   variable. Both override `equals()` to compare their text, and a `PropertyChangeSupport` removes the first listener equal to the
+   one it is given: unregistering a binding could remove another binding of the same text, and leave itself registered.
+2. `DataBinding.delete()` did not unregister from its owner (registered by `setOwner()`); `BindingPath.clear()`, called by its
+   `delete()`, dropped its binding variable without unregistering from it.
+3. `FMLExpressionParser.parse()` builds a `DataBinding` on the bindable only to return its expression; that vehicle stayed
+   registered on the bindable.
+
+**Fix.** `DataBinding` and `BindingPath` register a private listener whose equality is identity (a clone of a `BindingPath` gets its
+own); `DataBinding.stopListening()` unregisters from everything a binding listens to without touching its expression, and is used
+by `delete()` and by `FMLExpressionParser.parse()` on its vehicle; `BindingPath.clear()` unregisters from its binding variable.
+
+### CORE-D-24 — Bindings of the metamodel keep every context they were evaluated in  ·  `TODO`
+
+**Symptom.** A `DataBinding` owned by a VirtualModel — an expression of a behaviour, of a property — caches, per evaluation context,
+the value and a listener registered on every object of the evaluated path. Nothing releases them: the VirtualModel keeps every
+context such a binding was ever evaluated in (a behaviour action, a concept instance), and every object those contexts reach, for
+as long as it is loaded; and those objects keep notifying the stale listeners.
+
+**Reproduction (verified 2026-09-24 by execution, while measuring `CORE-D-21`).** After creating an `Item` with
+`CreateFlexoConceptInstance`, the `CreationSchemeAction` stays referenced by the `cachedValues` of the `parameters.name` binding of
+the creation scheme — reached from the compilation unit resource, which also keeps its parser and semantics analyzer
+(`CompilationUnitResourceImpl.fmlParser` → `FMLCompilationUnitSemanticsAnalyzer.nodesForAST`) once loaded.
+
+**Mechanism — verified in the code.** `DataBinding.getBindingValue()` caches in two strong `HashMap`s keyed by the context
+(`OPTIMIST_CACHE`, or `PRAGMATIC_CACHE` for a cacheable binding); a context is only dropped when a notification invalidates it
+(`LazyBindingPathChangeListener`), and the listener never. `CORE-D-21` releases the renderer only, the one binding evaluated with
+an instance as context that an instance knows of.
+
+**Options.** Weak keys, with a listener that does not reference its context strongly (it is itself held by the observed objects);
+or no cache for bindings evaluated in transient contexts (behaviours); or a release hook on the contexts (actions, when they end).
+Each changes the notification behaviour GINA relies on: to be decided and tested against the UI.
+
+**Workaround.** None needed functionally; memory grows with the number of evaluations while a VirtualModel stays loaded.
+
+### CORE-D-25 — Two threads creating the same repository: the loser keeps an orphan one  ·  `DONE`
+
+**Symptom.** Intermittently, a repository obtained from a resource center (`project.getVirtualModelInstanceRepository()`, or any
+`XxxTechnologyAdapter.getXxxRepository(rc)`) is not the one the resource center keeps: resources created afterwards are registered in
+another repository, and whoever listens to the first one — a browser, a test — is never told. The log shows `Repository already
+registered: … for …`. `TestResourceLoadedStateIsNotified` failed that way in 5 out of 8 complete runs of `flexo-foundation-test` after
+`CORE-D-21` shifted the timing, and 0 out of 3 before — the defect itself predates it.
+
+**Reproduction (verified 2026-09-25 by execution).** `flexo-foundation-test`, `rm/TestConcurrentRepositoryCreation`: two threads ask a
+fresh resource center for its virtual model instance repository at the same time, and must both get the registered one. With the old
+callers it fails on the first attempt.
+
+**Mechanism — verified by execution** (thread dump captured when the test failed within the complete suite).
+1. Every repository accessor of a technology adapter does, unsynchronized: `retrieveRepository()`; if null, `instanciateNewRepository()`,
+   then `registerRepository()`. `registerRepository()` kept the first one registered, logged a warning for the other — and the caller
+   of the other one returned it all the same.
+2. Such accessors run in several threads: `TechnologyAdapter.updateRepository()` posts `notifyRepositoryStructureChanged()` to the Swing
+   EDT, even in headless tests, and that notification creates the missing repositories (`getAllRepositories()` →
+   `getRegistedRepositories(ta, true)` → `ensureAllRepositoriesAreCreated()`). Here the EDT and the test thread created the repository
+   of the same new project together. The `DirectoryWatcher` is another such thread.
+3. `getRegistedRepositories()` also returned a live view of a map that another thread could change during the iteration.
+
+**Fix.** `FlexoResourceCenter.registerRepository()` is atomic and returns the repository actually registered — supplied one, or the one
+another thread registered first — and callers use what it returns. `FileSystemBasedResourceCenter` and `JarResourceCenter` guard their
+repository map with a lock (the repository itself is built outside of it, and notifications are sent outside of it);
+`getRegistedRepositories()` returns a copy. `FMLTechnologyAdapter` and `FMLRTTechnologyAdapter` use the returned repository.
+
+**Not covered.** The accessors of the other technology adapters (about 25, in about 20 repositories: xlsx, diagram, docx, emf, formod's
+b-ta, …) still ignore the returned repository: they compile unchanged, but keep the race until they are changed to
+`returned = resourceCenter.registerRepository(returned, …)`.

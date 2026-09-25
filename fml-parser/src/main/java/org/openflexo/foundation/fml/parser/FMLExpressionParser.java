@@ -104,8 +104,12 @@ public class FMLExpressionParser {
 			// Print the AST
 			// ASTDebugger.debug(tree);
 
-			return ExpressionFactory.makeDataBinding(tree, bindable, BindingDefinitionType.GET, Object.class, modelFactory, typingSpace,
-					new FMLBindingFactory(modelFactory)).getExpression();
+			DataBinding<?> vehicle = ExpressionFactory.makeDataBinding(tree, bindable, BindingDefinitionType.GET, Object.class, modelFactory,
+					typingSpace, new FMLBindingFactory(modelFactory));
+			// This binding only carries the expression back: stop it listening to the bindable, where it would stay registered forever
+			// (CORE-D-23)
+			vehicle.stopListening();
+			return vehicle.getExpression();
 
 		} catch (ParserException e) {
 			// e.printStackTrace();

@@ -88,6 +88,7 @@ import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
+import org.openflexo.foundation.resource.ReleasableObject;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.fml.rt.reflect.ReflectedFMLRTModelSlotInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -150,7 +151,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoEventInstance.class) })
 // TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 // This inheritance should disappear
-public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
+public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext, ReleasableObject {
 
 	public static final String DELETED_PROPERTY = "deleted";
 	public static final String EMPTY_STRING = "<null>";
@@ -2027,13 +2028,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}
+			release();
 			boolean returned = performSuperDelete();
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 			return returned;
 		}
 
 		/**
-		 * Delete this FlexoConcept instance using supplied DeletionScheme
+		 * Delete this FlexoConcept instance using supplied DeletionScheme<br>
+		 * The scheme runs first, then the contained instances are deleted, each with its own default deletion scheme, while they still are
+		 * attached to this instance: a deletion scheme of a contained instance may navigate through its <code>container</code>. Only then
+		 * is this instance detached and deleted.
 		 */
 		@Override
 		public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext) {
@@ -2056,6 +2061,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 
+			deleteContainedFlexoConceptInstances();
+
 			if (container != null) {
 				container.removeFromEmbeddedFlexoConceptInstances(this);
 			}
@@ -2063,6 +2070,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}
+			release();
 			// logger.warning("FlexoConceptInstance deletion !");
 			// deleted = true;
 			/*if (getFlexoConcept().getPrimaryRepresentationProperty() != null) {
@@ -2084,6 +2092,37 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			boolean returned = performSuperDelete();
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 			return returned;
+		}
+
+		/**
+		 * Delete, with their own default deletion scheme, the instances this instance contains<br>
+		 * Called by {@link #deleteWithScheme(DeletionScheme, RunTimeEvaluationContext)} before this instance is detached, so that their
+		 * deletion schemes still find their container. Otherwise PAMELA would delete them afterwards, while cascading the deletion over the
+		 * embedded properties, once their container is already gone.
+		 */
+		protected void deleteContainedFlexoConceptInstances() {
+			for (FlexoConceptInstance embedded : new ArrayList<>(getEmbeddedFlexoConceptInstances())) {
+				if (!embedded.isDeleted()) {
+					embedded.delete();
+				}
+			}
+		}
+
+		/**
+		 * Release what this instance registered outside of its resource: the listener keeping its string representation up to date, and
+		 * what the renderer of its concept cached for it. Both are registered on the objects the renderer reaches, which may belong to
+		 * other models, and the renderer binding belongs to the VirtualModel, which outlives this instance.<br>
+		 * Runs no behaviour and changes nothing: this is what unloading does, and what deleting does in addition to deleting.
+		 */
+		@Override
+		public void release() {
+			if (rendererChangeListener != null) {
+				rendererChangeListener.delete();
+				rendererChangeListener = null;
+			}
+			if (getFlexoConcept() != null && getFlexoConcept().getApplicableRenderer() != null) {
+				getFlexoConcept().getApplicableRenderer().releaseEvaluationContext(this);
+			}
 		}
 
 		private AbstractVirtualModelInstanceModelFactory storedFactoryAfterDeletion;

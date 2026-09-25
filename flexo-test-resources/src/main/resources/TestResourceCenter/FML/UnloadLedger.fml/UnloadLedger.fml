@@ -1,0 +1,16 @@
+/**
+ * The model a deletion scheme of UnloadProbe writes to: counts how many Item instances were deleted.
+ * See TestUnloadDoesNotDelete.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/UnloadLedger.fml")
+public model UnloadLedger {
+
+	String label;
+	int deletions;
+
+	create(String label) {
+		label = parameters.label;
+		deletions = 0;
+	}
+}
