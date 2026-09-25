@@ -813,6 +813,7 @@ another thread registered first — and callers use what it returns. `FileSystem
 repository map with a lock (the repository itself is built outside of it, and notifications are sent outside of it);
 `getRegistedRepositories()` returns a copy. `FMLTechnologyAdapter` and `FMLRTTechnologyAdapter` use the returned repository.
 
-**Not covered.** The accessors of the other technology adapters (about 25, in about 20 repositories: xlsx, diagram, docx, emf, formod's
-b-ta, …) still ignore the returned repository: they compile unchanged, but keep the race until they are changed to
-`returned = resourceCenter.registerRepository(returned, …)`.
+**Technology adapters.** Every live accessor of the other technology adapters was changed the same way (30 call sites, 23 files):
+pdf, docx, mcp, diagram, xml, markdown, owl, capella, pptx, http, emf, opc-ua, json, odt, java, gina, xlsx, csv, oslc, rhapsody,
+`openflexo-technology-adapters` (dsl, xx) and formod's b-ta. The call sites left unchanged are in commented-out code.
+`openflexo-http` is not in the `openflexo-dev` composite: its change was not compiled.
