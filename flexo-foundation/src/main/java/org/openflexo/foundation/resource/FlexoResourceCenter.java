@@ -299,14 +299,25 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	<R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType, TechnologyAdapter<?> technologyAdapter);
 
 	/**
-	 * Register supplied repository for a given type and technology
+	 * Register supplied repository for a given type and technology, unless one is already registered<br>
+	 * Atomic: two threads may both find no repository with {@link #retrieveRepository(Class, TechnologyAdapter)} and both build one; only
+	 * the first one registered is kept. Callers must use the returned repository, not the one they built (CORE-D-25):
+	 * 
+	 * <pre>
+	 * R returned = resourceCenter.retrieveRepository(RepositoryType.class, this);
+	 * if (returned == null) {
+	 * 	returned = resourceCenter.registerRepository(RepositoryType.instanciateNewRepository(this, resourceCenter), RepositoryType.class,
+	 * 			this);
+	 * }
+	 * </pre>
 	 * 
 	 * @param repository
 	 *            the non-null repository to register
 	 * @param repositoryType
 	 * @param technologyAdapter
+	 * @return the repository registered for that type and technology: supplied one, or the one registered before
 	 */
-	<R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
+	<R extends ResourceRepository<?, I>> R registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter<?> technologyAdapter);
 
 	/**

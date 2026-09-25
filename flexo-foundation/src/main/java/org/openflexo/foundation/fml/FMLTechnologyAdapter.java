@@ -173,7 +173,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		CompilationUnitRepository<I> returned = resourceCenter.retrieveRepository(CompilationUnitRepository.class, this);
 		if (returned == null) {
 			returned = CompilationUnitRepository.instanciateNewRepository(this, resourceCenter);
-			resourceCenter.registerRepository(returned, CompilationUnitRepository.class, this);
+			// Another thread may have registered one meanwhile: use the registered one (CORE-D-25)
+			returned = resourceCenter.registerRepository(returned, CompilationUnitRepository.class, this);
 		}
 		return returned;
 	}

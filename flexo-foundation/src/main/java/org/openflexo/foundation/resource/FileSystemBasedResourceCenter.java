@@ -741,11 +741,17 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 			return false;
 		}
 
+		/**
+		 * Guards {@link #repositories}: repositories are created from several threads - the thread that asks for one, and the Swing EDT,
+		 * where {@link TechnologyAdapter#notifyRepositoryStructureChanged()} creates the missing ones (CORE-D-25)
+		 */
+		private final Object repositoriesLock = new Object();
+
+		/**
+		 * Return the map of the repositories of supplied technology. Must be called holding {@link #repositoriesLock}.
+		 */
 		private HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> getRepositoriesForAdapter(
-				TechnologyAdapter<?> technologyAdapter, boolean considerEmptyRepositories) {
-			if (considerEmptyRepositories) {
-				technologyAdapter.ensureAllRepositoriesAreCreated(this);
-			}
+				TechnologyAdapter<?> technologyAdapter) {
 			HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = repositories.get(technologyAdapter);
 			if (map == null) {
 				map = new HashMap<>();
@@ -757,35 +763,43 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		@Override
 		public final <R extends ResourceRepository<?, File>> R retrieveRepository(Class<? extends R> repositoryType,
 				TechnologyAdapter<?> technologyAdapter) {
-			HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-					technologyAdapter, false);
-
-			return (R) map.get(repositoryType);
+			synchronized (repositoriesLock) {
+				return (R) getRepositoriesForAdapter(technologyAdapter).get(repositoryType);
+			}
 		}
 
 		@Override
-		public final <R extends ResourceRepository<?, File>> void registerRepository(R repository, Class<? extends R> repositoryType,
+		public final <R extends ResourceRepository<?, File>> R registerRepository(R repository, Class<? extends R> repositoryType,
 				TechnologyAdapter<?> technologyAdapter) {
 
-			HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
-					technologyAdapter, false);
-
-			if (map.get(repositoryType) == null) {
+			synchronized (repositoriesLock) {
+				HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
+						technologyAdapter);
+				ResourceRepository<?, File> registered = map.get(repositoryType);
+				if (registered != null) {
+					// Built concurrently by another thread, which registered its own first: keep that one
+					return (R) registered;
+				}
 				map.put(repositoryType, repository);
-				getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
-						getRegistedRepositories(technologyAdapter, false));
-				// Call it to update the current repositories
-				technologyAdapter.notifyRepositoryStructureChanged();
 			}
-			else {
-				logger.warning("Repository already registered: " + repositoryType + " for " + repository);
-			}
+			// Notify outside of the lock: listeners run arbitrary code, possibly in another thread
+			getPropertyChangeSupport().firePropertyChange("getRegisteredRepositories(TechnologyAdapter)", null,
+					getRegistedRepositories(technologyAdapter, false));
+			// Call it to update the current repositories
+			technologyAdapter.notifyRepositoryStructureChanged();
+			return repository;
 		}
 
 		@Override
 		public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter<?> technologyAdapter,
 				boolean considerEmptyRepositories) {
-			return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
+			if (considerEmptyRepositories) {
+				technologyAdapter.ensureAllRepositoriesAreCreated(this);
+			}
+			// A copy: the map may change in another thread while the caller iterates
+			synchronized (repositoriesLock) {
+				return new ArrayList<>(getRepositoriesForAdapter(technologyAdapter).values());
+			}
 		}
 
 		@Override

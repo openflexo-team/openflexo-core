@@ -1211,12 +1211,12 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public <R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
+	public <R extends ResourceRepository<?, I>> R registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter<?> technologyAdapter) {
 		if (getDelegateResourceCenter() == null) {
-			return;
+			return repository;
 		}
-		getDelegateResourceCenter().registerRepository(repository, repositoryType, technologyAdapter);
+		return getDelegateResourceCenter().registerRepository(repository, repositoryType, technologyAdapter);
 	}
 
 	@Override
