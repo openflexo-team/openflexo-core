@@ -202,8 +202,8 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 			return super.getDisplayName() + "[Loading]";
 		}
 		if (isLoaded() && getLoadedResourceData().getFlexoConcept() != null
-				&& getLoadedResourceData().getFlexoConcept().getInspector() != null
-				&& getLoadedResourceData().getFlexoConcept().getInspector().getRenderer().isValid()) {
+				&& getLoadedResourceData().getFlexoConcept().getRenderer() != null
+				&& getLoadedResourceData().getFlexoConcept().getRenderer().isValid()) {
 			return getLoadedResourceData().getStringRepresentation();
 		}
 		return super.getDisplayName();

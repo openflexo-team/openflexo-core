@@ -1170,7 +1170,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				for (FlexoBehaviourParameter p : es.getParameters()) {
 					checkAndRegisterLocalized(p.getName());
 				}
-				for (InspectorEntry entry : concept.getInspector().getEntries()) {
+				for (InspectorEntry entry : concept.getInspector() != null ? concept.getInspector().getEntries()
+						: java.util.Collections.<InspectorEntry> emptyList()) {
 					checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
 				}
 			}

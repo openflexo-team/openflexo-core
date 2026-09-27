@@ -359,9 +359,16 @@ public abstract class CompilationUnitResourceImpl
 
 	@Override
 	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+		// The second pass analyzes the bindings the first one deferred, and analyzing a binding sets its expression, which notifies its
+		// owner and marks this unit modified. That is still loading, not an edition: what was loaded from disk and not edited must not
+		// be proposed for saving (CORE-D-26)
+		boolean wasModifiedBeforeSecondPass = getLoadedResourceData().isModified();
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
 		if (cuNode != null) {
 			cuNode.getSemanticsAnalyzer().finalizeDeserialization(true);
+		}
+		if (!wasModifiedBeforeSecondPass) {
+			getLoadedResourceData().clearIsModified();
 		}
 		isFinalized = true;
 		// A compilation unit referenced by this one, but not finalized yet, is still loading higher in the stack: the bindings of this

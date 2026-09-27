@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -58,6 +59,12 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.md.SingleMetaData;
+import org.openflexo.foundation.fml.binding.FlexoConceptRendererBindingModel;
+import org.openflexo.connie.DefaultBindable;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.InvalidNameException;
@@ -631,6 +638,33 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Setter(INSPECTOR_KEY)
 	public void setInspector(FlexoConceptInspector inspector);
 
+	/**
+	 * Return the deprecated {@link FlexoConceptInspector} of this concept, creating it when this concept has none.
+	 *
+	 * Reserved for the code that edits an inspector: {@link #getInspector()} never creates one, so that merely reading a concept leaves
+	 * it unmodified.
+	 *
+	 * @deprecated as {@link FlexoConceptInspector} itself
+	 */
+	@Deprecated
+	public FlexoConceptInspector getOrCreateInspector();
+
+	/**
+	 * Return the renderer of this concept: the expression giving the string representation of one of its instances, which reads the
+	 * instance as <code>instance</code>.
+	 *
+	 * Stored as the {@link #RENDERER_METADATA} metadata (the <code>@Renderer</code> annotation).
+	 */
+	public DataBinding<String> getRenderer();
+
+	public void setRenderer(DataBinding<String> renderer);
+
+	/**
+	 * The {@link Bindable} in which the renderer of this concept is expressed: it exposes the rendered instance as
+	 * {@link #RENDERED_INSTANCE_PROPERTY}
+	 */
+	public Bindable getRendererContext();
+
 	// Used for serialization, do not use as API
 	@Getter(PARENT_FLEXO_CONCEPTS_LIST_KEY)
 	@XMLAttribute
@@ -954,6 +988,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * This is where a renderer is actually STORED - {@link FlexoConceptInspector#getRenderer()} only reads it back.
 	 */
 	public static final String RENDERER_METADATA = "Renderer";
+
+	/** Name under which a renderer reads the instance it renders */
+	public static final String RENDERED_INSTANCE_PROPERTY = "instance";
 
 	/**
 	 * Return the GINA component serializing the user interface of the instances of this {@link FlexoConcept}, as stored in the container
@@ -1975,13 +2012,125 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return newDeletionScheme;
 		}
 
+		/**
+		 * Return the inspector this concept declares, or null: reading a concept must not create one. Setting the title of a freshly
+		 * created inspector marked the concept, and its compilation unit, as modified - so merely analyzing a binding proposed an
+		 * untouched model for saving (CORE-D-26). Use {@link #getOrCreateInspector()} to edit one.
+		 */
 		@Override
 		public FlexoConceptInspector getInspector() {
+			return inspector;
+		}
+
+		@Override
+		public FlexoConceptInspector getOrCreateInspector() {
 			if (inspector == null && getFMLModelFactory() != null) {
 				inspector = getFMLModelFactory().newFlexoConceptInspector(this);
 				inspector.setInspectorTitle(getName());
 			}
 			return inspector;
+		}
+
+		private FlexoConceptRenderer rendererOwner;
+		private DataBinding<String> renderer;
+
+		@Override
+		public Bindable getRendererContext() {
+			return getRendererOwner();
+		}
+
+		/**
+		 * The {@link Bindable} in which the renderer of this concept is expressed: it exposes the rendered instance
+		 */
+		private FlexoConceptRenderer getRendererOwner() {
+			if (rendererOwner == null) {
+				rendererOwner = new FlexoConceptRenderer();
+			}
+			return rendererOwner;
+		}
+
+		private DataBinding<String> retrieveRendererFromMetadata() {
+			DataBinding<String> returned = getSingleMetaData(RENDERER_METADATA, DataBinding.class);
+			returned.setOwner(getRendererOwner());
+			returned.setDeclaredType(String.class);
+			returned.setBindingDefinitionType(BindingDefinitionType.GET);
+			returned.setBindingName("renderer");
+			return returned;
+		}
+
+		@Override
+		public DataBinding<String> getRenderer() {
+			if (renderer == null) {
+				if (hasMetaData(RENDERER_METADATA)) {
+					getMetaData(RENDERER_METADATA).getPropertyChangeSupport().addPropertyChangeListener(evt -> {
+						if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
+							renderer = retrieveRendererFromMetadata();
+						}
+					});
+					renderer = retrieveRendererFromMetadata();
+				}
+				else {
+					renderer = new DataBinding<>(getRendererOwner(), String.class, BindingDefinitionType.GET);
+					renderer.setBindingName("renderer");
+				}
+			}
+			return renderer;
+		}
+
+		@Override
+		public void setRenderer(DataBinding<String> renderer) {
+			if (renderer != null) {
+				renderer.setOwner(getRendererOwner());
+				renderer.setDeclaredType(String.class);
+				renderer.setBindingDefinitionType(BindingDefinitionType.GET);
+				renderer.setBindingName("renderer");
+			}
+			this.renderer = renderer;
+			setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+		}
+
+		/**
+		 * The {@link Bindable} owning the renderer of this concept
+		 */
+		public class FlexoConceptRenderer extends DefaultBindable {
+
+			private FlexoConceptRendererBindingModel rendererBindingModel = null;
+
+			@Override
+			public BindingFactory getBindingFactory() {
+				return FlexoConceptImpl.this.getBindingFactory();
+			}
+
+			@Override
+			public FlexoConceptRendererBindingModel getBindingModel() {
+				if (rendererBindingModel == null) {
+					rendererBindingModel = new FlexoConceptRendererBindingModel(FlexoConceptImpl.this);
+				}
+				return rendererBindingModel;
+			}
+
+			@Override
+			public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+				if (dataBinding == renderer) {
+					// Analyzing the renderer parses its expression, which notifies a change although nothing was edited: writing the
+					// metadata back then would mark the concept, and its compilation unit, as modified by a mere read (CORE-D-26)
+					String expression = renderer != null ? renderer.toString() : null;
+					FMLMetaData metaData = hasMetaData(RENDERER_METADATA) ? getMetaData(RENDERER_METADATA) : null;
+					if (metaData instanceof SingleMetaData
+							&& Objects.equals(((SingleMetaData<?>) metaData).getSerializationRepresentation(), expression)) {
+						return;
+					}
+					setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+					FlexoConceptImpl.this.notifiedBindingChanged(dataBinding);
+				}
+			}
+
+			@Override
+			public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+				if (dataBinding == renderer) {
+					FlexoConceptImpl.this.notifiedBindingDecoded(dataBinding);
+				}
+			}
 		}
 
 		@Override
@@ -2422,7 +2571,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				embeddedValidable.add(getStructuralFacet());
 				embeddedValidable.add(getBehaviouralFacet());
 				embeddedValidable.add(getInnerConceptsFacet());
-				embeddedValidable.add(getInspector());
+				if (getInspector() != null) {
+					embeddedValidable.add(getInspector());
+				}
 			}
 			return embeddedValidable;
 		}
@@ -2544,9 +2695,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public DataBinding<String> getApplicableRenderer() {
 			// A renderer is stored as @Renderer metadata; asking the deprecated inspector for one when the concept
 			// declares none would lazily create an empty inspector for nothing.
-			if (hasMetaData(RENDERER_METADATA) && getInspector() != null && getInspector().getRenderer() != null
-					&& getInspector().getRenderer().isSet() && getInspector().getRenderer().isValid()) {
-				return getInspector().getRenderer();
+			if (hasMetaData(RENDERER_METADATA) && getRenderer() != null && getRenderer().isSet() && getRenderer().isValid()) {
+				return getRenderer();
 			}
 			else if (getParentFlexoConcepts().size() > 0) {
 				List<FlexoConcept> parentConceptsWithARenderer = new ArrayList<>();
@@ -2987,10 +3137,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public DataBinding<String> getBinding(FlexoConcept object) {
-			if (object.getInspector() == null) {
+			if (!object.hasMetaData(RENDERER_METADATA)) {
 				return null;
 			}
-			return object.getInspector().getRenderer();
+			return object.getRenderer();
 		}
 	}
 

@@ -817,3 +817,45 @@ repository map with a lock (the repository itself is built outside of it, and no
 pdf, docx, mcp, diagram, xml, markdown, owl, capella, pptx, http, emf, opc-ua, json, odt, java, gina, xlsx, csv, oslc, rhapsody,
 `openflexo-technology-adapters` (dsl, xx) and formod's b-ta. The call sites left unchanged are in commented-out code.
 `openflexo-http` is not in the `openflexo-dev` composite: its change was not compiled.
+
+---
+
+## Resources: loading
+
+### CORE-D-26 — Loading a compilation unit leaves it modified  ·  `DONE`
+
+**Symptom.** A VirtualModel loaded from disk and never edited reports itself as modified, so the application offers to save it and
+`ResourceManager.getUnsavedResources()` lists it. On a resource center read from a jar this cannot even be done: saving raises
+`SaveResourcePermissionDeniedException`. Measured on `formod-rc`: every contained compilation unit came back modified right after
+loading.
+
+**Reproduction (verified 2026-09-25 by execution).** `flexo-foundation-test`, `TestLoadDoesNotModify`, over the `FML/PingPong.fml` and
+`FML/CrossImports.fml` fixtures of `flexo-test-resources`: it loads a container and its contained units and asserts that none is
+modified. First met in `formod`, uiTest `TestBMethology.instantiateBMethodology`, which saves every unsaved resource and tripped on
+`DocumentLibrary`, a VirtualModel of a jar resource center.
+
+**Mechanism — verified by execution (instrumenting the PAMELA modified flag).** Two contributors, both on read paths:
+
+1. `FlexoConcept.getInspector()` created the deprecated `FlexoConceptInspector` on the fly and gave it a title. Setting that title
+   marks the concept, hence its compilation unit, as modified — and the lazy creation fires from ordinary reads: binding analysis
+   (`FMLBindingFactory._getAccessibleSimplePathElements`), the localization scan (`FMLCompilationUnit.searchNewEntriesForConcept`) and
+   `ModuleInspectorController`.
+2. The renderer of a concept is stored as the `@Renderer` metadata, and the deprecated inspector was the only object able to hold its
+   `DataBinding`. Analyzing that binding parses its expression, which notifies a change, which wrote the metadata back — marking the
+   unit modified although nothing was edited.
+
+**Fix.**
+1. `getInspector()` never creates anything and returns null for a concept that declares no inspector; `getOrCreateInspector()` is the
+   explicit form, used by the few places that edit one (the concept creation wizard, free-modelling-editor, diagram-ta's concept from a
+   diagram element, jdbc-ta's mapping generator). Readers were made null-tolerant.
+2. The renderer moved to `FlexoConcept` itself: `getRenderer()` / `setRenderer()` read and write the `@Renderer` metadata, and the
+   binding is owned by a `FlexoConceptRenderer` exposing the rendered instance as `instance`
+   (`FlexoConceptRendererBindingModel`). `FlexoConceptInspector.getRenderer()` delegates to it, so both can never disagree. The
+   metadata is written back only when the expression really differs from the one it holds, not when the binding is merely parsed.
+3. `CompilationUnitResourceImpl.finalizeLoadResourceData()` clears the modified flag after the second analysis pass when the unit was
+   not modified before it, symmetrically to what the first pass already did.
+
+**What is NOT this defect.** A compilation unit whose file lacks a `use` declaration it needs is completed at load
+(`FlexoProperty.handleRequiredImports` → `FMLCompilationUnit.ensureUse`), and that legitimately marks it modified: the file on disk is
+incomplete. Two fixtures were completed rather than the platform changed — `flexo-test-resources` `FML/CrossImports.fml` and formod's
+`Methodology.fml`.

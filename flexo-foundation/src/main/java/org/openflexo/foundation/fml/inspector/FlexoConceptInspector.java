@@ -297,52 +297,23 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 
 		protected static final String RENDERER = FlexoConcept.RENDERER_METADATA;
 
-		private DataBinding<String> retrieveRendererFromMetadata() {
-			DataBinding<String> returned = getFlexoConcept().getSingleMetaData(RENDERER, DataBinding.class);
-			returned.setOwner(formatter);
-			returned.setDeclaredType(String.class);
-			returned.setBindingDefinitionType(BindingDefinitionType.GET);
-			returned.setBindingName("renderer");
-			return returned;
-		}
-
+		/**
+		 * The renderer is stored as the {@link FlexoConcept#RENDERER_METADATA} metadata of the concept, which owns it: this only
+		 * delegates, so that the deprecated inspector and the concept never disagree
+		 */
 		@Override
 		public DataBinding<String> getRenderer() {
-			if (renderer == null) {
-				if (getFlexoConcept() != null && getFlexoConcept().hasMetaData(RENDERER)) {
-
-					getFlexoConcept().getMetaData(RENDERER).getPropertyChangeSupport()
-							.addPropertyChangeListener(new PropertyChangeListener() {
-								@Override
-								public void propertyChange(PropertyChangeEvent evt) {
-									if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
-										renderer = retrieveRendererFromMetadata();
-										// System.err.println("New renderer: " + renderer + " valid: " + renderer.isValid()
-										// + " reason: " + renderer.invalidBindingReason());
-									}
-								}
-							});
-
-					renderer = retrieveRendererFromMetadata();
-				}
-				else {
-					renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
-					renderer.setBindingName("renderer");
-				}
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getRenderer();
 			}
-			return renderer;
+			return null;
 		}
 
 		@Override
 		public void setRenderer(DataBinding<String> renderer) {
-			if (renderer != null) {
-				renderer.setOwner(formatter);
-				renderer.setDeclaredType(String.class);
-				renderer.setBindingDefinitionType(BindingDefinitionType.GET);
-				renderer.setBindingName("renderer");
+			if (getFlexoConcept() != null) {
+				getFlexoConcept().setRenderer(renderer);
 			}
-			this.renderer = renderer;
-			notifiedBindingChanged(this.renderer);
 		}
 
 		@Override

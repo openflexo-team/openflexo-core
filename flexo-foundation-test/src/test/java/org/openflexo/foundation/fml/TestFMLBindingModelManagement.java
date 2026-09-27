@@ -1505,56 +1505,56 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(17)
 	public void testFlexoConceptInstanceInspector() {
 
-		assertSame(flexoConceptA.getBindingModel(), flexoConceptA.getInspector().getBindingModel().getBaseBindingModel());
+		assertSame(flexoConceptA.getBindingModel(), flexoConceptA.getOrCreateInspector().getBindingModel().getBaseBindingModel());
 
-		assertEquals(6, flexoConceptA.getInspector().getBindingModel().getBindingVariablesCount());
+		assertEquals(6, flexoConceptA.getOrCreateInspector().getBindingModel().getBindingVariablesCount());
 
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
 		assertNotNull(
-				flexoConceptA.getInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), flexoConceptA.getInspector().getBindingModel()
+				flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), flexoConceptA.getOrCreateInspector().getBindingModel()
 				.bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptA.getInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
+				flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aStringInA"));
-		assertEquals(String.class, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aStringInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aStringInA"));
+		assertEquals(String.class, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aStringInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aBooleanInA"));
+		assertEquals(Boolean.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anIntegerInA"));
+		assertEquals(Integer.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
+		assertEquals(Boolean.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 	}
 
 	@Test
 	@TestOrder(18)
 	public void testFlexoConceptInstanceRenderer() {
 
-		flexoConceptA.getInspector().setRenderer(new DataBinding<>("\"FlexoConceptA:\"+instance.aStringInA"));
-		assertTrue(flexoConceptA.getInspector().getRenderer().isValid());
+		flexoConceptA.setRenderer(new DataBinding<>("\"FlexoConceptA:\"+instance.aStringInA"));
+		assertTrue(flexoConceptA.getRenderer().isValid());
 
-		assertEquals(7, flexoConceptA.getInspector().getFormatter().getBindingModel().getBindingVariablesCount());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel()
+		assertEquals(7, flexoConceptA.getRendererContext().getBindingModel().getBindingVariablesCount());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel()
 				.bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME).getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aStringInA"));
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aStringInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aBooleanInA"));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aStringInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aBooleanInA"));
 		assertEquals(Boolean.TYPE,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anIntegerInA"));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.TYPE,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
 		assertEquals(Boolean.TYPE,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel()
-				.bindingVariableNamed(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel()
+				.bindingVariableNamed(FlexoConcept.RENDERED_INSTANCE_PROPERTY));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), flexoConceptA.getInspector().getFormatter()
-				.getBindingModel().bindingVariableNamed(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY).getType());
+				.getBindingModel().bindingVariableNamed(FlexoConcept.RENDERED_INSTANCE_PROPERTY).getType());
 
 	}
 

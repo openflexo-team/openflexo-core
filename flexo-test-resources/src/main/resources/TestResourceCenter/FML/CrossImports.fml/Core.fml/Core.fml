@@ -1,3 +1,5 @@
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
 import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/DerivedA.fml"];
 import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/DerivedB.fml"];
 

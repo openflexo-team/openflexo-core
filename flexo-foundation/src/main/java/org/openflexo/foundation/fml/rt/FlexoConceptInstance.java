@@ -1777,16 +1777,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null) {
-				return getFlexoConcept().getInspector().getBindingFactory();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getRendererContext().getBindingFactory();
 			}
 			return null;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null) {
-				return getFlexoConcept().getInspector().getBindingModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getRendererContext().getBindingModel();
 			}
 			return null;
 		}
@@ -2201,17 +2201,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public boolean hasValidRenderer() {
 
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null
-					&& getFlexoConcept().getInspector().getRenderer() != null) {
-				if (!getFlexoConcept().getInspector().getRenderer().isValid()) {
+			if (getFlexoConcept() != null && getFlexoConcept().getRenderer() != null) {
+				if (!getFlexoConcept().getRenderer().isValid()) {
 					// Quick and dirty hack to force revalidate
 					if (!rendererWasForceRevalidated) {
-						String invalidReason = getFlexoConcept().getInspector().getRenderer().invalidBindingReason();
-						getFlexoConcept().getInspector().getRenderer().revalidate();
+						String invalidReason = getFlexoConcept().getRenderer().invalidBindingReason();
+						getFlexoConcept().getRenderer().revalidate();
 						rendererWasForceRevalidated = true;
-						if (getFlexoConcept().getInspector().getRenderer().isValid()) {
+						if (getFlexoConcept().getRenderer().isValid()) {
 							logger.warning("Please investigate: i was required to force revalidate renderer: "
-									+ getFlexoConcept().getInspector().getRenderer() + " invalid reason=" + invalidReason);
+									+ getFlexoConcept().getRenderer() + " invalid reason=" + invalidReason);
 						}
 					}
 				}
@@ -2257,7 +2256,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 							@Override
 							public void bindingValueChanged(Object source, String newValue) {
 								/*System.out.println(" bindingValueChanged() detected for string representation of "
-										+ FlexoConceptInstanceImpl.this + " " + getFlexoConcept().getInspector().getRenderer()
+										+ FlexoConceptInstanceImpl.this + " " + getFlexoConcept().getRenderer()
 										+ " with newValue=" + newValue + " source=" + source);*/
 								if (!isDeleted()) {
 									// We have here detected that the string representation of this concept instance has changed
