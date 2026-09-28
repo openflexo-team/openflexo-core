@@ -245,7 +245,16 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 		if (parentFolder != null) {
 			parentFolder.removeFromResources(flexoResource);
 		}
-		resources.remove(flexoResource.getURI());
+		// By identity: the URI the resource was registered with may no longer be the one it answers now - a resource never loaded
+		// computes it from its resource center, which may already be detached when a project is closed (CORE-D-27). The URI is only
+		// the fast path.
+		String uri = flexoResource.getURI();
+		if (uri != null && resources.get(uri) == flexoResource) {
+			resources.remove(uri);
+		}
+		else {
+			resources.values().removeIf(registered -> registered == flexoResource);
+		}
 	}
 
 	/* (non-Javadoc)

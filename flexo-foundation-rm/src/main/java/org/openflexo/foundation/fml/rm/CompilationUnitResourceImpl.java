@@ -164,6 +164,11 @@ public abstract class CompilationUnitResourceImpl
 	@Override
 	public String computeDefaultURI() {
 		String returned = super.computeDefaultURI();
+		if (returned == null) {
+			// No default URI from the resource center: a project being closed has lost its delegate resource center (CORE-D-27).
+			// FlexoResourceImpl.getURI() falls back on the serialization artefact
+			return null;
+		}
 		if (!returned.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
 			return returned + CompilationUnitResourceFactory.FML_SUFFIX;
 		}
