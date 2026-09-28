@@ -653,8 +653,9 @@ into one across several statements.
 
 ## Resources: unloading and deletion
 
-`CORE-D-21`, `CORE-D-22` and `CORE-D-23` were found and fixed together; `CORE-D-24` is what the same measurement left open. The
-regression test of all four is `flexo-foundation-test`, `TestUnloadDoesNotDelete`, over the fixtures `FML/UnloadLedger.fml` and
+`CORE-D-21`, `CORE-D-22` and `CORE-D-23` were found and fixed together; `CORE-D-24` is what the same measurement left open. `CORE-D-27`
+is a consequence of the order the `CORE-D-21` fix gives to closing a project. The
+regression test of the first four is `flexo-foundation-test`, `TestUnloadDoesNotDelete`, over the fixtures `FML/UnloadLedger.fml` and
 `FML/UnloadProbe.fml` of `flexo-test-resources`: an `Item` whose deletion scheme increments a counter of a ledger held in another
 resource, and whose renderer reads that ledger.
 
@@ -817,6 +818,43 @@ repository map with a lock (the repository itself is built outside of it, and no
 pdf, docx, mcp, diagram, xml, markdown, owl, capella, pptx, http, emf, opc-ua, json, odt, java, gina, xlsx, csv, oslc, rhapsody,
 `openflexo-technology-adapters` (dsl, xx) and formod's b-ta. The call sites left unchanged are in commented-out code.
 `openflexo-http` is not in the `openflexo-dev` composite: its change was not compiled.
+
+### CORE-D-27 — Closing a reloaded project fails on a compilation unit that was never loaded  ·  `TODO`
+
+**Symptom.** `FlexoProject.close()` throws a `ModelExecutionException` caused by a `NullPointerException` in
+`CompilationUnitResourceImpl.computeDefaultURI()` (`flexo-foundation-rm`, `returned.endsWith(…)` on a null `returned`),
+raised from `DefaultResourceCenterService.removeFromResourceCenters()`. The project is left half-closed: `closed` is never
+set, and the resource center notification is interrupted for the remaining technology adapters.
+
+**Reproduction (verified 2026-09-28 by execution).** free-modelling-editor, uiTests `TestCreateFreeModel` and
+`TestCreateFreeModelWithInstances`: both reload their project (`loadProject` in a new service manager), and their
+`tearDownClass` (`OpenflexoProjectAtRunTimeTestCase.deleteProject` → `close()`) fails. Reported as a `classMethod` failure;
+every test method passes. Present on the baseline, before the FME inspector migration. A test class that does not reload
+its project does not fail.
+
+**Mechanism.**
+- *Verified by execution* (a trace in `computeDefaultURI()` when the default URI is null): the resource is a compilation
+  unit of the project that was **never loaded** in the reloaded project (`FreeModel`, `ConceptualModel`, `loaded=false`).
+  Its resource center is the `FlexoProject`, which at that point has **no name and no delegate resource center**
+  (`PROJECT-null`, `getDelegateResourceCenter() == null`), so `FlexoProjectImpl.getDefaultResourceURI()` answers null.
+- *From reading the code, not instrumented*: `removeFromResourceCenters()` first unloads the loaded resources of the
+  project, and DELETES the data of the project resource — the `FlexoProject` itself — which detaches it from its delegate
+  resource center (this exception was introduced with `CORE-D-21`, commit `49602a019`). Only then does it notify
+  `ResourceCenterRemoved`, on which each technology adapter unregisters its resources
+  (`ResourceRepositoryImpl.unregisterAllResources` → `unregisterResource` → `getURI()`). A resource that was loaded
+  knows its URI (`@URI`) and does not ask; one never loaded computes it from the project, too late.
+
+**Impact.** Presumably the same in the application when a project whose VirtualModels were not all opened is closed after
+being reopened: not measured there.
+
+**To decide as part of the fix.**
+- Notify `ResourceCenterRemoved` before deleting the project data, or have unregistration not depend on the URI (the
+  repository map could be keyed by the resource object, or keep the URI a resource was registered with).
+- Whether `CompilationUnitResourceImpl.computeDefaultURI()` should tolerate a null base URI regardless (a guard alone would
+  hide the ordering problem: the resource would be removed under a URI other than the one it was registered with).
+
+**Acceptance criteria.** Both FME test classes above pass their `tearDownClass`; a flexo-foundation-test reloading a project
+with a never-loaded compilation unit, then closing it, passes.
 
 ---
 
