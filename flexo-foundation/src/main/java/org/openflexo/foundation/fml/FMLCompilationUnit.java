@@ -423,6 +423,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 *
 	 * <code>name</code> may denote a nested artefact, using <code>/</code> as a separator (<code>"UI/MyScreen.fib"</code>).
 	 *
+	 * <p>
+	 * An artefact at the root of the container is also found BEFORE it is first written, when a resource serialized by it is registered in
+	 * the contents of the compilation unit resource: a generator creating a component marks it modified and leaves saving it to the user,
+	 * and the component must resolve in between.
+	 *
 	 * @param name
 	 *            simple name of the searched artefact, extension included
 	 * @return
@@ -1096,6 +1101,19 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			for (Resource child : container.getContents(false)) {
 				if (hasSimpleName(child, name)) {
 					return child;
+				}
+			}
+
+			// Not on disk (yet): a resource created in memory, registered in the contents and not saved so far.
+			// Its serialization artefact is the very Resource its IO delegate reports, which is what lets a lookup
+			// by artefact (FlexoConcept.componentResourceFor()) find it back.
+			if (getResource() != null) {
+				for (FlexoResource<?> content : getResource().getContents()) {
+					Resource artefact = content.getIODelegate() != null ? content.getIODelegate().getSerializationArtefactAsResource()
+							: null;
+					if (artefact != null && hasSimpleName(artefact, name)) {
+						return artefact;
+					}
 				}
 			}
 

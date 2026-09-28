@@ -92,3 +92,26 @@ to the first action scheme, which may be a deletion scheme.
 - What `FlexoConceptInstance.delete()` does when no scheme can be chosen.
 
 **Related.** Fix together with `CORE-D-1` and `CORE-D-2` (see [`KNOWN_DEFECTS.md`](./KNOWN_DEFECTS.md)).
+
+## Container-based user interfaces
+
+### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `TODO`
+
+**Problem.** A concept finds its user interface and its inspector in the `Xxx.fml/` container of its VirtualModel by
+naming convention: `<ConceptName>.fib`, `<ConceptName>.inspector` (`FlexoConcept.getUIComponentResource()` /
+`getInspectorComponentResource()`). Renaming the concept renames neither file, so the concept silently loses both, and
+the files stay in the container, driven by nothing. A component named by an explicit `@UI("…")` / `@Inspector("…")`
+annotation survives the rename.
+
+**Why it matters now.** The free modelling editor generates one `.inspector` per concept it creates, by convention
+(`FMEInspectorGenerator`). FME itself offers no rename, but the FML editor does, on any concept.
+
+**To decide.**
+- Rename the conventional components with the concept (a rename of the concept then touches the resource center), or
+- On rename, write an explicit annotation naming the existing file, so the convention no longer applies to it.
+- Whether a variant (`Xxx-variant.fib`) follows the same rule.
+
+**Acceptance criteria.**
+- After renaming a concept that has a conventional `.fib` and `.inspector`, both still resolve, from memory and after
+  reloading.
+- No component is left in the container that nothing resolves to.
