@@ -95,7 +95,7 @@ to the first action scheme, which may be a deletion scheme.
 
 ## Container-based user interfaces
 
-### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `TODO`
+### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `DONE`
 
 **Problem.** A concept finds its user interface and its inspector in the `Xxx.fml/` container of its VirtualModel by
 naming convention: `<ConceptName>.fib`, `<ConceptName>.inspector` (`FlexoConcept.getUIComponentResource()` /
@@ -106,12 +106,29 @@ annotation survives the rename.
 **Why it matters now.** The free modelling editor generates one `.inspector` per concept it creates, by convention
 (`FMEInspectorGenerator`). FME itself offers no rename, but the FML editor does, on any concept.
 
-**To decide.**
-- Rename the conventional components with the concept (a rename of the concept then touches the resource center), or
-- On rename, write an explicit annotation naming the existing file, so the convention no longer applies to it.
-- Whether a variant (`Xxx-variant.fib`) follows the same rule.
+**Resolution (2026-09-29).** The naming convention is kept only as a permanent, read-only fallback for components
+created before this change; going forward, resolution is meant to rely on the annotation alone.
+- `CreateFIBComponent` / `CreateInspector` (openflexo-ui/fml-gina-extension) now ALWAYS write an explicit
+  `@UI`/`@Inspector` annotation for a component they create - the default variant when the wizard's "declare as a
+  named variant" box is left unchecked, the chosen key otherwise - instead of only when that box was checked. A
+  component created from now on can never be orphaned by a later rename.
+- `FlexoConcept.freezeConventionalUIComponentNames()` (flexo-foundation) is the fixup for everything created
+  before this change: called by both rename actions - `RenameFlexoConcept` (a nested concept) and
+  `RenameCompilationUnit` (the VirtualModel itself, which IS a FlexoConcept and gets its own view the same way) -
+  BEFORE the name actually changes, it writes an explicit annotation naming whatever the naming convention alone
+  currently resolves, and is a no-op for a concept that already declares one. Covered by
+  `TestContainerUIComponents.test10FreezeWritesAnAnnotationOnlyWhereTheConventionResolves` (the mechanism) and
+  `TestRenameFlexoConcept` (end to end, both actions).
+- **Known gap, out of scope:** `fml-lsp`'s `RenameProvider` renames by pure text substitution and never touches the
+  model, so a rename issued through the LSP does not go through the freeze either.
+- **Test note, not a defect:** `TestRenameFlexoConcept`'s `RenameCompilationUnit` case only asserts the freeze,
+  not the action's overall success. `TestContainerUI.fml` is loaded from `flexo-test-resources`' packaged JAR
+  (as documented in this repo's `CLAUDE.md`), and `InJarIODelegateImpl.hasWritePermission()` always answers
+  false, so `FlexoResourceImpl.setName()` correctly refuses to rename it - `DirectoryBasedIODelegate.rename()`
+  (where the earlier draft of this note wrongly placed the cause) is never even reached. The freeze already ran
+  by then regardless, which is the only thing CORE-F-4 depends on.
 
 **Acceptance criteria.**
 - After renaming a concept that has a conventional `.fib` and `.inspector`, both still resolve, from memory and after
-  reloading.
-- No component is left in the container that nothing resolves to.
+  reloading. — met via the freeze, for any rename that goes through `RenameFlexoConcept`/`RenameCompilationUnit`.
+- No component is left in the container that nothing resolves to. — met the same way.

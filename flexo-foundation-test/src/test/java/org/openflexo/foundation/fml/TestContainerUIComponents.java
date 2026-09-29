@@ -6,6 +6,7 @@
 package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -201,6 +202,54 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 
 		// A concept declaring none gets none, rather than an empty binding carried by a lazily created inspector
 		assertNull(concept("Simple").getApplicableRenderer());
+	}
+
+	/**
+	 * {@link FlexoConcept#freezeConventionalUIComponentNames()} - called before a rename, to preserve a component still resolved by the
+	 * naming convention alone (CORE-F-4, see the rename actions in flexo-foundation) - only ever has something to do for a concept with
+	 * no <code>@UI</code>/<code>@Inspector</code> of its own, and only for the components it resolves ON ITSELF.
+	 */
+	@Test
+	@TestOrder(11)
+	public void test10FreezeWritesAnAnnotationOnlyWhereTheConventionResolves() {
+
+		FlexoConcept simple = concept("Simple");
+		assertFalse(simple.hasMetaData(FlexoConcept.UI_METADATA));
+		assertFalse(simple.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+
+		simple.freezeConventionalUIComponentNames();
+
+		assertEquals("Simple.fib", simple.getSingleMetaData(FlexoConcept.UI_METADATA, String.class));
+		assertEquals("Simple.inspector", simple.getSingleMetaData(FlexoConcept.INSPECTOR_METADATA, String.class));
+		// Resolution is unchanged: the new annotation names exactly what the convention already resolved
+		assertResolvesTo("Simple.fib", simple.getUIComponentResource());
+		assertResolvesTo("Simple.inspector", simple.getInspectorComponentResource());
+
+		// A concept that already declares an annotation of its own is left untouched
+		FlexoConcept annotated = concept("Annotated");
+		annotated.freezeConventionalUIComponentNames();
+		assertEquals("CustomScreen.fib", annotated.getSingleMetaData(FlexoConcept.UI_METADATA, String.class));
+
+		// Nothing to freeze: no component resolves on this concept at all
+		FlexoConcept without = concept("WithoutAnyComponent");
+		without.freezeConventionalUIComponentNames();
+		assertFalse(without.hasMetaData(FlexoConcept.UI_METADATA));
+		assertFalse(without.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+
+		// A component resolved only by INHERITANCE must not be frozen onto the child: InheritingFromSimple has no
+		// Xxx.fib/.inspector of its OWN in the container
+		FlexoConcept inheriting = concept("InheritingFromSimple");
+		inheriting.freezeConventionalUIComponentNames();
+		assertFalse(inheriting.hasMetaData(FlexoConcept.UI_METADATA));
+		assertFalse(inheriting.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+		assertResolvesTo("Simple.fib", inheriting.getUIComponentResource());
+
+		// A concept resolving only ONE of the two (an inspector but no .fib) freezes only that one
+		FlexoConcept plain = concept("Plain");
+		assertFalse(plain.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+		plain.freezeConventionalUIComponentNames();
+		assertEquals("Plain.inspector", plain.getSingleMetaData(FlexoConcept.INSPECTOR_METADATA, String.class));
+		assertFalse("No Plain.fib in the container: nothing to freeze", plain.hasMetaData(FlexoConcept.UI_METADATA));
 	}
 
 	/**

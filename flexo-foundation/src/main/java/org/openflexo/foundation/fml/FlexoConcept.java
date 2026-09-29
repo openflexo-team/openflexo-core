@@ -1067,6 +1067,20 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public List<String> getInspectorComponentVariants();
 
+	/**
+	 * When this concept has no <code>@UI</code> / <code>@Inspector</code> annotation of its own and resolves its default component (a
+	 * <code>.fib</code> and/or a <code>.inspector</code>) purely by the <code>&lt;ConceptName&gt;.&lt;extension&gt;</code> naming
+	 * convention, write that resolution down as an explicit annotation naming the file that already exists.
+	 *
+	 * <p>
+	 * Called by the rename actions ({@code RenameFlexoConcept}, {@code RenameCompilationUnit}) BEFORE the name actually changes, so that
+	 * a component nothing then names is never left behind: a renamed concept whose default view/inspector was still resolved by
+	 * convention would otherwise silently lose it (CORE-F-4). Creating a component through {@code CreateFIBComponent} /
+	 * {@code CreateInspector} already writes the annotation up front, so this only ever has something to do for LEGACY concepts never
+	 * touched since - it is a one-shot fixup, not a second permanent resolution path.
+	 */
+	public void freezeConventionalUIComponentNames();
+
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept, PropertyChangeListener {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
@@ -2751,6 +2765,35 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public List<String> getInspectorComponentVariants() {
 			return getComponentVariants(INSPECTOR_METADATA, ".inspector");
+		}
+
+		@Override
+		public void freezeConventionalUIComponentNames() {
+			freezeConventionalComponentName(UI_METADATA, ".fib");
+			freezeConventionalComponentName(INSPECTOR_METADATA, ".inspector");
+		}
+
+		/**
+		 * See {@link #freezeConventionalUIComponentNames()}. Mirrors exactly the convention branch of
+		 * {@link #getContainedComponentResource(String, String, String)}: an existing annotation under this key is left untouched (there is
+		 * nothing to freeze, and this concept's own declaration must not be second-guessed), and only a component resolved on THIS concept -
+		 * never one inherited from a parent - is frozen.
+		 */
+		private void freezeConventionalComponentName(String metadataKey, String extension) {
+
+			if (hasMetaData(metadataKey) || StringUtils.isEmpty(getName())) {
+				return;
+			}
+
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+			if (compilationUnit == null) {
+				return;
+			}
+
+			String conventionalName = getName() + extension;
+			if (compilationUnit.getContainedArtefact(conventionalName) != null) {
+				setSingleMetaData(metadataKey, conventionalName, String.class);
+			}
 		}
 
 		@Override

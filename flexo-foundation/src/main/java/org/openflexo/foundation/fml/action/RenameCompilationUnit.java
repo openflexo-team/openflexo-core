@@ -116,6 +116,12 @@ public class RenameCompilationUnit extends FlexoAction<RenameCompilationUnit, FM
 
 		System.out.println("Rename VM to " + getNewCompilationUnitName());
 
+		// Before the name actually changes: the VirtualModel IS a FlexoConcept, and FMLCompilationUnit.setName() below renames it too -
+		// see RenameFlexoConcept for why this call is needed (CORE-F-4).
+		if (getFocusedObject().getVirtualModel() != null) {
+			getFocusedObject().getVirtualModel().freezeConventionalUIComponentNames();
+		}
+
 		getFocusedObject().setName(getNewCompilationUnitName());
 		getFocusedObject().setURI(getNewCompilationUnitURI());
 		getFocusedObject().setDescription(getNewCompilationUnitDescription());
