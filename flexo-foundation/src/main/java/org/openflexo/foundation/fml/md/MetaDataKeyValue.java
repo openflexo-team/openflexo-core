@@ -74,6 +74,9 @@ public interface MetaDataKeyValue<T> extends FMLObject, FMLPrettyPrintable {
 	@PropertyIdentifier(type = FMLObject.class)
 	public static final String OWNING_METADATA_KEY = "owningMetaData";
 
+	public static final String VALUE_EXPRESSION_KEY = "valueExpression";
+	public static final String SERIALIZATION_REPRESENTATION_KEY = "serializationRepresentation";
+
 	@Getter(value = KEY_KEY)
 	public String getKey();
 
@@ -125,6 +128,14 @@ public interface MetaDataKeyValue<T> extends FMLObject, FMLPrettyPrintable {
 
 		@Override
 		public T getValue(Class<T> type) {
+			if (DataBinding.class.equals(type) && value == null && getValueExpression() != null) {
+				// Special case, mirroring SingleMetaDataImpl#getValue: this is the DataBinding itself who is the value (e.g. the
+				// 'derived' key of @Inspector(derived=...)) - it is never evaluated here, only handed back to whoever asked for it
+				value = (T) valueExpression;
+				valueExpression = null;
+				return value;
+			}
+
 			if (getValueExpression() != null && getValueExpression().isSet() && getValueExpression().isValid()) {
 				try {
 					return getValueExpression().getBindingValue(getReflectedBindingEvaluationContext());
@@ -169,7 +180,13 @@ public interface MetaDataKeyValue<T> extends FMLObject, FMLPrettyPrintable {
 			}
 			if (value != null) {
 				Converter<T> converter = converterForClass(value.getClass());
-				return "\"" + converter.convertToString(value) + "\"";
+				String convertedValue = converter.convertToString(value);
+				// A DataBinding expression (e.g. the 'derived' key of @Inspector(derived=...)) is pretty-printed verbatim; every
+				// other scalar value (a String naming a component, ...) is an FML string literal and must be re-quoted to round-trip
+				if (value instanceof DataBinding) {
+					return convertedValue;
+				}
+				return "\"" + convertedValue + "\"";
 			}
 			if (serializationRepresentation != null) {
 				return serializationRepresentation;

@@ -42,9 +42,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -594,7 +596,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public int hashCodeUsingRoles();
 
 	/**
-	 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+	 * Return applicable inspected object: the one {@link FlexoConcept#getDerivedInspector() @Inspector(derived=…)} hands inspection
+	 * to (chained through as many concepts as declare it), or this instance itself when its concept declares none.
 	 */
 	public FlexoConceptInstance getInspectedObject();
 
@@ -2575,29 +2578,47 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
-		 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+		 * Return applicable inspected object: the one {@code @Inspector(derived=…)} hands inspection to, chained through as many
+		 * concepts as declare it (a FlexoConceptInstance of a concept that itself derives its inspector further), otherwise this.
+		 *
+		 * <p>
+		 * Guards against a cycle (A derives to B, which derives back to A - a modeling mistake {@link FlexoConcept}'s validation rule
+		 * does not catch, since it only looks at one concept at a time): the chain stops at the first instance seen twice, returning it
+		 * rather than looping forever.
 		 */
 		@Override
 		public FlexoConceptInstance getInspectedObject() {
-			if (getFlexoConcept() != null && getFlexoConcept().hasDelegatedInspector()) {
+			FlexoConceptInstance current = this;
+			Set<FlexoConceptInstance> visited = new HashSet<>();
+			visited.add(current);
+			while (current.getFlexoConcept() != null && current.getFlexoConcept().hasDerivedInspector()) {
+				FlexoConceptInstance next;
 				try {
-					FlexoConceptInstance delegate = getFlexoConcept().getInspector().getDelegateConceptInstance().getBindingValue(this);
-					return delegate;
+					next = current.getFlexoConcept().getDerivedInspector().getBindingValue(current);
 				} catch (TypeMismatchException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				} catch (NullReferenceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				} catch (InvocationTargetException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				} catch (ReflectiveOperationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				}
+				if (next == null || !visited.add(next)) {
+					// Nothing to delegate to, or a cycle: stop here, showing whatever was reached last
+					break;
+				}
+				current = next;
 			}
-			return this;
+			return current;
 		}
 
 		/**
