@@ -217,6 +217,12 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 		}
 
 		notifyResourceSaved();
+		notifyComponentSaved();
+	}
+
+	@Override
+	public void notifyComponentSaved() {
+		getPropertyChangeSupport().firePropertyChange(COMPONENT_SAVED_KEY, null, getLoadedResourceData());
 	}
 
 	/**

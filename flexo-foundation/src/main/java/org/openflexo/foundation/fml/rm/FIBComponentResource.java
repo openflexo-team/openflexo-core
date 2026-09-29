@@ -66,6 +66,21 @@ import org.openflexo.pamela.annotations.ModelEntity;
 public interface FIBComponentResource extends TechnologyAdapterResource<FMLFIBComponent, FMLTechnologyAdapter> {
 
 	/**
+	 * Property fired on the resource when its component was saved - see {@link #notifyComponentSaved()}.
+	 */
+	public static final String COMPONENT_SAVED_KEY = "componentSaved";
+
+	/**
+	 * Announce that the component was edited and saved.
+	 *
+	 * <p>
+	 * The GINA editor edits the component IN PLACE, so <code>component</code> never changes and nothing tells what was built from this
+	 * component - a module's inspector, a clone merged into the inspector of a class - that it is now out of date. A save is where an
+	 * edit is committed, and this is how it is announced, as a {@link #COMPONENT_SAVED_KEY} property change.
+	 */
+	public void notifyComponentSaved();
+
+	/**
 	 * The component this resource describes, loading the resource when required, or null when it cannot be loaded.
 	 */
 	public FIBComponent getComponent();
