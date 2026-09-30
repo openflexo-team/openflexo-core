@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -2119,6 +2120,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public void release() {
+			stopListeningToConceptRenderers();
 			if (rendererChangeListener != null) {
 				rendererChangeListener.delete();
 				rendererChangeListener = null;
@@ -2229,6 +2231,58 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		private BindingPathChangeListener<String> rendererChangeListener = null;
 
+		private PropertyChangeListener conceptRendererListener = null;
+		private final List<FlexoConcept> conceptsListenedForRenderer = new ArrayList<>();
+
+		/**
+		 * Listen to the renderer of the concept of this instance, and of its parent concepts (the applicable renderer may be inherited), so
+		 * that editing a renderer refreshes the string representation of the instances already existing.
+		 */
+		private void listenToConceptRenderers() {
+			if (conceptRendererListener != null || getFlexoConcept() == null) {
+				return;
+			}
+			conceptRendererListener = evt -> {
+				if (FlexoConcept.RENDERER_KEY.equals(evt.getPropertyName())) {
+					conceptRendererChanged();
+				}
+			};
+			conceptsListenedForRenderer.add(getFlexoConcept());
+			conceptsListenedForRenderer.addAll(getFlexoConcept().getAllParentFlexoConcepts());
+			for (FlexoConcept concept : conceptsListenedForRenderer) {
+				concept.getPropertyChangeSupport().addPropertyChangeListener(FlexoConcept.RENDERER_KEY, conceptRendererListener);
+			}
+		}
+
+		private void stopListeningToConceptRenderers() {
+			if (conceptRendererListener != null) {
+				for (FlexoConcept concept : conceptsListenedForRenderer) {
+					concept.getPropertyChangeSupport().removePropertyChangeListener(FlexoConcept.RENDERER_KEY, conceptRendererListener);
+				}
+				conceptsListenedForRenderer.clear();
+				conceptRendererListener = null;
+			}
+		}
+
+		/**
+		 * The renderer applicable to this instance has been edited: drop what was built on the former one, then notify, which makes whoever
+		 * displays the string representation of this instance (a browser caching its label, for instance) read it again.
+		 */
+		private void conceptRendererChanged() {
+			if (isDeleted()) {
+				return;
+			}
+			if (rendererChangeListener != null) {
+				DataBinding<String> formerRenderer = rendererChangeListener.getDataBinding();
+				rendererChangeListener.delete();
+				rendererChangeListener = null;
+				if (formerRenderer != null) {
+					formerRenderer.releaseEvaluationContext(this);
+				}
+			}
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+		}
+
 		private boolean isComputingRenderer = false;
 
 		@Override
@@ -2248,6 +2302,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			// We avoid here to enter in an infinite loop while protecting the computation of toString()
 			// (Could happen while extensively logging)
+
+			listenToConceptRenderers();
 
 			if (hasValidRenderer() && !isComputingRenderer) {
 				try {

@@ -1892,6 +1892,47 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		}
 	}
 
+	/**
+	 * Editing the renderer of a concept (from its inspector) must refresh, without reloading, the string representation of the instances
+	 * that already exist.
+	 */
+	@Test
+	@TestOrder(24)
+	public void testRendererEditionIsAppliedToExistingInstances() throws Exception {
+
+		log("testRendererEditionIsAppliedToExistingInstances()");
+
+		DataBinding<String> initialRenderer = flexoConceptA.getRenderer();
+		try {
+			flexoConceptA.setRenderer(new DataBinding<>("\"first:\"+instance.aStringInA"));
+			FlexoConceptInstance existing = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+			existing.setFlexoActor("foo", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+			assertEquals("first:foo", existing.getStringRepresentation());
+
+			final List<String> notified = new ArrayList<>();
+			existing.getPropertyChangeSupport().addPropertyChangeListener("stringRepresentation", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					notified.add((String) evt.getNewValue());
+				}
+			});
+
+			flexoConceptA.setRenderer(new DataBinding<>("\"second:\"+instance.aStringInA"));
+
+			assertFalse("stringRepresentation was not notified", notified.isEmpty());
+			assertEquals("second:foo", notified.get(notified.size() - 1));
+			assertEquals("second:foo", existing.getStringRepresentation());
+
+			// The instance keeps following its data after the edition
+			notified.clear();
+			existing.setFlexoActor("bar", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+			assertFalse(notified.isEmpty());
+			assertEquals("second:bar", existing.getStringRepresentation());
+		} finally {
+			flexoConceptA.setRenderer(initialRenderer);
+		}
+	}
+
 	private static void checkBinding(String binding, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
 		DataBinding<Object> db = new DataBinding<>(binding, owner, Object.class, BindingDefinitionType.GET);
 		assertTrue(db.isValid());

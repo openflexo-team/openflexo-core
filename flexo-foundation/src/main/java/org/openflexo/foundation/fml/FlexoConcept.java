@@ -983,6 +983,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public static final String RENDERER_METADATA = "Renderer";
 
+	/**
+	 * Name of the property notified when the renderer of this concept changes (edited, or re-read from its <code>@Renderer</code>
+	 * metadata): the instances listen to it to refresh their string representation.
+	 */
+	public static final String RENDERER_KEY = "renderer";
+
 	/** Name under which a renderer reads the instance it renders */
 	public static final String RENDERED_INSTANCE_PROPERTY = "instance";
 
@@ -2106,6 +2112,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					getMetaData(RENDERER_METADATA).getPropertyChangeSupport().addPropertyChangeListener(evt -> {
 						if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
 							renderer = retrieveRendererFromMetadata();
+							getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
 						}
 					});
 					renderer = retrieveRendererFromMetadata();
@@ -2128,6 +2135,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 			this.renderer = renderer;
 			setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+			getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
 		}
 
 		/**
@@ -2162,6 +2170,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 						return;
 					}
 					setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+					getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
 					FlexoConceptImpl.this.notifiedBindingChanged(dataBinding);
 				}
 			}
