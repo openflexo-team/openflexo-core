@@ -81,6 +81,19 @@ public interface FIBComponentResource extends TechnologyAdapterResource<FMLFIBCo
 	public void notifyComponentSaved();
 
 	/**
+	 * Property fired on the resource when its component was edited in place by program, and not saved - see
+	 * {@link #notifyComponentEdited()}.
+	 */
+	public static final String COMPONENT_EDITED_KEY = "componentEdited";
+
+	/**
+	 * Announce that the component was completed in place by program - the free modelling editor adding the widget of a new property to an
+	 * inspector. Same reason as {@link #notifyComponentSaved()}: <code>component</code> is still the same object, and what was built from
+	 * it is out of date.
+	 */
+	public void notifyComponentEdited();
+
+	/**
 	 * The component this resource describes, loading the resource when required, or null when it cannot be loaded.
 	 */
 	public FIBComponent getComponent();
