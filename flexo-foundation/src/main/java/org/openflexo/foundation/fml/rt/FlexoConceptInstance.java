@@ -2252,8 +2252,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (hasValidRenderer() && !isComputingRenderer) {
 				try {
 					isComputingRenderer = true;
-					Object obj = getFlexoConcept().getApplicableRenderer().getBindingValue(this);
-
+					// The listener must exist BEFORE the renderer is evaluated: while the instance is still being built (a role such
+					// as 'fmeConcept' not yet assigned), the evaluation raises a NullReferenceException and we would leave here
+					// without ever listening. The fallback label would then never be refreshed once the path becomes computable.
 					if (rendererChangeListener == null) {
 						rendererChangeListener = new BindingPathChangeListener<String>(getFlexoConcept().getApplicableRenderer(), this) {
 							@Override
@@ -2268,6 +2269,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 							}
 						};
 					}
+
+					Object obj = getFlexoConcept().getApplicableRenderer().getBindingValue(this);
 
 					isComputingRenderer = false;
 

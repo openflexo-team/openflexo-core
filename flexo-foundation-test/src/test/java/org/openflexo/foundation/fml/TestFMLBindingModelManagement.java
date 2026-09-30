@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -47,6 +48,8 @@ import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -1847,6 +1850,45 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		}
+	}
+
+	/**
+	 * The label of an instance (its renderer) must be refreshed once the roles it depends on are assigned: while the instance is still
+	 * being built the renderer cannot be evaluated (the fallback label is shown), and nothing was listening yet, so the label stayed at the
+	 * fallback forever (the FME browser showing "EtoileGR[ID=-1]" after a drop).
+	 */
+	@Test
+	@TestOrder(23)
+	public void testRendererIsRefreshedAfterInstanceConstruction() throws Exception {
+
+		log("testRendererIsRefreshedAfterInstanceConstruction()");
+
+		DataBinding<String> initialRenderer = flexoConceptA.getRenderer();
+		flexoConceptA.setRenderer(new DataBinding<>("instance.aStringInA.toUpperCase()"));
+		try {
+			assertTrue(flexoConceptA.getRenderer().isValid());
+
+			FlexoConceptInstance newFci = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+			assertNotNull(newFci);
+
+			final List<String> notified = new ArrayList<>();
+			newFci.getPropertyChangeSupport().addPropertyChangeListener("stringRepresentation", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					notified.add((String) evt.getNewValue());
+				}
+			});
+
+			// Role not yet assigned: the renderer cannot be evaluated, the fallback label is returned
+			assertTrue(newFci.getStringRepresentation().startsWith("FlexoConceptA[ID="));
+
+			newFci.setFlexoActor("foo", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+
+			assertFalse("stringRepresentation was not notified", notified.isEmpty());
+			assertEquals("FOO", newFci.getStringRepresentation());
+		} finally {
+			flexoConceptA.setRenderer(initialRenderer);
 		}
 	}
 
