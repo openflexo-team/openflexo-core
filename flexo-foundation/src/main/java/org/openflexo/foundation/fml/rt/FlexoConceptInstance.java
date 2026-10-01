@@ -2265,6 +2265,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
+		 * The string representation of this instance has changed. It is exposed under two names, and a binding listens to the one it reads:
+		 * <code>stringRepresentation</code>, and <code>render</code>, the native property (see {@link org.openflexo.foundation.fml.binding.EPIRendererPathElement}) a renderer or
+		 * a label reads to get the representation of another instance (<code>instance.representedConcept.render</code>).
+		 */
+		private void notifyStringRepresentationChanged(String newValue) {
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
+			getPropertyChangeSupport().firePropertyChange(FlexoConceptBindingModel.RENDERER_PROPERTY_NAME, null, newValue);
+		}
+
+		/**
 		 * The renderer applicable to this instance has been edited: drop what was built on the former one, then notify, which makes whoever
 		 * displays the string representation of this instance (a browser caching its label, for instance) read it again.
 		 */
@@ -2280,7 +2290,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					formerRenderer.releaseEvaluationContext(this);
 				}
 			}
-			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+			notifyStringRepresentationChanged(getStringRepresentation());
 		}
 
 		private boolean isComputingRenderer = false;
@@ -2320,7 +2330,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 										+ " with newValue=" + newValue + " source=" + source);*/
 								if (!isDeleted()) {
 									// We have here detected that the string representation of this concept instance has changed
-									getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
+									notifyStringRepresentationChanged(newValue);
 								}
 							}
 						};

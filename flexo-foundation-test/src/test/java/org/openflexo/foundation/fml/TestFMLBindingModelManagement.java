@@ -61,6 +61,7 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -1923,11 +1924,28 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 			assertEquals("second:foo", notified.get(notified.size() - 1));
 			assertEquals("second:foo", existing.getStringRepresentation());
 
+			// What reads the representation of the instance through 'render' (the renderer of another instance, the label of a connector)
+			// is notified as well: it listens to the 'render' property, not to 'stringRepresentation'
+			DataBinding<String> renderBinding = new DataBinding<>("this.render", flexoConceptA, String.class, BindingDefinitionType.GET);
+			assertTrue(renderBinding.isValid());
+			final List<String> renderChanges = new ArrayList<>();
+			new BindingPathChangeListener<String>(renderBinding, existing) {
+				@Override
+				public void bindingValueChanged(Object source, String newValue) {
+					renderChanges.add(newValue);
+				}
+			};
+			flexoConceptA.setRenderer(new DataBinding<>("\"third:\"+instance.aStringInA"));
+			assertFalse("'render' was not notified", renderChanges.isEmpty());
+			assertEquals("third:foo", renderChanges.get(renderChanges.size() - 1));
+			assertEquals("third:foo", existing.getStringRepresentation());
+			notified.clear();
+
 			// The instance keeps following its data after the edition
 			notified.clear();
 			existing.setFlexoActor("bar", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
 			assertFalse(notified.isEmpty());
-			assertEquals("second:bar", existing.getStringRepresentation());
+			assertEquals("third:bar", existing.getStringRepresentation());
 		} finally {
 			flexoConceptA.setRenderer(initialRenderer);
 		}
