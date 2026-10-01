@@ -1640,6 +1640,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					getOwningVirtualModelInstance().flexoConceptInstanceChangedFlexoConcept(this, oldFlexoConcept, flexoConcept);
 				}
 				getPropertyChangeSupport().firePropertyChange("FlexoConcept", oldFlexoConcept, flexoConcept);
+				flexoConceptChanged();
 			}
 		}
 
@@ -2282,6 +2283,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (isDeleted()) {
 				return;
 			}
+			dropRendererListener();
+			notifyStringRepresentationChanged(getStringRepresentation());
+		}
+
+		/**
+		 * Drop what was built on the renderer this instance used: the listener of its value, and what the renderer cached for this instance
+		 */
+		private void dropRendererListener() {
 			if (rendererChangeListener != null) {
 				DataBinding<String> formerRenderer = rendererChangeListener.getDataBinding();
 				rendererChangeListener.delete();
@@ -2290,7 +2299,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					formerRenderer.releaseEvaluationContext(this);
 				}
 			}
-			notifyStringRepresentationChanged(getStringRepresentation());
+		}
+
+		/**
+		 * This instance has changed of concept (a shape of the free modelling editor, for instance, becomes the representation of a concept
+		 * it did not stand for): its renderer is no longer the one it was listening to, nor are the concepts defining it. Whoever displays its
+		 * representation (a browser caching its label) is told to read it again - otherwise it keeps the label of the former concept.
+		 */
+		private void flexoConceptChanged() {
+			boolean representationWasRead = rendererChangeListener != null || conceptRendererListener != null;
+			dropRendererListener();
+			stopListeningToConceptRenderers();
+			if (representationWasRead && !isDeleted()) {
+				notifyStringRepresentationChanged(getStringRepresentation());
+			}
 		}
 
 		private boolean isComputingRenderer = false;

@@ -1951,6 +1951,53 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		}
 	}
 
+	/**
+	 * An instance changing of concept (a shape becoming the representation of a concept it did not stand for) follows the renderer of its
+	 * new concept: whoever displays its representation is told, and the later changes of the new renderer are followed.
+	 */
+	@Test
+	@TestOrder(25)
+	public void testRendererFollowsAConceptChange() throws Exception {
+
+		log("testRendererFollowsAConceptChange()");
+
+		DataBinding<String> initialRendererA = flexoConceptA.getRenderer();
+		DataBinding<String> initialRendererB = flexoConceptB.getRenderer();
+		try {
+			flexoConceptA.setRenderer(new DataBinding<>("\"A:\"+instance.aStringInA"));
+			flexoConceptB.setRenderer(new DataBinding<>("\"B\""));
+
+			FlexoConceptInstance instance = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+			instance.setFlexoActor("foo", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+			assertEquals("A:foo", instance.getStringRepresentation());
+
+			final List<String> notified = new ArrayList<>();
+			instance.getPropertyChangeSupport().addPropertyChangeListener("stringRepresentation", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					notified.add((String) evt.getNewValue());
+				}
+			});
+
+			instance.setFlexoConcept(flexoConceptB);
+			assertFalse("stringRepresentation was not notified", notified.isEmpty());
+			assertEquals("B", notified.get(notified.size() - 1));
+			assertEquals("B", instance.getStringRepresentation());
+
+			// It now follows the renderer of its new concept, and no longer the one of the former concept
+			notified.clear();
+			flexoConceptB.setRenderer(new DataBinding<>("\"B2\""));
+			assertFalse(notified.isEmpty());
+			assertEquals("B2", instance.getStringRepresentation());
+			notified.clear();
+			flexoConceptA.setRenderer(new DataBinding<>("\"A2:\"+instance.aStringInA"));
+			assertTrue("the former concept is still listened to", notified.isEmpty());
+		} finally {
+			flexoConceptA.setRenderer(initialRendererA);
+			flexoConceptB.setRenderer(initialRendererB);
+		}
+	}
+
 	private static void checkBinding(String binding, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
 		DataBinding<Object> db = new DataBinding<>(binding, owner, Object.class, BindingDefinitionType.GET);
 		assertTrue(db.isValid());
