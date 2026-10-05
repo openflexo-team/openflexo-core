@@ -67,6 +67,23 @@ public class DeletionSchemeActionFactory
 		return new DeletionSchemeAction(this, focusedObject, globalSelection, editor);
 	}
 
+	/**
+	 * An anonymous (default) deletion scheme is named {@link DeletionScheme#DEFAULT_DELETION_SCHEME_NAME}, which is not meant to be shown
+	 * to the user: label it as a plain "delete" action.
+	 */
+	@Override
+	public String getActionName() {
+		if (getDeletionScheme().isAnonymous()) {
+			return "delete";
+		}
+		return super.getActionName();
+	}
+
+	@Override
+	public String getUnlocalizedName() {
+		return getActionName();
+	}
+
 	public DeletionScheme getDeletionScheme() {
 		return getBehaviour();
 	}
