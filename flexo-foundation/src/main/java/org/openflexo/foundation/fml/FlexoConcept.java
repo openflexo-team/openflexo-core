@@ -2098,6 +2098,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		private DataBinding<String> retrieveRendererFromMetadata() {
 			DataBinding<String> returned = getSingleMetaData(RENDERER_METADATA, DataBinding.class);
+			if (returned == null) {
+				// The metadata is declared but carries no decodable value (yet): fall back to an empty binding
+				returned = new DataBinding<>(getRendererOwner(), String.class, BindingDefinitionType.GET);
+			}
 			returned.setOwner(getRendererOwner());
 			returned.setDeclaredType(String.class);
 			returned.setBindingDefinitionType(BindingDefinitionType.GET);
