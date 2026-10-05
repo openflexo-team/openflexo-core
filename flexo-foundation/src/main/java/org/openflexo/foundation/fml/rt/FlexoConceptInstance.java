@@ -2271,9 +2271,21 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * a label reads to get the representation of another instance (<code>instance.representedConcept.render</code>).
 		 */
 		private void notifyStringRepresentationChanged(String newValue) {
-			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
-			getPropertyChangeSupport().firePropertyChange(FlexoConceptBindingModel.RENDERER_PROPERTY_NAME, null, newValue);
+			if (isNotifyingStringRepresentation) {
+				// A renderer reading the representation of its own instance (<code>instance.render</code>) listens to the very property
+				// fired here: without this guard, each notification triggers the next one until the stack overflows
+				return;
+			}
+			try {
+				isNotifyingStringRepresentation = true;
+				getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
+				getPropertyChangeSupport().firePropertyChange(FlexoConceptBindingModel.RENDERER_PROPERTY_NAME, null, newValue);
+			} finally {
+				isNotifyingStringRepresentation = false;
+			}
 		}
+
+		private boolean isNotifyingStringRepresentation = false;
 
 		/**
 		 * The renderer applicable to this instance has been edited: drop what was built on the former one, then notify, which makes whoever
