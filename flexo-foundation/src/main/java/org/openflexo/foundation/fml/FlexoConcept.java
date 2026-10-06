@@ -2169,6 +2169,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					// metadata back then would mark the concept, and its compilation unit, as modified by a mere read (CORE-D-26)
 					String expression = renderer != null ? renderer.toString() : null;
 					FMLMetaData metaData = hasMetaData(RENDERER_METADATA) ? getMetaData(RENDERER_METADATA) : null;
+					if (metaData == null && StringUtils.isEmpty(expression)) {
+						// Nothing was declared and nothing is typed: an empty renderer is not written as an (empty) @Renderer annotation
+						return;
+					}
 					if (metaData instanceof SingleMetaData
 							&& Objects.equals(((SingleMetaData<?>) metaData).getSerializationRepresentation(), expression)) {
 						return;
