@@ -858,6 +858,79 @@ repository; closing a project reloaded in a new service manager does not fail.
 
 ---
 
+### CORE-D-28 — Reloading a project leaves two generations of the same resource, and references straddle them  ·  `DONE`
+
+**Symptom.** After a project is closed and reloaded, two distinct object graphs of the same `.fml.rt` resource are alive at once, so
+the same conceptual instance exists twice. An FML expression comparing identities then fails for some objects and succeeds for
+others, intermittently: `select unique SysMLKaosMethodology from container.container where (selected.declaringElement == this)`
+returns null although the methodology is there and its `declaringElement` is restored.
+
+**Reproduction (verified 2026-10-07 by execution).** `formod`, module `formod-module`, uiTest `TestBMethology.testReloadProject`,
+which fails about one run in three (the measurement: 2 green, 1 red; with probes in place, four reds in a row — the timing matters,
+as for a race). Probing the reloaded model shows one resource object and several data objects:
+
+```
+projectElement     : Element id=343616650 in FormoseCore object 1703832508
+DocumentAnnotation : declaringElement id=343616650  -> same object
+SysMLKaos/DomainModel/B : declaringElement id=545990162 in FormoseCore object 5700829
+both                 : resource 751724127, .../FormoseView.fml.rt/FormoseVMI.fml.rt
+```
+
+Which methodologies fall on which side changes from run to run. At the moment of the assertion,
+`resource.getLoadedResourceData()` is null: the resource is not loaded any more, while objects of its graphs are still referenced
+by the reloaded view.
+
+**Mechanism — verified by execution.** Instrumenting `PamelaResourceImpl` (load, unload), `FlexoResourceImpl.setResourceData` and
+`FlexoObjectReference.getObject(boolean)` on that one resource, all on the test thread, with no `DirectoryWatcher` involvement:
+
+1. `reloadProject` → `FlexoProjectImpl.close()` → `DefaultResourceCenterService.removeFromResourceCenters()` unloads the resource
+   without deleting its data (CORE-D-21): generation 1 stays alive wherever it is still referenced;
+2. during the test, `FMLRTModelSlotInstance.getAccessedResourceData()` loads the resource again: generation 2;
+3. `FlexoObjectReference.getObject(boolean)` caches the object it resolved in `modelObject` and resolves only when that field is
+   null. **Nothing invalidates it when the resource is unloaded.** An `ActorReference` that resolved before the project was closed
+   therefore keeps pointing at a generation 1 object for ever, while one resolving for the first time after the reload gets
+   generation 2. Measured on the failing run: 36 cache hits against 9 resolutions, the resolutions coming from the earlier
+   validation of the project (`FlexoObject.getEmbeddedValidableObjects` → `ActorReference.getModellingElement`). Which references
+   had already resolved depends on what the earlier test steps touched, which is why the failure moves from one assertion to
+   another;
+4. at `tearDownClass`, the project is closed again and generation 2 is unloaded (harmless, after the assertions).
+
+**Fix (2026-10-07).** Unloading a resource resets the references that cached one of its objects.
+1. `FlexoObjectReference.releaseObject()` forgets the cached object (and removes the reference from the `referencers` of that object),
+   forgets the cached `resource` too — reopening a project builds another resource object with the same URI — and puts the status back
+   to `UNRESOLVED`. A deleted reference, or one in status `DELETED`, is left alone, so deletion notifications are untouched
+   (`notifyObjectDeletion()` has no caller anyway).
+2. `PamelaResourceImpl.unloadResourceData()` calls `releaseReferences()` once the data is released (or deleted) and before the index is
+   emptied: it walks the indexed objects and releases their `referencers`. This is the same hook for both flavours of unload.
+3. The walk relies on the index of the resource, which is built lazily. `FlexoObjectReference.setObject()` therefore registers its
+   object in the index of its resource, so that a reference built on an object nobody has looked up yet is still found. Building
+   the index at unload time instead was rejected: computing the embedding closure calls getters that load other resources.
+
+*Where the walk belongs* — in the resource: it is the only party that knows both the objects it drops and the moment it drops them.
+Listening to `isLoaded` from every reference would register each reference on its resource (a strong reference from the resource, and
+a listener to remove on deletion) for no gain.
+*What a reference answers while its resource is unloaded* — it resolves on read, which loads the resource: exactly what a reference
+that never resolved did before, so no new behaviour. Answering null until someone loads it would make the answer depend on who
+loaded what first, which is the intermittence this defect is about.
+
+**Not the same mechanism as CORE-D-24.** Both are caches that no lifecycle event clears, but this one holds a *result* that the
+object it points at knows how to reach (`referencers`), whereas the caches of CORE-D-24 are held by a binding of the VirtualModel,
+keyed by evaluation contexts that no object of the unloaded resource points back to: the walk cannot find them. What D-24 can reuse
+is the hook, not the mechanism — `release()` of the instances (CORE-D-21) is already where the renderer is let go of.
+
+**Limit.** Only references to objects of a `PamelaResource` are reset. `FMLRTModelSlotInstance` (a role typed by a virtual model)
+does not go through a `FlexoObjectReference` and was not touched.
+
+Test: `flexo-foundation-test`, `TestReloadedResourceReferences` (fixture `FML/UnloadHolder.fml`): a model in a resource center that
+stays loaded holds a role pointing at an `UnloadProbe.Item` of a project; the role is resolved, the project closed and reopened, and
+the role must answer the item of the CURRENT data, the very one found through the reloaded probe. Red without the fix (it answers
+the first generation), green with it. `formod`, `TestBMethology`: 6 runs in a row green (9/9), against 1 red in 3 before.
+
+**Not the cause** (both excluded by measurement): no `where` condition is invalid at evaluation (so not the CORE-D-14 family), and
+`declaringElement` is correctly restored from the `.fml.rt`. The `DirectoryWatcher` is not involved either: every event is on the
+test thread.
+
+
 ## Resources: loading
 
 ### CORE-D-26 — Loading a compilation unit leaves it modified  ·  `DONE`

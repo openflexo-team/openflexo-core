@@ -51,6 +51,7 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.ResourceLoadingListener;
@@ -227,6 +228,11 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 			this.objectIdentifier = resource.getObjectIdentifier(modelObject);
 			this.className = modelObject.getClass().getName();
 			setOwner(resource);
+			// The object must be known to the index of its resource, so that unloading the resource finds this reference (see
+			// releaseObject()): an object loaded from disk is only indexed when something looks an object up in its resource.
+			if (resource instanceof PamelaResource) {
+				((PamelaResource<?, ?>) resource).register(modelObject);
+			}
 		}
 
 		/*if (modelObject instanceof InnerResourceData) {
@@ -288,6 +294,32 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 			}
 		}
 		return modelObject;
+	}
+
+	/**
+	 * Called when the resource of the referenced object has been unloaded: forget the object, the status goes back to
+	 * {@link ReferenceStatus#UNRESOLVED}.<br>
+	 * 
+	 * The object belongs to a generation of the resource data that is dropped, but may stay alive wherever something still points at it.
+	 * Keeping it would make this reference answer an object of that generation for ever, while a reference resolving after the resource
+	 * has been loaded again gets an object of the current one: the same conceptual object would exist twice (CORE-D-28).<br>
+	 * The next read resolves the reference again, against the current data. As for a reference that never resolved, this loads the
+	 * resource if it is not loaded.<br>
+	 * The resource is forgotten too: it may be another resource object, with the same URI, when the project holding it was reopened.<br>
+	 * 
+	 * A deleted reference, or one whose object was deleted, is left alone.
+	 */
+	public void releaseObject() {
+		if (deleted || status == ReferenceStatus.DELETED) {
+			return;
+		}
+		O previous = modelObject;
+		modelObject = null;
+		resource = null;
+		status = ReferenceStatus.UNRESOLVED;
+		if (previous != null) {
+			previous.removeFromReferencers(this);
+		}
 	}
 
 	private O findObjectInResource(FlexoResource<?> resource) {

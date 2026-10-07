@@ -1,0 +1,17 @@
+import ["http://openflexo.org/test/TestResourceCenter/UnloadProbe.fml"];
+
+/**
+ * A model that outlives the project holding the UnloadProbe item it points at: its role is stored as a reference to an object of
+ * another resource, which is unloaded when that project is closed and loaded again when it is reopened.
+ * See TestReloadedResourceReferences (CORE-D-28).
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/UnloadHolder.fml")
+public model UnloadHolder {
+
+	Item item;
+
+	create(Item item) {
+		item = parameters.item;
+	}
+}
