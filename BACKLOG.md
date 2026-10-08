@@ -158,7 +158,7 @@ created before this change; going forward, resolution is meant to rely on the an
 
 ## User interface
 
-### CORE-F-6 — Additive inspector inheritance along the FlexoConcept hierarchy  ·  `IN PROGRESS`
+### CORE-F-6 — Additive inspector inheritance along the FlexoConcept hierarchy  ·  `DONE`
 
 **Problem.** The inspector of a concept is a `Xxx.inspector` component of its container. Resolution
 (`FlexoConceptImpl.getContainedComponentResource`) kept ONE component — the concept's own, else its most specialized
@@ -198,5 +198,4 @@ own; the `index` of the widgets orders them, and the tabs of the same `name` are
   (`FIBContainer.updateComponentIndexForInsertionIndex`, an editing aid): write the widgets in sort order.
 - `FIBContainer.reorderComponents` compares an index of 0 as equal to "no index", an inconsistent comparator.
 
-**Remaining.** Check in the running application (`:formod:formod-app:run -PwithModeller`, SysML/KAOS methodology, drop a
-FunctionalGoal, select it).
+**Verified** in the running application (formod, SysML/KAOS methodology, a FunctionalGoal selected), 2026-10-08.
