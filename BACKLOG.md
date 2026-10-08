@@ -93,6 +93,27 @@ to the first action scheme, which may be a deletion scheme.
 
 **Related.** Fix together with `CORE-D-1` and `CORE-D-2` (see [`KNOWN_DEFECTS.md`](./KNOWN_DEFECTS.md)).
 
+### CORE-F-5 — Single identifier token in the FML grammar  ·  `DEFERRED`
+
+**Problem.** `fml.sablecc` lexes three identifier kinds (`lidentifier`, `uidentifier`, `cidentifier`) and relies on the case of the
+first letter to stay LALR(1). The distinction is uncomfortable (a one-letter type lexes as a constant, `cidentifier` matches the empty
+string, `_FOO` is a constant) and leaks into the Java factories. Wanted: one `ident` token and a grammar that stays unambiguous.
+
+**Findings (2.99).** Feasible: a prototype generates with 0 SableCC conflicts and parses the workspace corpus (532 `.fml`/`.fmlscript`)
+exactly like the current grammar. It needs nine grammar changes, each removing a type-vs-expression ambiguity, and four of them change
+the language: no `Type.method()` as a dedicated form (static call resolved semantically), casts written as `( expression )` checked
+semantically (no generic/array casts, `(Foo) -x` not a cast), no assignment in call arguments (kept in `where`), `x = Foo` parsed as an
+expression instead of a type, escaped identifiers as a single token.
+
+**Deferred to 3.0**, together with the Java adaptation (~17 files in `fml-parser`, plus `fml-cli`).
+
+**Acceptance criteria.**
+- `fml.sablecc` has a single identifier token; SableCC reports no conflict.
+- The `.fml`/`.fmlscript` corpus and the fml-parser / foundation / modelers tests pass as before the change.
+- Static calls, casts, and type-valued FML parameters are resolved by the semantic layer.
+
+**Material.** Analysis, prototype grammar and experiment harness: [`fml-parser/doc/single-identifier/`](./fml-parser/doc/single-identifier/README.md).
+
 ## Container-based user interfaces
 
 ### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `DONE`

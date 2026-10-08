@@ -970,3 +970,50 @@ modified. First met in `formod`, uiTest `TestBMethology.instantiateBMethodology`
 (`FlexoProperty.handleRequiredImports` → `FMLCompilationUnit.ensureUse`), and that legitimately marks it modified: the file on disk is
 incomplete. Two fixtures were completed rather than the platform changed — `flexo-test-resources` `FML/CrossImports.fml` and formod's
 `Methodology.fml`.
+
+### CORE-D-29 — A string addition on a binding path fails in a GINA component: `data.owner.name + ".prj"`  ·  `TODO`
+
+**Symptom.** In a GINA component whose bindings are FML bindings, a label bound to `data.owner.name + ".prj"` stays empty and the
+log reports, at every evaluation: `TypeMismatchException on operator addition : supplied types are STRING and STRING`. Both operands are
+strings; the operator rejects them all the same. The same expression is in `fme-module` (`FMEProjectNaturePanel.fib`), and was in
+`formod-module` (`FMSProjectNaturePanel.fib`, worked around by a getter on the component controller, 2026-10-07).
+
+**Reproduction (2026-10-07).** `./gradlew :formod:formod-app:run` in `openflexo-dev`, create a project, give it the Formose nature, close
+and reopen it: the big title label of the project view is empty. A stack trace taken at the catch in `Expression.evaluate` gives:
+
+```
+FMLArithmeticBinaryOperator$1.evaluate(FMLArithmeticBinaryOperator.java:126)   <- the final throw
+ExpressionEvaluator.transformBinaryOperatorExpression(ExpressionEvaluator.java:84)
+ExpressionEvaluator.performTransformation(ExpressionEvaluator.java:70)
+JavaExpressionEvaluator.performTransformation(JavaExpressionEvaluator.java:83)
+FMLBinaryOperatorExpression.transform(FMLBinaryOperatorExpression.java:75)
+Expression.evaluate(Expression.java:75)
+DataBinding.getBindingValue(DataBinding.java:1181)
+BindingPathChangeListener.evaluateValue → ... FIBController.setDataObject
+```
+
+**What is measured, and what is not.** Measured: the expression is an `FMLBinaryOperatorExpression` (FML operator) transformed by a
+`JavaExpressionEvaluator`; the throw is the last one of `FMLArithmeticBinaryOperator.ADDITION.evaluate`, i.e. neither branch
+`leftArg instanceof StringConstant` (the FML `FMLConstant.StringConstant`) matched. Not measured: the class of the left constant. Reading
+`JavaExpressionEvaluator.performTransformation` (line 74), a binding path is turned into `JavaConstant.makeConstant(value)`, a Java
+constant, which the FML operator would not recognise — to be confirmed by printing the two operand classes before the throw (the
+`System.out.println` already in place there is lost under `formod-app:run`: use the logger).
+
+**Not covered by a test.** FML scripts evaluate with the FML evaluator and concatenate strings fine (T1 to T12).
+
+### CORE-D-30 — The arguments of a palette binding are ignored when a shape is dropped  ·  `TODO`
+
+**Symptom.** A palette binding written `PaletteElementBinding:(call=new FunctionalGoalGR::createFunctionalGoal("Goal", "", ""), paletteElementId=…)`
+does not give the drop scheme the values "Goal", "" and "": the drop scheme runs with its parameters unset (log: `Found not initialized
+parameter … name, type, description`).
+
+**Verified by reading (2026-10-07).** `ContextualPalette.handleFMLControlledDrop` (`openflexo-diagram/diagram-ta-ui`) keeps only
+`applicableBindings.get(0).getDropScheme()`, builds a `DropSchemeAction` from it and calls `doAction()`; `getCall()` is never evaluated. The
+code carries the comment "Ce qui serait mieux : applicableBindings.get(0).getCall().getBindingValue(…)". The parameters then come from the
+wizard, or from the parameter defaults when the wizard is skipped (`skipConfirmationPanel`, true by default, and every required parameter valid).
+
+**Consequence.** The textual form `call=…(args)` is accepted and validated, but its arguments are decoration. A drop scheme whose parameters have
+no default and are not `required` runs with nulls (formod, FORMOD-D-3). Not reproduced headless: the scripts call the scheme with explicit arguments.
+
+**To decide.** Evaluate the call against the drop context and seed the action's parameters with its arguments (then a `call=` really is a default),
+or reject arguments in `call=` where they cannot be honoured.
