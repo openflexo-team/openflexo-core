@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the additive inspector inheritance: see TestContainerUI.fml, concept InspDiamond. -->
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols" name="InspDiamondInspector"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.inspector.FIBInspectorController">
+	<TabPanel name="Tab">
+		<Tab title="InspDiamond" layout="twocols" index="0" name="InspDiamondInspectorTab">
+			<Label label="diamondName" name="diamondNameLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left;index=50)" />
+			<TextField data="data.diamondName" name="diamondNameWidget"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right;index=50)" />
+		</Tab>
+	</TabPanel>
+</Panel>

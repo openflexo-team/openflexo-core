@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -60,7 +61,7 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 
 		// A failed parse leaves an EMPTY compilation unit behind, which then validates with zero errors:
 		// assert the concepts were actually parsed before asserting anything about them.
-		assertEquals("The fixture did not parse", 11, virtualModel.getFlexoConcepts().size());
+		assertEquals("The fixture did not parse", 21, virtualModel.getFlexoConcepts().size());
 	}
 
 	/** A VirtualModel is a FlexoConcept, so the convention gives it its own view as Xxx.fml/Xxx.fib. */
@@ -315,6 +316,71 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 		FlexoConcept withVariants = concept("WithVariants");
 
 		assertEquals(withVariants, withVariants.getUIComponentFlexoResource("compact").getDrivingConcept());
+	}
+
+	/** The inspector of an instance is ADDITIVE: the components of the whole hierarchy, the most general first. */
+	@Test
+	@TestOrder(18)
+	public void test17InspectorComponentsOfTheHierarchyAncestorsFirst() {
+
+		assertEquals(Arrays.asList("InspParent.inspector"), inspectorNames(concept("InspParent")));
+		assertEquals(Arrays.asList("InspParent.inspector", "InspChild.inspector"), inspectorNames(concept("InspChild")));
+		assertEquals(Arrays.asList("InspParent.inspector", "InspChild.inspector", "InspGrandChild.inspector"),
+				inspectorNames(concept("InspGrandChild")));
+
+		// getInspectorComponentResource() is still "the" component of the concept: the grand child's own, hiding the others
+		assertResolvesTo("InspGrandChild.inspector", concept("InspGrandChild").getInspectorComponentResource());
+		assertResolvesTo("InspGrandChild.inspector", concept("InspGrandChild").getOwnInspectorComponentResource());
+	}
+
+	/** A concept contributing nothing is skipped, but its ancestors' contributions remain. */
+	@Test
+	@TestOrder(19)
+	public void test18ConceptWithoutInspectorContributesNothingButKeepsAncestors() {
+
+		FlexoConcept noInspector = concept("InspNoInspector");
+
+		assertNull(noInspector.getOwnInspectorComponentResource());
+		assertEquals(Arrays.asList("InspParent.inspector", "InspChild.inspector"), inspectorNames(noInspector));
+		// The single-component accessor takes the most specialized parent's
+		assertResolvesTo("InspChild.inspector", noInspector.getInspectorComponentResource());
+		assertEquals(Arrays.asList(concept("InspParent"), concept("InspChild")), noInspector.getInspectorContributingConcepts());
+	}
+
+	/** Several parents are all considered, and a common ancestor is contributed once, before the concepts specializing it. */
+	@Test
+	@TestOrder(20)
+	public void test19DiamondContributesTheCommonAncestorOnce() {
+
+		assertEquals(Arrays.asList("InspParent.inspector", "InspLeft.inspector", "InspRight.inspector", "InspDiamond.inspector"),
+				inspectorNames(concept("InspDiamond")));
+	}
+
+	/** One FIBComponentResource per resource, resolved through the concept declaring it. */
+	@Test
+	@TestOrder(21)
+	public void test20FlexoResourcesFollowTheResources() {
+
+		FlexoConcept grandChild = concept("InspGrandChild");
+		List<FIBComponentResource> resources = grandChild.getInspectorComponentFlexoResources();
+		assertEquals(grandChild.getInspectorComponentResources().size(), resources.size());
+		assertEquals(grandChild.getInspectorComponentResource(), resources.get(2).getIODelegate().getSerializationArtefactAsResource());
+	}
+
+	/** Nothing in the hierarchy: nothing to compose. */
+	@Test
+	@TestOrder(22)
+	public void test21NoInspectorAnywhere() {
+		assertTrue(concept("WithoutAnyComponent").getInspectorComponentResources().isEmpty());
+	}
+
+	private static List<String> inspectorNames(FlexoConcept concept) {
+		List<String> returned = new ArrayList<>();
+		for (Resource resource : concept.getInspectorComponentResources()) {
+			String path = resource.getRelativePath();
+			returned.add(path.substring(path.lastIndexOf('/') + 1));
+		}
+		return returned;
 	}
 
 	private static FlexoConcept concept(String name) {

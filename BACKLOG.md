@@ -153,3 +153,50 @@ created before this change; going forward, resolution is meant to rely on the an
 - After renaming a concept that has a conventional `.fib` and `.inspector`, both still resolve, from memory and after
   reloading. — met via the freeze, for any rename that goes through `RenameFlexoConcept`/`RenameCompilationUnit`.
 - No component is left in the container that nothing resolves to. — met the same way.
+
+---
+
+## User interface
+
+### CORE-F-6 — Additive inspector inheritance along the FlexoConcept hierarchy  ·  `IN PROGRESS`
+
+**Problem.** The inspector of a concept is a `Xxx.inspector` component of its container. Resolution
+(`FlexoConceptImpl.getContainedComponentResource`) kept ONE component — the concept's own, else its most specialized
+parent's — so a concept with an inspector hid its ancestors', where the deprecated `FlexoConceptInspector` mechanism
+(`appendInspectorEntries`) recursed on the parents first. In formod, 12 concepts declare an inspector while an ancestor does
+too (`FunctionalGoalGR` lost the goal name and description of `GoalGR`).
+
+**Decision (2026-10-08).** Additive: an instance shows the inspectors of its whole hierarchy, ancestors first, then its
+own; the `index` of the widgets orders them, and the tabs of the same `name` are merged (see Known limits for the tab rules).
+
+**Done.**
+- `FlexoConcept.getOwnInspectorComponentResource()` / `…FlexoResource()` (what a concept contributes by itself),
+  `getInspectorComponentResources()` / `…FlexoResources()` / `getInspectorContributingConcepts()` (the hierarchy, most
+  general first, each ancestor once, several parents walked depth first). `getInspectorComponentResource()` keeps its
+  meaning ("the" component) and its Javadoc says how the two differ.
+- `ModuleInspectorController.mergeContainerInspectors`: a single component is merged as before; several are composed into
+  tabs by `FIBContainer.append`, each widget bound to the instance's concept; a widget named like an ancestor's
+  replaces it. The cache (`containerComponentsOfInspectors`, `isStale`, `listenToContainerComponent`,
+  `dropInspectorsBuiltFrom`) tracks the components of the whole hierarchy: saving an ancestor's `.inspector` drops its
+  descendants' cached inspectors.
+- GINA: `FIBContainer.append` did not honour its own documented policy. A widget with no index was put BEFORE the
+  existing ones, and on equal positive indexes the appended widget came BEFORE the existing one — a descendant ended up
+  before its ancestor. Now: no index = after the last unindexed/negative one; equal index = after the existing one.
+  `TestAppendIndexOrdering` (gina-core).
+- Index convention: label and widget share `depth * 100 + position`; documented in `migrate-fml-serialization` (Step 2e)
+  and `write-gina-component`. `legacy_inspectors_to_container.py` writes it, `index_container_inspectors.py` retrofits
+  existing files; the 52 inspectors of formod-rc were retrofitted.
+- Tests: `TestContainerUIComponents` (resolution), `TestContainerInspectors` (composition, bindings, cache),
+  `TestAppendIndexOrdering`, `FormodInspectorsTest`; fixture `Insp*` concepts in `TestContainerUI.fml`.
+
+**Known limits.**
+- Tabs: a component declaring SEVERAL tabs contributes each to the tab of the same `name` (merged, the most specialized
+  `title` wins; a tab only one side has stays a tab of its own, ancestors' tabs first); a component declaring ONE tab or a
+  plain panel (the generated inspectors) contributes to the FIRST tab, whatever its name. So a single-tab inspector that
+  is meant to stay a separate tab next to its parent's cannot be expressed. Covered by `TestContainerInspectors` (21–25).
+- Cloning a component rewrites the index of an unindexed widget that follows an indexed one in the file
+  (`FIBContainer.updateComponentIndexForInsertionIndex`, an editing aid): write the widgets in sort order.
+- `FIBContainer.reorderComponents` compares an index of 0 as equal to "no index", an inconsistent comparator.
+
+**Remaining.** Check in the running application (`:formod:formod-app:run -PwithModeller`, SysML/KAOS methodology, drop a
+FunctionalGoal, select it).

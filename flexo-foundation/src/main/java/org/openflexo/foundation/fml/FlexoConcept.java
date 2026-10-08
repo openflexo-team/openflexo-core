@@ -1048,6 +1048,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * Return the GINA component serializing the inspector of the instances of this {@link FlexoConcept}, following the same rules as
 	 * {@link #getUIComponentResource()} with the <code>.inspector</code> extension and the <code>@Inspector("…")</code> annotation.
 	 *
+	 * <p>
+	 * This is "the" component of this concept, ONE: the one it names or the naming convention gives, else the one of its most specialized
+	 * parent that has one - so a concept naming its own hides its ancestors'. That is NOT what an instance shows: the inspector of an
+	 * instance is the sum of those of its whole concept hierarchy, ancestors first, composed by the <code>index</code> of the widgets.
+	 * See {@link #getInspectorComponentResources()} for all of them and {@link #getOwnInspectorComponentResource()} for what a concept
+	 * contributes by itself.
+	 *
 	 * @return the resource of the component, or null
 	 */
 	public Resource getInspectorComponentResource();
@@ -1057,6 +1064,49 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * {@link #getUIComponentFlexoResource()}.
 	 */
 	public FIBComponentResource getInspectorComponentFlexoResource();
+
+	/**
+	 * The inspector component THIS concept contributes, or null: the one it names with <code>@Inspector("…")</code>, or else the one its
+	 * container holds under the conventional name <code>&lt;ConceptName&gt;.inspector</code>. Never inherited.
+	 *
+	 * <p>
+	 * This is what separates it from {@link #getInspectorComponentResource()}, which answers "which single component do the instances of
+	 * this concept use": it falls back on the most specialized parent when this concept contributes none, and a concept naming its own
+	 * hides its ancestors'. The inspector of an instance is however ADDITIVE - see {@link #getInspectorComponentResources()}, which is
+	 * made of the {@link #getOwnInspectorComponentResource()} of every concept of the hierarchy.
+	 */
+	public Resource getOwnInspectorComponentResource();
+
+	/** The {@link FIBComponentResource} of {@link #getOwnInspectorComponentResource()}, or null. */
+	public FIBComponentResource getOwnInspectorComponentFlexoResource();
+
+	/**
+	 * All the inspector components that make up the inspector of an instance of this concept: the
+	 * {@link #getOwnInspectorComponentResource() own component} of every concept of the hierarchy - this one included - the most general
+	 * first and this concept's own last. A concept contributing none is skipped, and a component named by several concepts appears once, at
+	 * its first position.
+	 *
+	 * <p>
+	 * Every ancestor is considered, however many parents each concept has: they are walked depth first, parents in declaration order, and
+	 * an ancestor reached through several paths (diamond) is visited once, before all the concepts that specialize it.
+	 *
+	 * <p>
+	 * Composing these components is up to the user interface: the widgets of the later ones are appended to the earlier ones, so that the
+	 * <code>index</code> of the widgets decides the order, ancestors first on equal indexes.
+	 * Compare with {@link #getInspectorComponentResource()}, which is "the" component of this concept and only one.<br>
+	 * A concept deriving its inspector (<code>@Inspector(derived=…)</code>) is redirected before any of this: see
+	 * {@link FlexoConceptInstance#getInspectedObject()}.
+	 */
+	public List<Resource> getInspectorComponentResources();
+
+	/** The {@link FIBComponentResource} of each of {@link #getInspectorComponentResources()}, same order. */
+	public List<FIBComponentResource> getInspectorComponentFlexoResources();
+
+	/**
+	 * The concepts contributing to {@link #getInspectorComponentResources()}, in the same order: the one whose
+	 * {@link #getOwnInspectorComponentResource()} is the n-th component is the n-th concept returned.
+	 */
+	public List<FlexoConcept> getInspectorContributingConcepts();
 
 	/**
 	 * Named variant of the inspector, following the same rules as {@link #getUIComponentResource(String)}.
@@ -2933,6 +2983,73 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
+		public Resource getOwnInspectorComponentResource() {
+			return getOwnContainedComponentResource(INSPECTOR_METADATA, ".inspector", DEFAULT_VARIANT);
+		}
+
+		@Override
+		public FIBComponentResource getOwnInspectorComponentFlexoResource() {
+			return componentResourceFor(getOwnInspectorComponentResource());
+		}
+
+		@Override
+		public List<FlexoConcept> getInspectorContributingConcepts() {
+			List<FlexoConcept> returned = new ArrayList<>();
+			List<Resource> seen = new ArrayList<>();
+			for (FlexoConcept concept : getConceptsFromMostGeneral()) {
+				Resource own = concept.getOwnInspectorComponentResource();
+				if (own != null && !seen.contains(own)) {
+					seen.add(own);
+					returned.add(concept);
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public List<Resource> getInspectorComponentResources() {
+			List<Resource> returned = new ArrayList<>();
+			for (FlexoConcept concept : getInspectorContributingConcepts()) {
+				returned.add(concept.getOwnInspectorComponentResource());
+			}
+			return returned;
+		}
+
+		@Override
+		public List<FIBComponentResource> getInspectorComponentFlexoResources() {
+			List<FIBComponentResource> returned = new ArrayList<>();
+			for (FlexoConcept concept : getInspectorContributingConcepts()) {
+				FIBComponentResource own = concept.getOwnInspectorComponentFlexoResource();
+				if (own != null) {
+					returned.add(own);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * This concept and all its ancestors, each once, every concept after all of its parents: depth first, parents in declaration order.
+		 */
+		private List<FlexoConcept> getConceptsFromMostGeneral() {
+			List<FlexoConcept> returned = new ArrayList<>();
+			collectFromMostGeneral(this, returned, new HashSet<>());
+			return returned;
+		}
+
+		/** A cycle in the hierarchy is not valid FML, but must not loop: hence the set of the concepts being visited. */
+		private static void collectFromMostGeneral(FlexoConcept concept, List<FlexoConcept> collected, Set<FlexoConcept> visiting) {
+			if (collected.contains(concept) || !visiting.add(concept)) {
+				return;
+			}
+			for (FlexoConcept parent : concept.getParentFlexoConcepts()) {
+				if (parent != concept) {
+					collectFromMostGeneral(parent, collected, visiting);
+				}
+			}
+			collected.add(concept);
+		}
+
+		@Override
 		public List<String> getUIComponentVariants() {
 			return getComponentVariants(UI_METADATA, ".fib");
 		}
@@ -3009,25 +3126,15 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		private Resource getContainedComponentResource(String metadataKey, String extension, String variant) {
 
-			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
 			boolean isDefault = DEFAULT_VARIANT.equals(variant);
 
-			if (compilationUnit != null) {
-
-				// An explicit annotation wins, and is NOT searched in the concept hierarchy: naming a component is
-				// saying which one this concept uses, not which one its children use.
-				String declaredName = declaredComponentName(metadataKey, variant);
-				if (StringUtils.isNotEmpty(declaredName)) {
-					// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
-					return compilationUnit.getContainedArtefact(declaredName);
-				}
-
-				if (isDefault && StringUtils.isNotEmpty(getName())) {
-					Resource returned = compilationUnit.getContainedArtefact(getName() + extension);
-					if (returned != null) {
-						return returned;
-					}
-				}
+			Resource own = getOwnContainedComponentResource(metadataKey, extension, variant);
+			if (own != null) {
+				return own;
+			}
+			if (getDeclaringCompilationUnit() != null && StringUtils.isNotEmpty(declaredComponentName(metadataKey, variant))) {
+				// A broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent: it is NOT searched in the hierarchy
+				return null;
 			}
 
 			// Not declared here: inherit from the most specialized parent concept that declares THIS variant
@@ -3049,6 +3156,31 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				if (firstDeclared != null) {
 					return getContainedComponentResource(metadataKey, extension, firstDeclared);
 				}
+			}
+
+			return null;
+		}
+
+		/**
+		 * The component of supplied variant that THIS concept contributes: the one an explicit annotation names, which wins over the naming
+		 * convention - that one for the default variant only. Never searched in the concept hierarchy: naming a component is saying which
+		 * one this concept uses, not which one its children use.
+		 */
+		private Resource getOwnContainedComponentResource(String metadataKey, String extension, String variant) {
+
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+			if (compilationUnit == null) {
+				return null;
+			}
+
+			String declaredName = declaredComponentName(metadataKey, variant);
+			if (StringUtils.isNotEmpty(declaredName)) {
+				// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
+				return compilationUnit.getContainedArtefact(declaredName);
+			}
+
+			if (DEFAULT_VARIANT.equals(variant) && StringUtils.isNotEmpty(getName())) {
+				return compilationUnit.getContainedArtefact(getName() + extension);
 			}
 
 			return null;
