@@ -1029,3 +1029,14 @@ or reject arguments in `call=` where they cannot be honoured.
 **Fixed (2026-10-09).** `ModelSlot.finalizeDeserialization` asks the compilation unit (`uses` / `declareUse`, which build the list from the unit's own declarations) and only falls back on the VirtualModel's when there is none. Platform tests unchanged: `flexo-foundation-test` 521 (0 failure, 5 skipped), `fml-cli-test` 97, `integration-tests` 37; formod 32 + 15 + 56, and `Cannot find FMLEntity` is gone from their logs (it was in the thousands).
 
 **Not fixed, noted.** `VirtualModel.uses/declareUse/getUseDeclarations` are still deprecated and still used by other callers (`CreateModelSlot`, the XML serialization): the same trap exists wherever they feed `updateFMLModelFactory`.
+
+### CORE-D-32 — "DeclarationAction with EditionAction not implemented yet" is logged for declarations that are built and executed  ·  `DONE`
+
+**Symptom.** One warning per declaration of the form `Type v = <edition action>` (`ExcelRow row = XLS::AddExcelRow(...)`, `Goal g = select unique Goal from ... where ...`, `MatchingSet m = begin match ...`): 81 at the start of formod-app, about 700 per test run. A `System.out.println("On obtient ...")` of debugging was left next to it.
+
+**Verified by tests (2026-10-09) that the case is implemented, not only that it logs.** The declaration is built from the grammar production `initializer_fml_action` (not from the expression one) and `DeclarationActionNode` sets its assignable action and its child node *before* logging:
+- `TestDeclarationWithEditionAction` (`flexo-foundation-test`, fixture `TestResourceCenter/FML/TestDeclarationWithAction.fml`): `select unique` and `select ... where` declarations hold their action (type, condition), the node of the declaration holds the node of the action, and the text printed from the model gives the declaration back. `TestMatchingVM` already asserted the `begin match` form (`InitiateMatching`).
+- `TestDeclarationWithAction.fmlscript` (`AutomatedTests`, 98 tests): the declared variable is used by the next statement and gives the right values (`nameOfTheOneWithValue`, `countWithValue`).
+- `FormodDeclarationsTest` (`formod-module`): every declaration of the 16 units of the Formose resource center holds its action, and the forms met include `AddExcelRow`, `CreateBExpressionFromString`, `select`, `select unique`, `begin match`.
+
+**Fixed.** Warning and `println` removed from `DeclarationActionNode`. Platform tests: `flexo-foundation-test` 525 (0 failure, 5 skipped), `fml-cli-test` 98; formod 32 + 17 + 56; the message is gone from every log.
