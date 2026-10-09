@@ -627,7 +627,18 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 			if (getVirtualModel() != null && getFMLModelFactory() != null) {
 				Class<? extends ModelSlot<?, ?>> modelSlotClass = getFMLModelFactory().getModelEntityForInstance(this)
 						.getImplementedInterface();
-				if (!getVirtualModel().uses(modelSlotClass)) {
+				// The use declarations of a textual FML live in the compilation unit. VirtualModel.uses()/declareUse() are the deprecated ones of
+				// the XML serialization: they only see the declarations of the VirtualModel itself, an empty list here, so declareUse() would
+				// rebuild the model factory of the resource from that list - and a technology that is used (through edition actions, for
+				// example B::CreateBPredicateFromString) but has no model slot role would be forgotten by the factory, whose entities
+				// could then not be found any more
+				FMLCompilationUnit compilationUnit = getVirtualModel().getCompilationUnit();
+				if (compilationUnit != null) {
+					if (!compilationUnit.uses(modelSlotClass)) {
+						compilationUnit.declareUse(modelSlotClass);
+					}
+				}
+				else if (!getVirtualModel().uses(modelSlotClass)) {
 					getVirtualModel().declareUse(modelSlotClass);
 				}
 			}
