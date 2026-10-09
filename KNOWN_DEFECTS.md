@@ -1017,3 +1017,15 @@ no default and are not `required` runs with nulls (formod, FORMOD-D-3). Not repr
 
 **To decide.** Evaluate the call against the drop context and seed the action's parameters with its arguments (then a `call=` really is a default),
 or reject arguments in `call=` where they cannot be honoured.
+
+### CORE-D-31 — A technology used only through edition actions is forgotten while a unit is loaded; its actions are then written `null`  ·  `DONE`
+
+**Symptom.** In the FML text rebuilt from the model (what the FML editor of the Modeller shows and saves), the actions of a technology that the unit `use`s but has no model slot role of are written without their name: `XLS::AddExcelSheet(sheetName="Goal Model")` becomes `XLS::null(sheetName="Goal Model")`, `B::CreateBPredicateFromString(…)` becomes `B::null()`, and `with BPredicateRole()` disappears. The log carries one `Cannot find FMLEntity for interface …` per action. The Modeller then fails to parse its own text (`ParserException token:null`). Measured in formod: `BMethodology` and `GoalModelingDiagram`, the only two units declaring three `use`.
+
+**Reproduction (verified 2026-10-09 by execution).** `formod-module`, `FormodUnitsRoundTripTest`: after loading, `BMethodology` declares `BModelSlot` but the used model slots of its resource are `[AtelierBProjectModelSlot, FMLRTModelSlot]`, and `getFMLPrettyPrint()` contains `B::null()`.
+
+**Mechanism — verified by tracing the two places that write the list.** The list of the resource is right after `setUsedModelSlots(String)` (3) and after the parser (3). During `finalizeDeserialization`, each model slot role calls `VirtualModel.declareUse(…)` (`ModelSlot.finalizeDeserialization`), the deprecated one: it builds the new list from `VirtualModel.getUseDeclarations()` — the declarations of the XML serialization, empty for a textual FML, whose `use` live in the compilation unit — plus the class of that role, and `CompilationUnitResource.updateFMLModelFactory` replaces both the list and the model factory with it. Only the model slots that have a role survive (`[FMLRT]`, then `[FMLRT, TypedDiagram]`); a technology used by its actions alone is never put back. The factory then does not know its entities, hence the `null`. It also added duplicate declarations to the VirtualModel.
+
+**Fixed (2026-10-09).** `ModelSlot.finalizeDeserialization` asks the compilation unit (`uses` / `declareUse`, which build the list from the unit's own declarations) and only falls back on the VirtualModel's when there is none. Platform tests unchanged: `flexo-foundation-test` 521 (0 failure, 5 skipped), `fml-cli-test` 97, `integration-tests` 37; formod 32 + 15 + 56, and `Cannot find FMLEntity` is gone from their logs (it was in the thousands).
+
+**Not fixed, noted.** `VirtualModel.uses/declareUse/getUseDeclarations` are still deprecated and still used by other callers (`CreateModelSlot`, the XML serialization): the same trap exists wherever they feed `updateFMLModelFactory`.

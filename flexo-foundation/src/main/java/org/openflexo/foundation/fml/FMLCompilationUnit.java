@@ -133,15 +133,15 @@ import org.openflexo.toolbox.StringUtils;
  * }
  * </pre>
  *
- * A compilation unit has no URI of its own: {@link #getURI()} and {@link #setURI(String)} delegate to its {@link VirtualModel}. It holds the
- * {@link FMLTypingSpace} in which the types of its declarations are resolved.
+ * A compilation unit has no URI of its own: {@link #getURI()} and {@link #setURI(String)} delegate to its {@link VirtualModel}. It holds
+ * the {@link FMLTypingSpace} in which the types of its declarations are resolved.
  * <p>
  * A compilation unit is stored in a container directory {@code Xxx.fml/} (see {@link #getContainerDirectoryResource()}), which also holds
  * the compilation units of its contained virtual models (one {@code Yyy.fml/} directory each), its localized dictionary and its user
  * interface components.
  * <p>
- * Code building or modifying FML programmatically should rely on the {@code ensureXxx(...)} methods and on {@link #manageImports()}, so that
- * the required declarations are present when the compilation unit is pretty-printed.
+ * Code building or modifying FML programmatically should rely on the {@code ensureXxx(...)} methods and on {@link #manageImports()}, so
+ * that the required declarations are present when the compilation unit is pretty-printed.
  *
  * @author sylvain
  *
@@ -327,6 +327,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @return
 	 */
 	@Deprecated
+	// TODO : why this method is declared as deprecated ?!?
 	public <MS extends ModelSlot<?, ?>> boolean uses(Class<MS> modelSlotClass);
 
 	/**
@@ -409,8 +410,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * Return the directory serializing this {@link FMLCompilationUnit} (the <code>Xxx.fml/</code> container), or null when this compilation
 	 * unit has no resource yet.<br>
 	 *
-	 * Beyond the <code>Xxx.fml</code> core file, the contained VirtualModels and the <code>Localized/</code> dictionaries, that container is
-	 * free space: it is where the user interfaces of this compilation unit live (see {@link FlexoConcept#getUIComponentResource()} and
+	 * Beyond the <code>Xxx.fml</code> core file, the contained VirtualModels and the <code>Localized/</code> dictionaries, that container
+	 * is free space: it is where the user interfaces of this compilation unit live (see {@link FlexoConcept#getUIComponentResource()} and
 	 * {@link FlexoConcept#getInspectorComponentResource()}).
 	 *
 	 * @return
@@ -418,8 +419,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public Resource getContainerDirectoryResource();
 
 	/**
-	 * Return the artefact named <code>name</code> stored in the container directory of this {@link FMLCompilationUnit}, or null when no such
-	 * artefact exists.<br>
+	 * Return the artefact named <code>name</code> stored in the container directory of this {@link FMLCompilationUnit}, or null when no
+	 * such artefact exists.<br>
 	 *
 	 * <code>name</code> may denote a nested artefact, using <code>/</code> as a separator (<code>"UI/MyScreen.fib"</code>).
 	 *
@@ -452,7 +453,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 *
 	 * Lookup algorithm follows:
 	 * <ul>
-	 * <li>First lookup in the {@link VirtualModel} of this compilation unit (see {@link VirtualModel#lookupFlexoConceptWithName(String)})</li>
+	 * <li>First lookup in the {@link VirtualModel} of this compilation unit (see
+	 * {@link VirtualModel#lookupFlexoConceptWithName(String)})</li>
 	 * <li>When not found, apply the same algorithm for each FMLCompilationUnit import of this {@link FMLCompilationUnit} (in the order they
 	 * are declared : the first found is returned)</li>
 	 * </ul>
@@ -1136,9 +1138,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public LocalizedDictionaryResource getLocalizedDictionaryResource() {
-			return getResource() instanceof CompilationUnitResource
-					? ((CompilationUnitResource) getResource()).getLocalizedDictionaryResource()
-					: null;
+			return getResource() instanceof CompilationUnitResource ? getResource().getLocalizedDictionaryResource() : null;
 		}
 
 		@Override
