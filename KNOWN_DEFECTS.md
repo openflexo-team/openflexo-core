@@ -1040,3 +1040,49 @@ or reject arguments in `call=` where they cannot be honoured.
 - `FormodDeclarationsTest` (`formod-module`): every declaration of the 16 units of the Formose resource center holds its action, and the forms met include `AddExcelRow`, `CreateBExpressionFromString`, `select`, `select unique`, `begin match`.
 
 **Fixed.** Warning and `println` removed from `DeclarationActionNode`. Platform tests: `flexo-foundation-test` 525 (0 failure, 5 skipped), `fml-cli-test` 98; formod 32 + 17 + 56; the message is gone from every log.
+
+## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)
+
+Mapped on `formod-app` (583 warnings at the start of the application, 4 of them from opening a project) and on the headless tests (the same families, hundreds of times). Fixed since: CORE-D-31 (technologies forgotten at load), CORE-D-32 (stale "not implemented yet"), and the OWL adapter ones (`openflexo-owl/KNOWN_DEFECTS.md`). What is left is below, with what was measured and what was not.
+
+### CORE-D-33 — The text rebuilt from the model is not the text that was parsed  ·  `TODO`
+
+**Symptom.** `FMLCompilationUnit.getFMLPrettyPrint()` — what the FML editor of the Modeller shows and saves — differs from the source file on the 10 Formose units compared (2026-10-09). With the whitespace, the comments and the `java.lang.String` imports left out, the differences measured are:
+- **Imports added**: `import java.lang.String;` (and `ExcelCell`, `FlexoEnumInstance` once) appears where the source has none.
+- **Arguments reformatted**: the space after a comma is dropped (`createRequirement(a,b)`) and wrapped lines are joined into one very long line.
+- **Parentheses**: `in (container.diagram)` is written `in container.diagram` (123 times in `DomainModelDiagram`), and an extra pair appears around two string concatenations.
+- **`with ConceptInstance()` added** to a role declared without it (`Requirement requirement;` in an event of `FormoseCore`; 4 times in `SysMLKaosModel`). Whether this is neutral (it is the default role of a concept-typed property) was NOT verified.
+- `Cannot find P2PPNode for object FMLTypePropertyValue[…/targetType=GoalModelingDiagram,required=false]` logged twice (`ChildrenContents.handlePreludeAndPoslude` and `initializePrettyPrint`) for `with DropScheme(targetType=…)`. The printed text of the unit keeps the attribute: only the log was measured.
+
+**Not a defect, measured:** `@Renderer("x")` is written `@Renderer(x)`. The source was wrong, the printer is right (FORMOD-D-7).
+
+**Impact.** Saving a unit from the Modeller rewrites it entirely (large diffs, noise in review). No loss of meaning was found once CORE-D-31 was fixed (every `B::` and `XLS::` action of `BMethodology` and `GoalModelingDiagram` is printed, 40/40 and 10/10), but the neutrality of `with ConceptInstance()` and of the added imports is not proven.
+
+**To decide.** Whether the printer must give back the parsed text for what the user did not edit, or only normalise; a round-trip test (print, parse again, compare the models) over the units of the test resource center would settle the neutrality.
+
+### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `TODO`
+
+**Symptom.** At the start of formod-app, about 135 warnings: `Unresolved type: DefaultDataType | DomainModel | DocumentAnnotationMethodology` (32), `Preventing StackOverflow while loading resource CompilationUnitResource…/BMethodology | DomainModelMethodology | DomainModel | DocumentAnnotationMethodology` (32), `DataBinding … still invalid at the end of process, reason: BindingVariable X does not exist` (70, X being a constant imported from a diagram specification: `C_CONTAINER`, `GOAL_DIAGRAM`…, or `unresolved path element new DefaultDataType(…)`).
+
+**What is verified.** The units import each other in a cycle — `FormoseCore` imports `SysMLKaosMethodology`, `DomainModelMethodology` and `BMethodology`, which import `FormoseCore` — which `FlexoResourceImpl.getResourceData` stops with a guard (the "StackOverflow" warning). All 19 model validations of `formod-test` pass and every scenario executes, so the bindings are valid in the end: these are transient states, logged as warnings. The three sources: `FMLCompilationUnitSemanticsAnalyzer.finalizeDeserialization`, `FlexoResourceImpl.getResourceData`, `FMLSemanticsAnalyzer.attemptToFixInvalidBindings` (it logs at the end of the FIRST pass, a second one resolves them: see CORE-D-26).
+
+**Not verified.** Whether a cycle can leave a binding really invalid (none was found in formod); the order in which the units are loaded.
+
+**Also in this log, not an issue:** `cannot find constructor null for type Association with arguments […]` (8): emitted by the static analysis of `new X(…)` and resolved at run-time (`T8_DomainModelDiagram` passes). Same message as CORE-D-4, but there the `new` really evaluates to null.
+
+### CORE-D-35 — `PasteAction.isEnabledForSelection` logs a warning for an ordinary state  ·  `TODO`
+
+**Symptom.** `Unexpected null focused object in PASTE`, once at the start of formod-app. Read in `PasteAction.isEnabledForSelection`: it warns when the focused object is null, which is the normal state of a menu computed with nothing selected. The call that triggers it was not identified. Severity: noise.
+
+### CORE-D-36 — `DirectoryWatcher.waitNextWatching()` can return before a file written just before the call is seen, and gives up silently  ·  `TODO`
+
+**Symptom.** A test that writes files into a directory resource center, calls `getDirectoryWatcher().waitNextWatching()` once and then asks the center for the new resource gets null, intermittently: `Atelier B project SourceAtelierBProject was not registered` in `formod-test` (`T6`, `T7`, `T10`), which provisions two blank Atelier B projects before each script. Measured on 2026-10-10 on the same machine, formod-test: 3 green runs out of 4 on the state without the dependency changes of UI-D-1, 1 green out of 4 right after them; 6 out of 6 after the test-side fix below. `b-ta-test`: 131 of 132, the only red being FORMOD-D-1 (`testExpression7`), as before. Same family as `directory-watcher-flaky-tests` of the workspace memory.
+
+**Mechanism — read in `openflexo-utils/flexo-utils/.../toolbox/DirectoryWatcher.java`, not reproduced in isolation.**
+1. `waitNextWatching(timeout)` sets `waitNextWatchingRequested`, then waits for `waitNextWatchingDone`. `run()` sets the latter at the end of the watching **in progress**, even when that watching started before the call: a scan that began before the project was written ends, the wait returns, and the new project was not in what that scan listed.
+2. After `timeout` (5 s by default) it throws an `InterruptedException`; the callers found in formod swallowed it, so the test went on without the resource.
+3. `waitNextWatchingRequested`, `waitNextWatchingDone` and `isRunning` are plain fields read by the waiting thread: no visibility guarantee other than the `Thread.sleep` of the loop.
+
+**Worked around in the tests (2026-10-10).** `FormodAutomatedTests.provisionAtelierBProject` and `TestCreateBlankAtelierBProject` wait again, up to 10 times, until the resource is registered.
+
+**To decide.** Making `waitNextWatching` wait for a watching that STARTED after the call (a counter of started and completed runs, both `volatile`, waiting for `completed >= startedAtCall + 1`), and not turning the timeout into an `InterruptedException` the callers cannot tell from a real interruption. The default delay of 5 s must be checked against the period of the watcher before making the wait stricter.
