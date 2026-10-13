@@ -930,6 +930,39 @@ the first generation), green with it. `formod`, `TestBMethology`: 6 runs in a ro
 `declaringElement` is correctly restored from the `.fml.rt`. The `DirectoryWatcher` is not involved either: every event is on the
 test thread.
 
+### CORE-D-38 — A repository built for a project, not for its delegate, loses the URI of its resources when the project is closed  ·  `DONE`
+
+**Symptom.** Intermittently, a project reopened in the same service manager no longer finds one of its resources by its URI, or finds
+the resource of the closed project: `TestUnloadDoesNotDelete` (`NullPointerException` on `probeResource()`) and `TestReloadedResourceReferences` (a role answering
+`null`, `RESOURCE_NOT_FOUND`) failed in 8 builds of `openflexo-core-2.99` out of 12 on 2026-10-13 (#151-#162), never locally. The log shows, when the project is closed, a virtual model instance resource unregistered under a
+`file:` URI (`hop on desenregistre …file:/tmp/….prj/Probe.fml.rt/Probe.fml.rt.xml`).
+
+**Mechanism — verified by execution** (diagnostics captured on Jenkins, build #162, then reproduced locally).
+1. A resource of a project stores no URI: it computes one from the resource center of the repository it is registered in.
+2. That repository is built by whoever asks for it first (CORE-D-25 keeps the first one registered). The test thread asks the project,
+   which goes to its delegate resource center: the repository belongs to the delegate. But
+   `FMLRTTechnologyAdapter.notifyRepositoryStructureChanged()`, posted to the Swing event thread, also calls
+   `getVirtualModelInstanceRepositories()`, which asks the technology adapter for the repository of every resource center — the
+   `FlexoProject` among them. When the project joins the list between the two loops of that method, and before the test thread asked,
+   the repository is built for the project itself: its resources get the project as resource center.
+3. Closing the project deletes its data, so the project has no URI any more: the resources fall back to their `file:` URI. The
+   reopened project keeps the same delegate resource center, with the stale resources still indexed in it, attached to the closed
+   project — and does not find them by their URI.
+
+The race depends on thread scheduling only, which is why the same revision went green or red from one build to the next (green when
+`openflexo-core-3.0` happened to build at the same time, red otherwise, on the 14 builds looked at, #149-#162 — presumably through the
+load it puts on the agent, not measured).
+
+**Fixed (2026-10-13).** `FlexoProjectImpl.registerRepository()` gives a repository built for the project to its delegate resource center
+before registering it, whichever technology adapter built it: a repository of a project always belongs to the delegate, as it already
+did when the test thread won.
+
+**Tests.** `flexo-foundation-test`, `rm/TestProjectRepositoryResourceCenter`: holds the event thread back while the project is
+created and asks the technology adapter for the repository of the project, then checks that the repository and the resources belong
+to the delegate, and that the reopened project finds the resource by its URI. Red without the fix (3/3, the resource answering its
+`file:` URI), green with it. Non-regression: `flexo-foundation-test` 528 (523 successes, 5 skipped), `fml-cli-test` 99/99, all other
+modules of openflexo-core green.
+
 
 ## Resources: loading
 
