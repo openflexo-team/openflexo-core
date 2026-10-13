@@ -95,6 +95,7 @@ public class TestUnloadDoesNotDelete extends OpenflexoProjectAtRunTimeTestCase {
 
 		ledger.getResource().save();
 		probe.getResource().save();
+		logResourceSnapshot("TestUnloadDoesNotDelete.testCreateInstances", project, probeResourceURI);
 	}
 
 	/**
@@ -116,6 +117,7 @@ public class TestUnloadDoesNotDelete extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(4)
 	public void testReloadedResourceLoadsClean() throws Exception {
+		logResourceSnapshot("TestUnloadDoesNotDelete.testReloadedResourceLoadsClean", project, probeResourceURI);
 		FMLRTVirtualModelInstanceResource probeResource = probeResource();
 		assertNotNull(probeResource);
 		assertFalse(probeResource.isLoaded());
@@ -135,6 +137,7 @@ public class TestUnloadDoesNotDelete extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(5)
 	public void testUnloadReleasesItems() throws Exception {
+		logResourceSnapshot("TestUnloadDoesNotDelete.testUnloadReleasesItems", project, probeResourceURI);
 		FMLRTVirtualModelInstanceResource probeResource = probeResource();
 		FlexoConceptInstance item = probeResource.getResourceData().getFlexoConceptInstances(itemConcept).get(0);
 		assertEquals("i1@main", item.getStringRepresentation());
@@ -154,6 +157,7 @@ public class TestUnloadDoesNotDelete extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(6)
 	public void testDeletingAnItemStillRunsItsDeletionScheme() throws Exception {
+		logResourceSnapshot("TestUnloadDoesNotDelete.testDeletingAnItemStillRunsItsDeletionScheme", project, probeResourceURI);
 		FMLRTVirtualModelInstance probe = probeResource().getResourceData();
 		FlexoConceptInstance item = probe.getFlexoConceptInstances(itemConcept).get(0);
 		assertEquals("i1@main", item.getStringRepresentation());

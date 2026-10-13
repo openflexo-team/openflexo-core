@@ -9,3 +9,10 @@ dependencies {
 //  testCompile testUtils()
   testImplementation project(':flexo-test-resources')
 }
+
+// TEMPORARY diagnostics (ResourceDiagnostics): one file per test JVM in build/diag, emptied before each run
+def resourceDiagnosticsDir = file("${buildDir}/diag")
+tasks.withType(Test).configureEach {
+  systemProperty 'openflexo.resourceDiagnostics', resourceDiagnosticsDir.absolutePath
+  doFirst { delete resourceDiagnosticsDir }
+}

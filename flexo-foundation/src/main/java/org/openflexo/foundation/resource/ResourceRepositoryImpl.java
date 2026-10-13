@@ -238,6 +238,12 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	 */
 	@Override
 	public void unregisterResource(R flexoResource) {
+		boolean traced = ResourceDiagnostics.isTraced(flexoResource);
+		if (traced) {
+			ResourceDiagnostics.logWithStack("UNREGISTER " + ResourceDiagnostics.describe(flexoResource) + " from " + describeForDiagnostics()
+					+ " registeredUnderItsURI=" + (resources.get(flexoResource.getURI()) == flexoResource) + " registeredByIdentity="
+					+ resources.containsValue(flexoResource));
+		}
 		if (flexoResource.getContainer() != null) {
 			flexoResource.getContainer().removeFromContents(flexoResource);
 		}
@@ -255,6 +261,26 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 		else {
 			resources.values().removeIf(registered -> registered == flexoResource);
 		}
+		if (traced) {
+			ResourceDiagnostics.log("UNREGISTERED stillRegistered=" + resources.containsValue(flexoResource));
+		}
+	}
+
+	// TEMPORARY diagnostics (ResourceDiagnostics): each key of the URI index, and the resource it holds
+	public String describeEntriesForDiagnostics() {
+		StringBuilder sb = new StringBuilder(describeForDiagnostics());
+		for (java.util.Map.Entry<String, R> e : new ArrayList<>(resources.entrySet())) {
+			String current = e.getValue() != null ? e.getValue().getURI() : null;
+			sb.append("\n      key=").append(e.getKey()).append(e.getKey() != null && e.getKey().equals(current) ? "" : " KEY-DIFFERS getURI()=" + current)
+					.append(" -> ").append(ResourceDiagnostics.describe(e.getValue()));
+		}
+		return sb.toString();
+	}
+
+	// TEMPORARY diagnostics (ResourceDiagnostics)
+	public String describeForDiagnostics() {
+		return getClass().getSimpleName().replaceAll("_\\$\\$_.*", "") + "@" + ResourceDiagnostics.id(this) + "(rc="
+				+ ResourceDiagnostics.describe(getResourceCenter()) + " size=" + resources.size() + ")";
 	}
 
 	/* (non-Javadoc)
@@ -269,6 +295,9 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 		resource.setResourceCenter(getResourceCenter());
 		parentFolder.addToResources(resource);
 		resources.put(resource.getURI(), resource);
+		if (ResourceDiagnostics.isTraced(resource)) {
+			ResourceDiagnostics.log("REGISTER " + ResourceDiagnostics.describe(resource) + " in " + describeForDiagnostics());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -282,6 +311,10 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 		}
 		resource.setResourceCenter(getResourceCenter());
 		resources.put(resource.getURI(), resource);
+		if (ResourceDiagnostics.isTraced(resource)) {
+			ResourceDiagnostics.log("REGISTER " + ResourceDiagnostics.describe(resource) + " in " + describeForDiagnostics() + " parent="
+					+ ResourceDiagnostics.describe(parentResource));
+		}
 		if (parentResource.getContents().contains(resource)) {
 			parentResource.addToContents(resource);
 		}
