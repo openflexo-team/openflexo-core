@@ -357,6 +357,16 @@ public abstract class CompilationUnitResourceImpl
 	 */
 	private boolean isFinalized = false;
 
+	@Override
+	public boolean isWaitingForReferencedUnits() {
+		for (FlexoResource<?> dependency : getCrossReferenceDependencies()) {
+			if (dependency instanceof CompilationUnitResourceImpl && !((CompilationUnitResourceImpl) dependency).isFinalized) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * The compilation units finalized while this one was not yet (compilation units importing each other), and to revalidate once it is
 	 */
@@ -394,7 +404,9 @@ public abstract class CompilationUnitResourceImpl
 				if (node != null) {
 					// Analyzing a binding again is part of loading, not an edition: it must not leave the unit modified
 					boolean wasModified = resource.getLoadedResourceData().isModified();
-					node.getSemanticsAnalyzer().attemptToFixInvalidBindings(false);
+					node.getSemanticsAnalyzer().retryPendingResolutions();
+					// What is still invalid once no referenced unit is left to complete is reported, as the first pass did not
+					node.getSemanticsAnalyzer().attemptToFixInvalidBindings(!resource.isWaitingForReferencedUnits());
 					if (!wasModified) {
 						resource.getLoadedResourceData().clearIsModified();
 					}

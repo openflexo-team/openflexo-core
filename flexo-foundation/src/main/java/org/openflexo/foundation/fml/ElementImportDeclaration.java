@@ -381,6 +381,11 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 						if (resource.isLoaded()) {
 							resourceData = resource.getLoadedResourceData();
 						}
+						else if (resource.isLoading()) {
+							// Resources importing each other: this one is being loaded higher in the stack, which will complete it
+							// (two-passes loading). Forcing it again would only hit the guard of getResourceData() and log a warning.
+							resourceData = resource.getLoadedResourceData();
+						}
 						else {
 							logger.info("Resource not loaded : " + resource.getURI() + ". Force loading");
 							resourceData = resource.getResourceData();

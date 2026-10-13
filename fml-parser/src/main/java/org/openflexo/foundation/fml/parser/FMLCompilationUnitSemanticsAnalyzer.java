@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,8 @@ import org.openflexo.foundation.fml.FMLTypingSpace;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.SemanticAnalysisWarning;
+import org.openflexo.foundation.fml.parser.fmlnodes.AbstractFlexoConceptNode;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
@@ -288,6 +291,44 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 	}
 
+	private final List<AbstractFlexoConceptNode<?, ?>> nodesWaitingForReferencedUnits = new ArrayList<>();
+
+	/**
+	 * Return true when this unit references a unit which is not complete yet (compilation units importing each other), which may still
+	 * provide what this unit could not resolve
+	 */
+	public boolean isWaitingForReferencedUnits() {
+		return getCompilationUnit() != null && getCompilationUnit().getResource() instanceof CompilationUnitResource
+				&& ((CompilationUnitResource) getCompilationUnit().getResource()).isWaitingForReferencedUnits();
+	}
+
+	/**
+	 * Register a node whose resolution against a referenced unit was postponed, see {@link #retryPendingResolutions()}
+	 */
+	public void addToNodesWaitingForReferencedUnits(AbstractFlexoConceptNode<?, ?> node) {
+		if (!nodesWaitingForReferencedUnits.contains(node)) {
+			nodesWaitingForReferencedUnits.add(node);
+		}
+	}
+
+	/**
+	 * Called once a unit this one references is complete (compilation units importing each other): retries what was postponed. An
+	 * unresolved reference is reported once no referenced unit is left to complete.
+	 */
+	public void retryPendingResolutions() {
+		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
+			((FMLTypingSpaceDuringParsing) typingSpace).resolveUnresovedTypes();
+			if (!isWaitingForReferencedUnits()) {
+				reportUnresolvedTypes();
+			}
+		}
+		for (AbstractFlexoConceptNode<?, ?> node : new ArrayList<>(nodesWaitingForReferencedUnits)) {
+			if (node.resolveParentConcepts(!isWaitingForReferencedUnits())) {
+				nodesWaitingForReferencedUnits.remove(node);
+			}
+		}
+	}
+
 	/**
 	 * Perform second pass: at this stage all dependencies are resolved and parsed as first pass
 	 */
@@ -314,8 +355,9 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
 			FMLTypingSpaceDuringParsing fmlTypingSpaceDuringParsing = (FMLTypingSpaceDuringParsing) typingSpace;
 			fmlTypingSpaceDuringParsing.resolveUnresovedTypes();
-			for (CustomType unresolvedType : fmlTypingSpaceDuringParsing.getUnresolvedTypes()) {
-				logger.warning("Unresolved type: " + unresolvedType);
+			// Not reported while a referenced unit is incomplete (units importing each other): retryPendingResolutions() will
+			if (!isWaitingForReferencedUnits()) {
+				reportUnresolvedTypes();
 			}
 		}
 
@@ -324,8 +366,17 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		}
 
 		// Try tofix invalid bindings now
-		attemptToFixInvalidBindings(warnOnInvalidBinding);
+		// Idem: the bindings found invalid are reported once the referenced units are complete
+		attemptToFixInvalidBindings(warnOnInvalidBinding && !isWaitingForReferencedUnits());
 
+	}
+
+	private void reportUnresolvedTypes() {
+		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
+			for (CustomType unresolvedType : ((FMLTypingSpaceDuringParsing) typingSpace).getUnresolvedTypes()) {
+				logger.warning("Unresolved type: " + unresolvedType);
+			}
+		}
 	}
 
 	/*@Override

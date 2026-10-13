@@ -85,21 +85,9 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
 		if (parentTypes != null) {
-			// System.out.println("finalizeDeserialization() for " + parentTypes + " in " + getASTNode());
-			for (FlexoConceptInstanceType parentType : parentTypes) {
-				// System.out.println(" > " + parentType);
-				// System.out.println(" > " + parentType.getFlexoConcept());
-				if (parentType != null && parentType.getFlexoConcept() != null) {
-					try {
-						// System.out.println(" >> " + getModelObject());
-						getModelObject().addToParentFlexoConcepts(parentType.getFlexoConcept());
-					} catch (InconsistentFlexoConceptHierarchyException e) {
-						throwIssue("Inconsistent concept hierarchy", getSuperTypeListFragment());
-					}
-				}
-				else if (parentType != null) {
-					throwIssue("Parent concept " + parentType.getSerializationRepresentation() + " not found", getSuperTypeListFragment());
-				}
+			if (!resolveParentConcepts(!getSemanticsAnalyzer().isWaitingForReferencedUnits())) {
+				// A parent concept is declared in a unit which is not complete yet (units importing each other): try again later
+				getSemanticsAnalyzer().addToNodesWaitingForReferencedUnits(this);
 			}
 		}
 		if (containerType != null) {
@@ -110,6 +98,40 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 				throwIssue("Container concept " + containerType.getSerializationRepresentation() + " not found", getInsideTypeFragment());
 			}
 		}
+	}
+
+	/**
+	 * Attach the parent concepts which can be resolved now
+	 * 
+	 * @param reportUnresolved
+	 *            true when a parent concept which cannot be resolved is an issue, false when it may still be resolved later
+	 * @return true when there is nothing left to resolve
+	 */
+	public boolean resolveParentConcepts(boolean reportUnresolved) {
+		if (parentTypes == null) {
+			return true;
+		}
+		boolean returned = true;
+		for (FlexoConceptInstanceType parentType : new ArrayList<>(parentTypes)) {
+			if (parentType != null && parentType.getFlexoConcept() != null) {
+				try {
+					getModelObject().addToParentFlexoConcepts(parentType.getFlexoConcept());
+				} catch (InconsistentFlexoConceptHierarchyException e) {
+					throwIssue("Inconsistent concept hierarchy", getSuperTypeListFragment());
+				}
+				parentTypes.remove(parentType);
+			}
+			else if (parentType != null) {
+				if (reportUnresolved) {
+					throwIssue("Parent concept " + parentType.getSerializationRepresentation() + " not found", getSuperTypeListFragment());
+					parentTypes.remove(parentType);
+				}
+				else {
+					returned = false;
+				}
+			}
+		}
+		return returned;
 	}
 
 	protected FlexoConceptInstanceType containerType;

@@ -1042,15 +1042,21 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return null;
 		}
 
+		/**
+		 * The {@link VirtualModel} of a resource, which is loaded if needed, unless it is being loaded higher in the stack (compilation
+		 * units importing each other): its partial content is then returned, null while it has none yet.
+		 */
+		private VirtualModel getVirtualModelOf(CompilationUnitResource resource) {
+			FMLCompilationUnit cu = resource.isLoading() ? resource.getLoadedResourceData() : resource.getCompilationUnit();
+			return cu != null ? cu.getVirtualModel() : null;
+		}
+
 		private VirtualModel getContainedVirtualModelNamed(CompilationUnitResource resource, String virtualModelNameOrURI) {
 
 			if (resource != null) {
 				for (CompilationUnitResource vmRes : resource.getContents(CompilationUnitResource.class)) {
-					if (vmRes.getName().equals(virtualModelNameOrURI)) {
-						return vmRes.getCompilationUnit().getVirtualModel();
-					}
-					if (vmRes.getURI().equals(virtualModelNameOrURI)) {
-						return vmRes.getCompilationUnit().getVirtualModel();
+					if (vmRes.getName().equals(virtualModelNameOrURI) || vmRes.getURI().equals(virtualModelNameOrURI)) {
+						return getVirtualModelOf(vmRes);
 					}
 					VirtualModel returned = getContainedVirtualModelNamed(vmRes, virtualModelNameOrURI);
 					if (returned != null) {

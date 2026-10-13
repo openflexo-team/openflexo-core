@@ -1060,13 +1060,25 @@ Mapped on `formod-app` (583 warnings at the start of the application, 4 of them 
 
 **To decide.** Whether the printer must give back the parsed text for what the user did not edit, or only normalise; a round-trip test (print, parse again, compare the models) over the units of the test resource center would settle the neutrality.
 
-### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `TODO`
+### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `IN PROGRESS`
 
 **Symptom.** At the start of formod-app, about 135 warnings: `Unresolved type: DefaultDataType | DomainModel | DocumentAnnotationMethodology` (32), `Preventing StackOverflow while loading resource CompilationUnitResource…/BMethodology | DomainModelMethodology | DomainModel | DocumentAnnotationMethodology` (32), `DataBinding … still invalid at the end of process, reason: BindingVariable X does not exist` (70, X being a constant imported from a diagram specification: `C_CONTAINER`, `GOAL_DIAGRAM`…, or `unresolved path element new DefaultDataType(…)`).
 
 **What is verified.** The units import each other in a cycle — `FormoseCore` imports `SysMLKaosMethodology`, `DomainModelMethodology` and `BMethodology`, which import `FormoseCore` — which `FlexoResourceImpl.getResourceData` stops with a guard (the "StackOverflow" warning). All 19 model validations of `formod-test` pass and every scenario executes, so the bindings are valid in the end: these are transient states, logged as warnings. The three sources: `FMLCompilationUnitSemanticsAnalyzer.finalizeDeserialization`, `FlexoResourceImpl.getResourceData`, `FMLSemanticsAnalyzer.attemptToFixInvalidBindings` (it logs at the end of the FIRST pass, a second one resolves them: see CORE-D-26).
 
 **Not verified.** Whether a cycle can leave a binding really invalid (none was found in formod); the order in which the units are loaded.
+
+**Fixed for the cycle part (2026-10-13), `IN PROGRESS` for the rest.** Four causes, all of the same kind: a unit being loaded higher in the stack (units importing each other) was used or judged as if it were complete.
+- `ElementImportDeclaration.buildReferencedObject` forced `getResourceData()` on a unit being loaded: it hit the guard of `FlexoResourceImpl.getResourceData` (warning + `Thread.dumpStack()`). It now takes the partial data of a unit that `isLoading()`, as `PamelaResourceWithPotentialCrossReferencesImpl.performLoadResourceData` already did.
+- `FMLTypingSpaceDuringParsing.resolveType` looked for a concept inside an imported unit that was "loaded" but still loading; it now uses the `VirtualModelInfo` path for it (the type is resolved later).
+- `FMLCompilationUnit.getContainedVirtualModelNamed` threw a `NullPointerException` (printed and swallowed, 10 per `formod-test` run) on a sibling unit without data yet; it now returns null for it.
+- A parent concept declared in a unit that is not complete yet was reported "not found" by the second pass of the unit extending it (`SysMLKaosMethodology` extends `Methodology`, which imports `FormoseCore`, which imports `SysMLKaosMethodology`). `AbstractFlexoConceptNode.resolveParentConcepts` now postpones it, and so do the "Unresolved type" and "still invalid" reports, while `CompilationUnitResource.isWaitingForReferencedUnits()` is true; `FMLCompilationUnitSemanticsAnalyzer.retryPendingResolutions()` retries when a referenced unit is finalized (the CORE-D-14 hook in `CompilationUnitResourceImpl.finalizeLoadResourceData`), and what is left is reported then.
+
+Measured over the printed output of the test runs, same tests before/after, all green (`formod-test` 32/32, `formod-module` 17/17): `Preventing StackOverflow` 213 → 0 and 110 → 0; `Unresolved type` 182 → 0 and 100 → 0 (the `DefaultDataType` and `DomainModel` ones came from the cycle too: they are resolved on the retry); `Parent concept … not found` 0 → 0 and 2 → 0 (`DocumentLibrary`); `NullPointerException` 10 → 0; `still invalid` 618 → 574 and 334 → 310. On a real formod-app start (2026-10-13): `Preventing StackOverflow` 0, `Unresolved type` 0, `Parent concept` 0, `still invalid` 62 (70 before). Guarded by `TestCrossImportsLoading` in `fml-cli-test`.
+
+**Still open.** The 62 (formod-app start) / 574 / 310 (test output) `still invalid` left are not caused by the cycle: constants imported from diagram specifications (`C_CONTAINER`, `GOAL_DIAGRAM`, …) and `new DefaultDataType(…)`. Their cause is not identified yet.
+
+**Unrelated, seen in the same output.** `DiagramTechnologyAdapter.makeCreationSchemeAction` (l.570) prints `Qui passe ici ????` and a stack trace on every creation scheme of a diagram.
 
 **Also in this log, not an issue:** `cannot find constructor null for type Association with arguments […]` (8): emitted by the static analysis of `new X(…)` and resolved at run-time (`T8_DomainModelDiagram` passes). Same message as CORE-D-4, but there the `new` really evaluates to null.
 
