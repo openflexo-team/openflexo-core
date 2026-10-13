@@ -50,7 +50,9 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -397,23 +399,34 @@ public abstract class CompilationUnitResourceImpl
 		if (!resourcesToRevalidateOnceFinalized.isEmpty()) {
 			List<CompilationUnitResourceImpl> resourcesToRevalidate = new ArrayList<>(resourcesToRevalidateOnceFinalized);
 			resourcesToRevalidateOnceFinalized.clear();
+			// Analyzing a binding again is part of loading, not an edition: it must not leave the unit modified
+			Map<CompilationUnitResourceImpl, Boolean> wasModified = new HashMap<>();
+			// What was postponed is resolved for all these units first: a binding of one of them may rely on a parent concept (and the
+			// members it brings, such as declaringElement) attached to another one, whatever the order in which they were finalized
 			for (CompilationUnitResourceImpl resource : resourcesToRevalidate) {
-				FMLCompilationUnitNode node = resource.getLoadedResourceData() != null
-						? (FMLCompilationUnitNode) resource.getLoadedResourceData().getPrettyPrintDelegate()
-						: null;
+				FMLCompilationUnitNode node = getSemanticsNode(resource);
 				if (node != null) {
-					// Analyzing a binding again is part of loading, not an edition: it must not leave the unit modified
-					boolean wasModified = resource.getLoadedResourceData().isModified();
+					wasModified.put(resource, resource.getLoadedResourceData().isModified());
 					node.getSemanticsAnalyzer().retryPendingResolutions();
+				}
+			}
+			for (CompilationUnitResourceImpl resource : resourcesToRevalidate) {
+				FMLCompilationUnitNode node = getSemanticsNode(resource);
+				if (node != null) {
 					// What is still invalid once no referenced unit is left to complete is reported, as the first pass did not
 					node.getSemanticsAnalyzer().attemptToFixInvalidBindings(!resource.isWaitingForReferencedUnits());
-					if (!wasModified) {
+					if (!wasModified.get(resource)) {
 						resource.getLoadedResourceData().clearIsModified();
 					}
 				}
 			}
 		}
 		notifyResourceLoaded();
+	}
+
+	private static FMLCompilationUnitNode getSemanticsNode(CompilationUnitResourceImpl resource) {
+		return resource.getLoadedResourceData() != null ? (FMLCompilationUnitNode) resource.getLoadedResourceData().getPrettyPrintDelegate()
+				: null;
 	}
 
 	/**
