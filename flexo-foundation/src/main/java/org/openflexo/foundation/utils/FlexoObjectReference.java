@@ -467,7 +467,34 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		}
 	}
 
+	/**
+	 * Take the identifiers of the referenced object from its resource again, while that object is still there.
+	 * 
+	 * An identifier is not frozen at the time the reference was made: {@link #notifySerializationIdHasChanged()} says as much, and a
+	 * technology adapter may compute one from the place the object holds in its resource. A B predicate is identified by its
+	 * containment path in its component, which it only takes once it has been inserted in a clause - after the reference to it was
+	 * made - so the identifier captured by {@link #setObject(FlexoObject)} was null, and the reference was serialized as
+	 * <code>&lt;resource&gt;#FLX_null</code>, resolving to nothing when read again (FORMOD-D-15).
+	 * 
+	 * An object which no longer gives an identifier keeps the one already stored: this refreshes an identifier, it never drops one.
+	 */
+	private void refreshIdentifiersFromObject() {
+		if (modelObject == null) {
+			return;
+		}
+		FlexoResource<?> res = getResource(false);
+		if (res == null) {
+			return;
+		}
+		String currentIdentifier = res.getObjectIdentifier(modelObject);
+		if (currentIdentifier != null && !currentIdentifier.equals(objectIdentifier)) {
+			objectIdentifier = currentIdentifier;
+			userIdentifier = res.getUserIdentifier(modelObject);
+		}
+	}
+
 	public String constructSerializationRepresentation() {
+		refreshIdentifiersFromObject();
 		StringBuilder result = new StringBuilder();
 		result.append(resourceIdentifier);
 		result.append(SEPARATOR);
