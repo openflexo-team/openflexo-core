@@ -1074,6 +1074,39 @@ or reject arguments in `call=` where they cannot be honoured.
 
 **Fixed.** Warning and `println` removed from `DeclarationActionNode`. Platform tests: `flexo-foundation-test` 525 (0 failure, 5 skipped), `fml-cli-test` 98; formod 32 + 17 + 56; the message is gone from every log.
 
+### CORE-D-39 — A compilation unit found half-copied by the directory watcher is never completed  ·  `IN PROGRESS`
+
+**Symptom.** Intermittently, a unit copied into a watched resource center is found by its URI but loads incomplete — a concept of a
+contained VirtualModel is missing — or is not found at all. Seen on Jenkins: `TestBehavioursInheritance.testReloadViewPoint`
+(`FlexoConceptA` missing, build #163) and, most probably, `TestLocalizedDictionaryResource.test6DictionaryIsRediscoveredOnReload`
+(builds #149, #153, #154). The log shows, in the watcher thread, `FileNotFoundException: …/Xxx.fml/Xxx.fml (No such file or
+directory)` and `Cannot retrieve info from …/Xxx.fml`, then `File MODIFIED Xxx.fml … resource=null`.
+
+**Mechanism — verified by execution** (diagnostics of build #163, then reproduced locally).
+1. A new `DirectoryResourceCenter` schedules its `DirectoryWatcher` with no initial delay: it runs at once, in its own thread
+   (`pool-N-thread-1`), alongside the caller.
+2. The tests made the directory `Xxx.fml` in the resource center, then copied its files into it. When the watcher passes in between,
+   `CompilationUnitResourceFactory.isValidArtefact()` accepts the directory although `Xxx.fml/Xxx.fml` is not there yet: the resource is
+   built without its info, and its contained units are not explored.
+3. The next watching sees the directory modified, but `FileSystemBasedResourceCenterImpl.fileModified()` finds no resource registered
+   for it and does nothing: the incomplete resource is never completed.
+
+Reproduction: a copy of `TestBehavioursInheritance` running `performDirectoryWatchingNow()` between `mkdirs()` and the copy fails every
+time on `FlexoConceptA`, with the same two messages.
+
+**Not a test-only defect.** Copying a unit into a watched resource center while Openflexo runs can end the same way.
+
+**Worked around in the tests (2026-10-13).** `OpenflexoTestCase.copyIntoResourceCenter()` copies the directory aside, next to the
+resource center, and moves it in at once (`ATOMIC_MOVE`) before asking for a watching: the watcher can no longer find it half-copied.
+Used by `reloadResourceCenter()` and by the seven tests that copied a unit into a resource center (`TestBehavioursInheritance`,
+`TestCreateVirtualModel`, `TestFlexoConceptInheritance`, `TestFlexoConceptInstanceType`, `TestFMLBindingModelManagement3`,
+`TestLocalizedDictionaryResource`, `TestURIManagement`). `flexo-foundation-test` 528 (523 successes, 5 skipped).
+
+**To do — the platform fix.** A directory-based artefact should not give a resource before its main file exists
+(`isValidArtefact()`), and a watched directory that has no resource yet should be discovered again when it changes (`fileModified()`).
+Other directory-based factories (`.fml.rt`, `.prj`) are to be checked for the same gap. The watcher itself has unsynchronized,
+non-`volatile` state (`isRunning`, `waitNextWatching*`; see CORE-D-36).
+
 ## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)
 
 Mapped on `formod-app` (583 warnings at the start of the application, 4 of them from opening a project) and on the headless tests (the same families, hundreds of times). Fixed since: CORE-D-31 (technologies forgotten at load), CORE-D-32 (stale "not implemented yet"), and the OWL adapter ones (`openflexo-owl/KNOWN_DEFECTS.md`). What is left is below, with what was measured and what was not.
