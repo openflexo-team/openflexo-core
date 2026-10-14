@@ -1074,7 +1074,7 @@ or reject arguments in `call=` where they cannot be honoured.
 
 **Fixed.** Warning and `println` removed from `DeclarationActionNode`. Platform tests: `flexo-foundation-test` 525 (0 failure, 5 skipped), `fml-cli-test` 98; formod 32 + 17 + 56; the message is gone from every log.
 
-### CORE-D-39 — A compilation unit found half-copied by the directory watcher is never completed  ·  `IN PROGRESS`
+### CORE-D-39 — A compilation unit found half-copied by the directory watcher is never completed  ·  `DONE`
 
 **Symptom.** Intermittently, a unit copied into a watched resource center is found by its URI but loads incomplete — a concept of a
 contained VirtualModel is missing — or is not found at all. Seen on Jenkins: `TestBehavioursInheritance.testReloadViewPoint`
@@ -1102,9 +1102,29 @@ Used by `reloadResourceCenter()` and by the seven tests that copied a unit into 
 `TestCreateVirtualModel`, `TestFlexoConceptInheritance`, `TestFlexoConceptInstanceType`, `TestFMLBindingModelManagement3`,
 `TestLocalizedDictionaryResource`, `TestURIManagement`). `flexo-foundation-test` 528 (523 successes, 5 skipped).
 
-**To do — the platform fix.** A directory-based artefact should not give a resource before its main file exists
-(`isValidArtefact()`), and a watched directory that has no resource yet should be discovered again when it changes (`fileModified()`).
-Other directory-based factories (`.fml.rt`, `.prj`) are to be checked for the same gap. The watcher itself has unsynchronized,
+**Fixed in the platform (2026-10-14).**
+1. A directory artefact needs its main file: `isValidArtefact()` of `CompilationUnitResourceFactory` (`Xxx.fml/Xxx.fml`, or
+   `Xxx.fml.xml` in the deprecated XML serialization), `FMLRTVirtualModelInstanceResourceFactory` (`Xxx.fml.rt/Xxx.fml.rt.xml`) and
+   `FlexoProjectResourceFactory` (`Xxx.prj/ProjectData.xml`, the check that had been left commented out). New
+   `IFlexoResourceFactory.isIncompleteArtefact()`: the form of an artefact, its main file missing.
+2. `TechnologyAdapter.contentsAdded()` takes an incomplete artefact neither for a resource nor for a folder, and tells the resource center
+   (`FlexoResourceCenter.incompleteArtefactFound()`).
+3. `FileSystemBasedResourceCenterImpl` keeps those artefacts in a set of its own and looks them up again when they change, or when a
+   file is added in them (the date of a directory does not always change). Not in `addedFilesToBeRenotified`: the watcher empties that
+   list after each watching, whatever the outcome.
+4. New `TechnologyAdapter.contentsChangedInResourceCenter()`: `FMLTechnologyAdapter` makes the nearest registered unit enclosing a change
+   explore its directory again (`CompilationUnitResourceFactory.exploreContainedResources()`), skipping what is already registered — but
+   only when the contained unit has a main file: resources without a serialization artefact (units in the XML serialization, in a jar)
+   are all registered under `null`.
+
+**Tests.** `flexo-foundation-test`, `rm/TestIncompleteArtefactDiscovery`: a unit seen before its main file, a contained unit copied after
+its container, and the rule for `.fml.rt` and `.prj`. Red without the fix (3 of 4), green with it; the reproduction of
+`TestBehavioursInheritance` likewise. Non-regression: every non-UI test of openflexo-core green (`flexo-foundation-test` 532, 527
+successes, 5 skipped); through `openflexo-dev`, integration-tests 37/37, b-ta-test 144/144, bpmn/uml/statecharts modelers 10/6/5,
+xml-ta-test 30 (1 skipped), xlsx-ta-test 34 (4 skipped), xx-ta-test 6/6. `formod-test` 31/32, the same failure without the fix (a
+`StackOverflowError` in `BSerializationIdentifiers.pathTo`, b-ta).
+
+**Not covered.** A main file found while it is itself being written is still read as it is. The watcher keeps unsynchronized,
 non-`volatile` state (`isRunning`, `waitNextWatching*`; see CORE-D-36).
 
 ## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)

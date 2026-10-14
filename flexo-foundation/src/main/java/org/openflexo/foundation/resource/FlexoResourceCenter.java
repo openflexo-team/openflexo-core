@@ -419,6 +419,16 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	void registerResource(FlexoResource<?> resource, I serializationArtefact);
 
 	/**
+	 * Called by a technology which found supplied artefact incomplete: the form of one of its artefacts, its main file missing, because
+	 * it is being copied or written (CORE-D-39).<br>
+	 * A resource center that watches its contents looks it up again when it changes. Does nothing by default.
+	 * 
+	 * @param serializationArtefact
+	 */
+	default void incompleteArtefactFound(I serializationArtefact) {
+	}
+
+	/**
 	 * Called to register a resource relatively to its serialization artefact
 	 * 
 	 * @param resource

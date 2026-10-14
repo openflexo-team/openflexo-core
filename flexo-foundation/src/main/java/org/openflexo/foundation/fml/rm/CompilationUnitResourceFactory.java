@@ -339,13 +339,28 @@ public class CompilationUnitResourceFactory
 	 */
 	@Override
 	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return hasArtefactForm(serializationArtefact, resourceCenter) && hasMainFile(serializationArtefact, resourceCenter);
+	}
 
-		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
-				&& resourceCenter.canRead(serializationArtefact) && (resourceCenter.retrieveName(serializationArtefact).endsWith(FML_SUFFIX)
-				/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX + "/")*/)) {
-			return true;
-		}
-		return false;
+	@Override
+	public <I> boolean isIncompleteArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return hasArtefactForm(serializationArtefact, resourceCenter) && !hasMainFile(serializationArtefact, resourceCenter);
+	}
+
+	/** A readable directory whose name ends with {@link #FML_SUFFIX} */
+	private static <I> boolean hasArtefactForm(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
+				&& resourceCenter.canRead(serializationArtefact) && resourceCenter.retrieveName(serializationArtefact).endsWith(FML_SUFFIX);
+	}
+
+	/**
+	 * Whether the directory <code>Xxx.fml</code> holds its unit: <code>Xxx.fml</code>, or <code>Xxx.fml.xml</code> in the deprecated XML
+	 * serialization. A directory found without it is being copied or written: it gives no resource yet (CORE-D-39)
+	 */
+	private static <I> boolean hasMainFile(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		String name = resourceCenter.retrieveName(serializationArtefact);
+		return resourceCenter.exists(resourceCenter.getEntry(name, serializationArtefact))
+				|| resourceCenter.exists(resourceCenter.getEntry(name + ".xml", serializationArtefact));
 	}
 
 	@Override
@@ -375,6 +390,19 @@ public class CompilationUnitResourceFactory
 
 		return resource;
 
+	}
+
+	/**
+	 * Explore again the directory of supplied {@link CompilationUnitResource}, registering what it holds and was not registered yet: a
+	 * contained unit or a localized dictionary copied or written after the unit was registered (CORE-D-39). What is already registered is
+	 * left as it is.
+	 * 
+	 * @param compilationUnitResource
+	 */
+	public void exploreContainedResources(CompilationUnitResource compilationUnitResource) {
+		if (compilationUnitResource.getResourceCenter() != null && compilationUnitResource.getIODelegate() != null) {
+			exploreVirtualModels(compilationUnitResource);
+		}
 	}
 
 	/**
@@ -418,6 +446,12 @@ public class CompilationUnitResourceFactory
 				continue;
 			}
 			if (isValidArtefact(child, resourceCenter)) {
+				I childMainFile = resourceCenter.getEntry(childName, child);
+				if (childMainFile != null && getRegisteredResource(childMainFile) != null) {
+					// Already registered: this directory is explored again (CORE-D-39). A unit in the deprecated XML serialization has no
+					// main file: resources without a serialization artefact are all registered under null
+					continue;
+				}
 				// Following code is deprecated, as it is based on XML version
 				I xmlFile = resourceCenter.getEntry(childName + ".xml", child);
 				if (resourceCenter.exists(xmlFile)) {

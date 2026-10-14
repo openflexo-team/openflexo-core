@@ -400,6 +400,14 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	public final <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 		boolean hasBeenLookedUp = false;
 		if (!isSerializationArtefactIgnorable(resourceCenter, serializationArtefact)) {
+			// An artefact still being copied or written is neither a resource nor a folder yet: not handled, so that it is looked up again
+			// once it changes (CORE-D-39)
+			for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
+				if (resourceFactory.isIncompleteArtefact(serializationArtefact, resourceCenter)) {
+					resourceCenter.incompleteArtefactFound(serializationArtefact);
+					return false;
+				}
+			}
 			for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 				FlexoResource<?> resource = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 				if (resource != null) {
@@ -416,6 +424,18 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 			}
 		}
 		return hasBeenLookedUp;
+	}
+
+	/**
+	 * Called when a serialization artefact has been added or modified in a resource center, whatever it is.<br>
+	 * A technology whose resources are containers - a directory exploring the resources it holds when it is registered - explores such a
+	 * container again here when the change is inside it, so that what was copied or written after the container is not lost
+	 * (CORE-D-39). Does nothing by default.
+	 * 
+	 * @param resourceCenter
+	 * @param serializationArtefact
+	 */
+	public <I> void contentsChangedInResourceCenter(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 	}
 
 	/**

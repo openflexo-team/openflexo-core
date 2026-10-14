@@ -48,11 +48,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -477,6 +479,10 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 				if (updatedResource != null && updatedResource.isLoaded() && updatedResource.isUpdatable()) {
 					updatedResource.updateResourceData();
 				}
+				if (updatedResource == null) {
+					lookUpIncompleteArtefactAgain(file);
+				}
+				notifyContentsChanged(file);
 			}
 			else {
 				// OK, the file was declared as beeing written
@@ -547,10 +553,55 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 					}
 					dismissIgnoredFilesWhenRequired(file, adapter);
 				}
-
+				// A file added in a directory that was found incomplete may complete it: the date of the directory does not always change
+				lookUpIncompleteArtefactAgain(file.getParentFile());
+				notifyContentsChanged(file);
 			}
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Done: File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			}
+		}
+
+		/**
+		 * The directories a technology found incomplete - still being copied or written, their main file missing - and left aside. Kept
+		 * here, not with the files to be notified again, which are dropped after each watching (CORE-D-39)
+		 */
+		private final Set<File> incompleteArtefacts = Collections.synchronizedSet(new HashSet<>());
+
+		@Override
+		public void incompleteArtefactFound(File serializationArtefact) {
+			incompleteArtefacts.add(serializationArtefact);
+		}
+
+		/**
+		 * Look up again a directory that a technology found incomplete: once complete, it gives its resource (CORE-D-39). A technology
+		 * still finding it incomplete declares it again.
+		 */
+		private void lookUpIncompleteArtefactAgain(File directory) {
+			if (directory == null || !incompleteArtefacts.contains(directory) || getServiceManager() == null
+					|| getServiceManager().getTechnologyAdapterService() == null) {
+				return;
+			}
+			incompleteArtefacts.remove(directory);
+			if (!directory.isDirectory()) {
+				return;
+			}
+			for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (adapter.isActivated() && !isIgnorable(directory, adapter)) {
+					adapter.contentsAdded(this, directory);
+				}
+			}
+		}
+
+		/** Let the technologies whose resources are containers explore them again when the change is inside one of them (CORE-D-39) */
+		private void notifyContentsChanged(File file) {
+			if (getServiceManager() == null || getServiceManager().getTechnologyAdapterService() == null) {
+				return;
+			}
+			for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (adapter.isActivated()) {
+					adapter.contentsChangedInResourceCenter(this, file);
+				}
 			}
 		}
 
@@ -583,6 +634,7 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 			}
+			incompleteArtefacts.remove(file);
 			if (getServiceManager() != null) {
 				for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (!isIgnorable(file, adapter)) {

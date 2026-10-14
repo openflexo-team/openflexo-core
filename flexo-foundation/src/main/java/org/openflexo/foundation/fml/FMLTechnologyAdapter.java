@@ -225,6 +225,30 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		return false;
 	}
 
+	/**
+	 * A compilation unit explores its directory - contained units, localized dictionary - only when it is registered: what is copied or
+	 * written in it afterwards is ignored by the exploration of the resource center ({@link #isIgnorable}). The nearest registered unit
+	 * enclosing the change explores its directory again (CORE-D-39).
+	 */
+	@Override
+	public <I> void contentsChangedInResourceCenter(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+		CompilationUnitResourceFactory factory = getCompilationUnitResourceFactory();
+		if (factory == null) {
+			return;
+		}
+		I current = resourceCenter.getContainer(serializationArtefact);
+		while (current != null && !current.equals(resourceCenter.getBaseArtefact()) && resourceCenter.isDirectory(current)
+				&& resourceCenter.retrieveName(current).endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+			CompilationUnitResource container = factory
+					.getRegisteredResource(resourceCenter.getEntry(resourceCenter.retrieveName(current), current));
+			if (container != null) {
+				factory.exploreContainedResources(container);
+				return;
+			}
+			current = resourceCenter.getContainer(current);
+		}
+	}
+
 	@Override
 	protected <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		if (resourceCenter.isDirectory(contents)) {

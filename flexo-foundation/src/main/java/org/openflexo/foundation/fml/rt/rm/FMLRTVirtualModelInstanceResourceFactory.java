@@ -44,9 +44,9 @@ import org.openflexo.xml.XMLRootElementInfo;
 /**
  * The factory creating and retrieving the {@link FMLRTVirtualModelInstanceResource}s: the resources of the instances of virtual models.
  * <p>
- * A valid artefact is a directory whose name ends with {@link #FML_RT_SUFFIX}. Such a resource may be created at top level or inside
- * another instance resource; an instance stored in the {@code .fml} directory of a VirtualModel is registered as a resource contained in
- * that compilation unit ({@link CompilationUnitResource#getContainedVMI()}).
+ * A valid artefact is a directory whose name ends with {@link #FML_RT_SUFFIX} and that holds its {@link #XML_SUFFIX} file. Such a
+ * resource may be created at top level or inside another instance resource; an instance stored in the {@code .fml} directory of a
+ * VirtualModel is registered as a resource contained in that compilation unit ({@link CompilationUnitResource#getContainedVMI()}).
  *
  * @author sylvain
  *
@@ -219,13 +219,28 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 */
 	@Override
 	public <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return hasArtefactForm(serializationArtefact, resourceCenter) && hasMainFile(serializationArtefact, resourceCenter);
+	}
 
-		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
-				&& resourceCenter.canRead(serializationArtefact)
-				&& resourceCenter.retrieveName(serializationArtefact).endsWith(FML_RT_SUFFIX)) {
-			return true;
-		}
-		return false;
+	@Override
+	public <I> boolean isIncompleteArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return hasArtefactForm(serializationArtefact, resourceCenter) && !hasMainFile(serializationArtefact, resourceCenter);
+	}
+
+	/** A readable directory whose name ends with {@link #FML_RT_SUFFIX} */
+	private static <I> boolean hasArtefactForm(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
+				&& resourceCenter.canRead(serializationArtefact) && resourceCenter.retrieveName(serializationArtefact).endsWith(FML_RT_SUFFIX);
+	}
+
+	/**
+	 * Whether the directory <code>Xxx.fml.rt</code> holds its instance, <code>Xxx.fml.rt.xml</code>. A directory found without it is being
+	 * copied or written: it gives no resource yet (CORE-D-39)
+	 */
+	private static <I> boolean hasMainFile(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		String name = resourceCenter.retrieveName(serializationArtefact);
+		String baseName = name.substring(0, name.length() - FML_RT_SUFFIX.length());
+		return resourceCenter.exists(resourceCenter.getEntry(baseName + XML_SUFFIX, serializationArtefact));
 	}
 
 	/**

@@ -103,6 +103,19 @@ public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends R
 	<I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
 
 	/**
+	 * Return boolean indicating if supplied serialization artefact has the form of an artefact of this factory, but is not complete yet:
+	 * typically a directory whose main file is not there, because it is being copied or written (CORE-D-39).<br>
+	 * Such an artefact is neither a resource nor a folder: it is to be looked up again once it changes.
+	 *
+	 * @param serializationArtefact
+	 * @param resourceCenter
+	 * @return
+	 */
+	default <I> boolean isIncompleteArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return false;
+	}
+
+	/**
 	 * If supplied serialization artefact is interpretable as a former format and might be read as a valid resource
 	 * 
 	 * Return converted serialization artefact when adequate, null if this serialization artefact is not to be converted.
