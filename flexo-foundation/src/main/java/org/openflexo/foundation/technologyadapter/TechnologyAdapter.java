@@ -260,9 +260,13 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 * @param resourceCenter
 	 */
 	public final <I> void initializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
-		if (!resourceCentersManagingThisTechnology.contains(resourceCenter)) {
-			performInitializeResourceCenter(resourceCenter);
-			resourceCentersManagingThisTechnology.add(resourceCenter);
+		// Explorations of a resource center are serialized: the directory watcher runs in its own thread and may explore the same contents
+		// while the technology is being initialized, registering them twice (two resources, hence two types, for one unit)
+		synchronized (resourceCenter) {
+			if (!resourceCentersManagingThisTechnology.contains(resourceCenter)) {
+				performInitializeResourceCenter(resourceCenter);
+				resourceCentersManagingThisTechnology.add(resourceCenter);
+			}
 		}
 
 	}
@@ -398,6 +402,13 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 * @return a boolean indicating if this file has been handled by the technology, when false ResourceCenter might resend notification
 	 */
 	public final <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+		// Serialized with the other explorations of the resource center, see initializeResourceCenter()
+		synchronized (resourceCenter) {
+			return doContentsAdded(resourceCenter, serializationArtefact);
+		}
+	}
+
+	private <I> boolean doContentsAdded(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 		boolean hasBeenLookedUp = false;
 		if (!isSerializationArtefactIgnorable(resourceCenter, serializationArtefact)) {
 			// An artefact still being copied or written is neither a resource nor a folder yet: not handled, so that it is looked up again

@@ -236,16 +236,20 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		if (factory == null) {
 			return;
 		}
-		I current = resourceCenter.getContainer(serializationArtefact);
-		while (current != null && !current.equals(resourceCenter.getBaseArtefact()) && resourceCenter.isDirectory(current)
-				&& resourceCenter.retrieveName(current).endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
-			CompilationUnitResource container = factory
-					.getRegisteredResource(resourceCenter.getEntry(resourceCenter.retrieveName(current), current));
-			if (container != null) {
-				factory.exploreContainedResources(container);
-				return;
+		// Serialized with the other explorations of the resource center (see TechnologyAdapter.initializeResourceCenter()): exploring
+		// while the units are being registered by another thread registers them twice
+		synchronized (resourceCenter) {
+			I current = resourceCenter.getContainer(serializationArtefact);
+			while (current != null && !current.equals(resourceCenter.getBaseArtefact()) && resourceCenter.isDirectory(current)
+					&& resourceCenter.retrieveName(current).endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+				CompilationUnitResource container = factory
+						.getRegisteredResource(resourceCenter.getEntry(resourceCenter.retrieveName(current), current));
+				if (container != null) {
+					factory.exploreContainedResources(container);
+					return;
+				}
+				current = resourceCenter.getContainer(current);
 			}
-			current = resourceCenter.getContainer(current);
 		}
 	}
 

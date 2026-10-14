@@ -1127,6 +1127,40 @@ xml-ta-test 30 (1 skipped), xlsx-ta-test 34 (4 skipped), xx-ta-test 6/6. `formod
 **Not covered.** A main file found while it is itself being written is still read as it is. The watcher keeps unsynchronized,
 non-`volatile` state (`isRunning`, `waitNextWatching*`; see CORE-D-36).
 
+### CORE-D-40 — The directory watcher and the initialization of a technology explore a resource center at the same time, registering a unit twice  ·  `IN PROGRESS`
+
+**Symptom.** `modelers-2.99` #260 to #264 (2026-10-14) UNSTABLE, #247 SUCCESS on the very same revision of `modelers`: in `bpmn-modeler`,
+`TestBPMNModeler.test1BPMNEditor` fails on `assertVirtualModelIsValid` with two errors, `Types are not compatible in assignation :
+FlowNodeGR is not assignable from FlowNodeGR` (the two `fromNodeGR` / `toNodeGR` assignations of `ProcessDiagram.fml`). Locally the same
+test is green (3 runs of 10 tests, and the published snapshots).
+
+**Mechanism — read in the output of the failing test, not reproduced.**
+1. `DirectoryResourceCenter` starts its watcher with no initial delay (see CORE-D-39): its first watching runs in `pool-1-thread-1` while
+   the `Test worker` thread activates the technologies and explores the same resource center.
+2. The watcher finds directories modified since its snapshot (`File MODIFIED Models`, `File MODIFIED BPMNEditor.fml`,
+   `File MODIFIED ProcessDiagram.fml … resource=null`) and explores them through `TechnologyAdapter.contentsAdded()` /
+   `FMLTechnologyAdapter.contentsChangedInResourceCenter()` (the latter added by CORE-D-39).
+3. Both threads do the same unsynchronized look-up then register: `DuplicateURIException: a resource with that URI … already declared`
+   for the diagram specification, its palette, `ExampleDiagram.diagram` and `ProcessDiagram.fml`, the warnings alternating between the
+   two thread names. `ProcessDiagram` ends with two `CompilationUnitResource` (`@521e7c50`, `@6213104f`), hence two concepts named
+   `FlowNodeGR`, one not assignable from the other.
+
+Timing dependent: it follows the speed of the agent, as CORE-D-36 and CORE-D-38 do. Jenkins keeps ~1 KB of the output of a passing suite,
+so #247 cannot be compared.
+
+**Fix (2026-10-14, not validated on Jenkins).** The explorations of a resource center are serialized on the resource center:
+`TechnologyAdapter.initializeResourceCenter()`, `TechnologyAdapter.contentsAdded()` and `FMLTechnologyAdapter.contentsChangedInResourceCenter()`
+are `synchronized (resourceCenter)`.
+
+**Measured.** `flexo-foundation-test`: `TestIncompleteArtefactDiscovery`, `TestLocalizedDictionaryResource`, `TestCreateVirtualModel`,
+`TestResourceLoadedStateIsNotified`, `TestURIManagement` green (23). `bpmn-modeler` through the composite, 3 runs: 10/10. Neither shows
+anything about the race, which the local runs never triggered.
+
+**To close.** Run `openflexo-core-2.99`, then `modelers-2.99` several times on Jenkins: green on every run. Not checked: another lock held
+by a thread that waits for the resource center (the explorations call back into repositories, `repositoriesLock`).
+
+---
+
 ## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)
 
 Mapped on `formod-app` (583 warnings at the start of the application, 4 of them from opening a project) and on the headless tests (the same families, hundreds of times). Fixed since: CORE-D-31 (technologies forgotten at load), CORE-D-32 (stale "not implemented yet"), and the OWL adapter ones (`openflexo-owl/KNOWN_DEFECTS.md`). What is left is below, with what was measured and what was not.
