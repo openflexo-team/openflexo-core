@@ -1127,7 +1127,7 @@ xml-ta-test 30 (1 skipped), xlsx-ta-test 34 (4 skipped), xx-ta-test 6/6. `formod
 **Not covered.** A main file found while it is itself being written is still read as it is. The watcher keeps unsynchronized,
 non-`volatile` state (`isRunning`, `waitNextWatching*`; see CORE-D-36).
 
-### CORE-D-40 — The directory watcher and the initialization of a technology explore a resource center at the same time, registering a unit twice  ·  `IN PROGRESS`
+### CORE-D-40 — The directory watcher and the initialization of a technology explore a resource center at the same time, registering a unit twice  ·  `DONE`
 
 **Symptom.** `modelers-2.99` #260 to #264 (2026-10-14) UNSTABLE, #247 SUCCESS on the very same revision of `modelers`: in `bpmn-modeler`,
 `TestBPMNModeler.test1BPMNEditor` fails on `assertVirtualModelIsValid` with two errors, `Types are not compatible in assignation :
@@ -1148,7 +1148,7 @@ test is green (3 runs of 10 tests, and the published snapshots).
 Timing dependent: it follows the speed of the agent, as CORE-D-36 and CORE-D-38 do. Jenkins keeps ~1 KB of the output of a passing suite,
 so #247 cannot be compared.
 
-**Fix (2026-10-14, not validated on Jenkins).** The explorations of a resource center are serialized on the resource center:
+**Fix (2026-10-14, commit `0c64bec8b`).** The explorations of a resource center are serialized on the resource center:
 `TechnologyAdapter.initializeResourceCenter()`, `TechnologyAdapter.contentsAdded()` and `FMLTechnologyAdapter.contentsChangedInResourceCenter()`
 are `synchronized (resourceCenter)`.
 
@@ -1156,8 +1156,11 @@ are `synchronized (resourceCenter)`.
 `TestResourceLoadedStateIsNotified`, `TestURIManagement` green (23). `bpmn-modeler` through the composite, 3 runs: 10/10. Neither shows
 anything about the race, which the local runs never triggered.
 
-**To close.** Run `openflexo-core-2.99`, then `modelers-2.99` several times on Jenkins: green on every run. Not checked: another lock held
-by a thread that waits for the resource center (the explorations call back into repositories, `repositoriesLock`).
+**Validated on Jenkins (2026-10-14).** `openflexo-core-2.99` #181 (the fix) green, then `modelers-2.99` #265 and two later builds green
+(bpmn 10/10, owl 3/3, statecharts 5/5, uml 6/6), where #260-#264 were red on the same revision of `modelers`.
+
+**Not checked.** Another lock held by a thread that waits for the resource center (the explorations call back into repositories,
+`repositoriesLock`): no deadlock seen, none ruled out by reading.
 
 ---
 
