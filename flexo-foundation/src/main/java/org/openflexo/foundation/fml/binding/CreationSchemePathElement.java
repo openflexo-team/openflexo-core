@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -586,6 +587,18 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			return getCreationScheme() != null || resolvedAsNoConstructorIsDefined;
 		}
 
+		/**
+		 * Return true while a compilation unit referenced by the one declaring the bindable is not complete (see
+		 * {@link CompilationUnitResource#isWaitingForReferencedUnits()})
+		 */
+		private boolean isWaitingForReferencedUnits() {
+			if (getBindable() instanceof FMLObject) {
+				CompilationUnitResource resource = ((FMLObject) getBindable()).getDeclaringCompilationUnitResource();
+				return resource != null && resource.isWaitingForReferencedUnits();
+			}
+			return false;
+		}
+
 		@Override
 		public void invalidate() {
 			invalidate(null);
@@ -639,8 +652,11 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				resolvedAsNoConstructorIsDefined = true;
 			}
 			setFunction(function);
-			if (function == null && !resolvedAsNoConstructorIsDefined && getType() != null && getType().isResolved()) {
-				// Do not warn for unresolved type
+			if (function == null && !resolvedAsNoConstructorIsDefined && getType() != null && getType().isResolved()
+					&& !isWaitingForReferencedUnits()) {
+				// Do not warn for unresolved type, nor while a unit referenced by the one of the binding is not complete: what the
+				// arguments and the creation scheme are typed with (parent concepts, set when that unit is finalized) may be missing, the
+				// constructor is looked for again when the binding is revalidated
 				logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments()
 						+ (getParent() != null ? " and parent " + getParent().getType() : ""));
 				// System.out.println("type: " + getType() + " resolved=" + getType().isResolved());
