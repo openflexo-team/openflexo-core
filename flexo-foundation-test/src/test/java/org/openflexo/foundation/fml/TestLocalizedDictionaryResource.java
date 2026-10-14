@@ -59,8 +59,6 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.LocalizedDictionaryResource;
 import org.openflexo.foundation.fml.rm.LocalizedDictionaryResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.foundation.resource.ResourceDiagnostics;
-import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.localization.Language;
 import org.openflexo.localization.LocalizedDelegate;
@@ -226,13 +224,6 @@ public class TestLocalizedDictionaryResource extends OpenflexoTestCase {
 		File copy = copyIntoResourceCenter(directory, resourceCenter);
 
 		CompilationUnitResource reloaded = serviceManager.getVirtualModelLibrary().getCompilationUnitResource(NEW_VM_URI);
-		// TEMPORARY diagnostics (ResourceDiagnostics)
-		ResourceDiagnostics.log("SNAPSHOT TestLocalizedDictionaryResource.test6 copy=" + copy + " contents="
-				+ java.util.Arrays.toString(copy.list()) + "\n  rc=" + ResourceDiagnostics.describe(resourceCenter) + "\n  rc index: "
-				+ (resourceCenter instanceof ResourceRepositoryImpl ? ((ResourceRepositoryImpl<?, ?>) resourceCenter).describeEntriesForDiagnostics()
-						: "?")
-				+ "\n  getCompilationUnitResource(" + NEW_VM_URI + ")=" + ResourceDiagnostics.describe(reloaded)
-				+ "\n  resourceManager.getResource=" + ResourceDiagnostics.describe(serviceManager.getResourceManager().getResource(NEW_VM_URI)));
 		assertNotNull(reloaded);
 
 		LocalizedDictionaryResource dictionaryResource = reloaded.getLocalizedDictionaryResource();

@@ -81,7 +81,6 @@ public class TestReloadedResourceReferences extends OpenflexoProjectAtRunTimeTes
 		ledger.getResource().save();
 		firstGenerationProbe.getResource().save();
 		holder.getResource().save();
-		logResourceSnapshot("TestReloadedResourceReferences.testCreateInstances", project, probeResourceURI);
 	}
 
 	/** Resolves the reference once, against the first generation of the project: this is what caches the object */
@@ -107,7 +106,6 @@ public class TestReloadedResourceReferences extends OpenflexoProjectAtRunTimeTes
 		FlexoConceptInstance item = probe.getFlexoConceptInstances(itemConcept).get(0);
 		assertNotSame(firstGenerationItem, item);
 
-		logResourceSnapshot("TestReloadedResourceReferences.testReferenceAnswersTheCurrentDataAfterReload", project, probeResourceURI);
 		Object referenced = holder.execute("item");
 		assertNotNull(referenced);
 		assertSame("The reference still answers an object of the data dropped when the project was closed", item, referenced);
@@ -116,8 +114,6 @@ public class TestReloadedResourceReferences extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(4)
 	public void testIdentityHoldsBetweenInstancesOfTheReloadedProject() throws Exception {
-		logResourceSnapshot("TestReloadedResourceReferences.testIdentityHoldsBetweenInstancesOfTheReloadedProject", project,
-				probeResourceURI);
 		FMLRTVirtualModelInstance probe = probeResource().getResourceData();
 		FlexoConceptInstance item = probe.getFlexoConceptInstances(itemConcept).get(0);
 		FlexoConceptInstance referenced = (FlexoConceptInstance) holder.execute("item");

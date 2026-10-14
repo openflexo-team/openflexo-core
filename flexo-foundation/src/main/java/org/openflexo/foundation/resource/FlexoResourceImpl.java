@@ -724,45 +724,6 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return getResourceCenter().getDefaultResourceURI(this);
 	}
 
-	// TEMPORARY diagnostics (ResourceDiagnostics): the URI set on this resource, without computing a default one
-	public String getStoredURIForDiagnostics() {
-		return (String) performSuperGetter(URI);
-	}
-
-	// TEMPORARY diagnostics (ResourceDiagnostics)
-	@Override
-	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
-		FlexoResourceCenter<?> old = getResourceCenter();
-		boolean traced = ResourceDiagnostics.isTraced(this) || (resourceCenter != null && ResourceDiagnostics.isEnabled()
-				&& !(resourceCenter instanceof JarResourceCenter));
-		performSuperSetter(RESOURCE_CENTER, resourceCenter);
-		if (traced && old != resourceCenter) {
-			String event = "SET-RC " + ResourceDiagnostics.describe(this) + " old=" + ResourceDiagnostics.describe(old);
-			if (resourceCenter == null) {
-				ResourceDiagnostics.logWithStack(event);
-			}
-			else {
-				ResourceDiagnostics.log(event);
-			}
-		}
-	}
-
-	// TEMPORARY diagnostics (ResourceDiagnostics)
-	@Override
-	public void setURI(String anURI) {
-		String old = (String) performSuperGetter(URI);
-		performSuperSetter(URI, anURI);
-		if (ResourceDiagnostics.isTraced(this) && (old == null ? anURI != null : !old.equals(anURI))) {
-			String event = "SET-URI " + ResourceDiagnostics.describe(this) + " old=" + old + " new=" + anURI;
-			if (anURI == null) {
-				ResourceDiagnostics.logWithStack(event);
-			}
-			else {
-				ResourceDiagnostics.log(event);
-			}
-		}
-	}
-
 	@Override
 	public LocalizedDelegate getLocales() {
 		if (this instanceof TechnologyAdapterResource) {

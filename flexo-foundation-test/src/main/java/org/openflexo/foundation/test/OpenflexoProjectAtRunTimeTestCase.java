@@ -59,11 +59,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.foundation.resource.ResourceDiagnostics;
-import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
@@ -315,44 +311,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	 * @param prjDir
 	 * @return
 	 */
-	/**
-	 * TEMPORARY diagnostics (ResourceDiagnostics): what a project holds, and what a lookup of supplied URI answers
-	 */
-	protected static void logResourceSnapshot(String label, FlexoProject<?> project, String uri) {
-		if (!ResourceDiagnostics.isEnabled()) {
-			return;
-		}
-		StringBuilder sb = new StringBuilder("SNAPSHOT " + label + " project=" + ResourceDiagnostics.describe(project));
-		if (project != null) {
-			FlexoResourceCenter<?> delegate = project.getDelegateResourceCenter();
-			sb.append("\n  delegate=").append(ResourceDiagnostics.describe(delegate));
-			if (delegate instanceof ResourceRepositoryImpl) {
-				sb.append("\n  delegate index: ").append(((ResourceRepositoryImpl<?, ?>) delegate).describeEntriesForDiagnostics());
-			}
-			if (serviceManager != null) {
-				for (TechnologyAdapter<?> ta : serviceManager.getTechnologyAdapterService().getTechnologyAdapters()) {
-					for (ResourceRepository<?, ?> repository : project.getRegistedRepositories(ta, false)) {
-						sb.append("\n  ").append(ta.getClass().getSimpleName()).append(" ")
-								.append(repository instanceof ResourceRepositoryImpl
-										? ((ResourceRepositoryImpl<?, ?>) repository).describeEntriesForDiagnostics()
-										: repository.toString());
-					}
-				}
-			}
-			if (uri != null) {
-				sb.append("\n  project.getResource(").append(uri).append(")=").append(ResourceDiagnostics.describe(project.getResource(uri)));
-			}
-		}
-		if (uri != null && serviceManager != null) {
-			sb.append("\n  resourceManager.getResource(").append(uri).append(")=")
-					.append(ResourceDiagnostics.describe(serviceManager.getResourceManager().getResource(uri)));
-		}
-		ResourceDiagnostics.log(sb.toString());
-	}
-
 	protected FlexoEditor reloadProject(FlexoProject<File> projectToReload) {
 
-		logResourceSnapshot("before reloadProject", projectToReload, null);
 		File oldDirectory = projectToReload.getProjectDirectory();
 
 		// Close the project first
@@ -370,7 +330,6 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			}
 
 			_project = (FlexoProject<File>) anEditor.getProject();
-			logResourceSnapshot("after reloadProject", _project, null);
 			return anEditor;
 		} catch (ProjectLoadingCancelledException e) {
 			e.printStackTrace();

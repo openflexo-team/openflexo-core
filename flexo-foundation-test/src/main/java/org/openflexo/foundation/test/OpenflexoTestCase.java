@@ -57,9 +57,6 @@ import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Rule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.openflexo.connie.binding.javareflect.KeyValueLibrary;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
@@ -80,7 +77,6 @@ import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
-import org.openflexo.foundation.resource.ResourceDiagnostics;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter.FSBasedResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -146,25 +142,6 @@ public abstract class OpenflexoTestCase {
 			e.printStackTrace();
 		}
 	}
-
-	/** TEMPORARY diagnostics (ResourceDiagnostics): which test runs, and how it ends, in each test JVM */
-	@Rule
-	public TestWatcher resourceDiagnosticsWatcher = new TestWatcher() {
-		@Override
-		protected void starting(Description description) {
-			ResourceDiagnostics.log("TEST-START " + description.getClassName() + "." + description.getMethodName());
-		}
-
-		@Override
-		protected void succeeded(Description description) {
-			ResourceDiagnostics.log("TEST-OK " + description.getClassName() + "." + description.getMethodName());
-		}
-
-		@Override
-		protected void failed(Throwable e, Description description) {
-			ResourceDiagnostics.log("TEST-FAILED " + description.getClassName() + "." + description.getMethodName() + " " + e);
-		}
-	};
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {

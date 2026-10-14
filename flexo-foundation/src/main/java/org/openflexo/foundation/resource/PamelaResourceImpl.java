@@ -238,9 +238,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 */
 	@Override
 	public void unloadResourceData(boolean deleteResourceData) {
-		if (ResourceDiagnostics.isTraced(this)) {
-			ResourceDiagnostics.log("UNLOAD delete=" + deleteResourceData + " " + ResourceDiagnostics.describe(this));
-		}
 		if (isLoaded()) {
 
 			isUnloading = true;
@@ -271,9 +268,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			notifyResourceUnloaded();
 
 			isUnloading = false;
-			if (ResourceDiagnostics.isTraced(this)) {
-				ResourceDiagnostics.log("UNLOADED " + ResourceDiagnostics.describe(this));
-			}
 		}
 	}
 

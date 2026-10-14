@@ -71,7 +71,6 @@ import org.openflexo.foundation.resource.FileIODelegate.WillDeleteFileOnDiskNoti
 import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.PamelaModelFactory;
@@ -392,11 +391,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		// the resources of the project from the resource center the project resource keeps. Reopening the project then builds and
 		// registers them again; otherwise the old resources are found again as they are, and the repositories of the reopened project
 		// stay empty.
-		if (ResourceDiagnostics.isEnabled()) {
-			ResourceDiagnostics.logWithStack("REMOVE-RC " + ResourceDiagnostics.describe(resourceCenter) + " order:"
-					+ ResourceDiagnostics.describe(new ArrayList<>(resourceCenter.getAllResources())));
-			logRegisteredRepositoriesForDiagnostics("REMOVE-RC before unload", resourceCenter);
-		}
 		for (FlexoResource<?> resource : resourceCenter.getAllResources()) {
 			if (resource.isLoaded()) {
 				resource.unloadResourceData(resource instanceof FlexoProjectResource);
@@ -404,32 +398,10 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 		// TODO: dereference all resources registered in this ResourceCenter
 
-		if (ResourceDiagnostics.isEnabled()) {
-			logRegisteredRepositoriesForDiagnostics("REMOVE-RC after unload", resourceCenter);
-		}
 		if (getServiceManager() != null) {
 			getServiceManager().notify(this, new ResourceCenterRemoved(resourceCenter));
 		}
-		if (ResourceDiagnostics.isEnabled()) {
-			logRegisteredRepositoriesForDiagnostics("REMOVE-RC after notification", resourceCenter);
-		}
 		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, resourceCenter, null);
-	}
-
-	// TEMPORARY diagnostics (ResourceDiagnostics)
-	private void logRegisteredRepositoriesForDiagnostics(String when, FlexoResourceCenter<?> resourceCenter) {
-		StringBuilder sb = new StringBuilder(when + " " + ResourceDiagnostics.describe(resourceCenter));
-		if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
-			for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
-				for (ResourceRepository<?, ?> repository : resourceCenter.getRegistedRepositories(ta, false)) {
-					sb.append("\n    ").append(ta.getClass().getSimpleName()).append(" ")
-							.append(repository instanceof ResourceRepositoryImpl ? ((ResourceRepositoryImpl<?, ?>) repository).describeForDiagnostics()
-									: repository.toString())
-							.append(ResourceDiagnostics.describe(new ArrayList<>(repository.getAllResources())));
-				}
-			}
-		}
-		ResourceDiagnostics.log(sb.toString());
 	}
 
 	@Override
