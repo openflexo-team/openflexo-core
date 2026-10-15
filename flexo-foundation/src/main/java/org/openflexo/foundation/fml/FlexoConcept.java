@@ -2163,12 +2163,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
 				if (hasMetaData(RENDERER_METADATA)) {
-					getMetaData(RENDERER_METADATA).getPropertyChangeSupport().addPropertyChangeListener(evt -> {
-						if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
-							renderer = retrieveRendererFromMetadata();
-							getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
-						}
-					});
+					listenToRendererMetaData();
 					renderer = retrieveRendererFromMetadata();
 				}
 				else {
@@ -2189,7 +2184,29 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 			this.renderer = renderer;
 			setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+			// The renderer may be edited later on in the FML source: the metadata must be listened to whatever the way the renderer was set
+			listenToRendererMetaData();
 			getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
+		}
+
+		private FMLMetaData listenedRendererMetaData;
+
+		/**
+		 * When the {@link #RENDERER_METADATA} metadata is edited (the FML source of the concept was edited then merged), the renderer is read
+		 * again from it. Otherwise the renderer cached here would be written back over the edited metadata at next binding notification.
+		 */
+		private void listenToRendererMetaData() {
+			FMLMetaData metaData = hasMetaData(RENDERER_METADATA) ? getMetaData(RENDERER_METADATA) : null;
+			if (metaData == null || metaData == listenedRendererMetaData) {
+				return;
+			}
+			listenedRendererMetaData = metaData;
+			metaData.getPropertyChangeSupport().addPropertyChangeListener(evt -> {
+				if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
+					renderer = retrieveRendererFromMetadata();
+					getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
+				}
+			});
 		}
 
 		/**
@@ -2228,6 +2245,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 						return;
 					}
 					setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+					listenToRendererMetaData();
 					getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
 					FlexoConceptImpl.this.notifiedBindingChanged(dataBinding);
 				}
