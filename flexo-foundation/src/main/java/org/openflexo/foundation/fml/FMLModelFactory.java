@@ -923,6 +923,11 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 	@Override
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
+		// An object created by cloning is detached (no compilation unit yet) and never goes through deserialization:
+		// give it its factory now, otherwise cloned setters needing it (meta-data) hit a null factory
+		if (newlyCreatedObject instanceof FMLObject && ((FMLObject) newlyCreatedObject).getFMLModelFactory() == null) {
+			((FMLObject) newlyCreatedObject).initializeDeserialization(this);
+		}
 	}
 
 	public TypeConverter getTypeConverter() {
