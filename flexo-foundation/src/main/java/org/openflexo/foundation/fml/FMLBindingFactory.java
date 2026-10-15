@@ -254,9 +254,10 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
 						returned.add(getSimplePathElement(pr, parent, bindable));
 					}
-					if (concept.getRenderer() != null && concept.getRenderer().isSet() && concept.getRenderer().isValid()) {
-						returned.add(new EPIRendererPathElement(parent, bindable));
-					}
+					// Always exposed, whatever the state of the renderer of the concept (which may not be valid yet while compilation units
+					// are loaded): otherwise 'x.render' would silently resolve to FlexoObject.render(), the multi-line dump of the instance.
+					// FlexoConceptInstance.getStringRepresentation() falls back on a default representation when there is no valid renderer.
+					returned.add(new EPIRendererPathElement(parent, bindable));
 					returned.add(new FlexoConceptTypePathElement(parent, concept, bindable));
 					if (concept instanceof VirtualModel) {
 						returned.add(new VirtualModelTypePathElement(parent, concept, bindable));
