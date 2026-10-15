@@ -644,10 +644,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
 			// System.out.println("########## Je cherche le constructeur " + getParsed() + " pour " + getType());
 			// System.out.println("Je retourne: " + function);
-			if (function != null) {
-				System.out.println(function.getFMLPrettyPrint());
-			}
-			else if (getType() != null && getType().getFlexoConcept() != null && !getType().getFlexoConcept().hasCreationScheme()) {
+			if (function == null && getType() != null && getType().getFlexoConcept() != null && !getType().getFlexoConcept().hasCreationScheme()) {
 				// Special case where no constructor was defined for this concept, thus the instantiation is valid
 				resolvedAsNoConstructorIsDefined = true;
 			}

@@ -347,9 +347,6 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			// System.out.println(" > Loading " + elementImportDeclaration.getReferencedObject());
 			// System.out.println("resourceReference=" + elementImportDeclaration.getResourceReference());
 			// System.out.println("objectReference=" + elementImportDeclaration.getObjectReference());
-			if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
-				System.out.println(((FMLCompilationUnit) elementImportDeclaration.getReferencedObject()).getResource());
-			}
 		}
 
 		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
