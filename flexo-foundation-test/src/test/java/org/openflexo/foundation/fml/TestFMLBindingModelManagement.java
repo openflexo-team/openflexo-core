@@ -1998,6 +1998,28 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		}
 	}
 
+	/**
+	 * A number computed by an expression (a Long) assigned to an Integer property is stored as an Integer, so that a path resolved on the
+	 * declared type of the property (<code>anIntegerInA.toString</code>, as in a renderer) can be evaluated
+	 */
+	@Test
+	@TestOrder(26)
+	public void testNumberAssignedToIntegerPropertyIsCoerced() throws Exception {
+
+		log("testNumberAssignedToIntegerPropertyIsCoerced()");
+
+		FlexoConceptInstance instance = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+		FlexoRole<Integer> anIntegerInA = (FlexoRole<Integer>) flexoConceptA.getAccessibleProperty("anIntegerInA");
+
+		Object aLong = Long.valueOf(7);
+		instance.setFlexoPropertyValue((FlexoProperty) anIntegerInA, aLong);
+
+		Object stored = instance.getFlexoPropertyValue(anIntegerInA);
+		assertEquals(Integer.class, stored.getClass());
+		assertEquals(7, stored);
+		assertEquals("7", instance.execute("anIntegerInA.toString"));
+	}
+
 	private static void checkBinding(String binding, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
 		DataBinding<Object> db = new DataBinding<>(binding, owner, Object.class, BindingDefinitionType.GET);
 		assertTrue(db.isValid());

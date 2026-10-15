@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,6 +64,7 @@ import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
@@ -977,6 +979,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
+		 * A number computed by an expression (<code>weight + 1</code> is a Long) is stored in the numeric type of the property it is assigned
+		 * to: a property typed Integer holding a Long fails any path resolved on its declared type (<code>weight.toString</code>)
+		 */
+		@SuppressWarnings("unchecked")
+		private <T> T coerceNumber(FlexoProperty<T> flexoProperty, T value) {
+			Type type = flexoProperty.getType();
+			if (value instanceof Number && type != null && (TypeUtils.isByte(type) || TypeUtils.isShort(type) || TypeUtils.isInteger(type)
+					|| TypeUtils.isLong(type) || TypeUtils.isFloat(type) || TypeUtils.isDouble(type))) {
+				return (T) TypeUtils.castTo(value, type);
+			}
+			return value;
+		}
+
+		/**
 		 * Sets value associated with supplied property, if supplied value is not equals (java semantics) to actual value
 		 * 
 		 * @param flexoProperty
@@ -985,12 +1001,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the new value to set
 		 */
 		@Override
-		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value) {
+		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T aValue) {
 
 			if (flexoProperty == null || flexoProperty.getFlexoConcept() == null) {
 				logger.warning("Unexpected null value: " + flexoProperty);
 				return;
 			}
+
+			final T value = coerceNumber(flexoProperty, aValue);
 
 			if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
