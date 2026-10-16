@@ -1,0 +1,21 @@
+// Creating an instance from a behaviour of a concept, as stated by the "Behaviours" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Depot.fml"];
+service ResourceCenterService add_temp_rc;
+depot = new Depot() with (name="depot");
+bin = depot.newBin("b1");
+
+// A concept nested in the current one: a bare new creates it, inside the current instance
+slot = bin.newSlot("s1");
+assert slot != null;
+assert slot.code == "s1";
+assert slot.container == bin;
+
+// A concept declared at the model level: a bare new gives null, container.new creates it
+assert bin.bareTool("saw") == null;
+hammer = bin.containerTool("hammer");
+assert hammer != null;
+assert hammer.name == "hammer";
+assert hammer.container == depot;
+
+log "Test PASSED: new from a behaviour of a concept behaves as the guide states";

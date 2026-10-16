@@ -129,18 +129,24 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 
 	@Override
 	public <I2> boolean isValidArtefact(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
+		return hasArtefactForm(serializationArtefact, resourceCenter)
+				&& resourceCenter.exists(resourceCenter.getEntry(PROJECT_DATA_FILENAME, serializationArtefact));
+	}
 
-		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
-				&& resourceCenter.canRead(serializationArtefact)
-				&& (resourceCenter.retrieveName(serializationArtefact).endsWith(PROJECT_SUFFIX)
-				/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(DIAGRAM_SPECIFICATION_SUFFIX + "/")*/)) {
-			/*final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewPointResource.DIAGRAM_SPECIFICATION_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();*/
-			return true;
-		}
-		return false;
+	/**
+	 * A directory <code>Xxx.prj</code> found without its {@link #PROJECT_DATA_FILENAME} is being copied or written: it gives no project yet
+	 * (CORE-D-39)
+	 */
+	@Override
+	public <I2> boolean isIncompleteArtefact(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
+		return hasArtefactForm(serializationArtefact, resourceCenter)
+				&& !resourceCenter.exists(resourceCenter.getEntry(PROJECT_DATA_FILENAME, serializationArtefact));
+	}
+
+	/** A readable directory whose name ends with {@link #PROJECT_SUFFIX} */
+	private static <I2> boolean hasArtefactForm(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
+		return resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
+				&& resourceCenter.canRead(serializationArtefact) && resourceCenter.retrieveName(serializationArtefact).endsWith(PROJECT_SUFFIX);
 	}
 
 	public FlexoProjectResource<I> makeFlexoProjectResource(String baseName, String uri,

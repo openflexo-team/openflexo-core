@@ -1211,12 +1211,18 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public <R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
+	public <R extends ResourceRepository<?, I>> R registerRepository(R repository, Class<? extends R> repositoryType,
 			TechnologyAdapter<?> technologyAdapter) {
 		if (getDelegateResourceCenter() == null) {
-			return;
+			return repository;
 		}
-		getDelegateResourceCenter().registerRepository(repository, repositoryType, technologyAdapter);
+		// A repository built for the project belongs to its delegate resource center, whichever of the two it was asked for: its
+		// resources compute their URI from the resource center of the repository, and the project loses its URI when it is closed
+		// while the delegate is kept by the reopened project (CORE-D-38)
+		if (repository.getResourceCenter() == this) {
+			repository.setResourceCenter(getDelegateResourceCenter());
+		}
+		return getDelegateResourceCenter().registerRepository(repository, repositoryType, technologyAdapter);
 	}
 
 	@Override

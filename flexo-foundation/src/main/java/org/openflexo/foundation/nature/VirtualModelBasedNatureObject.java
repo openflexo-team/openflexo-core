@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.nature;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
@@ -104,10 +106,77 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 				virtualModelResource = fmlLibrary.getCompilationUnitResource(virtualModelURI);
 				if (virtualModelResource != null) {
 					logger.info("Looked-up " + virtualModelResource);
+					listenTo(virtualModelResource);
+					// What was computed from it until now (a label, typically) may be outdated
+					fireAccessedVirtualModelChanged();
 				}
 			}
 
 			return virtualModelResource;
+		}
+
+		/**
+		 * Listens to the resource of the accessed virtual model, to notify when it gets loaded.
+		 *
+		 * <p>
+		 * A view displays what a nature object derives from its virtual model - its name, typically - and caches it: a browser cell only
+		 * computes its label again when notified. Asked while the virtual model is not available yet (still loading, or its resource not
+		 * found yet), such a value is null, and would stay so.
+		 *
+		 * <p>
+		 * A PropertyChangeListener, not a FlexoObserver: the FlexoObservable API is to be deprecated. The resource fires
+		 * <code>loadedCompilationUnit</code> once loading is complete, second analysis pass included.
+		 */
+		private final PropertyChangeListener resourceListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (LOADED_COMPILATION_UNIT.equals(evt.getPropertyName())) {
+					fireAccessedVirtualModelChanged();
+				}
+			}
+		};
+
+		/** What {@link CompilationUnitResource} notifies when it is loaded */
+		private static final String LOADED_COMPILATION_UNIT = "loadedCompilationUnit";
+
+		private CompilationUnitResource listenedResource;
+
+		private void listenTo(CompilationUnitResource resource) {
+			if (listenedResource == resource) {
+				return;
+			}
+			if (listenedResource != null) {
+				listenedResource.getPropertyChangeSupport().removePropertyChangeListener(resourceListener);
+			}
+			listenedResource = resource;
+			if (resource != null) {
+				resource.getPropertyChangeSupport().addPropertyChangeListener(resourceListener);
+			}
+		}
+
+		/**
+		 * Notify that the accessed virtual model, and what subclasses derive from it, may have changed. <code>name</code> is notified as
+		 * well: it is what the nature objects of the platform derive from their virtual model, and what a browser shows.
+		 */
+		protected void fireAccessedVirtualModelChanged() {
+			getPropertyChangeSupport().firePropertyChange("accessedVirtualModel", null, virtualModelResource);
+			getPropertyChangeSupport().firePropertyChange("name", null, getLoadedOrResourceName());
+		}
+
+		/**
+		 * A name for the accessed virtual model that never loads it: its own name when loaded, the name of its resource otherwise (they are
+		 * the same unless the virtual model was renamed since), null when its resource is not found.
+		 */
+		protected String getLoadedOrResourceName() {
+			CompilationUnitResource resource = getAccessedVirtualModelResource();
+			if (resource == null) {
+				return null;
+			}
+			if (resource.isLoaded() && resource.getLoadedCompilationUnit() != null
+					&& resource.getLoadedCompilationUnit().getVirtualModel() != null) {
+				return resource.getLoadedCompilationUnit().getVirtualModel().getName();
+			}
+			return resource.getName();
 		}
 
 		@Override
@@ -117,6 +186,7 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 			if (virtualModelResource == null) {
 				virtualModelURI = null;
 			}
+			listenTo(virtualModelResource);
 			getPropertyChangeSupport().firePropertyChange("accessedVirtualModelResource", oldValue, virtualModelResource);
 		}
 
@@ -162,6 +232,8 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 		public void setAccessedVirtualModel(VirtualModel aVirtualModel) {
 			this.virtualModelURI = aVirtualModel.getURI();
 			this.virtualModelResource = aVirtualModel.getResource();
+			listenTo(virtualModelResource);
+			fireAccessedVirtualModelChanged();
 		}
 
 		@Override

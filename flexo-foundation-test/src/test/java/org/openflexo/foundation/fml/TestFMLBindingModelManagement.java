@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -47,6 +48,8 @@ import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -58,6 +61,7 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -1505,56 +1509,56 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(17)
 	public void testFlexoConceptInstanceInspector() {
 
-		assertSame(flexoConceptA.getBindingModel(), flexoConceptA.getInspector().getBindingModel().getBaseBindingModel());
+		assertSame(flexoConceptA.getBindingModel(), flexoConceptA.getOrCreateInspector().getBindingModel().getBaseBindingModel());
 
-		assertEquals(6, flexoConceptA.getInspector().getBindingModel().getBindingVariablesCount());
+		assertEquals(6, flexoConceptA.getOrCreateInspector().getBindingModel().getBindingVariablesCount());
 
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
 		assertNotNull(
-				flexoConceptA.getInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), flexoConceptA.getInspector().getBindingModel()
+				flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), flexoConceptA.getOrCreateInspector().getBindingModel()
 				.bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptA.getInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
+				flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aStringInA"));
-		assertEquals(String.class, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aStringInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aStringInA"));
+		assertEquals(String.class, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aStringInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aBooleanInA"));
+		assertEquals(Boolean.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anIntegerInA"));
+		assertEquals(Integer.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
+		assertEquals(Boolean.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 	}
 
 	@Test
 	@TestOrder(18)
 	public void testFlexoConceptInstanceRenderer() {
 
-		flexoConceptA.getInspector().setRenderer(new DataBinding<>("\"FlexoConceptA:\"+instance.aStringInA"));
-		assertTrue(flexoConceptA.getInspector().getRenderer().isValid());
+		flexoConceptA.setRenderer(new DataBinding<>("\"FlexoConceptA:\"+instance.aStringInA"));
+		assertTrue(flexoConceptA.getRenderer().isValid());
 
-		assertEquals(7, flexoConceptA.getInspector().getFormatter().getBindingModel().getBindingVariablesCount());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel()
+		assertEquals(7, flexoConceptA.getRendererContext().getBindingModel().getBindingVariablesCount());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel()
 				.bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME).getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aStringInA"));
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aStringInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aBooleanInA"));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aStringInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aBooleanInA"));
 		assertEquals(Boolean.TYPE,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anIntegerInA"));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.TYPE,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
 		assertEquals(Boolean.TYPE,
-				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
-		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel()
-				.bindingVariableNamed(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY));
+				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertNotNull(flexoConceptA.getRendererContext().getBindingModel()
+				.bindingVariableNamed(FlexoConcept.RENDERED_INSTANCE_PROPERTY));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), flexoConceptA.getInspector().getFormatter()
-				.getBindingModel().bindingVariableNamed(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY).getType());
+				.getBindingModel().bindingVariableNamed(FlexoConcept.RENDERED_INSTANCE_PROPERTY).getType());
 
 	}
 
@@ -1848,6 +1852,172 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+
+	/**
+	 * The label of an instance (its renderer) must be refreshed once the roles it depends on are assigned: while the instance is still
+	 * being built the renderer cannot be evaluated (the fallback label is shown), and nothing was listening yet, so the label stayed at the
+	 * fallback forever (the FME browser showing "EtoileGR[ID=-1]" after a drop).
+	 */
+	@Test
+	@TestOrder(23)
+	public void testRendererIsRefreshedAfterInstanceConstruction() throws Exception {
+
+		log("testRendererIsRefreshedAfterInstanceConstruction()");
+
+		DataBinding<String> initialRenderer = flexoConceptA.getRenderer();
+		flexoConceptA.setRenderer(new DataBinding<>("instance.aStringInA.toUpperCase()"));
+		try {
+			assertTrue(flexoConceptA.getRenderer().isValid());
+
+			FlexoConceptInstance newFci = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+			assertNotNull(newFci);
+
+			final List<String> notified = new ArrayList<>();
+			newFci.getPropertyChangeSupport().addPropertyChangeListener("stringRepresentation", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					notified.add((String) evt.getNewValue());
+				}
+			});
+
+			// Role not yet assigned: the renderer cannot be evaluated, the fallback label is returned
+			assertTrue(newFci.getStringRepresentation().startsWith("FlexoConceptA[ID="));
+
+			newFci.setFlexoActor("foo", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+
+			assertFalse("stringRepresentation was not notified", notified.isEmpty());
+			assertEquals("FOO", newFci.getStringRepresentation());
+		} finally {
+			flexoConceptA.setRenderer(initialRenderer);
+		}
+	}
+
+	/**
+	 * Editing the renderer of a concept (from its inspector) must refresh, without reloading, the string representation of the instances
+	 * that already exist.
+	 */
+	@Test
+	@TestOrder(24)
+	public void testRendererEditionIsAppliedToExistingInstances() throws Exception {
+
+		log("testRendererEditionIsAppliedToExistingInstances()");
+
+		DataBinding<String> initialRenderer = flexoConceptA.getRenderer();
+		try {
+			flexoConceptA.setRenderer(new DataBinding<>("\"first:\"+instance.aStringInA"));
+			FlexoConceptInstance existing = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+			existing.setFlexoActor("foo", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+			assertEquals("first:foo", existing.getStringRepresentation());
+
+			final List<String> notified = new ArrayList<>();
+			existing.getPropertyChangeSupport().addPropertyChangeListener("stringRepresentation", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					notified.add((String) evt.getNewValue());
+				}
+			});
+
+			flexoConceptA.setRenderer(new DataBinding<>("\"second:\"+instance.aStringInA"));
+
+			assertFalse("stringRepresentation was not notified", notified.isEmpty());
+			assertEquals("second:foo", notified.get(notified.size() - 1));
+			assertEquals("second:foo", existing.getStringRepresentation());
+
+			// What reads the representation of the instance through 'render' (the renderer of another instance, the label of a connector)
+			// is notified as well: it listens to the 'render' property, not to 'stringRepresentation'
+			DataBinding<String> renderBinding = new DataBinding<>("this.render", flexoConceptA, String.class, BindingDefinitionType.GET);
+			assertTrue(renderBinding.isValid());
+			final List<String> renderChanges = new ArrayList<>();
+			new BindingPathChangeListener<String>(renderBinding, existing) {
+				@Override
+				public void bindingValueChanged(Object source, String newValue) {
+					renderChanges.add(newValue);
+				}
+			};
+			flexoConceptA.setRenderer(new DataBinding<>("\"third:\"+instance.aStringInA"));
+			assertFalse("'render' was not notified", renderChanges.isEmpty());
+			assertEquals("third:foo", renderChanges.get(renderChanges.size() - 1));
+			assertEquals("third:foo", existing.getStringRepresentation());
+			notified.clear();
+
+			// The instance keeps following its data after the edition
+			notified.clear();
+			existing.setFlexoActor("bar", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+			assertFalse(notified.isEmpty());
+			assertEquals("third:bar", existing.getStringRepresentation());
+		} finally {
+			flexoConceptA.setRenderer(initialRenderer);
+		}
+	}
+
+	/**
+	 * An instance changing of concept (a shape becoming the representation of a concept it did not stand for) follows the renderer of its
+	 * new concept: whoever displays its representation is told, and the later changes of the new renderer are followed.
+	 */
+	@Test
+	@TestOrder(25)
+	public void testRendererFollowsAConceptChange() throws Exception {
+
+		log("testRendererFollowsAConceptChange()");
+
+		DataBinding<String> initialRendererA = flexoConceptA.getRenderer();
+		DataBinding<String> initialRendererB = flexoConceptB.getRenderer();
+		try {
+			flexoConceptA.setRenderer(new DataBinding<>("\"A:\"+instance.aStringInA"));
+			flexoConceptB.setRenderer(new DataBinding<>("\"B\""));
+
+			FlexoConceptInstance instance = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+			instance.setFlexoActor("foo", (FlexoRole<String>) flexoConceptA.getAccessibleProperty("aStringInA"));
+			assertEquals("A:foo", instance.getStringRepresentation());
+
+			final List<String> notified = new ArrayList<>();
+			instance.getPropertyChangeSupport().addPropertyChangeListener("stringRepresentation", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					notified.add((String) evt.getNewValue());
+				}
+			});
+
+			instance.setFlexoConcept(flexoConceptB);
+			assertFalse("stringRepresentation was not notified", notified.isEmpty());
+			assertEquals("B", notified.get(notified.size() - 1));
+			assertEquals("B", instance.getStringRepresentation());
+
+			// It now follows the renderer of its new concept, and no longer the one of the former concept
+			notified.clear();
+			flexoConceptB.setRenderer(new DataBinding<>("\"B2\""));
+			assertFalse(notified.isEmpty());
+			assertEquals("B2", instance.getStringRepresentation());
+			notified.clear();
+			flexoConceptA.setRenderer(new DataBinding<>("\"A2:\"+instance.aStringInA"));
+			assertTrue("the former concept is still listened to", notified.isEmpty());
+		} finally {
+			flexoConceptA.setRenderer(initialRendererA);
+			flexoConceptB.setRenderer(initialRendererB);
+		}
+	}
+
+	/**
+	 * A number computed by an expression (a Long) assigned to an Integer property is stored as an Integer, so that a path resolved on the
+	 * declared type of the property (<code>anIntegerInA.toString</code>, as in a renderer) can be evaluated
+	 */
+	@Test
+	@TestOrder(26)
+	public void testNumberAssignedToIntegerPropertyIsCoerced() throws Exception {
+
+		log("testNumberAssignedToIntegerPropertyIsCoerced()");
+
+		FlexoConceptInstance instance = vmi1.makeNewFlexoConceptInstance(flexoConceptA, null, null);
+		FlexoRole<Integer> anIntegerInA = (FlexoRole<Integer>) flexoConceptA.getAccessibleProperty("anIntegerInA");
+
+		Object aLong = Long.valueOf(7);
+		instance.setFlexoPropertyValue((FlexoProperty) anIntegerInA, aLong);
+
+		Object stored = instance.getFlexoPropertyValue(anIntegerInA);
+		assertEquals(Integer.class, stored.getClass());
+		assertEquals(7, stored);
+		assertEquals("7", instance.execute("anIntegerInA.toString"));
 	}
 
 	private static void checkBinding(String binding, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {

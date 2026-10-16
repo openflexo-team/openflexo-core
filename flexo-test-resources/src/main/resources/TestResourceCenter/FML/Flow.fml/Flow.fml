@@ -1,0 +1,102 @@
+/**
+ * Control structures: local variables, conditions, loops, and how the boolean operators evaluate.
+ * See TestFlow.fmlscript.
+ */
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/Flow.fml")
+public model Flow {
+
+	int touched = 0;
+	List<String> words = new ArrayList<String>();
+
+	create() {
+	}
+
+	public int touch() {
+		touched = touched + 1;
+		return 1;
+	}
+
+	public addWord(String word) {
+		words.add(parameters.word);
+	}
+
+	public String logged(String text) {
+		log "text is " + parameters.text;
+		return parameters.text;
+	}
+
+	public int scoped() {
+		int x = 0;
+		if (true) {
+			int y = 5;
+			x = y;
+		}
+		return x;
+	}
+
+	public String grade(int score) {
+		if (parameters.score >= 90) {
+			return "A";
+		}
+		else if (parameters.score >= 50) {
+			return "B";
+		}
+		else {
+			return "C";
+		}
+	}
+
+	public int sumWhile(int n) {
+		int i = 0;
+		int total = 0;
+		while (i < parameters.n) {
+			i = i + 1;
+			total = total + i;
+		}
+		return total;
+	}
+
+	public int sumFor(int n) {
+		int total = 0;
+		for (int i = 1; i <= parameters.n; i++) {
+			total = total + i;
+		}
+		return total;
+	}
+
+	public String joinWords() {
+		String all = "";
+		for (String w : words) {
+			all = all + w + ",";
+		}
+		return all;
+	}
+
+	public String firstLong(int size) {
+		for (String w : words) {
+			if (w.length() >= parameters.size) {
+				return w;
+			}
+		}
+		return null;
+	}
+
+	public int andOperands() {
+		touched = 0;
+		if (false && this.touch() == 1) {
+			touched = touched + 100;
+		}
+		return touched;
+	}
+
+	public int orOperands() {
+		touched = 0;
+		if (true || this.touch() == 1) {
+			touched = touched + 100;
+		}
+		return touched;
+	}
+}

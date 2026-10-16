@@ -6,12 +6,14 @@
 package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -59,7 +61,7 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 
 		// A failed parse leaves an EMPTY compilation unit behind, which then validates with zero errors:
 		// assert the concepts were actually parsed before asserting anything about them.
-		assertEquals("The fixture did not parse", 11, virtualModel.getFlexoConcepts().size());
+		assertEquals("The fixture did not parse", 21, virtualModel.getFlexoConcepts().size());
 	}
 
 	/** A VirtualModel is a FlexoConcept, so the convention gives it its own view as Xxx.fml/Xxx.fib. */
@@ -204,6 +206,54 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 	}
 
 	/**
+	 * {@link FlexoConcept#freezeConventionalUIComponentNames()} - called before a rename, to preserve a component still resolved by the
+	 * naming convention alone (CORE-F-4, see the rename actions in flexo-foundation) - only ever has something to do for a concept with
+	 * no <code>@UI</code>/<code>@Inspector</code> of its own, and only for the components it resolves ON ITSELF.
+	 */
+	@Test
+	@TestOrder(11)
+	public void test10FreezeWritesAnAnnotationOnlyWhereTheConventionResolves() {
+
+		FlexoConcept simple = concept("Simple");
+		assertFalse(simple.hasMetaData(FlexoConcept.UI_METADATA));
+		assertFalse(simple.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+
+		simple.freezeConventionalUIComponentNames();
+
+		assertEquals("Simple.fib", simple.getSingleMetaData(FlexoConcept.UI_METADATA, String.class));
+		assertEquals("Simple.inspector", simple.getSingleMetaData(FlexoConcept.INSPECTOR_METADATA, String.class));
+		// Resolution is unchanged: the new annotation names exactly what the convention already resolved
+		assertResolvesTo("Simple.fib", simple.getUIComponentResource());
+		assertResolvesTo("Simple.inspector", simple.getInspectorComponentResource());
+
+		// A concept that already declares an annotation of its own is left untouched
+		FlexoConcept annotated = concept("Annotated");
+		annotated.freezeConventionalUIComponentNames();
+		assertEquals("CustomScreen.fib", annotated.getSingleMetaData(FlexoConcept.UI_METADATA, String.class));
+
+		// Nothing to freeze: no component resolves on this concept at all
+		FlexoConcept without = concept("WithoutAnyComponent");
+		without.freezeConventionalUIComponentNames();
+		assertFalse(without.hasMetaData(FlexoConcept.UI_METADATA));
+		assertFalse(without.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+
+		// A component resolved only by INHERITANCE must not be frozen onto the child: InheritingFromSimple has no
+		// Xxx.fib/.inspector of its OWN in the container
+		FlexoConcept inheriting = concept("InheritingFromSimple");
+		inheriting.freezeConventionalUIComponentNames();
+		assertFalse(inheriting.hasMetaData(FlexoConcept.UI_METADATA));
+		assertFalse(inheriting.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+		assertResolvesTo("Simple.fib", inheriting.getUIComponentResource());
+
+		// A concept resolving only ONE of the two (an inspector but no .fib) freezes only that one
+		FlexoConcept plain = concept("Plain");
+		assertFalse(plain.hasMetaData(FlexoConcept.INSPECTOR_METADATA));
+		plain.freezeConventionalUIComponentNames();
+		assertEquals("Plain.inspector", plain.getSingleMetaData(FlexoConcept.INSPECTOR_METADATA, String.class));
+		assertFalse("No Plain.fib in the container: nothing to freeze", plain.hasMetaData(FlexoConcept.UI_METADATA));
+	}
+
+	/**
 	 * A multi-valued <code>@UI</code> declares named variants; its <code>default</code> key is what an unqualified lookup returns.
 	 */
 	@Test
@@ -266,6 +316,71 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 		FlexoConcept withVariants = concept("WithVariants");
 
 		assertEquals(withVariants, withVariants.getUIComponentFlexoResource("compact").getDrivingConcept());
+	}
+
+	/** The inspector of an instance is ADDITIVE: the components of the whole hierarchy, the most general first. */
+	@Test
+	@TestOrder(18)
+	public void test17InspectorComponentsOfTheHierarchyAncestorsFirst() {
+
+		assertEquals(Arrays.asList("InspParent.inspector"), inspectorNames(concept("InspParent")));
+		assertEquals(Arrays.asList("InspParent.inspector", "InspChild.inspector"), inspectorNames(concept("InspChild")));
+		assertEquals(Arrays.asList("InspParent.inspector", "InspChild.inspector", "InspGrandChild.inspector"),
+				inspectorNames(concept("InspGrandChild")));
+
+		// getInspectorComponentResource() is still "the" component of the concept: the grand child's own, hiding the others
+		assertResolvesTo("InspGrandChild.inspector", concept("InspGrandChild").getInspectorComponentResource());
+		assertResolvesTo("InspGrandChild.inspector", concept("InspGrandChild").getOwnInspectorComponentResource());
+	}
+
+	/** A concept contributing nothing is skipped, but its ancestors' contributions remain. */
+	@Test
+	@TestOrder(19)
+	public void test18ConceptWithoutInspectorContributesNothingButKeepsAncestors() {
+
+		FlexoConcept noInspector = concept("InspNoInspector");
+
+		assertNull(noInspector.getOwnInspectorComponentResource());
+		assertEquals(Arrays.asList("InspParent.inspector", "InspChild.inspector"), inspectorNames(noInspector));
+		// The single-component accessor takes the most specialized parent's
+		assertResolvesTo("InspChild.inspector", noInspector.getInspectorComponentResource());
+		assertEquals(Arrays.asList(concept("InspParent"), concept("InspChild")), noInspector.getInspectorContributingConcepts());
+	}
+
+	/** Several parents are all considered, and a common ancestor is contributed once, before the concepts specializing it. */
+	@Test
+	@TestOrder(20)
+	public void test19DiamondContributesTheCommonAncestorOnce() {
+
+		assertEquals(Arrays.asList("InspParent.inspector", "InspLeft.inspector", "InspRight.inspector", "InspDiamond.inspector"),
+				inspectorNames(concept("InspDiamond")));
+	}
+
+	/** One FIBComponentResource per resource, resolved through the concept declaring it. */
+	@Test
+	@TestOrder(21)
+	public void test20FlexoResourcesFollowTheResources() {
+
+		FlexoConcept grandChild = concept("InspGrandChild");
+		List<FIBComponentResource> resources = grandChild.getInspectorComponentFlexoResources();
+		assertEquals(grandChild.getInspectorComponentResources().size(), resources.size());
+		assertEquals(grandChild.getInspectorComponentResource(), resources.get(2).getIODelegate().getSerializationArtefactAsResource());
+	}
+
+	/** Nothing in the hierarchy: nothing to compose. */
+	@Test
+	@TestOrder(22)
+	public void test21NoInspectorAnywhere() {
+		assertTrue(concept("WithoutAnyComponent").getInspectorComponentResources().isEmpty());
+	}
+
+	private static List<String> inspectorNames(FlexoConcept concept) {
+		List<String> returned = new ArrayList<>();
+		for (Resource resource : concept.getInspectorComponentResources()) {
+			String path = resource.getRelativePath();
+			returned.add(path.substring(path.lastIndexOf('/') + 1));
+		}
+		return returned;
 	}
 
 	private static FlexoConcept concept(String name) {

@@ -284,8 +284,10 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 					FlexoResource resource = analyzer.getServiceManager().getResourceManager().getResource(resourceURI);
 					if (resource instanceof CompilationUnitResource) {
 						CompilationUnitResource cuResource = (CompilationUnitResource) resource;
-						if (cuResource.isLoaded()) {
-							// If the resource is loaded, it's safer to look inside
+						if (cuResource.isLoaded() && !cuResource.isLoading()) {
+							// If the resource is loaded, it's safer to look inside. Not while it is being loaded higher in the stack (units
+							// importing each other): its content is partial, the type is then resolved from the VirtualModelInfo below and
+							// again once the load is complete (second pass)
 							FlexoConcept concept = cuResource.getCompilationUnit().getVirtualModel().getFlexoConcept(typeAsString);
 							if (concept != null) {
 								return concept.getInstanceType();

@@ -1,0 +1,44 @@
+// Expressions, as stated by the "Expressions" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Calc.fml"];
+service ResourceCenterService add_temp_rc;
+calc = new Calc() with (name="calc");
+
+// Arithmetic: / and % give decimal numbers, even between integers
+assert calc.intDiv() == 3.5;
+assert calc.evenDiv() == 2.0;
+assert calc.intMod() == 1.0;
+assert calc.precedence() == 14;
+assert calc.parens() == 20;
+assert calc.mixed() == 4.5;
+assert calc.negate() == -4;
+
+// Booleans and comparisons
+assert calc.notTrue() == false;
+assert calc.diff();
+
+// Strings: + concatenates, a null is written "null", == compares the contents
+assert calc.concatNumber() == "a1";
+assert calc.nullConcat() == "xnull";
+assert calc.isNull();
+assert calc.stringEq();
+
+// Java methods of a string, called on a variable or a parameter
+assert calc.upperLocal() == "ABC";
+assert calc.replaceLocal() == "123";
+assert calc.equalsLocal();
+assert calc.lengthOf("hello") == 5;
+
+// A static Java method, once its class is imported
+assert calc.parsed() == 9.0;
+
+// A cast, a conditional expression, a Java list
+assert calc.castInt() == 3;
+assert calc.ternary(5) == "pos";
+assert calc.ternary(-1) == "neg";
+assert calc.ternary(0) == "zero";
+assert calc.listSize() == 2;
+assert calc.listGet() == "b";
+assert calc.listContains();
+
+log "Test PASSED: the expressions of Calc behave as the guide states";

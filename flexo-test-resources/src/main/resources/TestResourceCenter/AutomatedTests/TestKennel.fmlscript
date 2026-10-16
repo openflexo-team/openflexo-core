@@ -1,0 +1,37 @@
+// Declaring a model and its concepts, as stated by the "Declaring models and concepts" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Kennel.fml"];
+assert virtualModel.version.toString() == "1.0";
+assert virtualModel.description == "A kennel";
+creature = virtualModel.getFlexoConcept("Creature");
+dog = virtualModel.getFlexoConcept("Dog");
+assert creature.isAbstract();
+assert dog.isAbstract() == false;
+assert creature.isSuperConceptOf(dog);
+
+service ResourceCenterService add_temp_rc;
+kennel = new Kennel() with (name="kennel");
+rex = kennel.newDog("Rex");
+tom = kennel.newCat("Tom");
+max = kennel.newServiceDog("Max", "sit");
+rin = kennel.newGuard("Rin");
+
+// An abstract behaviour is given a body by each concept; the call is bound to the concept of the instance
+assert rex.sound() == "Woof";
+assert tom.sound() == "Meow";
+assert rex.describe() == "Rex says Woof";
+assert tom.describe() == "Tom says Meow";
+
+// A query on the concept Creature returns the instances of all its sub-concepts, and each answers with its own behaviour
+assert kennel.chorus() == "Woof;Meow;Woof;Alert Woof;";
+
+// Multiple inheritance: a service dog is a Dog and a Trained
+assert max.name == "Max";
+assert max.trick == "sit";
+assert max.describe() == "Max says Woof";
+
+// Calling the behaviour of the parent from an override, with super
+assert rin.sound() == "Alert Woof";
+assert rin.describe() == "Rin says Alert Woof";
+
+log "Test PASSED: the kennel model behaves as the guide states";

@@ -40,6 +40,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import javax.swing.undo.UndoableEdit;
 
 import org.jdom2.JDOMException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InnerResourceData;
@@ -226,14 +228,23 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	protected abstract RD performLoad() throws IOException, Exception;
 
 	/**
-	 * Delete (dereference) resource data if resource data is loaded<br>
-	 * Also delete the resource data
+	 * Dereference resource data if resource data is loaded<br>
+	 * 
+	 * When deleteResourceData is set, the resource data is deleted: this runs the deletion schemes of the instances it contains, which
+	 * may change other models. Do this only when the resource itself is deleted.<br>
+	 * Otherwise the resource data is only released (see {@link ReleasableObject}): no behaviour runs and no other model changes, but
+	 * its objects no longer listen to anything outside of this resource.<br>
+	 * In both cases the index of the objects of this resource is emptied: it would keep the whole unloaded graph alive.
 	 */
 	@Override
 	public void unloadResourceData(boolean deleteResourceData) {
 		if (isLoaded()) {
 
 			isUnloading = true;
+
+			if (!deleteResourceData) {
+				releaseResourceData();
+			}
 
 			if (deleteResourceData) {
 
@@ -250,10 +261,44 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 					undoManager.removeFromIgnoreHandlers(ignoreHandler);
 				}
 			}
+			releaseReferences();
 			resourceData = null;
+			objects.clear();
+			indexed = false;
 			notifyResourceUnloaded();
 
 			isUnloading = false;
+		}
+	}
+
+	/**
+	 * Reset the references that cached an object of the data being dropped, so that they resolve against the current data (CORE-D-28).<br>
+	 * An object knows the references pointing at it; the index holds the objects a reference may have resolved or been built on (see
+	 * {@link FlexoObjectReference#setObject(FlexoObject)}). Building the index here is not an option, as for the embedding closure above.
+	 */
+	protected void releaseReferences() {
+		for (Map<Long, FlexoObject> objectsForUserIdentifier : objects.values()) {
+			for (FlexoObject object : objectsForUserIdentifier.values()) {
+				List<FlexoObjectReference<?>> referencers = object.getReferencers();
+				if (referencers != null && !referencers.isEmpty()) {
+					// releasing a reference removes it from the list
+					for (FlexoObjectReference<?> reference : new ArrayList<>(referencers)) {
+						reference.releaseObject();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Release the loaded resource data when it is a {@link ReleasableObject}, without deleting anything. The resource data releases the
+	 * objects it contains.<br>
+	 * Walking the embedding closure instead is not an option: computing it calls getters that load other resources (the contained
+	 * virtual model instances of a virtual model instance), so unloading a resource would load others.
+	 */
+	protected void releaseResourceData() {
+		if (getLoadedResourceData() instanceof ReleasableObject) {
+			((ReleasableObject) getLoadedResourceData()).release();
 		}
 	}
 

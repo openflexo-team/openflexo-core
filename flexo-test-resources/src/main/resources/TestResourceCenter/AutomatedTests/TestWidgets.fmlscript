@@ -1,0 +1,46 @@
+// The kinds of properties of a concept, as stated by the "Properties" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Widgets.fml"];
+service ResourceCenterService add_temp_rc;
+widgets = new Widgets() with (name="widgets");
+g = widgets.newGadget();
+
+// Without an initial value, a property of a primitive type has no value: null, not 0 or false
+assert g.count == null;
+assert g.flag == null;
+assert g.text == null;
+g.count = 5;
+assert g.count == 5;
+
+// An initial value is what an instance starts with
+assert g.preset == 7;
+assert g.greeting == "hi";
+assert g.tags.size == 0;
+g.addTag("a");
+assert g.tags.size == 1;
+g.preset = 8;
+assert g.preset == 8;
+
+// A property with a cardinality holds a list, empty at the start
+assert g.many.size == 0;
+assert g.labels.size == 0;
+g.labels.add("x");
+assert g.labels.size == 1;
+
+// A property typed with a concept holds an instance, or nothing
+assert g.other == null;
+other = widgets.newGadget();
+g.other = other;
+assert g.other == other;
+
+// A property with a getter and no setter cannot be changed: the assignment is ignored, without error
+assert g.fixed == "constant";
+g.fixed = "changed";
+assert g.fixed == "constant";
+
+// A script can read and write a private property
+g.secret = "s";
+assert g.secret == "s";
+assert g.secretValue() == "s";
+
+log "Test PASSED: the properties of Widgets behave as the guide states";

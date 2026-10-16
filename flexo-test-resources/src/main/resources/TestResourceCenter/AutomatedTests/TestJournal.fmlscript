@@ -1,0 +1,6 @@
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Journal.fml"];
+service ResourceCenterService add_temp_rc;
+diary = new Journal::start("Diary") with (name="diary");
+assert diary != null;
+assert diary.label() == "Diary";
+log "Test PASSED: a model with only a named creation scheme is instantiated with new X::name(…)";

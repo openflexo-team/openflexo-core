@@ -1,0 +1,45 @@
+// Queries with select, as stated by the "Queries with select" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Stock.fml"];
+service ResourceCenterService add_temp_rc;
+stock = new Stock() with (name="stock");
+apple = stock.newArticle("apple", "fruit", 5);
+pear = stock.newArticle("pear", "fruit", 1);
+leek = stock.newArticle("leek", "vegetable", 3);
+salt = stock.newArticle("salt", "mineral", 9);
+
+// select without condition: every instance, in the order of creation
+assert stock.allArticles().size == 4;
+assert stock.allArticles().get(0) == apple;
+assert stock.allArticles().get(3) == salt;
+
+// where: one condition, two conditions separated by a comma or joined by &&, and ||
+assert stock.ofKind("fruit").size == 2;
+assert stock.ofKind("zzz").size == 0;
+assert stock.ofKindAndAtLeast("fruit", 3).size == 1;
+assert stock.ofKindAndAtLeast("fruit", 3).get(0) == apple;
+assert stock.ofKindAndAtLeastOperator("fruit", 3).size == 1;
+assert stock.fruitOrVegetable().size == 3;
+
+// select unique: the instance, or null when nothing matches
+assert stock.named("leek") == leek;
+assert stock.named("zzz") == null;
+// several matches: one of them is returned, the first created here
+assert stock.firstOfKind("fruit") == apple;
+
+// The from clause: the model finds the parts of every crate, a crate only its own
+crate1 = stock.newCrate("c1");
+crate2 = stock.newCrate("c2");
+crate1.newPart("p1");
+crate1.newPart("p2");
+crate2.newPart("p3");
+assert stock.allParts().size == 3;
+assert crate1.parts().size == 2;
+assert crate2.parts().size == 1;
+
+// A deleted instance is not found any more
+stock.removeArticle(pear);
+assert stock.allArticles().size == 3;
+assert stock.ofKind("fruit").size == 1;
+
+log "Test PASSED: the queries of Stock behave as the guide states";

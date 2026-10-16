@@ -47,14 +47,12 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.DefaultBindable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FlexoConceptFormatterBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptInspectorBindingModel;
 import org.openflexo.foundation.fml.md.SingleMetaData;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -103,8 +101,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 	public static final String INSPECTOR_TITLE_KEY = "inspectorTitle";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String RENDERER_KEY = "renderer";
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String DELEGATE_CONCEPT_INSTANCE_KEY = "delegateConceptInstance";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String ENTRIES_KEY = "entries";
 
@@ -128,13 +124,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 
 	@Setter(RENDERER_KEY)
 	public void setRenderer(DataBinding<String> renderer);
-
-	@Getter(value = DELEGATE_CONCEPT_INSTANCE_KEY)
-	@XMLAttribute
-	public DataBinding<FlexoConceptInstance> getDelegateConceptInstance();
-
-	@Setter(DELEGATE_CONCEPT_INSTANCE_KEY)
-	public void setDelegateConceptInstance(DataBinding<FlexoConceptInstance> delegateConceptInstance);
 
 	@Getter(value = ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = InspectorEntry.INSPECTOR_KEY)
 	@XMLElement
@@ -182,7 +171,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 		private FlexoConcept _flexoConcept;
 		// private Vector<InspectorEntry> entries;
 		private DataBinding<String> renderer;
-		private DataBinding<FlexoConceptInstance> delegateConceptInstance;
 
 		private final FlexoConceptFormatter formatter;
 
@@ -297,52 +285,23 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 
 		protected static final String RENDERER = FlexoConcept.RENDERER_METADATA;
 
-		private DataBinding<String> retrieveRendererFromMetadata() {
-			DataBinding<String> returned = getFlexoConcept().getSingleMetaData(RENDERER, DataBinding.class);
-			returned.setOwner(formatter);
-			returned.setDeclaredType(String.class);
-			returned.setBindingDefinitionType(BindingDefinitionType.GET);
-			returned.setBindingName("renderer");
-			return returned;
-		}
-
+		/**
+		 * The renderer is stored as the {@link FlexoConcept#RENDERER_METADATA} metadata of the concept, which owns it: this only
+		 * delegates, so that the deprecated inspector and the concept never disagree
+		 */
 		@Override
 		public DataBinding<String> getRenderer() {
-			if (renderer == null) {
-				if (getFlexoConcept() != null && getFlexoConcept().hasMetaData(RENDERER)) {
-
-					getFlexoConcept().getMetaData(RENDERER).getPropertyChangeSupport()
-							.addPropertyChangeListener(new PropertyChangeListener() {
-								@Override
-								public void propertyChange(PropertyChangeEvent evt) {
-									if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
-										renderer = retrieveRendererFromMetadata();
-										// System.err.println("New renderer: " + renderer + " valid: " + renderer.isValid()
-										// + " reason: " + renderer.invalidBindingReason());
-									}
-								}
-							});
-
-					renderer = retrieveRendererFromMetadata();
-				}
-				else {
-					renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
-					renderer.setBindingName("renderer");
-				}
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getRenderer();
 			}
-			return renderer;
+			return null;
 		}
 
 		@Override
 		public void setRenderer(DataBinding<String> renderer) {
-			if (renderer != null) {
-				renderer.setOwner(formatter);
-				renderer.setDeclaredType(String.class);
-				renderer.setBindingDefinitionType(BindingDefinitionType.GET);
-				renderer.setBindingName("renderer");
+			if (getFlexoConcept() != null) {
+				getFlexoConcept().setRenderer(renderer);
 			}
-			this.renderer = renderer;
-			notifiedBindingChanged(this.renderer);
 		}
 
 		@Override
@@ -353,27 +312,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 					getFlexoConcept().setSingleMetaData(RENDERER, renderer, DataBinding.class);
 				}
 			}
-		}
-
-		@Override
-		public DataBinding<FlexoConceptInstance> getDelegateConceptInstance() {
-			if (delegateConceptInstance == null) {
-				delegateConceptInstance = new DataBinding<>(this, FlexoConceptInstance.class, BindingDefinitionType.GET);
-				delegateConceptInstance.setBindingName("delegateConceptInstance");
-			}
-			return delegateConceptInstance;
-		}
-
-		@Override
-		public void setDelegateConceptInstance(DataBinding<FlexoConceptInstance> aDelegateConceptInstance) {
-			if (aDelegateConceptInstance != null) {
-				aDelegateConceptInstance.setOwner(this);
-				aDelegateConceptInstance.setDeclaredType(FlexoConceptInstance.class);
-				aDelegateConceptInstance.setBindingDefinitionType(BindingDefinitionType.GET);
-				aDelegateConceptInstance.setBindingName("delegateConceptInstance");
-			}
-			this.delegateConceptInstance = aDelegateConceptInstance;
-			notifiedBindingChanged(this.delegateConceptInstance);
 		}
 
 		public class FlexoConceptFormatterImpl extends DefaultBindable implements FlexoConceptFormatter {
@@ -412,7 +350,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 		public void revalidateBindings() {
 			super.revalidateBindings();
 			getRenderer().rebuild();
-			getDelegateConceptInstance().rebuild();
 		}
 
 	}

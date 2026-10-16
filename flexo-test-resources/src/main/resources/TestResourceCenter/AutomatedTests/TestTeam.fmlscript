@@ -1,0 +1,38 @@
+// Matching, as stated by the "Matching and synchronisation" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Team.fml"];
+service ResourceCenterService add_temp_rc;
+team = new Team() with (name="team");
+ann = team.newMember("Ann");
+bob = team.newMember("Bob");
+
+// The first synchronisation creates a badge for each member
+assert team.syncBadges() == 2;
+badgeAnn = team.badgeOf(ann);
+assert badgeAnn != null;
+assert badgeAnn.text == "Ann";
+
+// Synchronising again creates nothing, and the badge found is the same instance
+assert team.syncBadges() == 2;
+assert team.badgeOf(ann) == badgeAnn;
+
+// A change in the source reaches the matched instance, which is not replaced
+ann.name = "Anna";
+assert team.syncBadges() == 2;
+assert team.badgeOf(ann) == badgeAnn;
+assert badgeAnn.text == "Anna";
+
+// A source that disappears takes its badge with it: the unmatched badge is deleted
+team.removeMember(bob);
+assert team.syncBadges() == 1;
+
+// A new source gets a new badge
+carl = team.newMember("Carl");
+assert team.syncBadges() == 2;
+
+// Two concepts, one explicit matching set for each: stable from one run to the next
+squad = team.newSquad("red");
+assert team.syncBoth() == 21;
+assert team.syncBoth() == 21;
+
+log "Test PASSED: the matching of Team behaves as the guide states";

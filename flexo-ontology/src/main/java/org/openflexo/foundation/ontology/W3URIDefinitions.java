@@ -66,4 +66,14 @@ public interface W3URIDefinitions {
 
 	public static final String W3_BOOLEAN_DATATYPE_URI = W3_URI + "#boolean";
 
+	public static final String W3_NON_NEGATIVE_INTEGER_DATATYPE_URI = W3_URI + "#nonNegativeInteger";
+
+	public static final String W3_POSITIVE_INTEGER_DATATYPE_URI = W3_URI + "#positiveInteger";
+
+	public static final String W3_ANY_URI_DATATYPE_URI = W3_URI + "#anyURI";
+
+	public static final String W3_DATE_DATATYPE_URI = W3_URI + "#date";
+
+	public static final String W3_DATE_TIME_DATATYPE_URI = W3_URI + "#dateTime";
+
 }

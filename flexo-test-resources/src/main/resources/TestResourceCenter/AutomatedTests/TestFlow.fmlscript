@@ -1,0 +1,33 @@
+// Control structures, as stated by the "Control flow" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Flow.fml"];
+service ResourceCenterService add_temp_rc;
+flow = new Flow() with (name="flow");
+
+// A variable declared in a block is used in that block
+assert flow.scoped() == 5;
+
+// Conditions
+assert flow.grade(95) == "A";
+assert flow.grade(60) == "B";
+assert flow.grade(10) == "C";
+
+// Loops
+assert flow.sumWhile(4) == 10;
+assert flow.sumFor(4) == 10;
+flow.addWord("kiwi");
+flow.addWord("banana");
+assert flow.joinWords() == "kiwi,banana,";
+
+// A return inside a loop ends the behaviour
+assert flow.firstLong(5) == "banana";
+assert flow.firstLong(10) == null;
+
+// An instruction that writes to the log, then the behaviour goes on
+assert flow.logged("hello") == "hello";
+
+// && and || evaluate both operands: touch() is called although the result is known
+assert flow.andOperands() == 1;
+assert flow.orOperands() == 101;
+
+log "Test PASSED: the control structures of Flow behave as the guide states";

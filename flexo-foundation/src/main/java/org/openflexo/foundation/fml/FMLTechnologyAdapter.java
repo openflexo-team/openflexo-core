@@ -173,7 +173,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		CompilationUnitRepository<I> returned = resourceCenter.retrieveRepository(CompilationUnitRepository.class, this);
 		if (returned == null) {
 			returned = CompilationUnitRepository.instanciateNewRepository(this, resourceCenter);
-			resourceCenter.registerRepository(returned, CompilationUnitRepository.class, this);
+			// Another thread may have registered one meanwhile: use the registered one (CORE-D-25)
+			returned = resourceCenter.registerRepository(returned, CompilationUnitRepository.class, this);
 		}
 		return returned;
 	}
@@ -222,6 +223,34 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * A compilation unit explores its directory - contained units, localized dictionary - only when it is registered: what is copied or
+	 * written in it afterwards is ignored by the exploration of the resource center ({@link #isIgnorable}). The nearest registered unit
+	 * enclosing the change explores its directory again (CORE-D-39).
+	 */
+	@Override
+	public <I> void contentsChangedInResourceCenter(FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
+		CompilationUnitResourceFactory factory = getCompilationUnitResourceFactory();
+		if (factory == null) {
+			return;
+		}
+		// Serialized with the other explorations of the resource center (see TechnologyAdapter.initializeResourceCenter()): exploring
+		// while the units are being registered by another thread registers them twice
+		synchronized (resourceCenter) {
+			I current = resourceCenter.getContainer(serializationArtefact);
+			while (current != null && !current.equals(resourceCenter.getBaseArtefact()) && resourceCenter.isDirectory(current)
+					&& resourceCenter.retrieveName(current).endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+				CompilationUnitResource container = factory
+						.getRegisteredResource(resourceCenter.getEntry(resourceCenter.retrieveName(current), current));
+				if (container != null) {
+					factory.exploreContainedResources(container);
+					return;
+				}
+				current = resourceCenter.getContainer(current);
+			}
+		}
 	}
 
 	@Override

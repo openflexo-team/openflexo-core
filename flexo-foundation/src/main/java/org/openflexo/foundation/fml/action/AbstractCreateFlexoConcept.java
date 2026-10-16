@@ -287,7 +287,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 		if (getDefineInspector()) {
 
-			FlexoConceptInspector inspector = getNewFlexoConcept().getInspector();
+			FlexoConceptInspector inspector = getNewFlexoConcept().getOrCreateInspector();
 			System.out.println("Creating inspector " + inspector);
 
 			System.out.println("getPropertiesUsedForInspector()=" + getPropertiesUsedForInspector());

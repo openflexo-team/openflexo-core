@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
@@ -109,11 +110,21 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 		// DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
 
-		DataBinding<Object> value = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), modelObject, BindingDefinitionType.GET,
+		boolean isBindingProperty = DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()));
+
+		// A value which is not a binding is a constant, or the name of an import of the compilation unit, resolved below: the binding built
+		// here only carries the expression. Its owner is then the compilation unit, whose binding model knows the named imports (the one of
+		// the property value is the one of the object it decorates, which does not): it would never be valid, and be reported as such.
+		Bindable bindable = modelObject;
+		if (!isBindingProperty && getCompilationUnit() != null) {
+			bindable = getCompilationUnit();
+		}
+
+		DataBinding<Object> value = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), bindable, BindingDefinitionType.GET,
 				Object.class, getSemanticsAnalyzer(), this);
 		// System.out.println("value=" + value);
 
-		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
+		if (isBindingProperty) {
 			// logger.info("Set " + fmlProperty.getName() + " = " + value);
 			// fmlProperty.set(value, modelObject);
 			getModelObject().setValue((T) value);

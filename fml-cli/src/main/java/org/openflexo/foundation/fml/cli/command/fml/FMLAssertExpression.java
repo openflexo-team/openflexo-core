@@ -135,7 +135,8 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 
 					output.add(cmdOutput);
 					getOutStream().println(cmdOutput);
-					if (value) {
+					// An expression evaluating to null is a failed assertion, not an internal error
+					if (Boolean.TRUE.equals(value)) {
 						return true;
 					}
 					throw new FMLAssertException(getLine(), expression, getCommandInterpreter());

@@ -106,6 +106,11 @@ public interface SingleMetaData<T> extends FMLMetaData {
 						DataBinding.BindingDefinitionType.GET);
 				this.valueExpression.setBindingName(VALUE_EXPRESSION_KEY);
 				this.valueExpression.setMandatory(true);
+				// A new expression supersedes whatever value was decoded (or stored) before: otherwise getValue() and
+				// getSerializationRepresentation() keep answering the former one (an FML text edited then merged with updateWith)
+				value = null;
+				serializationRepresentation = null;
+				getPropertyChangeSupport().firePropertyChange(SERIALIZATION_REPRESENTATION_KEY, null, valueExpression.toString());
 			}
 			notifiedBindingChanged(valueExpression);
 		}
@@ -181,6 +186,10 @@ public interface SingleMetaData<T> extends FMLMetaData {
 			}
 			if (serializationRepresentation != null) {
 				return serializationRepresentation;
+			}
+			if (getValueExpression() != null && getValueExpression().isSet()) {
+				// Not (yet) valid in the absence of a binding model, but this is still what was declared
+				return getValueExpression().toString();
 			}
 			return "null";
 		}

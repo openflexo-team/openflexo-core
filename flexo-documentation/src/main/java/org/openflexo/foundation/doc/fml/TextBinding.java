@@ -236,17 +236,12 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null)
-				return getFlexoConcept().getInspector().getBindingFactory();
-			return null;
+			return getFlexoConcept() != null ? getFlexoConcept().getBindingFactory() : null;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null) {
-				return getFlexoConcept().getInspector().getBindingModel();
-			}
-			return null;
+			return getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
 		}
 
 		/**

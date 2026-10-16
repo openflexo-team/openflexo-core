@@ -1,0 +1,1206 @@
+/*
+ * EXPERIMENT — NOT the FML grammar. Prototype of fml.sablecc with a single `ident` token (CORE-F-5).
+ * Derived from the 2.99 grammar; to be re-based on the 3.0 grammar. Lives outside src/main/sablecc on
+ * purpose, so it is never generated nor compiled. See README.md in this directory.
+ */
+
+/*
+ * (c) Copyright 2014-2019 Openflexo
+ *
+ * This file is part of OpenFlexo.
+ *
+ * OpenFlexo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenFlexo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+Package org.openflexo.foundation.fml.parser;
+
+// *****************************************************************************************
+Helpers
+
+   unicode_input_character = [0..0xffff];
+   ht  = 0x0009;
+   lf  = 0x000a;
+   ff  = 0x000c;
+   cr  = 0x000d;
+   sp  = ' ';
+
+   line_terminator = lf | cr | cr lf;
+   input_character = [unicode_input_character - [cr + lf]];
+
+   not_star =    [input_character - '*'] | line_terminator;
+   not_star_not_slash = [input_character - ['*' + '/']] | line_terminator;
+
+   unicode_letter =
+        [0x0041..0x005a] | [0x0061..0x007a] | [0x00aa..0x00aa] | [0x00b5..0x00b5] |
+        [0x00ba..0x00ba] | [0x00c0..0x00d6] | [0x00d8..0x00f6] | [0x00f8..0x01f5] |
+        [0x01fa..0x0217] | [0x0250..0x02a8] | [0x02b0..0x02b8] | [0x02bb..0x02c1] |
+        [0x02d0..0x02d1] | [0x02e0..0x02e4] | [0x037a..0x037a] | [0x0386..0x0386] |
+        [0x0388..0x038a] | [0x038c..0x038c] | [0x038e..0x03a1] | [0x03a3..0x03ce] |
+        [0x03d0..0x03d6] | [0x03da..0x03da] | [0x03dc..0x03dc] | [0x03de..0x03de] |
+        [0x03e0..0x03e0] | [0x03e2..0x03f3] | [0x0401..0x040c] | [0x040e..0x044f] |
+        [0x0451..0x045c] | [0x045e..0x0481] | [0x0490..0x04c4] | [0x04c7..0x04c8] |
+        [0x04cb..0x04cc] | [0x04d0..0x04eb] | [0x04ee..0x04f5] | [0x04f8..0x04f9] |
+        [0x0531..0x0556] | [0x0559..0x0559] | [0x0561..0x0587] | [0x05d0..0x05ea] |
+        [0x05f0..0x05f2] | [0x0621..0x063a] | [0x0640..0x064a] | [0x0671..0x06b7] |
+        [0x06ba..0x06be] | [0x06c0..0x06ce] | [0x06d0..0x06d3] | [0x06d5..0x06d5] |
+        [0x06e5..0x06e6] | [0x0905..0x0939] | [0x093d..0x093d] | [0x0958..0x0961] |
+        [0x0985..0x098c] | [0x098f..0x0990] | [0x0993..0x09a8] | [0x09aa..0x09b0] |
+        [0x09b2..0x09b2] | [0x09b6..0x09b9] | [0x09dc..0x09dd] | [0x09df..0x09e1] |
+        [0x09f0..0x09f1] | [0x0a05..0x0a0a] | [0x0a0f..0x0a10] | [0x0a13..0x0a28] |
+        [0x0a2a..0x0a30] | [0x0a32..0x0a33] | [0x0a35..0x0a36] | [0x0a38..0x0a39] |
+        [0x0a59..0x0a5c] | [0x0a5e..0x0a5e] | [0x0a72..0x0a74] | [0x0a85..0x0a8b] |
+        [0x0a8d..0x0a8d] | [0x0a8f..0x0a91] | [0x0a93..0x0aa8] | [0x0aaa..0x0ab0] |
+        [0x0ab2..0x0ab3] | [0x0ab5..0x0ab9] | [0x0abd..0x0abd] | [0x0ae0..0x0ae0] |
+        [0x0b05..0x0b0c] | [0x0b0f..0x0b10] | [0x0b13..0x0b28] | [0x0b2a..0x0b30] |
+        [0x0b32..0x0b33] | [0x0b36..0x0b39] | [0x0b3d..0x0b3d] | [0x0b5c..0x0b5d] |
+        [0x0b5f..0x0b61] | [0x0b85..0x0b8a] | [0x0b8e..0x0b90] | [0x0b92..0x0b95] |
+        [0x0b99..0x0b9a] | [0x0b9c..0x0b9c] | [0x0b9e..0x0b9f] | [0x0ba3..0x0ba4] |
+        [0x0ba8..0x0baa] | [0x0bae..0x0bb5] | [0x0bb7..0x0bb9] | [0x0c05..0x0c0c] |
+        [0x0c0e..0x0c10] | [0x0c12..0x0c28] | [0x0c2a..0x0c33] | [0x0c35..0x0c39] |
+        [0x0c60..0x0c61] | [0x0c85..0x0c8c] | [0x0c8e..0x0c90] | [0x0c92..0x0ca8] |
+        [0x0caa..0x0cb3] | [0x0cb5..0x0cb9] | [0x0cde..0x0cde] | [0x0ce0..0x0ce1] |
+        [0x0d05..0x0d0c] | [0x0d0e..0x0d10] | [0x0d12..0x0d28] | [0x0d2a..0x0d39] |
+        [0x0d60..0x0d61] | [0x0e01..0x0e2e] | [0x0e30..0x0e30] | [0x0e32..0x0e33] |
+        [0x0e40..0x0e46] | [0x0e81..0x0e82] | [0x0e84..0x0e84] | [0x0e87..0x0e88] |
+        [0x0e8a..0x0e8a] | [0x0e8d..0x0e8d] | [0x0e94..0x0e97] | [0x0e99..0x0e9f] |
+        [0x0ea1..0x0ea3] | [0x0ea5..0x0ea5] | [0x0ea7..0x0ea7] | [0x0eaa..0x0eab] |
+        [0x0ead..0x0eae] | [0x0eb0..0x0eb0] | [0x0eb2..0x0eb3] | [0x0ebd..0x0ebd] |
+        [0x0ec0..0x0ec4] | [0x0ec6..0x0ec6] | [0x0edc..0x0edd] | [0x0f40..0x0f47] |
+        [0x0f49..0x0f69] | [0x10a0..0x10c5] | [0x10d0..0x10f6] | [0x1100..0x1159] |
+        [0x115f..0x11a2] | [0x11a8..0x11f9] | [0x1e00..0x1e9b] | [0x1ea0..0x1ef9] |
+        [0x1f00..0x1f15] | [0x1f18..0x1f1d] | [0x1f20..0x1f45] | [0x1f48..0x1f4d] |
+        [0x1f50..0x1f57] | [0x1f59..0x1f59] | [0x1f5b..0x1f5b] | [0x1f5d..0x1f5d] |
+        [0x1f5f..0x1f7d] | [0x1f80..0x1fb4] | [0x1fb6..0x1fbc] | [0x1fbe..0x1fbe] |
+        [0x1fc2..0x1fc4] | [0x1fc6..0x1fcc] | [0x1fd0..0x1fd3] | [0x1fd6..0x1fdb] |
+        [0x1fe0..0x1fec] | [0x1ff2..0x1ff4] | [0x1ff6..0x1ffc] | [0x207f..0x207f] |
+        [0x2102..0x2102] | [0x2107..0x2107] | [0x210a..0x2113] | [0x2115..0x2115] |
+        [0x2118..0x211d] | [0x2124..0x2124] | [0x2126..0x2126] | [0x2128..0x2128] |
+        [0x212a..0x2131] | [0x2133..0x2138] | [0x3005..0x3005] | [0x3031..0x3035] |
+        [0x3041..0x3094] | [0x309b..0x309e] | [0x30a1..0x30fa] | [0x30fc..0x30fe] |
+        [0x3105..0x312c] | [0x3131..0x318e] | [0x4e00..0x9fa5] | [0xac00..0xd7a3] |
+        [0xf900..0xfa2d] | [0xfb00..0xfb06] | [0xfb13..0xfb17] | [0xfb1f..0xfb28] |
+        [0xfb2a..0xfb36] | [0xfb38..0xfb3c] | [0xfb3e..0xfb3e] | [0xfb40..0xfb41] |
+        [0xfb43..0xfb44] | [0xfb46..0xfbb1] | [0xfbd3..0xfd3d] | [0xfd50..0xfd8f] |
+        [0xfd92..0xfdc7] | [0xfdf0..0xfdfb] | [0xfe70..0xfe72] | [0xfe74..0xfe74] |
+        [0xfe76..0xfefc] | [0xff21..0xff3a] | [0xff41..0xff5a] | [0xff66..0xffbe] |
+        [0xffc2..0xffc7] | [0xffca..0xffcf] | [0xffd2..0xffd7] | [0xffda..0xffdc];
+
+   unicode_digit =
+        [0x0030..0x0039] | [0x0660..0x0669] | [0x06f0..0x06f9] | [0x0966..0x096f] |
+        [0x09e6..0x09ef] | [0x0a66..0x0a6f] | [0x0ae6..0x0aef] | [0x0b66..0x0b6f] |
+        [0x0be7..0x0bef] | [0x0c66..0x0c6f] | [0x0ce6..0x0cef] | [0x0d66..0x0d6f] |
+        [0x0e50..0x0e59] | [0x0ed0..0x0ed9] | [0x0f20..0x0f29] | [0xff10..0xff19];
+
+   letter = unicode_letter | '$' | '_';
+
+   letter_or_digit = unicode_letter | unicode_digit | '$' | '_';
+
+   lowercase_letter = ['a'..'z'] | '_';
+
+   uppercase_letter = ['A'..'Z'];
+  
+   uppercase_letter_or_digit = ['A'..'Z'] | ['0'..'9'] | '_';
+   
+   // path_letter = unicode_letter | '-' | '$' | '_';
+
+   // --------------------------------------------------------------------------------------
+   // Constructions for numeric litterals
+   // --------------------------------------------------------------------------------------
+   digit = ['0'..'9'];
+   hex_digit = ['0'..'9'] | ['a'..'f'] | ['A'..'F'];
+   octal_digit = ['0'..'7'];
+   zero_to_three = ['0'..'3'];
+
+   decimal_numeral = '0' | ['1'..'9'] digit*;
+   hex_numeral = '0' ('x' | 'X') hex_digit+;
+   octal_numeral = '0' octal_digit+;
+
+   integer_type_suffix = 'l' | 'L';
+
+   exponent_part = ('e' | 'E') ('+' | '-')? digit+;
+
+   float_type_suffix = 'f' | 'F' | 'd' | 'D';
+
+   // --------------------------------------------------------------------------------------
+   // Constructions for string litterals
+   // --------------------------------------------------------------------------------------
+    single_character = [input_character - [''' + '\']];
+    octal_escape = '\' (octal_digit octal_digit? | zero_to_three octal_digit octal_digit);
+    escape_sequence = '\b' | '\t' | '\n' | '\f' | '\r' | '\"' | '\' ''' | '\\' | octal_escape;
+    string_character = [input_character - ['"' + '\']] | escape_sequence;
+
+// *****************************************************************************************
+States
+  normal,
+  binding,
+  command,
+  script;
+
+// *****************************************************************************************
+Tokens
+
+   // Beware, the following empty tokens are never read but are generated by the CustomLexer
+   // This is the CustomLexer that ensure the production of the correct token and the lexing state
+   {normal} start_compilation_unit = ;
+   {normal->binding} start_binding = ;
+   {normal->command} start_command = ;
+   {normal->script} start_script = ;
+
+   // --------------------------------------------------------------------------------------
+   // Operators
+   // --------------------------------------------------------------------------------------
+   amp = '&';
+   amp_amp = '&&';
+   amp_assign = '&=';
+   assign = '=';
+   bar = '|';
+   bar_assign = '|=';
+   bar_bar = '||';
+   caret = '^';
+   caret_assign = '^=';
+   colon = ':';
+   emark = '!';
+   eq = '==';
+   gt = '>';
+   gteq = '>=';
+   lt = '<';
+   lteq = '<=';
+   minus = '-';
+   minus_assign = '-=';
+   minus_minus = '--';
+   neq = '!=';
+   percent = '%';
+   percent_assign = '%=';
+   plus = '+';
+   plus_assign = '+=';
+   plus_plus = '++';
+   qmark = '?';
+   shl = '<<';
+   shl_assign = '<<=';
+   shr = '>>';
+   shr_assign = '>>=';
+   slash = '/';
+   slash_assign = '/=';
+   star = '*';
+   star_assign = '*=';
+   tilde = '~';
+   ushr = '>>>';
+   ushr_assign = '>>>=';
+
+   // --------------------------------------------------------------------------------------
+   // Separators
+   // --------------------------------------------------------------------------------------
+   at = '@';
+   colon_colon = '::';
+   comma = ',';
+   dollar = '$';
+   dot = '.';
+   dot_dot = '..';
+   dot_dot_dot = '...';
+   {normal,binding->normal,script} semi  = ';';
+
+   {normal->binding,binding,command,script} l_par = '(';
+   {normal,binding->normal,command,script} r_par = ')';
+   l_bkt = '[';
+   r_bkt = ']';
+   l_brc = '{';
+   r_brc = '}';
+
+   // --------------------------------------------------------------------------------------
+   // FML/Script directives and commands
+   // --------------------------------------------------------------------------------------
+
+   {command,script} help = 'help';
+   {command,script} history = 'history';
+   {command,script} execute = 'execute';
+   {command,script} pwd = 'pwd';
+   {command,script} ls = 'ls';
+   {command,script} cd = 'cd';
+   {command,script} services = 'services';
+   {command,script} service = 'service';
+   {command,script} activate = 'activate';
+   {command,script} resources = 'resources';
+   {command,script} open = 'open';
+   {command,script} load = 'load';
+   {command,script} more = 'more';
+   {command,script} enter = 'enter';
+   {command,script} exit = 'exit';
+   {command,script} quit = 'quit';
+   {command,script} context = 'context';
+ 
+   // options
+   {command,script} minus_rc = '-rc';
+   {command,script} minus_r = '-r';
+   {command,script} minus_d = '-d';
+   {command,script} minus_f = '-f';
+
+   // --------------------------------------------------------------------------------------
+   // Keywords
+   // --------------------------------------------------------------------------------------
+
+   // FML Keywords
+   {normal} kw_abstract = 'abstract';
+   {normal} kw_action = 'action';
+   {normal,binding} kw_as = 'as';
+   {command,script,normal} kw_assert = 'assert';
+   {normal,binding} kw_begin = 'begin';
+   {normal} kw_concept = 'concept';
+   {normal} kw_connect = 'connect';
+   {normal} kw_create = 'create';
+   {normal} kw_default = 'default';
+   {normal} kw_delete = 'delete';  
+   {normal} kw_do = 'do';
+   {normal} kw_else = 'else';
+   {normal} kw_end = 'end';
+   {normal} kw_enum = 'enum';
+   {normal} kw_event = 'event';
+   {normal,binding} kw_extends = 'extends';
+   {normal} kw_fire = 'fire';
+   {normal} kw_for = 'for';
+   {normal,binding} kw_from = 'from';
+   {normal} kw_get = 'get';
+   {normal} kw_if = 'if';
+   {normal -> binding} kw_import = 'import';
+   {normal} kw_in = 'in';
+   {normal} kw_inside = 'inside';
+   {normal,binding} kw_instanceof = 'instanceof';
+   {normal} kw_listen = 'listen';
+   {normal -> binding,command,script} kw_log = 'log';
+   {normal,binding} kw_match = 'match';
+   {normal} kw_model = 'model';
+   {normal} kw_namespace = 'namespace';
+   {normal} kw_notify = 'notify';
+   {normal,binding,command,script} kw_new = 'new';
+   {normal} kw_onfailure = 'onfailure';
+   {normal} kw_private = 'private';
+   {normal} kw_protected = 'protected';
+   {normal} kw_public = 'public';
+   //{normal} kw_receive = 'receive';
+   {normal,binding} kw_required = 'required';
+   {normal} kw_return = 'return';
+   {normal,binding} kw_select = 'select';
+   {normal} kw_set = 'set';
+   {normal} kw_super = 'super';
+   {normal} kw_then = 'then';
+   {normal} kw_typedef = 'typedef';
+   {normal,binding} kw_unique = 'unique';
+   {normal} kw_unmatched = 'unmatched';
+   {normal -> binding} kw_use = 'use';
+   {normal} kw_using = 'using';
+   {normal -> binding} kw_values = 'values';
+   {normal,binding} kw_where = 'where';
+   {normal} kw_while = 'while';
+   {normal,binding,command,script} kw_with = 'with';
+ 
+   // Types
+   ty_boolean = 'boolean';
+   ty_char = 'char';
+   ty_short = 'short';
+   ty_int = 'int';
+   ty_long = 'long';
+   ty_byte = 'byte';
+   ty_float = 'float';
+   ty_double = 'double';
+   ty_void = 'void';
+
+   // --------------------------------------------------------------------------------------
+   // Literals
+   // --------------------------------------------------------------------------------------
+   lit_string = '"' string_character* '"';
+   lit_character = ''' (single_character | escape_sequence) ''';
+   //escaped_identifier = ''' single_character string_character+ ''';
+   lit_float =
+     digit+ '.' digit* exponent_part? float_type_suffix?
+   | '.' digit+ exponent_part? float_type_suffix?
+   | digit+ exponent_part float_type_suffix?
+   | digit+ exponent_part? float_type_suffix
+   ;
+   //lit_plain_integer = decimal_numeral;
+   lit_integer =
+     decimal_numeral integer_type_suffix?
+   | hex_numeral integer_type_suffix?
+   | octal_numeral integer_type_suffix?
+   ;
+   escaped_identifier = '{' (sp | ht)* '"' string_character* '"' (sp | ht)* '}';
+   lit_null = 'null';
+   lit_true = 'true';
+   lit_false = 'false';
+
+   // --------------------------------------------------------------------------------------
+   // Identifier
+   // --------------------------------------------------------------------------------------
+   ident = (lowercase_letter | uppercase_letter) letter_or_digit*;
+   // path_identifier = path_letter*;
+
+   //escaped_identifier = '{' ''' single_character string_character+ ''' '}';
+ 
+   // --------------------------------------------------------------------------------------
+   // White space and comments
+   // --------------------------------------------------------------------------------------
+   white_space = (sp | ht | ff | line_terminator)+;
+   traditional_comment = '/*' not_star+ '*'+ (not_star_not_slash not_star* '*'+)* '/';
+   documentation_comment =    '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
+   end_of_line_comment = '//' input_character* line_terminator?;
+
+// *****************************************************************************************
+Ignored Tokens
+    white_space
+  , traditional_comment
+  , documentation_comment
+  , end_of_line_comment
+  ;
+
+// *****************************************************************************************
+Productions
+
+   // --------------------------------------------------------------------------------------
+   // Entry points
+   // --------------------------------------------------------------------------------------
+
+   //entry_point {-> entry_point} =
+   //  {compilation_unit} start_compilation_unit [cu]:fml_compilation_unit {-> New entry_point.compilation_unit(cu.fml_compilation_unit)} |
+   //  {binding} start_binding [expr]:expression {-> New entry_point.expression(expr.expression)};
+
+   entry_point =
+     {compilation_unit} start_compilation_unit [cu]:fml_compilation_unit |
+     {binding} start_binding [expr]:expression |
+     {command} start_command [command]:command |
+     {script} start_script [script]:script ;
+
+   // --------------------------------------------------------------------------------------
+   // Commands
+   // --------------------------------------------------------------------------------------
+
+   script = [commands]:command_in_script* ;
+
+   command_in_script = command semi;
+   
+   command =
+     {directive}   directive |
+     {fml_command} fml_command;
+
+   directive =
+     {help}        help |
+     {history}     history |
+     {pwd}         pwd |
+     {ls}          ls |
+     {cd}          cd path |
+     {execute}     execute path |
+     {services}    services |
+     {service}     service [service_name]:identifier [action]:identifier [argument]:directive_argument? |
+     {activate_ta} activate [technology_adapter]:identifier |
+     {resources}   resources_directive |
+     {open}        command_assign? open_directive |
+     {load}        command_assign? load_directive |
+     {more}        more_directive |
+     {enter}       command_assign? enter_directive |
+     {exit}        exit |
+     {quit}        quit;
+
+   command_assign = left_hand_side assign;
+
+   directive_argument =
+     {expression}       expression |
+     {directory_path}   minus_d path |
+     {file_path}        minus_f path |
+     {resource}         minus_r reference_by_uri |
+     {resource_center}  minus_rc reference_by_uri;
+
+   resources_directive =
+     {exhaustive} resources |
+     {ta}         resources [technology_adapter]:identifier |
+     {rc}         resources star [resource_center]:reference_by_uri |
+     {ta_rc}      resources [technology_adapter]:identifier [resource_center]:reference_by_uri;
+
+   open_directive =
+     {resource} open minus_r reference_by_uri |
+     {path}     open path;
+
+   load_directive =
+     {resource} load minus_r reference_by_uri |
+     {path}     load path;
+
+   enter_directive =
+     {resource} enter minus_r reference_by_uri |
+     {path}     enter minus_f path |
+     {object}   enter expression;
+
+   more_directive =
+     {plain}    more |
+     {resource} more minus_r reference_by_uri |
+     {path}     more minus_f path |
+     {object}   more expression;
+
+   // Put here all things that may appear in a path (dot, minus, etc...)
+   simple_path_prefix = 
+     {dot}    simple_path_terminal dot |
+     {minus}  simple_path_terminal minus |
+     {minusr} simple_path_terminal minus_r |
+     {minusd} simple_path_terminal minus_d |
+     {minusf} simple_path_terminal minus_f ;
+   
+   simple_path = 
+     {plain}      simple_path_terminal |
+     {concatened} simple_path_terminal [simple_path]:simple_path |
+     {prefixed}   [prefix]:simple_path_prefix [simple_path]:simple_path ;
+ 
+   // Put here all keywords that may appear in a path
+   simple_path_terminal = 
+     {plain}     identifier |
+     {literal}   literal |
+     {resources} resources ;
+
+   path =
+     {binding}         simple_path |
+     {dot}             dot |
+     {root_path}       slash path |
+     {path}            simple_path slash path |
+     {dot_path}        dot slash path |
+     {double_dot}      dot_dot |
+     {double_dot_path} dot_dot slash path ;
+
+   fml_command =
+     {context}    context |
+     {assert}     kw_assert expression |
+    // {validate} validate expression |
+    // {log}      kw_log expression |
+     {fml_action} command_assign? fml_action_exp |
+     {expression} expression;
+
+   // --------------------------------------------------------------------------------------
+   // Compilation unit
+   // --------------------------------------------------------------------------------------
+
+   fml_compilation_unit =
+     [namespace_declaration]:namespace_decl*
+     [use_declarations]:use_decl*
+     [import_declarations]:import_decl*
+     [type_declarations]:type_decl*
+     model_decl
+   ;
+
+   // --------------------------------------------------------------------------------------
+   // General rules
+   // --------------------------------------------------------------------------------------
+
+
+   identifier_prefix = 
+     {normal} ident dot |
+    // {kw} authorized_kw_in_composite_ident dot |
+     {escaped} escaped_identifier dot;
+    //   {lower_case} ident dot
+    // | {upper_case} ident dot;
+  
+    authorized_kw_in_composite_ident =
+   //  {abstract} kw_abstract |
+     {concept} kw_concept |
+     {create} kw_create |
+   //  {delete} kw_delete |
+     {get} kw_get |
+     {model} kw_model |
+     {set} kw_set;
+  
+  // TODO : check if other keywords should be included
+  /* authorized_kw_in_composite_ident =
+     {abstract} kw_abstract |
+     {as} kw_as |
+     //{assert} kw_assert |
+     {begin} kw_begin |
+     {concept} kw_concept |
+     //{connect} kw_connect |
+     {create} kw_create |
+     {default} kw_default |
+     //{delete} kw_delete |
+     //{do} kw_do |
+     {else} kw_else |
+     {end} kw_end |
+     {enum} kw_enum |
+     {event} kw_event |
+     {extends} kw_extends |
+     //{fire} kw_fire |
+     {for} kw_for |
+     {from} kw_from |
+     {get} kw_get |
+     {if} kw_if |
+     {import} kw_import |
+     {in} kw_in |
+     {inside} kw_inside |
+     //{instanceof} kw_instanceof |
+     {listen} kw_listen |
+     //{log} kw_log |
+     {match} kw_match |
+     {model} kw_model |
+     {namespace} kw_namespace |
+     //{notify} kw_notify |
+     //{new} kw_new |
+     {onfailure} kw_onfailure |
+     {private} kw_private |
+     {protected} kw_protected |
+     {public} kw_public |
+     {required} kw_required |
+     {return} kw_return |
+     {select} kw_select |
+     {set} kw_set |
+     //{super} kw_super |
+     {then} kw_then |
+     {typedef} kw_typedef |
+     
+     {unique} kw_unique |
+     {use} kw_use |
+     {using} kw_using |
+     {values} kw_values |
+     {where} kw_where |
+     {while} kw_while |
+     {with} kw_with;*/
+     
+   
+   composite_ident = 
+     {kw}   [prefixes]:identifier_prefix* [identifier]:authorized_kw_in_composite_ident |
+     {normal}   [prefixes]:identifier_prefix* [identifier]:ident |
+     {escaped}  [prefixes]:identifier_prefix* [identifier]:escaped_identifier;
+ 
+   composite_tident_suffix = dollar ident;
+   
+   composite_tident = [prefixes]:identifier_prefix* [identifier]:ident [suffixes]:composite_tident_suffix*;
+
+   composite_cident = [prefixes]:identifier_prefix* [identifier]:ident;
+
+   visibility =
+       {private}      kw_private
+     | {protected}    kw_protected
+     | {public}       kw_public
+     ;
+
+   cardinality =
+       {with_explicit_bounds} l_bkt [lower]:lit_integer comma [upper]:lit_integer r_bkt
+     | {with_lower_bounds} l_bkt [lower]:lit_integer comma [upper]:star r_bkt
+     | {with_upper_bounds} l_bkt [lower]:star comma [upper]:lit_integer r_bkt
+     | {multiple1} l_bkt [lower]:star comma [upper]:star r_bkt
+     | {multiple2} dot_dot_dot
+     ;
+
+   reference_by_uri =
+       {resource} l_bkt [resource]:uri_expression r_bkt
+     | {object_in_resource} l_bkt [resource]:uri_expression colon [object]:uri_expression r_bkt
+     ;
+ 
+   uri_expression_primary =
+       {ident} ident
+     | {litteral} lit_string
+     ; 
+
+   uri_expression =
+       {primary} uri_expression_primary 
+     | {concatenation} [left]:uri_expression plus [right]:uri_expression_primary
+     ; 
+
+   annotation =
+       {basic_annotation} at [tag]:annotation_tag
+     | {single_annotation}  at [tag]:annotation_tag l_par conditional_exp r_par
+     | {complex_annotation}  at [tag]:annotation_tag l_par annotation_key_value_pairs r_par
+     | {list_annotation}  at [tag]:annotation_tag l_par annotation* r_par
+     ;
+     
+   annotation_tag =
+       {composite_tident} composite_tident
+     ;
+   
+   annotation_key_value_pairs =
+       {one}  annotation_key_value_pair
+     | {many} annotation_key_value_pairs comma annotation_key_value_pair
+     ;
+   
+   
+   annotation_key_value_pair = [identifier]:composite_ident assign conditional_exp;
+
+   // --------------------------------------------------------------------------------------
+   // Namespace declaration
+   // --------------------------------------------------------------------------------------
+      
+   identifier = ident;
+   
+   namespace_decl = kw_namespace [string_literal]:lit_string kw_as [ns_id]:identifier semi;
+
+   // --------------------------------------------------------------------------------------
+   // Use declaration
+   // --------------------------------------------------------------------------------------
+   use_decl = kw_use [identifier]:composite_tident kw_as [ta_id]:ident semi;
+
+   // --------------------------------------------------------------------------------------
+   // Import declaration
+   // --------------------------------------------------------------------------------------
+   import_decl =
+       {java_import} kw_import [identifier]:composite_tident semi
+     | {named_java_import} kw_import [identifier]:composite_tident kw_as [name]:identifier semi
+     | {uri_import} kw_import [object]:reference_by_uri semi
+     | {named_uri_import} kw_import [type]:type_decl_type [name]:identifier kw_from [object]:reference_by_uri semi
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Type declaration
+   // --------------------------------------------------------------------------------------
+
+   type_decl = kw_typedef [type]:type_decl_type kw_as [name]:ident semi;
+
+   type_decl_type =
+     | {normal} reference_type
+     | {fml}    technology_specific_type
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Model declaration
+   // --------------------------------------------------------------------------------------
+   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model ident super_clause? inside_clause? l_brc  [inner_model_declaration]:inner_concept_decl* r_brc;
+
+   super_clause = kw_extends super_type_list;
+
+   super_type_list =
+       {one}  [identifier]:composite_tident
+     | {many} super_type_list comma [identifier]:composite_tident
+     ;
+
+   inside_clause = kw_inside composite_tident;
+
+   concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept ident super_clause? inside_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
+
+   event_decl = [annotations]:annotation* visibility? kw_abstract? kw_event ident super_clause? inside_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
+
+   enum_decl = [annotations]:annotation* visibility? kw_enum ident l_brc enum_values_list r_brc;
+
+   enum_values_list =
+       {one}  enum_value
+     | {many} enum_values_list comma enum_value
+     ;
+
+   enum_value = ident;
+
+   inner_concept_decl =
+      // basic role declaration
+       {java} [annotations]:annotation* visibility? type cardinality? variable_declarator semi
+     | {fml} [annotations]:annotation* visibility? type cardinality? ident kw_with [role]:ident fml_parameters? semi
+     | {fml_fully_qualified} [annotations]:annotation* visibility? type cardinality? ident kw_with [ta_id]:ident colon_colon [role]:ident fml_parameters? semi
+     // abstract property declaration
+     | {abstract_property} [annotations]:annotation* visibility? kw_abstract type variable_declarator semi
+     | {expression_property} [annotations]:annotation* visibility? type [identifier]:ident kw_values [expression_value]:expression semi
+     // get set property declaration
+     | {get_set_property}    [annotations]:annotation* visibility? type ident l_brc get_decl set_decl ? r_brc semi
+     | {behaviour_declaration} behaviour_decl
+     | {concept_declaration} concept_decl
+     | {event_declaration} event_decl
+     | {enum_declaration} enum_decl
+     | {assert_declaration} assert_decl
+     ;
+
+   get_decl = type kw_get l_par r_par flexo_behaviour_body;
+
+   set_decl = kw_set l_par type ident r_par flexo_behaviour_body;
+
+   variable_declarator =
+       {identifier}  ident
+     | {initializer_expression} ident assign expression
+     | {initializer_fml_action} ident assign fml_action_exp
+     ;
+
+   assert_decl = 
+       {simple}    simple_assert_declaration
+     | {iteration} iteration_assert_declaration
+     ;
+
+   simple_assert_declaration = 
+       {basic}     kw_assert expression semi
+     | {protected} kw_assert expression failure_clause;
+
+   iteration_assert_declaration = kw_assert l_par iteration_type ident colon expression r_par l_brc [inner_assert_declarations]:simple_assert_declaration* r_brc;
+
+   // Type of an iteration variable: no type arguments, since '(a < b ...' would be ambiguous
+   iteration_type =
+       {primitive} primitive_type
+     | {complex}   composite_tident
+     ;
+
+   failure_clause = kw_onfailure colon statement;
+
+   // --------------------------------------------------------------------------------------
+   // Behaviours
+   // --------------------------------------------------------------------------------------
+   behaviour_decl =
+       {anonymous_constructor} [annotations]:annotation* visibility? kw_create l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {named_constructor} [annotations]:annotation* visibility? kw_create colon_colon [name]:ident l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:ident l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {method} [annotations]:annotation* visibility? kw_abstract? type? [name]:ident l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {listener} [annotations]:annotation* kw_listen [event_type]:reference_type kw_from [listened]:expression flexo_behaviour_body
+     | {fml} [annotations]:annotation* visibility? type? [name]:ident l_par formal_arguments_list? r_par kw_with [behaviour]:ident fml_parameters? flexo_behaviour_body
+     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:ident l_par formal_arguments_list? r_par kw_with [ta_id]:ident colon_colon [behaviour]:ident fml_parameters? flexo_behaviour_body
+     //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:ident fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
+     //| {name_only} [annotations]:annotation* visibility? type? [name]:ident l_par formal_arguments_list? r_par flexo_behaviour_body
+     //| {name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:ident fml_parameters? colon [name]:ident l_par formal_arguments_list? r_par flexo_behaviour_body
+     ;
+
+   formal_arguments_list =
+       {one}  formal_argument
+     | {many} formal_arguments_list comma formal_argument
+     ;
+
+   formal_argument =
+       {primitive} kw_required? primitive_type [arg_name]:ident default_argument_value?
+     //| {simple} [identifier]:composite_ident [arg_name]:ident
+     | {complex} kw_required? reference_type [arg_name]:ident default_argument_value?
+     ;
+     
+   //default_argument_value = kw_default assign expression;
+ 
+   default_argument_value = assign expression;
+     
+   flexo_behaviour_body =
+       {block} block
+     | {empty} semi
+     ;
+
+   block =
+    	l_brc [block_statements]:block_statement* r_brc;
+
+   block_statement =
+       {variable_declaration} type variable_declarator semi
+     | {statement}            statement
+     ;
+
+   statement =
+       {no_trail}                statement_without_trailing_substatement
+     // if statements
+     | {if_simple}               kw_if l_par expression r_par statement
+     | {if_else}                 kw_if l_par expression r_par statement_no_short_if kw_else statement
+     // while statement
+     | {while}                   kw_while l_par expression r_par statement
+     // for statement
+     | {for_basic}               kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
+     | {for_basic_expression}    kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
+     | {for_enhanced_expression} kw_for l_par type ident colon expression r_par statement
+     | {for_enhanced_fml_action} kw_for l_par type ident colon fml_action_exp r_par statement
+     ;
+
+   for_init =
+       {statement}            statement_expression
+     | {variable_declaration} type variable_declarator
+     ;
+
+   statement_without_trailing_substatement =
+       {block}                        l_brc [block_statements]:block_statement* r_brc
+     | {empty_statement}              semi
+     | {expression_statement}         statement_expression semi
+     | {do_statement}                 kw_do statement kw_while l_par expression r_par semi
+     | {return_empty}                 kw_return semi
+     | {return_value}                 return_value_statement
+     ;
+
+   return_value_statement = 
+       {expression}   kw_return expression semi
+     | {fml_action}   kw_return fml_action_exp semi
+     ;
+
+   statement_no_short_if =
+       {statement_without_trailing_substatement} statement_without_trailing_substatement
+     | {if_then_else_statement_no_short_if}      kw_if l_par expression r_par [statement_no_short_if1]:statement_no_short_if kw_else [statement_no_short_if2]:statement_no_short_if
+     | {while_statement_no_short_if}             kw_while l_par expression r_par statement_no_short_if
+     | {for_statement_no_short_if}               for_statement_no_short_if
+     ;
+
+   for_statement_no_short_if =
+       {empty}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement_no_short_if
+     | {expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement_no_short_if
+     ;
+
+   statement_expression =
+       {assignment}             assignment_statement_expression
+     | {pre_increment}          pre_incr_exp
+     | {pre_decrement}          pre_decr_exp
+     | {post_increment}         post_incr_exp
+     | {post_decrement}         post_decr_exp
+     | {method_invocation}      method_invocation
+     | {new_instance}           new_instance
+     | {fml_action_expression}  fml_action_exp
+     ;
+
+   assignment_statement_expression =
+       {expression}  [left]:left_hand_side assignment_operator [right]:expression
+     | {fml_action}  [left]:left_hand_side assignment_operator [right]:fml_action_exp
+     ;
+
+   method_invocation =
+       {primary}    callee_primary l_par argument_list? r_par
+       | {super}      kw_super /*dot*/ /*non_wild_type_arguments?*/ /*ident*/ l_par argument_list? r_par
+     //| {class_name} [identifier1]:composite_ident [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:ident l_par argument_list? r_par
+     //| {type_name}  [identifier1]:composite_ident dot non_wild_type_arguments  [identifier2]:ident l_par argument_list? r_par
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Expressions
+   // --------------------------------------------------------------------------------------
+
+  expression =
+       {assignment}  [left]:left_hand_side assignment_operator [right]:expression
+     | {conditional} conditional_exp
+     ;
+
+   left_hand_side =
+       {identifier} composite_ident
+     | {field}      field_access
+     ;
+
+   // Operators priority 15
+   assignment_operator =
+       {assign}         assign
+     | {star_assign}    star_assign
+     | {slash_assign}   slash_assign
+     | {percent_assign} percent_assign
+     | {plus_assign}    plus_assign
+     | {minus_assign}   minus_assign
+     | {shl_assign}     shl_assign
+     | {shr_assign}     shr_assign
+     | {ushr_assign}    ushr_assign
+     | {amp_assign}     amp_assign
+     | {caret_assign}   caret_assign
+     | {bar_assign}     bar_assign
+     ;
+
+   // Operators priority 14
+   conditional_exp =
+       {simple} conditional_or_exp
+     | {qmark}  conditional_or_exp qmark expression colon conditional_exp
+     ;
+
+   // Operators priority 13
+   conditional_or_exp =
+       {simple}  conditional_and_exp
+     | {bar_bar} conditional_or_exp bar_bar conditional_and_exp
+     ;
+
+   // Operators priority 12
+   conditional_and_exp =
+       {simple}  inclusive_or_exp
+     | {amp_amp} conditional_and_exp amp_amp inclusive_or_exp
+     ;
+
+   // Operators priority 11
+   inclusive_or_exp =
+       {simple} exclusive_or_exp
+     | {bar}    inclusive_or_exp bar exclusive_or_exp
+     ;
+
+   // Operators priority 10
+   exclusive_or_exp =
+       {simple} and_exp
+     | {caret}  exclusive_or_exp caret and_exp
+     ;
+
+   // Operators priority 9
+   and_exp =
+       {simple} equality_exp
+     | {amp}    and_exp amp equality_exp
+     ;
+
+   // Operators priority 8
+   equality_exp =
+       {simple} relational_exp
+     | {eq}     equality_exp eq  relational_exp
+     | {neq}    equality_exp neq relational_exp
+     ;
+
+  // Operators priority 7
+   relational_exp =
+       {simple}     shift_exp
+     | {lt}         [shift_exp1]:shift_exp lt [shift_expression2]:shift_exp
+     | {gt}         [shift_expression1]:shift_exp gt [shift_expression2]:shift_exp
+     | {lteq}       [shift_expression1]:shift_exp lteq [shift_expression2]:shift_exp
+     | {gteq}       [shift_expression1]:shift_exp gteq [shift_expression2]:shift_exp
+     | {instanceof} shift_exp kw_instanceof type [dims]:dim*
+     ;
+
+   // Operators priority 6
+   shift_exp =
+       {simple} add_exp
+     | {shl}    shift_exp shl  add_exp
+     | {shr}    shift_exp shr  add_exp
+     | {ushr}   shift_exp ushr add_exp
+     ;
+
+   // Operators priority 5
+   add_exp =
+       {simple} mult_exp
+     | {plus}   add_exp plus mult_exp
+     | {minus}  add_exp minus mult_exp
+     ;
+
+   // Operators priority 4
+   mult_exp =
+       {simple}  unary_exp
+     | {star}    mult_exp star unary_exp
+     | {slash}   mult_exp slash unary_exp
+     | {percent} mult_exp percent unary_exp
+     ;
+
+   // Operators priority 3
+   unary_exp =
+       {pre_increment} pre_incr_exp
+     | {pre_decrement} pre_decr_exp
+     | {plus}          plus  unary_exp
+     | {minus}         minus unary_exp
+     | {unary}         unary_exp_not_plus_minus
+     ;
+
+   pre_incr_exp = plus_plus unary_exp;
+   pre_decr_exp = minus_minus unary_exp;
+
+   // Operators priority 2
+   unary_exp_not_plus_minus =
+       {postfix} postfix_exp
+     | {tilde}   tilde unary_exp
+     | {emark}   emark unary_exp
+     | {cast_primitive} l_par primitive_type [dims]:dim* r_par unary_exp
+     | {cast_reference} l_par expression r_par unary_exp_not_plus_minus
+     | {cast_fml}       [lpar1]:l_par [type]:ident [lpar2]:l_par qualified_argument_list [rpar1]:r_par [rpar2]:r_par unary_exp_not_plus_minus
+     ;
+
+   postfix_exp =
+       {primary}        primary
+     | {post_increment} post_incr_exp
+     | {post_decrement} post_decr_exp
+     ;
+
+   // Operators priority 1
+   post_incr_exp = postfix_exp plus_plus;
+   post_decr_exp = postfix_exp minus_minus;
+
+   primary =
+       {primary_no_id}          primary_no_id
+     | {identifier}             composite_ident
+     ;
+
+   // A primary that may be called: same as primary, but a parenthesed expression is excluded
+   // (otherwise '(a)(b)' is ambiguous between a call and a cast)
+   callee_primary =
+       {identifier}             composite_ident
+     | {literal}                literal
+     | {field}                  field_access
+     | {method}                 method_invocation
+     | {new_instance}           new_instance
+     ;
+
+   primary_no_id =
+       {literal}                literal
+     | {expression}             l_par expression r_par
+     | {field}                  field_access
+     | {method}                 method_invocation
+     | {new_instance}           new_instance
+//     | {fml_action_expression}  fml_action_exp
+     ;
+
+/*   primary_no_id =
+       {literal}                literal
+     | {expression}             l_par expression r_par
+     | {field}                  field_access
+     | {method}                 method_invocation
+     | {java_instance_creation} java_instance_creation_invokation
+     ;*/
+
+   new_instance = 
+       {simple}                 new_containment_clause? kw_new [type]:reference_type l_par argument_list? r_par precise_fml_parameters_clause?
+     | {full_qualified}  	    new_containment_clause? kw_new [concept_name]:ident colon_colon [constructor_name]:ident l_par argument_list? r_par precise_fml_parameters_clause?
+     ;
+
+   fml_action_exp =
+       {ta_edition_action}                     [ta_id]:ident colon_colon [edition_action]:ident fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
+     | {delete_action}                         kw_delete expression from_clause?
+     | {select_action}                         kw_select kw_unique? [selected_type]:select_type with_clause? from_clause where_clause?
+     | {connect_action}                        kw_connect [connect]:left_hand_side kw_using [using]:expression
+     | {log_action}                            kw_log expression
+     | {fire_action}                           kw_fire expression
+     | {notify_action}                         kw_notify expression in_clause?
+     | {begin_match_action}                    kw_begin kw_match [concept_name]:ident from_clause where_clause?
+     | {match_action}                          kw_match [concept_name]:ident in_clause? from_clause qualified_where_clause? kw_unmatched colon new_instance
+     | {end_match_action}                      kw_end kw_match [concept_name]:ident in_clause kw_unmatched colon end_match_action_clause
+     | {parenthesed}                           l_par fml_action_exp r_par
+     ;
+       
+   end_match_action_clause =
+   	 // TODO : this has to be refactored (see EndMatchActionNode.java)
+     | {simple}  kw_delete l_par argument_list? r_par
+     | {complex}  method_invocation
+     ;
+     
+   select_type =
+     | {normal} reference_type
+     | {fml}    technology_specific_type
+     ;
+       
+   precise_fml_parameters_clause = kw_with fml_parameters;
+    
+   with_clause = kw_with ident fml_parameters;
+    // | {simple}  		 kw_with [identifier]:ident fml_parameters
+    // | {fully_qualified} kw_with [ta_id]:ident colon_colon [identifier]:ident fml_parameters; 
+        
+   new_containment_clause = composite_ident dot;
+
+   // Arguments of a where clause: assignments are allowed (they express matching criteria)
+   expression_list =
+       {one}  expression
+     | {many} expression_list comma expression
+     ;
+
+   argument_list =
+       {one}  conditional_exp
+     | {many} argument_list comma conditional_exp
+     ;
+
+   qualified_argument_list =
+       {one}  qualified_argument
+     | {many} qualified_argument_list comma qualified_argument
+     ;
+
+   qualified_instance =
+       {simple}         [arg_type]:ident colon fml_parameters
+     | {full_qualified} [ta_id]:ident colon_colon [arg_type]:ident colon fml_parameters
+      ;
+
+   qualified_argument_list_instances =
+       {one}  qualified_instance
+     | {many} qualified_argument_list_instances comma qualified_instance
+     ;
+
+   qualified_argument =
+       {simple}         [arg_name]:ident assign expression
+     | {enum}           [arg_name]:ident assign enum_value_argument
+     | {instance}       [arg_name]:ident assign qualified_instance
+     | {list_instances} [arg_name]:ident assign l_brc qualified_argument_list_instances? r_brc
+     ;
+
+	enum_value_argument =
+		{plain} dollar ident
+	 ;
+
+   fml_parameters =
+       {full_qualified} l_par qualified_argument_list? r_par
+//     | {unqualified} l_par argument_list? r_par
+      ;
+
+   in_clause    = kw_in expression;
+   from_clause  = kw_from  expression;
+   where_clause = kw_where l_par expression_list? r_par;
+   qualified_where_clause = kw_where l_par qualified_argument_list? r_par;
+
+   field_access =
+       {super} kw_super dot ident
+     | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:ident
+     | {primary} primary_no_id dot ident
+     | {kw} primary_no_id dot authorized_kw_in_composite_ident
+     ;
+
+   literal =
+       {integer}        lit_integer
+     | {floating_point} lit_float
+     | {true}           lit_true
+     | {false}          lit_false
+     | {character}      lit_character
+     | {string}         lit_string
+     | {null}           lit_null
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Types
+   // --------------------------------------------------------------------------------------
+
+   version = 
+	  {basic} lit_integer |
+	  {float} lit_float |
+	  //{simple} [major]:lit_integer dot [minor]:lit_integer |
+	  {detailed} [float1]:lit_float [float2]:lit_float [additional]:ident? ;
+	  //{detailed} [major]:lit_integer [dot1]:dot [minor]:lit_integer [dot2]:dot [patch]:lit_integer [additional]:ident? ;
+
+   at_version = at l_par version r_par;
+
+   type =
+       {primitive} primitive_type
+     | {void}      ty_void
+     | {complex}   reference_type at_version?
+     | {fml}       technology_specific_type at_version?
+     ;
+
+   technology_specific_type = ident fml_parameters;
+
+   primitive_type =
+       {int}   ty_int
+     | {short} ty_short
+     | {long} ty_long
+     | {float} ty_float
+     | {double} ty_double
+     | {char} ty_char
+     | {byte} ty_byte
+     | {boolean} ty_boolean
+     ;
+
+   reference_type = 
+    // [identifier]:composite_tident at_version? [args]:type_arguments? ;
+     [identifier]:composite_tident [args]:type_arguments? ;
+
+  // Take care of the following lexical anomaly:
+   //   A<B<C>>  and  A<B<C<D>>>
+   // Notice the '>>' and '>>>" tokens.
+   //
+   // (Instead of)
+   // type_arguments =
+   //     lt type_argument_list gt;
+
+   type_arguments =
+       {diamond} lt gt
+     | {gt} lt type_argument_list gt
+     | {shr} [lt1]:lt type_argument_list_head* [identifier]:composite_tident [lt2]:lt type_argument_list shr
+     | {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:composite_tident [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:composite_tident [lt3]:lt type_argument_list ushr
+     ;
+
+   type_argument_list = type_argument_list_head* type_argument;
+
+   type_argument_list_head = type_argument comma;
+
+   type_argument =
+       {reference} reference_type
+     | {wildcard} qmark wildcard_bounds?
+     ;
+
+   wildcard_bounds =
+       {extends} kw_extends reference_type
+     | {super} kw_super reference_type
+     ;
+
+   // Autres trucs a regarder
+   dim = l_bkt r_bkt;
+
+   // --------------------------------------------------------------------------------------
+   // Abstract Syntax Tree
+   // --------------------------------------------------------------------------------------
+
+/*Abstract Syntax Tree
+
+   entry_point =
+       {compilation_unit} fml_compilation_unit |
+       {expression} expression;
+       
+   fml_compilation_unit =
+       {generated} fml_compilation_unit;
+       
+   expression =
+       {generated} expression;*/
+   
+   
+   

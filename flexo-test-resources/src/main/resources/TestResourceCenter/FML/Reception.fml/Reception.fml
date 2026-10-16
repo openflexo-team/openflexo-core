@@ -1,0 +1,18 @@
+/**
+ * Types a property with a concept of another model, imported through a namespace.
+ * See TestImports.fmlscript.
+ */
+
+namespace "http://openflexo.org/test/TestResourceCenter/" as TRC;
+
+import [TRC+"People.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/Reception.fml")
+public model Reception {
+
+	Person guest;
+
+	public String guestName() {
+		return guest.name;
+	}
+}

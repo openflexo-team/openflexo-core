@@ -65,7 +65,6 @@ import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileUtils;
 
 /**
  * The localized dictionary of a compilation unit is a resource contained in its {@link CompilationUnitResource}, created on demand by
@@ -221,10 +220,8 @@ public class TestLocalizedDictionaryResource extends OpenflexoTestCase {
 
 		instanciateTestServiceManager();
 		DirectoryResourceCenter resourceCenter = makeNewDirectoryResourceCenter();
-		File copy = new File(resourceCenter.getRootDirectory(), directory.getName());
-		copy.mkdirs();
-		FileUtils.copyContentDirToDir(directory, copy);
-		resourceCenter.performDirectoryWatchingNow();
+		// Copied aside and moved in at once: the directory watcher must not find it half-copied (CORE-D-39)
+		File copy = copyIntoResourceCenter(directory, resourceCenter);
 
 		CompilationUnitResource reloaded = serviceManager.getVirtualModelLibrary().getCompilationUnitResource(NEW_VM_URI);
 		assertNotNull(reloaded);

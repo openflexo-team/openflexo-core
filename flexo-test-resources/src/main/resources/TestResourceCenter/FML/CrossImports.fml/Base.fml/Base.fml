@@ -1,0 +1,10 @@
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Core.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Base.fml")
+public abstract model Base {
+
+	/** Element on which this model is declared */
+	Element declaringElement with ConceptInstance(virtualModelInstance=container.core);
+}

@@ -1,0 +1,32 @@
+import ["http://openflexo.org/test/TestResourceCenter/UnloadLedger.fml"];
+
+/**
+ * A concept whose deletion scheme has a visible side effect in another model: deleting an Item
+ * increments the deletions of the UnloadLedger it is attached to. Unloading must not run it.
+ * The renderer reaches the ledger, so that rendering an Item makes it listen to another resource.
+ * See TestUnloadDoesNotDelete.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/UnloadProbe.fml")
+public model UnloadProbe {
+
+	UnloadLedger ledger;
+
+	create(UnloadLedger ledger) {
+		ledger = parameters.ledger;
+	}
+
+	@Renderer(name + "@" + container.ledger.label)
+	public concept Item {
+
+		String name;
+
+		create(String name) {
+			name = parameters.name;
+		}
+
+		delete() {
+			container.ledger.deletions = container.ledger.deletions + 1;
+		}
+	}
+}

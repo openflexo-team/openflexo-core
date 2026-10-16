@@ -222,6 +222,12 @@ public interface CompilationUnitResource
 
 	public <I> VirtualModelInfo getVirtualModelInfo(FlexoResourceCenter<I> resourceCenter);
 
+	/**
+	 * Return true while a compilation unit this one references has not completed its loading (compilation units importing each other): what
+	 * this unit could not resolve against it may be resolved once it is complete
+	 */
+	public boolean isWaitingForReferencedUnits();
+
 	public static class VirtualModelInfo {
 		private String uri;
 		private String version;

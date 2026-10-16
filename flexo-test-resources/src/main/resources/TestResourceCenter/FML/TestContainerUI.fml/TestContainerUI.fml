@@ -10,6 +10,7 @@
  *   UI/NestedScreen.fib                              - named by a NESTED @UI annotation
  *   Screen.fib / Compact.fib / OtherCompact.fib      - named by multi-valued @UI annotations
  *   Plain.inspector                                  - a PLAIN inspector, with no TabPanel
+ *   Insp*.inspector                                  - the additive inspector inheritance (see InspParent)
  *
  * Those components are stored in TWO shapes on purpose, and TestContainerUIComponentSerialization
  * asserts both:
@@ -113,5 +114,67 @@ public model TestContainerUI {
 	 */
 	public concept Plain {
 		public String description;
+	}
+
+	/**
+	 * Root of the hierarchy that exercises the ADDITIVE inspector: an instance shows the inspector of
+	 * its whole concept hierarchy, ancestors first, the order being decided by the 'index' of the
+	 * widgets. Here: parentName at 100, parentNote at 200.
+	 */
+	public concept InspParent {
+		public String parentName;
+		public String parentNote;
+	}
+
+	/** Continues after / between the parent's widgets: childName at 150 (between), childNote at 300. */
+	public concept InspChild extends InspParent {
+		public String childName;
+		public String childNote;
+	}
+
+	/** grandName at 100 - EQUAL to parentName, which stays first - and grandNote with no index at all. */
+	public concept InspGrandChild extends InspChild {
+		public String grandName;
+		public String grandNote;
+	}
+
+	/** Declares no inspector: shows those of its ancestors, and nothing else. */
+	public concept InspNoInspector extends InspChild {
+	}
+
+	/** One of the two sides of a diamond. leftName has no index. */
+	public concept InspLeft extends InspParent {
+		public String leftName;
+	}
+
+	/** The other side of the diamond. rightName has a NEGATIVE index, so it comes first. */
+	public concept InspRight extends InspParent {
+		public String rightName;
+	}
+
+	/** Two parents sharing a common ancestor, which must be contributed once. diamondName at 50. */
+	public concept InspDiamond extends InspLeft, InspRight {
+		public String diamondName;
+	}
+
+	/** Inspector with two NAMED tabs, Single and Advanced: tabs of the same name are merged along the hierarchy. */
+	public concept InspTabsParent {
+		public String singleParent;
+		public String advancedParent;
+	}
+
+	/**
+	 * Same tabs as its parent, merged with them by name (the title of the child wins), plus Extra, which the parent does not have
+	 * and which stays a tab of its own.
+	 */
+	public concept InspTabsChild extends InspTabsParent {
+		public String singleChild;
+		public String advancedChild;
+		public String extraChild;
+	}
+
+	/** Declares a SINGLE tab, named like none of the others: its widgets join the first tab, Single. */
+	public concept InspTabsMixed extends InspTabsChild {
+		public String mixedWidget;
 	}
 }

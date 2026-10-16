@@ -173,8 +173,9 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 
 	protected void finalizeDoAction(Object context) throws InvalidParameterException {
 		if (getFlexoConcept() != null && getNewFlexoProperty() != null) {
-			getNewFlexoProperty().setDescription(getDescription());
 			getFlexoConcept().addToFlexoProperties(getNewFlexoProperty());
+			// Once added: a description is stored as metadata, which needs the model factory of the concept the property belongs to
+			getNewFlexoProperty().setDescription(getDescription());
 		}
 		else {
 			throw new InvalidParameterException("Could not create property");

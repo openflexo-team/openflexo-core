@@ -158,9 +158,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null)
-				return getFlexoConcept().getInspector().getBindingFactory();
-			return null;
+			return getFlexoConcept() != null ? getFlexoConcept().getBindingFactory() : null;
 		}
 
 		@Override

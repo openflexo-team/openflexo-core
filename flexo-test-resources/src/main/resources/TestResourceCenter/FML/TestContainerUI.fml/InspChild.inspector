@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the additive inspector inheritance: see TestContainerUI.fml, concept InspChild. -->
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols" name="InspChildInspector"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.inspector.FIBInspectorController">
+	<TabPanel name="Tab">
+		<Tab title="InspChild" layout="twocols" index="0" name="InspChildInspectorTab">
+			<Label label="childName" name="childNameLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left;index=150)" />
+			<TextField data="data.childName" name="childNameWidget"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right;index=150)" />
+			<Label label="childNote" name="childNoteLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left;index=300)" />
+			<TextField data="data.childNote" name="childNoteWidget"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right;index=300)" />
+		</Tab>
+	</TabPanel>
+</Panel>

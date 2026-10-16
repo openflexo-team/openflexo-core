@@ -1,0 +1,39 @@
+/**
+ * A to-do list: the smallest complete FML model. It has a concept with properties and a creation
+ * scheme, a computed property, behaviours, and a query. See TestTaskList.fmlscript.
+ */
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TaskList.fml")
+public model TaskList {
+
+	Task[0,*] tasks;
+	int taskCount values tasks.size;
+
+	public Task addTask(String label) {
+		Task task = new Task(parameters.label);
+		tasks.add(task);
+		return task;
+	}
+
+	public List<Task> openTasks() {
+		return select Task from (this) where (selected.done == false);
+	}
+
+	public concept Task {
+
+		String label;
+		boolean done;
+		String status values done ? "done" : "open";
+
+		create(String label) {
+			label = parameters.label;
+			done = false;
+		}
+
+		public complete() {
+			done = true;
+		}
+	}
+}

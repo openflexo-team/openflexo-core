@@ -178,7 +178,9 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 
 			// Now first pass on cross-reference dependencies
 			for (ResourceWithPotentialCrossReferences<?> dependency : getCrossReferenceDependencies()) {
-				if (!dependency.isLoaded()) {
+				// A dependency whose load is already in progress higher in the stack (resources referencing each other) is left to
+				// that load, which runs both passes on it: loading it here again would parse it twice
+				if (!dependency.isLoaded() && !dependency.isLoading()) {
 					logger.fine("While loading " + this + " load cross-referenced dependency " + dependency);
 					dependency.initializeLoadResourceData();
 					unloadedDependencies.add(dependency);

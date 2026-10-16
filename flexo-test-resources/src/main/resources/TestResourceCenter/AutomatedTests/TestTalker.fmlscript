@@ -1,0 +1,27 @@
+// Behaviours, as stated by the "Behaviours" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Talker.fml"];
+service ResourceCenterService add_temp_rc;
+talker = new Talker() with (name="talker");
+
+// Two behaviours may share a name when they differ by their arguments
+assert talker.greet() == "hello";
+assert talker.greet("Ann") == "hello Ann";
+
+// Several parameters, a condition, a call of the behaviour by itself
+assert talker.add(2, 3) == 5;
+assert talker.pick(2) == "positive";
+assert talker.pick(0) == "not positive";
+assert talker.fact(5) == 120;
+
+// A behaviour without a return type acts on the instance
+talker.remember("x");
+assert talker.last == "x";
+
+// A deletion behaviour runs when the instance is deleted
+note = talker.addNote("milk");
+assert note.text == "milk";
+talker.removeNote(note);
+assert talker.last == "note deleted";
+
+log "Test PASSED: the behaviours of Talker behave as the guide states";

@@ -1,0 +1,54 @@
+/**
+ * Creating an instance from a behaviour of a concept: a nested concept is created inside the current
+ * instance, a concept declared elsewhere needs container.new. See TestDepot.fmlscript.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/Depot.fml")
+public model Depot {
+
+	create() {
+	}
+
+	public Bin newBin(String label) {
+		return new Bin(parameters.label);
+	}
+
+	public concept Tool {
+
+		String name;
+
+		create(String name) {
+			name = parameters.name;
+		}
+	}
+
+	public concept Bin {
+
+		String label;
+
+		create(String label) {
+			label = parameters.label;
+		}
+
+		public Tool bareTool(String name) {
+			return new Tool(parameters.name);
+		}
+
+		public Tool containerTool(String name) {
+			return container.new Tool(parameters.name);
+		}
+
+		public Slot newSlot(String code) {
+			return new Slot(parameters.code);
+		}
+
+		public concept Slot {
+
+			String code;
+
+			create(String code) {
+				code = parameters.code;
+			}
+		}
+	}
+}

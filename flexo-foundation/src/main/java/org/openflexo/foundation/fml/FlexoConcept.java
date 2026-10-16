@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -58,6 +59,13 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.md.SingleMetaData;
+import org.openflexo.foundation.fml.binding.FlexoConceptInspectorDelegateBindingModel;
+import org.openflexo.foundation.fml.binding.FlexoConceptRendererBindingModel;
+import org.openflexo.connie.DefaultBindable;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.InvalidNameException;
@@ -631,6 +639,33 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Setter(INSPECTOR_KEY)
 	public void setInspector(FlexoConceptInspector inspector);
 
+	/**
+	 * Return the deprecated {@link FlexoConceptInspector} of this concept, creating it when this concept has none.
+	 *
+	 * Reserved for the code that edits an inspector: {@link #getInspector()} never creates one, so that merely reading a concept leaves
+	 * it unmodified.
+	 *
+	 * @deprecated as {@link FlexoConceptInspector} itself
+	 */
+	@Deprecated
+	public FlexoConceptInspector getOrCreateInspector();
+
+	/**
+	 * Return the renderer of this concept: the expression giving the string representation of one of its instances, which reads the
+	 * instance as <code>instance</code>.
+	 *
+	 * Stored as the {@link #RENDERER_METADATA} metadata (the <code>@Renderer</code> annotation).
+	 */
+	public DataBinding<String> getRenderer();
+
+	public void setRenderer(DataBinding<String> renderer);
+
+	/**
+	 * The {@link Bindable} in which the renderer of this concept is expressed: it exposes the rendered instance as
+	 * {@link #RENDERED_INSTANCE_PROPERTY}
+	 */
+	public Bindable getRendererContext();
+
 	// Used for serialization, do not use as API
 	@Getter(PARENT_FLEXO_CONCEPTS_LIST_KEY)
 	@XMLAttribute
@@ -910,15 +945,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public ImageIcon getSmallIcon();
 
 	/**
-	 * Return boolean indicating if this concept defines a delegated inspector
-	 * 
-	 * @return
-	 */
-	public boolean hasDelegatedInspector();
-
-	/**
-	 * Return applicable inspector, while returning delegate inspector when relevant, or current concept inspector
-	 * 
+	 * Return applicable inspector, or current concept inspector
+	 *
 	 * @return
 	 */
 	public FlexoConceptInspector getApplicableInspector();
@@ -954,6 +982,18 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * This is where a renderer is actually STORED - {@link FlexoConceptInspector#getRenderer()} only reads it back.
 	 */
 	public static final String RENDERER_METADATA = "Renderer";
+
+	/**
+	 * Name of the property notified when the renderer of this concept changes (edited, or re-read from its <code>@Renderer</code>
+	 * metadata): the instances listen to it to refresh their string representation.
+	 */
+	public static final String RENDERER_KEY = "renderer";
+
+	/** Name under which a renderer reads the instance it renders */
+	public static final String RENDERED_INSTANCE_PROPERTY = "instance";
+
+	/** Name under which an <code>@Inspector(derived=…)</code> expression reads the instance being inspected */
+	public static final String DERIVED_INSPECTOR_INSTANCE_PROPERTY = "instance";
 
 	/**
 	 * Return the GINA component serializing the user interface of the instances of this {@link FlexoConcept}, as stored in the container
@@ -1008,6 +1048,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * Return the GINA component serializing the inspector of the instances of this {@link FlexoConcept}, following the same rules as
 	 * {@link #getUIComponentResource()} with the <code>.inspector</code> extension and the <code>@Inspector("…")</code> annotation.
 	 *
+	 * <p>
+	 * This is "the" component of this concept, ONE: the one it names or the naming convention gives, else the one of its most specialized
+	 * parent that has one - so a concept naming its own hides its ancestors'. That is NOT what an instance shows: the inspector of an
+	 * instance is the sum of those of its whole concept hierarchy, ancestors first, composed by the <code>index</code> of the widgets.
+	 * See {@link #getInspectorComponentResources()} for all of them and {@link #getOwnInspectorComponentResource()} for what a concept
+	 * contributes by itself.
+	 *
 	 * @return the resource of the component, or null
 	 */
 	public Resource getInspectorComponentResource();
@@ -1017,6 +1064,49 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * {@link #getUIComponentFlexoResource()}.
 	 */
 	public FIBComponentResource getInspectorComponentFlexoResource();
+
+	/**
+	 * The inspector component THIS concept contributes, or null: the one it names with <code>@Inspector("…")</code>, or else the one its
+	 * container holds under the conventional name <code>&lt;ConceptName&gt;.inspector</code>. Never inherited.
+	 *
+	 * <p>
+	 * This is what separates it from {@link #getInspectorComponentResource()}, which answers "which single component do the instances of
+	 * this concept use": it falls back on the most specialized parent when this concept contributes none, and a concept naming its own
+	 * hides its ancestors'. The inspector of an instance is however ADDITIVE - see {@link #getInspectorComponentResources()}, which is
+	 * made of the {@link #getOwnInspectorComponentResource()} of every concept of the hierarchy.
+	 */
+	public Resource getOwnInspectorComponentResource();
+
+	/** The {@link FIBComponentResource} of {@link #getOwnInspectorComponentResource()}, or null. */
+	public FIBComponentResource getOwnInspectorComponentFlexoResource();
+
+	/**
+	 * All the inspector components that make up the inspector of an instance of this concept: the
+	 * {@link #getOwnInspectorComponentResource() own component} of every concept of the hierarchy - this one included - the most general
+	 * first and this concept's own last. A concept contributing none is skipped, and a component named by several concepts appears once, at
+	 * its first position.
+	 *
+	 * <p>
+	 * Every ancestor is considered, however many parents each concept has: they are walked depth first, parents in declaration order, and
+	 * an ancestor reached through several paths (diamond) is visited once, before all the concepts that specialize it.
+	 *
+	 * <p>
+	 * Composing these components is up to the user interface: the widgets of the later ones are appended to the earlier ones, so that the
+	 * <code>index</code> of the widgets decides the order, ancestors first on equal indexes.
+	 * Compare with {@link #getInspectorComponentResource()}, which is "the" component of this concept and only one.<br>
+	 * A concept deriving its inspector (<code>@Inspector(derived=…)</code>) is redirected before any of this: see
+	 * {@link FlexoConceptInstance#getInspectedObject()}.
+	 */
+	public List<Resource> getInspectorComponentResources();
+
+	/** The {@link FIBComponentResource} of each of {@link #getInspectorComponentResources()}, same order. */
+	public List<FIBComponentResource> getInspectorComponentFlexoResources();
+
+	/**
+	 * The concepts contributing to {@link #getInspectorComponentResources()}, in the same order: the one whose
+	 * {@link #getOwnInspectorComponentResource()} is the n-th component is the n-th concept returned.
+	 */
+	public List<FlexoConcept> getInspectorContributingConcepts();
 
 	/**
 	 * Named variant of the inspector, following the same rules as {@link #getUIComponentResource(String)}.
@@ -1029,6 +1119,50 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * Names of the inspector variants, following the same rules as {@link #getUIComponentVariants()}.
 	 */
 	public List<String> getInspectorComponentVariants();
+
+	/**
+	 * Key of the <code>@Inspector(derived=…)</code> key-value pair: hands inspection of an instance of this concept entirely to
+	 * another {@link FlexoConceptInstance}, found by evaluating this expression against the instance being inspected -
+	 * <code>@Inspector(derived=myConceptB)</code> on a concept declaring role <code>myConceptB</code> shows that related object's own
+	 * inspector instead of this concept's. Mutually exclusive with a <code>.inspector</code> component of this concept's own (a
+	 * validation rule flags the conflict): a concept that derives its inspector has none of its own to show.
+	 */
+	public static final String DERIVED_INSPECTOR_KEY = "derived";
+
+	/**
+	 * Whether this concept declares <code>@Inspector(derived=…)</code>.
+	 */
+	public boolean hasDerivedInspector();
+
+	/**
+	 * The expression of the <code>@Inspector(derived=…)</code> declaration: evaluated against the {@link FlexoConceptInstance} being
+	 * inspected (its {@link #getDerivedInspectorContext()}), it gives the OTHER instance whose inspector is shown instead of this
+	 * concept's - see {@link FlexoConceptInstance#getInspectedObject()}, which follows it (chained, since the target concept may
+	 * itself derive its inspector further).
+	 */
+	public DataBinding<FlexoConceptInstance> getDerivedInspector();
+
+	public void setDerivedInspector(DataBinding<FlexoConceptInstance> derivedInspector);
+
+	/**
+	 * The {@link Bindable} in which {@link #getDerivedInspector()} is expressed: exposes the instance being inspected on top of the
+	 * binding model of this concept itself - the same shape {@link #getRendererContext()} already has for <code>@Renderer</code>.
+	 */
+	public Bindable getDerivedInspectorContext();
+
+	/**
+	 * When this concept has no <code>@UI</code> / <code>@Inspector</code> annotation of its own and resolves its default component (a
+	 * <code>.fib</code> and/or a <code>.inspector</code>) purely by the <code>&lt;ConceptName&gt;.&lt;extension&gt;</code> naming
+	 * convention, write that resolution down as an explicit annotation naming the file that already exists.
+	 *
+	 * <p>
+	 * Called by the rename actions ({@code RenameFlexoConcept}, {@code RenameCompilationUnit}) BEFORE the name actually changes, so that
+	 * a component nothing then names is never left behind: a renamed concept whose default view/inspector was still resolved by
+	 * convention would otherwise silently lose it (CORE-F-4). Creating a component through {@code CreateFIBComponent} /
+	 * {@code CreateInspector} already writes the annotation up front, so this only ever has something to do for LEGACY concepts never
+	 * touched since - it is a one-shot fixup, not a second permanent resolution path.
+	 */
+	public void freezeConventionalUIComponentNames();
 
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept, PropertyChangeListener {
 
@@ -1975,13 +2109,292 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return newDeletionScheme;
 		}
 
+		/**
+		 * Return the inspector this concept declares, or null: reading a concept must not create one. Setting the title of a freshly
+		 * created inspector marked the concept, and its compilation unit, as modified - so merely analyzing a binding proposed an
+		 * untouched model for saving (CORE-D-26). Use {@link #getOrCreateInspector()} to edit one.
+		 */
 		@Override
 		public FlexoConceptInspector getInspector() {
+			return inspector;
+		}
+
+		@Override
+		public FlexoConceptInspector getOrCreateInspector() {
 			if (inspector == null && getFMLModelFactory() != null) {
 				inspector = getFMLModelFactory().newFlexoConceptInspector(this);
 				inspector.setInspectorTitle(getName());
 			}
 			return inspector;
+		}
+
+		private FlexoConceptRenderer rendererOwner;
+		private DataBinding<String> renderer;
+
+		@Override
+		public Bindable getRendererContext() {
+			return getRendererOwner();
+		}
+
+		/**
+		 * The {@link Bindable} in which the renderer of this concept is expressed: it exposes the rendered instance
+		 */
+		private FlexoConceptRenderer getRendererOwner() {
+			if (rendererOwner == null) {
+				rendererOwner = new FlexoConceptRenderer();
+			}
+			return rendererOwner;
+		}
+
+		private DataBinding<String> retrieveRendererFromMetadata() {
+			DataBinding<String> returned = getSingleMetaData(RENDERER_METADATA, DataBinding.class);
+			if (returned == null) {
+				// The metadata is declared but carries no decodable value (yet): fall back to an empty binding
+				returned = new DataBinding<>(getRendererOwner(), String.class, BindingDefinitionType.GET);
+			}
+			returned.setOwner(getRendererOwner());
+			returned.setDeclaredType(String.class);
+			returned.setBindingDefinitionType(BindingDefinitionType.GET);
+			returned.setBindingName("renderer");
+			return returned;
+		}
+
+		@Override
+		public DataBinding<String> getRenderer() {
+			if (renderer == null) {
+				if (hasMetaData(RENDERER_METADATA)) {
+					listenToRendererMetaData();
+					renderer = retrieveRendererFromMetadata();
+				}
+				else {
+					renderer = new DataBinding<>(getRendererOwner(), String.class, BindingDefinitionType.GET);
+					renderer.setBindingName("renderer");
+				}
+			}
+			return renderer;
+		}
+
+		@Override
+		public void setRenderer(DataBinding<String> renderer) {
+			if (renderer != null) {
+				renderer.setOwner(getRendererOwner());
+				renderer.setDeclaredType(String.class);
+				renderer.setBindingDefinitionType(BindingDefinitionType.GET);
+				renderer.setBindingName("renderer");
+			}
+			this.renderer = renderer;
+			setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+			// The renderer may be edited later on in the FML source: the metadata must be listened to whatever the way the renderer was set
+			listenToRendererMetaData();
+			getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
+		}
+
+		private FMLMetaData listenedRendererMetaData;
+
+		/**
+		 * When the {@link #RENDERER_METADATA} metadata is edited (the FML source of the concept was edited then merged), the renderer is read
+		 * again from it. Otherwise the renderer cached here would be written back over the edited metadata at next binding notification.
+		 */
+		private void listenToRendererMetaData() {
+			FMLMetaData metaData = hasMetaData(RENDERER_METADATA) ? getMetaData(RENDERER_METADATA) : null;
+			if (metaData == null || metaData == listenedRendererMetaData) {
+				return;
+			}
+			listenedRendererMetaData = metaData;
+			metaData.getPropertyChangeSupport().addPropertyChangeListener(evt -> {
+				if (evt.getPropertyName().equals(SingleMetaData.SERIALIZATION_REPRESENTATION_KEY)) {
+					renderer = retrieveRendererFromMetadata();
+					getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
+				}
+			});
+		}
+
+		/**
+		 * The {@link Bindable} owning the renderer of this concept
+		 */
+		public class FlexoConceptRenderer extends DefaultBindable {
+
+			private FlexoConceptRendererBindingModel rendererBindingModel = null;
+
+			@Override
+			public BindingFactory getBindingFactory() {
+				return FlexoConceptImpl.this.getBindingFactory();
+			}
+
+			@Override
+			public FlexoConceptRendererBindingModel getBindingModel() {
+				if (rendererBindingModel == null) {
+					rendererBindingModel = new FlexoConceptRendererBindingModel(FlexoConceptImpl.this);
+				}
+				return rendererBindingModel;
+			}
+
+			@Override
+			public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+				if (dataBinding == renderer) {
+					// Analyzing the renderer parses its expression, which notifies a change although nothing was edited: writing the
+					// metadata back then would mark the concept, and its compilation unit, as modified by a mere read (CORE-D-26)
+					String expression = renderer != null ? renderer.toString() : null;
+					FMLMetaData metaData = hasMetaData(RENDERER_METADATA) ? getMetaData(RENDERER_METADATA) : null;
+					if (metaData == null && StringUtils.isEmpty(expression)) {
+						// Nothing was declared and nothing is typed: an empty renderer is not written as an (empty) @Renderer annotation
+						return;
+					}
+					if (metaData instanceof SingleMetaData
+							&& Objects.equals(((SingleMetaData<?>) metaData).getSerializationRepresentation(), expression)) {
+						return;
+					}
+					setSingleMetaData(RENDERER_METADATA, renderer, DataBinding.class);
+					listenToRendererMetaData();
+					getPropertyChangeSupport().firePropertyChange(RENDERER_KEY, null, renderer);
+					FlexoConceptImpl.this.notifiedBindingChanged(dataBinding);
+				}
+			}
+
+			@Override
+			public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+				if (dataBinding == renderer) {
+					FlexoConceptImpl.this.notifiedBindingDecoded(dataBinding);
+				}
+			}
+		}
+
+		private FlexoConceptInspectorDelegate derivedInspectorOwner;
+		private DataBinding<FlexoConceptInstance> derivedInspector;
+
+		@Override
+		public Bindable getDerivedInspectorContext() {
+			return getDerivedInspectorOwner();
+		}
+
+		/**
+		 * The {@link Bindable} in which the <code>derived</code> key of this concept's <code>@Inspector(derived=…)</code> is expressed
+		 */
+		private FlexoConceptInspectorDelegate getDerivedInspectorOwner() {
+			if (derivedInspectorOwner == null) {
+				derivedInspectorOwner = new FlexoConceptInspectorDelegate();
+			}
+			return derivedInspectorOwner;
+		}
+
+		@Override
+		public boolean hasDerivedInspector() {
+			MultiValuedMetaData metaData = getMultiValuedMetaData(INSPECTOR_METADATA);
+			return metaData != null && metaData.hasKeyValue(DERIVED_INSPECTOR_KEY);
+		}
+
+		/**
+		 * Get, converting a pre-existing single-valued <code>@Inspector("X.inspector")</code> first (preserving it under the
+		 * <code>default</code> key, exactly as {@code CreateFIBComponent#declareComponent} (openflexo-ui) does for <code>@UI</code>),
+		 * or create, the {@link MultiValuedMetaData} under {@link #INSPECTOR_METADATA}.
+		 */
+		private MultiValuedMetaData getOrCreateInspectorMetaData() {
+			MultiValuedMetaData metaData = getMultiValuedMetaData(INSPECTOR_METADATA);
+			if (metaData == null) {
+				String defaultComponent = hasMetaData(INSPECTOR_METADATA) ? getSingleMetaData(INSPECTOR_METADATA, String.class) : null;
+				if (hasMetaData(INSPECTOR_METADATA)) {
+					removeFromMetaData(getMetaData(INSPECTOR_METADATA));
+				}
+				metaData = getFMLModelFactory().newMultiValuedMetaData(INSPECTOR_METADATA);
+				if (StringUtils.isNotEmpty(defaultComponent)) {
+					metaData.setValue(DEFAULT_VARIANT, defaultComponent, String.class);
+				}
+				addToMetaData(metaData);
+			}
+			return metaData;
+		}
+
+		private DataBinding<FlexoConceptInstance> retrieveDerivedInspectorFromMetadata() {
+			DataBinding<FlexoConceptInstance> returned = getMultiValuedMetaData(INSPECTOR_METADATA).getValue(DERIVED_INSPECTOR_KEY,
+					DataBinding.class);
+			returned.setOwner(getDerivedInspectorOwner());
+			returned.setDeclaredType(FlexoConceptInstance.class);
+			returned.setBindingDefinitionType(BindingDefinitionType.GET);
+			returned.setBindingName("derived");
+			// The FML parser built this binding owned by the MetaDataKeyValue it came from (MetaDataKeyValueImpl#setValueExpression),
+			// which has no binding model of its own: re-parenting it above onto the real context does not by itself invalidate that
+			// stale analysis (a role such as 'myConceptB' otherwise stays UndefinedType forever) - rebuild() forces it to re-resolve.
+			returned.rebuild();
+			return returned;
+		}
+
+		@Override
+		public DataBinding<FlexoConceptInstance> getDerivedInspector() {
+			if (derivedInspector == null) {
+				if (hasDerivedInspector()) {
+					getMultiValuedMetaData(INSPECTOR_METADATA).getKeyValue(DERIVED_INSPECTOR_KEY).getPropertyChangeSupport()
+							.addPropertyChangeListener(evt -> {
+								if (evt.getPropertyName().equals(MetaDataKeyValue.SERIALIZATION_REPRESENTATION_KEY)) {
+									derivedInspector = retrieveDerivedInspectorFromMetadata();
+								}
+							});
+					derivedInspector = retrieveDerivedInspectorFromMetadata();
+				}
+				else {
+					derivedInspector = new DataBinding<>(getDerivedInspectorOwner(), FlexoConceptInstance.class, BindingDefinitionType.GET);
+					derivedInspector.setBindingName("derived");
+				}
+			}
+			return derivedInspector;
+		}
+
+		@Override
+		public void setDerivedInspector(DataBinding<FlexoConceptInstance> derivedInspector) {
+			if (derivedInspector != null) {
+				derivedInspector.setOwner(getDerivedInspectorOwner());
+				derivedInspector.setDeclaredType(FlexoConceptInstance.class);
+				derivedInspector.setBindingDefinitionType(BindingDefinitionType.GET);
+				derivedInspector.setBindingName("derived");
+				getOrCreateInspectorMetaData().setValue(DERIVED_INSPECTOR_KEY, derivedInspector, DataBinding.class);
+			}
+			else if (getMultiValuedMetaData(INSPECTOR_METADATA) != null) {
+				getMultiValuedMetaData(INSPECTOR_METADATA).setValue(DERIVED_INSPECTOR_KEY, null, DataBinding.class);
+			}
+			this.derivedInspector = derivedInspector;
+		}
+
+		/**
+		 * The {@link Bindable} owning the <code>derived</code> key of this concept's <code>@Inspector(derived=…)</code>
+		 */
+		public class FlexoConceptInspectorDelegate extends DefaultBindable {
+
+			private FlexoConceptInspectorDelegateBindingModel derivedInspectorBindingModel = null;
+
+			@Override
+			public BindingFactory getBindingFactory() {
+				return FlexoConceptImpl.this.getBindingFactory();
+			}
+
+			@Override
+			public FlexoConceptInspectorDelegateBindingModel getBindingModel() {
+				if (derivedInspectorBindingModel == null) {
+					derivedInspectorBindingModel = new FlexoConceptInspectorDelegateBindingModel(FlexoConceptImpl.this);
+				}
+				return derivedInspectorBindingModel;
+			}
+
+			@Override
+			public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+				if (dataBinding == derivedInspector) {
+					// Analyzing the binding parses its expression, which notifies a change although nothing was edited: writing the
+					// metadata back then would mark the concept, and its compilation unit, as modified by a mere read (CORE-D-26)
+					String expression = derivedInspector != null ? derivedInspector.toString() : null;
+					MetaDataKeyValue<?> keyValue = hasDerivedInspector() ? getMultiValuedMetaData(INSPECTOR_METADATA).getKeyValue(DERIVED_INSPECTOR_KEY)
+							: null;
+					if (keyValue != null && Objects.equals(keyValue.getSerializationRepresentation(), expression)) {
+						return;
+					}
+					getOrCreateInspectorMetaData().setValue(DERIVED_INSPECTOR_KEY, derivedInspector, DataBinding.class);
+					FlexoConceptImpl.this.notifiedBindingChanged(dataBinding);
+				}
+			}
+
+			@Override
+			public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+				if (dataBinding == derivedInspector) {
+					FlexoConceptImpl.this.notifiedBindingDecoded(dataBinding);
+				}
+			}
 		}
 
 		@Override
@@ -2008,6 +2421,19 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 			decodeParentFlexoConceptList(true);
 			super.finalizeDeserialization();
+		}
+
+		/**
+		 * Rebuilds the bindings this concept stores itself as metadata - <code>@Renderer</code> and <code>@Inspector(derived=…)</code> -
+		 * against their real context. Both are "too early to parse" on the first analysis pass (their target, e.g. a role such as
+		 * <code>myConceptB</code>, may not exist yet), and {@link FMLCompilationUnit} calls this on every {@link FMLObject} for exactly
+		 * that reason - see every other override of this method for the same pattern, one per FMLObject that stores its own binding.
+		 */
+		@Override
+		public void revalidateBindings() {
+			super.revalidateBindings();
+			getRenderer().rebuild();
+			getDerivedInspector().rebuild();
 		}
 
 		public void debug() {
@@ -2422,7 +2848,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				embeddedValidable.add(getStructuralFacet());
 				embeddedValidable.add(getBehaviouralFacet());
 				embeddedValidable.add(getInnerConceptsFacet());
-				embeddedValidable.add(getInspector());
+				if (getInspector() != null) {
+					embeddedValidable.add(getInspector());
+				}
 			}
 			return embeddedValidable;
 		}
@@ -2506,32 +2934,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Return boolean indicating if this concept defines a delegated inspector
-		 * 
-		 * @return
-		 */
-		@Override
-		public boolean hasDelegatedInspector() {
-			if (getInspector() != null && getInspector().getDelegateConceptInstance() != null
-					&& getInspector().getDelegateConceptInstance().isSet() && getInspector().getDelegateConceptInstance().isSet()) {
-				return true;
-			}
-			return false;
-		}
-
-		/**
-		 * Return applicable inspector, while returning delegate inspector when relevant, or current concept inspector
-		 * 
+		 * Return applicable inspector, or current concept inspector
+		 *
 		 * @return
 		 */
 		@Override
 		public FlexoConceptInspector getApplicableInspector() {
-			if (hasDelegatedInspector()) {
-				Type analyzedType = getInspector().getDelegateConceptInstance().getAnalyzedType();
-				if (analyzedType instanceof FlexoConceptInstanceType) {
-					return ((FlexoConceptInstanceType) analyzedType).getFlexoConcept().getApplicableInspector();
-				}
-			}
 			return getInspector();
 		}
 
@@ -2544,9 +2952,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public DataBinding<String> getApplicableRenderer() {
 			// A renderer is stored as @Renderer metadata; asking the deprecated inspector for one when the concept
 			// declares none would lazily create an empty inspector for nothing.
-			if (hasMetaData(RENDERER_METADATA) && getInspector() != null && getInspector().getRenderer() != null
-					&& getInspector().getRenderer().isSet() && getInspector().getRenderer().isValid()) {
-				return getInspector().getRenderer();
+			if (hasMetaData(RENDERER_METADATA) && getRenderer() != null && getRenderer().isSet() && getRenderer().isValid()) {
+				return getRenderer();
 			}
 			else if (getParentFlexoConcepts().size() > 0) {
 				List<FlexoConcept> parentConceptsWithARenderer = new ArrayList<>();
@@ -2594,6 +3001,73 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
+		public Resource getOwnInspectorComponentResource() {
+			return getOwnContainedComponentResource(INSPECTOR_METADATA, ".inspector", DEFAULT_VARIANT);
+		}
+
+		@Override
+		public FIBComponentResource getOwnInspectorComponentFlexoResource() {
+			return componentResourceFor(getOwnInspectorComponentResource());
+		}
+
+		@Override
+		public List<FlexoConcept> getInspectorContributingConcepts() {
+			List<FlexoConcept> returned = new ArrayList<>();
+			List<Resource> seen = new ArrayList<>();
+			for (FlexoConcept concept : getConceptsFromMostGeneral()) {
+				Resource own = concept.getOwnInspectorComponentResource();
+				if (own != null && !seen.contains(own)) {
+					seen.add(own);
+					returned.add(concept);
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public List<Resource> getInspectorComponentResources() {
+			List<Resource> returned = new ArrayList<>();
+			for (FlexoConcept concept : getInspectorContributingConcepts()) {
+				returned.add(concept.getOwnInspectorComponentResource());
+			}
+			return returned;
+		}
+
+		@Override
+		public List<FIBComponentResource> getInspectorComponentFlexoResources() {
+			List<FIBComponentResource> returned = new ArrayList<>();
+			for (FlexoConcept concept : getInspectorContributingConcepts()) {
+				FIBComponentResource own = concept.getOwnInspectorComponentFlexoResource();
+				if (own != null) {
+					returned.add(own);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * This concept and all its ancestors, each once, every concept after all of its parents: depth first, parents in declaration order.
+		 */
+		private List<FlexoConcept> getConceptsFromMostGeneral() {
+			List<FlexoConcept> returned = new ArrayList<>();
+			collectFromMostGeneral(this, returned, new HashSet<>());
+			return returned;
+		}
+
+		/** A cycle in the hierarchy is not valid FML, but must not loop: hence the set of the concepts being visited. */
+		private static void collectFromMostGeneral(FlexoConcept concept, List<FlexoConcept> collected, Set<FlexoConcept> visiting) {
+			if (collected.contains(concept) || !visiting.add(concept)) {
+				return;
+			}
+			for (FlexoConcept parent : concept.getParentFlexoConcepts()) {
+				if (parent != concept) {
+					collectFromMostGeneral(parent, collected, visiting);
+				}
+			}
+			collected.add(concept);
+		}
+
+		@Override
 		public List<String> getUIComponentVariants() {
 			return getComponentVariants(UI_METADATA, ".fib");
 		}
@@ -2601,6 +3075,35 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public List<String> getInspectorComponentVariants() {
 			return getComponentVariants(INSPECTOR_METADATA, ".inspector");
+		}
+
+		@Override
+		public void freezeConventionalUIComponentNames() {
+			freezeConventionalComponentName(UI_METADATA, ".fib");
+			freezeConventionalComponentName(INSPECTOR_METADATA, ".inspector");
+		}
+
+		/**
+		 * See {@link #freezeConventionalUIComponentNames()}. Mirrors exactly the convention branch of
+		 * {@link #getContainedComponentResource(String, String, String)}: an existing annotation under this key is left untouched (there is
+		 * nothing to freeze, and this concept's own declaration must not be second-guessed), and only a component resolved on THIS concept -
+		 * never one inherited from a parent - is frozen.
+		 */
+		private void freezeConventionalComponentName(String metadataKey, String extension) {
+
+			if (hasMetaData(metadataKey) || StringUtils.isEmpty(getName())) {
+				return;
+			}
+
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+			if (compilationUnit == null) {
+				return;
+			}
+
+			String conventionalName = getName() + extension;
+			if (compilationUnit.getContainedArtefact(conventionalName) != null) {
+				setSingleMetaData(metadataKey, conventionalName, String.class);
+			}
 		}
 
 		@Override
@@ -2641,25 +3144,15 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		private Resource getContainedComponentResource(String metadataKey, String extension, String variant) {
 
-			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
 			boolean isDefault = DEFAULT_VARIANT.equals(variant);
 
-			if (compilationUnit != null) {
-
-				// An explicit annotation wins, and is NOT searched in the concept hierarchy: naming a component is
-				// saying which one this concept uses, not which one its children use.
-				String declaredName = declaredComponentName(metadataKey, variant);
-				if (StringUtils.isNotEmpty(declaredName)) {
-					// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
-					return compilationUnit.getContainedArtefact(declaredName);
-				}
-
-				if (isDefault && StringUtils.isNotEmpty(getName())) {
-					Resource returned = compilationUnit.getContainedArtefact(getName() + extension);
-					if (returned != null) {
-						return returned;
-					}
-				}
+			Resource own = getOwnContainedComponentResource(metadataKey, extension, variant);
+			if (own != null) {
+				return own;
+			}
+			if (getDeclaringCompilationUnit() != null && StringUtils.isNotEmpty(declaredComponentName(metadataKey, variant))) {
+				// A broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent: it is NOT searched in the hierarchy
+				return null;
 			}
 
 			// Not declared here: inherit from the most specialized parent concept that declares THIS variant
@@ -2687,6 +3180,31 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
+		 * The component of supplied variant that THIS concept contributes: the one an explicit annotation names, which wins over the naming
+		 * convention - that one for the default variant only. Never searched in the concept hierarchy: naming a component is saying which
+		 * one this concept uses, not which one its children use.
+		 */
+		private Resource getOwnContainedComponentResource(String metadataKey, String extension, String variant) {
+
+			FMLCompilationUnit compilationUnit = getDeclaringCompilationUnit();
+			if (compilationUnit == null) {
+				return null;
+			}
+
+			String declaredName = declaredComponentName(metadataKey, variant);
+			if (StringUtils.isNotEmpty(declaredName)) {
+				// A null here is a broken declaration, reported by FlexoConceptShouldHaveAnExistingDeclaredComponent
+				return compilationUnit.getContainedArtefact(declaredName);
+			}
+
+			if (DEFAULT_VARIANT.equals(variant) && StringUtils.isNotEmpty(getName())) {
+				return compilationUnit.getContainedArtefact(getName() + extension);
+			}
+
+			return null;
+		}
+
+		/**
 		 * The file name supplied annotation gives for supplied variant, or null. Handles both shapes under the same key: the accessors of
 		 * {@link FMLObject} are guarded by an <code>instanceof</code>, so a single-valued and a multi-valued annotation cohabit safely.
 		 */
@@ -2704,15 +3222,27 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return DEFAULT_VARIANT.equals(variant) ? getSingleMetaData(metadataKey, String.class) : null;
 		}
 
-		/** First variant of a multi-valued annotation, in declaration order, or null. */
+		/**
+		 * First variant of a multi-valued annotation, in declaration order, or null. The <code>derived</code> key of
+		 * <code>@Inspector(derived=…)</code> is never a candidate: it hands inspection to another object entirely, and is not the name
+		 * of a component to fall back on.
+		 */
 		private String firstDeclaredVariant(String metadataKey) {
 			MultiValuedMetaData metaData = getMultiValuedMetaData(metadataKey);
 			if (metaData != null) {
 				for (MetaDataKeyValue<?> keyValue : metaData.getKeyValues()) {
+					if (isDerivedInspectorKey(metadataKey, keyValue.getKey())) {
+						continue;
+					}
 					return keyValue.getKey();
 				}
 			}
 			return null;
+		}
+
+		/** Whether supplied key, under supplied metadata, is the reserved <code>derived</code> key of <code>@Inspector(derived=…)</code>. */
+		private boolean isDerivedInspectorKey(String metadataKey, String key) {
+			return INSPECTOR_METADATA.equals(metadataKey) && DERIVED_INSPECTOR_KEY.equals(key);
 		}
 
 		/**
@@ -2729,6 +3259,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			MultiValuedMetaData metaData = getMultiValuedMetaData(metadataKey);
 			if (metaData != null) {
 				for (MetaDataKeyValue<?> keyValue : metaData.getKeyValues()) {
+					if (isDerivedInspectorKey(metadataKey, keyValue.getKey())) {
+						continue;
+					}
 					if (!returned.contains(keyValue.getKey())) {
 						returned.add(keyValue.getKey());
 					}
@@ -2987,10 +3520,67 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public DataBinding<String> getBinding(FlexoConcept object) {
-			if (object.getInspector() == null) {
+			if (!object.hasMetaData(RENDERER_METADATA)) {
 				return null;
 			}
-			return object.getInspector().getRenderer();
+			return object.getRenderer();
+		}
+	}
+
+	/**
+	 * Checks the <code>derived</code> key of this {@link FlexoConcept}, as declared in FML with the
+	 * {@code @Inspector(derived=...)} annotation.
+	 *
+	 * The expression must resolve to a {@link FlexoConceptInstance}: an invalid one is silently ignored at run-time
+	 * ({@link FlexoConceptInstance#getInspectedObject()} then returns the instance itself, showing its own inspector instead of
+	 * delegating), which gives no clue that the annotation was rejected.
+	 */
+	@DefineValidationRule
+	public static class DerivedInspectorBindingMustBeValid extends BindingMustBeValid<FlexoConcept> {
+		public DerivedInspectorBindingMustBeValid() {
+			super("'derived'_inspector_binding_must_be_valid", FlexoConcept.class);
+		}
+
+		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
+		}
+
+		@Override
+		public DataBinding<FlexoConceptInstance> getBinding(FlexoConcept object) {
+			if (!object.hasDerivedInspector()) {
+				return null;
+			}
+			return object.getDerivedInspector();
+		}
+	}
+
+	/**
+	 * A concept declaring <code>@Inspector(derived=...)</code> hands inspection of its instances entirely to another object: it
+	 * cannot also resolve a <code>.inspector</code> component of its own - by an explicit <code>@Inspector("...")</code>/
+	 * <code>@Inspector(default="...")</code> key, or by the plain naming convention. Having both is very likely a modeling mistake:
+	 * the component would simply never be shown, since {@link FlexoConceptInstance#getInspectedObject()} redirects before
+	 * {@link FlexoConcept#getInspectorComponentResource()} of THIS concept is ever consulted.
+	 */
+	@DefineValidationRule
+	public static class DerivedInspectorMustBeExclusiveOfAnInspectorComponent
+			extends ValidationRule<DerivedInspectorMustBeExclusiveOfAnInspectorComponent, FlexoConcept> {
+		public DerivedInspectorMustBeExclusiveOfAnInspectorComponent() {
+			super(FlexoConcept.class, "derived_inspector_must_be_exclusive_of_an_inspector_component");
+		}
+
+		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
+		}
+
+		@Override
+		public ValidationIssue<DerivedInspectorMustBeExclusiveOfAnInspectorComponent, FlexoConcept> applyValidation(
+				FlexoConcept flexoConcept) {
+			if (flexoConcept.hasDerivedInspector() && flexoConcept.getInspectorComponentResource() != null) {
+				return new ValidationError<>(this, flexoConcept, "concept_declares_both_a_derived_inspector_and_an_inspector_component");
+			}
+			return null;
 		}
 	}
 

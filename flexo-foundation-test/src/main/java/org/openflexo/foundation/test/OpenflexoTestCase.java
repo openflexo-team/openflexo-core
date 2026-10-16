@@ -45,6 +45,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -373,17 +375,38 @@ public abstract class OpenflexoTestCase {
 	protected void reloadResourceCenter(Resource oldRCDirectory) {
 		if (oldRCDirectory instanceof FileResourceImpl) {
 			File directory = ((FileResourceImpl) oldRCDirectory).getFile();
-			File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory(), directory.getName());
-			newDirectory.mkdirs();
 			try {
-				FileUtils.copyContentDirToDir(directory, newDirectory);
-				// We wait here for the thread monitoring ResourceCenters to
-				// detect new files
-				((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
+				copyIntoResourceCenter(directory, (FileSystemBasedResourceCenter) resourceCenter);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Copy a directory into the root directory of supplied resource center, then make the resource center discover it.<br>
+	 * The copy is made aside and moved in at once: the directory watcher of the resource center runs in its own thread, and a directory
+	 * it finds half-copied - a <code>Xxx.fml</code> without its <code>Xxx.fml</code> file yet - gives a resource that is never completed
+	 * afterwards (CORE-D-39).
+	 *
+	 * @return the copy, in the resource center
+	 */
+	protected static File copyIntoResourceCenter(File directory, FileSystemBasedResourceCenter resourceCenter) throws IOException {
+		File rootDirectory = resourceCenter.getRootDirectory();
+		File copy = new File(rootDirectory, directory.getName());
+		// Next to the resource center, so that the move is a rename on the same file system
+		File staging = Files.createTempDirectory(rootDirectory.getParentFile().toPath(), "staging").toFile();
+		try {
+			File staged = new File(staging, directory.getName());
+			staged.mkdirs();
+			FileUtils.copyContentDirToDir(directory, staged);
+			Files.move(staged.toPath(), copy.toPath(), StandardCopyOption.ATOMIC_MOVE);
+		} finally {
+			FileUtils.deleteDir(staging);
+		}
+		// We wait here for the thread monitoring ResourceCenters to detect new files
+		resourceCenter.performDirectoryWatchingNow();
+		return copy;
 	}
 
 	protected static FlexoServiceManager getFlexoServiceManager() {

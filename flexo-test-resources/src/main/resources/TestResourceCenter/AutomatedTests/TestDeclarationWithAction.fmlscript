@@ -1,0 +1,13 @@
+// A declaration whose initializer is an edition action (select unique, select) declares a variable, which is then used by the next
+// statements: the actions are executed, not only parsed.
+service ResourceCenterService status;
+resources;
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestDeclarationWithAction.fml"];
+assert virtualModel != null;
+service ResourceCenterService add_temp_rc;
+myVMI = new TestDeclarationWithAction() with (name="test1");
+assert myVMI != null;
+assert myVMI.nameOfTheOneWithValue(1) == "a";
+assert myVMI.countWithValue(2) == 2;
+assert myVMI.countWithValue(1) == 1;
+assert myVMI.countWithValue(7) == 0;

@@ -106,8 +106,6 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 					((AInitializerFmlActionVariableDeclarator) astNode.getVariableDeclarator()).getFmlActionExp(), getSemanticsAnalyzer());
 
 			if (assignableActionNode != null) {
-				System.out.println("On obtient " + assignableActionNode);
-				// System.exit(-1);
 				if (assignableActionNode.getModelObject() instanceof AssignableAction) {
 					returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
 					addToChildren(assignableActionNode);
@@ -118,7 +116,6 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 				}
 			}
 
-			logger.warning("DeclarationAction with EditionAction not implemented yet");
 		}
 
 		return returned;

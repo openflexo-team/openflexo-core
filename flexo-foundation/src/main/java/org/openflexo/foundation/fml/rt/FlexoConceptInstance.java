@@ -38,13 +38,17 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,6 +64,7 @@ import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
@@ -88,6 +93,7 @@ import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
+import org.openflexo.foundation.resource.ReleasableObject;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.fml.rt.reflect.ReflectedFMLRTModelSlotInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -150,7 +156,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoEventInstance.class) })
 // TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 // This inheritance should disappear
-public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
+public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext, ReleasableObject {
 
 	public static final String DELETED_PROPERTY = "deleted";
 	public static final String EMPTY_STRING = "<null>";
@@ -593,7 +599,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public int hashCodeUsingRoles();
 
 	/**
-	 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+	 * Return applicable inspected object: the one {@link FlexoConcept#getDerivedInspector() @Inspector(derived=…)} hands inspection
+	 * to (chained through as many concepts as declare it), or this instance itself when its concept declares none.
 	 */
 	public FlexoConceptInstance getInspectedObject();
 
@@ -972,6 +979,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
+		 * A number computed by an expression (<code>weight + 1</code> is a Long) is stored in the numeric type of the property it is assigned
+		 * to: a property typed Integer holding a Long fails any path resolved on its declared type (<code>weight.toString</code>)
+		 */
+		@SuppressWarnings("unchecked")
+		private <T> T coerceNumber(FlexoProperty<T> flexoProperty, T value) {
+			Type type = flexoProperty.getType();
+			if (value instanceof Number && type != null && (TypeUtils.isByte(type) || TypeUtils.isShort(type) || TypeUtils.isInteger(type)
+					|| TypeUtils.isLong(type) || TypeUtils.isFloat(type) || TypeUtils.isDouble(type))) {
+				return (T) TypeUtils.castTo(value, type);
+			}
+			return value;
+		}
+
+		/**
 		 * Sets value associated with supplied property, if supplied value is not equals (java semantics) to actual value
 		 * 
 		 * @param flexoProperty
@@ -980,12 +1001,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the new value to set
 		 */
 		@Override
-		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value) {
+		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T aValue) {
 
 			if (flexoProperty == null || flexoProperty.getFlexoConcept() == null) {
 				logger.warning("Unexpected null value: " + flexoProperty);
 				return;
 			}
+
+			final T value = coerceNumber(flexoProperty, aValue);
 
 			if (!flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
@@ -1635,6 +1658,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					getOwningVirtualModelInstance().flexoConceptInstanceChangedFlexoConcept(this, oldFlexoConcept, flexoConcept);
 				}
 				getPropertyChangeSupport().firePropertyChange("FlexoConcept", oldFlexoConcept, flexoConcept);
+				flexoConceptChanged();
 			}
 		}
 
@@ -1776,16 +1800,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null) {
-				return getFlexoConcept().getInspector().getBindingFactory();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getRendererContext().getBindingFactory();
 			}
 			return null;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null) {
-				return getFlexoConcept().getInspector().getBindingModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getRendererContext().getBindingModel();
 			}
 			return null;
 		}
@@ -2027,13 +2051,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}
+			release();
 			boolean returned = performSuperDelete();
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 			return returned;
 		}
 
 		/**
-		 * Delete this FlexoConcept instance using supplied DeletionScheme
+		 * Delete this FlexoConcept instance using supplied DeletionScheme<br>
+		 * The scheme runs first, then the contained instances are deleted, each with its own default deletion scheme, while they still are
+		 * attached to this instance: a deletion scheme of a contained instance may navigate through its <code>container</code>. Only then
+		 * is this instance detached and deleted.
 		 */
 		@Override
 		public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext) {
@@ -2056,6 +2084,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 
+			deleteContainedFlexoConceptInstances();
+
 			if (container != null) {
 				container.removeFromEmbeddedFlexoConceptInstances(this);
 			}
@@ -2063,6 +2093,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}
+			release();
 			// logger.warning("FlexoConceptInstance deletion !");
 			// deleted = true;
 			/*if (getFlexoConcept().getPrimaryRepresentationProperty() != null) {
@@ -2084,6 +2115,38 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			boolean returned = performSuperDelete();
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 			return returned;
+		}
+
+		/**
+		 * Delete, with their own default deletion scheme, the instances this instance contains<br>
+		 * Called by {@link #deleteWithScheme(DeletionScheme, RunTimeEvaluationContext)} before this instance is detached, so that their
+		 * deletion schemes still find their container. Otherwise PAMELA would delete them afterwards, while cascading the deletion over the
+		 * embedded properties, once their container is already gone.
+		 */
+		protected void deleteContainedFlexoConceptInstances() {
+			for (FlexoConceptInstance embedded : new ArrayList<>(getEmbeddedFlexoConceptInstances())) {
+				if (!embedded.isDeleted()) {
+					embedded.delete();
+				}
+			}
+		}
+
+		/**
+		 * Release what this instance registered outside of its resource: the listener keeping its string representation up to date, and
+		 * what the renderer of its concept cached for it. Both are registered on the objects the renderer reaches, which may belong to
+		 * other models, and the renderer binding belongs to the VirtualModel, which outlives this instance.<br>
+		 * Runs no behaviour and changes nothing: this is what unloading does, and what deleting does in addition to deleting.
+		 */
+		@Override
+		public void release() {
+			stopListeningToConceptRenderers();
+			if (rendererChangeListener != null) {
+				rendererChangeListener.delete();
+				rendererChangeListener = null;
+			}
+			if (getFlexoConcept() != null && getFlexoConcept().getApplicableRenderer() != null) {
+				getFlexoConcept().getApplicableRenderer().releaseEvaluationContext(this);
+			}
 		}
 
 		private AbstractVirtualModelInstanceModelFactory storedFactoryAfterDeletion;
@@ -2162,17 +2225,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public boolean hasValidRenderer() {
 
-			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null
-					&& getFlexoConcept().getInspector().getRenderer() != null) {
-				if (!getFlexoConcept().getInspector().getRenderer().isValid()) {
+			if (getFlexoConcept() != null && getFlexoConcept().getRenderer() != null) {
+				if (!getFlexoConcept().getRenderer().isValid()) {
 					// Quick and dirty hack to force revalidate
 					if (!rendererWasForceRevalidated) {
-						String invalidReason = getFlexoConcept().getInspector().getRenderer().invalidBindingReason();
-						getFlexoConcept().getInspector().getRenderer().revalidate();
+						String invalidReason = getFlexoConcept().getRenderer().invalidBindingReason();
+						getFlexoConcept().getRenderer().revalidate();
 						rendererWasForceRevalidated = true;
-						if (getFlexoConcept().getInspector().getRenderer().isValid()) {
+						if (getFlexoConcept().getRenderer().isValid()) {
 							logger.warning("Please investigate: i was required to force revalidate renderer: "
-									+ getFlexoConcept().getInspector().getRenderer() + " invalid reason=" + invalidReason);
+									+ getFlexoConcept().getRenderer() + " invalid reason=" + invalidReason);
 						}
 					}
 				}
@@ -2187,6 +2249,101 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		private BindingPathChangeListener<String> rendererChangeListener = null;
+
+		private PropertyChangeListener conceptRendererListener = null;
+		private final List<FlexoConcept> conceptsListenedForRenderer = new ArrayList<>();
+
+		/**
+		 * Listen to the renderer of the concept of this instance, and of its parent concepts (the applicable renderer may be inherited), so
+		 * that editing a renderer refreshes the string representation of the instances already existing.
+		 */
+		private void listenToConceptRenderers() {
+			if (conceptRendererListener != null || getFlexoConcept() == null) {
+				return;
+			}
+			conceptRendererListener = evt -> {
+				if (FlexoConcept.RENDERER_KEY.equals(evt.getPropertyName())) {
+					conceptRendererChanged();
+				}
+			};
+			conceptsListenedForRenderer.add(getFlexoConcept());
+			conceptsListenedForRenderer.addAll(getFlexoConcept().getAllParentFlexoConcepts());
+			for (FlexoConcept concept : conceptsListenedForRenderer) {
+				concept.getPropertyChangeSupport().addPropertyChangeListener(FlexoConcept.RENDERER_KEY, conceptRendererListener);
+			}
+		}
+
+		private void stopListeningToConceptRenderers() {
+			if (conceptRendererListener != null) {
+				for (FlexoConcept concept : conceptsListenedForRenderer) {
+					concept.getPropertyChangeSupport().removePropertyChangeListener(FlexoConcept.RENDERER_KEY, conceptRendererListener);
+				}
+				conceptsListenedForRenderer.clear();
+				conceptRendererListener = null;
+			}
+		}
+
+		/**
+		 * The string representation of this instance has changed. It is exposed under two names, and a binding listens to the one it reads:
+		 * <code>stringRepresentation</code>, and <code>render</code>, the native property (see {@link org.openflexo.foundation.fml.binding.EPIRendererPathElement}) a renderer or
+		 * a label reads to get the representation of another instance (<code>instance.representedConcept.render</code>).
+		 */
+		private void notifyStringRepresentationChanged(String newValue) {
+			if (isNotifyingStringRepresentation) {
+				// A renderer reading the representation of its own instance (<code>instance.render</code>) listens to the very property
+				// fired here: without this guard, each notification triggers the next one until the stack overflows
+				return;
+			}
+			try {
+				isNotifyingStringRepresentation = true;
+				getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
+				getPropertyChangeSupport().firePropertyChange(FlexoConceptBindingModel.RENDERER_PROPERTY_NAME, null, newValue);
+			} finally {
+				isNotifyingStringRepresentation = false;
+			}
+		}
+
+		private boolean isNotifyingStringRepresentation = false;
+
+		/**
+		 * The renderer applicable to this instance has been edited: drop what was built on the former one, then notify, which makes whoever
+		 * displays the string representation of this instance (a browser caching its label, for instance) read it again.
+		 */
+		private void conceptRendererChanged() {
+			if (isDeleted()) {
+				return;
+			}
+			dropRendererListener();
+			notifyStringRepresentationChanged(getStringRepresentation());
+		}
+
+		/**
+		 * Drop what was built on the renderer this instance used: the listener of its value, and what the renderer cached for this instance
+		 */
+		private void dropRendererListener() {
+			if (rendererChangeListener != null) {
+				DataBinding<String> formerRenderer = rendererChangeListener.getDataBinding();
+				rendererChangeListener.delete();
+				rendererChangeListener = null;
+				if (formerRenderer != null) {
+					formerRenderer.releaseEvaluationContext(this);
+				}
+			}
+		}
+
+		/**
+		 * This instance has changed of concept (a shape of the free modelling editor, for instance, becomes the representation of a concept
+		 * it did not stand for): its renderer is no longer the one it was listening to, nor are the concepts defining it. Whoever displays its
+		 * representation (a browser caching its label) is told to read it again - otherwise it keeps the label of the former concept.
+		 */
+		private void flexoConceptChanged() {
+			boolean representationWasRead = rendererChangeListener != null || conceptRendererListener != null;
+			dropRendererListener();
+			stopListeningToConceptRenderers();
+			if (representationWasRead && !isDeleted()) {
+				notifyStringRepresentationChanged(getStringRepresentation());
+			}
+		}
 
 		private boolean isComputingRenderer = false;
 
@@ -2208,25 +2365,30 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			// We avoid here to enter in an infinite loop while protecting the computation of toString()
 			// (Could happen while extensively logging)
 
+			listenToConceptRenderers();
+
 			if (hasValidRenderer() && !isComputingRenderer) {
 				try {
 					isComputingRenderer = true;
-					Object obj = getFlexoConcept().getApplicableRenderer().getBindingValue(this);
-
+					// The listener must exist BEFORE the renderer is evaluated: while the instance is still being built (a role such
+					// as 'fmeConcept' not yet assigned), the evaluation raises a NullReferenceException and we would leave here
+					// without ever listening. The fallback label would then never be refreshed once the path becomes computable.
 					if (rendererChangeListener == null) {
 						rendererChangeListener = new BindingPathChangeListener<String>(getFlexoConcept().getApplicableRenderer(), this) {
 							@Override
 							public void bindingValueChanged(Object source, String newValue) {
 								/*System.out.println(" bindingValueChanged() detected for string representation of "
-										+ FlexoConceptInstanceImpl.this + " " + getFlexoConcept().getInspector().getRenderer()
+										+ FlexoConceptInstanceImpl.this + " " + getFlexoConcept().getRenderer()
 										+ " with newValue=" + newValue + " source=" + source);*/
 								if (!isDeleted()) {
 									// We have here detected that the string representation of this concept instance has changed
-									getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
+									notifyStringRepresentationChanged(newValue);
 								}
 							}
 						};
 					}
+
+					Object obj = getFlexoConcept().getApplicableRenderer().getBindingValue(this);
 
 					isComputingRenderer = false;
 
@@ -2537,29 +2699,47 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
-		 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+		 * Return applicable inspected object: the one {@code @Inspector(derived=…)} hands inspection to, chained through as many
+		 * concepts as declare it (a FlexoConceptInstance of a concept that itself derives its inspector further), otherwise this.
+		 *
+		 * <p>
+		 * Guards against a cycle (A derives to B, which derives back to A - a modeling mistake {@link FlexoConcept}'s validation rule
+		 * does not catch, since it only looks at one concept at a time): the chain stops at the first instance seen twice, returning it
+		 * rather than looping forever.
 		 */
 		@Override
 		public FlexoConceptInstance getInspectedObject() {
-			if (getFlexoConcept() != null && getFlexoConcept().hasDelegatedInspector()) {
+			FlexoConceptInstance current = this;
+			Set<FlexoConceptInstance> visited = new HashSet<>();
+			visited.add(current);
+			while (current.getFlexoConcept() != null && current.getFlexoConcept().hasDerivedInspector()) {
+				FlexoConceptInstance next;
 				try {
-					FlexoConceptInstance delegate = getFlexoConcept().getInspector().getDelegateConceptInstance().getBindingValue(this);
-					return delegate;
+					next = current.getFlexoConcept().getDerivedInspector().getBindingValue(current);
 				} catch (TypeMismatchException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				} catch (NullReferenceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				} catch (InvocationTargetException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				} catch (ReflectiveOperationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				}
+				if (next == null || !visited.add(next)) {
+					// Nothing to delegate to, or a cycle: stop here, showing whatever was reached last
+					break;
+				}
+				current = next;
 			}
-			return this;
+			return current;
 		}
 
 		/**

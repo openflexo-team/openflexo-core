@@ -1,0 +1,46 @@
+/**
+ * The kinds of properties of a concept, their initial values and how they are read and written.
+ * See TestWidgets.fmlscript.
+ */
+
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/Widgets.fml")
+public model Widgets {
+
+	public Gadget newGadget() {
+		return new Gadget();
+	}
+
+	public concept Gadget {
+
+		int count;
+		boolean flag;
+		String text;
+		double ratio;
+		int preset = 7;
+		String greeting = "hi";
+		List<String> tags = new ArrayList<String>();
+		String[0,*] many;
+		String... labels;
+		Gadget other;
+		private String secret;
+
+		String fixed {
+			String get() {
+				return "constant";
+			}
+		};
+
+		create() {
+		}
+
+		public addTag(String tag) {
+			tags.add(parameters.tag);
+		}
+
+		public String secretValue() {
+			return secret;
+		}
+	}
+}

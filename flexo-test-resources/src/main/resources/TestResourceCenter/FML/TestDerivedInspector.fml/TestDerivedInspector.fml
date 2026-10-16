@@ -1,0 +1,29 @@
+/**
+ * Fixture for @Inspector(derived=…): hands inspection of an instance of a concept entirely to another
+ * FlexoConceptInstance, found by evaluating the expression against the instance being inspected. See
+ * FlexoConcept.getDerivedInspector() and FlexoConceptInstance.getInspectedObject(), which follows it.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestDerivedInspector.fml")
+public model TestDerivedInspector {
+
+	public concept ConceptB {
+		public String name;
+	}
+
+	/** Hands inspection entirely to the ConceptB instance referenced by role myConceptB. */
+	@Inspector(derived=myConceptB)
+	public concept ConceptA {
+		public ConceptB myConceptB;
+	}
+
+	/** Declares neither convention, file, nor derived key: has none of it. */
+	public concept WithoutAnyInspector {
+		public ConceptB myConceptB;
+	}
+
+	/** Left pristine for TestDerivedInspector#test4RoundTripsThroughTheFMLSource, which declares 'derived' on it. */
+	public concept AnotherWithoutAnyInspector {
+		public ConceptB myConceptB;
+	}
+}

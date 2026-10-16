@@ -141,7 +141,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAda
 				this);
 		if (returned == null) {
 			returned = FMLRTVirtualModelInstanceRepository.instanciateNewRepository(this, resourceCenter);
-			resourceCenter.registerRepository(returned, FMLRTVirtualModelInstanceRepository.class, this);
+			// Another thread may have registered one meanwhile: use the registered one (CORE-D-25)
+			returned = resourceCenter.registerRepository(returned, FMLRTVirtualModelInstanceRepository.class, this);
 		}
 		return returned;
 	}

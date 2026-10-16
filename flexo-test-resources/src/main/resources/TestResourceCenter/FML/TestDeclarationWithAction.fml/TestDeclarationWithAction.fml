@@ -1,0 +1,37 @@
+import java.lang.String;
+import java.util.List;
+
+/**
+ * Fixture of the declarations whose initializer is an edition action rather than an expression: <code>Type v = select unique ...</code>
+ * and <code>Type v = select ... where ...</code>. They go through their own production of the grammar (initializer_fml_action).
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/TestDeclarationWithAction.fml")
+@Author("sylvainguerin")
+public model TestDeclarationWithAction {
+
+	create() {
+		Item a = new Item("a",1);
+		Item b = new Item("b",2);
+		Item c = new Item("c",2);
+	}
+
+	String nameOfTheOneWithValue(int wanted) {
+		Item found = select unique Item from this where(selected.value == parameters.wanted);
+		return found.name;
+	}
+
+	int countWithValue(int wanted) {
+		List<Item> all = select Item from this where(selected.value == parameters.wanted);
+		return all.size;
+	}
+
+	concept Item {
+		String name;
+		int value;
+
+		create(String name,int value) {
+			name = parameters.name;
+			value = parameters.value;
+		}
+	}
+}

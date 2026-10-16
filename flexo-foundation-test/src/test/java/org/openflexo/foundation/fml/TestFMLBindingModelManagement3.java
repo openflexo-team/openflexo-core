@@ -655,14 +655,9 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(viewPoint.getResource().getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory(), directory.getName());
-		newDirectory.mkdirs();
-
 		try {
-			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect
-			// new files
-			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
+			// Copied aside and moved in at once: the directory watcher must not find it half-copied (CORE-D-39)
+			copyIntoResourceCenter(directory, (FileSystemBasedResourceCenter) resourceCenter);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

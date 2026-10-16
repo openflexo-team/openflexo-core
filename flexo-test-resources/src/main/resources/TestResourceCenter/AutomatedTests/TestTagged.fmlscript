@@ -1,0 +1,39 @@
+// Annotations, as stated by the "Annotations" page of the user guide.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Tagged.fml"];
+
+// Any annotation is accepted and kept on the element it precedes, whatever its shape
+assert virtualModel.hasMetaData("Marker");
+assert virtualModel.hasMetaData("Note");
+assert virtualModel.hasMetaData("Owner");
+assert virtualModel.hasMetaData("Groups");
+assert virtualModel.hasMetaData("Nope") == false;
+card = virtualModel.getFlexoConcept("Card");
+assert card.hasMetaData("Renderer");
+assert card.getDeclaredProperty("name").hasMetaData("Hint");
+
+// They are printed back as they were written; a version is normalised
+printed = virtualModel.fMLPrettyPrint;
+assert printed.contains("@Marker");
+assert printed.contains("@Owner(name=");
+assert printed.contains("@Groups(");
+assert printed.contains("@Renderer(");
+assert printed.contains("@Hint(");
+assert virtualModel.version.toString() == "2.0";
+
+// A renderer gives the string representation of the instances, and follows their properties
+service ResourceCenterService add_temp_rc;
+tagged = new Tagged() with (name="tagged");
+c1 = tagged.newCard("x");
+first = "" + c1;
+assert first == "x!";
+c1.name = "y";
+second = "" + c1;
+assert second == "y!";
+
+// Inherited by the concepts that extend the concept
+g1 = tagged.newGold("z");
+third = "" + g1;
+assert third == "z!";
+
+log "Test PASSED: the annotations of Tagged behave as the guide states";

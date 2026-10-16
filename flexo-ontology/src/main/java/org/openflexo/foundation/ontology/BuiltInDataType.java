@@ -149,6 +149,66 @@ public enum BuiltInDataType implements W3URIDefinitions {
 			return W3_BOOLEAN_DATATYPE_URI;
 		}
 
+	},
+	NonNegativeInteger {
+		@Override
+		public Class<?> getAccessedType() {
+			return Integer.class;
+		}
+
+		@Override
+		public java.lang.String getURI() {
+			return W3_NON_NEGATIVE_INTEGER_DATATYPE_URI;
+		}
+
+	},
+	PositiveInteger {
+		@Override
+		public Class<?> getAccessedType() {
+			return Integer.class;
+		}
+
+		@Override
+		public java.lang.String getURI() {
+			return W3_POSITIVE_INTEGER_DATATYPE_URI;
+		}
+
+	},
+	AnyURI {
+		@Override
+		public Class<?> getAccessedType() {
+			return String.class;
+		}
+
+		@Override
+		public java.lang.String getURI() {
+			return W3_ANY_URI_DATATYPE_URI;
+		}
+
+	},
+	Date {
+		@Override
+		public Class<?> getAccessedType() {
+			return java.util.Date.class;
+		}
+
+		@Override
+		public java.lang.String getURI() {
+			return W3_DATE_DATATYPE_URI;
+		}
+
+	},
+	DateTime {
+		@Override
+		public Class<?> getAccessedType() {
+			return java.util.Date.class;
+		}
+
+		@Override
+		public java.lang.String getURI() {
+			return W3_DATE_TIME_DATATYPE_URI;
+		}
+
 	};
 
 	public abstract Class<?> getAccessedType();

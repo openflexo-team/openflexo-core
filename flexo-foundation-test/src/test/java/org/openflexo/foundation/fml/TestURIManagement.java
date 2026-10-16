@@ -67,7 +67,6 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileUtils;
 
 /**
  * This unit test is intented to test URI management
@@ -333,14 +332,9 @@ public class TestURIManagement extends OpenflexoTestCase {
 		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(topLevelVMResource.getDirectory());
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory(), directory.getName());
-		newDirectory.mkdirs();
-
 		try {
-			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect
-			// new files
-			((FileSystemBasedResourceCenter) resourceCenter).performDirectoryWatchingNow();
+			// Copied aside and moved in at once: the directory watcher must not find it half-copied (CORE-D-39)
+			copyIntoResourceCenter(directory, (FileSystemBasedResourceCenter) resourceCenter);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -50,7 +50,9 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -164,6 +166,11 @@ public abstract class CompilationUnitResourceImpl
 	@Override
 	public String computeDefaultURI() {
 		String returned = super.computeDefaultURI();
+		if (returned == null) {
+			// No default URI from the resource center: a project being closed has lost its delegate resource center (CORE-D-27).
+			// FlexoResourceImpl.getURI() falls back on the serialization artefact
+			return null;
+		}
 		if (!returned.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
 			return returned + CompilationUnitResourceFactory.FML_SUFFIX;
 		}
@@ -347,13 +354,79 @@ public abstract class CompilationUnitResourceImpl
 
 	private boolean isLoading;
 
+	/**
+	 * Flag indicating that the second loading pass of this resource is done
+	 */
+	private boolean isFinalized = false;
+
+	@Override
+	public boolean isWaitingForReferencedUnits() {
+		for (FlexoResource<?> dependency : getCrossReferenceDependencies()) {
+			if (dependency instanceof CompilationUnitResourceImpl && !((CompilationUnitResourceImpl) dependency).isFinalized) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * The compilation units finalized while this one was not yet (compilation units importing each other), and to revalidate once it is
+	 */
+	private final List<CompilationUnitResourceImpl> resourcesToRevalidateOnceFinalized = new ArrayList<>();
+
 	@Override
 	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+		// The second pass analyzes the bindings the first one deferred, and analyzing a binding sets its expression, which notifies its
+		// owner and marks this unit modified. That is still loading, not an edition: what was loaded from disk and not edited must not
+		// be proposed for saving (CORE-D-26)
+		boolean wasModifiedBeforeSecondPass = getLoadedResourceData().isModified();
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
 		if (cuNode != null) {
 			cuNode.getSemanticsAnalyzer().finalizeDeserialization(true);
 		}
+		if (!wasModifiedBeforeSecondPass) {
+			getLoadedResourceData().clearIsModified();
+		}
+		isFinalized = true;
+		// A compilation unit referenced by this one, but not finalized yet, is still loading higher in the stack: the bindings of this
+		// unit were analyzed against its partial content (members not declared yet are unresolved), and those found invalid must be
+		// analyzed again once it is complete (CORE-D-14)
+		for (FlexoResource<?> dependency : getCrossReferenceDependencies()) {
+			if (dependency instanceof CompilationUnitResourceImpl && !((CompilationUnitResourceImpl) dependency).isFinalized) {
+				((CompilationUnitResourceImpl) dependency).resourcesToRevalidateOnceFinalized.add(this);
+			}
+		}
+		if (!resourcesToRevalidateOnceFinalized.isEmpty()) {
+			List<CompilationUnitResourceImpl> resourcesToRevalidate = new ArrayList<>(resourcesToRevalidateOnceFinalized);
+			resourcesToRevalidateOnceFinalized.clear();
+			// Analyzing a binding again is part of loading, not an edition: it must not leave the unit modified
+			Map<CompilationUnitResourceImpl, Boolean> wasModified = new HashMap<>();
+			// What was postponed is resolved for all these units first: a binding of one of them may rely on a parent concept (and the
+			// members it brings, such as declaringElement) attached to another one, whatever the order in which they were finalized
+			for (CompilationUnitResourceImpl resource : resourcesToRevalidate) {
+				FMLCompilationUnitNode node = getSemanticsNode(resource);
+				if (node != null) {
+					wasModified.put(resource, resource.getLoadedResourceData().isModified());
+					node.getSemanticsAnalyzer().retryPendingResolutions();
+				}
+			}
+			for (CompilationUnitResourceImpl resource : resourcesToRevalidate) {
+				FMLCompilationUnitNode node = getSemanticsNode(resource);
+				if (node != null) {
+					// What is still invalid once no referenced unit is left to complete is reported, as the first pass did not
+					node.getSemanticsAnalyzer().attemptToFixInvalidBindings(!resource.isWaitingForReferencedUnits());
+					if (!wasModified.get(resource)) {
+						resource.getLoadedResourceData().clearIsModified();
+					}
+				}
+			}
+		}
 		notifyResourceLoaded();
+	}
+
+	private static FMLCompilationUnitNode getSemanticsNode(CompilationUnitResourceImpl resource) {
+		return resource.getLoadedResourceData() != null ? (FMLCompilationUnitNode) resource.getLoadedResourceData().getPrettyPrintDelegate()
+				: null;
 	}
 
 	/**
@@ -374,6 +447,7 @@ public abstract class CompilationUnitResourceImpl
 			return resourceData;
 		}
 
+		isFinalized = false;
 		setLoading(true);
 
 		// Now we have to activate all required technologies

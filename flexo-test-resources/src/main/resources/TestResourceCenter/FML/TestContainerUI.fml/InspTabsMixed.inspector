@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the additive inspector inheritance with NAMED tabs: see TestContainerUI.fml, concept InspTabsMixed. -->
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols" name="InspTabsMixedInspector"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.inspector.FIBInspectorController">
+	<TabPanel name="Tab">
+		<Tab title="MixedTab" layout="twocols" index="0" name="MixedTab">
+			<Label label="mixedWidget" name="mixedWidgetLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left;index=3)" />
+			<TextField data="data.mixedWidget" name="mixedWidgetWidget"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right;index=3)" />
+		</Tab>
+	</TabPanel>
+</Panel>

@@ -99,6 +99,10 @@ public class RenameFlexoConcept extends FlexoAction<RenameFlexoConcept, FlexoCon
 
 		System.out.println("Rename concept to " + getNewFlexoConceptName());
 
+		// Before the name actually changes: a .fib/.inspector still resolved by naming convention alone would otherwise be
+		// orphaned by the rename (CORE-F-4). No-op for a concept whose components are already named by an @UI/@Inspector annotation.
+		getFocusedObject().freezeConventionalUIComponentNames();
+
 		getFocusedObject().setName(getNewFlexoConceptName());
 		getFocusedObject().setDescription(getNewFlexoConceptDescription());
 

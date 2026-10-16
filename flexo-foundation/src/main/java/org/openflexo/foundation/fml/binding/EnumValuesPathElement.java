@@ -86,6 +86,15 @@ public class EnumValuesPathElement extends SimplePathElementImpl<FMLNativeProper
 		return accessedEnum.getInstances();
 	}
 
+	/**
+	 * The values of an enum do not depend on the instance they are reached through: <code>x.color.enumValues</code> must list the colors
+	 * while <code>x.color</code> is still unset - which is exactly when a drop-down choosing it is shown.
+	 */
+	@Override
+	public boolean supportsNullValues() {
+		return true;
+	}
+
 	@Override
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {

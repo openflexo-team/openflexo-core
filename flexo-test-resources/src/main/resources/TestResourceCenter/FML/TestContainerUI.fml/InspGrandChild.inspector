@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture of the additive inspector inheritance: see TestContainerUI.fml, concept InspGrandChild.
+     The unindexed pair comes FIRST, as the sort puts it: cloning a component rewrites the index of an unindexed widget following an
+     indexed one (FIBContainer.updateComponentIndexForInsertionIndex). -->
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="twocols" name="InspGrandChildInspector"
+	dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance"
+	controllerClassName="org.openflexo.inspector.FIBInspectorController">
+	<TabPanel name="Tab">
+		<Tab title="InspGrandChild" layout="twocols" index="0" name="InspGrandChildInspectorTab">
+			<Label label="grandNote" name="grandNoteLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)" />
+			<TextField data="data.grandNote" name="grandNoteWidget"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)" />
+			<Label label="grandName" name="grandNameLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left;index=100)" />
+			<TextField data="data.grandName" name="grandNameWidget"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right;index=100)" />
+		</Tab>
+	</TabPanel>
+</Panel>

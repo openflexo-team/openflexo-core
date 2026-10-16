@@ -73,7 +73,7 @@ public abstract class AbstractActionSchemeActionFactory<A extends AbstractAction
 
 	@Override
 	public boolean isVisibleForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return true;
+		return getActionScheme().evaluateVisible(object);
 	}
 
 	public AbstractActionScheme getActionScheme() {

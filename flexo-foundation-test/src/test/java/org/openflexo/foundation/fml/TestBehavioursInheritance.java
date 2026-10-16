@@ -64,7 +64,6 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileUtils;
 
 /**
  * This unit test is intented to test {@link FlexoConcept} inheritance features, as well as "isAbstract" management and
@@ -434,14 +433,9 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		resourceCenter = makeNewDirectoryResourceCenter();
 
 		File directory = ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory());
-		File newDirectory = new File(resourceCenter.getRootDirectory(), directory.getName());
-		newDirectory.mkdirs();
-
 		try {
-			FileUtils.copyContentDirToDir(directory, newDirectory);
-			// We wait here for the thread monitoring ResourceCenters to detect
-			// new files
-			resourceCenter.performDirectoryWatchingNow();
+			// Copied aside and moved in at once: the directory watcher must not find it half-copied (CORE-D-39)
+			copyIntoResourceCenter(directory, resourceCenter);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

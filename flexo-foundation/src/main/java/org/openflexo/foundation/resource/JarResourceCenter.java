@@ -317,11 +317,17 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 
 		private final Map<TechnologyAdapter<?>, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
 
+		/**
+		 * Guards {@link #repositories}: repositories are created from several threads - the thread that asks for one, and the Swing EDT,
+		 * where {@link TechnologyAdapter#notifyRepositoryStructureChanged()} creates the missing ones (CORE-D-25)
+		 */
+		private final Object repositoriesLock = new Object();
+
+		/**
+		 * Return the map of the repositories of supplied technology. Must be called holding {@link #repositoriesLock}.
+		 */
 		private HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> getRepositoriesForAdapter(
-				TechnologyAdapter<?> technologyAdapter, boolean considerEmptyRepositories) {
-			if (considerEmptyRepositories) {
-				technologyAdapter.ensureAllRepositoriesAreCreated(this);
-			}
+				TechnologyAdapter<?> technologyAdapter) {
 			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = repositories
 					.get(technologyAdapter);
 			if (map == null) {
@@ -335,28 +341,38 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		@Override
 		public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
 				TechnologyAdapter<?> technologyAdapter) {
-			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
-					technologyAdapter, false);
-			return (R) map.get(repositoryType);
+			synchronized (repositoriesLock) {
+				return (R) getRepositoriesForAdapter(technologyAdapter).get(repositoryType);
+			}
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
-		public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
+		public final <R extends ResourceRepository<?, InJarResourceImpl>> R registerRepository(R repository,
 				Class<? extends R> repositoryType, TechnologyAdapter<?> technologyAdapter) {
-			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
-					technologyAdapter, false);
-			if (map.get(repositoryType) == null) {
+			synchronized (repositoriesLock) {
+				HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
+						technologyAdapter);
+				ResourceRepository<?, InJarResourceImpl> registered = map.get(repositoryType);
+				if (registered != null) {
+					// Built concurrently by another thread, which registered its own first: keep that one
+					return (R) registered;
+				}
 				map.put(repositoryType, repository);
-			}
-			else {
-				logger.warning("Repository already registered: " + repositoryType + " for " + repository);
+				return repository;
 			}
 		}
 
 		@Override
 		public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter<?> technologyAdapter,
 				boolean considerEmptyRepositories) {
-			return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
+			if (considerEmptyRepositories) {
+				technologyAdapter.ensureAllRepositoriesAreCreated(this);
+			}
+			// A copy: the map may change in another thread while the caller iterates
+			synchronized (repositoriesLock) {
+				return new ArrayList<>(getRepositoriesForAdapter(technologyAdapter).values());
+			}
 		}
 
 		/**

@@ -1010,6 +1010,38 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return true;
 		}
 
+		/**
+		 * The instances of a VirtualModelInstance are not embedded in it as in a concept instance, they are owned by it: delete the root
+		 * ones, each of them deleting in turn the instances it contains
+		 */
+		@Override
+		protected void deleteContainedFlexoConceptInstances() {
+			for (FlexoConceptInstance fci : new ArrayList<>(getFlexoConceptInstances())) {
+				if (fci.getContainerFlexoConceptInstance() == null && !fci.isDeleted()) {
+					fci.delete();
+				}
+			}
+			super.deleteContainedFlexoConceptInstances();
+		}
+
+		/**
+		 * Release the concept instances of this virtual model instance, and its indexes: each indexed instance is listened to through the
+		 * indexable term, whose path may reach other models
+		 */
+		@Override
+		public void release() {
+			for (FlexoConceptInstance fci : new ArrayList<>(getFlexoConceptInstances())) {
+				fci.release();
+			}
+			for (Map<String, FlexoConceptInstanceIndex<?>> mapForType : new ArrayList<>(indexes.values())) {
+				for (FlexoConceptInstanceIndex<?> index : new ArrayList<>(mapForType.values())) {
+					index.release();
+				}
+			}
+			indexes.clear();
+			super.release();
+		}
+
 		// ==========================================================================
 		// =============================== Synchronize ==============================
 		// ==========================================================================
@@ -1156,6 +1188,18 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			public FlexoConceptInstanceIndex(FlexoConceptInstanceType type, DataBinding<T> indexableTerm) {
 				this.type = type;
 				this.indexableTerm = indexableTerm;
+			}
+
+			/**
+			 * Stop listening to the indexed instances, and forget them
+			 */
+			public void release() {
+				for (BindingPathChangeListener<T> l : listeners.values()) {
+					l.delete();
+				}
+				listeners.clear();
+				clear();
+				needsReindex = true;
 			}
 
 			public void updateWhenRequired() {
