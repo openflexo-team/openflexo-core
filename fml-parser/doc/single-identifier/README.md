@@ -60,5 +60,5 @@ not the counts (they move with the workspace).
 2. Re-check the language deltas are still acceptable, and grep the corpus for them (casts, `Foo.bar(`,
    `x = Type`, generic usages, `{"…"}`).
 3. Not covered by the corpus harness: the `binding` entry point (GINA `.fib` bindings) and `fml-cli` commands.
-4. Implement the Java side, then `./gradlew sableccParser compile test` in the openflexo-dev composite and read
+4. Implement the Java side, then `./gradlew compile` then the tests in the openflexo-dev composite (`compile` regenerates the parser) and read
    the `Results:` summary (failures are hidden by `ignoreFailures`).

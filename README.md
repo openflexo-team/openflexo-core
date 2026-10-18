@@ -39,15 +39,15 @@ The build uses **Gradle** through the Openflexo build plugin (`openflexo-buildpl
 fixes versions and repositories and adds global tasks. Sources are compiled and tested with a
 **Java 17** toolchain, whatever JDK launches Gradle. The `pom.xml` files are not used.
 
-The FML parser is generated from its SableCC grammar. Generation is **not** triggered by
-`compile`: run it once before the first build (or before importing the project in an IDE), and
-again after any change to `fml.sablecc`:
+The FML parser is generated from its SableCC grammar by the `generateGrammarSource` task of
+`fml-parser`, which the Gradle build runs before compiling. To generate it alone — for instance
+before importing the project in an IDE, which does not run it:
 
 ```bash
-./gradlew sableccParser
+./gradlew :fml-parser:generateGrammarSource
 ```
 
-Then:
+Main tasks:
 
 ```bash
 ./gradlew compile     # compile all modules
