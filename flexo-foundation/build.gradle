@@ -12,9 +12,6 @@ dependencies {
   // 'api' rather than 'implementation': FIBComponent leaks into the signature of FIBComponentResource.
   api ginaApi()
 
-  // Replacement for java.xml.bind
-  implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
-  implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
 
   // external dep
   api jgit()
@@ -25,9 +22,3 @@ dependencies {
   }
 
 }
-
-//if (JavaVersion.current().isJava9Compatible()) {
-//	tasks.withType(JavaCompile) {
-//		options.compilerArgs.addAll(['--add-modules', 'java.xml.bind'])
-//    }
-//}
