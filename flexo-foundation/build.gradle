@@ -17,10 +17,10 @@ dependencies {
   implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
 
   // external dep
-  api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.8.0.202006091008-r'
+  api jgit()
   api group: 'com.google.inject', name: 'guice', version: '4.2.3'
  // api group: 'findbugs', name: 'annotations', version: '1.0.0'
-  implementation group: 'xerces', name: 'xercesImpl', version: '2.12.2',  {
+  implementation(xerces()) {
        exclude group: "xml-apis", module: "xml-apis"
   }
 
