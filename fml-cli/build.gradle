@@ -9,7 +9,9 @@ dependencies {
 
 // use with gradle --no-daemon --console plain fml-cli:run -q
 apply plugin: 'application'
-mainClassName = "org.openflexo.foundation.fml.cli.LaunchHeadlessFMLCLI"
+application {
+    mainClass = "org.openflexo.foundation.fml.cli.LaunchHeadlessFMLCLI"
+}
 
 run {
     jvmArgs += ["-Djava.awt.headless=true"]
