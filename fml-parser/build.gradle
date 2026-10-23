@@ -1,6 +1,6 @@
 dependencies {
   // openflexo dep
-  implementation flexoP2PP();
+  implementation p2pp();
   implementation project(':flexo-foundation')
   // external dep
 

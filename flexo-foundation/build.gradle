@@ -1,7 +1,7 @@
 dependencies {
   compileOnly jsr305() // javax.annotation.Nonnull / Nullable
   // openflexo dep
-  api flexoP2PP()
+  api p2pp()
   api flexoLocalization()
   api pamela()
   // Still to be removed
