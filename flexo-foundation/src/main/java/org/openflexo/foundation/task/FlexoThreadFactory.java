@@ -51,8 +51,7 @@ class FlexoThreadFactory implements ThreadFactory {
 	final String namePrefix;
 
 	FlexoThreadFactory() {
-		SecurityManager s = System.getSecurityManager();
-		group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		group = Thread.currentThread().getThreadGroup();
 		namePrefix = "pool-" + poolNumber.getAndIncrement() + "-thread-";
 	}
 
