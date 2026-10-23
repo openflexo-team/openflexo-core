@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ConnieType;
-import org.openflexo.connie.type.LoadedClassesInfo;
+import org.openflexo.toolbox.LoadedClassesInfo;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.FMLObject;
