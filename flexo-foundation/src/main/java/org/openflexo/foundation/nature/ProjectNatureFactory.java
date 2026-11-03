@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.nature;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -64,6 +67,16 @@ public interface ProjectNatureFactory<N extends ProjectNature<N>> {
 	 * @return
 	 */
 	public Class<N> getProjectNatureClass();
+
+	/**
+	 * Return the PAMELA entities this nature brings into the {@link FlexoProject} model factory: the class of the nature, and the entities
+	 * it cannot reach through its own <code>@Imports</code>, such as those contributed by extensions loaded at runtime
+	 *
+	 * @return
+	 */
+	public default List<Class<?>> getProjectNatureSpecificClasses() {
+		return Collections.singletonList(getProjectNatureClass());
+	}
 
 	/**
 	 * Returns service managing project natures
