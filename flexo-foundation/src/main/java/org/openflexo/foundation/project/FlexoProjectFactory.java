@@ -93,7 +93,7 @@ public class FlexoProjectFactory extends DefaultPamelaResourceModelFactory<Flexo
 		classes.add(FlexoProject.class);
 
 		for (ProjectNatureFactory<?> factory : pnService.getProjectNatureFactories()) {
-			classes.add(factory.getProjectNatureClass());
+			classes.addAll(factory.getProjectNatureSpecificClasses());
 		}
 		return classes;
 	}
