@@ -454,6 +454,9 @@ public class ProjectLoader extends FlexoServiceImpl {
 
 		FlexoProject<I> loadedProject = projectResource.getResourceData();
 
+		// Done in the loading task, before the project is shown
+		loadProjectContents(loadedProject);
+
 		/*if (editor == null) {
 			try {
 				editor = FlexoProject.openProject(projectDirectory, new FlexoEditor.FlexoEditorFactory() {
@@ -602,6 +605,17 @@ public class ProjectLoader extends FlexoServiceImpl {
 		if (exceptions.size() > 0) {
 			throw new SaveResourceExceptionList(exceptions);
 		}
+	}
+
+	/**
+	 * Hook called while a project is loaded, after its resource data and before it is added to the root projects (which shows it in a
+	 * user interface), in the thread loading the project: load here what the display of the project would load anyway.<br>
+	 * Default does nothing: the resources of the project are loaded when used.
+	 * 
+	 * @param project
+	 *            the project being loaded
+	 */
+	protected void loadProjectContents(FlexoProject<?> project) {
 	}
 
 	protected <I> void preInitialization(I projectDirectory) {

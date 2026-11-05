@@ -87,6 +87,14 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 
 	private final List<FlexoTask> dependantTasks;
 
+	// Progress replayed from the previous execution (see getProgressHistoryKey())
+	private ProgressHistory previousHistory;
+	private List<ProgressHistory.Milestone> milestones;
+	private long startTime;
+	private int matchedMilestone = -1;
+	private long matchedTime;
+	private double lastFraction;
+
 	private Exception thrownException = null;
 
 	public enum TaskStatus {
@@ -184,6 +192,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 			this.thread = thread;
 			thread.setTask(this);
 			status = TaskStatus.RUNNING;
+			startProgressHistory();
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.WAITING, TaskStatus.READY_TO_EXECUTE);
 		}
 		else {
@@ -205,6 +214,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		if (status == TaskStatus.RUNNING) {
 			thread.setTask(null);
 			status = TaskStatus.FINISHED;
+			storeProgressHistory();
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.RUNNING, status);
 		}
 		else if (status == TaskStatus.CANCEL_REQUESTED) {
@@ -277,15 +287,130 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	}
 
 	public void progress() {
-		currentProgress++;
-		getPropertyChangeSupport().firePropertyChange(CURRENT_PROGRESS_PROPERTY, currentProgress - 1, currentProgress);
-		// System.out.println(Integer.toHexString(hashCode()) + " " + getTaskTitle() + " progress " + currentProgress + "/"
-		// + getExpectedProgressSteps());
+		incrementProgress();
+		reachMilestone(null);
 	}
 
 	public void progress(String stepName) {
-		progress();
+		incrementProgress();
 		setCurrentStepName(stepName);
+		reachMilestone(stepName);
+	}
+
+	private void incrementProgress() {
+		currentProgress++;
+		getPropertyChangeSupport().firePropertyChange(CURRENT_PROGRESS_PROPERTY, currentProgress - 1, currentProgress);
+	}
+
+	/**
+	 * Return the key under which the milestones of an execution of this task are stored, to be replayed by the next execution
+	 * (see {@link #getProgressFraction()}).<br>
+	 * Default is null: the progress of the task is the counted steps ({@link #getCurrentProgress()} out of
+	 * {@link #getExpectedProgressSteps()}). Override to give the task a progress linear in time.
+	 * 
+	 * @return a key identifying this kind of task, the same from one execution to the next
+	 */
+	public String getProgressHistoryKey() {
+		return null;
+	}
+
+	/**
+	 * Return true when this task is shown, with its progress bar, in the task panel of the user interface<br>
+	 * Default is true. Override for a short task scheduled only to run after the others.
+	 */
+	public boolean isShownInTaskPanel() {
+		return true;
+	}
+
+	/**
+	 * Return the expected duration of this task, in milliseconds, used while no history of a previous execution exists
+	 * 
+	 * @return 10 seconds by default
+	 */
+	public long getDefaultExpectedDuration() {
+		return 10000;
+	}
+
+	/**
+	 * Return true when the progress of this task is computed from the history of its previous execution, in time
+	 */
+	public boolean hasTimedProgress() {
+		return getProgressHistoryKey() != null;
+	}
+
+	private synchronized void startProgressHistory() {
+		if (getProgressHistoryKey() != null) {
+			previousHistory = ProgressHistory.load(getProgressHistoryKey());
+			milestones = new ArrayList<>();
+			startTime = System.currentTimeMillis();
+			matchedMilestone = -1;
+			matchedTime = 0;
+			lastFraction = 0;
+		}
+	}
+
+	private synchronized void reachMilestone(String name) {
+		if (milestones == null) {
+			return;
+		}
+		long now = System.currentTimeMillis() - startTime;
+		milestones.add(new ProgressHistory.Milestone(name, now));
+		if (previousHistory != null) {
+			int index = previousHistory.indexOf(name, matchedMilestone + 1);
+			if (index >= 0) {
+				matchedMilestone = index;
+				matchedTime = now;
+			}
+			// An unknown milestone changes nothing: the bar keeps moving towards the next known one
+		}
+	}
+
+	private synchronized void storeProgressHistory() {
+		if (milestones != null) {
+			new ProgressHistory(milestones, System.currentTimeMillis() - startTime).store(getProgressHistoryKey());
+			milestones = null;
+		}
+	}
+
+	/**
+	 * Return the progress of this task, between 0 and 1, never decreasing while the task runs.<br>
+	 * 
+	 * When the task has a {@link #getProgressHistoryKey()}, this progress is linear in time: each milestone (a call to
+	 * {@link #progress(String)}) reached again places it at the fraction of the total duration that this milestone represented in the
+	 * previous execution, and between two milestones it moves with time towards the next one, without passing it. Without any
+	 * previous execution, it tends towards 1 according to {@link #getDefaultExpectedDuration()}.<br>
+	 * 
+	 * Otherwise, it is the counted steps.
+	 * 
+	 * @return the progress, between 0 and 1
+	 */
+	public synchronized double getProgressFraction() {
+		if (status == TaskStatus.FINISHED) {
+			return 1;
+		}
+		double fraction;
+		if (milestones == null) {
+			fraction = expectedProgressSteps > 0 ? Math.min(1.0, (double) currentProgress / expectedProgressSteps) : 0;
+		}
+		else {
+			long now = System.currentTimeMillis() - startTime;
+			if (previousHistory == null || previousHistory.getTotalDuration() <= 0) {
+				// Never reached, approaches 1 asymptotically: 63% after the expected duration
+				fraction = 1 - Math.exp(-(double) now / getDefaultExpectedDuration());
+			}
+			else {
+				int next = matchedMilestone + 1;
+				double from = previousHistory.getFraction(matchedMilestone);
+				double to = previousHistory.getFraction(next);
+				long expectedStepDuration = previousHistory.getTime(next) - previousHistory.getTime(matchedMilestone);
+				double ratio = expectedStepDuration > 0 ? Math.min(1.0, (double) (now - matchedTime) / expectedStepDuration) : 1;
+				fraction = from + (to - from) * ratio;
+			}
+			// Leave the end of the bar to the end of the task
+			fraction = Math.min(fraction, 0.99);
+		}
+		lastFraction = Math.max(lastFraction, fraction);
+		return lastFraction;
 	}
 
 	public void hideTaskBar() {
