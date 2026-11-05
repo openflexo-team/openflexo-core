@@ -338,6 +338,26 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		return getProgressHistoryKey() != null;
 	}
 
+	/**
+	 * Start following, in the calling thread, a task that is not executed by a {@link FlexoTaskManager} (the startup of the
+	 * application): its progress is what the code executed by this thread reports through {@link Progress}, until {@link #end()}
+	 */
+	public synchronized void begin() {
+		status = TaskStatus.RUNNING;
+		startProgressHistory();
+		Progress.bindToCurrentThread(this);
+	}
+
+	/**
+	 * End a task started with {@link #begin()}, from any thread: its execution is stored as the history of the next one
+	 */
+	public synchronized void end() {
+		if (status == TaskStatus.RUNNING) {
+			storeProgressHistory();
+			status = TaskStatus.FINISHED;
+		}
+	}
+
 	private synchronized void startProgressHistory() {
 		if (getProgressHistoryKey() != null) {
 			previousHistory = ProgressHistory.load(getProgressHistoryKey());

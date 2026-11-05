@@ -57,6 +57,7 @@ import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
@@ -92,11 +93,19 @@ public abstract class FlexoServiceManager {
 
 			notify(service, new ServiceRegistered());
 
+			Progress.progress(getInitializationStepName(service));
 			service.initialize();
 		}
 		else {
 			logger.warning("Trying to register null FlexoService");
 		}
+	}
+
+	private String getInitializationStepName(FlexoService service) {
+		if (getLocalizationService() != null && getLocalizationService().getFlexoLocalizer() != null) {
+			return getLocalizationService().getFlexoLocalizer().localizedForKey("initializing") + " " + service.getServiceName();
+		}
+		return service.getServiceName();
 	}
 
 	public void notify(FlexoService caller, ServiceNotification notification) {

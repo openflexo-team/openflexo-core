@@ -156,6 +156,38 @@ public class TestProgressHistory {
 	}
 
 	@Test
+	public void testTaskBoundToCurrentThread() {
+		FlexoTask startup = new FlexoTask("Startup", "Startup") {
+			@Override
+			public String getProgressHistoryKey() {
+				return key;
+			}
+
+			@Override
+			public void performTask() {
+			}
+		};
+		// Not bound yet: reported progress goes nowhere
+		Progress.progress("ignored");
+		startup.begin();
+		try {
+			Progress.progress("services");
+			Progress.progress("modules");
+			assertEquals("modules", startup.getCurrentStepName());
+			assertTrue(startup.getProgressFraction() < 1);
+		} finally {
+			Progress.unbindFromCurrentThread();
+		}
+		startup.end();
+		assertEquals(TaskStatus.FINISHED, startup.getTaskStatus());
+		assertEquals(1.0, startup.getProgressFraction(), 1e-9);
+		ProgressHistory history = ProgressHistory.load(key);
+		assertNotNull(history);
+		assertEquals(Arrays.asList("services", "modules"),
+				Arrays.asList(history.getMilestones().get(0).getName(), history.getMilestones().get(1).getName()));
+	}
+
+	@Test
 	public void testCountedStepsWithoutKey() {
 		FlexoTask task = new FlexoTask("Counted", "Counted") {
 			@Override

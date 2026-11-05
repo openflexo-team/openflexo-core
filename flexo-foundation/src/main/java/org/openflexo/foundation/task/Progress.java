@@ -38,71 +38,80 @@
 
 package org.openflexo.foundation.task;
 
+/**
+ * Static entry point through which the code executed by a {@link FlexoTask} reports its progress, without holding the task.<br>
+ * The task is the one executed by the current {@link FlexoTaskThread}, or the one bound to the current thread with
+ * {@link #bindToCurrentThread(FlexoTask)} (the startup of the application, executed in the main thread). Elsewhere, calls do nothing.
+ */
 public class Progress {
 
-	/*public static void startTask() {
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			System.out.println("Hop on commence la tache " + ((FlexoTaskThread) currentThread).getTask());
-		}
+	private static final ThreadLocal<FlexoTask> BOUND_TASK = new ThreadLocal<>();
+
+	/**
+	 * Report the progress of the current thread to supplied task, which is not executed by a {@link FlexoTaskManager}
+	 */
+	public static void bindToCurrentThread(FlexoTask task) {
+		BOUND_TASK.set(task);
 	}
-	
-	public static void endTask() {
+
+	public static void unbindFromCurrentThread() {
+		BOUND_TASK.remove();
+	}
+
+	private static FlexoTask currentTask() {
 		Thread currentThread = Thread.currentThread();
 		if (currentThread instanceof FlexoTaskThread) {
-			System.out.println("Hop on termine la tache " + ((FlexoTaskThread) currentThread).getTask());
+			return ((FlexoTaskThread) currentThread).getTask();
 		}
-	}*/
+		return BOUND_TASK.get();
+	}
 
 	public static void setExpectedProgressSteps(int expectedProgressSteps) {
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			((FlexoTaskThread) currentThread).getTask().setExpectedProgressSteps(expectedProgressSteps);
+		FlexoTask task = currentTask();
+		if (task != null) {
+			task.setExpectedProgressSteps(expectedProgressSteps);
 		}
 	}
 
 	public static void progress() {
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			((FlexoTaskThread) currentThread).getTask().progress();
+		FlexoTask task = currentTask();
+		if (task != null) {
+			task.progress();
 		}
 	}
 
 	public static void progress(String stepName) {
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			((FlexoTaskThread) currentThread).getTask().progress(stepName);
+		FlexoTask task = currentTask();
+		if (task != null) {
+			task.progress(stepName);
 		}
 	}
 
 	public static void hideTaskBar() {
-		System.out.println("hideTaskBar called for thead " + Thread.currentThread());
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			((FlexoTaskThread) currentThread).getTask().hideTaskBar();
+		FlexoTask task = currentTask();
+		if (task != null) {
+			task.hideTaskBar();
 		}
 	}
 
 	public static void showTaskBar() {
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			((FlexoTaskThread) currentThread).getTask().showTaskBar();
+		FlexoTask task = currentTask();
+		if (task != null) {
+			task.showTaskBar();
 		}
 	}
 
 	public static void forceHideTaskBar() {
-		// System.out.println("forceHideTaskBar called for thead " + Thread.currentThread());
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			((FlexoTaskThread) currentThread).getTask().forceHideTaskBar();
+		FlexoTask task = currentTask();
+		if (task != null) {
+			task.forceHideTaskBar();
 		}
 	}
 
 	public static void stopForceHideTaskBar() {
-		// System.out.println("stopForceHideTaskBar called for thead " + Thread.currentThread());
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof FlexoTaskThread) {
-			((FlexoTaskThread) currentThread).getTask().stopForceHideTaskBar();
+		FlexoTask task = currentTask();
+		if (task != null) {
+			task.stopForceHideTaskBar();
 		}
 	}
 
