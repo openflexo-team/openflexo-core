@@ -114,6 +114,22 @@ expression instead of a type, escaped identifiers as a single token.
 
 **Material.** Analysis, prototype grammar and experiment harness: [`fml-parser/doc/single-identifier/`](./fml-parser/doc/single-identifier/README.md).
 
+### CORE-F-7 — Clabjects: a multi-level extension of FML  ·  `DEFERRED`
+
+**Problem.** FML separates `FlexoConcept` from `FlexoConceptInstance`, so stacked type/instance levels (product model →
+series → item, the two-level emulation of the FME, the MULTI process challenge) duplicate every notion. Wanted: a language,
+an extension of FML sharing its grammar (FML itself unchanged), whose elements are clabjects (concept and instance at once).
+
+**Current state.** Exploratory study only, nothing implemented. Directions taken: no mandatory potency (optional, decremented at each refinement
+step), no declared levels;
+progressive refinement with values inherited by delegation; `.fml.rt.xml` replaced by textual FML (instances only) as a
+first milestone. Analysis, examples, hard points and proposed path: [`design/clabjects.md`](./design/clabjects.md).
+
+**To decide.** Valuation operator (`:=`), own features and optional classification, conflict rule shared with behaviours,
+`select`/`match` semantics, deletion of an intermediate clabject, interoperability with FML.
+
+**Acceptance criteria.** To be written per milestone (textual FML@RT, then clabjects in the FME).
+
 ## Container-based user interfaces
 
 ### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `DONE`
