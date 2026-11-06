@@ -1,6 +1,6 @@
-consistency_check_ok=consistency_check_ok
-instance_has_no_type=instance_has_no_type
-missing_required_role_($role.name)_for_($flexoConceptInstance)=missing_required_role_($role.name)_for_($flexoConceptInstance)
-missing_required_roles_($role.name)_for_($flexoConceptInstance)=missing_required_roles_($role.name)_for_($flexoConceptInstance)
-revalidating=revalidating
-validating=validating
+consistency_check_ok=V\u00e9rification de coh\u00e9rence r\u00e9ussie
+instance_has_no_type=L'instance n'a pas de type
+missing_required_role_($role.name)_for_($flexoConceptInstance)=Le r\u00f4le obligatoire ($role.name) est manquant pour ($flexoConceptInstance)
+missing_required_roles_($role.name)_for_($flexoConceptInstance)=Les r\u00f4les obligatoires ($role.name) sont manquants pour ($flexoConceptInstance)
+revalidating=Nouvelle validation en cours
+validating=Validation en cours

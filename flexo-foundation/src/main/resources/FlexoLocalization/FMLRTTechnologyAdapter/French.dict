@@ -1,32 +1,32 @@
 <html><a\ href\="">hide_errors_warnings</a></html>=<html><a href\="">hide_errors_warnings</a></html>
-<html><a\ href\="">revalidate</a></html>=<html><a href\="">revalidate</a></html>
+<html><a\ href\="">revalidate</a></html>=<html><a href="">revalider</a></html>
 <html><a\ href\="">show_errors_warnings</a></html>=<html><a href\="">show_errors_warnings</a></html>
-a_virtual_model_instance_with_that_name_already_exists=a_virtual_model_instance_with_that_name_already_exists
+a_virtual_model_instance_with_that_name_already_exists=Une instance de VirtualModel de ce nom existe d\u00e9j\u00e0
 cannot_instantiate_enum=Impossible d'instancier l'\u00E9numeration
-choose_fml_controlled_diagram_virtual_model=choose_fml_controlled_diagram_virtual_model
-choose_virtual_model=choose_virtual_model
-configure_creation_scheme_to_use=configure_creation_scheme_to_use
-create_virtual_model_instance=create_virtual_model_instance
-declare_flexo_role_($object.simpleName)=declare_flexo_role_($object.simpleName)
-declare_model_slot_($object.simpleName)=declare_model_slot_($object.simpleName)
+choose_fml_controlled_diagram_virtual_model=Choisissez un VirtualModel de diagramme contr\u00f4l\u00e9 par FML
+choose_virtual_model=Choisissez un VirtualModel
+configure_creation_scheme_to_use=Configurer le CreationScheme \u00e0 utiliser
+create_virtual_model_instance=Cr\u00e9er une instance de VirtualModel
+declare_flexo_role_($object.simpleName)=D\u00e9clarer le FlexoRole ($object.simpleName)
+declare_model_slot_($object.simpleName)=D\u00e9clarer le ModelSlot ($object.simpleName)
 define_new_concept_instance=D\u00E9finition d'un nouvelle instance
 delete_virtual_model_instance=Supprimer l'instance de VirtualModel
 describe_flexo_concept_instance=Description de l'instance
 discouraged_name_for_new_virtual_model_instance=Ce nom n'est pas recommand\u00E9 pour une instance de VirtualModel
-errors/warnings=errors/warnings
+errors/warnings=Erreurs/avertissements
 instantiate_flexo_concept=Instancier un concept
 instantiate_virtual_model=Instancier un VirtualModel
-invalid_parameter=invalid_parameter
+invalid_parameter=Param\u00e8tre invalide
 new=Nouveau
-no_behaviour=no_behaviour
-no_virtual_model_instance_name_defined=no_virtual_model_instance_name_defined
-no_virtual_model_instance_title_defined=no_virtual_model_instance_title_defined
-no_virtual_model_type_selected=no_virtual_model_type_selected
+no_behaviour=Aucun comportement
+no_virtual_model_instance_name_defined=Aucun nom d'instance de VirtualModel d\u00e9fini
+no_virtual_model_instance_title_defined=Aucun titre d'instance de VirtualModel d\u00e9fini
+no_virtual_model_type_selected=Aucun type de VirtualModel s\u00e9lectionn\u00e9
 open_virtual_model_instance=Ouvrir l'instance de VirtualModel
 please_supply_a_valid_type_for_instance_beeing_created=Veuillez saisir un type valide pour l'instance \u00E0 cr\u00E9er
-really_delete_this_virtual_model_instance_?=really_delete_this_virtual_model_instance_?
+really_delete_this_virtual_model_instance_?=Voulez-vous vraiment supprimer cette instance de VirtualModel ?
 saving=Sauvegarde de
 select_a_creation_scheme=Choix d'un CreationScheme
-title=title
-validating_virtual_model_instance...=validating_virtual_model_instance...
-virtual_model_instance_repository=virtual_model_instance_repository
+title=Titre
+validating_virtual_model_instance...=Validation de l'instance de VirtualModel...
+virtual_model_instance_repository=D\u00e9p\u00f4t d'instances de VirtualModel
