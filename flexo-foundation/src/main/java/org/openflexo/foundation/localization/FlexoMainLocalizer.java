@@ -60,8 +60,14 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 
 	public static final String FLEXO_LOCALIZATION_DIRNAME = "FlexoLocalization/General";
 
+	/**
+	 * Context of the dictionary shared by the whole platform (see {@link org.openflexo.localization.LocalizedDelegate#getContext()}).
+	 */
+	public static final String PLATFORM_CONTEXT = "platform";
+
 	public FlexoMainLocalizer(boolean isDev, boolean automaticSaving) {
 		super(ResourceLocator.locateResource(FLEXO_LOCALIZATION_DIRNAME), null, automaticSaving, isDev);
+		setContext(PLATFORM_CONTEXT);
 		// If we want to update locales, we have to retrieve source code dictionaries
 		if (isDev) {
 			// Get Localized from flexolocalization here because we need main Localized support to come from gina project

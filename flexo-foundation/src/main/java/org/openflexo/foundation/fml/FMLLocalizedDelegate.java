@@ -135,6 +135,24 @@ public class FMLLocalizedDelegate extends LocalizedDelegateImpl {
 	}
 
 	/**
+	 * A dictionary of a VirtualModel is the one of that VirtualModel (and of its instances): see {@link #getContext()}.
+	 */
+	@Override
+	public String getContext() {
+		FMLCompilationUnit cu = compilationUnit.get();
+		String uri = cu != null ? cu.getURI() : null;
+		return uri != null ? "vm:" + uri : super.getContext();
+	}
+
+	/**
+	 * Entries are created in a dictionary of a VirtualModel whatever the way it is stored: its owner saves it, with the resource.
+	 */
+	@Override
+	protected boolean isCreationAllowed() {
+		return true;
+	}
+
+	/**
 	 * The files are written when the resource is saved, never as a side effect of reading them.
 	 */
 	@Override

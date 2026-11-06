@@ -78,8 +78,10 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 		logger.info("Main localization directory: " + mainLocalizer.getLocalizedDirectoryResource());
 
 		if (StringUtils.isNotEmpty(getGeneralLocalizerRelativePath())) {
-			flexoLocalizer = new LocalizedDelegateImpl(ResourceLocator.locateResource(getGeneralLocalizerRelativePath()), mainLocalizer,
-					getAutomaticSaving(), true);
+			LocalizedDelegateImpl general = new LocalizedDelegateImpl(ResourceLocator.locateResource(getGeneralLocalizerRelativePath()),
+					mainLocalizer, getAutomaticSaving(), true);
+			general.setContext("flexo");
+			flexoLocalizer = general;
 		}
 		else {
 			flexoLocalizer = mainLocalizer;

@@ -207,9 +207,11 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 				technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
 				initResourceFactories();
 				initTechnologySpecificTypes(getTechnologyAdapterService());
-				locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
+				LocalizedDelegateImpl taLocales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
 						getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(),
 						getTechnologyAdapterService().getServiceManager().getLocalizationService().getAutomaticSaving(), true);
+				taLocales.setContext("ta:" + getIdentifier());
+				locales = taLocales;
 				loadPrivateResourceCenters();
 				isActivated = true;
 				getPropertyChangeSupport().firePropertyChange("activated", false, true);
