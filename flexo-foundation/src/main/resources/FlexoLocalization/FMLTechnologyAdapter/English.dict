@@ -333,7 +333,6 @@ uri_processors=Uri processors
 use_model_slot_($object.simpleName)=Use model slot ($object.simpleName)
 user=User
 uses=Uses
-validating_compilation_unit...=Validating compilation unit...
 validating_virtual_model...=Validating virtual model...
 value_name=Value name
 values=Values
