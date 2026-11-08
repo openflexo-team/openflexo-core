@@ -46,7 +46,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
@@ -103,7 +102,8 @@ public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit, CompilationU
 
 		@Override
 		public Type getType() {
-			return VirtualModel.class;
+			// The model slot instance holds the compilation unit (see makeActorReference() and FMLModelSlotInstance)
+			return FMLCompilationUnit.class;
 		}
 
 		@Override

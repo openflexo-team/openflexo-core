@@ -215,3 +215,40 @@ own; the `index` of the widgets orders them, and the tabs of the same `name` are
 - `FIBContainer.reorderComponents` compares an index of 0 as equal to "no index", an inconsistent comparator.
 
 **Verified** in the running application (formod, SysML/KAOS methodology, a FunctionalGoal selected), 2026-10-08.
+
+## Technical debt
+
+### CORE-F-8 — Remove the XML serialization of VirtualModels and the deprecated FML API  ·  `IN PROGRESS`
+
+**Problem.** 3.0 no longer supports the `.fml.xml` serialization of VirtualModels, but flexo-foundation still carries it:
+the XML load/save path of `CompilationUnitResourceImpl` (`PersistencyStrategy`, default `XML2FML`), `XMLToFMLConverter`,
+the edition actions only the XML could produce (`AddFlexoConceptInstance`, `AddToListAction`, `IncrementalIterationAction`…),
+the `_get/_set` accessors holding cross-references as URI strings (`_getFlexoConceptTypeURI`, `_getParentFlexoConceptsList`…,
+also in flexo-ontology), about 120 other `@Deprecated` members, `@FMLMigration`, and the `@XMLElement`/`@XMLAttribute`
+annotations of the definition classes (in core and in every technology adapter). `fml/rt` keeps its XML: `.fml.rt` instances
+are still serialized that way.
+
+**Phases.** 1. test fixtures and migration tests; 2. cut the XML path; 3. remove the XML-only edition actions and their UI;
+4. remove the URI-string accessors; 5. other `@Deprecated`, family by family (renames last); 6. remove the XML annotations of
+the definition classes; 7. remove `@FMLMigration`. Each phase compiles in the openflexo-dev composite and keeps the tests green.
+
+**Phase 1 (2026-11-08).** No `.fml.xml` fixture was worth migrating. Deleted: the migration tests (`TestFMLMigration` in core
+and diagram-ta, `TestMigrateEditionActions`, fixture `MigrationVM`), the `*XMLVersion` tests and fixture of diagram-ta, the
+duplicates `TestControlledDiagramViewPoint2` and `TestViewPointA` (with `TestFMLEditorWithDiagramTA` and the two "FromJar"
+steps of `TestDiagramFeaturesBindingModelManagement`: their jar dependency is commented out), and the docx fixtures
+`TestLibraryViewPoint`/`TestLibraryViewPoint2`, which no longer loaded at all. Tests repointed to the textual models
+`TestControlledDiagramViewPoint` and docx `FML/TestLibrary.fml` (that one revealed DOCX-D-2).
+
+**`FMLClassDiagram` migrated (2026-11-08).** The model of fml-diagramming-extension (used by the Modeller) is textual FML; the
+XML version loaded but carried 19 validation errors, so the feature could not work. Now proven by
+`TestFMLClassDiagramVirtualModel` (load, 0 validation error, instantiation, representation of a concept and its properties,
+creation of a concept from the palette). It needed CORE-D-41 and CORE-D-42; the role `concept` is now `flexoConcept`.
+
+**Last `.fml.xml` removed (2026-11-08).** Deleted with their unparseable 2022 pretty-print, none being used by a test:
+xlsx-ta-test-rc `RootVM`/`PersonListing`, the copy of `TestXXVM` in capella-ta-test-rc, `XXX`/`TestVM` of the unbuilt
+`xxxmodule` (its `.fib` and `XXXCst` still name `http://openflexo.org/xxxmodule/XXX.fml`, to rewrite if the module is revived).
+`TestXXVM` of the TA template xx-ta-test-rc is rewritten in textual FML and run by `AutomatedTests/TestXXVM.fmlscript`.
+No `.fml.xml` is left in the workspace: phase 2 can start.
+
+**Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
+`FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.

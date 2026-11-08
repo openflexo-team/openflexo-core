@@ -97,6 +97,18 @@ public pruneKeepTagged() {
 
 ---
 
+### CORE-D-41 — Validation rejects `container.new X(...)` as the `unmatched:` clause of a `match`  ·  `DONE`
+
+**Symptom.** In the behaviour of a concept, `match X in set from container where (...) unmatched: new X(...)` validates but
+creates nothing at run time (a bare `new` in another concept's behaviour has no container), while the working spelling
+`unmatched: container.new X(...)` was reported `'new instance' binding must instantiate a new instance`.
+
+**Cause.** `MatchFlexoConceptInstance.NewInstanceBindingIsRequiredAndMustBeValid` required the instantiation at the ROOT of the
+binding path; in `container.new X(...)` it is the last element.
+
+**Fix (2026-11-08).** The rule checks the last element of the path. Proven by `TestFMLClassDiagramVirtualModel`
+(fml-diagramming-extension): the class diagram creates one `FlexoPropertyGR` per property, none twice, with 0 validation error.
+
 ## FML types
 
 ### CORE-D-5 — A `FlexoConceptInstanceType` built with an empty URI is reported as resolved  ·  `TODO`
@@ -398,6 +410,20 @@ to "the first DropScheme declared by the bound concept", which is right by luck 
 the arity match. They then act as the values the drop dialog starts from.
 
 ---
+
+### CORE-D-42 — The FML technology adapter could not be used from textual FML  ·  `DONE`
+
+**Symptom.** Found while migrating `FMLClassDiagram` (CORE-F-8), its only user: assigning a VirtualModel to an
+`FMLModelSlot` failed at run time with `ClassCastException: VirtualModel cannot be cast to FMLCompilationUnit`, and
+`FML::CreateFlexoConcept(conceptName=…, container=…)` reported `Unknown property conceptName`.
+
+**Cause.** `FMLModelSlot.getType()` declared `VirtualModel` while the slot holds the compilation unit (`makeActorReference`,
+`FMLModelSlotInstance`, `getTypeDescription()` all use `FMLCompilationUnit`); `CreateFlexoConcept` carried no `@FMLAttribute`.
+
+**Fix (2026-11-08).** `getType()` returns `FMLCompilationUnit`; `conceptName` and `container` of `CreateFlexoConcept` are FML
+attributes. **Not done**: the other actions of the FML technology adapter (`CreateTopLevelVirtualModel`,
+`CreateContainedVirtualModel`, `CreatePrimitiveRole`, `CreateFlexoConceptInstanceRole`, `CreateFlexoBehaviour`) still have no FML
+attribute — nothing uses them yet.
 
 ## FML compilation unit loading
 

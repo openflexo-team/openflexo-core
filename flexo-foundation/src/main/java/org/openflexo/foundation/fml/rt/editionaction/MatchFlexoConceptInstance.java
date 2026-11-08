@@ -728,11 +728,13 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				}
 				else {
 					BindingPath bp = (BindingPath) binding.getExpression();
-					if (!(bp.getRootPathElement() instanceof CreationSchemePathElement)) {
+					// The instantiation ends the path: 'new X(...)', or 'container.new X(...)' where the instance must be created
+					// in a given container (a bare 'new' in the behaviour of another concept creates nothing)
+					if (!(bp.getLastBindingPathElement() instanceof CreationSchemePathElement)) {
 						return new ValidationError<>(this, object, "'new_instance'_binding_must_instantiate_a_new_instance");
 					}
 					// We should also check that the newly created instance type is compatible with the one which has been declared
-					CreationSchemePathElement<CreationScheme> cspe = (CreationSchemePathElement<CreationScheme>) bp.getRootPathElement();
+					CreationSchemePathElement<CreationScheme> cspe = (CreationSchemePathElement<CreationScheme>) bp.getLastBindingPathElement();
 					if (!object.getFlexoConceptType().isAssignableFrom(cspe.getCreationScheme().getFlexoConcept())) {
 						System.out.println("object.getFlexoConceptType()=" + object.getFlexoConceptType());
 						System.out.println("cspe.getCreationScheme().getFlexoConcept()=" + cspe.getCreationScheme().getFlexoConcept());

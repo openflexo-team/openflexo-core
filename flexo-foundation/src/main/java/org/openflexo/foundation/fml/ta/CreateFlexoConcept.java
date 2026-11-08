@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -82,6 +83,7 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = VALUE_KEY, required = true, description = "<html>name of the new concept</html>")
 	public DataBinding<String> getConceptName();
 
 	@Setter(VALUE_KEY)
@@ -89,6 +91,7 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = CONTAINER_KEY, required = true, description = "<html>concept (or VirtualModel) that will contain the new concept</html>")
 	public DataBinding<FlexoConcept> getContainer();
 
 	@Setter(CONTAINER_KEY)
