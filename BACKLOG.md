@@ -250,5 +250,11 @@ xlsx-ta-test-rc `RootVM`/`PersonListing`, the copy of `TestXXVM` in capella-ta-t
 `TestXXVM` of the TA template xx-ta-test-rc is rewritten in textual FML and run by `AutomatedTests/TestXXVM.fmlscript`.
 No `.fml.xml` is left in the workspace: phase 2 can start.
 
+**Phase 2 (2026-11-08).** The XML path is cut: `CompilationUnitResourceImpl` reads and writes textual FML only
+(`PersistencyStrategy`, the XML load/save, the metadata read from the XML root, `doesIODelegateExist` special case removed),
+`XMLToFMLConverter`, `FML_XML_SUFFIX` and `FMLObjectImpl.IS_CONVERTING_FROM_XML` are deleted. A `Xxx.fml/` directory holding only a
+`Xxx.fml.xml` gives no resource, and `CompilationUnitResourceFactory.isIncompleteArtefact` logs a warning naming it (not covered by a
+test: no such fixture is left).
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.

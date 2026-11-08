@@ -270,9 +270,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
-		@FMLMigration("Can be removed in 3.0.0")
-		public static boolean IS_CONVERTING_FROM_XML = false;
-
 		private static final Logger logger = Logger.getLogger(FMLObject.class.getPackage().getName());
 
 		private String name;
@@ -310,12 +307,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public void setName(String name) throws InvalidNameException {
 			if (FMLKeywords.isKeyword(name)) {
-				if (IS_CONVERTING_FROM_XML) {
-					name = "_" + name;
-				}
-				else {
-					throw new InvalidNameException(this, name);
-				}
+				throw new InvalidNameException(this, name);
 			}
 			if (requireChange(this.name, name)) {
 				String oldName = this.name;

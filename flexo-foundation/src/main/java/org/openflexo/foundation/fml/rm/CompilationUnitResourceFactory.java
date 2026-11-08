@@ -61,7 +61,6 @@ public class CompilationUnitResourceFactory
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 	public static final String FML_SUFFIX = ".fml";
-	public static final String FML_XML_SUFFIX = ".fml.xml";
 
 	private static final Logger logger = Logger.getLogger(CompilationUnitResourceFactory.class.getPackage().getName());
 
@@ -344,7 +343,15 @@ public class CompilationUnitResourceFactory
 
 	@Override
 	public <I> boolean isIncompleteArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return hasArtefactForm(serializationArtefact, resourceCenter) && !hasMainFile(serializationArtefact, resourceCenter);
+		if (hasArtefactForm(serializationArtefact, resourceCenter) && !hasMainFile(serializationArtefact, resourceCenter)) {
+			if (hasLegacyXMLFile(serializationArtefact, resourceCenter)) {
+				logger.warning("Ignoring " + resourceCenter.retrieveName(serializationArtefact) + " in " + resourceCenter
+						+ ": it is serialized in the XML format (" + resourceCenter.retrieveName(serializationArtefact) + ".xml"
+						+ "), no longer supported since 3.0. Migrate it to textual FML.");
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/** A readable directory whose name ends with {@link #FML_SUFFIX} */
@@ -354,13 +361,21 @@ public class CompilationUnitResourceFactory
 	}
 
 	/**
-	 * Whether the directory <code>Xxx.fml</code> holds its unit: <code>Xxx.fml</code>, or <code>Xxx.fml.xml</code> in the deprecated XML
-	 * serialization. A directory found without it is being copied or written: it gives no resource yet (CORE-D-39)
+	 * Whether the directory <code>Xxx.fml</code> holds its unit <code>Xxx.fml</code>. A directory found without it is being copied or
+	 * written: it gives no resource yet (CORE-D-39)
 	 */
 	private static <I> boolean hasMainFile(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
 		String name = resourceCenter.retrieveName(serializationArtefact);
-		return resourceCenter.exists(resourceCenter.getEntry(name, serializationArtefact))
-				|| resourceCenter.exists(resourceCenter.getEntry(name + ".xml", serializationArtefact));
+		return resourceCenter.exists(resourceCenter.getEntry(name, serializationArtefact));
+	}
+
+	/**
+	 * Whether the directory <code>Xxx.fml</code> holds a <code>Xxx.fml.xml</code>, the XML serialization of VirtualModels, removed in 3.0
+	 * (CORE-F-8)
+	 */
+	private static <I> boolean hasLegacyXMLFile(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		String name = resourceCenter.retrieveName(serializationArtefact);
+		return resourceCenter.exists(resourceCenter.getEntry(name + ".xml", serializationArtefact));
 	}
 
 	@Override

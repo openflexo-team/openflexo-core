@@ -52,8 +52,6 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.md.ListMetaData;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rm.CompilationUnitResourceImpl;
-import org.openflexo.foundation.fml.rm.CompilationUnitResourceImpl.PersistencyStrategy;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.test.OrderedRunner;
@@ -105,7 +103,6 @@ public class TestFMLAnnotations extends OpenflexoTestCase {
 
 		CompilationUnitResource cuResource = vpLib
 				.getCompilationUnitResource("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/TestAnnotations.fml");
-		((CompilationUnitResourceImpl) cuResource).setPersistencyStrategy(PersistencyStrategy.FML);
 
 		assertNotNull(cuResource);
 

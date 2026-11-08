@@ -46,9 +46,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,11 +69,9 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.FMLObject.FMLObjectImpl;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
@@ -89,7 +84,6 @@ import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid.I
 import org.openflexo.foundation.fml.visitor.FlexoConceptVisitor;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
-import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FileWritingLock;
@@ -106,17 +100,11 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationReport;
-import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
-import org.openflexo.xml.XMLElementInfo;
-import org.openflexo.xml.XMLRootElementInfo;
 
 /**
  * Implementation for {@link CompilationUnitResource}
@@ -131,21 +119,6 @@ public abstract class CompilationUnitResourceImpl
 		extends PamelaResourceWithPotentialCrossReferencesImpl<FMLCompilationUnit, FMLModelFactory> implements CompilationUnitResource {
 
 	private static final Logger logger = Logger.getLogger(CompilationUnitResourceImpl.class.getPackage().getName());
-
-	public enum PersistencyStrategy {
-		XML, XML2FML, FML
-	}
-
-	private static final PersistencyStrategy DEFAULT_PERSISTENCY_STRATEGY = PersistencyStrategy.XML2FML;
-	private PersistencyStrategy persistencyStrategy = DEFAULT_PERSISTENCY_STRATEGY;
-
-	public PersistencyStrategy getPersistencyStrategy() {
-		return persistencyStrategy;
-	}
-
-	public void setPersistencyStrategy(PersistencyStrategy persistencyStrategy) {
-		this.persistencyStrategy = persistencyStrategy;
-	}
 
 	private final FMLCompilationUnitParser fmlParser;
 
@@ -243,10 +216,6 @@ public abstract class CompilationUnitResourceImpl
 			}
 		}
 		super.stopDeserializing();
-
-		if (willConvertFromXMLtoFML) {
-			convertFromXMLToFML();
-		}
 	}
 
 	@Override
@@ -322,24 +291,6 @@ public abstract class CompilationUnitResourceImpl
 	@Override
 	public boolean isUnparseable() {
 		return StringUtils.isNotEmpty(getUnparseableContents());
-	}
-
-	@Override
-	protected boolean doesIODelegateExist() {
-		if (getIODelegate() != null && !getIODelegate().exists()) {
-			// Special case for XML serialized VMs > no FML
-			try {
-				if (getXMLArtefactResource() != null && getXMLArtefactResource().exists()) {
-					return true;
-				}
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (LocatorNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return super.doesIODelegateExist();
 	}
 
 	@Override
@@ -657,7 +608,7 @@ public abstract class CompilationUnitResourceImpl
 
 	/**
 	 * Return {@link ModelSlot} classes used in this {@link VirtualModel} resource<br>
-	 * Note that this information is extracted from metadata or from reading XML file before effective parsing<br>
+	 * Note that this information is extracted from metadata or from reading the FML file before effective parsing<br>
 	 * This information is used to determine which technology adapters have to be activated before {@link VirtualModel} is loaded
 	 * 
 	 * @return
@@ -826,59 +777,7 @@ public abstract class CompilationUnitResourceImpl
 
 	@Override
 	protected FMLCompilationUnit performLoad() throws IOException {
-		switch (getPersistencyStrategy()) {
-			case XML:
-				return loadFromXML();
-			case XML2FML:
-				Resource fmlArtefactResource = getIODelegate().getSerializationArtefactAsResource();
-				Resource xmlArtefactResource = null;
-				try {
-					xmlArtefactResource = getXMLArtefactResource();
-				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (LocatorNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				if (fmlArtefactResource != null && fmlArtefactResource.exists()) {
-					if (xmlArtefactResource != null && xmlArtefactResource.exists() && fmlArtefactResource instanceof FileResourceImpl
-							&& xmlArtefactResource instanceof FileResourceImpl) {
-						// In this case, both resources exist, take the recent one
-						FileTime fmlLastModified = Files.getLastModifiedTime(((FileResourceImpl) fmlArtefactResource).getFile().toPath());
-						FileTime xmlLastModified = Files.getLastModifiedTime(((FileResourceImpl) xmlArtefactResource).getFile().toPath());
-						System.out.println("Dir: " + fmlArtefactResource.getContainer());
-						System.out.println("FML: " + fmlArtefactResource + " lastModified: " + fmlLastModified);
-						System.out.println("XML: " + xmlArtefactResource + " lastModified: " + xmlLastModified);
-						if (xmlLastModified.compareTo(fmlLastModified) >= 0) {
-							// Loading using XML file
-							System.out.println("Loading as XML " + xmlArtefactResource);
-							return loadFromXML();
-						}
-						else {
-							// Loading using FML file
-							System.out.println("Loading as FML " + fmlArtefactResource);
-							return loadFromFML();
-						}
-					}
-					else {
-						return loadFromFML();
-					}
-				}
-				if (xmlArtefactResource != null && xmlArtefactResource.exists()) {
-					return loadFromXML();
-				}
-				logger.warning("Cannot load " + this);
-				return null;
-
-			case FML:
-				return loadFromFML();
-
-			default:
-				return null;
-		}
-
+		return loadFromFML();
 	}
 
 	/**
@@ -890,10 +789,6 @@ public abstract class CompilationUnitResourceImpl
 	protected void performSave(boolean clearIsModified) throws SaveResourceException {
 
 		getLoadedResourceData().manageImports();
-
-		if (getPersistencyStrategy() == PersistencyStrategy.XML) {
-			saveToXML(getLoadedResourceData());
-		}
 
 		saveToFML();
 
@@ -1032,237 +927,6 @@ public abstract class CompilationUnitResourceImpl
 		logger.info("Wrote " + getIODelegate().getSerializationArtefact());
 	}
 
-	/**
-	 * Return XML file when relevant and existant (deprecated)
-	 * 
-	 * @return
-	 * @throws LocatorNotFoundException
-	 * @throws MalformedURLException
-	 * @throws FileNotFoundException
-	 */
-	@Deprecated
-	private <I> I getXMLArtefact() {
-		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
-			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
-
-			String artefactName = ioDelegate.getDirectory().getName();
-			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
-			return (I) new File(ioDelegate.getDirectory(), baseName + CompilationUnitResourceFactory.FML_XML_SUFFIX);
-			/*
-			File f = new File(ioDelegate.getDirectory(), baseName + CompilationUnitResourceFactory.FML_XML_SUFFIX);
-			ResourceLocatorDelegate locator = ioDelegate.getSerializationArtefactAsResource().getLocator();		
-			return new FileResourceImpl(locator,f);*/
-			// return new FileResourceImpl(f);
-		}
-		if (getIODelegate() instanceof DirectoryBasedJarIODelegate) {
-			DirectoryBasedJarIODelegate ioDelegate = (DirectoryBasedJarIODelegate) getIODelegate();
-			String artefactName = ioDelegate.getDirectory().getName();
-			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
-			List<? extends Resource> contents = ioDelegate.getDirectory().getContents();
-			for (Resource child : contents) {
-				InJarResourceImpl entry = (InJarResourceImpl) child;
-				if (entry.getName().contains(CompilationUnitResourceFactory.FML_XML_SUFFIX)) {
-					return (I) entry;
-				}
-			}
-		}
-		return null;
-	}
-
-	private Resource getXMLArtefactResource() throws MalformedURLException, LocatorNotFoundException {
-		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
-			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
-			String artefactName = ioDelegate.getDirectory().getName();
-			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
-			File f = new File(ioDelegate.getDirectory(), baseName + CompilationUnitResourceFactory.FML_XML_SUFFIX);
-			ResourceLocatorDelegate locator = ioDelegate.getSerializationArtefactAsResource().getLocator();
-			return new FileResourceImpl(locator, f);
-		}
-		if (getIODelegate() instanceof DirectoryBasedJarIODelegate) {
-			DirectoryBasedJarIODelegate ioDelegate = (DirectoryBasedJarIODelegate) getIODelegate();
-			String artefactName = ioDelegate.getDirectory().getName();
-			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
-			List<? extends Resource> contents = ioDelegate.getDirectory().getContents();
-			for (Resource child : contents) {
-				InJarResourceImpl entry = (InJarResourceImpl) child;
-				if (entry.getName().contains(CompilationUnitResourceFactory.FML_XML_SUFFIX)) {
-					return entry;
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Return XML input stream (deprecated)
-	 * 
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws LocatorNotFoundException
-	 * @throws MalformedURLException
-	 */
-	@Deprecated
-	private InputStream getXMLInputStream() throws FileNotFoundException, MalformedURLException, LocatorNotFoundException {
-		Resource xmlArtefactResource = getXMLArtefactResource();
-		if (xmlArtefactResource != null) {
-			return xmlArtefactResource.openInputStream();
-		}
-		return null;
-	}
-
-	private FMLCompilationUnit loadFromXML() {
-
-		if (getPersistencyStrategy() == PersistencyStrategy.XML2FML) {
-			willConvertFromXMLtoFML();
-		}
-
-		logger.info("Loading from XML " + getXMLArtefact());
-		try {
-			logger.info("Resource " + getXMLArtefactResource());
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (LocatorNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		VirtualModel virtualModel = null;
-		InputStream ioStream = null;
-		try {
-			ioStream = getXMLInputStream();
-			// startDeserializing();
-			virtualModel = (VirtualModel) getFactory().deserialize(ioStream);
-			// stopDeserializing();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				if (ioStream != null) {
-					ioStream.close();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		FMLCompilationUnit returned = getFactory().newCompilationUnit();
-		returned.setVirtualModel(virtualModel);
-		for (UseModelSlotDeclaration useModelSlotDeclaration : virtualModel.getUseDeclarations()) {
-			// System.out.println("Hop: " + useModelSlotDeclaration + " of " + useModelSlotDeclaration.getClass());
-			returned.addToUseDeclarations(useModelSlotDeclaration);
-		}
-		for (UseModelSlotDeclaration useModelSlotDeclaration : new ArrayList<UseModelSlotDeclaration>(virtualModel.getUseDeclarations())) {
-			virtualModel.removeFromUseDeclarations(useModelSlotDeclaration);
-		}
-		returned.setResource(this);
-
-		getFMLParser().initPrettyPrint(returned);
-
-		if (getPersistencyStrategy() == PersistencyStrategy.XML2FML) {
-			FMLObjectImpl.IS_CONVERTING_FROM_XML = false;
-		}
-
-		return returned;
-	}
-
-	private boolean willConvertFromXMLtoFML = false;
-
-	private void willConvertFromXMLtoFML() {
-		FMLObjectImpl.IS_CONVERTING_FROM_XML = true;
-		willConvertFromXMLtoFML = true;
-	}
-
-	private void convertFromXMLToFML() {
-
-		new XMLToFMLConverter(getLoadedResourceData()).convert();
-
-	}
-
-	private void saveToXML(FMLCompilationUnit toBeSaved) throws SaveResourceException {
-
-		logger.info("Saving XML " + this);
-
-		File temporaryFile = null;
-		// FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
-
-		/*if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
-				&& getFlexoIOStreamDelegate().getSourceResource() != null) {
-			logger.info("Saving SOURCE resource " + this + " : " + getFlexoIOStreamDelegate().getSourceResource().getFile() + " version="
-					+ getModelVersion());
-		}
-		else {
-			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Saving resource " + this + " : " + getFile() + " version=" + getModelVersion());
-			}
-		}*/
-		try {
-			/*
-			 * File dir = getFile().getParentFile(); willWrite(dir); if
-			 * (!dir.exists()) { dir.mkdirs(); } willWrite(getFile());
-			 */
-			// Make local copy
-			makeLocalCopy();
-			// Using temporary file
-
-			temporaryFile = File.createTempFile("temp", ".xml", getFile().getParentFile());
-			if (logger.isLoggable(Level.FINE)) {
-				logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());
-			}
-			performXMLSerialization(toBeSaved, temporaryFile);
-			if (logger.isLoggable(Level.FINE)) {
-				logger.finer("Renaming temp file " + temporaryFile.getAbsolutePath() + " to " + getFile().getAbsolutePath());
-			}
-			// Renaming temporary file is done in post serialization
-			postXMLSerialization(temporaryFile /*, lock*/);
-		} catch (IOException e) {
-			e.printStackTrace();
-			if (temporaryFile != null) {
-				temporaryFile.delete();
-			}
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Failed to save resource " + this + " with model version " + getModelVersion());
-			}
-			// getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
-			throw new SaveResourceException(getIODelegate(), e);
-		} /*
-			* finally { hasWritten(getFile());
-			* hasWritten(getFile().getParentFile()); }
-			*/
-	}
-
-	/**
-	 * @param version
-	 * @param temporaryFile
-	 * @param lock
-	 * @param clearIsModified
-	 * @throws IOException
-	 */
-	private void postXMLSerialization(File temporaryFile/*, FileWritingLock lock*/) throws IOException {
-		if (getXMLArtefact() instanceof File) {
-			File xmlFile = (File) getXMLArtefact();
-			FileUtils.rename(temporaryFile, xmlFile);
-		}
-		// getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
-		/*if (clearIsModified) {
-			notifyResourceStatusChanged();
-		}*/
-	}
-
-	private void performXMLSerialization(FMLCompilationUnit toBeSaved, File temporaryFile) throws IOException {
-		try (FileOutputStream out = new FileOutputStream(temporaryFile)) {
-			getFactory().serialize(toBeSaved.getVirtualModel(), out);
-			out.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IOException(e);
-		}
-	}
-
 	private VirtualModelInfo virtualModelInfo;
 
 	@Override
@@ -1304,7 +968,7 @@ public abstract class CompilationUnitResourceImpl
 			File file = (File) getIODelegate().getSerializationArtefact();
 
 			if (!forceRebuild && (file.lastModified() < metaDataManager.metaDataLastModified(file))) {
-				// OK, in this case the metadata file is there and more recent than .fml.xml file
+				// OK, in this case the metadata file is there and more recent than the .fml file
 				// Attempt to retrieve metadata from cache
 				String uri = metaDataManager.getProperty("uri", file);
 				String name = metaDataManager.getProperty("name", file);
@@ -1321,44 +985,13 @@ public abstract class CompilationUnitResourceImpl
 				}
 			}
 			else {
-				// No way, metadata are either not present or older than file version, we should parse XML file, continuing...
+				// No way, metadata are either not present or older than file version, we should parse the FML file, continuing...
 			}
 		}
 
 		// System.out.println("Retrieve info from file for " + this);
 
-		VirtualModelInfo returned = null;
-
-		switch (getPersistencyStrategy()) {
-			case XML:
-			case XML2FML:
-				if (getXMLArtefact() != null && resourceCenter.exists(getXMLArtefact())) {
-					returned = retrieveInfoFromXML(resourceCenter);
-					break;
-				}
-				else {
-					// Retrieve infos from FML file
-					returned = retrieveInfoFromFML(resourceCenter);
-					break;
-				}
-			case FML:
-				returned = retrieveInfoFromFML(resourceCenter);
-				break;
-			default:
-				break;
-		}
-
-		/*try {
-		if (getXMLArtefact() != null) {
-			returned = retrieveInfoFromXML(resourceCenter);
-		}
-		else {
-			returned = retrieveInfoFromFML(resourceCenter);
-		}
-		} catch (Exception e) {
-		e.printStackTrace();
-			returned = retrieveInfoFromFML(resourceCenter);
-		}*/
+		VirtualModelInfo returned = retrieveInfoFromFML(resourceCenter);
 
 		if (resourceCenter instanceof FileSystemBasedResourceCenter && returned != null) {
 			// Save metadata !!!
@@ -1378,44 +1011,6 @@ public abstract class CompilationUnitResourceImpl
 		}
 
 		return returned;
-	}
-
-	private <I> VirtualModelInfo retrieveInfoFromXML(FlexoResourceCenter resourceCenter) {
-
-		XMLRootElementInfo xmlRootElementInfo = resourceCenter.getXMLRootElementInfo(getXMLArtefact(), true, "UseModelSlotDeclaration");
-
-		if (xmlRootElementInfo == null) {
-			return null;
-		}
-
-		String uri = xmlRootElementInfo.getAttribute("uri");
-		String name = xmlRootElementInfo.getAttribute("name");
-		String version = xmlRootElementInfo.getAttribute("version");
-		String virtualModelClassName = xmlRootElementInfo.getAttribute("virtualModelClass");
-
-		if (StringUtils.isEmpty(name)) {
-			if (StringUtils.isNotEmpty(uri)) {
-				if (uri.indexOf("/") > -1) {
-					name = uri.substring(uri.lastIndexOf("/") + 1);
-				}
-				else if (uri.indexOf("\\") > -1) {
-					name = uri.substring(uri.lastIndexOf("\\") + 1);
-				}
-				else {
-					name = uri;
-				}
-			}
-		}
-
-		String requiredModelSlotList = "";
-		boolean isFirst = true;
-		for (XMLElementInfo elInfo : xmlRootElementInfo.getElements()) {
-			requiredModelSlotList = requiredModelSlotList + (isFirst ? "" : ",") + elInfo.getAttribute("modelSlotClass");
-			isFirst = false;
-		}
-
-		return new VirtualModelInfo(uri, version, name, requiredModelSlotList, "", "", virtualModelClassName);
-
 	}
 
 	private <I> VirtualModelInfo retrieveInfoFromFML(FlexoResourceCenter<I> resourceCenter) {
