@@ -52,19 +52,14 @@ import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
-import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEvent;
-import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -92,16 +87,13 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
 // Following imports are required for those actions be available in a VirtualModel even if no model slot is declared
-@Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(CreateTopLevelVirtualModelInstance.class),
-		@Import(AddVirtualModelInstance.class), @Import(AddClassInstance.class), @Import(DeclarationAction.class),
-		@Import(AssignationAction.class), @Import(ReturnStatement.class), @Import(ExpressionAction.class), @Import(LogAction.class),
-		@Import(ConnectAction.class), @Import(NotifyProgressAction.class), @Import(SelectUniqueFlexoConceptInstance.class),
-		@Import(SelectFlexoConceptInstance.class), @Import(SelectUniqueVirtualModelInstance.class),
-		@Import(SelectVirtualModelInstance.class), @Import(InitiateMatching.class), @Import(FinalizeMatching.class),
-		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
-		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class),
-		@Import(IncrementalIterationAction.class), @Import(FireEvent.class), @Import(FireEventAction.class),
-		@Import(NotifyPropertyChangedAction.class), @Import(AddClassInstance.class), @Import(UnresolvedTechnologySpecificAction.class) })
+@Imports({ @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class),
+		@Import(ExpressionAction.class), @Import(LogAction.class), @Import(ConnectAction.class), @Import(NotifyProgressAction.class),
+		@Import(SelectUniqueFlexoConceptInstance.class), @Import(SelectFlexoConceptInstance.class),
+		@Import(SelectUniqueVirtualModelInstance.class), @Import(SelectVirtualModelInstance.class), @Import(InitiateMatching.class),
+		@Import(FinalizeMatching.class), @Import(MatchFlexoConceptInstance.class), @Import(DeleteAction.class),
+		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(WhileAction.class), @Import(FireEvent.class),
+		@Import(NotifyPropertyChangedAction.class), @Import(UnresolvedTechnologySpecificAction.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	/**

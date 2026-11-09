@@ -67,7 +67,6 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.AddFlexoConceptInstanceImpl;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -100,8 +99,7 @@ import org.openflexo.toolbox.StringUtils;
  * ({@link #getCreationScheme()}) with the values of {@link #getParameters()}.
  * <p>
  * Note that the FML instance creation, {@code new Book(parameters.title)} or {@code new Catalog() with (name="catalog")}, is not such an
- * action: it is an expression, evaluated by a {@link org.openflexo.foundation.fml.binding.CreationSchemePathElement}. The concrete
- * {@link AddFlexoConceptInstance} is deprecated.
+ * action: it is an expression, evaluated by a {@link org.openflexo.foundation.fml.binding.CreationSchemePathElement}.
  *
  * @author sylvain
  *
@@ -802,7 +800,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 						}
 						else if (!p.getValue().revalidate()) {
-							AddFlexoConceptInstanceImpl.logger
+							AbstractAddFlexoConceptInstanceImpl.logger
 									.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="
 											+ p.getOwner().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
 							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_valid: " + param.getName()));

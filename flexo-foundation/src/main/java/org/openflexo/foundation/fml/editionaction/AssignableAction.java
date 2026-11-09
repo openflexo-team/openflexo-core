@@ -59,7 +59,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 /**
  * An {@link EditionAction} producing a value of type T, which can be assigned<br>
  * An {@link AssignableAction} might be embedded as right-hand side in an {@link AbstractAssignationAction} ({@link AssignationAction} or
- * {@link DeclarationAction}), in an {@link AddToListAction} or in a {@link ReturnStatement}. For instance, in {@code Book book = new
+ * {@link DeclarationAction}) or in a {@link ReturnStatement}. For instance, in {@code Book book = new
  * Book(parameters.title);} the right-hand side is an {@link ExpressionAction} (an {@link AssignableAction}) held by a
  * {@link DeclarationAction}.
  * <p>
@@ -130,13 +130,16 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	public AssignationAction<T> assignTo(DataBinding<? super T> assignation);
 
 	/**
-	 * Replace this action, in the control graph of its owner, by a new {@link AddToListAction} adding the value of this action to supplied
-	 * list
+	 * Make this action add its value to supplied list, with the FML expression {@code list.add(value)}.<br>
+	 * An {@link ExpressionAction} is rewritten in place ({@code expr} becomes {@code list.add(expr)}); any other action is replaced, in
+	 * the control graph of its owner, by a {@link DeclarationAction} declaring a variable assigned with this action, followed by
+	 * {@code list.add(variable)}
 	 *
-	 * @param assignation
-	 * @return the new {@link AddToListAction}, now holding this action
+	 * @param list
+	 *            the list the value is added to
+	 * @return the {@link ExpressionAction} calling {@code add}
 	 */
-	public AddToListAction<T> addToList(DataBinding<? extends List<T>> assignation);
+	public ExpressionAction<?> addToList(DataBinding<? extends List<T>> list);
 
 	/**
 	 * Replace this action, in the control graph of its owner, by a new {@link ReturnStatement} returning the value of this action
@@ -254,31 +257,23 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		}
 
 		@Override
-		public AddToListAction<T> addToList(DataBinding<? extends List<T>> list) {
-			FMLModelFactory factory = getFMLModelFactory();
-
-			FMLControlGraphOwner owner = getOwner();
-			String ownerContext = getOwnerContext();
-			Sequence parentFlattenedSequence = getParentFlattenedSequence();
-
-			owner.setControlGraph(null, ownerContext);
-
-			AddToListAction<T> addToListAction = factory.newAddToListAction();
-			addToListAction.setAssignableAction(this);
-			addToListAction.setList(list);
-
-			// We connect control graph
-			setOwnerContext(ownerContext);
-			owner.setControlGraph(addToListAction, ownerContext);
-
-			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
-			// This fixes issue TA-81
-			if (parentFlattenedSequence != null) {
-				parentFlattenedSequence.controlGraphChanged(this);
+		public ExpressionAction<?> addToList(DataBinding<? extends List<T>> list) {
+			if (this instanceof ExpressionAction) {
+				ExpressionAction<T> expressionAction = (ExpressionAction<T>) this;
+				DataBinding<T> value = expressionAction.getExpression();
+				String valueAsString = value != null && value.isSet() ? value.toString() : "";
+				expressionAction.setExpression(new DataBinding<>(list + ".add(" + valueAsString + ")", null));
+				return expressionAction;
 			}
-
-			return addToListAction;
-
+			String variableName = "valueToAdd";
+			int index = 2;
+			while (getBindingModel() != null && getBindingModel().bindingVariableNamed(variableName) != null) {
+				variableName = "valueToAdd" + index++;
+			}
+			DeclarationAction<T> declarationAction = declaresNewVariable(variableName);
+			ExpressionAction<?> addAction = getFMLModelFactory().newExpressionAction(list + ".add(" + variableName + ")");
+			declarationAction.sequentiallyAppend(addAction);
+			return addAction;
 		}
 
 		@Override

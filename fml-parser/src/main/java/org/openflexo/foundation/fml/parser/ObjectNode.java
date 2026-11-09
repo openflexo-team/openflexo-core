@@ -533,15 +533,6 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				return (P2PPNode<?, C>) new ExpressionIterationActionNode((ExpressionIterationAction) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
-			/*if (object instanceof AddFlexoConceptInstance) {
-			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getanalyzer());
-			}
-			if (object instanceof AddVirtualModelInstance) {
-			return (P2PPNode<?, C>) new AddVirtualModelInstanceNode((AddVirtualModelInstance) object, getanalyzer());
-			}
-			if (object instanceof AddClassInstance) {
-			return (P2PPNode<?, C>) new AddClassInstanceNode((AddClassInstance) object, getanalyzer());
-			}*/
 			if (object instanceof FireEvent) {
 				return (P2PPNode<?, C>) new FireEventNode((FireEvent) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}

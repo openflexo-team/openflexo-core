@@ -53,7 +53,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -735,12 +734,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					}
 					// We should also check that the newly created instance type is compatible with the one which has been declared
 					CreationSchemePathElement<CreationScheme> cspe = (CreationSchemePathElement<CreationScheme>) bp.getLastBindingPathElement();
-					if (!object.getFlexoConceptType().isAssignableFrom(cspe.getCreationScheme().getFlexoConcept())) {
-						System.out.println("object.getFlexoConceptType()=" + object.getFlexoConceptType());
-						System.out.println("cspe.getCreationScheme().getFlexoConcept()=" + cspe.getCreationScheme().getFlexoConcept());
-						System.out.println("analyzedType=" + binding.getAnalyzedType());
-						System.out.println("Assignable quand meme: "
-								+ TypeUtils.isTypeAssignableFrom(object.getAssignableType(), binding.getAnalyzedType()));
+					// A concept without creation scheme is instantiated with no scheme ('new Foo()'): take the concept of the path element
+					FlexoConcept createdConcept = cspe.getType() != null ? cspe.getType().getFlexoConcept() : null;
+					if (createdConcept != null && object.getFlexoConceptType() != null
+							&& !object.getFlexoConceptType().isAssignableFrom(createdConcept)) {
 						return new ValidationError<>(this, object, "'new_instance'_type_must_be_compatible_with_the_declaration");
 					}
 				}

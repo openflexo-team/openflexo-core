@@ -61,11 +61,7 @@
         <item name="PrimitiveRole" href="flexo-foundation/PrimitiveRole.html"/>
     </item>
     <item name="Edition actions" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_edition_actions.html">
-        <item name="AddFlexoConceptInstance" href="flexo-foundation/AddFlexoConceptInstance.html"/>
-        <item name="CreateTopLevelVirtualModelInstance" href="flexo-foundation/CreateTopLevelVirtualModelInstance.html"/>
-        <item name="AddVirtualModelInstance" href="flexo-foundation/AddVirtualModelInstance.html"/>
         <item name="ExecuteFlexoBehaviour" href="flexo-foundation/ExecuteFlexoBehaviour.html"/>
-        <item name="ExecuteFML" href="flexo-foundation/ExecuteFML.html"/>
     </item>
     <item name="Fetch requests" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_fetch_requests.html">
         <item name="SelectFlexoConceptInstance" href="flexo-foundation/SelectFlexoConceptInstance.html"/>

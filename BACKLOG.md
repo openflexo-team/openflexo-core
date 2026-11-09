@@ -256,5 +256,17 @@ No `.fml.xml` is left in the workspace: phase 2 can start.
 `Xxx.fml.xml` gives no resource, and `CompilationUnitResourceFactory.isIncompleteArtefact` logs a warning naming it (not covered by a
 test: no such fixture is left).
 
+**Phase 3 (2026-11-08).** The edition actions only the XML could produce are deleted, with their factory methods, `@Import`s,
+editor entries, icons, inspectors, documentation pages and validation key: `AddFlexoConceptInstance`, `AddVirtualModelInstance`,
+`CreateTopLevelVirtualModelInstance`, `AbstractAddFMLRTVirtualModelInstance`, `ExecuteFML`, `FireEventAction`, `AddClassInstance`,
+`AddToListAction`, `RemoveFromListAction`, `IncrementalIterationAction` (the textual equivalents are `new X(...)`, `fire`,
+`list.add(x)` / `list.remove(x)` and `for (int i = ...; ...; ...)`). Decided with the user: the editor's "add to list" (creation
+wizard and `AddToAction`) is kept and now writes `list.add(value)` (`AssignableAction.addToList`: an expression is rewritten in
+place, any other action is first declared as a variable `valueToAdd`), proven by `TestControlGraph.testAddToList`; the REST routes
+`add-to-list` / `remove-from-list` of http-server are removed (their tests were already commented out). The two diagram-ta
+strategies mapping a shape or connector to a concept instance now write `<vmi>.new Concept()`. The fml-parser nodes still named
+`AddFlexoConceptInstanceNode`, `AddVirtualModelInstanceNode`, `AddClassInstanceNode` build `CreationSchemePathElement`s: a rename
+left for phase 5.
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.

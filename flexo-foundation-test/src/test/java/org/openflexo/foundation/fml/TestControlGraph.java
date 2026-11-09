@@ -51,6 +51,7 @@ import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.InvalidNameException;
+import org.openflexo.foundation.fml.action.AddToAction;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -61,8 +62,10 @@ import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
+import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -417,5 +420,77 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(actionScheme, conditional1.getRootOwner());
 		assertEquals(actionScheme, conditional2.getRootOwner());
 
+	}
+
+	/**
+	 * Adding a value to a list writes the FML expression {@code list.add(value)} (CORE-F-8): an expression is rewritten in place, any other
+	 * action is first declared as a variable
+	 */
+	@Test
+	@TestOrder(12)
+	public void testAddToList() {
+
+		log("testAddToList");
+
+		CreatePrimitiveRole createListRole = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept, null, editor);
+		createListRole.setRoleName("someStrings");
+		createListRole.setPrimitiveType(PrimitiveType.String);
+		createListRole.setCardinality(PropertyCardinality.ZeroMany);
+		createListRole.doAction();
+
+		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, editor);
+		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
+		createActionScheme.doAction();
+		ActionScheme actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
+
+		// The creation wizard, "add to list" checked: the new expression is rewritten as someStrings.add(...)
+		CreateEditionAction createAddToList = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null, editor);
+		createAddToList.setEditionActionClass(ExpressionAction.class);
+		createAddToList.setAddToListAction(true);
+		createAddToList.setListExpression(new DataBinding<>("someStrings"));
+		createAddToList.doAction();
+		ExpressionAction<?> addAction1 = (ExpressionAction<?>) createAddToList.getNewEditionAction();
+		assertEquals(addAction1, actionScheme.getControlGraph());
+		assertEquals("someStrings.add()", addAction1.getExpression().toString());
+
+		// The "add to list" action on an existing expression
+		CreateEditionAction createExpression = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null, editor);
+		createExpression.setEditionActionClass(ExpressionAction.class);
+		createExpression.doAction();
+		ExpressionAction<?> expression = (ExpressionAction<?>) createExpression.getNewEditionAction();
+		expression.setExpression(new DataBinding<>("aString"));
+		AddToAction addTo = AddToAction.actionType.makeNewAction(expression, null, editor);
+		addTo.getList().setUnparsedBinding("someStrings");
+		addTo.doAction();
+		assertTrue(addTo.hasActionExecutionSucceeded());
+		assertEquals(expression, addTo.getAddToListAction());
+		assertEquals("someStrings.add(aString)", expression.getExpression().toString());
+
+		// The "add to list" action on another assignable action: its value is first declared as a variable
+		CreateEditionAction createSelect = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null, editor);
+		createSelect.setEditionActionClass(SelectFlexoConceptInstance.class);
+		createSelect.doAction();
+		SelectFlexoConceptInstance<?> select = (SelectFlexoConceptInstance<?>) createSelect.getNewEditionAction();
+		AddToAction addSelectTo = AddToAction.actionType.makeNewAction(select, null, editor);
+		addSelectTo.getList().setUnparsedBinding("someStrings");
+		addSelectTo.doAction();
+		assertTrue(addSelectTo.hasActionExecutionSucceeded());
+		ExpressionAction<?> addAction3 = addSelectTo.getAddToListAction();
+		assertEquals("someStrings.add(valueToAdd)", addAction3.getExpression().toString());
+
+		Sequence sequence = (Sequence) actionScheme.getControlGraph();
+		assertEquals(4, sequence.getFlattenedSequence().size());
+		assertEquals(addAction1, sequence.getFlattenedSequence().get(0));
+		assertEquals(expression, sequence.getFlattenedSequence().get(1));
+		assertTrue(sequence.getFlattenedSequence().get(2) instanceof DeclarationAction);
+		DeclarationAction<?> declaration = (DeclarationAction<?>) sequence.getFlattenedSequence().get(2);
+		assertEquals("valueToAdd", declaration.getVariableName());
+		assertEquals(select, declaration.getAssignableAction());
+		assertEquals(addAction3, sequence.getFlattenedSequence().get(3));
+
+		String fml = actionScheme.getFMLPrettyPrint();
+		System.out.println("actionScheme:\n" + fml);
+		assertTrue(fml.contains("someStrings.add(aString);"));
+		assertTrue(fml.contains("someStrings.add(valueToAdd);"));
 	}
 }

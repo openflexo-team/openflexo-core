@@ -67,26 +67,6 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 
 	@Override
 	public BehaviourCallArgumentNode deserialize() {
-		/*if (getParent() instanceof AddFlexoConceptInstanceNode) {
-			AddFlexoConceptInstance<?> action = ((AddFlexoConceptInstanceNode) getParent()).getModelObject();
-			int currentIndex = action.getParameters().size();
-			if (action.getCreationScheme() != null) {
-				FlexoBehaviourParameter parameter = action.getCreationScheme().getParameters().get(currentIndex);
-				getModelObject().setParam(parameter);
-			}
-			((AddFlexoConceptInstanceNode) getParent()).getModelObject()
-					.addToParameters((AddFlexoConceptInstanceParameter) getModelObject());
-		}
-		if (getParent() instanceof AddVirtualModelInstanceNode) {
-			AddVirtualModelInstance action = ((AddVirtualModelInstanceNode) getParent()).getModelObject();
-			int currentIndex = action.getParameters().size();
-			if (action.getCreationScheme() != null) {
-				FlexoBehaviourParameter parameter = action.getCreationScheme().getParameters().get(currentIndex);
-				getModelObject().setParam(parameter);
-			}
-			((AddVirtualModelInstanceNode) getParent()).getModelObject()
-					.addToParameters((AddFlexoConceptInstanceParameter) getModelObject());
-		}*/
 		return this;
 	}
 

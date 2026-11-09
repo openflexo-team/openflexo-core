@@ -51,14 +51,13 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to {@link AddVirtualModelInstance} edition action
+ * This unit test is intented to the creation of a VirtualModel instance inside another one
  * 
  * @author sylvain
  * 

@@ -54,14 +54,15 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 
 /**
- * Instantiate a new {@link AddToListAction} while embedding focused {@link AssignableAction} as value beeing added to list
+ * Make focused {@link AssignableAction} add its value to a list, with the FML expression {@code list.add(value)} (see
+ * {@link AssignableAction#addToList(DataBinding)})
  * 
  * @author sylvain
  *
@@ -90,8 +91,7 @@ public class AddToAction extends FlexoAction<AddToAction, AssignableAction<?>, F
 
 		@Override
 		public boolean isEnabledForSelection(AssignableAction<?> object, Vector<FMLObject> globalSelection) {
-			return object != null && !(object instanceof DeclarationAction) && !(object instanceof AssignationAction)
-					&& !(object instanceof AddToListAction) && !(object instanceof ReturnStatement);
+			return object != null && !(object instanceof DeclarationAction) && !(object instanceof AssignationAction) && !(object instanceof ReturnStatement);
 		}
 
 	};
@@ -100,7 +100,7 @@ public class AddToAction extends FlexoAction<AddToAction, AssignableAction<?>, F
 		FlexoObjectImpl.addActionForClass(AddToAction.actionType, AssignableAction.class);
 	}
 
-	private AddToListAction<?> addToListAction;
+	private ExpressionAction<?> addToListAction;
 	private DataBinding<List<?>> list;
 
 	private AddToAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
@@ -135,7 +135,10 @@ public class AddToAction extends FlexoAction<AddToAction, AssignableAction<?>, F
 		return list;
 	}
 
-	public AddToListAction<?> getAddToListAction() {
+	/**
+	 * @return the {@link ExpressionAction} calling {@code add} on the list
+	 */
+	public ExpressionAction<?> getAddToListAction() {
 		return addToListAction;
 	}
 

@@ -93,8 +93,7 @@ import org.openflexo.pamela.annotations.XMLElement;
  * }
  * </pre>
  *
- * Unlike the deprecated {@link AddFlexoConceptInstance}, this action is produced by the FML parser and used by the corpus: it is the FML
- * form of a dynamic instantiation, where {@code new Foo(...)} names its concept statically.
+ * This action is produced by the FML parser and used by the corpus: it is the FML form of a dynamic instantiation, where {@code new Foo(...)} names its concept statically.
  * 
  * @author sylvain
  * 

@@ -50,7 +50,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ControlStructureAction.ControlStructureActionImpl.class)
 @Imports({ @Import(ConditionalAction.class), @Import(IterationAction.class), @Import(ExpressionIterationAction.class),
-		@Import(WhileAction.class), @Import(IncrementalIterationAction.class) })
+		@Import(WhileAction.class) })
 public abstract interface ControlStructureAction extends EditionAction {
 
 	public static abstract class ControlStructureActionImpl extends EditionActionImpl implements ControlStructureAction {

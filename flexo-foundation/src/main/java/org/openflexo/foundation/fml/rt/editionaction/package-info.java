@@ -15,8 +15,8 @@
  * The instance creation {@code new Concept(...)} is an expression, not an edition action (see
  * {@link org.openflexo.foundation.fml.binding.CreationSchemePathElement}). The actions declared by
  * {@link org.openflexo.foundation.fml.rt.FMLRTModelSlot} can also be written {@code FMLRT::Action(...)} in a compilation unit using that
- * model slot ({@code use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;}); among them, {@link AddFlexoConceptInstance} and
- * {@link ExecuteFlexoBehaviour} are deprecated, as is {@link DeleteFlexoConceptInstance}.
+ * model slot ({@code use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;}); among them, {@link ExecuteFlexoBehaviour} is
+ * deprecated, as is {@link DeleteFlexoConceptInstance}.
  * <p>
  * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
  *

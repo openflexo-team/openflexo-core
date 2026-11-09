@@ -59,11 +59,7 @@ where
 
 ## Edition actions
 
-- <img src="/openflexo-core/images/AddFlexoConceptInstance.png" alt="AddFlexoConceptInstance"/> [AddFlexoConceptInstance](AddFlexoConceptInstance.md) : No documentation yet
-- <img src="/openflexo-core/images/CreateTopLevelVirtualModelInstance.png" alt="CreateTopLevelVirtualModelInstance"/> [CreateTopLevelVirtualModelInstance](CreateTopLevelVirtualModelInstance.md) : No documentation yet
-- <img src="/openflexo-core/images/AddVirtualModelInstance.png" alt="AddVirtualModelInstance"/> [AddVirtualModelInstance](AddVirtualModelInstance.md) : No documentation yet
 - <img src="/openflexo-core/images/ExecuteFlexoBehaviour.png" alt="ExecuteFlexoBehaviour"/> [ExecuteFlexoBehaviour](ExecuteFlexoBehaviour.md) : No documentation yet
-- <img src="/openflexo-core/images/ExecuteFML.png" alt="ExecuteFML"/> [ExecuteFML](ExecuteFML.md) : No documentation yet
 - ??? [NewInstance](NewFlexoConceptInstance.md) : This edition primitive allows to dynamically instantiate a FlexoConceptInstance
 
 [//]: # --------------------- FETCH REQUEST

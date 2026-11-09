@@ -54,7 +54,6 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.TypeDeclaration;
-import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
@@ -93,8 +92,7 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 
 		@Override
 		public boolean isEnabledForSelection(AssignableAction<?> object, Vector<FMLObject> globalSelection) {
-			return object != null && !(object instanceof DeclarationAction) && !(object instanceof AssignationAction)
-					&& !(object instanceof AddToListAction) && !(object instanceof ReturnStatement);
+			return object != null && !(object instanceof DeclarationAction) && !(object instanceof AssignationAction) && !(object instanceof ReturnStatement);
 		}
 
 	};

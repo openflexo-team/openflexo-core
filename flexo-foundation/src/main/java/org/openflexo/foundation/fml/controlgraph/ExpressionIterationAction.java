@@ -78,8 +78,7 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * evaluates to true, the body ({@link #getControlGraph()}) is executed, followed by {@link #getStatementExpression()}, a control graph
  * such as {@code i++} or {@code i = i + 2}. The iterator variable must be declared, with its type, in the initialization part.
  * <p>
- * Unlike Java, the condition cannot be omitted (known defect {@code CORE-D-9}). This action replaces the deprecated
- * {@link IncrementalIterationAction}.
+ * Unlike Java, the condition cannot be omitted (known defect {@code CORE-D-9}).
  * <p>
  * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
  *

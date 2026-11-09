@@ -14,7 +14,6 @@
  * <li>{@code for (Type i = init; condition; update) ...}: {@link ExpressionIterationAction}; the condition cannot be omitted (known
  * defect {@code CORE-D-9})</li>
  * </ul>
- * {@link IncrementalIterationAction} is deprecated, replaced by {@link ExpressionIterationAction}: the FML parser does not produce it.
  * <p>
  * Control structures are {@link ControlStructureAction}s, hence {@link org.openflexo.foundation.fml.editionaction.EditionAction}s, whereas
  * a {@link Sequence} is not. The atomic actions are described in {@link org.openflexo.foundation.fml.editionaction}.

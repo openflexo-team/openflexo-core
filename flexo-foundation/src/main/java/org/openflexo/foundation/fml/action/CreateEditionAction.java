@@ -69,12 +69,9 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.DefaultFMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
-import org.openflexo.foundation.fml.editionaction.AddClassInstance;
-import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ConnectAction;
@@ -86,17 +83,12 @@ import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
-import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
-import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -185,18 +177,12 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		addToAvailableActions(ExpressionAction.class, fmlTA);
-		addToAvailableActions(AddClassInstance.class, fmlTA);
 		addToAvailableActions(LogAction.class, fmlTA);
 		addToAvailableActions(ConnectAction.class, fmlTA);
 		addToAvailableActions(NotifyProgressAction.class, fmlTA);
 		addToAvailableActions(ConditionalAction.class, fmlTA);
 		addToAvailableActions(IterationAction.class, fmlTA);
 		addToAvailableActions(WhileAction.class, fmlTA);
-		addToAvailableActions(IncrementalIterationAction.class, fmlTA);
-		addToAvailableActions(RemoveFromListAction.class, fmlTA);
-		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
-		addToAvailableActions(CreateTopLevelVirtualModelInstance.class, fmlTA);
-		addToAvailableActions(AddVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(InitiateMatching.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(FinalizeMatching.class, fmlTA);
@@ -206,7 +192,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(SelectVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(DeleteAction.class, fmlTA);
 		addToAvailableActions(DeleteFlexoConceptInstance.class, fmlTA);
-		addToAvailableActions(FireEventAction.class, fmlTA);
 		addToAvailableActions(NotifyPropertyChangedAction.class, fmlTA);
 
 		if (getVirtualModel().getCompilationUnit() != null && getVirtualModel().getCompilationUnit().getUseDeclarations() != null) {
@@ -261,10 +246,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				newEditionAction = newReturnStatement;
 			}
 			else if (isAddToListAction()) {
-				AddToListAction<?> newAddToListAction = getFocusedObject().getFMLModelFactory().newAddToListAction();
-				newAddToListAction.setAssignableAction((AssignableAction) baseEditionAction);
-				newAddToListAction.setList((DataBinding) getListExpression());
-				newEditionAction = newAddToListAction;
+				// The action is first appended, then rewritten as list.add(value) where it now stands
+				getFocusedObject().sequentiallyAppend(baseEditionAction);
+				newEditionAction = ((AssignableAction<?>) baseEditionAction).addToList((DataBinding) getListExpression());
+				return;
 			}
 		}
 
@@ -374,7 +359,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 						+ getDeclarationVariableName() + " = " + baseEditionAction.getStringRepresentation();
 			}
 			else if (isAddToListAction()) {
-				return getListExpression() + ".FML::AddToList(" + baseEditionAction.getStringRepresentation() + ")";
+				return getListExpression() + ".add(" + baseEditionAction.getStringRepresentation() + ")";
 			}
 			else {
 				return baseEditionAction.getStringRepresentation();
@@ -482,27 +467,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		else if (org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newNotifyPropertyChangedAction();
 		}
-		else if (org.openflexo.foundation.fml.rt.editionaction.FireEventAction.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newFireEventAction();
-		}
-		else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newAddToListAction();
-		}
-		else if (org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newRemoveFromListAction();
-		}
-		else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newAddFlexoConceptInstance();
-		}
-		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newAddClassInstance();
-		}
-		else if (CreateTopLevelVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newCreateTopLevelVirtualModelInstance();
-		}
-		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newAddVirtualModelInstance();
-		}
 		else if (InitiateMatching.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newInitiateMatching();
 		}
@@ -530,9 +494,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		else if (WhileAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newWhileAction();
 		}
-		else if (IncrementalIterationAction.class.isAssignableFrom(editionActionClass)) {
-			returned = factory.newIncrementalIterationAction();
-		}
 		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newIterationAction();
 			updateIteration((IterationAction) returned);
@@ -557,9 +518,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			((RoleSpecificAction<?, ?, ?>) returned).getReceiver().setUnparsedBinding(getFlexoRole().getName());
 		}
 		else if (TechnologySpecificActionDefiningReceiver.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			if (!editionActionClass.equals(CreateTopLevelVirtualModelInstance.class)) {
-				((TechnologySpecificActionDefiningReceiver<?, ?, ?>) returned).getReceiver().setUnparsedBinding(getModelSlot().getName());
-			}
+			((TechnologySpecificActionDefiningReceiver<?, ?, ?>) returned).getReceiver().setUnparsedBinding(getModelSlot().getName());
 		}
 
 		if (returned != null) {

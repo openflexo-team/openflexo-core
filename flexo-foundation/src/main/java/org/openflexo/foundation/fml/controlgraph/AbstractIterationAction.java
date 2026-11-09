@@ -64,7 +64,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * Base of the FML loops declaring an iterator variable: {@link IterationAction} ({@code for (Type item : expression)}) and
- * {@link ExpressionIterationAction} ({@code for (Type i = init; condition; update)}). {@link IncrementalIterationAction} is deprecated.
+ * {@link ExpressionIterationAction} ({@code for (Type i = init; condition; update)}).
  * <p>
  * The iterator variable, named {@link #getIteratorName()} ({@code item} by default) and typed {@link #getItemType()}, is declared in
  * the evaluation context while the body ({@link #getControlGraph()}) is executed, and dereferenced after the loop. A return statement

@@ -109,6 +109,11 @@ binding path; in `container.new X(...)` it is the last element.
 **Fix (2026-11-08).** The rule checks the last element of the path. Proven by `TestFMLClassDiagramVirtualModel`
 (fml-diagramming-extension): the class diagram creates one `FlexoPropertyGR` per property, none twice, with 0 validation error.
 
+**Second case (2026-11-08).** The same rule failed with a `NullPointerException` ("Unexpected exception" in the validation
+report) on `unmatched: new Foo()` when `Foo` declares no creation scheme: the path element has no scheme, and the rule read the
+concept from it. It now reads the concept from the type of the path element. Proven by `TestFMLEditor23` (fml-technologyadapter-ui,
+UI test, fixture `TestCreationScheme.fml`), red before.
+
 ## FML types
 
 ### CORE-D-5 — A `FlexoConceptInstanceType` built with an empty URI is reported as resolved  ·  `TODO`

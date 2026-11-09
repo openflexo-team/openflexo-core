@@ -49,7 +49,6 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
@@ -85,8 +84,7 @@ public class AddReturnStatement extends FlexoAction<AddReturnStatement, Assignab
 
 		@Override
 		public boolean isEnabledForSelection(AssignableAction<?> object, Vector<FMLObject> globalSelection) {
-			return object != null && !(object instanceof DeclarationAction) && !(object instanceof AssignationAction)
-					&& !(object instanceof AddToListAction) && !(object instanceof ReturnStatement);
+			return object != null && !(object instanceof DeclarationAction) && !(object instanceof AssignationAction) && !(object instanceof ReturnStatement);
 		}
 
 	};

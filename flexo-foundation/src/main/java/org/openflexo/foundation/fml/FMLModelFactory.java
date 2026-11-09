@@ -64,13 +64,10 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
-import org.openflexo.foundation.fml.editionaction.AddClassInstance;
-import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ConnectAction;
@@ -82,7 +79,6 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
-import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
@@ -93,17 +89,13 @@ import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteBehaviourParameter;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEvent;
-import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchCondition;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -538,22 +530,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(FlexoConceptInstanceRole.class);
 	}
 
-	public AddFlexoConceptInstance<?> newAddFlexoConceptInstance() {
-		return newInstance(AddFlexoConceptInstance.class);
-	}
-
-	public AddClassInstance newAddClassInstance() {
-		return newInstance(AddClassInstance.class);
-	}
-
-	public AddVirtualModelInstance newAddVirtualModelInstance() {
-		return newInstance(AddVirtualModelInstance.class);
-	}
-
-	public CreateTopLevelVirtualModelInstance newCreateTopLevelVirtualModelInstance() {
-		return newInstance(CreateTopLevelVirtualModelInstance.class);
-	}
-
 	public SelectFlexoConceptInstance<?> newSelectFlexoConceptInstance() {
 		return newInstance(SelectFlexoConceptInstance.class);
 	}
@@ -610,16 +586,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 	public FinalizeMatching newFinalizeMatching() {
 		return newInstance(FinalizeMatching.class);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> RemoveFromListAction<T> newRemoveFromListAction() {
-		return newInstance(RemoveFromListAction.class);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> AddToListAction<T> newAddToListAction() {
-		return newInstance(AddToListAction.class);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -687,10 +653,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(NotifyProgressAction.class);
 	}
 
-	public FireEventAction newFireEventAction() {
-		return newInstance(FireEventAction.class);
-	}
-
 	public <T> ExpressionAction<T> newExpressionAction() {
 		return newInstance(ExpressionAction.class);
 	}
@@ -728,12 +690,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 	public WhileAction newWhileAction() {
 		WhileAction returned = newInstance(WhileAction.class);
-		returned.setControlGraph(newEmptyControlGraph());
-		return returned;
-	}
-
-	public IncrementalIterationAction newIncrementalIterationAction() {
-		IncrementalIterationAction returned = newInstance(IncrementalIterationAction.class);
 		returned.setControlGraph(newEmptyControlGraph());
 		return returned;
 	}
