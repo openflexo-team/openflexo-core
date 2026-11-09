@@ -50,7 +50,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
@@ -106,8 +105,6 @@ import org.openflexo.pamela.validation.ValidationRule;
 public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
 		extends AbstractFetchRequest<AbstractFMLRTModelSlot<VMI, ?, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
 
@@ -117,13 +114,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConceptInstance> container);
-
-	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getFlexoConceptTypeURI();
-
-	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setFlexoConceptTypeURI(String flexoConceptTypeURI);
 
 	public FlexoConcept getFlexoConceptType();
 
@@ -193,9 +183,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		/**
 		 * For a select action, the fetched type IS the concept type (see {@link #getFetchedType()} returning
-		 * {@link #getType()}), so route the fetched-type setter to the {@code type} field. This keeps the type carried by
-		 * the modern {@code Type}-valued {@code fetchedType} property (with its translating {@code @Updater}) rather than
-		 * by the deprecated String {@code flexoConceptTypeURI} property (XML-era serialization).
+		 * {@link #getType()}), so route the fetched-type setter to the {@code type} field: the type is carried by the
+		 * {@code Type}-valued {@code fetchedType} property, with its translating {@code @Updater}.
 		 */
 		@Override
 		public void setFetchedType(Type aType) {
@@ -210,9 +199,9 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		/**
 		 * Called during {@code updateWith()} (interactive re-parse): translate the concept type into the current typing
 		 * space (receiver-independent) and store it in the {@code type} field, instead of leaving it in the disconnected
-		 * base slot. Rebuilding the type through the deprecated {@code flexoConceptTypeURI} setter would resolve it via
-		 * {@link #getAddressedVirtualModel()} (receiver-dependent), which yields an UndefinedFlexoConceptInstanceType
-		 * before the receiver binding is re-analyzed. Same rationale as {@code DeclarationAction.updateDeclaredType}.
+		 * base slot. Resolving it through {@link #getAddressedVirtualModel()} instead would be receiver-dependent, and yield
+		 * an UndefinedFlexoConceptInstanceType before the receiver binding is re-analyzed. Same rationale as
+		 * {@code DeclarationAction.updateDeclaredType}.
 		 */
 		@Override
 		public void updateFetchedType(Type aType) {
@@ -225,32 +214,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			else {
 				super.updateFetchedType(aType);
 			}
-		}
-
-		@Override
-		public String _getFlexoConceptTypeURI() {
-			if (type != null) {
-				return type.getConceptURI();
-			}
-			return null;
-		}
-
-		private boolean isFetching = false;
-
-		@Override
-		public void _setFlexoConceptTypeURI(String flexoConceptURI) {
-			type = new FlexoConceptInstanceType(flexoConceptURI, new DefaultFlexoConceptInstanceTypeFactory(getTechnologyAdapter()) {
-				@Override
-				public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
-					if (!isFetching && getAddressedVirtualModel() != null) {
-						isFetching = true;
-						FlexoConcept flexoConceptType = getAddressedVirtualModel().getFlexoConcept(typeToResolve.getConceptURI());
-						isFetching = false;
-						return flexoConceptType;
-					}
-					return null;
-				}
-			});
 		}
 
 		@Override

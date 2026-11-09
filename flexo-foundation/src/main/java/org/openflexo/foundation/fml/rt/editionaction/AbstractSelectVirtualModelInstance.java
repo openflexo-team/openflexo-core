@@ -46,9 +46,9 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.ConnieType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -81,9 +81,6 @@ import org.openflexo.pamela.validation.ValidationRule;
 public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
 		extends AbstractFetchRequest<AbstractFMLRTModelSlot<VMI, ?, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>, AT> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
-
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
 
@@ -93,15 +90,6 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<VirtualModelInstance<?, ?>> container);
-
-	@Getter(value = VIRTUAL_MODEL_TYPE_URI_KEY)
-	@XMLAttribute
-	@Deprecated
-	public String _getVirtualModelTypeURI();
-
-	@Setter(VIRTUAL_MODEL_TYPE_URI_KEY)
-	@Deprecated
-	public void _setVirtualModelTypeURI(String virtualModelTypeURI);
 
 	public VirtualModel getVirtualModelType();
 
@@ -187,31 +175,39 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 			return getType();
 		}
 
+		/**
+		 * The fetched type IS the type of this action (see {@link #getFetchedType()}): route the fetched-type setter to the
+		 * {@code type} field, so that the type is carried by the {@code Type}-valued {@code fetchedType} property
+		 */
 		@Override
-		public String _getVirtualModelTypeURI() {
-			if (type != null) {
-				return type.getConceptURI();
+		public void setFetchedType(Type aType) {
+			if (aType == null || aType instanceof VirtualModelInstanceType) {
+				setType((VirtualModelInstanceType) aType);
 			}
-			return null;
+			else {
+				performSuperSetter(FETCHED_TYPE_KEY, aType);
+			}
 		}
 
-		private boolean isFetching = false;
-
+		/**
+		 * Called during {@code updateWith()} (interactive re-parse): translate the type into the current typing space and store it
+		 * in the {@code type} field (same as {@code AbstractSelectFlexoConceptInstance.updateFetchedType})
+		 */
 		@Override
-		public void _setVirtualModelTypeURI(String virtualModelTypeURI) {
-			// this.virtualModelTypeURI = virtualModelTypeURI;
-			type = new VirtualModelInstanceType(virtualModelTypeURI, new DefaultVirtualModelInstanceTypeFactory(getTechnologyAdapter()) {
-				@Override
-				public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
-					if (!isFetching && getAddressedVirtualModel() != null) {
-						isFetching = true;
-						VirtualModel virtualModelType = getAddressedVirtualModel().getVirtualModelNamed(typeToResolve.getConceptURI());
-						isFetching = false;
-						return virtualModelType;
-					}
-					return null;
+		public void updateFetchedType(Type aType) {
+			if (aType instanceof ConnieType && getDeclaringCompilationUnit() != null) {
+				Type translated = ((ConnieType) aType).translateTo(getDeclaringCompilationUnit().getTypingSpace());
+				if (translated instanceof VirtualModelInstanceType) {
+					setType((VirtualModelInstanceType) translated);
+					return;
 				}
-			});
+			}
+			if (aType == null || aType instanceof VirtualModelInstanceType) {
+				setType((VirtualModelInstanceType) aType);
+			}
+			else {
+				super.updateFetchedType(aType);
+			}
 		}
 
 		@Override

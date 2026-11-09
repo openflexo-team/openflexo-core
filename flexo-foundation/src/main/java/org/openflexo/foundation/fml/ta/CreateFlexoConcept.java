@@ -47,6 +47,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -63,6 +64,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
@@ -78,8 +80,8 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	public static final String CONTAINER_KEY = "container";
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
-	@PropertyIdentifier(type = String.class)
-	public static final String PARENT_FLEXO_CONCEPT_TYPE_URI_KEY = "parentFlexoConceptTypeURI";
+	@PropertyIdentifier(type = FlexoConceptInstanceType.class)
+	public static final String PARENT_TYPE_KEY = "parentType";
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -97,12 +99,25 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConcept> container);
 
-	@Getter(value = PARENT_FLEXO_CONCEPT_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getParentFlexoConceptTypeURI();
+	/**
+	 * The type of the parent of the created concept (see {@link #getParentFlexoConceptType()})
+	 *
+	 * @return the parent type, null when the created concept has no parent
+	 */
+	@Getter(value = PARENT_TYPE_KEY, ignoreType = true)
+	public FlexoConceptInstanceType getParentType();
 
-	@Setter(PARENT_FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setParentFlexoConceptTypeURI(String flexoConceptTypeURI);
+	@Setter(PARENT_TYPE_KEY)
+	public void setParentType(FlexoConceptInstanceType parentType);
+
+	/**
+	 * Translates the supplied type into the typing space of this action, then sets it
+	 *
+	 * @param parentType
+	 *            the parent type, possibly expressed in another typing space
+	 */
+	@Updater(PARENT_TYPE_KEY)
+	public void updateParentType(FlexoConceptInstanceType parentType);
 
 	public FlexoConcept getParentFlexoConceptType();
 
@@ -123,8 +138,7 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 		private DataBinding<String> conceptName;
 		private DataBinding<FlexoConcept> container;
 
-		private FlexoConcept parentFlexoConceptType;
-		private String parentFlexoConceptTypeURI;
+		private FlexoConceptInstanceType parentType;
 
 		private String getConceptName(RunTimeEvaluationContext evaluationContext) {
 			try {
@@ -197,38 +211,46 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 		}
 
 		@Override
-		public String _getParentFlexoConceptTypeURI() {
-			if (parentFlexoConceptType != null) {
-				return parentFlexoConceptType.getURI();
-			}
-			return parentFlexoConceptTypeURI;
+		public FlexoConceptInstanceType getParentType() {
+			return parentType;
 		}
 
 		@Override
-		public void _setParentFlexoConceptTypeURI(String flexoConceptURI) {
-			this.parentFlexoConceptTypeURI = flexoConceptURI;
+		public void setParentType(FlexoConceptInstanceType parentType) {
+			if (parentType != this.parentType) {
+				FlexoConceptInstanceType oldValue = this.parentType;
+				this.parentType = parentType;
+				getPropertyChangeSupport().firePropertyChange(PARENT_TYPE_KEY, oldValue, parentType);
+			}
 		}
 
-		private boolean isComputingParentFlexoConceptType = false;
+		@Override
+		public void updateParentType(FlexoConceptInstanceType parentType) {
+			if (parentType != null && getDeclaringCompilationUnit() != null) {
+				setParentType(parentType.translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setParentType(parentType);
+			}
+		}
 
 		@Override
 		public FlexoConcept getParentFlexoConceptType() {
-
-			if (!isComputingParentFlexoConceptType && parentFlexoConceptType == null && parentFlexoConceptTypeURI != null) {
-				isComputingParentFlexoConceptType = true;
-				parentFlexoConceptType = getVirtualModelLibrary().getFlexoConcept(parentFlexoConceptTypeURI);
-				isComputingParentFlexoConceptType = false;
+			if (parentType == null) {
+				return null;
 			}
-
-			return parentFlexoConceptType;
+			if (!parentType.isResolved()) {
+				parentType.resolve();
+			}
+			return parentType.getFlexoConcept();
 		}
 
 		@Override
 		public void setParentFlexoConceptType(FlexoConcept flexoConceptType) {
-			if (flexoConceptType != this.parentFlexoConceptType) {
-				FlexoConcept oldValue = this.parentFlexoConceptType;
-				this.parentFlexoConceptType = flexoConceptType;
-				getPropertyChangeSupport().firePropertyChange("parentFlexoConceptType", oldValue, oldValue);
+			FlexoConcept oldValue = getParentFlexoConceptType();
+			if (flexoConceptType != oldValue) {
+				setParentType(flexoConceptType != null ? flexoConceptType.getInstanceType() : null);
+				getPropertyChangeSupport().firePropertyChange("parentFlexoConceptType", oldValue, flexoConceptType);
 			}
 		}
 

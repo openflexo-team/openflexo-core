@@ -56,6 +56,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
@@ -84,25 +85,21 @@ public interface EventListener extends AbstractActionScheme {
 	public static final String EVENT_TYPE_KEY = "eventType";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String LISTENED_VIRTUAL_MODEL_INSTANCE_KEY = "listenedVirtualModelInstance";
-	@PropertyIdentifier(type = String.class)
-	public static final String EVENT_TYPE_URI_KEY = "flexoEventTypeURI";
-
-	@Getter(value = EVENT_TYPE_URI_KEY)
-	@XMLAttribute
-	@FMLMigration
-	@Deprecated
-	public String _getEventTypeURI();
-
-	@Setter(EVENT_TYPE_URI_KEY)
-	@FMLMigration
-	@Deprecated
-	public void _setEventTypeURI(String eventTypeURI);
-
 	@Getter(value = EVENT_TYPE_KEY, ignoreType = true)
 	public FlexoConceptInstanceType getEventType();
 
 	@Setter(EVENT_TYPE_KEY)
 	public void setEventType(FlexoConceptInstanceType eventType);
+
+	/**
+	 * Translates the supplied type into the typing space of this listener, when it comes from another compilation unit (the one the FML
+	 * editor has just parsed, merged with {@code updateWith()})
+	 *
+	 * @param eventType
+	 *            the listened event type, possibly expressed in another typing space
+	 */
+	@Updater(EVENT_TYPE_KEY)
+	public void updateEventType(FlexoConceptInstanceType eventType);
 
 	@Getter(value = LISTENED_VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
@@ -117,35 +114,19 @@ public interface EventListener extends AbstractActionScheme {
 
 	public static abstract class EventListenerImpl extends AbstractActionSchemeImpl implements EventListener {
 
-		private String _eventTypeURI;
 		private FlexoConceptInstanceType eventType;
-		private FlexoEvent event;
 		private DataBinding<VirtualModelInstance<?, ?>> listenedVirtualModelInstance;
 
 		@Override
-		public void finalizeDeserialization() {
-			super.finalizeDeserialization();
-			/*if (eventType == null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
-				eventType = (FlexoEvent) getVirtualModelLibrary().getFlexoConcept(_eventTypeURI, true);
-			}*/
-		}
-
-		@Override
 		public FlexoEvent getEvent() {
-			if (getEventType() != null) {
+			if (getEventType() != null && getEventType().getFlexoConcept() instanceof FlexoEvent) {
 				return (FlexoEvent) getEventType().getFlexoConcept();
 			}
-			return event;
+			return null;
 		}
 
 		@Override
 		public FlexoConceptInstanceType getEventType() {
-			if (eventType == null && event != null && _eventTypeURI != null && getVirtualModelLibrary() != null) {
-				event = (FlexoEvent) getVirtualModelLibrary().getFlexoConcept(_eventTypeURI, false);
-				if (event != null) {
-					eventType = event.getInstanceType();
-				}
-			}
 			return eventType;
 		}
 
@@ -163,16 +144,13 @@ public interface EventListener extends AbstractActionScheme {
 		}
 
 		@Override
-		public String _getEventTypeURI() {
-			if (getEvent() != null) {
-				return getEvent().getURI();
+		public void updateEventType(FlexoConceptInstanceType eventType) {
+			if (eventType != null && getDeclaringCompilationUnit() != null) {
+				setEventType(eventType.translateTo(getDeclaringCompilationUnit().getTypingSpace()));
 			}
-			return _eventTypeURI;
-		}
-
-		@Override
-		public void _setEventTypeURI(String uri) {
-			_eventTypeURI = uri;
+			else {
+				setEventType(eventType);
+			}
 		}
 
 		@Override

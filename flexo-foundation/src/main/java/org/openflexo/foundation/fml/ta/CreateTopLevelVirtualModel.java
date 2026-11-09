@@ -59,6 +59,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -69,21 +70,31 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 @FML("CreateTopLevelVirtualModel")
 public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLModelSlot, FMLCompilationUnit, FMLTechnologyAdapter> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String PARENT_VIRTUAL_MODEL_TYPE_URI_KEY = "parentVirtualModelTypeURI";
+	@PropertyIdentifier(type = CompilationUnitResource.class)
+	public static final String PARENT_VIRTUAL_MODEL_TYPE_KEY = "parentVirtualModelType";
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
-	@Getter(value = PARENT_VIRTUAL_MODEL_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getParentVirtualModelTypeURI();
-
-	@Setter(PARENT_VIRTUAL_MODEL_TYPE_URI_KEY)
-	public void _setParentVirtualModelTypeURI(String virtualModelTypeURI);
-
+	/**
+	 * The resource of the VirtualModel the created VirtualModel extends
+	 *
+	 * @return the resource, null when the created VirtualModel has no parent
+	 */
+	@Getter(value = PARENT_VIRTUAL_MODEL_TYPE_KEY, ignoreType = true, ignoreForEquality = true)
 	public CompilationUnitResource getParentVirtualModelType();
 
+	@Setter(PARENT_VIRTUAL_MODEL_TYPE_KEY)
 	public void setParentVirtualModelType(CompilationUnitResource virtualModelType);
+
+	/**
+	 * Sets the supplied resource as it is when merging with another compilation unit ({@code updateWith()}): a resource is shared by
+	 * all compilation units, there is nothing to merge in it
+	 *
+	 * @param virtualModelType
+	 *            the resource of the parent VirtualModel
+	 */
+	@Updater(PARENT_VIRTUAL_MODEL_TYPE_KEY)
+	public void updateParentVirtualModelType(CompilationUnitResource virtualModelType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -98,43 +109,9 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 		private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModel.class.getPackage().getName());
 
 		private CompilationUnitResource parentVirtualModelType;
-		private String parentVirtualModelTypeURI;
-
-		@Override
-		public String _getParentVirtualModelTypeURI() {
-			if (parentVirtualModelType != null) {
-				return parentVirtualModelType.getURI();
-			}
-			return parentVirtualModelTypeURI;
-		}
-
-		@Override
-		public void _setParentVirtualModelTypeURI(String virtualModelURI) {
-			this.parentVirtualModelTypeURI = virtualModelURI;
-		}
-
-		private boolean isComputingParentVirtualModelType = false;
 
 		@Override
 		public CompilationUnitResource getParentVirtualModelType() {
-
-			if (!isComputingParentVirtualModelType && parentVirtualModelType == null && parentVirtualModelTypeURI != null) {
-				isComputingParentVirtualModelType = true;
-				try {
-					parentVirtualModelType = getVirtualModelLibrary().getVirtualModel(parentVirtualModelTypeURI).getResource();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				isComputingParentVirtualModelType = false;
-			}
-
 			return parentVirtualModelType;
 		}
 
@@ -143,8 +120,13 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 			if (parentVirtualModelType != this.parentVirtualModelType) {
 				CompilationUnitResource oldValue = this.parentVirtualModelType;
 				this.parentVirtualModelType = parentVirtualModelType;
-				getPropertyChangeSupport().firePropertyChange("parentVirtualModelType", oldValue, oldValue);
+				getPropertyChangeSupport().firePropertyChange("parentVirtualModelType", oldValue, parentVirtualModelType);
 			}
+		}
+
+		@Override
+		public void updateParentVirtualModelType(CompilationUnitResource virtualModelType) {
+			setParentVirtualModelType(virtualModelType);
 		}
 
 		@Override

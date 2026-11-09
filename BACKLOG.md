@@ -268,5 +268,26 @@ strategies mapping a shape or connector to a concept instance now write `<vmi>.n
 `AddFlexoConceptInstanceNode`, `AddVirtualModelInstanceNode`, `AddClassInstanceNode` build `CreationSchemePathElement`s: a rename
 left for phase 5.
 
+**Phase 4 (2026-11-09), core only.** The `_get/_set` URI-string accessors of flexo-foundation are removed. Decided with the user: a
+reference the textual FML carries becomes a typed PAMELA property, and flexo-ontology / owl-ta keep theirs for now (there the string is
+the storage, and `ClassRole.conceptURI` / `AbstractSelectIndividual.ontologyClassURI` are FML syntax).
+- Measured first: when the FML editor merges the text it has just parsed (`updateWith()`), the strings did not carry the references;
+  most of them were already lost or pointed into the parsed compilation unit (CORE-D-43). `TestUpdateWithReferences` now pins every one.
+- A concept is carried by a `FlexoConceptInstanceType` property whose `@Updater` translates it into the current typing space: the type
+  of a role (already so), of the `select`s (`fetchedType`, now also routed for `select` of VirtualModel instances), of `begin match` /
+  `match` / `end match` (`matchedType`, now a PAMELA property), of a listener (`eventType`), the parents of a concept
+  (`parentFlexoConceptTypes`; `parentFlexoConcepts` is now derived for the merge), and the instantiated type of `NewFlexoConceptInstance`
+  and the parent of `CreateFlexoConcept`.
+- A behaviour, a parameter or a property is carried by `FMLNamedReference` (new): an immutable reference by name, compared by name,
+  resolved by its holder in its own context (the matched concept, the called behaviour), the `@Updater` keeping the name only. Used for
+  the criteria of a `match`, the behaviour and the arguments of an `end match`, the creation scheme of `NewFlexoConceptInstance`, the
+  deletion scheme of `DeleteFlexoConceptInstance`, and the parameter of the four argument classes.
+- Left out: the deprecated creation scheme of `FlexoConceptInstanceRole` is a plain field (no FML syntax, for phase 5); the URI property
+  of jdbc-ta `AbstractPerformSQLQuery` and those of flexo-ontology / owl-ta (to do with the ontology rework); the behaviour of
+  `end match ... unmatched: someMethod(...)` is still not parsed (CORE-D-2): the test sets it on the parsed action.
+- For phase 6: PAMELA calls a property "serializable" only when it carries `@XMLAttribute`/`@XMLElement`
+  (`ModelProperty.isSerializable()`), and that decides the list matching of `updateWith()` (`CompareAndMergeUtils.getDistance`) and
+  the "modified" marking. The XML annotations cannot be removed before this definition changes.
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.

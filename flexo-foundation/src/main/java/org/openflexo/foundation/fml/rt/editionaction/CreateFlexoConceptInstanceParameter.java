@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -57,6 +58,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
@@ -69,8 +71,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
 
-	@PropertyIdentifier(type = String.class)
-	public static final String PARAM_NAME_KEY = "paramName";
+	@PropertyIdentifier(type = FMLNamedReference.class)
+	public static final String PARAM_REFERENCE_KEY = "paramReference";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
@@ -80,12 +82,25 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	@Setter(ACTION_KEY)
 	public void setAction(MatchFlexoConceptInstance action);
 
-	@Getter(value = PARAM_NAME_KEY)
-	@XMLAttribute
-	public String _getParamName();
+	/**
+	 * The parameter this argument gives a value to, as a reference resolved in the behaviour it is given to (see {@link #getParam()})
+	 *
+	 * @return the reference to the parameter
+	 */
+	@Getter(value = PARAM_REFERENCE_KEY, ignoreType = true)
+	public FMLNamedReference<FlexoBehaviourParameter> getParamReference();
 
-	@Setter(PARAM_NAME_KEY)
-	public void _setParamName(String paramName);
+	@Setter(PARAM_REFERENCE_KEY)
+	public void setParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference);
+
+	/**
+	 * Keeps the name only of a reference coming from another compilation unit (merge with {@code updateWith()})
+	 *
+	 * @param paramReference
+	 *            the reference held by the argument of the other compilation unit
+	 */
+	@Updater(PARAM_REFERENCE_KEY)
+	public void updateParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference);
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -110,8 +125,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 		// MatchFlexoConceptInstance action;
 
-		private FlexoBehaviourParameter param;
-		String paramName;
+		private FMLNamedReference<FlexoBehaviourParameter> paramReference;
 		private DataBinding<?> value;
 
 		// Use it only for deserialization
@@ -121,11 +135,11 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 		public CreateFlexoConceptInstanceParameterImpl(FlexoBehaviourParameter param) {
 			super();
-			this.param = param;
+			this.paramReference = FMLNamedReference.to(param);
 		}
 
 		public FlexoBehaviourParameter getParameter() {
-			return param;
+			return getParam();
 		}
 
 		@Override
@@ -138,8 +152,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
-			if (param != null) {
-				return param.getFlexoBehaviour();
+			if (getParam() != null) {
+				return getParam().getFlexoBehaviour();
 			}
 			return null;
 		}
@@ -147,8 +161,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
-				value.setBindingName(param != null ? param.getName() : "param");
+				value = new DataBinding<>(this, getParam() != null ? getParam().getType() : Object.class, DataBinding.BindingDefinitionType.GET);
+				value.setBindingName(getParam() != null ? getParam().getName() : "param");
 			}
 			return value;
 		}
@@ -157,8 +171,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		public void setValue(DataBinding<?> value) {
 			if (value != null) {
 				value.setOwner(this);
-				value.setBindingName(param != null ? param.getName() : "param");
-				value.setDeclaredType(param != null ? param.getType() : Object.class);
+				value.setBindingName(getParam() != null ? getParam().getName() : "param");
+				value.setDeclaredType(getParam() != null ? getParam().getType() : Object.class);
 				value.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.value = value;
@@ -222,29 +236,34 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}*/
 
 		@Override
+		public FMLNamedReference<FlexoBehaviourParameter> getParamReference() {
+			return paramReference;
+		}
+
+		@Override
+		public void setParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference) {
+			FMLNamedReference<FlexoBehaviourParameter> oldValue = this.paramReference;
+			this.paramReference = paramReference;
+			getPropertyChangeSupport().firePropertyChange(PARAM_REFERENCE_KEY, oldValue, paramReference);
+		}
+
+		@Override
+		public void updateParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference) {
+			setParamReference(paramReference != null ? paramReference.unresolved() : null);
+		}
+
+		@Override
 		public FlexoBehaviourParameter getParam() {
-			if (param == null && paramName != null && getAction() != null && getAction().getCreationScheme() != null) {
-				param = getAction().getCreationScheme().getParameter(paramName);
+			if (paramReference == null) {
+				return null;
 			}
-			return param;
+			FlexoBehaviour behaviour = getAction() != null ? getAction().getCreationScheme() : null;
+			return paramReference.resolve(behaviour != null ? behaviour::getParameter : null);
 		}
 
 		@Override
 		public void setParam(FlexoBehaviourParameter param) {
-			this.param = param;
-		}
-
-		@Override
-		public String _getParamName() {
-			if (param != null) {
-				return param.getName();
-			}
-			return paramName;
-		}
-
-		@Override
-		public void _setParamName(String param) {
-			this.paramName = param;
+			setParamReference(FMLNamedReference.to(param));
 		}
 
 		@Override

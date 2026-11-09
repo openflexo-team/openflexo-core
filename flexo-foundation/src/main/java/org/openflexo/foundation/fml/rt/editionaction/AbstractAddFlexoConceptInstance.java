@@ -53,6 +53,8 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLNamedReference;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -88,7 +90,6 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Base of the actions instantiating a {@link FlexoConceptInstance} with a creation scheme in a given {@link VirtualModelInstance}; also the
@@ -114,10 +115,10 @@ import org.openflexo.toolbox.StringUtils;
 public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
 		extends FMLRTAction<FCI, VMI> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String CREATION_SCHEME_URI_KEY = "creationSchemeURI";
-	@PropertyIdentifier(type = String.class)
-	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
+	@PropertyIdentifier(type = FMLNamedReference.class)
+	public static final String CREATION_SCHEME_REFERENCE_KEY = "creationSchemeReference";
+	@PropertyIdentifier(type = FlexoConceptInstanceType.class)
+	public static final String INSTANTIATED_TYPE_KEY = "instantiatedType";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
@@ -139,12 +140,26 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConceptInstance> container);
 
-	@Getter(value = CREATION_SCHEME_URI_KEY)
-	@XMLAttribute
-	public String _getCreationSchemeURI();
+	/**
+	 * The creation scheme used to instantiate the concept, as a reference resolved in the instantiated concept (see
+	 * {@link #getCreationScheme()})
+	 *
+	 * @return the reference to the creation scheme
+	 */
+	@Getter(value = CREATION_SCHEME_REFERENCE_KEY, ignoreType = true)
+	public FMLNamedReference<CreationScheme> getCreationSchemeReference();
 
-	@Setter(CREATION_SCHEME_URI_KEY)
-	public void _setCreationSchemeURI(String creationSchemeURI);
+	@Setter(CREATION_SCHEME_REFERENCE_KEY)
+	public void setCreationSchemeReference(FMLNamedReference<CreationScheme> creationSchemeReference);
+
+	/**
+	 * Keeps the name only of a reference coming from another compilation unit (merge with {@code updateWith()})
+	 *
+	 * @param creationSchemeReference
+	 *            the reference held by the action of the other compilation unit
+	 */
+	@Updater(CREATION_SCHEME_REFERENCE_KEY)
+	public void updateCreationSchemeReference(FMLNamedReference<CreationScheme> creationSchemeReference);
 
 	public CreationScheme getCreationScheme();
 
@@ -175,12 +190,25 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	// TODO: rename "parameter" to "argument"
 	public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
 
-	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getFlexoConceptTypeURI();
+	/**
+	 * The type of the instantiated concept (see {@link #getFlexoConceptType()})
+	 *
+	 * @return the instantiated type
+	 */
+	@Getter(value = INSTANTIATED_TYPE_KEY, ignoreType = true)
+	public FlexoConceptInstanceType getInstantiatedType();
 
-	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setFlexoConceptTypeURI(String conceptTypeURI);
+	@Setter(INSTANTIATED_TYPE_KEY)
+	public void setInstantiatedType(FlexoConceptInstanceType instantiatedType);
+
+	/**
+	 * Translates the supplied type into the typing space of this action, then sets it
+	 *
+	 * @param instantiatedType
+	 *            the instantiated type, possibly expressed in another typing space
+	 */
+	@Updater(INSTANTIATED_TYPE_KEY)
+	public void updateInstantiatedType(FlexoConceptInstanceType instantiatedType);
 
 	/**
 	 * Return the concept instantiated by this action: the concept of the creation scheme when one is set
@@ -235,9 +263,11 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstance.class.getPackage().getName());
 
-		private FlexoConcept flexoConceptType;
-		private CreationScheme creationScheme;
-		private String _creationSchemeURI;
+		private FlexoConceptInstanceType instantiatedType;
+		private FMLNamedReference<CreationScheme> creationSchemeReference;
+		// The concept and the creation scheme this action listens to: the last ones resolved
+		private FlexoConcept listenedConcept;
+		private CreationScheme listenedCreationScheme;
 		private List<AddFlexoConceptInstanceParameter> parameters = null;
 
 		private DataBinding<FlexoConceptInstance> container;
@@ -245,12 +275,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		@Override
 		public boolean delete(Object... context) {
-			if (flexoConceptType != null) {
-				flexoConceptType.getPropertyChangeSupport().removePropertyChangeListener(this);
-			}
-			if (creationScheme != null) {
-				creationScheme.getPropertyChangeSupport().removePropertyChangeListener(this);
-			}
+			listenTo(null, null);
 			return super.delete(context);
 		}
 
@@ -351,26 +376,57 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		}
 
 		@Override
+		public FlexoConceptInstanceType getInstantiatedType() {
+			return instantiatedType;
+		}
+
+		@Override
+		public void setInstantiatedType(FlexoConceptInstanceType instantiatedType) {
+			if (instantiatedType != this.instantiatedType) {
+				FlexoConceptInstanceType oldValue = this.instantiatedType;
+				this.instantiatedType = instantiatedType;
+				getPropertyChangeSupport().firePropertyChange(INSTANTIATED_TYPE_KEY, oldValue, instantiatedType);
+			}
+		}
+
+		@Override
+		public void updateInstantiatedType(FlexoConceptInstanceType instantiatedType) {
+			if (instantiatedType != null && getDeclaringCompilationUnit() != null) {
+				setInstantiatedType(instantiatedType.translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setInstantiatedType(instantiatedType);
+			}
+		}
+
+		/**
+		 * The concept of {@link #getInstantiatedType()}, in which the creation scheme is resolved
+		 */
+		private FlexoConcept getInstantiatedConcept() {
+			if (instantiatedType == null) {
+				return null;
+			}
+			if (!instantiatedType.isResolved()) {
+				instantiatedType.resolve();
+			}
+			return instantiatedType.getFlexoConcept();
+		}
+
+		@Override
 		public FlexoConcept getFlexoConceptType() {
 			if (getCreationScheme() != null) {
 				return getCreationScheme().getFlexoConcept();
 			}
-			if (flexoConceptType == null && StringUtils.isNotEmpty(_flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
-			}
-			return flexoConceptType;
+			return getInstantiatedConcept();
 		}
 
 		@Override
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
-			if (this.flexoConceptType != flexoConceptType) {
-				FlexoConcept oldValue = this.flexoConceptType;
-				if (oldValue != null) {
-					oldValue.getPropertyChangeSupport().removePropertyChangeListener(this);
-				}
-				this.flexoConceptType = flexoConceptType;
+			FlexoConcept oldValue = getFlexoConceptType();
+			if (oldValue != flexoConceptType) {
+				setInstantiatedType(flexoConceptType != null ? flexoConceptType.getInstanceType() : null);
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
-					if (flexoConceptType.getCreationSchemes().size() > 0) {
+					if (flexoConceptType != null && flexoConceptType.getCreationSchemes().size() > 0) {
 						setCreationScheme(flexoConceptType.getCreationSchemes().get(0));
 					}
 					else {
@@ -386,99 +442,80 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, oldValue, flexoConceptType);
 				getPropertyChangeSupport().firePropertyChange("availableCreationSchemes", null, getAvailableCreationSchemes());
 				getPropertyChangeSupport().firePropertyChange("requiresContainer", !requiresContainer(), requiresContainer());
-				if (flexoConceptType != null) {
-					flexoConceptType.getPropertyChangeSupport().addPropertyChangeListener(this);
+			}
+		}
+
+		@Override
+		public FMLNamedReference<CreationScheme> getCreationSchemeReference() {
+			return creationSchemeReference;
+		}
+
+		@Override
+		public void setCreationSchemeReference(FMLNamedReference<CreationScheme> creationSchemeReference) {
+			FMLNamedReference<CreationScheme> oldValue = this.creationSchemeReference;
+			this.creationSchemeReference = creationSchemeReference;
+			getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_REFERENCE_KEY, oldValue, creationSchemeReference);
+		}
+
+		@Override
+		public void updateCreationSchemeReference(FMLNamedReference<CreationScheme> creationSchemeReference) {
+			setCreationSchemeReference(creationSchemeReference != null ? creationSchemeReference.unresolved() : null);
+		}
+
+		/**
+		 * Listens to the supplied concept and creation scheme instead of the former ones
+		 */
+		private void listenTo(FlexoConcept concept, CreationScheme creationScheme) {
+			if (concept != listenedConcept) {
+				if (listenedConcept != null) {
+					listenedConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
+				listenedConcept = concept;
+				if (concept != null) {
+					concept.getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
 			}
-		}
-
-		@Override
-		public String _getCreationSchemeURI() {
-			if (getCreationScheme() != null) {
-				return getCreationScheme().getURI();
-			}
-			return _creationSchemeURI;
-		}
-
-		@Override
-		public void _setCreationSchemeURI(String uri) {
-			if (getVirtualModelLibrary() != null) {
-				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(uri, true);
-				if (creationScheme != null) {
-					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
-					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+			if (creationScheme != listenedCreationScheme) {
+				if (listenedCreationScheme != null) {
+					listenedCreationScheme.getPropertyChangeSupport().removePropertyChangeListener(this);
 				}
-			}
-			_creationSchemeURI = uri;
-		}
-
-		private String _flexoConceptTypeURI;
-
-		@Override
-		public String _getFlexoConceptTypeURI() {
-			if (getFlexoConceptType() != null) {
-				return getFlexoConceptType().getURI();
-			}
-			return _flexoConceptTypeURI;
-		}
-
-		@Override
-		public void _setFlexoConceptTypeURI(String uri) {
-			if (getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri, true);
-			}
-			_flexoConceptTypeURI = uri;
-		}
-
-		protected void loadMetaModelWhenRequired() {
-			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
-				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+				listenedCreationScheme = creationScheme;
 				if (creationScheme != null) {
 					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
-					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
 			}
 		}
 
 		@Override
 		public CreationScheme getCreationScheme() {
-
-			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
-				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, false);
-				if (creationScheme != null) {
-					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
-					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
-				}
+			CreationScheme returned = null;
+			if (creationSchemeReference != null) {
+				FlexoConcept concept = getInstantiatedConcept();
+				returned = creationSchemeReference.resolve(concept != null ? name -> {
+					FlexoBehaviour behaviour = concept.getFlexoBehaviour(name);
+					return behaviour instanceof CreationScheme ? (CreationScheme) behaviour : null;
+				} : null);
 			}
-			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
-				creationScheme = ((FlexoConceptInstanceRole) getAssignedFlexoProperty()).getCreationScheme();
-				if (creationScheme != null) {
-					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
-					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
-				}
+			if (returned == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
+				returned = ((FlexoConceptInstanceRole) getAssignedFlexoProperty()).getCreationScheme();
 			}
-			return creationScheme;
+			if (!isDeleted()) {
+				listenTo(returned != null ? returned.getFlexoConcept() : getInstantiatedConcept(), returned);
+			}
+			return returned;
 		}
 
 		@Override
 		public void setCreationScheme(CreationScheme creationScheme) {
-			if (this.creationScheme != creationScheme) {
-				CreationScheme oldValue = this.creationScheme;
-				if (oldValue != null) {
-					oldValue.getPropertyChangeSupport().removePropertyChangeListener(this);
-				}
-				this.creationScheme = creationScheme;
+			CreationScheme oldValue = getCreationScheme();
+			if (oldValue != creationScheme) {
 				if (creationScheme != null) {
-					_creationSchemeURI = creationScheme.getURI();
+					// The creation scheme is resolved in the instantiated concept
+					setInstantiatedType(creationScheme.getFlexoConcept().getInstanceType());
 				}
-				else {
-					_creationSchemeURI = null;
-				}
+				setCreationSchemeReference(FMLNamedReference.to(creationScheme));
 				getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_KEY, oldValue, creationScheme);
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, getFlexoConceptType());
-				if (creationScheme != null) {
-					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
-				}
 			}
 		}
 
@@ -532,7 +569,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
 				}
-				if (addEPParam._getParamName() != null && addEPParam._getParamName().equals(p.getName())) {
+				if (p != null && addEPParam.getParamReference() != null && p.getName().equals(addEPParam.getParamReference().getName())) {
 					return addEPParam;
 				}
 
@@ -555,6 +592,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 			List<AddFlexoConceptInstanceParameter> oldValue = new ArrayList<>(parameters);
 			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<>(parameters);
+			CreationScheme creationScheme = getCreationScheme();
 			if (creationScheme != null) {
 				for (FlexoBehaviourParameter p : creationScheme.getParameters()) {
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
@@ -587,7 +625,6 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				logger.fine("--------------> Perform performAddFlexoConceptInstance " + evaluationContext);
 			}
 
-			loadMetaModelWhenRequired();
 
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
 			if (vmInstance == null) {
@@ -734,7 +771,6 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			loadMetaModelWhenRequired();
 		}
 
 		@Override

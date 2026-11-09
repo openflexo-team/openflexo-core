@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -56,6 +57,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
@@ -75,8 +77,8 @@ public interface MatchingCriteria extends FlexoConceptObject {
 	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
 
-	@PropertyIdentifier(type = String.class)
-	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
+	@PropertyIdentifier(type = FMLNamedReference.class)
+	public static final String PROPERTY_REFERENCE_KEY = "propertyReference";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
@@ -87,17 +89,25 @@ public interface MatchingCriteria extends FlexoConceptObject {
 	public void setAction(MatchFlexoConceptInstance action);
 
 	/**
-	 * Return the name of the property of this criterion, under its serialization name inherited from the former "pattern role" vocabulary
+	 * The property of the matched concept this criterion compares, as a reference resolved in the concept the action addresses (see
+	 * {@link #getFlexoProperty()})
 	 *
-	 * @return the name of the property
+	 * @return the reference to the property
 	 */
-	@Getter(value = PATTERN_ROLE_NAME_KEY)
-	@XMLAttribute
-	// TODO: name kept for compatibility, implements oldXMLTag / newXMLTag
-	public String _getPatternRoleName();
+	@Getter(value = PROPERTY_REFERENCE_KEY, ignoreType = true)
+	public FMLNamedReference<FlexoProperty<?>> getPropertyReference();
 
-	@Setter(PATTERN_ROLE_NAME_KEY)
-	public void _setPatternRoleName(String patternRoleName);
+	@Setter(PROPERTY_REFERENCE_KEY)
+	public void setPropertyReference(FMLNamedReference<FlexoProperty<?>> propertyReference);
+
+	/**
+	 * Keeps the name only of a reference coming from another compilation unit (merge with {@code updateWith()})
+	 *
+	 * @param propertyReference
+	 *            the reference held by the criterion of the other compilation unit
+	 */
+	@Updater(PROPERTY_REFERENCE_KEY)
+	public void updatePropertyReference(FMLNamedReference<FlexoProperty<?>> propertyReference);
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -106,9 +116,22 @@ public interface MatchingCriteria extends FlexoConceptObject {
 	@Setter(VALUE_KEY)
 	public void setValue(DataBinding<?> value);
 
+	/**
+	 * The property of the matched concept this criterion compares
+	 *
+	 * @return the property found under the name of {@link #getPropertyReference()} in the concept the action addresses
+	 */
 	public FlexoProperty<?> getFlexoProperty();
 
 	public void setFlexoProperty(FlexoProperty<?> property);
+
+	/**
+	 * Sets the property of this criterion by its name, resolved in the concept the action addresses
+	 *
+	 * @param propertyName
+	 *            name of the property
+	 */
+	public void setFlexoPropertyName(String propertyName);
 
 	/**
 	 * Evaluate the value of this criterion in supplied context
@@ -126,8 +149,7 @@ public interface MatchingCriteria extends FlexoConceptObject {
 
 		private static final Logger logger = Logger.getLogger(MatchingCriteria.class.getPackage().getName());
 
-		private FlexoProperty<?> flexoProperty;
-		private String propertyName;
+		private FMLNamedReference<FlexoProperty<?>> propertyReference;
 		private DataBinding<?> value;
 
 		private MatchingCriteriaBindingModel bindingModel;
@@ -200,34 +222,44 @@ public interface MatchingCriteria extends FlexoConceptObject {
 		}
 
 		@Override
+		public FMLNamedReference<FlexoProperty<?>> getPropertyReference() {
+			return propertyReference;
+		}
+
+		@Override
+		public void setPropertyReference(FMLNamedReference<FlexoProperty<?>> propertyReference) {
+			FMLNamedReference<FlexoProperty<?>> oldValue = this.propertyReference;
+			this.propertyReference = propertyReference;
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_REFERENCE_KEY, oldValue, propertyReference);
+		}
+
+		@Override
+		public void updatePropertyReference(FMLNamedReference<FlexoProperty<?>> propertyReference) {
+			setPropertyReference(propertyReference != null ? propertyReference.unresolved() : null);
+		}
+
+		@Override
 		public FlexoProperty<?> getFlexoProperty() {
-			if (flexoProperty == null && propertyName != null && getAction() != null && getAction().getFlexoConceptType() != null) {
-				flexoProperty = getAction().getFlexoConceptType().getAccessibleProperty(propertyName);
+			if (propertyReference == null) {
+				return null;
 			}
-			return flexoProperty;
+			FlexoConcept matchedConcept = getAction() != null ? getAction().getFlexoConceptType() : null;
+			return propertyReference.resolve(matchedConcept != null ? matchedConcept::getAccessibleProperty : null);
 		}
 
 		@Override
 		public void setFlexoProperty(FlexoProperty<?> flexoProperty) {
-			this.flexoProperty = flexoProperty;
+			setPropertyReference(FMLNamedReference.to(flexoProperty));
 		}
 
 		@Override
-		public String _getPatternRoleName() {
-			if (flexoProperty != null) {
-				return flexoProperty.getName();
-			}
-			return propertyName;
-		}
-
-		@Override
-		public void _setPatternRoleName(String patternRoleName) {
-			this.propertyName = patternRoleName;
+		public void setFlexoPropertyName(String propertyName) {
+			setPropertyReference(FMLNamedReference.named(propertyName));
 		}
 
 		@Override
 		public String toString() {
-			return "MatchingCriteria[" + _getPatternRoleName() + "=" + getValue() + "]";
+			return "MatchingCriteria[" + (propertyReference != null ? propertyReference.getName() : null) + "=" + getValue() + "]";
 		}
 
 		@Override

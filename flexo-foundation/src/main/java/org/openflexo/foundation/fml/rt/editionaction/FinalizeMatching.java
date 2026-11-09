@@ -54,6 +54,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -79,9 +80,9 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * The FML statement {@code end match Concept in matchingSet unmatched: delete();}, closing a {@link MatchingSet}.
@@ -105,10 +106,10 @@ public interface FinalizeMatching extends EditionAction {
 	public static final String MATCHING_SET_KEY = "matchingSet";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
-	@PropertyIdentifier(type = String.class)
-	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
-	@PropertyIdentifier(type = String.class)
-	public static final String FLEXO_BEHAVIOUR_URI_KEY = "flexoBehaviourURI";
+	@PropertyIdentifier(type = FlexoConceptInstanceType.class)
+	public static final String MATCHED_TYPE_KEY = "matchedType";
+	@PropertyIdentifier(type = FMLNamedReference.class)
+	public static final String BEHAVIOUR_REFERENCE_KEY = "behaviourReference";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
@@ -130,23 +131,58 @@ public interface FinalizeMatching extends EditionAction {
 
 	public List<FlexoConcept> getAvailableFlexoConceptTypes();
 
-	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getFlexoConceptTypeURI();
+	/**
+	 * The type of the instances this action matches.<br>
+	 * This is the property that carries the matched concept: when a compilation unit is merged with another one (the FML editor merges
+	 * the text it has just parsed with {@code updateWith()}), {@link #updateMatchedType(FlexoConceptInstanceType)} translates the type
+	 * into the typing space of this action.
+	 *
+	 * @return the matched type
+	 */
+	@Getter(value = MATCHED_TYPE_KEY, ignoreType = true)
+	public FlexoConceptInstanceType getMatchedType();
 
-	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setFlexoConceptTypeURI(String uri);
+	@Setter(MATCHED_TYPE_KEY)
+	public void setMatchedType(FlexoConceptInstanceType matchedType);
 
+	/**
+	 * Translates the supplied type into the typing space of this action, then sets it
+	 *
+	 * @param matchedType
+	 *            the matched type, possibly expressed in another typing space
+	 */
+	@Updater(MATCHED_TYPE_KEY)
+	public void updateMatchedType(FlexoConceptInstanceType matchedType);
+
+	/**
+	 * The concept of the instances this action matches, the concept of {@link #getMatchedType()}
+	 *
+	 * @return the matched concept
+	 */
 	public FlexoConcept getFlexoConceptType();
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	@Getter(value = FLEXO_BEHAVIOUR_URI_KEY)
-	@XMLAttribute
-	public String getFlexoBehaviourURI();
+	/**
+	 * The behaviour executed on the instances which have not been matched, as a reference resolved in the matched concept (see
+	 * {@link #getFlexoBehaviour()})
+	 *
+	 * @return the reference to the behaviour, null when none was set
+	 */
+	@Getter(value = BEHAVIOUR_REFERENCE_KEY, ignoreType = true)
+	public FMLNamedReference<FlexoBehaviour> getBehaviourReference();
 
-	@Setter(FLEXO_BEHAVIOUR_URI_KEY)
-	public void setFlexoBehaviourURI(String flexoBehaviourURI);
+	@Setter(BEHAVIOUR_REFERENCE_KEY)
+	public void setBehaviourReference(FMLNamedReference<FlexoBehaviour> behaviourReference);
+
+	/**
+	 * Keeps the name only of a reference coming from another compilation unit (merge with {@code updateWith()})
+	 *
+	 * @param behaviourReference
+	 *            the reference held by the action of the other compilation unit
+	 */
+	@Updater(BEHAVIOUR_REFERENCE_KEY)
+	public void updateBehaviourReference(FMLNamedReference<FlexoBehaviour> behaviourReference);
 
 	/**
 	 * Return the behaviour executed on the instances which have not been matched.
@@ -179,10 +215,6 @@ public interface FinalizeMatching extends EditionAction {
 
 	public List<? extends FlexoBehaviour> getAvailableFlexoBehaviours();
 
-	public FlexoConceptInstanceType getMatchedType();
-
-	public void setMatchedType(FlexoConceptInstanceType matchedType);
-
 	public static abstract class FinalizeMatchingMatchingImpl extends EditionActionImpl
 			implements FinalizeMatching, PropertyChangeListener {
 
@@ -190,11 +222,10 @@ public interface FinalizeMatching extends EditionAction {
 
 		private DataBinding<MatchingSet> matchingSet;
 
-		private FlexoBehaviour flexoBehaviour;
-		private String flexoBehaviourURI;
+		private FMLNamedReference<FlexoBehaviour> behaviourReference;
+		// The behaviour this action listens to (to keep its parameters in step), the last one getFlexoBehaviour() returned
+		private FlexoBehaviour listenedBehaviour;
 		private DataBinding<FlexoConceptInstance> container;
-		private String flexoConceptTypeURI;
-		private FlexoConcept flexoConceptType;
 		private FlexoConceptInstanceType matchedType;
 
 		@Override
@@ -237,47 +268,59 @@ public interface FinalizeMatching extends EditionAction {
 			this.container = container;
 		}
 
-		@Getter(value = CONTAINER_KEY)
-		@XMLAttribute
 		@Override
-		public String _getFlexoConceptTypeURI() {
-			if (flexoConceptType != null) {
-				return flexoConceptType.getURI();
-			}
-			if (matchedType != null) {
-				if (matchedType.isResolved()) {
-					return matchedType.getFlexoConcept().getURI();
-				}
-				return matchedType.getConceptURI();
-			}
-			return flexoConceptTypeURI;
+		public FlexoConceptInstanceType getMatchedType() {
+			return matchedType;
 		}
 
 		@Override
-		public void _setFlexoConceptTypeURI(String uri) {
-			if (getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri);
+		public void setMatchedType(FlexoConceptInstanceType matchedType) {
+			if (matchedType != this.matchedType) {
+				FlexoConceptInstanceType oldValue = this.matchedType;
+				// Do not force the resolution here: while parsing, the type may not be resolvable yet
+				FlexoConcept oldConcept = oldValue != null && oldValue.isResolved() ? oldValue.getFlexoConcept() : null;
+				this.matchedType = matchedType;
+				getPropertyChangeSupport().firePropertyChange(MATCHED_TYPE_KEY, oldValue, matchedType);
+				FlexoConcept newConcept = matchedType != null && matchedType.isResolved() ? matchedType.getFlexoConcept() : null;
+				if (oldConcept != newConcept) {
+					matchedConceptChanged(oldConcept, newConcept);
+				}
 			}
-			flexoConceptTypeURI = uri;
+		}
+
+		@Override
+		public void updateMatchedType(FlexoConceptInstanceType matchedType) {
+			if (matchedType != null && getDeclaringCompilationUnit() != null) {
+				setMatchedType(matchedType.translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setMatchedType(matchedType);
+			}
 		}
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (flexoConceptType == null && StringUtils.isNotEmpty(flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(flexoConceptTypeURI, false);
+			if (matchedType == null) {
+				return null;
 			}
-			return flexoConceptType;
+			if (!matchedType.isResolved()) {
+				matchedType.resolve();
+			}
+			return matchedType.getFlexoConcept();
 		}
 
 		@Override
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
-			if (flexoConceptType != this.flexoConceptType) {
-				FlexoConcept oldValue = this.flexoConceptType;
-				this.flexoConceptType = flexoConceptType;
-				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, flexoConceptType);
-				getPropertyChangeSupport().firePropertyChange("flexoBehaviour", false, true);
-				getPropertyChangeSupport().firePropertyChange("availableFlexoBehaviours", null, getAvailableFlexoBehaviours());
+			if (flexoConceptType != getFlexoConceptType()) {
+				setMatchedType(flexoConceptType != null ? flexoConceptType.getInstanceType() : null);
 			}
+		}
+
+		private void matchedConceptChanged(FlexoConcept oldConcept, FlexoConcept newConcept) {
+			getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldConcept, newConcept);
+			getPropertyChangeSupport().firePropertyChange("availableFlexoBehaviours", null, getAvailableFlexoBehaviours());
+			// The behaviour is resolved in the matched concept
+			getFlexoBehaviour();
 		}
 
 		@Override
@@ -312,25 +355,24 @@ public interface FinalizeMatching extends EditionAction {
 		}
 
 		@Override
-		public String getFlexoBehaviourURI() {
-			if (getFlexoBehaviour() != null) {
-				return getFlexoBehaviour().getURI();
-			}
-			return flexoBehaviourURI;
+		public FMLNamedReference<FlexoBehaviour> getBehaviourReference() {
+			return behaviourReference;
 		}
 
 		@Override
-		public void setFlexoBehaviourURI(String uri) {
-			if (requireChange(getFlexoBehaviourURI(), uri)) {
-				String oldURI = getFlexoBehaviourURI();
-				FlexoBehaviour oldCS = getFlexoBehaviour();
-				flexoBehaviourURI = uri;
-				if (getVirtualModelLibrary() != null) {
-					flexoBehaviour = getVirtualModelLibrary().getFlexoBehaviour(uri, true);
-				}
-				fireBehaviourChanged(oldCS, getFlexoBehaviour());
-				getPropertyChangeSupport().firePropertyChange(FLEXO_BEHAVIOUR_URI_KEY, oldURI, uri);
+		public void setBehaviourReference(FMLNamedReference<FlexoBehaviour> behaviourReference) {
+			if (requireChange(this.behaviourReference, behaviourReference)) {
+				FMLNamedReference<FlexoBehaviour> oldValue = this.behaviourReference;
+				this.behaviourReference = behaviourReference;
+				getPropertyChangeSupport().firePropertyChange(BEHAVIOUR_REFERENCE_KEY, oldValue, behaviourReference);
+				// Listen to the new behaviour and update the parameters
+				getFlexoBehaviour();
 			}
+		}
+
+		@Override
+		public void updateBehaviourReference(FMLNamedReference<FlexoBehaviour> behaviourReference) {
+			setBehaviourReference(behaviourReference != null ? behaviourReference.unresolved() : null);
 		}
 
 		@Override
@@ -343,30 +385,26 @@ public interface FinalizeMatching extends EditionAction {
 
 		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
-			if (flexoBehaviour == null && flexoBehaviourURI != null && getVirtualModelLibrary() != null) {
-				flexoBehaviour = getVirtualModelLibrary().getFlexoBehaviour(flexoBehaviourURI, true);
+			FlexoConcept matchedConcept = getFlexoConceptType();
+			FlexoBehaviour returned = null;
+			if (behaviourReference != null) {
+				returned = behaviourReference.resolve(matchedConcept != null ? name -> matchedConcept.getFlexoBehaviour(name) : null);
 			}
-			if (flexoBehaviour == null && getFlexoConceptType() != null && getAvailableFlexoBehaviours() != null
-					&& getAvailableFlexoBehaviours().size() > 0) {
-				flexoBehaviour = getAvailableFlexoBehaviours().get(0);
-				fireBehaviourChanged(null, flexoBehaviour);
+			else if (matchedConcept != null && getAvailableFlexoBehaviours() != null && getAvailableFlexoBehaviours().size() > 0) {
+				// No behaviour set: the first action scheme of the concept (known defect CORE-D-2)
+				returned = getAvailableFlexoBehaviours().get(0);
 			}
-			return flexoBehaviour;
+			if (returned != listenedBehaviour) {
+				FlexoBehaviour oldValue = listenedBehaviour;
+				listenedBehaviour = returned;
+				fireBehaviourChanged(oldValue, returned);
+			}
+			return returned;
 		}
 
 		@Override
-		public void setFlexoBehaviour(FlexoBehaviour creationScheme) {
-			if (requireChange(getFlexoBehaviour(), creationScheme)) {
-				FlexoBehaviour oldCS = getFlexoBehaviour();
-				this.flexoBehaviour = creationScheme;
-				if (creationScheme != null) {
-					flexoBehaviourURI = creationScheme.getURI();
-				}
-				else {
-					flexoBehaviourURI = null;
-				}
-				fireBehaviourChanged(oldCS, creationScheme);
-			}
+		public void setFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
+			setBehaviourReference(FMLNamedReference.to(flexoBehaviour));
 		}
 
 		@Override
@@ -499,22 +537,6 @@ public interface FinalizeMatching extends EditionAction {
 		@Override
 		public Type getInferedType() {
 			return Void.class;
-		}
-
-		@Override
-		public FlexoConceptInstanceType getMatchedType() {
-			if (getFlexoConceptType() != null) {
-				return getFlexoConceptType().getInstanceType();
-			}
-			return matchedType;
-		}
-
-		@Override
-		public void setMatchedType(FlexoConceptInstanceType matchedType) {
-			this.matchedType = matchedType;
-			if (matchedType.isResolved()) {
-				flexoConceptType = matchedType.getFlexoConcept();
-			}
 		}
 
 		@Override

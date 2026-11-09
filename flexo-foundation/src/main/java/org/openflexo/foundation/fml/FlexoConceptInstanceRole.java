@@ -65,7 +65,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * A role referencing instances of a {@link FlexoConcept} (see {@link #getFlexoConceptType()}).
@@ -99,28 +98,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_TYPE_KEY = "flexoConceptType";
-	@PropertyIdentifier(type = String.class)
-	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
-	@PropertyIdentifier(type = String.class)
-	public static final String CREATION_SCHEME_URI_KEY = "creationSchemeURI";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
-
-	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getFlexoConceptTypeURI();
-
-	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setFlexoConceptTypeURI(String flexoConceptTypeURI);
-
-	@Getter(value = CREATION_SCHEME_URI_KEY)
-	@XMLAttribute
-	@Deprecated
-	public String _getCreationSchemeURI();
-
-	@Setter(CREATION_SCHEME_URI_KEY)
-	@Deprecated
-	public void _setCreationSchemeURI(String creationSchemeURI);
 
 	@Deprecated
 	public CreationScheme getCreationScheme();
@@ -159,44 +138,31 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
 		private FlexoConcept flexoConceptType;
-		private String _flexoConceptTypeURI;
 
+		// Not persisted: the textual FML has no syntax for the creation scheme of a role
 		@Deprecated
 		private CreationScheme creationScheme;
-		@Deprecated
-		private String _creationSchemeURI;
-
-		/*@Override
-		public boolean getIsPrimaryRole() {
-			return false;
-		}
-		
-		@Override
-		public void setIsPrimaryRole(boolean isPrimary) {
-			// Not relevant
-		}*/
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
 			if (getCreationScheme() != null) {
 				return getCreationScheme().getFlexoConcept();
 			}
-			if (flexoConceptType == null && _getFlexoConceptTypeURI() != null && getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_getFlexoConceptTypeURI(), false);
-				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, type);
-				notifyResultingTypeChanged();
+			if (flexoConceptType == null && type != FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE) {
+				if (!type.isResolved()) {
+					// Resolving with the factory of this role sets flexoConceptType
+					type.resolve();
+				}
+				if (flexoConceptType == null && type.getFlexoConcept() != null) {
+					// The type was resolved by another factory (for instance after a translation into another typing space)
+					flexoConceptType = type.getFlexoConcept();
+				}
+				if (flexoConceptType == null && type.getConceptURI() != null && getVirtualModelLibrary() != null) {
+					// The factory of this role only looks into the imports: the concept may be declared in this compilation unit
+					// (looked up by URI in the library, which does not follow the imports, as compilation units may import each other)
+					flexoConceptType = getVirtualModelLibrary().getFlexoConcept(type.getConceptURI(), false);
+				}
 			}
-			/*System.out.println("On me demande le type, je renvoie: " + flexoConceptType);
-			System.out.println("uri=" + _getFlexoConceptTypeURI());
-			System.out.println("getVirtualModelLibrary()" + getVirtualModelLibrary());
-			System.out.println("type: " + type + " resolved=" + type.isResolved());
-			System.out.println("concept: " + type.getFlexoConcept());*/
-			if (!type.isResolved()) {
-				type.resolve();
-			}
-			/*System.out.println("- type: " + type + " resolved=" + type.isResolved());
-			System.out.println("- factory=" + type.getCustomTypeFactory());
-			System.out.println("- concept: " + type.getFlexoConcept());*/
 			return flexoConceptType;
 		}
 
@@ -204,103 +170,26 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (flexoConceptType != this.flexoConceptType) {
 				Type oldType = getType();
-				String oldValue = _getFlexoConceptTypeURI();
 				FlexoConcept oldConceptType = this.flexoConceptType;
 				this.flexoConceptType = flexoConceptType;
-				/*if (flexoConceptType != null) {
-					type = flexoConceptType.getInstanceType();
-				}*/
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 					setCreationScheme(null);
 				}
-				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_URI_KEY, oldValue, _getFlexoConceptTypeURI());
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, oldConceptType, getFlexoConceptType());
 				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, oldType, getType());
 				notifyResultingTypeChanged();
 			}
-		}
-
-		@Override
-		public void finalizeDeserialization() {
-			super.finalizeDeserialization();
-			if (flexoConceptType == null && _flexoConceptTypeURI != null && getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_flexoConceptTypeURI, true);
-				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, type);
-				notifyResultingTypeChanged();
-			}
-		}
-
-		@Override
-		@Deprecated
-		public String _getCreationSchemeURI() {
-			if (getCreationScheme() != null) {
-				return getCreationScheme().getURI();
-			}
-			return _creationSchemeURI;
-		}
-
-		@Override
-		@Deprecated
-		public void _setCreationSchemeURI(String uri) {
-			if (getVirtualModelLibrary() != null) {
-				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(uri, true);
-				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
-					s.updateBindingModels();
-				}*/
-			}
-			_creationSchemeURI = uri;
-		}
-
-		@Override
-		public String _getFlexoConceptTypeURI() {
-			if (flexoConceptType != null) {
-				return flexoConceptType.getURI();
-			}
-			if (type != null) {
-				if (type.isResolved() && type.getFlexoConcept() != null) {
-					return type.getFlexoConcept().getURI();
-				}
-				else {
-					return type.getConceptURI();
-				}
-			}
-			return _flexoConceptTypeURI;
-		}
-
-		@Override
-		public void _setFlexoConceptTypeURI(String uri) {
-			if ((uri == null && _getFlexoConceptTypeURI() != null) || (uri != null && !uri.equals(_getFlexoConceptTypeURI()))) {
-				Type oldType = getType();
-				String oldValue = _getFlexoConceptTypeURI();
-				FlexoConcept oldConceptType = getFlexoConceptType();
-				this._flexoConceptTypeURI = uri;
-				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_URI_KEY, oldValue, uri);
-				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, oldConceptType, getFlexoConceptType());
-				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, oldType, getType());
-				notifyResultingTypeChanged();
-			}
-
-			if (getDeclaringCompilationUnit() != null) {
-				flexoConceptType = getDeclaringCompilationUnit().getFlexoConcept(uri);
-			}
-			_flexoConceptTypeURI = uri;
 		}
 
 		@Override
 		@Deprecated
 		public CreationScheme getCreationScheme() {
-			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
-				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
-			}
 			return creationScheme;
 		}
 
 		@Deprecated
 		public void setCreationScheme(CreationScheme creationScheme) {
 			this.creationScheme = creationScheme;
-			if (creationScheme != null) {
-				_creationSchemeURI = creationScheme.getURI();
-			}
 		}
 
 		/**
@@ -434,14 +323,6 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public Type getType() {
 
 			if (flexoConceptType == null) {
-				if (type == FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE
-						&& StringUtils.isNotEmpty(_getFlexoConceptTypeURI()) && getTechnologyAdapter() != null
-						&& getTechnologyAdapter().getFlexoConceptInstanceTypeFactory() != null) {
-					type = getTechnologyAdapter().getFlexoConceptInstanceTypeFactory().makeCustomType(_getFlexoConceptTypeURI());
-					// getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, getFlexoConceptType());
-					getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, type);
-					notifyResultingTypeChanged();
-				}
 				return type;
 			}
 			return getFlexoConceptType().getInstanceType();
@@ -459,15 +340,9 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public void setType(Type type) {
 			if (type instanceof FlexoConceptInstanceType) {
 				Type oldType = getType();
-				String oldValue = _getFlexoConceptTypeURI();
 				FlexoConcept oldConceptType = getFlexoConceptType();
 				flexoConceptType = null;
-				_flexoConceptTypeURI = null;
 				this.type = (FlexoConceptInstanceType) type;
-				/*if (((FlexoConceptInstanceType) type).isResolved()) {
-					setFlexoConceptType(((FlexoConceptInstanceType) type).getFlexoConcept());
-				}*/
-				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_URI_KEY, oldValue, _getFlexoConceptTypeURI());
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, oldConceptType, getFlexoConceptType());
 				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, oldType, getType());
 				notifyResultingTypeChanged();

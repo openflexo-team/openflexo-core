@@ -430,6 +430,42 @@ attributes. **Not done**: the other actions of the FML technology adapter (`Crea
 `CreateContainedVirtualModel`, `CreatePrimitiveRole`, `CreateFlexoConceptInstanceRole`, `CreateFlexoBehaviour`) still have no FML
 attribute — nothing uses them yet.
 
+### CORE-D-43 — The FML editor did not follow most references edited in the text  ·  `DONE`
+
+**Symptom.** In the FML editor, retargeting a reference in the text (the type of a role, `extends`, the concept of a `begin match` /
+`match` / `end match`, the property of a `match` criterion, the event of a listener) left the model on the former target, or with no
+target at all, until the model was reloaded.
+
+**Verified (2026-11-09).** `TestUpdateWithReferences` (flexo-foundation-test) merges with `updateWith()`, as the editor does, a text
+in which one more reference is retargeted at each step. On the baseline: the type of a role became null; `extends` and the whole match
+family kept their former concept; a criterion and a listener's event pointed to objects of the parsed compilation unit (thrown away
+after the merge). Only `select` followed (its type was already a translated `Type` property). The deprecated URI strings, merged too,
+did not repair any of them.
+
+**Cause.** A reference is merged by PAMELA through the property holding it: a property holding a model object without `@Updater`
+brings the object of the parsed compilation unit (or merges two different objects into each other), and the match family, the parents
+of a concept and the event of a listener carried their reference outside any PAMELA property, or without translation.
+
+**Fix (2026-11-09, CORE-F-8 phase 4).** Concepts are carried by `FlexoConceptInstanceType` properties with a translating `@Updater`;
+behaviours, parameters and properties by `FMLNamedReference` (compared by name, resolved by the holder). All eight steps pass. The
+behaviour of `end match ... unmatched: someMethod(...)` is not parsed at all (CORE-D-2): the test sets it on the parsed action.
+
+### CORE-D-44 — Looking up an unknown concept loops forever between compilation units that import each other  ·  `TODO`
+
+**Symptom.** `StackOverflowError`, the stack made of `FMLCompilationUnit$FMLCompilationUnitImpl.getFlexoConcept(FMLCompilationUnit.java:814)`
+only.
+
+**Verified (2026-11-09).** Reached by a first version of CORE-F-8 phase 4, which looked the concept of a role up in its declaring
+compilation unit by URI: loading Formose (`FormodContainerUIsTest.test0LoadFormose`, formod-module) then overflowed. That call was
+removed (the role looks its concept up in the `VirtualModelLibrary`, as before); the defect itself is not fixed.
+
+**Mechanism — read in the code.** The deprecated `FMLCompilationUnit.getFlexoConcept(String)` searches its VirtualModel, then calls
+itself on each loaded imported compilation unit, skipping only itself: when two units import each other and neither declares the name,
+the calls never end.
+
+**Expected.** A lookup visits each compilation unit once (a set of visited units), or the method goes with the other deprecated API
+(phase 5 of CORE-F-8).
+
 ## FML compilation unit loading
 
 ### CORE-D-14 — Compilation units importing each other load forever, or keep bindings analyzed against partial types  ·  `DONE`

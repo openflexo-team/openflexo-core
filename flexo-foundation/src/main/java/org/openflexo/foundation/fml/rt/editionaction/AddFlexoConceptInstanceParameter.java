@@ -69,12 +69,12 @@ public interface AddFlexoConceptInstanceParameter extends BehaviourCallArgument<
 
 		@Override
 		public FlexoBehaviour getAccessedBehaviour() {
-			return getOwner().getCreationScheme();
+			return getOwner() != null ? getOwner().getCreationScheme() : null;
 		}
 
 		@Override
 		public String toString() {
-			return (getParameter() != null ? getParameter().getName() : _getParamName()) + "=" + getValue();
+			return (getParamReference() != null ? getParamReference().getName() : null) + "=" + getValue();
 		}
 	}
 

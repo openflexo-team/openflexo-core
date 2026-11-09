@@ -48,6 +48,8 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLNamedReference;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -72,6 +74,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.CompoundIssue;
@@ -99,18 +102,38 @@ import org.openflexo.pamela.validation.ValidationRule;
 @Deprecated
 public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>> extends DeleteAction<FlexoConceptInstance> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String DELETION_SCHEME_URI_KEY = "deletionSchemeURI";
+	@PropertyIdentifier(type = FMLNamedReference.class)
+	public static final String DELETION_SCHEME_REFERENCE_KEY = "deletionSchemeReference";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
-	@Getter(value = DELETION_SCHEME_URI_KEY)
-	@XMLAttribute
-	public String _getDeletionSchemeURI();
+	/**
+	 * The deletion scheme executed on the deleted instance, as a reference resolved in the concept of the deleted object (see
+	 * {@link #getDeletionScheme()})
+	 *
+	 * @return the reference to the deletion scheme, null for the default deletion scheme of the concept
+	 */
+	@Getter(value = DELETION_SCHEME_REFERENCE_KEY, ignoreType = true)
+	public FMLNamedReference<DeletionScheme> getDeletionSchemeReference();
 
-	@Setter(DELETION_SCHEME_URI_KEY)
-	public void _setDeletionSchemeURI(String creationSchemeURI);
+	@Setter(DELETION_SCHEME_REFERENCE_KEY)
+	public void setDeletionSchemeReference(FMLNamedReference<DeletionScheme> deletionSchemeReference);
 
+	/**
+	 * Keeps the name only of a reference coming from another compilation unit (merge with {@code updateWith()})
+	 *
+	 * @param deletionSchemeReference
+	 *            the reference held by the action of the other compilation unit
+	 */
+	@Updater(DELETION_SCHEME_REFERENCE_KEY)
+	public void updateDeletionSchemeReference(FMLNamedReference<DeletionScheme> deletionSchemeReference);
+
+	/**
+	 * The deletion scheme executed on the deleted instance: the one of {@link #getDeletionSchemeReference()}, otherwise the default
+	 * deletion scheme of the concept of the deleted object
+	 *
+	 * @return the deletion scheme
+	 */
 	public DeletionScheme getDeletionScheme();
 
 	public void setDeletionScheme(DeletionScheme deletionScheme);
@@ -137,8 +160,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
 
-		private DeletionScheme deletionScheme;
-		private String _deletionSchemeURI;
+		private FMLNamedReference<DeletionScheme> deletionSchemeReference;
 		private boolean isUpdating = false;
 
 		@Override
@@ -162,41 +184,37 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		}
 
 		@Override
-		public String _getDeletionSchemeURI() {
-			if (getDeletionScheme() != null) {
-				return getDeletionScheme().getURI();
-			}
-			return _deletionSchemeURI;
+		public FMLNamedReference<DeletionScheme> getDeletionSchemeReference() {
+			return deletionSchemeReference;
 		}
 
 		@Override
-		public void _setDeletionSchemeURI(String uri) {
-			_deletionSchemeURI = uri;
+		public void setDeletionSchemeReference(FMLNamedReference<DeletionScheme> deletionSchemeReference) {
+			FMLNamedReference<DeletionScheme> oldValue = this.deletionSchemeReference;
+			this.deletionSchemeReference = deletionSchemeReference;
+			getPropertyChangeSupport().firePropertyChange(DELETION_SCHEME_REFERENCE_KEY, oldValue, deletionSchemeReference);
+		}
+
+		@Override
+		public void updateDeletionSchemeReference(FMLNamedReference<DeletionScheme> deletionSchemeReference) {
+			setDeletionSchemeReference(deletionSchemeReference != null ? deletionSchemeReference.unresolved() : null);
 		}
 
 		@Override
 		public DeletionScheme getDeletionScheme() {
-			if (deletionScheme == null && _deletionSchemeURI != null) {
-				if (getVirtualModelLibrary() != null) {
-					deletionScheme = (DeletionScheme) getVirtualModelLibrary().getFlexoBehaviour(_deletionSchemeURI, true);
-				}
+			FlexoConcept concept = getFlexoConceptType();
+			if (deletionSchemeReference != null) {
+				return deletionSchemeReference.resolve(concept != null ? name -> {
+					FlexoBehaviour behaviour = concept.getFlexoBehaviour(name);
+					return behaviour instanceof DeletionScheme ? (DeletionScheme) behaviour : null;
+				} : null);
 			}
-			else if (deletionScheme == null && getFlexoConceptType() != null) {
-				deletionScheme = getFlexoConceptType().getDefaultDeletionScheme();
-				if (deletionScheme != null) {
-					_deletionSchemeURI = deletionScheme.getURI();
-				}
-			}
-
-			return deletionScheme;
+			return concept != null ? concept.getDefaultDeletionScheme() : null;
 		}
 
 		@Override
 		public void setDeletionScheme(DeletionScheme deletionScheme) {
-			this.deletionScheme = deletionScheme;
-			if (deletionScheme != null) {
-				_deletionSchemeURI = deletionScheme.getURI();
-			}
+			setDeletionSchemeReference(FMLNamedReference.to(deletionScheme));
 		}
 
 		@Override

@@ -118,7 +118,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 					getSemanticsAnalyzer(), this);
 
 			MatchingCriteria newMatchingCriteria = getFactory().newMatchingCriteria(null);
-			newMatchingCriteria._setPatternRoleName(propertyName);
+			newMatchingCriteria.setFlexoPropertyName(propertyName);
 			newMatchingCriteria.setValue(argValue);
 			modelObject.addToMatchingCriterias(newMatchingCriteria);
 		}

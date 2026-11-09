@@ -66,9 +66,9 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * The FML action {@code begin match Concept from (container)}, opening a {@link MatchingSet}, as in
@@ -90,8 +90,8 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
-	@PropertyIdentifier(type = String.class)
-	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
+	@PropertyIdentifier(type = FlexoConceptInstanceType.class)
+	public static final String MATCHED_TYPE_KEY = "matchedType";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String CONDITIONS_KEY = "conditions";
 
@@ -102,13 +102,34 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConceptInstance> container);
 
-	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getFlexoConceptTypeURI();
+	/**
+	 * The type of the instances this action matches.<br>
+	 * This is the property that carries the matched concept: when a compilation unit is merged with another one (the FML editor merges
+	 * the text it has just parsed with {@code updateWith()}), {@link #updateMatchedType(FlexoConceptInstanceType)} translates the type
+	 * into the typing space of this action.
+	 *
+	 * @return the matched type
+	 */
+	@Getter(value = MATCHED_TYPE_KEY, ignoreType = true)
+	public FlexoConceptInstanceType getMatchedType();
 
-	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setFlexoConceptTypeURI(String uri);
+	@Setter(MATCHED_TYPE_KEY)
+	public void setMatchedType(FlexoConceptInstanceType matchedType);
 
+	/**
+	 * Translates the supplied type into the typing space of this action, then sets it
+	 *
+	 * @param matchedType
+	 *            the matched type, possibly expressed in another typing space
+	 */
+	@Updater(MATCHED_TYPE_KEY)
+	public void updateMatchedType(FlexoConceptInstanceType matchedType);
+
+	/**
+	 * The concept of the instances this action matches, the concept of {@link #getMatchedType()}
+	 *
+	 * @return the matched concept
+	 */
 	public FlexoConcept getFlexoConceptType();
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
@@ -128,10 +149,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 	@Remover(CONDITIONS_KEY)
 	public void removeFromConditions(MatchCondition aCondition);
 
-	public FlexoConceptInstanceType getMatchedType();
-
-	public void setMatchedType(FlexoConceptInstanceType matchedType);
-
 	public FlexoConcept getOwnerConcept();
 
 	public MatchCondition createCondition();
@@ -145,62 +162,59 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		private static final Logger logger = Logger.getLogger(InitiateMatching.class.getPackage().getName());
 
 		private DataBinding<FlexoConceptInstance> container;
-		private String flexoConceptTypeURI;
 
 		private FlexoConceptInstanceType matchedType;
 
-		@Getter(value = CONTAINER_KEY)
-		@XMLAttribute
 		@Override
-		public String _getFlexoConceptTypeURI() {
-			if (matchedType != null) {
-				if (matchedType.isResolved()) {
-					return matchedType.getFlexoConcept().getURI();
-				}
-				return matchedType.getConceptURI();
-			}
-			return flexoConceptTypeURI;
+		public FlexoConceptInstanceType getMatchedType() {
+			return matchedType;
 		}
 
 		@Override
-		public void _setFlexoConceptTypeURI(String uri) {
-			if (getVirtualModelLibrary() != null) {
-				FlexoConcept flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri);
-				if (flexoConceptType != null) {
-					matchedType = flexoConceptType.getInstanceType();
+		public void setMatchedType(FlexoConceptInstanceType matchedType) {
+			if (matchedType != this.matchedType) {
+				FlexoConceptInstanceType oldValue = this.matchedType;
+				// Do not force the resolution here: while parsing, the type may not be resolvable yet
+				FlexoConcept oldConcept = oldValue != null && oldValue.isResolved() ? oldValue.getFlexoConcept() : null;
+				this.matchedType = matchedType;
+				getPropertyChangeSupport().firePropertyChange(MATCHED_TYPE_KEY, oldValue, matchedType);
+				FlexoConcept newConcept = matchedType != null && matchedType.isResolved() ? matchedType.getFlexoConcept() : null;
+				if (oldConcept != newConcept) {
+					matchedConceptChanged(oldConcept, newConcept);
 				}
 			}
-			flexoConceptTypeURI = uri;
+		}
+
+		@Override
+		public void updateMatchedType(FlexoConceptInstanceType matchedType) {
+			if (matchedType != null && getDeclaringCompilationUnit() != null) {
+				setMatchedType(matchedType.translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+			}
+			else {
+				setMatchedType(matchedType);
+			}
 		}
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (matchedType != null && matchedType.isResolved()) {
-				return matchedType.getFlexoConcept();
+			if (matchedType == null) {
+				return null;
 			}
-
-			if (StringUtils.isNotEmpty(flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
-				FlexoConcept flexoConceptType = getVirtualModelLibrary().getFlexoConcept(flexoConceptTypeURI, false);
-				if (flexoConceptType != null) {
-					matchedType = flexoConceptType.getInstanceType();
-					return matchedType.getFlexoConcept();
-				}
+			if (!matchedType.isResolved()) {
+				matchedType.resolve();
 			}
-			return null;
+			return matchedType.getFlexoConcept();
 		}
 
 		@Override
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (flexoConceptType != getFlexoConceptType()) {
-				FlexoConcept oldValue = getFlexoConceptType();
-				if (flexoConceptType != null) {
-					matchedType = flexoConceptType.getInstanceType();
-				}
-				else {
-					matchedType = FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
-				}
-				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, flexoConceptType);
+				setMatchedType(flexoConceptType != null ? flexoConceptType.getInstanceType() : null);
 			}
+		}
+
+		private void matchedConceptChanged(FlexoConcept oldConcept, FlexoConcept newConcept) {
+			getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldConcept, newConcept);
 		}
 
 		@Override
@@ -258,19 +272,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 				container.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.container = container;
-		}
-
-		@Override
-		public FlexoConceptInstanceType getMatchedType() {
-			if (getFlexoConceptType() != null) {
-				return getFlexoConceptType().getInstanceType();
-			}
-			return matchedType;
-		}
-
-		@Override
-		public void setMatchedType(FlexoConceptInstanceType matchedType) {
-			this.matchedType = matchedType;
 		}
 
 		@Override

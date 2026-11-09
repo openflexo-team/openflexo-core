@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -105,6 +104,7 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Updater;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.undo.CompoundEdit;
@@ -204,8 +204,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String KEY_PROPERTIES_KEY = "keyProperties";
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
-	@PropertyIdentifier(type = String.class)
-	public static final String PARENT_FLEXO_CONCEPTS_LIST_KEY = "parentFlexoConceptsList";
+	@PropertyIdentifier(type = List.class)
+	public static final String PARENT_FLEXO_CONCEPT_TYPES_KEY = "parentFlexoConceptTypes";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARENT_FLEXO_CONCEPTS_KEY = "parentFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
@@ -666,16 +666,43 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public Bindable getRendererContext();
 
-	// Used for serialization, do not use as API
-	@Getter(PARENT_FLEXO_CONCEPTS_LIST_KEY)
-	@XMLAttribute
-	public String _getParentFlexoConceptsList();
+	/**
+	 * The types of the parent concepts ({@link #getParentFlexoConcepts()}), as one value.<br>
+	 * This is the property that carries the parent concepts when a compilation unit is merged with another one (the FML editor merges
+	 * the text it has just parsed with {@code updateWith()}): the parent concepts of the parsed compilation unit belong to it, their types
+	 * are translated into this one ({@link #updateParentFlexoConceptTypes(List)}), and resolved as soon as the concepts exist.
+	 *
+	 * @return a new list of the instance types of the parent concepts
+	 */
+	@Getter(value = PARENT_FLEXO_CONCEPT_TYPES_KEY, ignoreType = true, ignoreForEquality = true)
+	public List<FlexoConceptInstanceType> getParentFlexoConceptTypes();
 
-	// Used for serialization, do not use as API
-	@Setter(PARENT_FLEXO_CONCEPTS_LIST_KEY)
-	public void _setParentFlexoConceptsList(String conceptsList);
+	/**
+	 * Sets the parent concepts from their types: a type not resolved yet is resolved when the parent concepts are read
+	 *
+	 * @param parentTypes
+	 *            types of the parent concepts
+	 */
+	@Setter(PARENT_FLEXO_CONCEPT_TYPES_KEY)
+	public void setParentFlexoConceptTypes(List<FlexoConceptInstanceType> parentTypes);
 
-	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY, ignoreForEquality = true)
+	/**
+	 * Translates the supplied types into the typing space of this concept, then sets the parent concepts from them
+	 *
+	 * @param parentTypes
+	 *            types of the parent concepts, possibly expressed in another typing space
+	 */
+	@Updater(PARENT_FLEXO_CONCEPT_TYPES_KEY)
+	public void updateParentFlexoConceptTypes(List<FlexoConceptInstanceType> parentTypes);
+
+	/**
+	 * The parent concepts. Derived for the merge of compilation units, which goes through {@link #getParentFlexoConceptTypes()}: merging
+	 * this list directly would bring the concepts of the merged compilation unit into this one.
+	 *
+	 * @return the parent concepts
+	 */
+	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY, ignoreForEquality = true,
+			isDerived = true)
 	public List<FlexoConcept> getParentFlexoConcepts();
 
 	@Setter(PARENT_FLEXO_CONCEPTS_KEY)
@@ -1178,9 +1205,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private final FlexoConceptType conceptType = new FlexoConceptType(instanceType);
 
 		private FlexoConceptBindingModel bindingModel;
-
-		@Deprecated
-		private String parentFlexoConceptList;
 
 		/**
 		 * Stores a cache for properties for all end-properties of this {@link FlexoConcept}
@@ -2419,7 +2443,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				pr.finalizeDeserialization();
 			}
-			decodeParentFlexoConceptList(true);
 			super.finalizeDeserialization();
 		}
 
@@ -2540,38 +2563,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 		}
 
-		// Used for serialization, do not use as API
-		@Override
-		@FMLMigration
-		public String _getParentFlexoConceptsList() {
-			if (parentFlexoConceptList == null && getParentFlexoConcepts().size() > 0) {
-				parentFlexoConceptList = computeParentFlexoConceptList();
-			}
-			return parentFlexoConceptList;
-		}
-
-		@FMLMigration
-		private boolean parentFlexoConceptListWasExplicitelySet = false;
-
-		// Used for serialization, do not use as API
-		@Override
-		@FMLMigration
-		public void _setParentFlexoConceptsList(String parentFlexoConceptList) {
-			this.parentFlexoConceptList = parentFlexoConceptList;
-			parentFlexoConceptListWasExplicitelySet = true;
-		}
-
-		private String computeParentFlexoConceptList() {
-
-			StringBuffer sb = new StringBuffer();
-			boolean isFirst = true;
-			for (FlexoConcept parent : getParentFlexoConcepts()) {
-				sb.append((isFirst ? "" : ",") + parent.getURI());
-				isFirst = false;
-			}
-			return sb.toString();
-		}
-
 		@Override
 		public String getParentFlexoConceptsDeclaration() {
 			StringBuffer sb = new StringBuffer();
@@ -2583,60 +2574,87 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return sb.toString();
 		}
 
-		private boolean isDecodingParentFlexoConceptList = false;
-
-		// Testing XML->FML migration
-		@Deprecated
-		@FMLMigration
-		public static boolean PREVENT_PARENT_CONCEPTS_DECODING = false;
-
-		@FMLMigration
-		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
-			if (parentFlexoConceptListWasExplicitelySet && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList
-					&& !PREVENT_PARENT_CONCEPTS_DECODING && parentFlexoConceptList != null) {
-				isDecodingParentFlexoConceptList = true;
-				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
-				List<FlexoConcept> parentConcepts = new ArrayList<>();
-				boolean someConceptsWereNotDecoded = false;
-				while (st.hasMoreTokens()) {
-					String conceptURI = st.nextToken();
-					FlexoConcept concept = getVirtualModelLibrary().getFlexoConcept(conceptURI, loadWhenRequired);
-					if (concept != null) {
-						parentConcepts.add(concept);
-					}
-					else {
-						someConceptsWereNotDecoded = true;
-					}
-				}
-				if (!someConceptsWereNotDecoded) {
-					// OK, all concepts were decoded, fill in parent concepts
-					parentFlexoConcepts.clear();
-					for (FlexoConcept parent : parentConcepts) {
-						try {
-							addToParentFlexoConcepts(parent);
-						} catch (InconsistentFlexoConceptHierarchyException e) {
-							e.printStackTrace();
-						}
-					}
-					parentFlexoConceptList = null;
-				}
-				else {
-					// Some concepts are not decoded yet, we don't do anything
-					System.out.println("Bizarre, on a pas reussi a decoder tous les concepts " + parentFlexoConceptList);
-				}
-				isDecodingParentFlexoConceptList = false;
-				parentFlexoConceptListWasExplicitelySet = false;
-			}
-		}
-
 		private List<FlexoConcept> parentFlexoConcepts = new ArrayList<>();
+
+		// Types of the parent concepts set by setParentFlexoConceptTypes() and not resolved yet
+		private List<FlexoConceptInstanceType> pendingParentTypes;
+		private boolean isResolvingParentTypes = false;
 
 		@Override
 		public List<FlexoConcept> getParentFlexoConcepts() {
-			if (parentFlexoConceptListWasExplicitelySet && getVirtualModelLibrary() != null) {
-				decodeParentFlexoConceptList(!isDeserializing());
+			if (pendingParentTypes != null && !isResolvingParentTypes) {
+				resolvePendingParentTypes();
 			}
 			return parentFlexoConcepts;
+		}
+
+		@Override
+		public List<FlexoConceptInstanceType> getParentFlexoConceptTypes() {
+			if (pendingParentTypes != null) {
+				return new ArrayList<>(pendingParentTypes);
+			}
+			List<FlexoConceptInstanceType> returned = new ArrayList<>();
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				returned.add(parent.getInstanceType());
+			}
+			return returned;
+		}
+
+		@Override
+		public void setParentFlexoConceptTypes(List<FlexoConceptInstanceType> parentTypes) {
+			pendingParentTypes = parentTypes != null ? new ArrayList<>(parentTypes) : new ArrayList<>();
+			resolvePendingParentTypes();
+		}
+
+		@Override
+		public void updateParentFlexoConceptTypes(List<FlexoConceptInstanceType> parentTypes) {
+			if (parentTypes != null && getDeclaringCompilationUnit() != null) {
+				List<FlexoConceptInstanceType> translated = new ArrayList<>();
+				for (FlexoConceptInstanceType parentType : parentTypes) {
+					translated.add(parentType.translateTo(getDeclaringCompilationUnit().getTypingSpace()));
+				}
+				setParentFlexoConceptTypes(translated);
+			}
+			else {
+				setParentFlexoConceptTypes(parentTypes);
+			}
+		}
+
+		/**
+		 * Sets the parent concepts from {@link #pendingParentTypes} when all of them are resolved, otherwise waits for the next read
+		 */
+		private void resolvePendingParentTypes() {
+			isResolvingParentTypes = true;
+			try {
+				List<FlexoConcept> resolved = new ArrayList<>();
+				for (FlexoConceptInstanceType parentType : pendingParentTypes) {
+					if (!parentType.isResolved()) {
+						parentType.resolve();
+					}
+					if (parentType.getFlexoConcept() == null) {
+						// Not resolvable yet (the concept may not be merged yet): wait for the next read
+						return;
+					}
+					resolved.add(parentType.getFlexoConcept());
+				}
+				pendingParentTypes = null;
+				for (FlexoConcept parent : new ArrayList<>(parentFlexoConcepts)) {
+					if (!resolved.contains(parent)) {
+						removeFromParentFlexoConcepts(parent);
+					}
+				}
+				for (FlexoConcept parent : resolved) {
+					if (!parentFlexoConcepts.contains(parent)) {
+						try {
+							addToParentFlexoConcepts(parent);
+						} catch (InconsistentFlexoConceptHierarchyException e) {
+							logger.warning("Cannot set " + parent + " as parent concept of " + this + ": " + e.getMessage());
+						}
+					}
+				}
+			} finally {
+				isResolvingParentTypes = false;
+			}
 		}
 
 		@Override
@@ -2683,7 +2701,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		// Called when the parent concept hierarchy has changed
 		private void notifyParentConceptsHaveChanged() {
-			parentFlexoConceptList = null;
 			accessibleProperties = null;
 			VirtualModel owningVirtualModel = getOwningVirtualModel();
 			if (owningVirtualModel != null) {

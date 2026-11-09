@@ -1,0 +1,49 @@
+import java.util.List;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestUpdateWithReferences.fml")
+public model TestUpdateWithReferences {
+	Alpha myRole;
+	public List<Alpha> all() {
+		return select Alpha from this;
+	}
+	public int sync() {
+		MatchingSet<Alpha> matched = begin match Alpha from this;
+		for (Alpha a : select Alpha from this) {
+			match Alpha in matched from this where (x = a.x) unmatched: new Alpha(a.x);
+		}
+		end match Alpha in matched unmatched: markAlpha();
+		return 0;
+	}
+	listen AlphaEvent from this {
+		log "event";
+	}
+	event AlphaEvent {
+	}
+	event GammaEvent {
+	}
+	public concept Alpha {
+		String x;
+		String y;
+		create(String x) {
+			x = parameters.x;
+		}
+		markAlpha() {
+		}
+		markGamma(String reason) {
+		}
+	}
+	public concept Beta extends Alpha {
+	}
+	public concept Gamma {
+		String x;
+		String y;
+		int z;
+		create(String x) {
+			x = parameters.x;
+		}
+		markAlpha() {
+		}
+		markGamma(String reason) {
+		}
+	}
+}
