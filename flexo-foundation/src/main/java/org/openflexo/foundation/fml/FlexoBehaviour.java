@@ -51,7 +51,7 @@ import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.InvalidNameException;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument.FlexoBehaviourArgumentImpl;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
@@ -97,7 +97,7 @@ import org.openflexo.pamela.validation.ValidationRule;
  * <li>{@code name(...) with TA::Behaviour(...)} declares a technology-specific behaviour</li>
  * <li>any other method {@code [Type] name(...)} declares an {@link ActionScheme}</li>
  * </ul>
- * Its parameters are {@link FlexoBehaviourParameter}s, read in the body as {@code parameters.name}. Its return type is the declared one when
+ * Its parameters are {@link FlexoBehaviourArgument}s, read in the body as {@code parameters.name}. Its return type is the declared one when
  * present ({@link #getDeclaredType()}), the type inferred from the return statements of its body otherwise ({@link #getAnalyzedReturnType()}).
  * <p>
  * Behaviours are inherited and may be overridden: {@link #getMostSpecializedBehaviour(FlexoConcept)} returns the behaviour to be executed
@@ -217,27 +217,27 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@Setter(SKIP_CONFIRMATION_PANEL_KEY)
 	public void setSkipConfirmationPanel(boolean skipConfirmationPanel);
 
-	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
+	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourArgument.FLEXO_BEHAVIOUR_KEY)
 	@Embedded
 	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
-	public List<FlexoBehaviourParameter> getParameters();
+	public List<FlexoBehaviourArgument> getParameters();
 
 	@Setter(PARAMETERS_KEY)
-	public void setParameters(List<FlexoBehaviourParameter> parameters);
+	public void setParameters(List<FlexoBehaviourArgument> parameters);
 
 	@Adder(PARAMETERS_KEY)
 	@PastingPoint
-	public void addToParameters(FlexoBehaviourParameter aParameter);
+	public void addToParameters(FlexoBehaviourArgument aParameter);
 
 	@Remover(PARAMETERS_KEY)
-	public void removeFromParameters(FlexoBehaviourParameter aParameter);
+	public void removeFromParameters(FlexoBehaviourArgument aParameter);
 
 	@Reindexer(PARAMETERS_KEY)
-	public void moveParameterToIndex(FlexoBehaviourParameter aParameter, int index);
+	public void moveParameterToIndex(FlexoBehaviourArgument aParameter, int index);
 
-	@Finder(collection = PARAMETERS_KEY, attribute = FlexoBehaviourParameter.NAME_KEY)
-	public FlexoBehaviourParameter getParameter(String name);
+	@Finder(collection = PARAMETERS_KEY, attribute = FlexoBehaviourArgument.NAME_KEY)
+	public FlexoBehaviourArgument getParameter(String name);
 
 	public FlexoBehaviourType getFlexoBehaviourType();
 
@@ -258,17 +258,17 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public Type[] getParameterTypes();
 
 	@Override
-	public List<FlexoBehaviourParameter> getArguments();
+	public List<FlexoBehaviourArgument> getArguments();
 
 	public String getAvailableParameterName(String baseName);
 
-	public void parameterFirst(FlexoBehaviourParameter p);
+	public void parameterFirst(FlexoBehaviourArgument p);
 
-	public void parameterUp(FlexoBehaviourParameter p);
+	public void parameterUp(FlexoBehaviourArgument p);
 
-	public void parameterDown(FlexoBehaviourParameter p);
+	public void parameterDown(FlexoBehaviourArgument p);
 
-	public void parameterLast(FlexoBehaviourParameter p);
+	public void parameterLast(FlexoBehaviourArgument p);
 
 	@Override
 	public FlexoBehaviourBindingModel getBindingModel();
@@ -317,7 +317,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	public ListMetaData getUIMetaData(boolean ensureExistence);
 
-	public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourParameter parameter, boolean ensureExistence);
+	public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourArgument parameter, boolean ensureExistence);
 
 	/**
 	 * Return the URI of this behaviour: the URI of its concept, followed by {@code .} and its signature (see {@link #getSignature()})
@@ -423,7 +423,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			if (getParameters().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				boolean isFirst = true;
-				for (FlexoBehaviourParameter p : getParameters()) {
+				for (FlexoBehaviourArgument p : getParameters()) {
 					sb.append((isFirst ? "" : ", ") + TypeUtils.simpleRepresentation(p.getType()) + " " + p.getName());
 					isFirst = false;
 				}
@@ -456,10 +456,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourParameter parameter, boolean ensureExistence) {
+		public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourArgument parameter, boolean ensureExistence) {
 			ListMetaData md = getUIMetaData(ensureExistence);
 			if (md != null) {
-				List<FMLMetaData> allMetaData = md.getMultipleMetaData(FlexoBehaviourParameterImpl.AVAILABLE_ANNOTATIONS);
+				List<FMLMetaData> allMetaData = md.getMultipleMetaData(FlexoBehaviourArgumentImpl.AVAILABLE_ANNOTATIONS);
 				for (FMLMetaData metaData : allMetaData) {
 					if (metaData instanceof MultiValuedMetaData) {
 						if (parameter.getName() != null
@@ -498,28 +498,28 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				}*/
 
 		@Override
-		public void setParameters(List<FlexoBehaviourParameter> someParameters) {
+		public void setParameters(List<FlexoBehaviourArgument> someParameters) {
 			String oldSignature = getSignature();
 			performSuperSetter(PARAMETERS_KEY, someParameters);
 			updateSignature(oldSignature);
 		}
 
 		@Override
-		public void addToParameters(FlexoBehaviourParameter parameter) {
+		public void addToParameters(FlexoBehaviourArgument parameter) {
 			String oldSignature = getSignature();
 			performSuperAdder(PARAMETERS_KEY, parameter);
 			updateSignature(oldSignature);
 		}
 
 		@Override
-		public void removeFromParameters(FlexoBehaviourParameter parameter) {
+		public void removeFromParameters(FlexoBehaviourArgument parameter) {
 			String oldSignature = getSignature();
 			performSuperRemover(PARAMETERS_KEY, parameter);
 			updateSignature(oldSignature);
 		}
 
 		@Override
-		public void parameterFirst(FlexoBehaviourParameter p) {
+		public void parameterFirst(FlexoBehaviourArgument p) {
 			String oldSignature = getSignature();
 			getParameters().remove(p);
 			getParameters().add(0, p);
@@ -529,7 +529,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public void parameterUp(FlexoBehaviourParameter p) {
+		public void parameterUp(FlexoBehaviourArgument p) {
 			int index = getParameters().indexOf(p);
 			if (index > 0) {
 				String oldSignature = getSignature();
@@ -542,7 +542,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public void parameterDown(FlexoBehaviourParameter p) {
+		public void parameterDown(FlexoBehaviourArgument p) {
 			int index = getParameters().indexOf(p);
 			if (index > -1) {
 				String oldSignature = getSignature();
@@ -555,7 +555,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public void parameterLast(FlexoBehaviourParameter p) {
+		public void parameterLast(FlexoBehaviourArgument p) {
 			String oldSignature = getSignature();
 			getParameters().remove(p);
 			getParameters().add(p);
@@ -615,7 +615,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public List<FlexoBehaviourParameter> getArguments() {
+		public List<FlexoBehaviourArgument> getArguments() {
 			return getParameters();
 		}
 
@@ -664,7 +664,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		protected String getParameterListAsString(boolean fullyQualified) {
 			StringBuffer returned = new StringBuffer();
 			boolean isFirst = true;
-			for (FlexoBehaviourParameter param : getParameters()) {
+			for (FlexoBehaviourArgument param : getParameters()) {
 				// returned.append((isFirst ? "" : ",") + (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType())
 				// : TypeUtils.simpleRepresentation(param.getType())));
 				returned.append((isFirst ? "" : ",") + param.getName());

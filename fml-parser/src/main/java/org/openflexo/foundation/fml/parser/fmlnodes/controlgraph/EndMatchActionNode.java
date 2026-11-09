@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
@@ -144,7 +144,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 				}
 				if (getModelObject().getFlexoBehaviour() != null && behaviourArgs != null) {
 					int index = 0;
-					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getFlexoBehaviour().getParameters()) {
+					for (FlexoBehaviourArgument flexoBehaviourParameter : getModelObject().getFlexoBehaviour().getParameters()) {
 						ExecuteBehaviourParameter arg = getModelObject().getParameter(flexoBehaviourParameter);
 						if (index < behaviourArgs.size()) {
 							arg.setValue(behaviourArgs.get(index));

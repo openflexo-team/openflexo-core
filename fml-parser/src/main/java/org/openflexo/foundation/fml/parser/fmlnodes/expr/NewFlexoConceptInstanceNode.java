@@ -60,25 +60,25 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstanceNode {
+public class NewFlexoConceptInstanceNode extends AbstractNewFlexoConceptInstanceNode {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(NewFlexoConceptInstanceNode.class.getPackage().getName());
 
 	// private FlexoConceptInstanceType conceptType;
 	// private String creationSchemeName;
 
-	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
+	public NewFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
+	public NewFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+	public NewFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
 		super(bindingPathElement, analyzer, bindable);
 	}
 
@@ -112,7 +112,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 							AddFlexoConceptInstanceParameter argument = (AddFlexoConceptInstanceParameter) ((BehaviourCallArgumentNode) p2ppNode)
 									.getModelObject();
 							if (index < getModelObject().getCreationScheme().getParameters().size()) {
-								FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
+								FlexoBehaviourArgument parameter = getModelObject().getCreationScheme().getParameters().get(index);
 								argument.setParam(parameter);
 								// System.out.println(parameter.getName() + " = " + argument.getValue());
 								if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType(), true)) {

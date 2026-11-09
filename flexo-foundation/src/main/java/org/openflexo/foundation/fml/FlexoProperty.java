@@ -77,7 +77,7 @@ import org.openflexo.toolbox.StringUtils;
  * The kind of property depends on its FML declaration:
  * <ul>
  * <li>a primitive, {@code String} or {@code Date} type ({@code String label;}) declares a {@link PrimitiveRole}, another Java type declares a
- * {@link JavaRole}</li>
+ * {@link FMLVariable}</li>
  * <li>a concept type ({@code Book[0,*] books;}) declares a {@link FlexoConceptInstanceRole}</li>
  * <li>{@code X x with TA::Role(...)} declares a technology-specific {@link FlexoRole}, or a {@link ModelSlot}</li>
  * <li>{@code int bookCount values books.size;} declares an {@link ExpressionProperty}</li>

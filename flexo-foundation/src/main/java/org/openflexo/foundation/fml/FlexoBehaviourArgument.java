@@ -110,10 +110,9 @@ import org.openflexo.toolbox.StringUtils;
  *
  */
 @ModelEntity
-@ImplementationClass(FlexoBehaviourParameter.FlexoBehaviourParameterImpl.class)
+@ImplementationClass(FlexoBehaviourArgument.FlexoBehaviourArgumentImpl.class)
 @XMLElement(xmlTag = "GenericBehaviourParameter")
-@FMLMigration("Rename to FlexoBehaviourArgument")
-public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext, FMLPrettyPrintable {
+public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionArgument, WidgetContext, FMLPrettyPrintable {
 
 	public static enum WidgetType {
 		TEXT_FIELD {
@@ -298,9 +297,9 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public MultiValuedMetaData getParameterMetaData(boolean ensureExistence);
 
-	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
+	public static abstract class FlexoBehaviourArgumentImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourArgument {
 
-		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FlexoBehaviourArgument.class.getPackage().getName());
 
 		private DataBinding<?> defaultValue;
 		private DataBinding<?> container;
@@ -314,7 +313,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			}
 		}
 
-		public FlexoBehaviourParameterImpl() {
+		public FlexoBehaviourArgumentImpl() {
 			super();
 		}
 
@@ -483,7 +482,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public String toString() {
-			return "FlexoBehaviourParameter: " + getName();
+			return "FlexoBehaviourArgument: " + getName();
 		}
 
 		@Override
@@ -796,27 +795,27 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	}
 
 	@DefineValidationRule
-	public static class ArgumentTypeMustBeResolved extends TypeMustBeResolved<FlexoBehaviourParameter> {
+	public static class ArgumentTypeMustBeResolved extends TypeMustBeResolved<FlexoBehaviourArgument> {
 		public ArgumentTypeMustBeResolved() {
-			super("assigned_type_must_be_resolved", FlexoBehaviourParameter.class);
+			super("assigned_type_must_be_resolved", FlexoBehaviourArgument.class);
 		}
 
 		@Override
-		public Type getType(FlexoBehaviourParameter role) {
+		public Type getType(FlexoBehaviourArgument role) {
 			return role.getType();
 		}
 	}
 
 	@DefineValidationRule
-	public static class ArgumentTypeMustBeValid extends ValidationRule<ArgumentTypeMustBeValid, FlexoBehaviourParameter> {
+	public static class ArgumentTypeMustBeValid extends ValidationRule<ArgumentTypeMustBeValid, FlexoBehaviourArgument> {
 
 		public ArgumentTypeMustBeValid() {
-			super(FlexoBehaviourParameter.class, "argument_type_must_be_valid");
+			super(FlexoBehaviourArgument.class, "argument_type_must_be_valid");
 		}
 
 		@Override
-		public ValidationIssue<ArgumentTypeMustBeValid, FlexoBehaviourParameter> applyValidation(
-				FlexoBehaviourParameter behaviourArgument) {
+		public ValidationIssue<ArgumentTypeMustBeValid, FlexoBehaviourArgument> applyValidation(
+				FlexoBehaviourArgument behaviourArgument) {
 			if (behaviourArgument.getType() == null) {
 				return new ValidationError<>(this, behaviourArgument, "argument_type_must_be_declared");
 			}

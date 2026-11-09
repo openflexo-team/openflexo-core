@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
@@ -146,7 +146,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
-				FlexoBehaviourParameter.class));
+				FlexoBehaviourArgument.class));
 		append(staticContents(")"), getRParFragment());
 	
 		append(staticContents(SPACE, "with", SPACE), getWithFragment());

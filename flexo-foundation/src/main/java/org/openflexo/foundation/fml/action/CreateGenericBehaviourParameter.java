@@ -63,8 +63,8 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument.WidgetType;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>
@@ -110,7 +110,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 
 	private String description;
 
-	private FlexoBehaviourParameter newParameter;
+	private FlexoBehaviourArgument newParameter;
 
 	private CreateGenericBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -194,7 +194,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException, InvalidNameException {
-		logger.info("Add FlexoBehaviourParameter, name=" + getParameterName() + " type=" + getParameterType());
+		logger.info("Add FlexoBehaviourArgument, name=" + getParameterName() + " type=" + getParameterType());
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		newParameter = factory.newParameter(getFlexoBehaviour());
@@ -208,7 +208,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 		newParameter.setDescription(getDescription());
 	}
 
-	public FlexoBehaviourParameter getNewParameter() {
+	public FlexoBehaviourArgument getNewParameter() {
 		return newParameter;
 	}
 

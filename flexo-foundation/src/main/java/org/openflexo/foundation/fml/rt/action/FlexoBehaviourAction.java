@@ -50,7 +50,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
@@ -256,7 +256,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		boolean returned = true;
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		// logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
-		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
+		for (final FlexoBehaviourArgument parameter : flexoBehaviour.getParameters()) {
 			Object value = parameterValues.get(parameter.getArgumentName());
 			if (value == null) {
 				value = parameter.getDefaultValue(this);
@@ -286,7 +286,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	public boolean areRequiredParametersSetAndValid() {
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
-		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
+		for (final FlexoBehaviourArgument parameter : flexoBehaviour.getParameters()) {
 			if (!parameter.isValid(this, parameterValues.get(parameter.getName()))) {
 				return false;
 			}
@@ -336,7 +336,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		variables.remove(variableName);
 	}
 
-	public Object getParameterValue(FlexoBehaviourParameter parameter) {
+	public Object getParameterValue(FlexoBehaviourArgument parameter) {
 		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
 				+ parameterValues.get(parameter));*/
 		/*if (parameter instanceof URIParameter) {
@@ -348,10 +348,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return parameterValues.get(parameter.getArgumentName());
 	}
 
-	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
+	public void setParameterValue(FlexoBehaviourArgument parameter, Object value) {
 		// System.out.println("setParameterValue " + value + " for parameter " + parameter.getName());
 		parameterValues.put(parameter.getArgumentName(), value);
-		/*for (FlexoBehaviourParameter p : getEditionScheme().getParameters()) {
+		/*for (FlexoBehaviourArgument p : getEditionScheme().getParameters()) {
 			if (p instanceof URIParameter) {
 				// System.out.println("Hop, je recalcule l'uri, ici");
 			}
@@ -666,7 +666,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			}
 
 			Object returned = super.put(name, value);
-			/*for (FlexoBehaviourParameter p : parameter.getFlexoBehaviour().getParameters()) {
+			/*for (FlexoBehaviourArgument p : parameter.getFlexoBehaviour().getParameters()) {
 				if (p != parameter && p instanceof URIParameter && ((URIParameter) p).getModelSlot() instanceof TypeAwareModelSlot) {
 					URIParameter uriParam = (URIParameter) p;
 					TypeAwareModelSlot modelSlot = uriParam.getModelSlot();

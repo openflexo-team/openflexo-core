@@ -60,7 +60,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddFlexoConceptInstanceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NewFlexoConceptInstanceNode;
 import org.openflexo.foundation.test.parser.FMLParserTestCase;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -188,7 +188,7 @@ public class TestAddFlexoConceptInstance extends FMLParserTestCase {
 		BindingPath bv = (BindingPath) expression.getExpression();
 		assertTrue(bv.getBindingPath().get(0) instanceof CreationSchemePathElement);
 
-		AddFlexoConceptInstanceNode creationSchemePathNode = (AddFlexoConceptInstanceNode) (P2PPNode) rootNode
+		NewFlexoConceptInstanceNode creationSchemePathNode = (NewFlexoConceptInstanceNode) (P2PPNode) rootNode
 				.getObjectNode(bv.getBindingPath().get(0));
 		assertNotNull(creationSchemePathNode);
 		assertEquals("(14:13)-(14:41)", creationSchemePathNode.getLastParsedFragment().toString());

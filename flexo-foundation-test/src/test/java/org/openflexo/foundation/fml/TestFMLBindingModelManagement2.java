@@ -303,7 +303,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		createStringParameter.setParameterName("aString");
 		createStringParameter.setParameterType(String.class);
 		createStringParameter.doAction();
-		FlexoBehaviourParameter param1 = createStringParameter.getNewParameter();
+		FlexoBehaviourArgument param1 = createStringParameter.getNewParameter();
 		assertNotNull(param1);
 		assertTrue(actionScheme.getParameters().contains(param1));
 
@@ -312,7 +312,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		createBooleanParameter.setParameterName("aBoolean");
 		createBooleanParameter.setParameterType(Boolean.class);
 		createBooleanParameter.doAction();
-		FlexoBehaviourParameter param2 = createBooleanParameter.getNewParameter();
+		FlexoBehaviourArgument param2 = createBooleanParameter.getNewParameter();
 		assertNotNull(param2);
 		assertTrue(actionScheme.getParameters().contains(param2));
 

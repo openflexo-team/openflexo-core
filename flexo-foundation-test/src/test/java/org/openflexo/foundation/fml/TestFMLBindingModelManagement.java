@@ -828,7 +828,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createParameter.setParameterName("aFlag");
 		createParameter.setParameterType(Boolean.class);
 		createParameter.doAction();
-		FlexoBehaviourParameter param = createParameter.getNewParameter();
+		FlexoBehaviourArgument param = createParameter.getNewParameter();
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 
@@ -1071,7 +1071,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createStringParameter.setParameterName("aString");
 		createStringParameter.setParameterType(String.class);
 		createStringParameter.doAction();
-		FlexoBehaviourParameter param1 = createStringParameter.getNewParameter();
+		FlexoBehaviourArgument param1 = createStringParameter.getNewParameter();
 		assertNotNull(param1);
 		assertTrue(actionScheme.getParameters().contains(param1));
 
@@ -1080,7 +1080,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createBooleanParameter.setParameterName("aBoolean");
 		createBooleanParameter.setParameterType(Boolean.class);
 		createBooleanParameter.doAction();
-		FlexoBehaviourParameter param2 = createBooleanParameter.getNewParameter();
+		FlexoBehaviourArgument param2 = createBooleanParameter.getNewParameter();
 		assertNotNull(param2);
 		assertTrue(actionScheme.getParameters().contains(param2));
 
@@ -1156,7 +1156,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createStringParameter.setParameterName("aString");
 		createStringParameter.setParameterType(String.class);
 		createStringParameter.doAction();
-		FlexoBehaviourParameter param1 = createStringParameter.getNewParameter();
+		FlexoBehaviourArgument param1 = createStringParameter.getNewParameter();
 		assertNotNull(param1);
 		assertTrue(actionScheme.getParameters().contains(param1));
 
@@ -1165,7 +1165,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createBooleanParameter.setParameterName("aBoolean");
 		createBooleanParameter.setParameterType(Boolean.class);
 		createBooleanParameter.doAction();
-		FlexoBehaviourParameter param2 = createBooleanParameter.getNewParameter();
+		FlexoBehaviourArgument param2 = createBooleanParameter.getNewParameter();
 		assertNotNull(param2);
 		assertTrue(actionScheme.getParameters().contains(param2));
 
@@ -1298,7 +1298,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createStringParameter.setParameterName("aString");
 		createStringParameter.setParameterType(String.class);
 		createStringParameter.doAction();
-		FlexoBehaviourParameter param1 = createStringParameter.getNewParameter();
+		FlexoBehaviourArgument param1 = createStringParameter.getNewParameter();
 		assertNotNull(param1);
 		assertTrue(actionScheme.getParameters().contains(param1));
 
@@ -1307,7 +1307,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createBooleanParameter.setParameterName("aBoolean");
 		createBooleanParameter.setParameterType(Boolean.class);
 		createBooleanParameter.doAction();
-		FlexoBehaviourParameter param2 = createBooleanParameter.getNewParameter();
+		FlexoBehaviourArgument param2 = createBooleanParameter.getNewParameter();
 		assertNotNull(param2);
 		assertTrue(actionScheme.getParameters().contains(param2));
 
@@ -1367,7 +1367,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createStringParameter2.setParameterName("aStringParameter");
 		createStringParameter2.setParameterType(String.class);
 		createStringParameter2.doAction();
-		FlexoBehaviourParameter creationSchemeParam1 = createStringParameter2.getNewParameter();
+		FlexoBehaviourArgument creationSchemeParam1 = createStringParameter2.getNewParameter();
 		assertNotNull(creationSchemeParam1);
 		assertTrue(creationScheme.getParameters().contains(creationSchemeParam1));
 
@@ -1376,7 +1376,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createBooleanParameter2.setParameterName("aBooleanParameter");
 		createBooleanParameter2.setParameterType(Boolean.class);
 		createBooleanParameter2.doAction();
-		FlexoBehaviourParameter creationSchemeParam2 = createBooleanParameter2.getNewParameter();
+		FlexoBehaviourArgument creationSchemeParam2 = createBooleanParameter2.getNewParameter();
 		assertNotNull(creationSchemeParam2);
 		assertTrue(creationScheme.getParameters().contains(creationSchemeParam2));
 
@@ -1485,7 +1485,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createBooleanParameter3.setParameterName("anOtherBooleanParameter");
 		createBooleanParameter3.setParameterType(Boolean.class);
 		createBooleanParameter3.doAction();
-		FlexoBehaviourParameter creationSchemeParam3 = createBooleanParameter3.getNewParameter();
+		FlexoBehaviourArgument creationSchemeParam3 = createBooleanParameter3.getNewParameter();
 		assertNotNull(creationSchemeParam3);
 		assertTrue(creationScheme.getParameters().contains(creationSchemeParam3));
 		assertEquals(3, matchFlexoConceptInstance.getNewInstanceArguments().size());
@@ -1766,7 +1766,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(fci, null, editor);
 		assertNotNull(actionSchemeCreationAction);
-		FlexoBehaviourParameter p = actionScheme.getParameter("aFlag");
+		FlexoBehaviourArgument p = actionScheme.getParameter("aFlag");
 		actionSchemeCreationAction.setParameterValue(p, false);
 		actionSchemeCreationAction.doAction();
 

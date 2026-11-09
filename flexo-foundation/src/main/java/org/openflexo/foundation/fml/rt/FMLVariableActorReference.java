@@ -41,8 +41,7 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLMigration;
-import org.openflexo.foundation.fml.JavaRole;
+import org.openflexo.foundation.fml.FMLVariable;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -55,17 +54,16 @@ import org.openflexo.pamela.exceptions.InvalidDataException;
 
 /**
  * Implements {@link ActorReference} for Java objects which are not {@link org.openflexo.foundation.FlexoObject}s, as values of a
- * {@link org.openflexo.foundation.fml.JavaRole}.<br>
+ * {@link org.openflexo.foundation.fml.FMLVariable}.<br>
  * 
  * @author sylvain
  * 
  * @param <T>
  */
-@FMLMigration("TODO: rename to FMLVariableActorRefence")
 @ModelEntity
-@ImplementationClass(JavaActorReference.JavaActorReferenceImpl.class)
-@XMLElement
-public interface JavaActorReference<T> extends ActorReference<T> {
+@ImplementationClass(FMLVariableActorReference.FMLVariableActorReferenceImpl.class)
+@XMLElement(deprecatedXMLTags = "JavaActorReference")
+public interface FMLVariableActorReference<T> extends ActorReference<T> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VALUE_AS_STRING_KEY = "valueAsString";
@@ -78,17 +76,17 @@ public interface JavaActorReference<T> extends ActorReference<T> {
 	public void setValueAsString(String value);
 
 	@Override
-	public JavaRole<T> getFlexoRole();
+	public FMLVariable<T> getFlexoRole();
 
-	public static abstract class JavaActorReferenceImpl<T> extends ActorReferenceImpl<T> implements JavaActorReference<T> {
+	public static abstract class FMLVariableActorReferenceImpl<T> extends ActorReferenceImpl<T> implements FMLVariableActorReference<T> {
 
-		private static final Logger logger = FlexoLogger.getLogger(JavaActorReference.class.getPackage().toString());
+		private static final Logger logger = FlexoLogger.getLogger(FMLVariableActorReference.class.getPackage().toString());
 
 		private T modellingElement = null;
 
 		@Override
-		public JavaRole<T> getFlexoRole() {
-			return (JavaRole<T>) super.getFlexoRole();
+		public FMLVariable<T> getFlexoRole() {
+			return (FMLVariable<T>) super.getFlexoRole();
 		}
 
 		@Override
@@ -132,7 +130,7 @@ public interface JavaActorReference<T> extends ActorReference<T> {
 
 		@Override
 		public String toString() {
-			return "JavaActorReference [" + getRoleName() + "] " + Integer.toHexString(hashCode()) + " encodes " + getModellingElement()
+			return "FMLVariableActorReference [" + getRoleName() + "] " + Integer.toHexString(hashCode()) + " encodes " + getModellingElement()
 					+ "[type: " + (getFlexoRole() != null ? getFlexoRole().getType() : "null") + "]";
 		}
 

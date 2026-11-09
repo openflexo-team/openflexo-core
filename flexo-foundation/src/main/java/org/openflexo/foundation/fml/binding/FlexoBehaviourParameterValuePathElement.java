@@ -51,7 +51,7 @@ import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction.ParameterValues;
 
 @Deprecated
@@ -60,10 +60,10 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterValuePathElement.class.getPackage().getName());
 
-	private final FlexoBehaviourParameter parameter;
+	private final FlexoBehaviourArgument parameter;
 	private Type lastKnownType = null;
 
-	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter, Bindable bindable) {
+	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourArgument parameter, Bindable bindable) {
 		super(parent, parameter != null ? parameter.getName() : null, parameter != null ? parameter.getType() : null, bindable);
 		this.parameter = parameter;
 		lastKnownType = parameter != null ? parameter.getType() : null;
@@ -85,7 +85,7 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 		super.desactivate();
 	}
 
-	public FlexoBehaviourParameter getParameter() {
+	public FlexoBehaviourArgument getParameter() {
 		return parameter;
 	}
 
@@ -100,7 +100,7 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getParameter()) {
-			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
+			if (evt.getPropertyName().equals(FlexoBehaviourArgument.NAME_KEY)) {
 				System.out.println("Notify parameter name changing for " + getParameter() + " new=" + getParameter().getName());
 				if (getParameter() != null && getParameter().getBindingModel() != null
 						&& getParameter().getBindingModel().getPropertyChangeSupport() != null) {

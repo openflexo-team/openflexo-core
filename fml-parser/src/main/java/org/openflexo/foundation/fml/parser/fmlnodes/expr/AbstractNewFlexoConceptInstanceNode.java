@@ -61,14 +61,14 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBindingPathElementNode<Node, CreationSchemePathElement<?>> {
+public abstract class AbstractNewFlexoConceptInstanceNode extends AbstractCallBindingPathElementNode<Node, CreationSchemePathElement<?>> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstanceNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AbstractNewFlexoConceptInstanceNode.class.getPackage().getName());
 
 	private IBindingPathElement parent;
 
-	public AbstractAddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
+	public AbstractNewFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyzer, bindable);
 		this.parent = parent;
@@ -78,7 +78,7 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
+	public AbstractNewFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyzer, bindable);
 		this.parent = parent;
@@ -88,7 +88,7 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer,
+	public AbstractNewFlexoConceptInstanceNode(CreationSchemePathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer,
 			Bindable bindable) {
 		super(bindingPathElement, analyzer, bindable);
 	}

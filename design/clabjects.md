@@ -253,7 +253,7 @@ Requirements found on this real file:
 - **To measure**: parse plus semantic analysis versus direct PAMELA XML, on a VMI with thousands of instances.
 - **Migration**: a converter from `.fml.rt.xml` to text, on the model of the `.fml.xml` → FML converter. That converter
   only runs in file-based resource centers, not in jar ones.
-- **Open**: serializing `JavaActorReference` values.
+- **Open**: serializing `FMLVariableActorReference` values.
 
 ## 8. Hard points
 

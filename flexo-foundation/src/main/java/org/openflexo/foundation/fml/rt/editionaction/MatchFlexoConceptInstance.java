@@ -54,7 +54,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -167,11 +167,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	@Setter(NEW_INSTANCE_KEY)
 	public void setNewInstance(DataBinding<FlexoConceptInstance> newInstance);
 
-	public List<FlexoBehaviourParameter> getNewInstanceArguments();
+	public List<FlexoBehaviourArgument> getNewInstanceArguments();
 
-	public DataBinding<?> getNewInstanceArgumentValue(FlexoBehaviourParameter argument);
+	public DataBinding<?> getNewInstanceArgumentValue(FlexoBehaviourArgument argument);
 
-	public void setNewInstanceArgumentValue(FlexoBehaviourParameter argument, DataBinding<?> value);
+	public void setNewInstanceArgumentValue(FlexoBehaviourArgument argument, DataBinding<?> value);
 
 	@Getter(value = MATCHING_CRITERIAS_KEY, cardinality = Cardinality.LIST, inverse = MatchingCriteria.ACTION_KEY)
 	@XMLElement
@@ -487,16 +487,16 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 
 		@Override
-		public List<FlexoBehaviourParameter> getNewInstanceArguments() {
+		public List<FlexoBehaviourArgument> getNewInstanceArguments() {
 			CreationSchemePathElement<CreationScheme> cspe = getCreationSchemePathElement();
 			if (cspe != null) {
-				return (List<FlexoBehaviourParameter>) cspe.getFunctionArguments();
+				return (List<FlexoBehaviourArgument>) cspe.getFunctionArguments();
 			}
 			return null;
 		}
 
 		@Override
-		public DataBinding<?> getNewInstanceArgumentValue(FlexoBehaviourParameter argument) {
+		public DataBinding<?> getNewInstanceArgumentValue(FlexoBehaviourArgument argument) {
 			CreationSchemePathElement<CreationScheme> cspe = getCreationSchemePathElement();
 			if (cspe != null) {
 				return cspe.getArgumentValue(argument);
@@ -505,7 +505,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 
 		@Override
-		public void setNewInstanceArgumentValue(FlexoBehaviourParameter argument, DataBinding<?> value) {
+		public void setNewInstanceArgumentValue(FlexoBehaviourArgument argument, DataBinding<?> value) {
 			CreationSchemePathElement<CreationScheme> cspe = getCreationSchemePathElement();
 			if (cspe != null) {
 				value.setOwner(this);

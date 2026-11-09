@@ -55,7 +55,7 @@ import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -202,7 +202,7 @@ public class GenerateUnimplementedPropertiesAndBehaviours
 					this);
 			createFlexoBehaviour.setFlexoBehaviourName(behaviour.getName());
 			createFlexoBehaviour.setFlexoBehaviourClass((Class<? extends FlexoBehaviour>) behaviour.getImplementedInterface());
-			for (FlexoBehaviourParameter parameter : behaviour.getParameters()) {
+			for (FlexoBehaviourArgument parameter : behaviour.getParameters()) {
 				BehaviourParameterEntry newEntry = createFlexoBehaviour.newParameterEntry();
 				newEntry.setParameterName(parameter.getName());
 				newEntry.setParameterType(parameter.getType());

@@ -70,7 +70,7 @@ import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FMLSimplePropertyValue;
 import org.openflexo.foundation.fml.FMLTypePropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEnum;
@@ -79,7 +79,7 @@ import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
-import org.openflexo.foundation.fml.JavaRole;
+import org.openflexo.foundation.fml.FMLVariable;
 import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
@@ -133,7 +133,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEventNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLVariableNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ListMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataKeyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ModelSlotPropertyNode;
@@ -454,8 +454,8 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				return (P2PPNode<?, C>) new PrimitiveRoleNode((PrimitiveRole) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
-			if (object instanceof JavaRole) {
-				return (P2PPNode<?, C>) new JavaRoleNode((JavaRole) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			if (object instanceof FMLVariable) {
+				return (P2PPNode<?, C>) new FMLVariableNode((FMLVariable) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof AbstractProperty) {
 				return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object,
@@ -494,8 +494,8 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			if (object instanceof FlexoBehaviour) {
 				return new FMLBehaviourNode((FlexoBehaviour) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
-			if (object instanceof FlexoBehaviourParameter) {
-				return (P2PPNode<?, C>) new BehaviourParameterNode((FlexoBehaviourParameter) object,
+			if (object instanceof FlexoBehaviourArgument) {
+				return (P2PPNode<?, C>) new BehaviourParameterNode((FlexoBehaviourArgument) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof EmptyControlGraph) {

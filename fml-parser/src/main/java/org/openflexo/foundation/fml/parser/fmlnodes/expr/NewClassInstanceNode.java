@@ -60,14 +60,14 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASimpleNewInstance, JavaNewInstanceMethodPathElement> {
+public class NewClassInstanceNode extends AbstractCallBindingPathElementNode<ASimpleNewInstance, JavaNewInstanceMethodPathElement> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AddClassInstanceNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(NewClassInstanceNode.class.getPackage().getName());
 
 	private IBindingPathElement parent;
 
-	public AddClassInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent, Bindable bindable) {
+	public NewClassInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyzer, bindable);
 		this.parent = parent;
 		setReadyToBuildModelObject(true);
@@ -76,7 +76,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AddClassInstanceNode(JavaNewInstanceMethodPathElement bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+	public NewClassInstanceNode(JavaNewInstanceMethodPathElement bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
 		super(bindingPathElement, analyzer, bindable);
 	}
 

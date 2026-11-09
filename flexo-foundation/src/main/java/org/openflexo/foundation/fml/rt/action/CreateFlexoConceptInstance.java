@@ -52,7 +52,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -254,7 +254,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 
 	}
 
-	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
+	public void setParameterValue(FlexoBehaviourArgument parameter, Object value) {
 		if (creationSchemeAction != null) {
 			creationSchemeAction.setParameterValue(parameter, value);
 		}

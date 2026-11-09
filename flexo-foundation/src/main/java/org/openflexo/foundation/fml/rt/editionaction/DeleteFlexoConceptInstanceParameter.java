@@ -47,7 +47,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.binding.DeleteFlexoConceptInstanceParameterBindingModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -82,10 +82,10 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	 * @return the reference to the parameter
 	 */
 	@Getter(value = PARAM_REFERENCE_KEY, ignoreType = true)
-	public FMLNamedReference<FlexoBehaviourParameter> getParamReference();
+	public FMLNamedReference<FlexoBehaviourArgument> getParamReference();
 
 	@Setter(PARAM_REFERENCE_KEY)
-	public void setParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference);
+	public void setParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference);
 
 	/**
 	 * Keeps the name only of a reference coming from another compilation unit (merge with {@code updateWith()})
@@ -94,7 +94,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	 *            the reference held by the argument of the other compilation unit
 	 */
 	@Updater(PARAM_REFERENCE_KEY)
-	public void updateParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference);
+	public void updateParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference);
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -110,10 +110,10 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	public void setAction(DeleteFlexoConceptInstance action);
 
 	// TODO: PAMELA
-	public FlexoBehaviourParameter getParam();
+	public FlexoBehaviourArgument getParam();
 
 	// TODO: PAMELA
-	public void setParam(FlexoBehaviourParameter param);
+	public void setParam(FlexoBehaviourArgument param);
 
 	public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action);
 
@@ -127,7 +127,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 		// DeleteFlexoConceptInstance action;
 
-		private FMLNamedReference<FlexoBehaviourParameter> paramReference;
+		private FMLNamedReference<FlexoBehaviourArgument> paramReference;
 		private DataBinding<Object> value;
 
 		private DeleteFlexoConceptInstanceParameterBindingModel bindingModel;
@@ -137,12 +137,12 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			super();
 		}
 
-		public DeleteFlexoConceptInstanceParameterImpl(FlexoBehaviourParameter param) {
+		public DeleteFlexoConceptInstanceParameterImpl(FlexoBehaviourArgument param) {
 			super();
 			this.paramReference = FMLNamedReference.to(param);
 		}
 
-		public FlexoBehaviourParameter getParameter() {
+		public FlexoBehaviourArgument getParameter() {
 			return getParam();
 		}
 
@@ -227,24 +227,24 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public FMLNamedReference<FlexoBehaviourParameter> getParamReference() {
+		public FMLNamedReference<FlexoBehaviourArgument> getParamReference() {
 			return paramReference;
 		}
 
 		@Override
-		public void setParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference) {
-			FMLNamedReference<FlexoBehaviourParameter> oldValue = this.paramReference;
+		public void setParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference) {
+			FMLNamedReference<FlexoBehaviourArgument> oldValue = this.paramReference;
 			this.paramReference = paramReference;
 			getPropertyChangeSupport().firePropertyChange(PARAM_REFERENCE_KEY, oldValue, paramReference);
 		}
 
 		@Override
-		public void updateParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference) {
+		public void updateParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference) {
 			setParamReference(paramReference != null ? paramReference.unresolved() : null);
 		}
 
 		@Override
-		public FlexoBehaviourParameter getParam() {
+		public FlexoBehaviourArgument getParam() {
 			if (paramReference == null) {
 				return null;
 			}
@@ -253,7 +253,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public void setParam(FlexoBehaviourParameter param) {
+		public void setParam(FlexoBehaviourArgument param) {
 			setParamReference(FMLNamedReference.to(param));
 		}
 

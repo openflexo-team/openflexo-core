@@ -68,7 +68,7 @@ import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.FMLPropertyValue;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -256,7 +256,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getSource() == getCreationScheme()) {
-				if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
+				if (evt.getPropertyName().equals(FlexoBehaviourArgument.NAME_KEY)) {
 					// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
 					// getFlexoBehaviour().getName());
 					clearSerializationRepresentation();
@@ -786,7 +786,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 							// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
 							Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
 							// System.out.println("values:" + v);
-							createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
+							createVMIAction.setParameterValue((FlexoBehaviourArgument) functionArgument, v);
 						}
 					}
 
@@ -864,7 +864,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					evaluationContext);
 
 			if (getCreationScheme() != null) {
-				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
+				for (FlexoBehaviourArgument p : getCreationScheme().getParameters()) {
 					DataBinding<?> param = getArgumentValue(p);
 					Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
 					// System.out.println("For parameter " + param + " value is " + paramValue);

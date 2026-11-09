@@ -377,7 +377,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		createParameter.setParameterName("aFlag");
 		createParameter.setParameterType(Boolean.class);
 		createParameter.doAction();
-		FlexoBehaviourParameter param = createParameter.getNewParameter();
+		FlexoBehaviourArgument param = createParameter.getNewParameter();
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 
@@ -442,7 +442,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		createParameter.setParameterName("anotherFlag");
 		createParameter.setParameterType(Boolean.class);
 		createParameter.doAction();
-		FlexoBehaviourParameter param = createParameter.getNewParameter();
+		FlexoBehaviourArgument param = createParameter.getNewParameter();
 		assertNotNull(param);
 		assertTrue(actionScheme2.getParameters().contains(param));
 

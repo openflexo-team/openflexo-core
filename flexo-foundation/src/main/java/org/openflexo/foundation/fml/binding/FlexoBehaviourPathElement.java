@@ -68,7 +68,7 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -255,7 +255,7 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 					}
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
-					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
+					for (FlexoBehaviourArgument p : getFlexoBehaviour().getParameters()) {
 						DataBinding<?> param = getArgumentValue(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);
@@ -286,7 +286,7 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
-					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
+					for (FlexoBehaviourArgument p : getFlexoBehaviour().getParameters()) {
 						DataBinding<?> param = getArgumentValue(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);

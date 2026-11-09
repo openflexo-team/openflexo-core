@@ -270,7 +270,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
 		private List<Class<? extends TechnologySpecificAction<?, ?, ?>>> availableEditionActionTypes;
 		private List<Class<? extends FetchRequest<?, ?, ?>>> availableFetchRequestActionTypes;
-		private List<Class<? extends FlexoBehaviourParameter>> availableFlexoBehaviourParameterTypes;*/
+		private List<Class<? extends FlexoBehaviourArgument>> availableFlexoBehaviourParameterTypes;*/
 
 		@Override
 		public ModelSlot<RD, R> getModelSlot() {

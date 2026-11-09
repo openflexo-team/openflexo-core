@@ -328,6 +328,15 @@ the old inspector model; list the alive ones (below) for a decision item by item
 | fml-parser `getCompilationUnitAnalyzer` | 79 uses | the analyzer of the unit being parsed |
 | flexo-ontology `isNamedClass` / `isRootConcept`, `AddIndividual` URI | ontology TAs | with the ontology rework |
 
+**Phase 5 renames (2026-11-09).** The renames the `@FMLMigration` markers asked for, markers removed:
+`FlexoBehaviourParameter` → `FlexoBehaviourArgument` (core, ui, and every TA using it; its inspector is now
+`Inspectors/FML/FlexoBehaviourArgument/`), `JavaRole` → `FMLVariable` (its `@FML` keyword too; nothing in a `.fml` names it, a variable
+is written `Type name;`), `JavaActorReference` → `FMLVariableActorReference` (still `.fml.rt` XML: `JavaActorReference` is kept as a
+deprecated XML tag so older instances load), and the fml-parser nodes `Add{FlexoConcept,VirtualModel,Class}InstanceNode` →
+`New…InstanceNode`. Kept as they are: the names derived from the parameters collection (`FlexoBehaviourParametersType`,
+`FlexoBehaviourParameter*PathElement`, `ConfigureFlexoBehaviourParameters`, `createFlexoBehaviourParameter`…), the XML tag
+`GenericBehaviourParameter`, and `FMLDataBindingRole`'s `@FML("JavaRole")`.
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.
 

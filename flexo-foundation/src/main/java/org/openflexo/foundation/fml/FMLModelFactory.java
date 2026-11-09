@@ -406,8 +406,8 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(PrimitiveRole.class);
 	}
 
-	public JavaRole<?> newJavaRole() {
-		return newInstance(JavaRole.class);
+	public FMLVariable<?> newFMLVariable() {
+		return newInstance(FMLVariable.class);
 	}
 
 	public ExpressionProperty<?> newExpressionProperty() {
@@ -443,13 +443,13 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(EmptyControlGraph.class);
 	}
 
-	public AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
+	public AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter(FlexoBehaviourArgument p) {
 		AddFlexoConceptInstanceParameter returned = newInstance(AddFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
 	}
 
-	public DeleteFlexoConceptInstanceParameter newDeleteFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
+	public DeleteFlexoConceptInstanceParameter newDeleteFlexoConceptInstanceParameter(FlexoBehaviourArgument p) {
 		DeleteFlexoConceptInstanceParameter returned = newInstance(DeleteFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
@@ -473,8 +473,8 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return returned;
 	}
 
-	public FlexoBehaviourParameter newParameter(FlexoBehaviour behaviour) {
-		FlexoBehaviourParameter returned = newInstance(FlexoBehaviourParameter.class);
+	public FlexoBehaviourArgument newParameter(FlexoBehaviour behaviour) {
+		FlexoBehaviourArgument returned = newInstance(FlexoBehaviourArgument.class);
 		returned.initializeDeserialization(this);
 		if (behaviour != null) {
 			behaviour.addToParameters(returned);
@@ -490,13 +490,13 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(MatchCondition.class);
 	}
 
-	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
+	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(FlexoBehaviourArgument p) {
 		CreateFlexoConceptInstanceParameter returned = newInstance(CreateFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
 	}
 
-	public ExecuteBehaviourParameter newExecuteBehaviourParameter(FlexoBehaviourParameter p) {
+	public ExecuteBehaviourParameter newExecuteBehaviourParameter(FlexoBehaviourArgument p) {
 		ExecuteBehaviourParameter returned = newInstance(ExecuteBehaviourParameter.class);
 		returned.setParam(p);
 		return returned;

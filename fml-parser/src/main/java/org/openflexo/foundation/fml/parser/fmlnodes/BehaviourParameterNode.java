@@ -46,7 +46,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -71,7 +71,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 // @formatter:on
 
-public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, FlexoBehaviourParameter, FMLCompilationUnitSemanticsAnalyzer> {
+public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, FlexoBehaviourArgument, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BehaviourParameterNode.class.getPackage().getName());
@@ -80,7 +80,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		super(astNode, analyzer);
 	}
 
-	public BehaviourParameterNode(FlexoBehaviourParameter modelObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public BehaviourParameterNode(FlexoBehaviourArgument modelObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(modelObject, analyzer);
 	}
 
@@ -95,8 +95,8 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public FlexoBehaviourParameter buildModelObjectFromAST(PFormalArgument astNode) {
-		FlexoBehaviourParameter returned = getFactory().newParameter(null);
+	public FlexoBehaviourArgument buildModelObjectFromAST(PFormalArgument astNode) {
+		FlexoBehaviourArgument returned = getFactory().newParameter(null);
 
 		if (astNode instanceof APrimitiveFormalArgument) {
 			Type type = TypeFactory.makeType(((APrimitiveFormalArgument) astNode).getPrimitiveType(), getSemanticsAnalyzer().getTypingSpace());
@@ -128,7 +128,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		return returned;
 	}
 
-	private void handleDefaultArgumentValue(FlexoBehaviourParameter param, PDefaultArgumentValue anArgValue) {
+	private void handleDefaultArgumentValue(FlexoBehaviourArgument param, PDefaultArgumentValue anArgValue) {
 		if (anArgValue instanceof ADefaultArgumentValue) {
 			ADefaultArgumentValue argValue = (ADefaultArgumentValue) anArgValue;
 			DataBinding<?> expression = ExpressionFactory.makeDataBinding(argValue.getExpression(), param, BindingDefinitionType.GET,

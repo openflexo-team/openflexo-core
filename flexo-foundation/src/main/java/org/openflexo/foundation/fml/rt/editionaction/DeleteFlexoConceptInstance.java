@@ -50,7 +50,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -223,7 +223,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			return (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
 		}
 
-		public DeleteFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
+		public DeleteFlexoConceptInstanceParameter getParameter(FlexoBehaviourArgument p) {
 			List<DeleteFlexoConceptInstanceParameter> pList = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(
 					PARAMETERS_KEY);
 			for (DeleteFlexoConceptInstanceParameter deleteEPParam : pList) {
@@ -239,7 +239,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				List<DeleteFlexoConceptInstanceParameter> parametersToRemove = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(
 						PARAMETERS_KEY);
 				if (getDeletionScheme() != null) {
-					for (FlexoBehaviourParameter p : getDeletionScheme().getParameters()) {
+					for (FlexoBehaviourArgument p : getDeletionScheme().getParameters()) {
 						DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
 						if (existingParam != null) {
 							parametersToRemove.remove(existingParam);
@@ -283,7 +283,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 
 						for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
-							FlexoBehaviourParameter param = p.getParam();
+							FlexoBehaviourArgument param = p.getParam();
 							Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 							logger.info("For parameter " + param + " value is " + value);
 							if (value != null) {
@@ -374,7 +374,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance<?>>> issues = new Vector<>();
 				for (DeleteFlexoConceptInstanceParameter p : action.getParameters()) {
 
-					FlexoBehaviourParameter param = p.getParam();
+					FlexoBehaviourArgument param = p.getParam();
 					if (param.getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
 							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_defined: " + param.getName()));

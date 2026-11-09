@@ -39,7 +39,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument.WidgetType;
 
 /**
  * Widget Context for an object allowing to construct a widget to edit its value.

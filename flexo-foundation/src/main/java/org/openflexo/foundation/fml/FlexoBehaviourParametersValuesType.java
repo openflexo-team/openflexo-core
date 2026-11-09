@@ -45,7 +45,7 @@ import org.openflexo.connie.type.CustomType;
 
 /**
  * Represent the type of the list of all parameters of an FlexoBehaviour (run-time). Internal representation is given by an
- * Hashtable<FlexoBehaviourParameter,Object)
+ * Hashtable<FlexoBehaviourArgument,Object)
  * 
  * @author sylvain
  * 

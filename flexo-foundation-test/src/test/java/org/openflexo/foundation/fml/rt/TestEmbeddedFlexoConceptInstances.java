@@ -53,7 +53,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -279,7 +279,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(vmi2, null, editor);
 		assertNotNull(actionSchemeCreationAction);
-		FlexoBehaviourParameter p = actionScheme.getParameter("instanceName");
+		FlexoBehaviourArgument p = actionScheme.getParameter("instanceName");
 		actionSchemeCreationAction.setParameterValue(p, "TestInstance");
 		actionSchemeCreationAction.doAction();
 

@@ -61,8 +61,8 @@ import org.openflexo.toolbox.StringUtils;
  * <ul>
  * <li>{@link PrimitiveActorReference} for a {@link org.openflexo.foundation.fml.PrimitiveRole}</li>
  * <li>{@link ModelObjectActorReference} for a {@link org.openflexo.foundation.fml.FlexoConceptInstanceRole}, or for a
- * {@link org.openflexo.foundation.fml.JavaRole} whose value is a {@link org.openflexo.foundation.FlexoObject}</li>
- * <li>{@link JavaActorReference} for a {@link org.openflexo.foundation.fml.JavaRole} whose value is another Java object</li>
+ * {@link org.openflexo.foundation.fml.FMLVariable} whose value is a {@link org.openflexo.foundation.FlexoObject}</li>
+ * <li>{@link FMLVariableActorReference} for a {@link org.openflexo.foundation.fml.FMLVariable} whose value is another Java object</li>
  * <li>{@link FlexoEnumValueActorReference} for an enumeration value</li>
  * <li>{@link ModelSlotInstance} for a {@link org.openflexo.foundation.technologyadapter.ModelSlot}</li>
  * </ul>
@@ -75,7 +75,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActorReference.ActorReferenceImpl.class)
-@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(JavaActorReference.class),
+@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(FMLVariableActorReference.class),
 		@Import(FlexoEnumValueActorReference.class), @Import(ModelSlotInstance.class) })
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 

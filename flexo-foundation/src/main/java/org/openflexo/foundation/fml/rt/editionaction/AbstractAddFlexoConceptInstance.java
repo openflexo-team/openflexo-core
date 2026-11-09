@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -188,7 +188,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	public AddFlexoConceptInstanceParameter getParameter(String paramName);
 
 	// TODO: rename "parameter" to "argument"
-	public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
+	public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourArgument p);
 
 	/**
 	 * The type of the instantiated concept (see {@link #getFlexoConceptType()})
@@ -559,12 +559,12 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (getCreationScheme() == null) {
 				return null;
 			}
-			FlexoBehaviourParameter p = getCreationScheme().getParameter(paramName);
+			FlexoBehaviourArgument p = getCreationScheme().getParameter(paramName);
 			return getParameter(p);
 		}
 
 		@Override
-		public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
+		public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourArgument p) {
 			for (AddFlexoConceptInstanceParameter addEPParam : getParameters()) {
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
@@ -594,7 +594,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<>(parameters);
 			CreationScheme creationScheme = getCreationScheme();
 			if (creationScheme != null) {
-				for (FlexoBehaviourParameter p : creationScheme.getParameters()) {
+				for (FlexoBehaviourArgument p : creationScheme.getParameters()) {
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
@@ -726,7 +726,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				for (AddFlexoConceptInstanceParameter p : getParameters()) {
-					FlexoBehaviourParameter param = p.getParam();
+					FlexoBehaviourArgument param = p.getParam();
 					Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 					if (logger.isLoggable(Level.FINE)) {
 						logger.fine("For parameter " + param + " value is " + value);
@@ -830,7 +830,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (action.getCreationScheme() != null) {
 				Vector<ValidationIssue<AddFlexoConceptInstanceParametersMustBeValid, AbstractAddFlexoConceptInstance<?, ?>>> issues = new Vector<>();
 				for (AddFlexoConceptInstanceParameter p : action.getParameters()) {
-					FlexoBehaviourParameter param = p.getParam();
+					FlexoBehaviourArgument param = p.getParam();
 					if (param.getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
 							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_defined: " + param.getName()));

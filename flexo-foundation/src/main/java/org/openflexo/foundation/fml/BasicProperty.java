@@ -46,7 +46,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * Base of the roles storing a plain value in the instance: {@link PrimitiveRole} and {@link JavaRole}.<br>
+ * Base of the roles storing a plain value in the instance: {@link PrimitiveRole} and {@link FMLVariable}.<br>
  * By default, such a value is cloned when the instance is copied, and deleted with the instance.
  *
  * @author sylvain

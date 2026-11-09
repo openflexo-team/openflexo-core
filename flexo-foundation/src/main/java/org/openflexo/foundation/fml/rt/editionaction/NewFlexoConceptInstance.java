@@ -48,7 +48,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
@@ -246,7 +246,7 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 
 			if (creationScheme.getParameters().size() > 0) {
 				int index = 0;
-				for (FlexoBehaviourParameter arg : creationScheme.getParameters()) {
+				for (FlexoBehaviourArgument arg : creationScheme.getParameters()) {
 					creationSchemeAction.setParameterValue(arg, arguments.get(index));
 					index++;
 				}
@@ -294,7 +294,7 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 					if (creationScheme.getParameters().size() == arguments.size()) {
 						boolean allParametersMatch = true;
 						for (int i = 0; i < creationScheme.getParameters().size(); i++) {
-							FlexoBehaviourParameter p = creationScheme.getParameters().get(i);
+							FlexoBehaviourArgument p = creationScheme.getParameters().get(i);
 							if (!TypeUtils.isOfType(arguments.get(i), p.getArgumentType())) {
 								allParametersMatch = false;
 							}

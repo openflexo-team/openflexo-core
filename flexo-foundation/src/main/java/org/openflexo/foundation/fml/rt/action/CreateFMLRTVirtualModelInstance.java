@@ -51,7 +51,7 @@ import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -307,7 +307,7 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 
 	}
 
-	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
+	public void setParameterValue(FlexoBehaviourArgument parameter, Object value) {
 		if (creationSchemeAction != null) {
 			creationSchemeAction.setParameterValue(parameter, value);
 		}

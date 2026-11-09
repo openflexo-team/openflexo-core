@@ -60,22 +60,22 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstanceNode {
+public class NewVirtualModelInstanceNode extends AbstractNewFlexoConceptInstanceNode {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AddVirtualModelInstanceNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(NewVirtualModelInstanceNode.class.getPackage().getName());
 
-	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
+	public NewVirtualModelInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
+	public NewVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddVirtualModelInstanceNode(CreationSchemePathElement action, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+	public NewVirtualModelInstanceNode(CreationSchemePathElement action, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
 		super(action, analyzer, bindable);
 	}
 
@@ -109,7 +109,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 							AddFlexoConceptInstanceParameter argument = (AddFlexoConceptInstanceParameter) ((BehaviourCallArgumentNode) p2ppNode)
 									.getModelObject();
 							if (index < getModelObject().getCreationScheme().getParameters().size()) {
-								FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
+								FlexoBehaviourArgument parameter = getModelObject().getCreationScheme().getParameters().get(index);
 								argument.setParam(parameter);
 								if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType(), true)) {
 									throwIssue("Invalid type " + argument.getValue().getAnalyzedType() + " (expected: "

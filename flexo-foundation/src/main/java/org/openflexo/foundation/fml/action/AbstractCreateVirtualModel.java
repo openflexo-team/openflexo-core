@@ -53,7 +53,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -128,14 +128,14 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 		action.doAction();
 	}
 
-	protected FlexoBehaviourParameter createParameter(FlexoBehaviour behaviour, String parameterName, Type parameterType) {
+	protected FlexoBehaviourArgument createParameter(FlexoBehaviour behaviour, String parameterName, Type parameterType) {
 		CreateGenericBehaviourParameter createParameter = CreateGenericBehaviourParameter.actionType.makeNewEmbeddedAction(behaviour, null,
 				this);
 		createParameter.setParameterName(parameterName);
 		createParameter.setParameterType(parameterType);
 
 		createParameter.doAction();
-		FlexoBehaviourParameter returned = createParameter.getNewParameter();
+		FlexoBehaviourArgument returned = createParameter.getNewParameter();
 		if (parameterType instanceof FlexoConceptInstanceType) {
 			returned.setContainer(new DataBinding<FMLRTVirtualModelInstance>("this"));
 		}

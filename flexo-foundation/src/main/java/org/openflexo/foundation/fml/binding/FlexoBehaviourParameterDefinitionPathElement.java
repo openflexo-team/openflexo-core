@@ -47,7 +47,7 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 
 @Deprecated
 // Should be refactored
@@ -55,11 +55,11 @@ public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElem
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterDefinitionPathElement.class.getPackage().getName());
 
-	private FlexoBehaviourParameter parameter;
+	private FlexoBehaviourArgument parameter;
 
 	private static final String PARAMETER_DEFINITION = "definition";
 
-	public FlexoBehaviourParameterDefinitionPathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter, Bindable bindable) {
+	public FlexoBehaviourParameterDefinitionPathElement(IBindingPathElement parent, FlexoBehaviourArgument parameter, Bindable bindable) {
 		super(parent, PARAMETER_DEFINITION, parameter.getImplementedInterface(), bindable);
 		this.parameter = parameter;
 	}

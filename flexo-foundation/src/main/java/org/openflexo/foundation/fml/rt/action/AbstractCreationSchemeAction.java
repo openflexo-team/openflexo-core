@@ -49,7 +49,7 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -239,7 +239,7 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 	public boolean retrieveMissingDefaultParameters() {
 		boolean returned = true;
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
-		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
+		for (final FlexoBehaviourArgument parameter : flexoBehaviour.getParameters()) {
 			if (getParameterValue(parameter) == null) {
 				logger.warning("Found not initialized parameter " + parameter);
 				Object defaultValue = parameter.getDefaultValue(this);

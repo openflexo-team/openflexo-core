@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.InvalidNameException;
-import org.openflexo.foundation.fml.JavaRole;
+import org.openflexo.foundation.fml.FMLVariable;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
@@ -54,16 +54,16 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
  * @author sylvain
  * 
  */
-public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
+public class FMLVariableNode extends BasicPropertyNode<FMLVariable<?>> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLVariableNode.class.getPackage().getName());
 
-	public JavaRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public FMLVariableNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 	}
 
-	public JavaRoleNode(JavaRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public FMLVariableNode(FMLVariable<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(property, analyzer);
 	}
 
@@ -80,8 +80,8 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 	}
 
 	@Override
-	public JavaRole<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
-		JavaRole<?> returned = getFactory().newJavaRole();
+	public FMLVariable<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
+		FMLVariable<?> returned = getFactory().newFMLVariable();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		try {
 			returned.setName(getName(astNode.getVariableDeclarator()).getText());

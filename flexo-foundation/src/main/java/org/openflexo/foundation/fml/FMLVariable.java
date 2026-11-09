@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.JavaActorReference;
+import org.openflexo.foundation.fml.rt.FMLVariableActorReference;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
 import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
 import org.openflexo.logging.FlexoLogger;
@@ -64,18 +64,17 @@ import org.openflexo.pamela.annotations.XMLElement;
  * VirtualModel), e.g. {@code List<String> tags;}.
  * <p>
  * Its value is persisted as a String, through the string encoder of the model factory (see
- * {@link org.openflexo.foundation.fml.rt.JavaActorReference}): a value whose type cannot be converted to a String is not persisted.
+ * {@link org.openflexo.foundation.fml.rt.FMLVariableActorReference}): a value whose type cannot be converted to a String is not persisted.
  *
  * @author sylvain
  *
  * @param <T>
  */
-@FMLMigration("TODO: rename to FMLVariable")
 @ModelEntity
-@ImplementationClass(JavaRole.JavaRoleImpl.class)
-@XMLElement(xmlTag = "JavaRole")
-@FML("JavaRole")
-public interface JavaRole<T> extends BasicProperty<T> {
+@ImplementationClass(FMLVariable.FMLVariableImpl.class)
+@XMLElement(xmlTag = "FMLVariable")
+@FML("FMLVariable")
+public interface FMLVariable<T> extends BasicProperty<T> {
 
 	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)
@@ -95,9 +94,9 @@ public interface JavaRole<T> extends BasicProperty<T> {
 	@Updater(TYPE_KEY)
 	public void updateType(Type type);
 
-	public static abstract class JavaRoleImpl<T> extends BasicPropertyImpl<T> implements JavaRole<T> {
+	public static abstract class FMLVariableImpl<T> extends BasicPropertyImpl<T> implements FMLVariable<T> {
 
-		protected static final Logger logger = FlexoLogger.getLogger(JavaRole.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(FMLVariable.class.getPackage().getName());
 
 		private Type type;
 
@@ -129,7 +128,7 @@ public interface JavaRole<T> extends BasicProperty<T> {
 				return returned;
 			}
 			else {
-				JavaActorReference<T> returned = factory.newInstance(JavaActorReference.class);
+				FMLVariableActorReference<T> returned = factory.newInstance(FMLVariableActorReference.class);
 				returned.setFlexoRole(this);
 				returned.setModellingElement(object);
 				return returned;
@@ -179,13 +178,13 @@ public interface JavaRole<T> extends BasicProperty<T> {
 	}
 
 	@DefineValidationRule
-	public static class JavaRoleTypeMustBeResolved extends TypeMustBeResolved<JavaRole> {
-		public JavaRoleTypeMustBeResolved() {
-			super("assigned_type_must_be_resolved", JavaRole.class);
+	public static class FMLVariableTypeMustBeResolved extends TypeMustBeResolved<FMLVariable> {
+		public FMLVariableTypeMustBeResolved() {
+			super("assigned_type_must_be_resolved", FMLVariable.class);
 		}
 
 		@Override
-		public Type getType(JavaRole role) {
+		public Type getType(FMLVariable role) {
 			return role.getType();
 		}
 

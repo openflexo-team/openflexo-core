@@ -175,12 +175,12 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			return getFMLModelFactory().newFlexoPropertyPathElement(parent, (FlexoProperty<?>) object, bindable);
 			// return new FlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
 		}
-		if (object instanceof FlexoBehaviourParameter) {
+		if (object instanceof FlexoBehaviourArgument) {
 			if (parent.getType() instanceof FlexoBehaviourParametersType) {
-				return new FlexoBehaviourParameterDefinitionPathElement(parent, (FlexoBehaviourParameter) object, bindable);
+				return new FlexoBehaviourParameterDefinitionPathElement(parent, (FlexoBehaviourArgument) object, bindable);
 			}
 			else if (parent.getType() instanceof FlexoBehaviourParametersValuesType) {
-				return new FlexoBehaviourParameterValuePathElement(parent, (FlexoBehaviourParameter) object, bindable);
+				return new FlexoBehaviourParameterValuePathElement(parent, (FlexoBehaviourArgument) object, bindable);
 			}
 		}
 		logger.warning("Unexpected " + object + " for parent=" + parent);
@@ -194,7 +194,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 
 			if (parent instanceof FlexoBehaviourParameterValuePathElement) {
 				List<SimplePathElement<?>> returned = new ArrayList<>(_getAccessibleSimplePathElements(parent, bindable));
-				FlexoBehaviourParameter p = ((FlexoBehaviourParameterValuePathElement) parent).getParameter();
+				FlexoBehaviourArgument p = ((FlexoBehaviourParameterValuePathElement) parent).getParameter();
 				returned.add(0, new FlexoBehaviourParameterDefinitionPathElement(parent, p, bindable));
 				return returned;
 			}
@@ -227,7 +227,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			if (pType instanceof FlexoBehaviourParametersType) {
 				List<SimplePathElement<?>> returned = new ArrayList<>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersType) pType).getFlexoBehaviour();
-				for (FlexoBehaviourParameter p : es.getParameters()) {
+				for (FlexoBehaviourArgument p : es.getParameters()) {
 					returned.add(getSimplePathElement(p, parent, bindable));
 				}
 				Collections.sort(returned, BindingPathElement.COMPARATOR);
@@ -236,7 +236,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 			else if (pType instanceof FlexoBehaviourParametersValuesType) {
 				List<SimplePathElement<?>> returned = new ArrayList<>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersValuesType) pType).getFlexoBehaviour();
-				for (FlexoBehaviourParameter p : es.getParameters()) {
+				for (FlexoBehaviourArgument p : es.getParameters()) {
 					returned.add(getSimplePathElement(p, parent, bindable));
 				}
 				Collections.sort(returned, BindingPathElement.COMPARATOR);

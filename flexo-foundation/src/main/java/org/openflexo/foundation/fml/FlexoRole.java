@@ -87,7 +87,7 @@ import org.openflexo.toolbox.StringUtils;
  * A {@link FlexoRole} is a {@link FlexoProperty} whose value is stored in the {@link FlexoConceptInstance}: at run-time, each value is held
  * by an {@link ActorReference} (see {@link #makeActorReference(Object, FlexoConceptInstance)}).
  * <p>
- * Depending on its type, a role references a primitive value ({@link PrimitiveRole}), a Java object ({@link JavaRole}), an instance of a
+ * Depending on its type, a role references a primitive value ({@link PrimitiveRole}), a Java object ({@link FMLVariable}), an instance of a
  * concept ({@link FlexoConceptInstanceRole}), or an object of another technological space, declared with {@code with TA::Role(...)} and
  * accessed through a {@link ModelSlot} (see {@link #getModelSlot()}). A {@link ModelSlot} is itself a {@link FlexoRole}.
  * <p>
@@ -108,7 +108,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoRole.FlexoRoleImpl.class)
-@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class), @Import(JavaRole.class) })
+@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class), @Import(FMLVariable.class) })
 public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = String.class)

@@ -59,7 +59,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -239,7 +239,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		createParameter1.setParameterType(String.class);
 		createParameter1.setParameterName("aFirstName");
 		createParameter1.doAction();
-		FlexoBehaviourParameter firstNameParam = createParameter1.getNewParameter();
+		FlexoBehaviourArgument firstNameParam = createParameter1.getNewParameter();
 		assertNotNull(firstNameParam);
 
 		CreateGenericBehaviourParameter createParameter2 = CreateGenericBehaviourParameter.actionType.makeNewAction(creationScheme, null,
@@ -247,7 +247,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		createParameter2.setParameterType(String.class);
 		createParameter2.setParameterName("aLastName");
 		createParameter2.doAction();
-		FlexoBehaviourParameter lastNameParam = createParameter2.getNewParameter();
+		FlexoBehaviourArgument lastNameParam = createParameter2.getNewParameter();
 		assertNotNull(lastNameParam);
 
 		CreateGenericBehaviourParameter createParameter3 = CreateGenericBehaviourParameter.actionType.makeNewAction(creationScheme, null,
@@ -255,7 +255,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		createParameter3.setParameterType(String.class);
 		createParameter3.setParameterName("anAge");
 		createParameter3.doAction();
-		FlexoBehaviourParameter ageParam = createParameter3.getNewParameter();
+		FlexoBehaviourArgument ageParam = createParameter3.getNewParameter();
 		assertNotNull(ageParam);
 
 		assertTrue(creationScheme.getParameters().contains(firstNameParam));
@@ -486,9 +486,9 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	private static FlexoConceptInstance createInstance(String firstName, String lastName, int age) {
 		CreationScheme creationScheme = flexoConcept.getCreationSchemes().get(0);
 		CreationSchemeAction action = new CreationSchemeAction(creationScheme, newVirtualModelInstance, null, editor);
-		FlexoBehaviourParameter firstNameP = creationScheme.getParameter("aFirstName");
-		FlexoBehaviourParameter lastNameP = creationScheme.getParameter("aLastName");
-		FlexoBehaviourParameter ageP = creationScheme.getParameter("anAge");
+		FlexoBehaviourArgument firstNameP = creationScheme.getParameter("aFirstName");
+		FlexoBehaviourArgument lastNameP = creationScheme.getParameter("aLastName");
+		FlexoBehaviourArgument ageP = creationScheme.getParameter("anAge");
 		action.setParameterValue(firstNameP, firstName);
 		action.setParameterValue(lastNameP, lastName);
 		action.setParameterValue(ageP, age);

@@ -48,7 +48,7 @@ import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.BehaviourParameterBindingModel;
@@ -88,10 +88,10 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 	 * @return the reference to the parameter
 	 */
 	@Getter(value = PARAM_REFERENCE_KEY, ignoreType = true)
-	public FMLNamedReference<FlexoBehaviourParameter> getParamReference();
+	public FMLNamedReference<FlexoBehaviourArgument> getParamReference();
 
 	@Setter(PARAM_REFERENCE_KEY)
-	public void setParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference);
+	public void setParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference);
 
 	/**
 	 * Keeps the name only of a reference coming from another compilation unit (merge with {@code updateWith()})
@@ -100,7 +100,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 	 *            the reference held by the argument of the other compilation unit
 	 */
 	@Updater(PARAM_REFERENCE_KEY)
-	public void updateParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference);
+	public void updateParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference);
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -118,17 +118,17 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 	public FlexoBehaviour getAccessedBehaviour();
 
 	// TODO: PAMELA
-	public FlexoBehaviourParameter getParam();
+	public FlexoBehaviourArgument getParam();
 
 	// TODO: PAMELA
-	public void setParam(FlexoBehaviourParameter param);
+	public void setParam(FlexoBehaviourArgument param);
 
 	public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action);
 
 	@Override
 	public BehaviourParameterBindingModel getBindingModel();
 
-	public FlexoBehaviourParameter getParameter();
+	public FlexoBehaviourArgument getParameter();
 
 	public static abstract class BehaviourCallArgumentImpl<T extends FlexoConceptObject> extends FlexoBehaviourObjectImpl
 			implements BehaviourCallArgument<T> {
@@ -137,7 +137,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 
 		// AddFlexoConceptInstance action;
 
-		private FMLNamedReference<FlexoBehaviourParameter> paramReference;
+		private FMLNamedReference<FlexoBehaviourArgument> paramReference;
 		private DataBinding<Object> value;
 
 		private BehaviourParameterBindingModel bindingModel;
@@ -150,7 +150,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 		}*/
 
 		@Override
-		public FlexoBehaviourParameter getParameter() {
+		public FlexoBehaviourArgument getParameter() {
 			return getParam();
 		}
 
@@ -235,24 +235,24 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 		}
 
 		@Override
-		public FMLNamedReference<FlexoBehaviourParameter> getParamReference() {
+		public FMLNamedReference<FlexoBehaviourArgument> getParamReference() {
 			return paramReference;
 		}
 
 		@Override
-		public void setParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference) {
-			FMLNamedReference<FlexoBehaviourParameter> oldValue = this.paramReference;
+		public void setParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference) {
+			FMLNamedReference<FlexoBehaviourArgument> oldValue = this.paramReference;
 			this.paramReference = paramReference;
 			getPropertyChangeSupport().firePropertyChange(PARAM_REFERENCE_KEY, oldValue, paramReference);
 		}
 
 		@Override
-		public void updateParamReference(FMLNamedReference<FlexoBehaviourParameter> paramReference) {
+		public void updateParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference) {
 			setParamReference(paramReference != null ? paramReference.unresolved() : null);
 		}
 
 		@Override
-		public FlexoBehaviourParameter getParam() {
+		public FlexoBehaviourArgument getParam() {
 			if (paramReference == null) {
 				return null;
 			}
@@ -261,7 +261,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 		}
 
 		@Override
-		public void setParam(FlexoBehaviourParameter param) {
+		public void setParam(FlexoBehaviourArgument param) {
 			setParamReference(FMLNamedReference.to(param));
 		}
 

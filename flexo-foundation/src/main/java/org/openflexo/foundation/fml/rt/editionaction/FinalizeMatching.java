@@ -56,7 +56,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FMLNamedReference;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -211,7 +211,7 @@ public interface FinalizeMatching extends EditionAction {
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(ExecuteBehaviourParameter aParameter);
 
-	public ExecuteBehaviourParameter getParameter(FlexoBehaviourParameter p);
+	public ExecuteBehaviourParameter getParameter(FlexoBehaviourArgument p);
 
 	public List<? extends FlexoBehaviour> getAvailableFlexoBehaviours();
 
@@ -408,7 +408,7 @@ public interface FinalizeMatching extends EditionAction {
 		}
 
 		@Override
-		public ExecuteBehaviourParameter getParameter(FlexoBehaviourParameter p) {
+		public ExecuteBehaviourParameter getParameter(FlexoBehaviourArgument p) {
 			for (ExecuteBehaviourParameter addEPParam : getParameters()) {
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
@@ -443,7 +443,7 @@ public interface FinalizeMatching extends EditionAction {
 			else {
 				List<ExecuteBehaviourParameter> parametersToRemove = new ArrayList<>(getParameters());
 				if (getFlexoBehaviour() != null) {
-					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
+					for (FlexoBehaviourArgument p : getFlexoBehaviour().getParameters()) {
 						ExecuteBehaviourParameter existingParam = getParameter(p);
 						if (existingParam != null) {
 							parametersToRemove.remove(existingParam);

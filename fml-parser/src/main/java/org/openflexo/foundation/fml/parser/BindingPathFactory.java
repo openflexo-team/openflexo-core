@@ -58,9 +58,9 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddClassInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddFlexoConceptInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddVirtualModelInstanceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NewClassInstanceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NewFlexoConceptInstanceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NewVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingVariableNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
@@ -495,22 +495,22 @@ public class BindingPathFactory {
 		final IBindingPathElement parent = retrieveActualParent();
 
 		if (type instanceof VirtualModelInstanceType) {
-			AddVirtualModelInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
-					n -> new AddVirtualModelInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			NewVirtualModelInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new NewVirtualModelInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
 		}
 		else if (type instanceof FlexoConceptInstanceType) {
-			AddFlexoConceptInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
-					n -> new AddFlexoConceptInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			NewFlexoConceptInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new NewFlexoConceptInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
 		}
 		else {
-			AddClassInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
-					n -> new AddClassInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			NewClassInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new NewClassInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			JavaNewInstanceMethodPathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
@@ -529,22 +529,22 @@ public class BindingPathFactory {
 		final IBindingPathElement parent = retrieveActualParent();
 
 		if (type instanceof VirtualModelInstanceType) {
-			AddVirtualModelInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
-					n -> new AddVirtualModelInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			NewVirtualModelInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new NewVirtualModelInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
 		}
 		else if (type instanceof FlexoConceptInstanceType) {
-			AddFlexoConceptInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
-					n -> new AddFlexoConceptInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			NewFlexoConceptInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new NewFlexoConceptInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
 		}
 		/*else {
-			AddClassInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
-					n -> new AddClassInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
+			NewClassInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,
+					n -> new NewClassInstanceNode(n, expressionFactory, parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			JavaNewInstanceMethodPathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
