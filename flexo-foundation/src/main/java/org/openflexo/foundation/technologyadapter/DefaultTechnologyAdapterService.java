@@ -126,7 +126,6 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	private Map<String, Class<? extends TechnologySpecificType>> availableTechnologySpecificTypesByFMLKeyword;
 
 	// private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
-	// private Map<Class<? extends ModelSlot<?,?>>, List<Class<? extends InspectorEntry>>> availableInspectorEntryTypes;
 
 	public static TechnologyAdapterService getNewInstance(FlexoResourceCenterService resourceCenterService) {
 		try {

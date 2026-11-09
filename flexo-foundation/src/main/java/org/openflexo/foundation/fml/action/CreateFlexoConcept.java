@@ -151,7 +151,6 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		performSetParentConcepts();
 		performCreateProperties();
 		performCreateBehaviours();
-		performCreateInspectors();
 		performPostProcessings();
 
 	}

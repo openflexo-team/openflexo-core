@@ -64,7 +64,6 @@ import org.openflexo.foundation.fml.binding.CompilationUnitBindingModel;
 import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
 import org.openflexo.foundation.fml.binding.NamespaceBindingVariable;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
-import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rm.LocalizedDictionaryResource;
@@ -1193,10 +1192,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				// checkAndRegisterLocalized(es.getDescription());
 				for (FlexoBehaviourParameter p : es.getParameters()) {
 					checkAndRegisterLocalized(p.getName());
-				}
-				for (InspectorEntry entry : concept.getInspector() != null ? concept.getInspector().getEntries()
-						: java.util.Collections.<InspectorEntry> emptyList()) {
-					checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
 				}
 			}
 		}

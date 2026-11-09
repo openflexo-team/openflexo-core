@@ -738,37 +738,6 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return null;
 	}
 
-	/*
-	// We should parse expression instead
-	@Deprecated
-	protected <T> DataBinding<T> makeBinding(Node node, Type type, BindingDefinitionType bindingType, Bindable bindable) {
-		return new DataBinding(getText(node), bindable, type, bindingType);
-	}
-	
-	// We should parse expression instead
-	@Deprecated
-	protected <T> DataBinding<T> makeBinding(Node node, Bindable bindable) {
-		return new DataBinding(getText(node), bindable, Object.class, BindingDefinitionType.GET);
-	}
-	
-	// We should parse expression instead
-	@Deprecated
-	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Type type, BindingDefinitionType bindingType,
-			Bindable bindable) {
-		// TODO: implement this
-		logger.warning("Un truc a faire la pour " + compositeIdentifier);
-		return new DataBinding(analyzer.makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
-	}
-	
-	// We should parse expression instead
-	@Deprecated
-	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Bindable bindable) {
-		// TODO: implement this
-		logger.warning("Un truc a faire la pour " + compositeIdentifier);
-		return new DataBinding(analyzer.makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class,
-				BindingDefinitionType.GET);
-	}*/
-
 	protected String getVisibilityAsString(Visibility visibility) {
 		if (visibility != null) {
 			switch (visibility) {

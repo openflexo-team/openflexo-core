@@ -64,23 +64,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 public interface SynchronizationScheme extends AbstractActionScheme {
 
 	@Deprecated
-	public VirtualModel getSynchronizedVirtualModel();
-
-	@Deprecated
-	public void setSynchronizedVirtualModel(VirtualModel virtualModel);
-
-	@Deprecated
 	public static abstract class SynchronizationSchemeImpl extends AbstractActionSchemeImpl implements SynchronizationScheme {
-
-		@Override
-		public VirtualModel getSynchronizedVirtualModel() {
-			return (VirtualModel) getFlexoConcept();
-		}
-
-		@Override
-		public void setSynchronizedVirtualModel(VirtualModel virtualModel) {
-			setFlexoConcept(virtualModel);
-		}
 
 		@Override
 		public SynchronizationSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {

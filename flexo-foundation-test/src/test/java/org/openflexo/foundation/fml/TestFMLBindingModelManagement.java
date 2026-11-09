@@ -91,7 +91,6 @@ import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
@@ -1506,32 +1505,6 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	}
 
 	@Test
-	@TestOrder(17)
-	public void testFlexoConceptInstanceInspector() {
-
-		assertSame(flexoConceptA.getBindingModel(), flexoConceptA.getOrCreateInspector().getBindingModel().getBaseBindingModel());
-
-		assertEquals(6, flexoConceptA.getOrCreateInspector().getBindingModel().getBindingVariablesCount());
-
-		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
-		assertNotNull(
-				flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), flexoConceptA.getOrCreateInspector().getBindingModel()
-				.bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
-		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
-
-		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aStringInA"));
-		assertEquals(String.class, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aStringInA").getType());
-		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
-		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		assertNotNull(flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.TYPE, flexoConceptA.getOrCreateInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
-	}
-
-	@Test
 	@TestOrder(18)
 	public void testFlexoConceptInstanceRenderer() {
 
@@ -1557,7 +1530,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 				flexoConceptA.getRendererContext().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(flexoConceptA.getRendererContext().getBindingModel()
 				.bindingVariableNamed(FlexoConcept.RENDERED_INSTANCE_PROPERTY));
-		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), flexoConceptA.getInspector().getFormatter()
+		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), flexoConceptA.getRendererContext()
 				.getBindingModel().bindingVariableNamed(FlexoConcept.RENDERED_INSTANCE_PROPERTY).getType());
 
 	}

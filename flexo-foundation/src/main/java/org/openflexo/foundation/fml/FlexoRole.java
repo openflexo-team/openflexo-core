@@ -310,17 +310,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		private DataBinding<T> defaultValue;
 		private DataBinding<?> container;
 
-		/*@Override
-		public boolean hasParameters() {
-			// TODO
-			return false;
-		}
-		
-		@Override
-		public List<RolePropertyValue<?>> buildParameters() {
-			return new ArrayList<>();
-		}*/
-
 		/**
 		 * Return flag indicating whether this property is abstract
 		 * 

@@ -270,8 +270,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
 		private List<Class<? extends TechnologySpecificAction<?, ?, ?>>> availableEditionActionTypes;
 		private List<Class<? extends FetchRequest<?, ?, ?>>> availableFetchRequestActionTypes;
-		private List<Class<? extends FlexoBehaviourParameter>> availableFlexoBehaviourParameterTypes;
-		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;*/
+		private List<Class<? extends FlexoBehaviourParameter>> availableFlexoBehaviourParameterTypes;*/
 
 		@Override
 		public ModelSlot<RD, R> getModelSlot() {
@@ -355,21 +354,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 		@Override
 		public void setIsRequired(boolean isRequired) {
 			this.isRequired = isRequired;
-		}
-
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("ModelSlot " + getName() + " as "
-					+ (getModelSlotTechnologyAdapter() != null ? getModelSlotTechnologyAdapter().getIdentifier() : "???") + "::"
-					+ getImplementedInterface().getSimpleName() + " " + getFMLRepresentationForConformToStatement() + "required="
-					+ getIsRequired() + " readOnly=" + getIsReadOnly() + ";", context);
-			return out.toString();
-		}*/
-
-		@Deprecated
-		protected String getFMLRepresentationForConformToStatement() {
-			return "";
 		}
 
 		@Override
@@ -627,19 +611,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 			if (getVirtualModel() != null && getFMLModelFactory() != null) {
 				Class<? extends ModelSlot<?, ?>> modelSlotClass = getFMLModelFactory().getModelEntityForInstance(this)
 						.getImplementedInterface();
-				// The use declarations of a textual FML live in the compilation unit. VirtualModel.uses()/declareUse() are the deprecated ones of
-				// the XML serialization: they only see the declarations of the VirtualModel itself, an empty list here, so declareUse() would
-				// rebuild the model factory of the resource from that list - and a technology that is used (through edition actions, for
-				// example B::CreateBPredicateFromString) but has no model slot role would be forgotten by the factory, whose entities
-				// could then not be found any more
+				// The use declarations live in the compilation unit: they include those of technologies used through edition actions only
+				// (for example B::CreateBPredicateFromString), which the model factory of the resource must keep
 				FMLCompilationUnit compilationUnit = getVirtualModel().getCompilationUnit();
-				if (compilationUnit != null) {
-					if (!compilationUnit.uses(modelSlotClass)) {
-						compilationUnit.declareUse(modelSlotClass);
-					}
-				}
-				else if (!getVirtualModel().uses(modelSlotClass)) {
-					getVirtualModel().declareUse(modelSlotClass);
+				if (compilationUnit != null && !compilationUnit.uses(modelSlotClass)) {
+					compilationUnit.declareUse(modelSlotClass);
 				}
 			}
 			super.finalizeDeserialization();

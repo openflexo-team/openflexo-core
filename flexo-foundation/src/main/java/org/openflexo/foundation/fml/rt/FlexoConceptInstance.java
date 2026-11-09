@@ -90,7 +90,6 @@ import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
-import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ReleasableObject;
@@ -1908,7 +1907,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME)) {
 				return getContainer();
 			}
-			else if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
+			else if (variable.getVariableName().equals(FlexoConcept.RENDERED_INSTANCE_PROPERTY)) {
 				return this;
 			}
 			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {

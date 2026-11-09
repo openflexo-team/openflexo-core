@@ -161,7 +161,6 @@ public class CreateTopLevelVirtualModel
 		performCreateBehaviours();
 
 		Progress.progress(getLocales().localizedForKey("create_inspector"));
-		performCreateInspectors();
 
 		Progress.progress(getLocales().localizedForKey("perform_post_processings"));
 		performPostProcessings();

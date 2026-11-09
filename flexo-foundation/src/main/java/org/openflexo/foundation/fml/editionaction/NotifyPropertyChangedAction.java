@@ -71,19 +71,8 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String PROPERTY_NAME_KEY = "propertyName";
-	@PropertyIdentifier(type = String.class)
-	public static final String STATIC_PROPERTY_NAME_KEY = "staticPropertyName";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
-
-	@Getter(value = STATIC_PROPERTY_NAME_KEY)
-	@XMLAttribute
-	@Deprecated
-	public String getStaticPropertyName();
-
-	@Setter(STATIC_PROPERTY_NAME_KEY)
-	@Deprecated
-	public void setStaticPropertyName(String propertyName);
 
 	@Getter(value = PROPERTY_NAME_KEY)
 	public DataBinding<String> getPropertyName();

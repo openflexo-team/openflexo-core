@@ -80,8 +80,6 @@ import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
-import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.md.BasicMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
@@ -490,22 +488,6 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 
 	public MatchCondition newMatchCondition() {
 		return newInstance(MatchCondition.class);
-	}
-
-	public FlexoConceptInspector newFlexoConceptInspector(FlexoConcept ep) {
-		FlexoConceptInspector returned = newInstance(FlexoConceptInspector.class);
-		returned.setFlexoConcept(ep);
-		return returned;
-	}
-
-	public InspectorEntry newInspectorEntry() {
-		return newInstance(InspectorEntry.class);
-	}
-
-	public InspectorEntry newInspectorEntry(FlexoConceptInspector inspector) {
-		InspectorEntry returned = newInspectorEntry();
-		inspector.addToEntries(returned);
-		return returned;
 	}
 
 	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {

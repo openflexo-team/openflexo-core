@@ -143,8 +143,6 @@ public interface VirtualModel extends FlexoConcept {
 	public static final String VERSION_KEY = "version";
 	@PropertyIdentifier(type = FlexoConcept.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
-	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
-	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 
 	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_NATURE_CLASS_KEY = "modelSlotNatureClass";
@@ -188,61 +186,6 @@ public interface VirtualModel extends FlexoConcept {
 
 	@Override
 	public FMLModelFactory getFMLModelFactory();
-
-	/**
-	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
-	 * It includes the use declarations accessible from its container {@link VirtualModel} (recursively)
-	 *
-	 * @return
-	 */
-	@Deprecated
-	@FMLMigration
-	public List<UseModelSlotDeclaration> getAccessibleUseDeclarations();
-
-	/**
-	 * Return list of {@link UseModelSlotDeclaration} explicitely declared in this {@link VirtualModel}
-	 * 
-	 * @return
-	 */
-	@Getter(
-			value = USE_DECLARATIONS_KEY,
-			cardinality = Cardinality.LIST/*, inverse = UseModelSlotDeclaration.VIRTUAL_MODEL_KEY*/,
-			ignoreForEquality = true)
-	@XMLElement
-	@Embedded
-	@CloningStrategy(StrategyType.CLONE)
-	@Deprecated
-	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-	public List<UseModelSlotDeclaration> getUseDeclarations();
-
-	@Adder(USE_DECLARATIONS_KEY)
-	@PastingPoint
-	@Deprecated
-	public void addToUseDeclarations(UseModelSlotDeclaration useDecl);
-
-	@Remover(USE_DECLARATIONS_KEY)
-	@Deprecated
-	public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl);
-
-	/**
-	 * Return boolean indicating if this VirtualModel uses supplied modelSlotClass
-	 * 
-	 * @param modelSlotClass
-	 * @return
-	 */
-	@Deprecated
-	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-	public <MS extends ModelSlot<?, ?>> boolean uses(Class<MS> modelSlotClass);
-
-	/**
-	 * Declare use of supplied modelSlotClass
-	 * 
-	 * @param modelSlotClass
-	 * @return
-	 */
-	@Deprecated
-	@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-	public <MS extends ModelSlot<?, ?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
 	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel}
@@ -497,24 +440,6 @@ public interface VirtualModel extends FlexoConcept {
 		}
 
 		@Override
-		@Deprecated
-		public void addToUseDeclarations(UseModelSlotDeclaration useDecl) {
-			performSuperAdder(USE_DECLARATIONS_KEY, useDecl);
-			vmInstanceType = null;
-			availableModelSlotNatureClasses = null;
-			getPropertyChangeSupport().firePropertyChange("availableModelSlotNatureClasses", null, getAvailableModelSlotNatureClasses());
-		}
-
-		@Override
-		@Deprecated
-		public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl) {
-			performSuperRemover(USE_DECLARATIONS_KEY, useDecl);
-			vmInstanceType = null;
-			availableModelSlotNatureClasses = null;
-			getPropertyChangeSupport().firePropertyChange("availableModelSlotNatureClasses", null, getAvailableModelSlotNatureClasses());
-		}
-
-		@Override
 		public void setModelSlotNatureClass(Class<? extends ReflectedFMLRTModelSlot<?, ?, ?, ?>> modelSlotNatureClass) {
 			performSuperSetter(MODEL_SLOT_NATURE_CLASS_KEY, modelSlotNatureClass);
 			vmInstanceType = null;
@@ -527,7 +452,7 @@ public interface VirtualModel extends FlexoConcept {
 		public List<Class<? extends ReflectedFMLRTModelSlot<?, ?, ?, ?>>> getAvailableModelSlotNatureClasses() {
 			if (availableModelSlotNatureClasses == null) {
 				availableModelSlotNatureClasses = new ArrayList<>();
-				for (UseModelSlotDeclaration useMSDecl : getUseDeclarations()) {
+				for (UseModelSlotDeclaration useMSDecl : getCompilationUnit().getUseDeclarations()) {
 					if (ReflectedFMLRTModelSlot.class.isAssignableFrom(useMSDecl.getModelSlotClass())) {
 						availableModelSlotNatureClasses
 								.add((Class<? extends ReflectedFMLRTModelSlot<?, ?, ?, ?>>) useMSDecl.getModelSlotClass());
@@ -954,7 +879,7 @@ public interface VirtualModel extends FlexoConcept {
 
 		public SynchronizationScheme createSynchronizationScheme() {
 			SynchronizationScheme newSynchronizationScheme = getFMLModelFactory().newSynchronizationScheme();
-			newSynchronizationScheme.setSynchronizedVirtualModel(this);
+			newSynchronizationScheme.setFlexoConcept(this);
 			try {
 				newSynchronizationScheme.setName("synchronization");
 			} catch (InvalidNameException e) {
@@ -1045,38 +970,6 @@ public interface VirtualModel extends FlexoConcept {
 			return null;
 		}
 
-		/**
-		 * Declare use of supplied modelSlotClass
-		 * 
-		 * @param modelSlotClass
-		 * @return
-		 */
-		@Override
-		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-		public <MS extends ModelSlot<?, ?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
-			if (modelSlotClass == null) {
-				return null;
-			}
-
-			List<Class<? extends ModelSlot<?, ?>>> usedModelSlots = new ArrayList<>();
-			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
-				usedModelSlots.add(msDecl.getModelSlotClass());
-				if (modelSlotClass.equals(msDecl.getModelSlotClass())) {
-					return msDecl;
-				}
-			}
-
-			usedModelSlots.add(modelSlotClass);
-			if (getCompilationUnit().getResource() != null) {
-				((CompilationUnitResource) getCompilationUnit().getResource()).updateFMLModelFactory(usedModelSlots);
-			}
-
-			UseModelSlotDeclaration useDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
-			addToUseDeclarations(useDeclaration);
-			return useDeclaration;
-
-		}
-
 		@Override
 		protected void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
 			super.notifiedPropertiesChanged(oldValue, newValue);
@@ -1164,45 +1057,6 @@ public interface VirtualModel extends FlexoConcept {
 			for (FlexoConcept concept : getFlexoConcepts()) {
 				concept.notifiedScopeChanged();
 			}
-		}
-
-		@Override
-		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-		public <MS extends ModelSlot<?, ?>> boolean uses(Class<MS> modelSlotClass) {
-			if (modelSlotClass == null) {
-				return false;
-			}
-			for (UseModelSlotDeclaration useDecl : getUseDeclarations()) {
-				if (modelSlotClass.equals(useDecl.getModelSlotClass())) {
-					return true;
-				}
-			}
-			/*if (getContainerVirtualModel() != null && getContainerVirtualModel().uses(modelSlotClass)) {
-				return true;
-			}*/
-			return false;
-		}
-
-		/**
-		 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
-		 * It includes the list of uses declarations accessible from parent and container
-		 * 
-		 * @return
-		 */
-		@Override
-		@Deprecated
-		@FMLMigration("Remove in 3.0 since it's now done in FMLCompilationUnit")
-		public List<UseModelSlotDeclaration> getAccessibleUseDeclarations() {
-			List<UseModelSlotDeclaration> returned = new ArrayList<>();
-			if (getContainerVirtualModel() != null) {
-				returned.addAll(getContainerVirtualModel().getAccessibleUseDeclarations());
-			}
-			for (UseModelSlotDeclaration useDecl : getUseDeclarations()) {
-				if (!returned.contains(useDecl)) {
-					returned.add(useDecl);
-				}
-			}
-			return returned;
 		}
 
 		@Override

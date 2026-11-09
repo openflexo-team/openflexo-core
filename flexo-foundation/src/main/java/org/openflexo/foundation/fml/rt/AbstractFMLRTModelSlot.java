@@ -330,11 +330,6 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 		}
 
 		@Override
-		protected String getFMLRepresentationForConformToStatement() {
-			return "conformTo " + getAccessedVirtualModelURI() + " ";
-		}
-
-		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {

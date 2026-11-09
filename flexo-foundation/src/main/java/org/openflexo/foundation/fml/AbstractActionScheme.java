@@ -74,22 +74,8 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(AbstractActionScheme.AbstractActionSchemeImpl.class)
 public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String CONDITIONAL_KEY = "conditional";
-
-	// Not sure this is a good idea in the language
-	@Deprecated
-	@Getter(value = CONDITIONAL_KEY)
-	@XMLAttribute
-	public DataBinding<Boolean> getConditional();
-
-	@Deprecated
-	@Setter(CONDITIONAL_KEY)
-	public void setConditional(DataBinding<Boolean> conditional);
-
 	/**
-	 * Whether this behaviour is enabled on supplied instance: its {@link #getEnable() @Enable} expression, and the deprecated
-	 * {@link #getConditional() conditional}, both of which are true when not set
+	 * Whether this behaviour is enabled on supplied instance: its {@link #getEnable() @Enable} expression, true when not set
 	 */
 	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
 
@@ -118,7 +104,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 	/**
 	 * The expression telling whether this behaviour can be performed on an instance: when it evaluates to false the behaviour is offered
 	 * but disabled. Stored as the {@link #ENABLE_METADATA} metadata (the <code>@Enable</code> annotation). Same context as
-	 * {@link #getVisible()}. It supersedes the deprecated {@link #getConditional()}.
+	 * {@link #getVisible()}.
 	 */
 	public DataBinding<Boolean> getEnable();
 
@@ -134,41 +120,14 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 	public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
 
-		private DataBinding<Boolean> conditional;
 
 		public AbstractActionSchemeImpl() {
 			super();
 		}
 
-		// TODO: we had to set caching strategy to NO_CACHING in dynamic instantiation context (CTA project)
-		@Override
-		@Deprecated
-		public DataBinding<Boolean> getConditional() {
-			if (conditional == null) {
-				conditional = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
-				conditional.setCachingStrategy(CachingStrategy.NO_CACHING);
-				conditional.setBindingName("conditional");
-			}
-			return conditional;
-		}
-
-		// TODO: we had to set caching strategy to NO_CACHING in dynamic instantiation context (CTA project)
-		@Override
-		@Deprecated
-		public void setConditional(DataBinding<Boolean> conditional) {
-			if (conditional != null) {
-				conditional.setOwner(this);
-				conditional.setDeclaredType(Boolean.class);
-				conditional.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-				conditional.setCachingStrategy(CachingStrategy.NO_CACHING);
-				conditional.setBindingName("conditional");
-			}
-			this.conditional = conditional;
-		}
-
 		@Override
 		public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance) {
-			return evaluate(getConditional(), flexoConceptInstance) && evaluate(getEnable(), flexoConceptInstance);
+			return evaluate(getEnable(), flexoConceptInstance);
 		}
 
 		@Override
@@ -262,7 +221,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 				expression.setDeclaredType(Boolean.class);
 				expression.setBindingDefinitionType(BindingDefinitionType.GET);
 				expression.setBindingName(key);
-				// Evaluated on the instance of the moment, for a menu that may stay open: no cache (see conditional)
+				// Evaluated on the instance of the moment, for a menu that may stay open: no cache
 				expression.setCachingStrategy(CachingStrategy.NO_CACHING);
 			}
 
@@ -421,7 +380,6 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 		@Override
 		public void revalidateBindings() {
 			super.revalidateBindings();
-			getConditional().rebuild();
 			getVisible().rebuild();
 			getEnable().rebuild();
 		}

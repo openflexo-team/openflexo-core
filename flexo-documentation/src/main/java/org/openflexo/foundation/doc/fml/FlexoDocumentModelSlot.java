@@ -108,11 +108,6 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, TA>, R extend
 		}
 
 		@Override
-		protected String getFMLRepresentationForConformToStatement() {
-			return "conformTo " + getTemplateDocumentURI() + " ";
-		}
-
-		@Override
 		public FlexoDocument<D, TA> getTemplateDocument() {
 			if (getTemplateResource() != null) {
 				return getTemplateResource().getDocument();

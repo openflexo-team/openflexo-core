@@ -75,7 +75,6 @@ import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.rm.FIBComponentResource;
@@ -202,8 +201,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String FLEXO_PROPERTIES_KEY = "flexoProperties";
 	@PropertyIdentifier(type = FlexoProperty.class, cardinality = Cardinality.LIST)
 	public static final String KEY_PROPERTIES_KEY = "keyProperties";
-	@PropertyIdentifier(type = FlexoConceptInspector.class)
-	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARENT_FLEXO_CONCEPT_TYPES_KEY = "parentFlexoConceptTypes";
 	@PropertyIdentifier(type = List.class)
@@ -630,26 +627,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public <MS extends ModelSlot<?,?>> List<MS> getModelSlots(Class<MS> msType);
 
-	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY/*, ignoreForEquality = true*/)
-	@XMLElement(xmlTag = "Inspector")
-	@CloningStrategy(StrategyType.CLONE)
-	@Embedded
-	public FlexoConceptInspector getInspector();
-
-	@Setter(INSPECTOR_KEY)
-	public void setInspector(FlexoConceptInspector inspector);
-
-	/**
-	 * Return the deprecated {@link FlexoConceptInspector} of this concept, creating it when this concept has none.
-	 *
-	 * Reserved for the code that edits an inspector: {@link #getInspector()} never creates one, so that merely reading a concept leaves
-	 * it unmodified.
-	 *
-	 * @deprecated as {@link FlexoConceptInspector} itself
-	 */
-	@Deprecated
-	public FlexoConceptInspector getOrCreateInspector();
-
 	/**
 	 * Return the renderer of this concept: the expression giving the string representation of one of its instances, which reads the
 	 * instance as <code>instance</code>.
@@ -972,13 +949,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public ImageIcon getSmallIcon();
 
 	/**
-	 * Return applicable inspector, or current concept inspector
-	 *
-	 * @return
-	 */
-	public FlexoConceptInspector getApplicableInspector();
-
-	/**
 	 * Return applicable renderer, exploiting concept hierarchy and finding most specialized one
 	 * 
 	 * @return
@@ -1006,7 +976,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	/**
 	 * Metadata key of the annotation giving the string representation of the instances of this concept:
 	 * <code>@Renderer(someExpression)</code>.<br>
-	 * This is where a renderer is actually STORED - {@link FlexoConceptInspector#getRenderer()} only reads it back.
+	 * This is where a renderer is actually STORED.
 	 */
 	public static final String RENDERER_METADATA = "Renderer";
 
@@ -1195,7 +1165,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 
-		private FlexoConceptInspector inspector;
 
 		private FlexoConceptStructuralFacet structuralFacet;
 		private FlexoConceptBehaviouralFacet behaviouralFacet;
@@ -2133,25 +2102,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return newDeletionScheme;
 		}
 
-		/**
-		 * Return the inspector this concept declares, or null: reading a concept must not create one. Setting the title of a freshly
-		 * created inspector marked the concept, and its compilation unit, as modified - so merely analyzing a binding proposed an
-		 * untouched model for saving (CORE-D-26). Use {@link #getOrCreateInspector()} to edit one.
-		 */
-		@Override
-		public FlexoConceptInspector getInspector() {
-			return inspector;
-		}
-
-		@Override
-		public FlexoConceptInspector getOrCreateInspector() {
-			if (inspector == null && getFMLModelFactory() != null) {
-				inspector = getFMLModelFactory().newFlexoConceptInspector(this);
-				inspector.setInspectorTitle(getName());
-			}
-			return inspector;
-		}
-
 		private FlexoConceptRenderer rendererOwner;
 		private DataBinding<String> renderer;
 
@@ -2419,14 +2369,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					FlexoConceptImpl.this.notifiedBindingDecoded(dataBinding);
 				}
 			}
-		}
-
-		@Override
-		public void setInspector(FlexoConceptInspector inspector) {
-			if (inspector != null) {
-				inspector.setFlexoConcept(this);
-			}
-			this.inspector = inspector;
 		}
 
 		@Override
@@ -2865,9 +2807,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				embeddedValidable.add(getStructuralFacet());
 				embeddedValidable.add(getBehaviouralFacet());
 				embeddedValidable.add(getInnerConceptsFacet());
-				if (getInspector() != null) {
-					embeddedValidable.add(getInspector());
-				}
 			}
 			return embeddedValidable;
 		}
@@ -2951,16 +2890,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Return applicable inspector, or current concept inspector
-		 *
-		 * @return
-		 */
-		@Override
-		public FlexoConceptInspector getApplicableInspector() {
-			return getInspector();
-		}
-
-		/**
 		 * Return applicable renderer, exploiting concept hierarchy and finding most specialized one
 		 * 
 		 * @return
@@ -2988,13 +2917,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public String getPresentationName() {
-			if (getApplicableInspector() != null && StringUtils.isNotEmpty(getApplicableInspector().getInspectorTitle())) {
-				return getApplicableInspector().getInspectorTitle();
-			}
-			else {
-				return getName();
-			}
-
+			return getName();
 		}
 
 		@Override

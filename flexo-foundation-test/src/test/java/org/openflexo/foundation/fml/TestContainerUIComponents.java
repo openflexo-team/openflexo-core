@@ -20,7 +20,6 @@ import java.util.TreeSet;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.rm.FIBComponentResource;
-import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.rm.Resource;
@@ -189,7 +188,7 @@ public class TestContainerUIComponents extends OpenflexoTestCase {
 		assertNull(compilationUnit.getContainedArtefact(""));
 	}
 
-	/** A renderer is STORED as @Renderer metadata; the deprecated {@link FlexoConceptInspector} only reads it back. */
+	/** A renderer is STORED as @Renderer metadata. */
 	@Test
 	@TestOrder(10)
 	public void test9RendererComesFromAnnotation() {

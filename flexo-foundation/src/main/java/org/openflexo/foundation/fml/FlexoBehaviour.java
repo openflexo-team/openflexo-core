@@ -138,20 +138,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String SKIP_CONFIRMATION_PANEL_KEY = "skipConfirmationPanel";
-	@PropertyIdentifier(type = boolean.class)
-	public static final String LONG_RUNNING_ACTION_KEY = "longRunningAction";
-	@PropertyIdentifier(type = boolean.class)
-	public static final String DEFINE_POPUP_DEFAULT_SIZE_KEY = "definePopupDefaultSize";
-	@PropertyIdentifier(type = int.class)
-	public static final String WIDTH_KEY = "width";
-	@PropertyIdentifier(type = int.class)
-	public static final String HEIGHT_KEY = "height";
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String STEPS_NUMBER_KEY = "stepsNumber";
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 	@PropertyIdentifier(type = boolean.class)
@@ -226,51 +216,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Setter(SKIP_CONFIRMATION_PANEL_KEY)
 	public void setSkipConfirmationPanel(boolean skipConfirmationPanel);
-
-	@Getter(value = LONG_RUNNING_ACTION_KEY, defaultValue = "false")
-	@XMLAttribute
-	@Deprecated
-	public boolean getLongRunningAction();
-
-	@Setter(LONG_RUNNING_ACTION_KEY)
-	@Deprecated
-	public void setLongRunningAction(boolean isLongRunningAction);
-
-	@Getter(value = STEPS_NUMBER_KEY)
-	@XMLAttribute
-	@Deprecated
-	public DataBinding<Integer> getStepsNumber();
-
-	@Setter(STEPS_NUMBER_KEY)
-	@Deprecated
-	public void setStepsNumber(DataBinding<Integer> stepsNumber);
-
-	@Getter(value = DEFINE_POPUP_DEFAULT_SIZE_KEY, defaultValue = "false")
-	@XMLAttribute
-	@Deprecated
-	public boolean getDefinePopupDefaultSize();
-
-	@Setter(DEFINE_POPUP_DEFAULT_SIZE_KEY)
-	@Deprecated
-	public void setDefinePopupDefaultSize(boolean definePopupDefaultSize);
-
-	@Getter(value = WIDTH_KEY, defaultValue = "0")
-	@XMLAttribute
-	@Deprecated
-	public int getWidth();
-
-	@Setter(WIDTH_KEY)
-	@Deprecated
-	public void setWidth(int width);
-
-	@Getter(value = HEIGHT_KEY, defaultValue = "0")
-	@XMLAttribute
-	@Deprecated
-	public int getHeight();
-
-	@Setter(HEIGHT_KEY)
-	@Deprecated
-	public void setHeight(int height);
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
 	@Embedded
@@ -389,15 +334,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoBehaviour.class.getPackage().getName());
 
-		private int width = 800;
-		private int height = 600;
-
 		private final FlexoBehaviourType flexoBehaviourType = new FlexoBehaviourType(this);
 		private final FlexoBehaviourActionType flexoBehaviourActionType = new FlexoBehaviourActionType(this);
 		private final FlexoBehaviourParametersType flexoBehaviourParametersType = new FlexoBehaviourParametersType(this);
 		private final FlexoBehaviourParametersValuesType flexoBehaviourParametersValuesType = new FlexoBehaviourParametersValuesType(this);
-
-		private DataBinding<Integer> stepsNumber;
 
 		/**
 		 * We define an updater for TYPE property because we need to translate supplied Type to valid TypingSpace
@@ -675,26 +615,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public int getWidth() {
-			return width;
-		}
-
-		@Override
-		public void setWidth(int width) {
-			this.width = width;
-		}
-
-		@Override
-		public int getHeight() {
-			return height;
-		}
-
-		@Override
-		public void setHeight(int height) {
-			this.height = height;
-		}
-
-		@Override
 		public List<FlexoBehaviourParameter> getArguments() {
 			return getParameters();
 		}
@@ -892,27 +812,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public boolean supportParameters() {
 			return true;
-		}
-
-		@Override
-		public DataBinding<Integer> getStepsNumber() {
-			if (stepsNumber == null) {
-				stepsNumber = new DataBinding<>(this, Integer.class, DataBinding.BindingDefinitionType.GET);
-				stepsNumber.setBindingName("stepsNumber");
-				stepsNumber.setMandatory(false);
-
-			}
-			return stepsNumber;
-		}
-
-		@Override
-		public void setStepsNumber(DataBinding<Integer> stepsNumber) {
-			if (stepsNumber != null) {
-				this.stepsNumber = new DataBinding<>(stepsNumber.toString(), this, Integer.class, DataBinding.BindingDefinitionType.GET);
-				this.stepsNumber.setBindingName("stepsNumber");
-				this.stepsNumber.setMandatory(true);
-			}
-			notifiedBindingChanged(stepsNumber);
 		}
 
 		@Override

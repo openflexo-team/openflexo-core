@@ -139,8 +139,9 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 
 			// First handle FMLModelFactory update
 			VirtualModel virtualModel = getFlexoConcept().getOwningVirtualModel();
-			if (virtualModel != null && !virtualModel.uses(getModelSlotClass())) {
-				virtualModel.declareUse(getModelSlotClass());
+			if (virtualModel != null && virtualModel.getCompilationUnit() != null
+					&& !virtualModel.getCompilationUnit().uses(getModelSlotClass())) {
+				virtualModel.getCompilationUnit().declareUse(getModelSlotClass());
 			}
 
 			if (getModelSlot() != null) {

@@ -132,7 +132,6 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 		performSetParentConcepts();
 		performCreateProperties();
 		performCreateBehaviours();
-		performCreateInspectors();
 		performPostProcessings();
 
 	}

@@ -125,10 +125,6 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 
 			getVirtualModel().getCompilationUnit().ensureUse(getModelSlotClass());
 
-			if (getVirtualModel() != null && !getVirtualModel().uses(getModelSlotClass())) {
-				getVirtualModel().declareUse(getModelSlotClass());
-			}
-
 			// Add required uses declaration
 			List<Class<? extends ModelSlot<?, ?>>> msClasses = new ArrayList<>();
 			for (UseModelSlotDeclaration useDecl : getVirtualModel().getCompilationUnit().getUseDeclarations()) {

@@ -289,5 +289,58 @@ the storage, and `ClassRole.conceptURI` / `AbstractSelectIndividual.ontologyClas
   (`ModelProperty.isSerializable()`), and that decides the list matching of `updateWith()` (`CompareAndMergeUtils.getDistance`) and
   the "modified" marking. The XML annotations cannot be removed before this definition changes.
 
+**Phase 5 (2026-11-09), other `@Deprecated`.** Checked caller by caller across the workspace first: most of the deprecated API is
+in fact alive. Decided with the user: remove the dead ones, the old GUI hints of a behaviour, the use declarations of `VirtualModel` and
+the old inspector model; list the alive ones (below) for a decision item by item; renames last.
+- Dead, removed: `RolePropertyValue`, the `CreateActionScheme` entity of `fml/ta` (never declared), `SynchronizationScheme`'s
+  `synchronizedVirtualModel`, `NotifyPropertyChangedAction.staticPropertyName`, `ModelSlot.getFMLRepresentationForConformToStatement`,
+  commented-out leftovers of fml-parser.
+- GUI hints with no FML syntax (only the XML carried them), removed: `FlexoBehaviour.longRunningAction` / `stepsNumber` (and
+  `LongRunningActionSchemeAction`), `definePopupDefaultSize` / `width` / `height`, `AbstractActionScheme.conditional` (superseded by
+  `@Enable`), with their widgets and dictionary keys. A long-running action scheme, if wanted again, is an annotation to design (UI-F-2).
+- `VirtualModel.getUseDeclarations` / `getAccessibleUseDeclarations` / `uses` / `declareUse` and the adder/remover removed: the use
+  declarations live in `FMLCompilationUnit`; the three internal callers moved there.
+- The old inspector model removed: `FlexoConceptInspector`, `InspectorEntry`, their binding models, `FlexoConcept.getInspector` /
+  `getOrCreateInspector` / `getApplicableInspector`, the `CreateInspectorEntry` action and wizard, the "Define inspector" step of the
+  concept-creation wizards (`defineInspector`, `performCreateInspectors`), the legacy tab of `ModuleInspectorController` (a concept
+  without a container `.inspector` now shows the basic inspector only), the inspector nodes of the FML browsers. The entries that
+  concept creation used to generate (core, diagram-ta, jdbc-ta, gina-ta) were never saved; creating an inspector at creation time
+  again is CORE-F-9. fml-gina-extension's widget scaffolding is a detached `FlexoBehaviourParameter` instead of an `InspectorEntry`.
+- Alive, kept `@Deprecated` until decided (callers outside the declaring file, measured 2026-11-09):
+
+| API | Users | What it is |
+|---|---|---|
+| `FlexoObject.addActionForClass` / `removeActionFromClass` | ~150 files, every repository | the registration of FlexoActions on a class |
+| `TechnologySpecificActionDefiningReceiver` (receiver) | ~90 files, every TA | the receiver of TA edition actions (`in (x)`) |
+| `FlexoConceptInstance.getModelSlotInstance(...)` | ~60 files | access to the model slot instances of an instance |
+| `AbstractCreateResource.relativePath` | ~50 files | static relative path of a created resource (`dynamicRelativePath` exists) |
+| `CreationSchemePathElement.virtualModelInstanceTitle` | ~60 files | title of a created VirtualModel instance |
+| `VirtualModel` / `FMLCompilationUnit.getVirtualModelNamed`, `FMLCompilationUnit.getFlexoConcept(String)`, `getObject` | ~45 files | lookup by name or URI |
+| `VirtualModel.getCompilationUnitResource` | ~70 files | the resource of a VirtualModel |
+| `FlexoConcept.getFlexoBehaviour(String)` | ~40 files | behaviour lookup by name |
+| `SynchronizationScheme` (the class) | ~30 files | the `synchronize` behaviour of a VirtualModel |
+| `ExecuteFlexoBehaviour`, `DeleteFlexoConceptInstance` (the classes) | FML syntax | `FMLRT::ExecuteFlexoBehaviour(...)`, `delete` |
+| `VirtualModel.modelSlotNatureClass` | jdbc-ta | gives `CreateJDBCVirtualModel` an `HbnVirtualModelInstanceType`; not in FML text, lost on reload |
+| `FlexoConceptInstanceRole.creationScheme` | core | plain field since phase 4, fallback of `NewFlexoConceptInstance` |
+| 8 binding classes (`FlexoBehaviourParameter*PathElement`, `*ParameterBindingModel`, `FlexoConceptInstancePathElement`), `FMLBindingFactory` constants | core | the implementation of `parameters.x`, `parametersDefinitions`, `flexoConceptInstance` |
+| `KVCFlexoObject`, `DefaultFlexoObject` | `FlexoObservable`, `RepositoryFolder`, `VirtualModelLibrary`, ontology, pdf-ta | base classes, to become PAMELA |
+| `DirectoryContainerResource.get/setDirectory`, `ModelSlot.makeFlexoRole` / `getModelSlotName`, `CompilationUnitResource.setUsedModelSlots` | 5-10 files each | resource and model slot plumbing |
+| fml-parser `getCompilationUnitAnalyzer` | 79 uses | the analyzer of the unit being parsed |
+| flexo-ontology `isNamedClass` / `isRootConcept`, `AddIndividual` URI | ontology TAs | with the ontology rework |
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.
+
+### CORE-F-9 — Create the inspector of a concept when creating the concept  ·  `TODO`
+
+**Problem.** The concept-creation wizards had a "Define inspector" step that built a `FlexoConceptInspector` with an entry per chosen
+property. That model had no FML syntax, so the inspector was lost at the first save, and it was removed with it (CORE-F-8 phase 5). The
+inspector of a concept is now a `Xxx.inspector` GINA component in the `Xxx.fml/` container, written by fml-gina-extension's
+`CreateInspector`, which core and fml-technologyadapter-ui cannot call (it depends on them).
+
+**Options.** A post-creation hook that a UI module contributes (fml-gina-extension runs `CreateInspector` with the chosen properties);
+or the wizard step moves to fml-gina-extension.
+
+**Acceptance criteria.** Creating a concept (core, diagram-ta, jdbc-ta, gina-ta wizards) can produce its container `.inspector`, saved
+with the model and shown in the running application.
+

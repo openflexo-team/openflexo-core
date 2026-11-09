@@ -131,8 +131,7 @@ public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum,
 
 		/*performSetParentConcepts();
 		performCreateProperties();
-		performCreateBehaviours();
-		performCreateInspectors();*/
+		performCreateBehaviours();*/
 		performPostProcessings();
 
 	}
