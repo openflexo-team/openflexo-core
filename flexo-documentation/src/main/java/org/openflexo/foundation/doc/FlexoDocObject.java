@@ -24,6 +24,8 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -49,7 +51,10 @@ public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends Techn
 	@PropertyIdentifier(type = FlexoDocument.class)
 	public static final String DOCUMENT_KEY = "document";
 
-	@Getter(value = DOCUMENT_KEY)
+	// Transient: a pointer back to the document holding this object, not part of its content. A clone keeps it (the elements of a
+	// fragment are cloned before being inserted in another document)
+	@Getter(value = DOCUMENT_KEY, isTransient = true)
+	@CloningStrategy(StrategyType.REFERENCE)
 	public D getFlexoDocument();
 
 	@Setter(DOCUMENT_KEY)

@@ -57,7 +57,10 @@ public interface ResourceData<RD extends ResourceData<RD>> {
 	@PropertyIdentifier(type = FlexoResource.class)
 	final String FLEXO_RESOURCE = "flexoResource";
 
-	@Getter(value = FLEXO_RESOURCE, ignoreType = true)
+	/**
+	 * The resource holding this data. Transient: a link set when the data is attached to its resource, not part of its content.
+	 */
+	@Getter(value = FLEXO_RESOURCE, ignoreType = true, isTransient = true)
 	FlexoResource<RD> getResource();
 
 	@Setter(FLEXO_RESOURCE)

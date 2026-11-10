@@ -128,6 +128,14 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentImpl.class.getPackage().getName());
 
+		/**
+		 * A fragment is a view over a sequence of elements of its document, not part of the document's content: setting its bounds does
+		 * not modify the document (PAMELA-F-3)
+		 */
+		@Override
+		public void setIsModified() {
+		}
+
 		@Override
 		public List<? extends FlexoDocElement<D, TA>> getElements() {
 			if (getStartElement() == null || getEndElement() == null) {

@@ -466,6 +466,26 @@ the calls never end.
 **Expected.** A lookup visits each compilation unit once (a set of visited units), or the method goes with the other deprecated API
 (phase 5 of CORE-F-8).
 
+### CORE-D-45 — Validating or printing a VirtualModel marks its resource modified  ·  `TODO`
+
+**Symptom.** A compilation unit nobody edited is reported modified, so the application would offer to save it. Measured on
+2026-11-09 on the 22 VirtualModels of `integration-tests` (all loaded, then validated, then pretty-printed): none is modified after
+loading, 9 are after validation, 11 after printing.
+
+**What is verified (recorder of `setIsModified` on resource data, temporary, removed).**
+- Validation: the 9 `DiagramSpecification.fml` of the old view points. Their expressions are parsed again
+  (`DataBinding.setExpression` → `notifiedBindingChanged` → `setIsModified`, from `FMLControlGraph`).
+- Printing: `FMLCompilationUnit` printing visits the concepts, and `FlexoConcept.handleRequiredImports` calls `ensureUse`, which adds a
+  use declaration (BPMNModel, FMLClassDiagram).
+- Printing a `DiagramSpecification` loads its example diagrams and palettes from XML, and the diagram-ta objects mark themselves
+  modified while being deserialized (`DiagramImpl.setIsModified` / `DiagramPaletteImpl.setIsModified` from `XMLSaxDeserializer`).
+
+**To reproduce.** Load every `CompilationUnitResource` of a resource center, check `isModified()`, validate the VirtualModels, check
+again, call `getFMLPrettyPrint()`, check again.
+
+**Expected.** Neither validation nor printing changes the model, so neither marks it modified; a binding parsed again to the same
+expression, and a use declaration that printing needs, are not edits. Found while measuring phase 6 of CORE-F-8.
+
 ## FML compilation unit loading
 
 ### CORE-D-14 — Compilation units importing each other load forever, or keep bindings analyzed against partial types  ·  `DONE`

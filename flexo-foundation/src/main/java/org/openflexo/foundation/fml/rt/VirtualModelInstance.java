@@ -318,7 +318,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setContainerVirtualModelInstance(VirtualModelInstance<?, ?> containerVMI);
 
 	/**
-	 * Return all {@link FMLRTVirtualModelInstance} defined in this {@link VirtualModelInstance}
+	 * Return all {@link FMLRTVirtualModelInstance} defined in this {@link VirtualModelInstance}.<br>
+	 * Transient: each of them is a resource of its own, contained in the resource of this instance, and not saved with it.
 	 * 
 	 * @return
 	 */
@@ -326,7 +327,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			value = VIRTUAL_MODEL_INSTANCES_KEY,
 			cardinality = Cardinality.LIST,
 			inverse = VirtualModelInstance.CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY,
-			ignoreType = true)
+			ignoreType = true,
+			isTransient = true)
 	public List<VirtualModelInstance<?, ?>> getVirtualModelInstances();
 
 	/**

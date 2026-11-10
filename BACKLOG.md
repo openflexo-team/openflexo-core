@@ -337,6 +337,38 @@ deprecated XML tag so older instances load), and the fml-parser nodes `Add{Flexo
 `FlexoBehaviourParameter*PathElement`, `ConfigureFlexoBehaviourParameters`, `createFlexoBehaviourParameter`…), the XML tag
 `GenericBehaviourParameter`, and `FMLDataBindingRole`'s `@FML("JavaRole")`.
 
+**Phase 6, measured before deciding (2026-11-09).** Candidate rule for FML definitions: a property counts for "modified" and for the
+matching of `updateWith()` when it is neither derived nor inverse nor marked transient, instead of when it carries an XML annotation.
+Measured with the rule behind a flag (temporary code, removed): 2590 definition properties are XML-marked, 964 others are neither
+derived nor XML-marked. Over the 16 usual suites only one test changes: `TestBehaviourAvailability.test5` — `FMLObject.metaData` (the
+annotations) now weighs in the matching, a reorder is attempted and PAMELA fails because the property has no `@Reindexer`. 48 properties
+are set at least once under the rule; sorted:
+- transient (print / parse helpers, caches): `prettyPrintDelegate` (128 entities), `FMLPropertyValues`, the `object` / `property` /
+  `value` / `instances` / `enum` of the `FMLPropertyValue`s, `unresolvedPropertyName`, `flexoResource`, `accessedVirtualModel`,
+  `roleName` (an alias of `name`), `serializationRepresentation` (to check);
+- parent pointers without a declared inverse (to exclude like inverses): the `owner` of meta-data and of call arguments;
+- data, so far ignored by "modified" and by the matching: `type`, `modelSlot`, `key`, `valueExpression`, `matchedType`,
+  `fetchedType`, `metamodelElement`, `label`, `targetType`, `fromType` / `toType`, `eventType`, the typed references of phase 4
+  (`behaviourReference`, `propertyReference`, `paramReference`, `creationSchemeReference`), `parentFlexoConceptTypes`, and the values
+  of TA annotations set through `FMLModelContext$FMLProperty.set` (`ontologyClass`, `objectProperty`, `call`, `transparency`, …).
+On loading, the rule marks nothing modified (the load resets the status); printing marks 2 more resources of 22 because of the
+`FMLPropertyValue` helpers. Validation and printing already mark resources modified without the rule (CORE-D-45).
+
+**The same rule on every PAMELA model, measured (2026-11-10).** Proposed by the user: persistent = not derived and not `@Transient`
+for all PAMELA models, the XML annotations keeping only the mapping role. ("Not inverse" is not needed: PAMELA already makes the single
+side of an inverse pair derived.) 28 suites (pamela, pamela-editor, gina, diana non-UI, core, ui, 7 TAs, formod, FME), all green
+without the rule. With it: pamela, pamela-editor, gina, diana, pptx, owl, formod, FME, fml-parser, fml-cli, ui, http-server unchanged;
+red: docx 25, xlsx 17, jdbc 12, flexo-foundation-test 5, xml 2. Cause verified for xlsx and jdbc: models built by a converter from a
+native file (POI rows and cells, JDBC lines) are not deserialized by PAMELA, so every setter called while building them now marks them
+modified, and `setIsModified` climbs `getResourceData()` through a parent not set yet (`ExcelCell.getExcelSheet()`,
+`JDBCLine.getResultSet()`) -> NPE. In core: reading a localized dictionary marks it modified; `TestPopulateVirtualModelInstance` not
+analyzed; docx and xml not root-caused. Census over the 933 entities loaded: 7765 XML-mapped properties, 609 derived, about 3100 neither
+(core 950, gina 243, diana 60, pamela 47, TAs 1800). The properties set under the rule are mostly runtime links: the
+`serviceManager` / `factory` / `resourceCenter` / `technologyAdapter` of every resource, the `flexo_resource` of IO delegates, the
+native handles of TA models (`ExcelRow.row`, `ExcelCell.cell`), GINA's `controllerClass` / `customTypeManager` / `fibLibrary` /
+`parent`, DIANA's mouse controls. Note: an `@XMLElement` on an entity does not mean it is saved in XML (many TA model entities carry one
+and are rebuilt from their native file).
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.
 

@@ -160,6 +160,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	@Remover(META_DATA_KEY)
 	public void removeFromMetaData(FMLMetaData metaData);
 
+	@Reindexer(META_DATA_KEY)
+	public void moveMetaDataToIndex(FMLMetaData metaData, int index);
+
 	@Finder(collection = META_DATA_KEY, attribute = FMLMetaData.KEY_KEY)
 	public FMLMetaData getMetaData(String key);
 

@@ -378,7 +378,8 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 	public void testPopulateVirtualModelInstance() throws SaveResourceException {
 
 		log("testPopulateVirtualModelInstance()");
-		assertEquals(0, serviceManager.getResourceManager().getUnsavedResources().size());
+		assertEquals("Unsaved: " + serviceManager.getResourceManager().getUnsavedResources(), 0,
+				serviceManager.getResourceManager().getUnsavedResources().size());
 
 		FMLRTVirtualModelInstanceResource vmiRes = (FMLRTVirtualModelInstanceResource) newVirtualModelInstance.getResource();
 		assertFalse(newVirtualModelInstance.isModified());

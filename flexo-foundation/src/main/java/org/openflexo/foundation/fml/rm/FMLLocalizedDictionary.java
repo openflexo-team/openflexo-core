@@ -71,9 +71,10 @@ public interface FMLLocalizedDictionary extends TechnologyObject<FMLTechnologyAd
 	public static final String DICTIONARY_KEY = "dictionary";
 
 	/**
-	 * The localizer this resource holds.
+	 * The localizer this resource holds. Transient: the localizer writes the <code>.dict</code> files itself, holding it is not a change
+	 * of the dictionary.
 	 */
-	@Getter(value = DICTIONARY_KEY, ignoreType = true)
+	@Getter(value = DICTIONARY_KEY, ignoreType = true, isTransient = true)
 	public LocalizedDelegate getDictionary();
 
 	@Setter(DICTIONARY_KEY)

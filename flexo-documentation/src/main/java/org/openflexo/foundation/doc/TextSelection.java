@@ -104,13 +104,14 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * 
 	 * @return
 	 */
-	@Getter(FRAGMENT_KEY)
+	// Transient (as the other element pointers): a view over the document, rebuilt on demand, not saved with it
+	@Getter(value = FRAGMENT_KEY, isTransient = true)
 	public FlexoDocFragment<D, TA> getFragment();
 
 	@Setter(FRAGMENT_KEY)
 	public void setFragment(FlexoDocFragment<D, TA> fragment);
 
-	@Getter(START_ELEMENT_KEY)
+	@Getter(value = START_ELEMENT_KEY, isTransient = true)
 	public FlexoDocElement<D, TA> getStartElement();
 
 	@Setter(START_ELEMENT_KEY)
@@ -123,7 +124,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Setter(START_ELEMENT_IDENTIFIER_KEY)
 	public void setStartElementIdentifier(String startElementIdentifier);
 
-	@Getter(END_ELEMENT_KEY)
+	@Getter(value = END_ELEMENT_KEY, isTransient = true)
 	public FlexoDocElement<D, TA> getEndElement();
 
 	@Setter(END_ELEMENT_KEY)
