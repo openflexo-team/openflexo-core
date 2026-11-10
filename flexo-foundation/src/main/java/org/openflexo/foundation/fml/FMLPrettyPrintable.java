@@ -60,6 +60,7 @@ public interface FMLPrettyPrintable extends FMLObject {
 	// Very important here:
 	// ignoreForEquality=true MUST remains commented out for the update schemes to work well
 	// But it must be present to locally run migration tests
+	// Not transient: updateWith() carries the delegate (and the text positions it holds) from a re-parsed text to the edited object
 	@Getter(value = PRETTY_PRINT_DELEGATE_KEY, ignoreType = true/*, ignoreForEquality = true*/)
 	public FMLPrettyPrintDelegate<?> getPrettyPrintDelegate();
 

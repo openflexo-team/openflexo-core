@@ -69,7 +69,7 @@ public interface FlexoResourceCenterService extends FlexoService, AccessibleProx
 
 	public FlexoResourceCenter<?> getFlexoResourceCenter(String baseURI);
 
-	@Getter(value = RESOURCE_CENTERS, cardinality = Cardinality.LIST, ignoreType = true)
+	@Getter(value = RESOURCE_CENTERS, cardinality = Cardinality.LIST, ignoreType = true, isTransient = true)
 	public List<FlexoResourceCenter<?>> getResourceCenters();
 
 	@Setter(RESOURCE_CENTERS)

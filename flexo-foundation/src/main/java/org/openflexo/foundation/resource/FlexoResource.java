@@ -192,7 +192,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @return the name of this resource.
 	 */
 	@Override
-	@Getter(value = SERVICE_MANAGER, ignoreType = true)
+	@Getter(value = SERVICE_MANAGER, ignoreType = true, isTransient = true)
 	public FlexoServiceManager getServiceManager();
 
 	/**
@@ -208,7 +208,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return
 	 */
-	@Getter(value = RESOURCE_CENTER, ignoreType = true)
+	@Getter(value = RESOURCE_CENTER, ignoreType = true, isTransient = true)
 	public FlexoResourceCenter<?> getResourceCenter();
 
 	/**

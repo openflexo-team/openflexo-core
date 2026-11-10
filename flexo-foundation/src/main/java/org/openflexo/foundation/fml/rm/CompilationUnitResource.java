@@ -96,7 +96,7 @@ public interface CompilationUnitResource
 	String FACTORY = "factory";
 
 	@Override
-	@Getter(value = FACTORY, ignoreType = true)
+	@Getter(value = FACTORY, ignoreType = true, isTransient = true)
 	public FMLModelFactory getFactory();
 
 	@Override

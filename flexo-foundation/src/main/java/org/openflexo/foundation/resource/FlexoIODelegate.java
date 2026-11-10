@@ -72,7 +72,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 */
 	public static final String SERIALIZATION_ARTEFACT = "serialization_artefact";
 
-	@Getter(value = FLEXO_RESOURCE)
+	@Getter(value = FLEXO_RESOURCE, isTransient = true)
 	public FlexoResource<?> getFlexoResource();
 
 	@Setter(FLEXO_RESOURCE)

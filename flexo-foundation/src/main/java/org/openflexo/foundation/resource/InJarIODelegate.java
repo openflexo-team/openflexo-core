@@ -67,7 +67,7 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 	@PropertyIdentifier(type = InJarResourceImpl.class)
 	public static final String IN_JAR_RESOURCE = "inJarResource";
 
-	@Getter(value = IN_JAR_RESOURCE, ignoreType = true)
+	@Getter(value = IN_JAR_RESOURCE, ignoreType = true, isTransient = true)
 	public InJarResourceImpl getInJarResource();
 
 	@Setter(IN_JAR_RESOURCE)

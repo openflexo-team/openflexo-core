@@ -58,13 +58,13 @@ public interface TechnologyAdapterResource<RD extends ResourceData<RD> & Technol
 	public static final String TECHNOLOGY_ADAPTER = "technologyAdapter";
 	public static final String TECHNOLOGY_CONTEXT_MANAGER = "technologyContextManager";
 
-	@Getter(value = TECHNOLOGY_ADAPTER, ignoreType = true)
+	@Getter(value = TECHNOLOGY_ADAPTER, ignoreType = true, isTransient = true)
 	public TA getTechnologyAdapter();
 
 	@Setter(TECHNOLOGY_ADAPTER)
 	public void setTechnologyAdapter(TA technologyAdapter);
 
-	@Getter(value = TECHNOLOGY_CONTEXT_MANAGER, ignoreType = true)
+	@Getter(value = TECHNOLOGY_CONTEXT_MANAGER, ignoreType = true, isTransient = true)
 	public abstract TechnologyContextManager<TA> getTechnologyContextManager();
 
 	@Setter(TECHNOLOGY_CONTEXT_MANAGER)

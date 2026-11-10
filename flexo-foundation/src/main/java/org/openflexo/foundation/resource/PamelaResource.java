@@ -60,7 +60,7 @@ public interface PamelaResource<RD extends ResourceData<RD>, F extends PamelaMod
 	String MODEL_VERSION = "modelVersion";
 	String FACTORY = "factory";
 
-	@Getter(value = FACTORY, ignoreType = true)
+	@Getter(value = FACTORY, ignoreType = true, isTransient = true)
 	F getFactory();
 
 	@Setter(FACTORY)
