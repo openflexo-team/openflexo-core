@@ -49,8 +49,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A pure declaration of a {@link FlexoProperty}, with no implementation, declared in FML as {@code abstract Type name;}.
@@ -64,7 +62,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(AbstractProperty.AbstractPropertyImpl.class)
-@XMLElement
 public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = Type.class)
@@ -74,7 +71,6 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 	public static final String READ_ONLY_KEY = "readOnly";
 
 	@Getter(value = READ_ONLY_KEY, defaultValue = "false")
-	@XMLAttribute
 	@Override
 	public boolean isReadOnly();
 
@@ -83,7 +79,6 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 
 	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Type getType();
 
 	@Setter(TYPE_KEY)

@@ -74,7 +74,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
@@ -158,7 +157,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	@Override
 	@Getter(CARDINALITY_KEY)
-	@XMLAttribute
 	PropertyCardinality getCardinality();
 
 	/**
@@ -176,7 +174,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @return
 	 */
 	@Getter(value = DEFAULT_VALUE_KEY)
-	@XMLAttribute
 	DataBinding<T> getDefaultValue();
 
 	/**
@@ -188,7 +185,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	void setDefaultValue(DataBinding<T> defaultValue);
 
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
-	@XMLAttribute
 	boolean getIsRequired();
 
 	@Setter(IS_REQUIRED_KEY)
@@ -197,7 +193,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = CONTAINER_KEY, required = false)
 	DataBinding<?> getContainer();
 
@@ -222,7 +217,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @return
 	 */
 	@Getter(CLONING_STRATEGY_KEY)
-	@XMLAttribute
 	RoleCloningStrategy getCloningStrategy();
 
 	/**

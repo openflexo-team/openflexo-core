@@ -55,8 +55,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -85,7 +83,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
-@XMLElement
 // TODO: manage assignment operator
 public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
@@ -93,7 +90,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	public static final String ASSIGNATION_KEY = "assignation";
 
 	@Getter(value = ASSIGNATION_KEY)
-	@XMLAttribute(xmlTag = "assign")
 	public DataBinding<? super T> getAssignation();
 
 	@Setter(ASSIGNATION_KEY)

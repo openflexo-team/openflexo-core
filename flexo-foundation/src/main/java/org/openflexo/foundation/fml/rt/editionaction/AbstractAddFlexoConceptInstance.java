@@ -83,8 +83,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.CompoundIssue;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -134,7 +132,6 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	public static final String DYNAMIC_FLEXO_CONCEPT_TYPE_KEY = "dynamicFlexoConceptType";
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConceptInstance> getContainer();
 
 	@Setter(CONTAINER_KEY)
@@ -166,7 +163,6 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	public void setCreationScheme(CreationScheme creationScheme);
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = AddFlexoConceptInstanceParameter.OWNER_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	// TODO: rename "parameter" to "argument"
@@ -234,14 +230,12 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	public List<CreationScheme> getAvailableCreationSchemes();
 
 	@Getter(value = DYNAMIC_INSTANTIATION_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getDynamicInstantiation();
 
 	@Setter(DYNAMIC_INSTANTIATION_KEY)
 	public void setDynamicInstantiation(boolean dynamicInstanciation);
 
 	@Getter(value = DYNAMIC_FLEXO_CONCEPT_TYPE_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConcept> getDynamicFlexoConceptType();
 
 	@Setter(DYNAMIC_FLEXO_CONCEPT_TYPE_KEY)

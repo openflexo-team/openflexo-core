@@ -42,7 +42,6 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A method of a concept, declared in FML as {@code [visibility] [Type] name(...) { ... }}; its return type is the declared type, or the
@@ -67,7 +66,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(ActionScheme.ActionSchemeImpl.class)
-@XMLElement
 public interface ActionScheme extends AbstractActionScheme {
 
 	public static abstract class ActionSchemeImpl extends AbstractActionSchemeImpl implements ActionScheme {

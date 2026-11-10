@@ -67,8 +67,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The FML action {@code begin match Concept from (container)}, opening a {@link MatchingSet}, as in
@@ -85,7 +83,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(InitiateMatching.InitiateMatchingImpl.class)
-@XMLElement
 public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -96,7 +93,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 	public static final String CONDITIONS_KEY = "conditions";
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConceptInstance> getContainer();
 
 	@Setter(CONTAINER_KEY)
@@ -135,7 +131,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	@Getter(value = CONDITIONS_KEY, cardinality = Cardinality.LIST, inverse = MatchCondition.ACTION_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<MatchCondition> getConditions();

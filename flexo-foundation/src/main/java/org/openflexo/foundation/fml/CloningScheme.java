@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A behaviour creating an instance of a concept by cloning an existing one; the type of the created instance is the type inferred from
@@ -56,7 +55,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(CloningScheme.CloningSchemeImpl.class)
-@XMLElement
 public interface CloningScheme extends AbstractCreationScheme {
 
 	public static abstract class CloningSchemeImpl extends AbstractCreationSchemeImpl implements CloningScheme {

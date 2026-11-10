@@ -68,8 +68,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -95,7 +93,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
-@XMLElement
 public interface ConditionalAction extends ControlStructureAction, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -106,7 +103,6 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 	public static final String ELSE_CONTROL_GRAPH_KEY = "elseControlGraph";
 
 	@Getter(value = CONDITION_KEY)
-	@XMLAttribute
 	public DataBinding<Boolean> getCondition();
 
 	@Setter(CONDITION_KEY)
@@ -115,7 +111,6 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 	@Getter(value = THEN_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "ThenControlGraph_")
 	public FMLControlGraph getThenControlGraph();
 
 	@Setter(THEN_CONTROL_GRAPH_KEY)
@@ -124,7 +119,6 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 	@Getter(value = ELSE_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "ElseControlGraph_")
 	public FMLControlGraph getElseControlGraph();
 
 	@Setter(ELSE_CONTROL_GRAPH_KEY)

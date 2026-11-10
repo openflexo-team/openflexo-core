@@ -60,8 +60,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
@@ -92,7 +90,6 @@ import org.openflexo.pamela.validation.ValidationWarning;
  */
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceRole.FlexoConceptInstanceRoleImpl.class)
-@XMLElement
 @FML("ConceptInstance")
 public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance> {
 
@@ -114,7 +111,6 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_KEY, required = false)
 	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance();
 

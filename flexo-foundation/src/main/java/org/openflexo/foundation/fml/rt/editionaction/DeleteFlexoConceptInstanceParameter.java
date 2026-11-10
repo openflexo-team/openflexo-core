@@ -59,13 +59,10 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 //TODO: merge and use BehaviourParameter instead
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstanceParameter.DeleteFlexoConceptInstanceParameterImpl.class)
-@XMLElement
 public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObject {
 
 	@PropertyIdentifier(type = DeleteFlexoConceptInstance.class)
@@ -97,7 +94,6 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	public void updateParamReference(FMLNamedReference<FlexoBehaviourArgument> paramReference);
 
 	@Getter(value = VALUE_KEY)
-	@XMLAttribute
 	public DataBinding<Object> getValue();
 
 	@Setter(VALUE_KEY)

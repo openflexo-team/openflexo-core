@@ -58,7 +58,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.PamelaModelFactory;
 
@@ -83,7 +82,6 @@ import org.openflexo.pamela.factory.PamelaModelFactory;
  */
 @ModelEntity
 @ImplementationClass(FlexoEnum.FlexoEnumImpl.class)
-@XMLElement
 public interface FlexoEnum extends FlexoConcept {
 
 	@PropertyIdentifier(type = FlexoEnumValue.class, cardinality = Cardinality.LIST)
@@ -91,7 +89,6 @@ public interface FlexoEnum extends FlexoConcept {
 
 	@Getter(value = VALUES_KEY, cardinality = Cardinality.LIST, inverse = FlexoEnumValue.FLEXO_ENUM_KEY)
 	@Embedded
-	@XMLElement(context = "Value_")
 	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoEnumValue> getValues();
 

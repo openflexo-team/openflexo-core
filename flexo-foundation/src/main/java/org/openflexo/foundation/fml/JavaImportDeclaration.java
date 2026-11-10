@@ -48,8 +48,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The import of a Java class in a {@link FMLCompilationUnit}, written in FML as {@code import java.util.List;}, or
@@ -62,7 +60,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  *
  */
 @ModelEntity
-@XMLElement
 @ImplementationClass(JavaImportDeclaration.JavaImportDeclarationImpl.class)
 public interface JavaImportDeclaration extends FMLPrettyPrintable {
 
@@ -81,14 +78,12 @@ public interface JavaImportDeclaration extends FMLPrettyPrintable {
 	public String getClassName();
 
 	@Getter(value = FULL_QUALIFIED_CLASS_NAME_KEY)
-	@XMLAttribute
 	public String getFullQualifiedClassName();
 
 	@Setter(FULL_QUALIFIED_CLASS_NAME_KEY)
 	public void setFullQualifiedClassName(String fullQualifiedClassName);
 
 	@Getter(value = ABBREV_KEY)
-	@XMLAttribute
 	public String getAbbrev();
 
 	@Setter(ABBREV_KEY)

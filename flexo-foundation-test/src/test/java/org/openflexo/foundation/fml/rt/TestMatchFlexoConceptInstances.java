@@ -135,7 +135,6 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		System.out.println("matchingVM2: " + matchingVM2.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(matchingVM2);
 
-		System.out.println(rootVirtualModel.getFMLModelFactory().stringRepresentation(rootVirtualModel));
 
 		System.out.println("VP: " + rootVirtualModel.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(rootVirtualModel);

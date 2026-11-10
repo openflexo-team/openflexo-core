@@ -72,8 +72,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -111,7 +109,6 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity
 @ImplementationClass(FlexoBehaviourArgument.FlexoBehaviourArgumentImpl.class)
-@XMLElement(xmlTag = "GenericBehaviourParameter")
 public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionArgument, WidgetContext, FMLPrettyPrintable {
 
 	public static enum WidgetType {
@@ -212,7 +209,6 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 
 	@Override
 	@Getter(value = NAME_KEY)
-	@XMLAttribute
 	public String getName();
 
 	@Override
@@ -221,7 +217,6 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 
 	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public abstract Type getType();
 
 	@Setter(TYPE_KEY)
@@ -237,21 +232,18 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 
 	@Override
 	@Getter(value = WIDGET_KEY)
-	@XMLAttribute
 	public WidgetType getWidget();
 
 	@Setter(WIDGET_KEY)
 	public void setWidget(WidgetType widget);
 
 	@Getter(value = DEFAULT_VALUE_KEY)
-	@XMLAttribute
 	public DataBinding<?> getDefaultValue();
 
 	@Setter(DEFAULT_VALUE_KEY)
 	public void setDefaultValue(DataBinding<?> defaultValue);
 
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getIsRequired();
 
 	@Setter(IS_REQUIRED_KEY)
@@ -263,7 +255,6 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 
 	@Override
 	@Getter(value = CONTAINER_KEY, ignoreForEquality = true)
-	@XMLAttribute
 	public DataBinding<?> getContainer();
 
 	@Setter(CONTAINER_KEY)
@@ -272,7 +263,6 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 	public Object getContainer(BindingEvaluationContext evaluationContext);
 
 	@Getter(value = LIST_KEY)
-	@XMLAttribute
 	public DataBinding<List<?>> getList();
 
 	@Setter(LIST_KEY)

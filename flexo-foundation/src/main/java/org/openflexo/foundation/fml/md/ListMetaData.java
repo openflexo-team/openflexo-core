@@ -48,7 +48,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link ListMetaData} represent a list of meta-data associated with a key
@@ -59,7 +58,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(ListMetaData.ListMetaDataImpl.class)
-@XMLElement
 public interface ListMetaData extends FMLMetaData {
 
 	@PropertyIdentifier(type = FMLMetaData.class, cardinality = Cardinality.LIST)

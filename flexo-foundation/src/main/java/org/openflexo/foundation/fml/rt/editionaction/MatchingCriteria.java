@@ -58,8 +58,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A criterion of a {@code match} statement ({@link MatchFlexoConceptInstance}): one {@code property=value} of its {@code where} clause, as
@@ -71,7 +69,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(MatchingCriteria.MatchingCriteriaImpl.class)
-@XMLElement
 public interface MatchingCriteria extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
@@ -110,7 +107,6 @@ public interface MatchingCriteria extends FlexoConceptObject {
 	public void updatePropertyReference(FMLNamedReference<FlexoProperty<?>> propertyReference);
 
 	@Getter(value = VALUE_KEY)
-	@XMLAttribute
 	public DataBinding<?> getValue();
 
 	@Setter(VALUE_KEY)

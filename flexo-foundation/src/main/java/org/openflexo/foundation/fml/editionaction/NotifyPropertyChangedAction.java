@@ -55,8 +55,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -66,7 +64,6 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  */
 @ModelEntity
 @ImplementationClass(NotifyPropertyChangedAction.NotifyPropertyChangedActionImpl.class)
-@XMLElement
 public interface NotifyPropertyChangedAction extends EditionAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -81,7 +78,6 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 	public void setPropertyName(DataBinding<String> propertyName);
 
 	@Getter(value = OBJECT_KEY)
-	@XMLAttribute
 	public DataBinding<HasPropertyChangeSupport> getObject();
 
 	@Setter(OBJECT_KEY)

@@ -57,7 +57,6 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link ModelSlot} allowing to reflexively access an FML language<br>
@@ -73,7 +72,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 @DeclareActorReferences({ FMLModelSlotInstance.class, FMLObjectActorReference.class, FMLDataBindingActorReference.class })
 @ModelEntity
 @ImplementationClass(FMLModelSlot.FMLModelSlotImpl.class)
-@XMLElement
 @FML(
 		value = "FMLModelSlot",
 		description = "<html>This ModelSlot represents access to a FML compilation unit<br>"

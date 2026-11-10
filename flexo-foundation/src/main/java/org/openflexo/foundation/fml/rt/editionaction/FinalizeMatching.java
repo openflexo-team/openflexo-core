@@ -81,8 +81,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The FML statement {@code end match Concept in matchingSet unmatched: delete();}, closing a {@link MatchingSet}.
@@ -99,7 +97,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(FinalizeMatching.FinalizeMatchingMatchingImpl.class)
-@XMLElement
 public interface FinalizeMatching extends EditionAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -114,14 +111,12 @@ public interface FinalizeMatching extends EditionAction {
 	public static final String PARAMETERS_KEY = "parameters";
 
 	@Getter(value = MATCHING_SET_KEY)
-	@XMLAttribute
 	public DataBinding<MatchingSet> getMatchingSet();
 
 	@Setter(MATCHING_SET_KEY)
 	public void setMatchingSet(DataBinding<MatchingSet> matchingSet);
 
 	@Getter(value = CONTAINER_KEY, ignoreForEquality = true)
-	@XMLAttribute
 	public DataBinding<FlexoConceptInstance> getContainer();
 
 	@Setter(CONTAINER_KEY)
@@ -197,7 +192,6 @@ public interface FinalizeMatching extends EditionAction {
 	public void setFlexoBehaviour(FlexoBehaviour flexoBehaviour);
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = ExecuteBehaviourParameter.ACTION_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<ExecuteBehaviourParameter> getParameters();

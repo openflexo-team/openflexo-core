@@ -47,8 +47,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The declaration of a namespace in a {@link FMLCompilationUnit}, written in FML as {@code namespace "http://www.openflexo.org/test/" as NS;}.
@@ -61,7 +59,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(NamespaceDeclaration.NamespaceDeclarationImpl.class)
-@XMLElement
 public interface NamespaceDeclaration extends FlexoObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FMLCompilationUnit.class)
@@ -72,7 +69,6 @@ public interface NamespaceDeclaration extends FlexoObject, FMLPrettyPrintable {
 	public static final String ABBREV_KEY = "abbrev";
 
 	@Getter(value = VALUE_KEY)
-	@XMLAttribute
 	public String getValue();
 
 	@Setter(VALUE_KEY)
@@ -86,7 +82,6 @@ public interface NamespaceDeclaration extends FlexoObject, FMLPrettyPrintable {
 	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
 
 	@Getter(value = ABBREV_KEY)
-	@XMLAttribute
 	public String getAbbrev();
 
 	@Setter(ABBREV_KEY)

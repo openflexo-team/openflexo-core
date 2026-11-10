@@ -57,8 +57,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Primitive used to notify a progress step when a progress bar is active
@@ -67,14 +65,12 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(NotifyProgressAction.LogActionImpl.class)
-@XMLElement
 public interface NotifyProgressAction extends EditionAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String LOG_STRING_KEY = "logString";
 
 	@Getter(value = LOG_STRING_KEY)
-	@XMLAttribute
 	public DataBinding<String> getLogString();
 
 	@Setter(LOG_STRING_KEY)

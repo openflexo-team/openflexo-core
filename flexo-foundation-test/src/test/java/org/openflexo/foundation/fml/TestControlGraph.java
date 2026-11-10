@@ -254,7 +254,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		FMLModelFactory factory = creationScheme.getOwningVirtualModel().getResource().getFactory();
 		FMLControlGraph controlGraph = creationScheme.getControlGraph();
 
-		String cg = factory.stringRepresentation(creationScheme);
+		String cg = creationScheme.getFMLPrettyPrint();
 		System.out.println("creationScheme:\n" + cg);
 
 		assertTrue(seq1.getBindingModel().getBaseBindingModel() == creationScheme.getBindingModel());
@@ -275,7 +275,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertTrue(flexoConcept.getFlexoBehaviours().contains(creationScheme));
 		assertTrue(flexoConcept.getCreationSchemes().contains(creationScheme));
 
-		cg = factory.stringRepresentation(creationScheme);
+		cg = creationScheme.getFMLPrettyPrint();
 		System.out.println("creationScheme:\n" + cg);
 
 		assertTrue(controlGraph instanceof Sequence);
@@ -299,7 +299,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(creationScheme, seq1.getRootOwner());
 		assertEquals(creationScheme, seq2.getRootOwner());
 
-		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
+		System.out.println("creationScheme:\n" + creationScheme.getFMLPrettyPrint());
 		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLPrettyPrint());
 
 		// We check that getFlattenedSequence() is correct for a chained
@@ -310,7 +310,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		// We test here control graph deletion and reduction
 		action2.delete();
 
-		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
+		System.out.println("creationScheme:\n" + creationScheme.getFMLPrettyPrint());
 		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLPrettyPrint());
 
 		assertEquals(2, seq1.getFlattenedSequence().size());
@@ -350,7 +350,6 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		FMLModelFactory factory = actionScheme.getOwningVirtualModel().getResource().getFactory();
 
-		// String cg = factory.stringRepresentation(actionScheme);
 		// System.out.println("1 - Control graph:\n" + cg);
 
 		assertNotNull(conditional1);
@@ -402,7 +401,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 				.getNewEditionAction();
 		((ExpressionAction<?>) declarePatternRole2InCondition2.getAssignableAction()).setExpression(new DataBinding<>("3"));
 
-		String debug = factory.stringRepresentation(actionScheme);
+		String debug = actionScheme.getFMLPrettyPrint();
 		System.out.println("actionScheme:\n" + debug);
 
 		FMLControlGraph controlGraph = actionScheme.getControlGraph();

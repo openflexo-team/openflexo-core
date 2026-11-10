@@ -45,11 +45,9 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceRoleRole.FlexoConceptInstanceRoleRoleImpl.class)
-@XMLElement
 @FML("FlexoConceptInstanceRoleRole")
 public interface FlexoConceptInstanceRoleRole extends FlexoPropertyRole<FlexoConceptInstanceRole> {
 

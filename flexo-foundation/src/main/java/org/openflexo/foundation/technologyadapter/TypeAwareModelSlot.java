@@ -54,7 +54,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -84,7 +83,6 @@ public interface TypeAwareModelSlot<
 	public static final String META_MODEL_URI_KEY = "metaModelURI";
 
 	@Getter(value = META_MODEL_URI_KEY)
-	@XMLAttribute
 	public String getMetaModelURI();
 
 	@Setter(META_MODEL_URI_KEY)

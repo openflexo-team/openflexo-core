@@ -48,7 +48,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link MultiValuedMetaData} represent metadata with some values
@@ -59,7 +58,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(MultiValuedMetaData.MultiValuedMetaDataImpl.class)
-@XMLElement
 public interface MultiValuedMetaData extends FMLMetaData {
 
 	@PropertyIdentifier(type = MetaDataKeyValue.class, cardinality = Cardinality.LIST)

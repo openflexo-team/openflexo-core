@@ -62,7 +62,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -74,7 +73,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(ConnectAction.ConnectActionImpl.class)
-@XMLElement
 public interface ConnectAction<RD extends ResourceData<RD> & TechnologyObject<?>, R extends FlexoResource<?>> extends AssignableAction<RD> {
 
 	@PropertyIdentifier(type = DataBinding.class)

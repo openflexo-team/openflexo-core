@@ -80,8 +80,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -103,7 +101,6 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
-@XMLElement(idFactory = "userIdentifier+'-'+flexoID")
 @Imports({ @Import(FMLPropertyValue.class), @Import(FlexoPropertyPathElement.class), @Import(ModelSlotPathElement.class),
 		@Import(CreationSchemePathElement.class) })
 public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLCompilationUnit>, TechnologyObject<FMLTechnologyAdapter> {
@@ -120,14 +117,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public static final String FML_PROPERTY_VALUES_KEY = "FMLPropertyValues";
 
 	@Getter(value = NAME_KEY)
-	@XMLAttribute
 	public String getName();
 
 	@Setter(NAME_KEY)
 	public void setName(String name) throws InvalidNameException;
 
 	@Getter(value = AUTHOR_KEY)
-	@XMLAttribute
 	public String getAuthor();
 
 	@Setter(AUTHOR_KEY)
@@ -138,7 +133,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 * A documentation comment preceding the declaration in FML source is ignored by the parser: it does not provide the description.
 	 */
 	@Getter(value = DESCRIPTION_KEY)
-	@XMLAttribute
 	public String getDescription();
 
 	@Setter(DESCRIPTION_KEY)
@@ -551,14 +545,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return getDeserializationFactory();
 		}
 
+		/**
+		 * Default representation: the simple name of the implemented interface, followed by the name of the object when it has one. FML
+		 * definitions are not serialized in XML any more (CORE-F-8), so the former XML dump would be empty.
+		 */
 		@Override
 		public String getStringRepresentation() {
-			if (getFMLModelFactory() != null) {
-				return getFMLModelFactory().stringRepresentation(this);
-			}
-			else {
-				return "<No factory>";
-			}
+			String className = getImplementedInterface() != null ? getImplementedInterface().getSimpleName() : getClass().getSimpleName();
+			return StringUtils.isNotEmpty(getName()) ? className + " " + getName() : className;
 		}
 
 		private FMLModelFactory deserializationFactory;

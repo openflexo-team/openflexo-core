@@ -60,13 +60,10 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 @ModelEntity
 @ImplementationClass(CreateTopLevelVirtualModel.CreateTopLevelVirtualModelImpl.class)
-@XMLElement
 @FML("CreateTopLevelVirtualModel")
 public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLModelSlot, FMLCompilationUnit, FMLTechnologyAdapter> {
 
@@ -97,7 +94,6 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 	public void updateParentVirtualModelType(CompilationUnitResource virtualModelType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getForceExecuteConfirmationPanel();
 
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)

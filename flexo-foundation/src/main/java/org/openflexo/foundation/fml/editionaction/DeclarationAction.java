@@ -56,8 +56,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -83,7 +81,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(DeclarationAction.DeclarationActionImpl.class)
-@XMLElement
 public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 	@PropertyIdentifier(type = String.class)
@@ -92,7 +89,6 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = VARIABLE_NAME_KEY)
-	@XMLAttribute(xmlTag = "variable")
 	public String getVariableName();
 
 	@Setter(VARIABLE_NAME_KEY)
@@ -108,7 +104,6 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 	 */
 	@FMLMigration("ignoreForEquality=true to be removed")
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
-	@XMLAttribute
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)

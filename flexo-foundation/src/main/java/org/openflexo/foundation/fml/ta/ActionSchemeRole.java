@@ -45,11 +45,9 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(ActionSchemeRole.ActionSchemeRoleImpl.class)
-@XMLElement
 @FML("ActionSchemeRole")
 public interface ActionSchemeRole extends FlexoBehaviourRole<ActionScheme> {
 

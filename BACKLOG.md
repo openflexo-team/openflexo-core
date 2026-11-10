@@ -369,6 +369,17 @@ native handles of TA models (`ExcelRow.row`, `ExcelCell.cell`), GINA's `controll
 `parent`, DIANA's mouse controls. Note: an `@XMLElement` on an entity does not mean it is saved in XML (many TA model entities carry one
 and are rebuilt from their native file).
 
+**Phase 6, batch 1 (2026-11-10): flexo-foundation.** Persistence no longer depends on the XML annotations (PAMELA-F-3, the rule is
+the only one), so they are removed from the FML definitions. Which classes are definitions was decided by a probe, not by package:
+the FML-RT meta-model contains nearly every definition (PAMELA follows `getFlexoConcept()` and the other references), so the criterion
+is "reachable from the runtime roots (the VirtualModelInstance and the actor references of every model slot) through XML-mapped
+properties only". In flexo-foundation that gives 98 definition interfaces (243 annotations removed) and leaves only `FlexoObject`
+shared with the `.fml.rt`; the actor references and model-slot instances keep their mapping, wherever their package. PAMELA now only
+requires distinct XML tags between XML-mapped entities (the tag of an unmapped one falls back on its simple name and may clash).
+`FMLObject.getStringRepresentation()` defaults to "interface name + name" instead of an XML dump; the debug prints of
+`DuplicateVirtualModel` and the XML dumps of definitions in the tests are gone (the tests print the FML instead). Batch 2: the
+technology adapters, formod, flexo-ontology and flexo-documentation (their probe runs where their adapter is loaded).
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.
 

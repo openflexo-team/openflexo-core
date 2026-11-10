@@ -104,8 +104,6 @@ import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.Validable;
@@ -181,7 +179,6 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
-@XMLElement
 @Imports({ @Import(FlexoEvent.class), @Import(FlexoEnum.class) })
 public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
@@ -226,7 +223,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@Override
 	@Getter(value = NAME_KEY)
-	@XMLAttribute
 	public String getName();
 
 	@Override
@@ -247,7 +243,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public String getLocalURI();
 
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
-	@XMLAttribute
 	public Visibility getVisibility();
 
 	@Setter(VISIBILITY_KEY)
@@ -305,7 +300,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	@Getter(value = EMBEDDED_FLEXO_CONCEPT_KEY, cardinality = Cardinality.LIST, inverse = CONTAINER_FLEXO_CONCEPT_KEY)
-	@XMLElement(context = "Embedded", primary = true)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoConcept> getEmbeddedFlexoConcepts();
@@ -345,7 +339,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public List<FlexoBehaviour> getAccessibleFlexoBehaviours(boolean considerContainment);
 
 	@Getter(value = FLEXO_BEHAVIOURS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
-	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
 	public List<FlexoBehaviour> getFlexoBehaviours();
@@ -426,7 +419,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.FLEXO_CONCEPT_KEY)
-	@XMLElement(deprecatedContext = "ModelSlot_", primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
 	public List<FlexoProperty<?>> getFlexoProperties();
@@ -465,7 +457,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	@Getter(value = KEY_PROPERTIES_KEY, cardinality = Cardinality.LIST)
-	@XMLElement(context = "Key_", primary = false)
 	public List<FlexoProperty<?>> getKeyProperties();
 
 	/**
@@ -493,7 +484,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void removeFromKeyProperties(FlexoProperty<?> aProperty);
 
 	@Getter(value = IS_ABSTRACT_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean isAbstract();
 
 	@Setter(IS_ABSTRACT_KEY)
@@ -698,7 +688,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public String getParentFlexoConceptsDeclaration();
 
 	@Getter(value = CHILD_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, isDerived = true/*, inverse = PARENT_FLEXO_CONCEPTS_KEY*/)
-	// @XMLElement(context = "Child")
 	public List<FlexoConcept> getChildFlexoConcepts();
 
 	@Setter(CHILD_FLEXO_CONCEPTS_KEY)
@@ -711,7 +700,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void removeFromChildFlexoConcepts(FlexoConcept childFlexoConcept);
 
 	@Getter(value = INVARIANTS_KEY, cardinality = Cardinality.LIST, inverse = AbstractInvariant.FLEXO_CONCEPT_KEY)
-	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
 	public List<AbstractInvariant> getInvariants();
@@ -879,7 +867,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	@Getter(value = BIG_ICON_RESOURCE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Resource getBigIconResource();
 
 	@Setter(BIG_ICON_RESOURCE_KEY)
@@ -904,7 +891,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	@Getter(value = MEDIUM_ICON_RESOURCE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Resource getMediumIconResource();
 
 	@Setter(MEDIUM_ICON_RESOURCE_KEY)
@@ -929,7 +915,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	@Getter(value = SMALL_ICON_RESOURCE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Resource getSmallIconResource();
 
 	@Setter(SMALL_ICON_RESOURCE_KEY)

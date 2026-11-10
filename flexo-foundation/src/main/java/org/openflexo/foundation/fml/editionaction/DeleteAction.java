@@ -60,8 +60,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The FML deletion statement {@code delete expression;}.
@@ -89,14 +87,12 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(DeleteAction.DeleteActionImpl.class)
-@XMLElement
 public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
 
 	@Getter(value = OBJECT_KEY)
-	@XMLAttribute
 	public DataBinding<T> getObject();
 
 	@Setter(OBJECT_KEY)

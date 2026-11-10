@@ -83,8 +83,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 
@@ -126,7 +124,6 @@ import org.openflexo.pamela.validation.ValidationIssue;
  */
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
-@XMLElement
 @FML("MatchFlexoConceptInstance")
 public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance, FMLRTVirtualModelInstance> {
 
@@ -144,7 +141,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	public static final String CONTAINER_KEY = "container";
 
 	@Getter(value = MATCHING_SET_KEY)
-	@XMLAttribute
 	public DataBinding<MatchingSet> getMatchingSet();
 
 	@Setter(MATCHING_SET_KEY)
@@ -156,7 +152,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	 * @return
 	 */
 	@Getter(value = NEW_INSTANCE_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConceptInstance> getNewInstance();
 
 	/**
@@ -174,7 +169,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	public void setNewInstanceArgumentValue(FlexoBehaviourArgument argument, DataBinding<?> value);
 
 	@Getter(value = MATCHING_CRITERIAS_KEY, cardinality = Cardinality.LIST, inverse = MatchingCriteria.ACTION_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<MatchingCriteria> getMatchingCriterias();
@@ -197,7 +191,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	public void setCreationScheme(CreationScheme creationScheme);
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConceptInstance> getContainer();
 
 	@Setter(CONTAINER_KEY)

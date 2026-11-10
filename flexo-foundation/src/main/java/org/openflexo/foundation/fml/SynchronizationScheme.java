@@ -44,7 +44,6 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A behaviour of a {@link VirtualModel} executed on its instances to synchronize their contained {@link FlexoConceptInstance}s (see
@@ -59,7 +58,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 @Deprecated
 @ModelEntity
 @ImplementationClass(SynchronizationScheme.SynchronizationSchemeImpl.class)
-@XMLElement
 @FML("SynchronizationScheme")
 public interface SynchronizationScheme extends AbstractActionScheme {
 

@@ -60,12 +60,9 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(CreateContainedVirtualModel.CreateContainedVirtualModelImpl.class)
-@XMLElement
 @FML("CreateContainedVirtualModel")
 public interface CreateContainedVirtualModel extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, VirtualModel> {
 
@@ -77,21 +74,18 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
 	@Getter(value = VIRTUAL_MODEL_NAME_KEY)
-	@XMLAttribute
 	public DataBinding<String> getVirtualModelName();
 
 	@Setter(VIRTUAL_MODEL_NAME_KEY)
 	public void setVirtualModelName(DataBinding<String> virtualModelName);
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<VirtualModel> getContainer();
 
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<VirtualModel> container);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getForceExecuteConfirmationPanel();
 
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)

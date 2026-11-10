@@ -60,8 +60,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.PropertyImplementation;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * An expression used as an FML action.
@@ -88,7 +86,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(ExpressionAction.ExpressionActionImpl.class)
-@XMLElement
 public interface ExpressionAction<T> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -102,7 +99,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			owner = "this",
 			bindingDefinitionType = BindingDefinitionType.GET,
 			isMandatory = true)
-	@XMLAttribute
 	public DataBinding<T> getExpression();
 
 	@Setter(EXPRESSION_KEY)

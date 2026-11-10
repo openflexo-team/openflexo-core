@@ -62,8 +62,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A condition applied when matching FlexoConceptInstances
@@ -73,7 +71,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(MatchCondition.MatchConditionImpl.class)
-@XMLElement
 public interface MatchCondition extends FlexoConceptObject {
 
 	public static final String SELECTED = "selected";
@@ -91,7 +88,6 @@ public interface MatchCondition extends FlexoConceptObject {
 	public void setAction(InitiateMatching action);
 
 	@Getter(value = CONDITION_KEY)
-	@XMLAttribute
 	public DataBinding<Boolean> getCondition();
 
 	@Setter(CONDITION_KEY)

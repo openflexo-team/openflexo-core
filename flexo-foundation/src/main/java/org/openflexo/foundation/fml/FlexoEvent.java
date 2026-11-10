@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link FlexoConcept} representing an event, declared in FML with {@code event}.
@@ -82,7 +81,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(FlexoEvent.FlexoEventImpl.class)
-@XMLElement
 public interface FlexoEvent extends FlexoConcept {
 
 	public static abstract class FlexoEventImpl extends FlexoConceptImpl implements FlexoEvent {

@@ -48,7 +48,6 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link FetchRequest} allowing to retrieve a unique {@link FMLRTVirtualModelInstance} matching some conditions and a given
@@ -59,7 +58,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(AbstractSelectVirtualModelInstance.AbstractSelectVirtualModelInstanceImpl.class)
-@XMLElement
 @FML("SelectUniqueVirtualModelInstance")
 public interface SelectUniqueVirtualModelInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
 		extends AbstractSelectVirtualModelInstance<VMI, VirtualModelInstance<?, ?>>,

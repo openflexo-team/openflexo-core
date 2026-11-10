@@ -46,8 +46,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A destructor of a concept, declared in FML with {@code delete(...)} (anonymous, see {@link #isAnonymous()}) or
@@ -61,7 +59,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(DeletionScheme.DeletionSchemeImpl.class)
-@XMLElement
 public interface DeletionScheme extends AbstractActionScheme {
 
 	public static final String DEFAULT_DELETION_SCHEME_NAME = "DefaultDeletionScheme";
@@ -70,7 +67,6 @@ public interface DeletionScheme extends AbstractActionScheme {
 	public static final String IS_ANONYMOUS_KEY = "isAnonymous";
 
 	@Getter(value = IS_ANONYMOUS_KEY)
-	@XMLAttribute
 	public Boolean isAnonymous();
 
 	@Setter(IS_ANONYMOUS_KEY)

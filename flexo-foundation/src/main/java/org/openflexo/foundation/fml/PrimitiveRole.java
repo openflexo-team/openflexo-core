@@ -54,8 +54,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A role storing a primitive value, whose type is a primitive type, {@code String} or {@code Date} (see {@link PrimitiveType}). Its value
@@ -70,7 +68,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 // TODO: rename to PrimitiveProperty
 @ModelEntity
 @ImplementationClass(PrimitiveRole.PrimitiveRoleImpl.class)
-@XMLElement(xmlTag = "PrimitiveRole")
 @FML("PrimitiveRole")
 public interface PrimitiveRole<T> extends BasicProperty<T> {
 
@@ -78,7 +75,6 @@ public interface PrimitiveRole<T> extends BasicProperty<T> {
 	public static final String PRIMITIVE_TYPE_KEY = "primitiveType";
 
 	@Getter(value = PRIMITIVE_TYPE_KEY)
-	@XMLAttribute
 	public PrimitiveType getPrimitiveType();
 
 	@Setter(PRIMITIVE_TYPE_KEY)

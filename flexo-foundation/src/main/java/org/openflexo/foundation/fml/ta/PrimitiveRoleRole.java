@@ -45,11 +45,9 @@ import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(PrimitiveRoleRole.PrimitiveRoleRoleImpl.class)
-@XMLElement
 @FML("PrimitiveRoleRole")
 public interface PrimitiveRoleRole extends FlexoPropertyRole<PrimitiveRole<?>> {
 

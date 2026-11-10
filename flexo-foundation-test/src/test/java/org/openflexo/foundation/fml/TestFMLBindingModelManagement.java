@@ -940,7 +940,6 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		((ExpressionAction<?>) declareFlexoRoleInIteration1.getAssignableAction()).setExpression(new DataBinding<>("\"foo\""));
 
 		FMLModelFactory factory = actionScheme.getFMLModelFactory();
-		System.out.println("actionScheme =\n" + factory.stringRepresentation(actionScheme));
 		System.out.println("FML=\n" + actionScheme.getFMLPrettyPrint());
 		System.out.println("bm=" + declareFlexoRoleInIteration1.getInferedBindingModel());
 		System.out.println("iteration.getControlGraph()=" + iteration.getControlGraph());
@@ -992,7 +991,6 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertTrue(((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
 
-		System.out.println(factory.stringRepresentation(actionScheme));
 
 		System.out.println("FML=\n" + actionScheme.getFMLPrettyPrint());
 
@@ -1758,7 +1756,6 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		ActionScheme actionScheme = flexoConceptA.getFlexoBehaviours(ActionScheme.class).get(0);
 		assertNotNull(actionScheme);
 
-		System.out.println("Applying " + actionScheme.getFMLModelFactory().stringRepresentation(actionScheme));
 
 		System.out.println("Soit en FML:\n" + actionScheme.getFMLPrettyPrint());
 

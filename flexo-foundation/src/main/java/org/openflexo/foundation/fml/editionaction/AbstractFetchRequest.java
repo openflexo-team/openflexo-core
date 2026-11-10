@@ -67,7 +67,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Base of the fetch requests: the FML actions {@code select [unique] Type from (expression) [where (condition, ...)]}.
@@ -130,7 +129,6 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 	void setReceiver(DataBinding<RD> receiver);
 
 	@Getter(value = CONDITIONS_KEY, cardinality = Cardinality.LIST, inverse = FetchRequestCondition.ACTION_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	@FMLAttribute(value = CONDITIONS_KEY, required = false, description = "<html>condition of the request</html>")

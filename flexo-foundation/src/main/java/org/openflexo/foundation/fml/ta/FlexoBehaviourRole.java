@@ -45,11 +45,9 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(FlexoBehaviourRole.FlexoBehaviourRoleImpl.class)
-@XMLElement
 @FML("FlexoBehaviourRole")
 public interface FlexoBehaviourRole<B extends FlexoBehaviour> extends FMLObjectRole<B> {
 

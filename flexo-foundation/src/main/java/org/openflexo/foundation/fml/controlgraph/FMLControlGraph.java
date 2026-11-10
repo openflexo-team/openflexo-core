@@ -64,7 +64,6 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
  * A node of a control graph: the body of a {@link org.openflexo.foundation.fml.FlexoBehaviour}, of the get or set block of a property, or of
@@ -103,7 +102,6 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	 * @return
 	 */
 	@Getter(value = OWNER_CONTEXT_KEY)
-	@XMLAttribute
 	public String getOwnerContext();
 
 	@Setter(OWNER_CONTEXT_KEY)

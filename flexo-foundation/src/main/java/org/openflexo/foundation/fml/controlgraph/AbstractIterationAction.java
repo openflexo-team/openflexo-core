@@ -56,8 +56,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -82,7 +80,6 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = ITERATOR_NAME_KEY)
-	@XMLAttribute
 	public String getIteratorName();
 
 	@Setter(ITERATOR_NAME_KEY)
@@ -90,7 +87,6 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 
 	@FMLMigration("ignoreForEquality=true to be removed")
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
-	@XMLAttribute
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)
@@ -126,7 +122,6 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 	 */
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "ControlGraph_")
 	@Embedded
 	public FMLControlGraph getControlGraph();
 

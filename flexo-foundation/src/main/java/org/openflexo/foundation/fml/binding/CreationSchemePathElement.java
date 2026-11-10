@@ -90,7 +90,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
  * Modelize the instantiation (creation of a new instance) of a given {@link FlexoConcept}
@@ -121,7 +120,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	public static final String REPOSITORY_FOLDER_KEY = "folder";
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
-	@XMLAttribute
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, required = true)
 	public DataBinding<String> getVirtualModelInstanceName();
 
@@ -130,7 +128,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 	@Deprecated /* Will disappear */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, ignoreForEquality = true)
-	@XMLAttribute
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, required = false)
 	public DataBinding<String> getVirtualModelInstanceTitle();
 
@@ -139,7 +136,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
 
 	@Getter(value = RESOURCE_URI_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = RESOURCE_URI_KEY, required = false)
 	public DataBinding<String> getResourceURI();
 
@@ -147,7 +143,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	public void setResourceURI(DataBinding<String> resourceURI);
 
 	@Getter(value = RESOURCE_CENTER_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = RESOURCE_CENTER_KEY, required = false)
 	public DataBinding<FlexoResourceCenter<?>> getResourceCenter();
 
@@ -155,7 +150,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter);
 
 	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = DYNAMIC_RELATIVE_PATH_KEY, required = false)
 	public DataBinding<String> getDynamicRelativePath();
 
@@ -163,7 +157,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	public void setDynamicRelativePath(DataBinding<String> relativePath);
 
 	@Getter(value = REPOSITORY_FOLDER_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = REPOSITORY_FOLDER_KEY, required = false)
 	public DataBinding<RepositoryFolder> getRepositoryFolder();
 

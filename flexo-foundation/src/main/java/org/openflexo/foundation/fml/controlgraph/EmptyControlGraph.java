@@ -46,7 +46,6 @@ import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Encodes an empty control graph
@@ -56,7 +55,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(EmptyControlGraph.EmptyControlGraphImpl.class)
-@XMLElement
 public interface EmptyControlGraph extends FMLControlGraph {
 
 	public static abstract class EmptyControlGraphImpl extends FMLControlGraphImpl implements EmptyControlGraph {

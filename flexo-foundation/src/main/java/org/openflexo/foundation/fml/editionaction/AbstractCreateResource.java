@@ -65,7 +65,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -99,7 +98,6 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 	public static final String DYNAMIC_RELATIVE_PATH_KEY = "dynamicRelativePath";
 
 	@Getter(value = RESOURCE_NAME_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = RESOURCE_NAME_KEY, index = 0, required = true, description = "<html>name for the resource to be created</html>")
 	public DataBinding<String> getResourceName();
 
@@ -107,7 +105,6 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 	public void setResourceName(DataBinding<String> resourceName);
 
 	@Getter(value = RESOURCE_URI_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = RESOURCE_URI_KEY, index = 1, required = false, description = "<html>URI for the resource to be created</html>")
 	public DataBinding<String> getResourceURI();
 
@@ -115,7 +112,6 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 	public void setResourceURI(DataBinding<String> resourceURI);
 
 	@Getter(value = RESOURCE_CENTER_KEY)
-	@XMLAttribute
 	@FMLAttribute(
 			value = RESOURCE_CENTER_KEY,
 			index = 2,
@@ -127,7 +123,6 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 	public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter);
 
 	@Getter(value = RELATIVE_PATH_KEY, ignoreForEquality = true)
-	@XMLAttribute
 	@Deprecated // Use getDynamicRelativePath() instead
 	public String getRelativePath();
 
@@ -136,7 +131,6 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 	public void setRelativePath(String relativePath);
 
 	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
-	@XMLAttribute
 	@FMLAttribute(
 			value = "relativePath",
 			index = 3,

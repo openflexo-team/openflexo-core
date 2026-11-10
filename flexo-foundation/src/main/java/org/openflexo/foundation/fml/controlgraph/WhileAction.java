@@ -61,8 +61,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The FML loop {@code while (condition) ...}: the body ({@link #getControlGraph()}) is executed as long as the condition
@@ -90,7 +88,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(WhileAction.WhileActionImpl.class)
-@XMLElement
 public interface WhileAction extends ControlStructureAction, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -101,7 +98,6 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 	public static final String EVALUATE_CONDITION_AFTER_CYCLE_KEY = "evaluateConditionAfterCycle";
 
 	@Getter(value = CONDITION_KEY)
-	@XMLAttribute
 	public DataBinding<Boolean> getCondition();
 
 	@Setter(CONDITION_KEY)
@@ -110,14 +106,12 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "ControlGraph_")
 	public FMLControlGraph getControlGraph();
 
 	@Setter(CONTROL_GRAPH_KEY)
 	public void setControlGraph(FMLControlGraph aControlGraph);
 
 	@Getter(value = EVALUATE_CONDITION_AFTER_CYCLE_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getEvaluateConditionAfterCycle();
 
 	@Setter(EVALUATE_CONDITION_AFTER_CYCLE_KEY)

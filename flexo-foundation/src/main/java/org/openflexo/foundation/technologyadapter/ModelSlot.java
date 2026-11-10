@@ -68,7 +68,6 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
  * A {@link ModelSlot} is a {@link FlexoRole} giving access to a data of a given technological space (a model, a document, an instance of
@@ -135,7 +134,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 
 	@Override
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
-	@XMLAttribute
 	@FMLAttribute(value = IS_REQUIRED_KEY, required = false)
 	public boolean getIsRequired();
 
@@ -144,7 +142,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 	public void setIsRequired(boolean isRequired);
 
 	@Getter(value = IS_READ_ONLY_KEY, defaultValue = "false")
-	@XMLAttribute
 	@FMLAttribute(value = IS_READ_ONLY_KEY, required = false)
 	public boolean getIsReadOnly();
 

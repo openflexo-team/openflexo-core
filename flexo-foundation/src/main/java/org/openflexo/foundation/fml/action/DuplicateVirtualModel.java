@@ -171,7 +171,6 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 			// This is a top-level VM
 			virtualModelResource = resourceFactory.makeTopLevelCompilationUnitResource(newName, null, folder, false);
 			returned = (FMLCompilationUnit) source.getCompilationUnit().cloneObject();
-			System.out.println(source.getFMLModelFactory().stringRepresentation(returned));
 			// Take care to disconnect the resource !
 			returned.setResource(null);
 			returned.setName(newName);
@@ -207,7 +206,6 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 			CompilationUnitResource virtualModelResource = null;
 			virtualModelResource = resourceFactory.makeContainedCompilationUnitResource(newName, containerResource, false);
 			returned = (FMLCompilationUnit) source.getCompilationUnit().cloneObject();
-			System.out.println(source.getFMLModelFactory().stringRepresentation(returned));
 			// Take care to disconnect the resource !
 			returned.setResource(null);
 			returned.setName(newName);

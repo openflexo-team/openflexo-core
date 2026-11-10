@@ -48,7 +48,6 @@ import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationIssue;
 
 /**
@@ -59,7 +58,6 @@ import org.openflexo.pamela.validation.ValidationIssue;
  */
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstanceParameter.AddFlexoConceptInstanceParameterImpl.class)
-@XMLElement
 public interface AddFlexoConceptInstanceParameter extends BehaviourCallArgument<AbstractAddFlexoConceptInstance<?, ?>> {
 
 	public static abstract class AddFlexoConceptInstanceParameterImpl

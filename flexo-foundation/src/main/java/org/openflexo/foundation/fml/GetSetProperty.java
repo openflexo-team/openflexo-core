@@ -49,8 +49,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link GetProperty} which can also be written, declared in FML with a {@code get()} block and a {@code set(...)} block (see
@@ -74,7 +72,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(GetSetProperty.GetSetPropertyImpl.class)
-@XMLElement
 public abstract interface GetSetProperty<T> extends GetProperty<T> {
 
 	@PropertyIdentifier(type = String.class)
@@ -92,7 +89,6 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 	 * @return
 	 */
 	@Getter(value = VALUE_VARIABLE_NAME_KEY, defaultValue = "value")
-	@XMLAttribute
 	public String getValueVariableName();
 
 	@Setter(VALUE_VARIABLE_NAME_KEY)
@@ -100,7 +96,6 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 
 	@Getter(value = SET_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "SetControlGraph_")
 	@Embedded
 	public FMLControlGraph getSetControlGraph();
 

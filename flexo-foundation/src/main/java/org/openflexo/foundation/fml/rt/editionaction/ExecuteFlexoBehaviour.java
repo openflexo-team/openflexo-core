@@ -72,8 +72,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * An action executing an action scheme ({@link #getFlexoBehaviour()}) on a {@link FlexoConceptInstance}, its receiver, and returning the
@@ -91,7 +89,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(ExecuteFlexoBehaviour.ExecuteFlexoBehaviourImpl.class)
-@XMLElement
 @FML("ExecuteFlexoBehaviour")
 @Deprecated
 public interface ExecuteFlexoBehaviour<T>
@@ -103,14 +100,12 @@ public interface ExecuteFlexoBehaviour<T>
 	public static final String PARAMETERS_KEY = "parameters";
 
 	@Getter(value = FLEXO_BEHAVIOUR_KEY)
-	@XMLAttribute
 	public DataBinding<AbstractActionScheme> getFlexoBehaviour();
 
 	@Setter(FLEXO_BEHAVIOUR_KEY)
 	public void setFlexoBehaviour(DataBinding<AbstractActionScheme> flexoBehaviour);
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = CreateFlexoConceptInstanceParameter.ACTION_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<CreateFlexoConceptInstanceParameter> getParameters();

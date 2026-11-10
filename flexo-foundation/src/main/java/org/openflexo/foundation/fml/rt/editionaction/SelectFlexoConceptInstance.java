@@ -49,7 +49,6 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link FetchRequest} allowing to retrieve a selection of some {@link FlexoConceptInstance} matching some conditions and a given
@@ -60,7 +59,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(AbstractSelectFlexoConceptInstance.AbstractSelectFlexoConceptInstanceImpl.class)
-@XMLElement
 @FML("SelectFlexoConceptInstance")
 public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
 		extends AbstractSelectFlexoConceptInstance<VMI, List<FlexoConceptInstance>>,

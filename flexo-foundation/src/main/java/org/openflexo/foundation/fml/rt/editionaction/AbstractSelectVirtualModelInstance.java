@@ -64,7 +64,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -85,7 +84,6 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 	public static final String CONTAINER_KEY = "container";
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<VirtualModelInstance<?, ?>> getContainer();
 
 	@Setter(CONTAINER_KEY)

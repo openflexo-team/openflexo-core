@@ -53,8 +53,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -84,7 +82,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(ExpressionProperty.ExpressionPropertyImpl.class)
-@XMLElement
 public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = Type.class)
@@ -94,7 +91,6 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 	public static final String EXPRESSION_KEY = "expression";
 
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)
@@ -111,7 +107,6 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 	public Type getAnalyzedType();
 
 	@Getter(value = EXPRESSION_KEY)
-	@XMLAttribute
 	public DataBinding<? super T> getExpression();
 
 	@Setter(EXPRESSION_KEY)

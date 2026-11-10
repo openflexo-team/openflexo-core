@@ -64,12 +64,9 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(CreatePrimitiveRole.CreatePrimitiveRoleImpl.class)
-@XMLElement
 @FML("CreatePrimitiveRole")
 public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, PrimitiveRole<?>> {
 
@@ -83,28 +80,24 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
 	@Getter(value = ROLE_NAME_KEY)
-	@XMLAttribute
 	public DataBinding<String> getRoleName();
 
 	@Setter(ROLE_NAME_KEY)
 	public void setRoleName(DataBinding<String> roleName);
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConcept> getContainer();
 
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConcept> container);
 
 	@Getter(value = PRIMITIVE_TYPE_KEY)
-	@XMLAttribute
 	public DataBinding<PrimitiveType> getPrimitiveType();
 
 	@Setter(PRIMITIVE_TYPE_KEY)
 	public void setPrimitiveType(DataBinding<PrimitiveType> primitiveType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getForceExecuteConfirmationPanel();
 
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)

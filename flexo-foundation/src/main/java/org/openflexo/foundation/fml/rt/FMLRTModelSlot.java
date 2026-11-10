@@ -61,7 +61,6 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The model slot giving access to a {@link FMLRTVirtualModelInstance}, the native implementation of a {@link VirtualModel} instance, stored
@@ -94,7 +93,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 		SelectUniqueVirtualModelInstance.class })
 @ModelEntity
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
-@XMLElement(xmlTag = "FMLRTModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot,FMLRTModelSlot")
 @FML(AbstractFMLTypingSpace.MODEL_INSTANCE)
 public interface FMLRTModelSlot
 		extends AbstractFMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTVirtualModelInstanceResource, FMLRTTechnologyAdapter> {

@@ -56,8 +56,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Primitive used to display a log in FML virtual machine at run-time
@@ -66,7 +64,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(LogAction.LogActionImpl.class)
-@XMLElement
 public interface LogAction extends EditionAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -75,14 +72,12 @@ public interface LogAction extends EditionAction {
 	public static final String LOG_LEVEL_KEY = "logLevel";
 
 	@Getter(value = LOG_STRING_KEY)
-	@XMLAttribute
 	public DataBinding<String> getLogString();
 
 	@Setter(LOG_STRING_KEY)
 	public void setLogString(DataBinding<String> object);
 
 	@Getter(value = LOG_LEVEL_KEY)
-	@XMLAttribute
 	public FMLConsole.LogLevel getLogLevel();
 
 	@Setter(LOG_LEVEL_KEY)

@@ -54,8 +54,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * An {@link SimpleInvariant} is an invariant represented by a simple expression and a violation hook
@@ -65,7 +63,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(SimpleInvariant.SimpleInvariantImpl.class)
-@XMLElement(xmlTag = "Constraint")
 public interface SimpleInvariant extends AbstractInvariant, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -83,7 +80,6 @@ public interface SimpleInvariant extends AbstractInvariant, FMLControlGraphOwner
 	public void setParentIterationInvariant(IterationInvariant parentIterationInvariant);
 
 	@Getter(value = CONSTRAINT_KEY)
-	@XMLAttribute
 	public DataBinding<Boolean> getConstraint();
 
 	@Setter(CONSTRAINT_KEY)

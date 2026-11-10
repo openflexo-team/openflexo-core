@@ -75,8 +75,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.CompoundIssue;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -97,7 +95,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
-@XMLElement
 @FML("DeleteFlexoConceptInstance")
 @Deprecated
 public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>> extends DeleteAction<FlexoConceptInstance> {
@@ -139,7 +136,6 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 	public void setDeletionScheme(DeletionScheme deletionScheme);
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = DeleteFlexoConceptInstanceParameter.ACTION_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<DeleteFlexoConceptInstanceParameter> getParameters();

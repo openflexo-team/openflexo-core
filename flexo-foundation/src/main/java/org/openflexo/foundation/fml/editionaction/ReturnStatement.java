@@ -45,7 +45,6 @@ import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The FML return statement: {@code return value;} or {@code return;}.
@@ -75,7 +74,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(ReturnStatement.ReturnActionImpl.class)
-@XMLElement
 public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 
 	public static abstract class ReturnActionImpl<T> extends AbstractAssignationActionImpl<T> implements ReturnStatement<T> {

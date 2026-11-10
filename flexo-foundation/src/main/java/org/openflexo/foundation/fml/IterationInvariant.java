@@ -61,8 +61,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * An {@link IterationInvariant} represents a structural constraint attached to an FlexoConcept
@@ -82,7 +80,6 @@ public interface IterationInvariant extends AbstractInvariant {
 	public static final String SIMPLE_INVARIANTS_KEY = "invariants";
 
 	@Getter(value = ITERATOR_NAME_KEY)
-	@XMLAttribute
 	public String getIteratorName();
 
 	@Setter(ITERATOR_NAME_KEY)
@@ -91,14 +88,12 @@ public interface IterationInvariant extends AbstractInvariant {
 	public Type getIteratorType();
 
 	@Getter(value = ITERATION_KEY)
-	@XMLAttribute
 	public DataBinding<List> getIteration();
 
 	@Setter(ITERATION_KEY)
 	public void setIteration(DataBinding<List> iteration);
 
 	@Getter(value = SIMPLE_INVARIANTS_KEY, cardinality = Cardinality.LIST, inverse = SimpleInvariant.PARENT_ITERATION_INVARIANT_KEY)
-	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
 	public List<SimpleInvariant> getSimpleInvariants();

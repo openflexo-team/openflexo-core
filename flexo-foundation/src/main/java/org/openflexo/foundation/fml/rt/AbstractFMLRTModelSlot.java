@@ -69,7 +69,6 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -110,7 +109,6 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 
 	// This property remains the persistent way to store the accessed VirtualModel
 	@Getter(value = VIRTUAL_MODEL_URI_KEY)
-	@XMLAttribute(xmlTag = "virtualModelURI")
 	public String getAccessedVirtualModelURI();
 
 	@Setter(VIRTUAL_MODEL_URI_KEY)

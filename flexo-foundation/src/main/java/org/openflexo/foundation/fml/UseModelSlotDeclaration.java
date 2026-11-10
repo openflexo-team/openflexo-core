@@ -51,8 +51,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The declaration of a model slot type used by a {@link FMLCompilationUnit}, written in FML as {@code use <model slot class> as ABBREV;},
@@ -66,7 +64,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(UseModelSlotDeclaration.UseModelSlotDeclarationImpl.class)
-@XMLElement
 public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FMLCompilationUnit.class)
@@ -77,7 +74,6 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 	public static final String ABBREV_KEY = "abbrev";
 
 	@Getter(value = MODEL_SLOT_CLASS_KEY)
-	@XMLAttribute
 	public Class<? extends ModelSlot<?,?>> getModelSlotClass();
 
 	@Setter(MODEL_SLOT_CLASS_KEY)
@@ -91,7 +87,6 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
 
 	@Getter(value = ABBREV_KEY)
-	@XMLAttribute
 	public String getAbbrev();
 
 	@Setter(ABBREV_KEY)

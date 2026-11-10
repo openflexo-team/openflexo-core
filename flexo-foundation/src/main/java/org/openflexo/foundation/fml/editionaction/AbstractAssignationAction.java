@@ -56,7 +56,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Abstract {@link AssignableAction} which is composed with an other {@link AssignableAction} (right hand side)
@@ -67,14 +66,12 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAssignationAction.AbstractAssignationActionImpl.class)
-@XMLElement
 public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = AssignableAction.class)
 	public static final String ASSIGNABLE_ACTION_KEY = "assignableAction";
 
 	@Getter(value = ASSIGNABLE_ACTION_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@XMLElement(context = "AssignableAction_")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public AssignableAction<T> getAssignableAction();

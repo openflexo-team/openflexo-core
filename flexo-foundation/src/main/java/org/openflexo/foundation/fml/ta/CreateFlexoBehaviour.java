@@ -63,12 +63,9 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(CreateFlexoBehaviour.CreateFlexoBehaviourImpl.class)
-@XMLElement
 @FML("CreateFlexoBehaviour")
 public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
 		extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, B> {
@@ -87,28 +84,24 @@ public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
 	@Getter(value = BEHAVIOUR_NAME_KEY)
-	@XMLAttribute
 	public DataBinding<String> getBehaviourName();
 
 	@Setter(BEHAVIOUR_NAME_KEY)
 	public void setBehaviourName(DataBinding<String> behaviourName);
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConcept> getContainer();
 
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConcept> container);
 
 	@Getter(value = BEHAVIOUR_TYPE_KEY)
-	@XMLAttribute
 	public BehaviourType getBehaviourType();
 
 	@Setter(BEHAVIOUR_TYPE_KEY)
 	public void setBehaviourType(BehaviourType behaviourType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getForceExecuteConfirmationPanel();
 
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)

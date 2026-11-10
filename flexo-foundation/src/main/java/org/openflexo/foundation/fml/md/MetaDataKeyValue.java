@@ -53,7 +53,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.model.StringConverterLibrary.Converter;
 
@@ -66,7 +65,6 @@ import org.openflexo.pamela.model.StringConverterLibrary.Converter;
  */
 @ModelEntity
 @ImplementationClass(MetaDataKeyValue.MetaDataKeyValueImpl.class)
-@XMLElement
 public interface MetaDataKeyValue<T> extends FMLObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = String.class)

@@ -48,7 +48,6 @@ import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.model.StringConverterLibrary.Converter;
 
@@ -61,7 +60,6 @@ import org.openflexo.pamela.model.StringConverterLibrary.Converter;
  */
 @ModelEntity
 @ImplementationClass(SingleMetaData.SingleMetaDataImpl.class)
-@XMLElement
 public interface SingleMetaData<T> extends FMLMetaData {
 
 	public static final String VALUE_EXPRESSION_KEY = "valueExpression";

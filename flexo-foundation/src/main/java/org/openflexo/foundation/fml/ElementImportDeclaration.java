@@ -69,8 +69,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -93,7 +91,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  *
  */
 @ModelEntity
-@XMLElement
 @ImplementationClass(ElementImportDeclaration.ElementImportDeclarationImpl.class)
 public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
@@ -109,14 +106,12 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = RESOURCE_REFERENCE_KEY)
-	@XMLAttribute
 	public DataBinding<String> getResourceReference();
 
 	@Setter(RESOURCE_REFERENCE_KEY)
 	public void setResourceReference(DataBinding<String> resourceReference);
 
 	@Getter(value = OBJECT_REFERENCE_KEY)
-	@XMLAttribute
 	public DataBinding<String> getObjectReference();
 
 	@Setter(OBJECT_REFERENCE_KEY)
@@ -132,14 +127,12 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	public boolean isAnonymous();
 
 	@Getter(value = ABBREV_KEY)
-	@XMLAttribute
 	public String getAbbrev();
 
 	@Setter(ABBREV_KEY)
 	public void setAbbrev(String abbrev);
 
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)

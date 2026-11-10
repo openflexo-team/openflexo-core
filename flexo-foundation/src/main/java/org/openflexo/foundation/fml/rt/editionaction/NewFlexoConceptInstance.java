@@ -64,7 +64,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The reflective instantiation action, written {@code FMLRT::NewInstance(conceptType=..., container=..., args=...)}: it instantiates a
@@ -100,7 +99,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(NewFlexoConceptInstance.NewFlexoConceptInstanceImpl.class)
-@XMLElement
 @FML(
 		value = "NewInstance",
 		description = "<html>This edition primitive allows to dynamically instantiate a FlexoConceptInstance</html>",

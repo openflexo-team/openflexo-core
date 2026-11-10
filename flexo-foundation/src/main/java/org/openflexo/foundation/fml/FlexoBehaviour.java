@@ -80,8 +80,6 @@ import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -151,7 +149,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "BehaviourControlGraph_")
 	@Embedded
 	public FMLControlGraph getControlGraph();
 
@@ -159,7 +156,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public void setControlGraph(FMLControlGraph aControlGraph);
 
 	@Getter(value = IS_ABSTRACT_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean isAbstract();
 
 	@Setter(IS_ABSTRACT_KEY)
@@ -174,7 +170,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)
@@ -195,7 +190,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Override
 	@Getter(value = NAME_KEY)
-	@XMLAttribute
 	public String getName();
 
 	@Override
@@ -203,14 +197,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public void setName(String name) throws InvalidNameException;
 
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
-	@XMLAttribute
 	public Visibility getVisibility();
 
 	@Setter(VISIBILITY_KEY)
 	public void setVisibility(Visibility visibility);
 
 	@Getter(value = SKIP_CONFIRMATION_PANEL_KEY, defaultValue = "true")
-	@XMLAttribute
 	@FMLAttribute(SKIP_CONFIRMATION_PANEL_KEY)
 	public boolean getSkipConfirmationPanel();
 
@@ -219,7 +211,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourArgument.FLEXO_BEHAVIOUR_KEY)
 	@Embedded
-	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoBehaviourArgument> getParameters();
 

@@ -86,8 +86,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -134,7 +132,6 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(VirtualModel.VirtualModelImpl.class)
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(InnerConceptsFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class) })
-@XMLElement
 public interface VirtualModel extends FlexoConcept {
 
 	@PropertyIdentifier(type = String.class)
@@ -169,7 +166,6 @@ public interface VirtualModel extends FlexoConcept {
 	public CompilationUnitResource getResource();
 
 	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
-	@XMLAttribute
 	@Deprecated
 	public Class<? extends ReflectedFMLRTModelSlot<?, ?, ?, ?>> getModelSlotNatureClass();
 
@@ -181,7 +177,6 @@ public interface VirtualModel extends FlexoConcept {
 	public List<Class<? extends ReflectedFMLRTModelSlot<?, ?, ?, ?>>> getAvailableModelSlotNatureClasses();
 
 	@Getter("virtualModelClass")
-	@XMLAttribute
 	public Class<? extends VirtualModel> getVirtualModelClass();
 
 	@Override
@@ -193,7 +188,6 @@ public interface VirtualModel extends FlexoConcept {
 	 * @return
 	 */
 	@Getter(value = FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConcept.OWNER_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoConcept> getFlexoConcepts();
@@ -311,7 +305,6 @@ public interface VirtualModel extends FlexoConcept {
 	@Override
 	@Getter(value = URI_KEY)
 	@CloningStrategy(value = StrategyType.IGNORE)
-	@XMLAttribute
 	public abstract String getURI();
 
 	/**
@@ -324,7 +317,6 @@ public interface VirtualModel extends FlexoConcept {
 	public void setURI(String anURI);
 
 	@Getter(value = VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public FlexoVersion getVersion();
 
 	@Setter(VERSION_KEY)

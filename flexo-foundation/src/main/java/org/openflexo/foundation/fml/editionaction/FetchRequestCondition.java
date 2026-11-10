@@ -61,8 +61,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * An AbstractInvariant represents a structural constraint attached to an FlexoConcept
@@ -72,7 +70,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(FetchRequestCondition.FetchRequestConditionImpl.class)
-@XMLElement(xmlTag = "Condition")
 public interface FetchRequestCondition extends FlexoConceptObject {
 
 	public static final String SELECTED = "selected";
@@ -90,7 +87,6 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 	public void setAction(AbstractFetchRequest<?, ?, ?, ?> action);
 
 	@Getter(value = CONDITION_KEY)
-	@XMLAttribute
 	public DataBinding<Boolean> getCondition();
 
 	@Setter(CONDITION_KEY)

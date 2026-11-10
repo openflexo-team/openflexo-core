@@ -66,12 +66,9 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(CreateFlexoConceptInstanceRole.CreateFlexoConceptInstanceRoleImpl.class)
-@XMLElement
 @FML("CreateFlexoConceptInstanceRole")
 public interface CreateFlexoConceptInstanceRole
 		extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, FlexoConceptInstanceRole> {
@@ -88,35 +85,30 @@ public interface CreateFlexoConceptInstanceRole
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
 	@Getter(value = ROLE_NAME_KEY)
-	@XMLAttribute
 	public DataBinding<String> getRoleName();
 
 	@Setter(ROLE_NAME_KEY)
 	public void setRoleName(DataBinding<String> roleName);
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConcept> getContainer();
 
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConcept> container);
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoConcept> getFlexoConceptType();
 
 	@Setter(FLEXO_CONCEPT_TYPE_KEY)
 	public void setFlexoConceptType(DataBinding<FlexoConcept> flexoConceptType);
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_AS_TYPE_KEY)
-	@XMLAttribute
 	public DataBinding<String> getVirtualModelInstanceAsString();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_AS_TYPE_KEY)
 	public void setVirtualModelInstanceAsString(DataBinding<String> vmiAsString);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getForceExecuteConfirmationPanel();
 
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)

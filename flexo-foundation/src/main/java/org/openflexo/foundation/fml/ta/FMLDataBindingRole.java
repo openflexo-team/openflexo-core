@@ -56,8 +56,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Represents access to a {@link DataBinding}
@@ -66,7 +64,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(FMLDataBindingRole.FMLDataBindingRoleImpl.class)
-@XMLElement
 @FML("JavaRole")
 public interface FMLDataBindingRole extends FlexoRole<DataBinding> {
 
@@ -74,7 +71,6 @@ public interface FMLDataBindingRole extends FlexoRole<DataBinding> {
 	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)

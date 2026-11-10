@@ -93,8 +93,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.model.PamelaVisitor;
 import org.openflexo.pamela.model.PamelaVisitor.VisitingStrategy;
 import org.openflexo.pamela.undo.CompoundEdit;
@@ -278,7 +276,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @return
 	 */
 	@Getter(value = NAMESPACES_KEY, cardinality = Cardinality.LIST, inverse = NamespaceDeclaration.COMPILATION_UNIT_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<NamespaceDeclaration> getNamespaces();
@@ -304,7 +301,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @return
 	 */
 	@Getter(value = USE_DECLARATIONS_KEY, cardinality = Cardinality.LIST, inverse = UseModelSlotDeclaration.COMPILATION_UNIT_KEY)
-	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<UseModelSlotDeclaration> getUseDeclarations();
@@ -370,7 +366,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 * @return
 	 */
 	@Getter(value = VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public FlexoVersion getVersion();
 
 	@Setter(VERSION_KEY)

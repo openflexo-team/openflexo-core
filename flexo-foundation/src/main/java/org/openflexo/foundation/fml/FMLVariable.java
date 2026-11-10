@@ -56,8 +56,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A role storing a value of any other Java type (a type which is neither primitive, {@code String}, {@code Date}, a concept nor a
@@ -72,13 +70,11 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(FMLVariable.FMLVariableImpl.class)
-@XMLElement(xmlTag = "FMLVariable")
 @FML("FMLVariable")
 public interface FMLVariable<T> extends BasicProperty<T> {
 
 	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public Type getType();
 
 	@Override

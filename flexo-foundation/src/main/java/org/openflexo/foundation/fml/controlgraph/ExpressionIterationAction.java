@@ -64,8 +64,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -98,7 +96,6 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  */
 @ModelEntity
 @ImplementationClass(ExpressionIterationAction.ExpressionIterationActionImpl.class)
-@XMLElement
 public interface ExpressionIterationAction extends AbstractIterationAction {
 
 	@PropertyIdentifier(type = Type.class)
@@ -117,7 +114,6 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 	 */
 	@Getter(value = STATEMENT_EXPRESSION_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "StatementExpression_")
 	@Embedded
 	public FMLControlGraph getStatementExpression();
 
@@ -125,14 +121,12 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 	public void setStatementExpression(FMLControlGraph statementExpression);
 
 	@Getter(value = INIT_EXPRESSION_KEY)
-	@XMLAttribute
 	public DataBinding<?> getInitExpression();
 
 	@Setter(INIT_EXPRESSION_KEY)
 	public void setInitExpression(DataBinding<?> initExpression);
 
 	@Getter(value = CONDITION_EXPRESSION_KEY)
-	@XMLAttribute
 	public DataBinding<Boolean> getConditionExpression();
 
 	@Setter(CONDITION_EXPRESSION_KEY)

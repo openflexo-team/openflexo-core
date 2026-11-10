@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.md;
 
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link BasicMetaData} is a basic present or not present meta-data identified by a key
@@ -51,7 +50,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(BasicMetaData.BasicMetaDataImpl.class)
-@XMLElement
 public interface BasicMetaData extends FMLMetaData {
 
 	public static abstract class BasicMetaDataImpl extends FMLMetaDataImpl implements BasicMetaData {

@@ -48,8 +48,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A constructor of a concept, declared in FML with {@code create(...)} (anonymous, see {@link #isAnonymous()}) or
@@ -90,7 +88,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(CreationScheme.CreationSchemeImpl.class)
-@XMLElement
 public interface CreationScheme extends AbstractCreationScheme {
 
 	public static final String DEFAULT_CREATION_SCHEME_NAME = "DefaultCreationScheme";
@@ -99,7 +96,6 @@ public interface CreationScheme extends AbstractCreationScheme {
 	public static final String IS_ANONYMOUS_KEY = "isAnonymous";
 
 	@Getter(value = IS_ANONYMOUS_KEY)
-	@XMLAttribute
 	public Boolean isAnonymous();
 
 	@Setter(IS_ANONYMOUS_KEY)

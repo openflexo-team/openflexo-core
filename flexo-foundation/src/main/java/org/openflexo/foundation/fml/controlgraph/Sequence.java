@@ -63,7 +63,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -84,7 +83,6 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(Sequence.SequenceImpl.class)
-@XMLElement
 public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = FMLControlGraph.class)
@@ -95,7 +93,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	@Getter(value = CONTROL_GRAPH1_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "ControlGraph1_")
 	public FMLControlGraph getControlGraph1();
 
 	@Setter(CONTROL_GRAPH1_KEY)
@@ -104,7 +101,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	@Getter(value = CONTROL_GRAPH2_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "ControlGraph2_")
 	public FMLControlGraph getControlGraph2();
 
 	@Setter(CONTROL_GRAPH2_KEY)

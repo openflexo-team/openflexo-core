@@ -59,8 +59,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -89,13 +87,11 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(IterationAction.IterationActionImpl.class)
-@XMLElement
 public interface IterationAction extends AbstractIterationAction {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ITERATION_CONTROL_GRAPH_KEY = "iterationControlGraph";
 
 	@Getter(value = ITERATION_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@XMLElement(context = "Iteration_")
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
 	public AssignableAction<? extends List<?>> getIterationAction();
@@ -105,7 +101,6 @@ public interface IterationAction extends AbstractIterationAction {
 
 	@Override
 	@Getter(value = ITERATOR_NAME_KEY)
-	@XMLAttribute
 	public String getIteratorName();
 
 	public static abstract class IterationActionImpl extends AbstractIterationActionImpl implements IterationAction {

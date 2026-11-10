@@ -49,7 +49,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A possible value of a {@link FlexoEnum}, identified by its name (see {@link #getName()}); {@link #getIndex()} gives its position in the
@@ -63,7 +62,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(FlexoEnumValue.FlexoEnumValueImpl.class)
-@XMLElement
 public interface FlexoEnumValue extends FlexoConcept {
 
 	@PropertyIdentifier(type = FlexoEnum.class)

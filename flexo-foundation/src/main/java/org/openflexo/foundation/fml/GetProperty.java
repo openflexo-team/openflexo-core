@@ -58,8 +58,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -77,7 +75,6 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity
 @ImplementationClass(GetProperty.GetPropertyImpl.class)
-@XMLElement
 public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = Type.class)
@@ -88,7 +85,6 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 
 	@Getter(value = GET_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
-	@XMLElement(context = "GetControlGraph_")
 	@Embedded
 	public FMLControlGraph getGetControlGraph();
 
@@ -97,7 +93,6 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 
 	@FMLMigration("ignoreForEquality=true to be removed")
 	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
-	@XMLAttribute
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)

@@ -65,12 +65,9 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.Updater;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(CreateFlexoConcept.CreateFlexoConceptImpl.class)
-@XMLElement(xmlTag = "CreateFlexoConcept")
 @FML("CreateFlexoConcept")
 public interface CreateFlexoConcept extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, FlexoConcept> {
 
@@ -84,7 +81,6 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	public static final String PARENT_TYPE_KEY = "parentType";
 
 	@Getter(value = VALUE_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = VALUE_KEY, required = true, description = "<html>name of the new concept</html>")
 	public DataBinding<String> getConceptName();
 
@@ -92,7 +88,6 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	public void setConceptName(DataBinding<String> conceptName);
 
 	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = CONTAINER_KEY, required = true, description = "<html>concept (or VirtualModel) that will contain the new concept</html>")
 	public DataBinding<FlexoConcept> getContainer();
 
@@ -124,7 +119,6 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	public void setParentFlexoConceptType(FlexoConcept flexoConceptType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
-	@XMLAttribute
 	public boolean getForceExecuteConfirmationPanel();
 
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)

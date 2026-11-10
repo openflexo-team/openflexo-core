@@ -63,7 +63,6 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -149,7 +148,6 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public void setPropertyName(String propertyName) throws InvalidNameException;
 
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
-	@XMLAttribute
 	public Visibility getVisibility();
 
 	@Setter(VISIBILITY_KEY)

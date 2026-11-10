@@ -50,8 +50,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * The declaration of a type alias in a {@link FMLCompilationUnit}, written in FML as {@code typedef <type> as Alias;}. It is typically
@@ -65,7 +63,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  *
  */
 @ModelEntity
-@XMLElement
 @ImplementationClass(TypeDeclaration.TypeDeclarationImpl.class)
 public interface TypeDeclaration extends FMLPrettyPrintable {
 
@@ -90,7 +87,6 @@ public interface TypeDeclaration extends FMLPrettyPrintable {
 	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
 
 	@Getter(value = ABBREV_KEY)
-	@XMLAttribute
 	public String getAbbrev();
 
 	@Setter(ABBREV_KEY)

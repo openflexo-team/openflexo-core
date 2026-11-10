@@ -56,8 +56,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A behaviour navigating from an instance to a target object (see {@link #getTargetObject()}), which the tooling then displays (see
@@ -72,14 +70,12 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(NavigationScheme.NavigationSchemeImpl.class)
-@XMLElement
 public interface NavigationScheme extends AbstractActionScheme {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String TARGET_OBJECT_KEY = "targetObject";
 
 	@Getter(value = TARGET_OBJECT_KEY)
-	@XMLAttribute
 	public DataBinding<?> getTargetObject();
 
 	@Setter(TARGET_OBJECT_KEY)
