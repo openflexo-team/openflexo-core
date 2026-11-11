@@ -218,7 +218,7 @@ own; the `index` of the widgets orders them, and the tabs of the same `name` are
 
 ## Technical debt
 
-### CORE-F-8 — Remove the XML serialization of VirtualModels and the deprecated FML API  ·  `IN PROGRESS`
+### CORE-F-8 — Remove the XML serialization of VirtualModels and the deprecated FML API  ·  `DONE`
 
 **Problem.** 3.0 no longer supports the `.fml.xml` serialization of VirtualModels, but flexo-foundation still carries it:
 the XML load/save path of `CompilationUnitResourceImpl` (`PersistencyStrategy`, default `XML2FML`), `XMLToFMLConverter`,
@@ -386,6 +386,27 @@ reflected VirtualModelInstances of xlsx, xml and rest included): 272 definition 
 requests, URI processors), plus 21 definition classes no meta-model reaches (dead roles and actions); 540 annotations removed, in
 flexo-ontology, flexo-documentation, formod's b-ta and 21 adapter repositories. Kept: every actor reference, model-slot instance and
 reflected instance, and the adapters' own models (none of them points to a definition through an XML-mapped property).
+
+**Phase 7 (2026-11-11): `@FMLMigration` removed.** 31 markers were left, all on members kept for the XML format. Decided with the
+user: remove the members, not only the marker.
+- diagram-ta: `DropScheme`, `LinkScheme` and `DrawRectangleScheme` stored their targets twice, as the typed types the FML attributes
+  show (`targetType`, `fromType` / `toType`, `childrenType`) and as URI strings (`target`, `fromTarget` / `toTarget`, `children`). The
+  strings and their `_get/_set` accessors are gone; `getXxxTargetFlexoConcept()` / `getChildrenFlexoConcept()` are now plain
+  conveniences derived from the type (no longer deprecated), their setters set the type, and changing the type fires the concept event the
+  binding models listen to. `DrawRectangleScheme.isTopTarget()` read the string, so a scheme declaring a `targetType` still counted as
+  drawing at top level: it is now "no target type". Unchecking "top level" in its inspector starts from the concept declaring the scheme.
+  FME built behaviour bodies with the removed property names as variable names: it now uses the binding-model constants
+  (`DropSchemeBindingModel.TARGET`, `LinkSchemeBindingModel.FROM_TARGET` / `TO_TARGET`).
+- diagram-ta `ShapeRole.parentShapeRole` is not a leftover but the API the wizard and inspectors use over `containerElement`: kept,
+  markers and `@Deprecated` removed, and it is no longer a PAMELA property (it was persistent under PAMELA-F-3, duplicating
+  `containerElement`).
+- flexo-ontology `AddIndividual._getOntologyClassURI` removed (the class is the typed `ontologyClass`, else the role's type).
+- `FMLMigration` itself is deleted.
+
+**Done (2026-11-11).** Checked against the criteria below: no `.fml.xml` left in the workspace, `XMLToFMLConverter`,
+`PersistencyStrategy`, `FML_XML_SUFFIX` and `FMLMigration` gone; the touched modules compile with javac and with ECJ (pamela-core,
+flexo-foundation, flexo-ontology, diagram-ta, diagram-ta-ui, fme-diagram: no error); the 28 usual suites and the 15 other adapter test
+modules give the results they gave before (CAPELLA-D-1 apart). Still open beside it: CORE-D-45.
 
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.

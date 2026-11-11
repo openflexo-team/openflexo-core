@@ -43,16 +43,13 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.ontology.fml.IndividualRole;
-import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -89,8 +86,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 	public static final String DATA_ASSERTIONS_KEY = "dataAssertions";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String OBJECT_ASSERTIONS_KEY = "objectAssertions";
-	@PropertyIdentifier(type = String.class)
-	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
 	@PropertyIdentifier(type = IFlexoOntologyClass.class)
 	public static final String ONTOLOGY_CLASS_KEY = "ontologyClass";
 	// @PropertyIdentifier(type = TypeAwareModelSlot.class)
@@ -138,16 +133,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 	@Remover(OBJECT_ASSERTIONS_KEY)
 	public void removeFromObjectAssertions(ObjectPropertyAssertion aObjectAssertion);
 
-	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
-	@Deprecated
-	@FMLMigration("Will disappear in 3.0")
-	public String _getOntologyClassURI();
-
-	@Setter(ONTOLOGY_CLASS_URI_KEY)
-	@Deprecated
-	@FMLMigration("Will disappear in 3.0")
-	public void _setOntologyClassURI(String ontologyClassURI);
-
 	@Getter(value = ONTOLOGY_CLASS_KEY, ignoreType = true)
 	@FMLAttribute(value = ONTOLOGY_CLASS_KEY, required = false, description = "<html>reference of the class</html>")
 	public IFlexoOntologyClass<?> getOntologyClass();
@@ -176,8 +161,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
-		@Deprecated
-		protected String ontologyClassURI = null;
 		protected IFlexoOntologyClass ontologyClass;
 
 		private DataBinding<String> individualName;
@@ -205,20 +188,10 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 			if (ontologyClass != null) {
 				return ontologyClass;
 			}
-			if (StringUtils.isNoneEmpty(ontologyClassURI)) {
-				ontologyClass = FlexoOntologyVirtualModelNature.getOntologyClass(ontologyClassURI, getOwningVirtualModel());
-			}
 			if (getAssignedFlexoProperty() != null) {
 				return getAssignedFlexoProperty().getOntologicType();
 			}
-			return ontologyClass;
-			/*if (getAssignedFlexoProperty() != null) {
-				return getAssignedFlexoProperty().getOntologicType();
-			}
-			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getOwningVirtualModel())) {
-				return FlexoOntologyVirtualModelNature.getOntologyClass(ontologyClassURI, getOwningVirtualModel());
-			}
-			return null;*/
+			return null;
 		}
 
 		@Override
@@ -227,46 +200,9 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 			if (ontologyClass != this.ontologyClass) {
 				IFlexoOntologyClass<?> oldOntologyClass = this.ontologyClass;
 				this.ontologyClass = ontologyClass;
-				ontologyClassURI = null;
 				getPropertyChangeSupport().firePropertyChange(ONTOLOGY_CLASS_KEY, oldOntologyClass, ontologyClass);
 			}
 
-			/*if (ontologyClass != null) {
-				if (getAssignedFlexoProperty() != null) {
-					if (getAssignedFlexoProperty().getOntologicType() != null) {
-						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
-						}
-						else {
-							getAssignedFlexoProperty().setOntologicType(ontologyClass);
-						}
-					}
-					else {
-						getAssignedFlexoProperty().setOntologicType(ontologyClass);
-					}
-				}
-				ontologyClassURI = ontologyClass.getURI();
-			}
-			else {
-				ontologyClassURI = null;
-			}*/
-			// System.out.println("ontologyClassURI=" + ontologyClassURI);
-		}
-
-		@Override
-		public String _getOntologyClassURI() {
-			if (getOntologyClass() != null) {
-				if (getAssignedFlexoProperty() != null && getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
-					// No need to store an overriding type, just use default provided by pattern property
-					return null;
-				}
-				return getOntologyClass().getURI();
-			}
-			return ontologyClassURI;
-		}
-
-		@Override
-		public void _setOntologyClassURI(String ontologyClassURI) {
-			this.ontologyClassURI = ontologyClassURI;
 		}
 
 		@Override
