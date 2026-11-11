@@ -156,7 +156,8 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 		System.out.println(rawSource.debug());
 		debug(rootNode, 0);
 
-		assertEquals("(1:0)-(13:1)", rootNode.getLastParsedFragment().toString());
+		// The compilation unit stands for the whole source, final line separator included (P2PP-D-5)
+		assertEquals("(1:0)-(14:0)", rootNode.getLastParsedFragment().toString());
 		assertEquals(null, rootNode.getPrelude());
 		assertEquals(null, rootNode.getPostlude());
 
