@@ -163,6 +163,16 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 
 	public static abstract class FMLPropertyValueImpl<M extends FMLObject, T> extends FMLObjectImpl implements FMLPropertyValue<M, T> {
 
+		/**
+		 * A property value mirrors a property of its object, and is rebuilt when the object is printed: setting it is not an edition, the
+		 * property of the object marks it when it really changes (CORE-D-45)
+		 */
+		@Override
+		public synchronized void setIsModified() {
+			// Not propagated
+		}
+
+
 		protected static final Logger logger = FlexoLogger.getLogger(FMLPropertyValue.class.getPackage().getName());
 
 		@Override

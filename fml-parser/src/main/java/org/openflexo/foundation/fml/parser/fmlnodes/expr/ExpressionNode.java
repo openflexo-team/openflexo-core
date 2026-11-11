@@ -75,7 +75,8 @@ public abstract class ExpressionNode<N extends Node, T extends Expression> exten
 				// System.exit(-1);
 			}
 			else {
-				((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
+				DataBindingNode dataBindingNode = (DataBindingNode) getParent();
+				dataBindingNode.getModelObject().setExpression(getModelObject(), !dataBindingNode.isDetached());
 			}
 		}
 		return this;

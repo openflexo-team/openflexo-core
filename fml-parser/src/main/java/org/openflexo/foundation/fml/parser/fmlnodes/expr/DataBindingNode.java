@@ -57,6 +57,7 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompila
 	private Bindable bindable;
 	private BindingDefinitionType bindingDefinitionType;
 	private Type expectedType;
+	private boolean detached = false;
 
 	public DataBindingNode(Node astNode, Bindable bindable, BindingDefinitionType bindingDefinitionType, Type expectedType,
 			FMLSemanticsAnalyzer analyzer) {
@@ -71,6 +72,18 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompila
 
 	public DataBindingNode(DataBinding<?> dataBinding, FMLSemanticsAnalyzer analyzer) {
 		super(dataBinding, analyzer);
+	}
+
+	/**
+	 * A detached node only carries the parsed expression back to its caller: the expression is set on its {@link DataBinding} without
+	 * notifying the bindable, as nothing was edited (CORE-D-45)
+	 */
+	public boolean isDetached() {
+		return detached;
+	}
+
+	public void setDetached(boolean detached) {
+		this.detached = detached;
 	}
 
 	@Override

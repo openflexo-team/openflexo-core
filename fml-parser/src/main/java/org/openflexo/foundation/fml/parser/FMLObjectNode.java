@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
@@ -65,7 +66,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		super(astNode, analyzer);
 
 		if (modelObject != null) {
-			modelObject.setPrettyPrintDelegate(this);
+			linkToModelObject();
 			modelObject.initializeDeserialization(getFactory());
 		}
 	}
@@ -73,8 +74,22 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	public FMLObjectNode(T aFMLObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(aFMLObject, analyzer);
 
-		modelObject.setPrettyPrintDelegate(this);
+		linkToModelObject();
 		preparePrettyPrint(false);
+	}
+
+	/**
+	 * Make this node the pretty-print delegate of its model object. The delegate is built when the object is printed (a use declaration
+	 * added in memory has none until then): linking it is not an edition of the object, which must not be marked modified (CORE-D-45). The
+	 * property is persistent, so the object would otherwise be marked by the PAMELA setter itself, whatever the setter does.
+	 */
+	private void linkToModelObject() {
+		if (modelObject instanceof FlexoObject) {
+			((FlexoObject) modelObject).runWithoutMarkingModified(() -> modelObject.setPrettyPrintDelegate(this));
+		}
+		else {
+			modelObject.setPrettyPrintDelegate(this);
+		}
 	}
 
 	@Override
@@ -85,7 +100,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	@Override
 	public void setModelObject(T modelObject) {
 		super.setModelObject(modelObject);
-		modelObject.setPrettyPrintDelegate(this);
+		linkToModelObject();
 	}
 
 	/**

@@ -480,7 +480,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public final synchronized void setChanged() {
 			super.setChanged();
-			if (getResourceData() != null) {
+			if (!ignoreNotifications() && getResourceData() != null) {
 				getResourceData().setIsModified();
 			}
 		}
@@ -733,7 +733,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 					if (pValue == null) {
 						pValue = fmlProperty.makeFMLPropertyValue(this);
 						if (pValue != null && pValue.isRequired(modelFactory)) {
-							performSuperAdder(FML_PROPERTY_VALUES_KEY, pValue);
+							// The property values mirror the object, they are built when printing: not an edition (CORE-D-45)
+							final FMLPropertyValue newValue = pValue;
+							runWithoutMarkingModified(() -> performSuperAdder(FML_PROPERTY_VALUES_KEY, newValue));
 						}
 					}
 					else {

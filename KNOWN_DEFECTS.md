@@ -466,7 +466,7 @@ the calls never end.
 **Expected.** A lookup visits each compilation unit once (a set of visited units), or the method goes with the other deprecated API
 (phase 5 of CORE-F-8).
 
-### CORE-D-45 — Validating or printing a VirtualModel marks its resource modified  ·  `TODO`
+### CORE-D-45 — Validating or printing a VirtualModel marks its resource modified  ·  `DONE`
 
 **Symptom.** A compilation unit nobody edited is reported modified, so the application would offer to save it. Measured on
 2026-11-09 on the 22 VirtualModels of `integration-tests` (all loaded, then validated, then pretty-printed): none is modified after
@@ -485,6 +485,42 @@ again, call `getFMLPrettyPrint()`, check again.
 
 **Expected.** Neither validation nor printing changes the model, so neither marks it modified; a binding parsed again to the same
 expression, and a use declaration that printing needs, are not edits. Found while measuring phase 6 of CORE-F-8.
+
+**Done (2026-11-11), decisions taken with the user.** Reproduced first by `TestNoSpuriousModification` (integration-tests): every
+resource of every resource center is loaded, then validated, then printed, and none may be loaded and modified. It failed as measured
+(9 after validation, 11 after printing) and, once widened beyond the compilation units, showed 22 diagram specifications, diagrams and
+palettes modified after loading. Each cause was fixed at its source, one at a time, with no global guard:
+1. Validation (9 `DiagramSpecification.fml`): a binding whose parse had been postponed at load (no binding factory yet) is parsed by its
+   first `isValid()`. That is not an edit: `DataBinding.isValid()` sets the expression without notifying the owner. The parser's
+   throw-away binding that carries an expression back (`FMLExpressionParser`) no longer notifies the owner either
+   (`ExpressionFactory.makeDetachedExpression`, `DataBindingNode.isDetached()`): that one marked the owner even when the binding was
+   already parsed.
+2. Printing, `use` declarations: `manageImports()` now also runs when a unit is finalized after loading (decision: declared at load, not
+   skipped at print), so the unit is complete in memory and the declaration is not marked as an edit. Printing still calls it, for a unit
+   edited in memory. Found on the way, in the same family:
+   - the pretty-print delegate of an object created in memory (a `use` or Java import added by `manageImports()`) is linked when
+     printing: `FMLObjectNode` links it through the new `FlexoObject.runWithoutMarkingModified()` (a PAMELA setter of a persistent
+     property marks the object after the implementation returns, so only the caller can suppress it);
+   - `FMLObject.updateFMLPropertyValues()` builds the property values when printing; `FMLPropertyValue.setIsModified()` no longer
+     propagates (a property value mirrors a property of its object), and `FMLObject.setChanged()` honours the ignore flag;
+   - printing a property valued by a resource declares an element import (`FMLSimplePropertyValueNode`), which also loads the
+     resource: the declaration is not marked as an edit. Declaring it at load time was tried and abandoned: it loads other units while
+     a unit is loading, and an unit whose data is not yet available is finalized (`NullPointerException`, the CORE-D-14 situation).
+3. Diagram specification (openflexo-diagram): linking the example diagrams and palettes to their specification, when they are first
+   asked for (`loadExampleDiagramsWhenUnloaded`, `loadDiagramPalettesWhenUnloaded`, `DiagramPaletteResourceImpl.performLoad`), marked the
+   diagram, the palette and the specification: now done through `runWithoutMarkingModified()`. The marks raised while
+   `XMLSaxDeserializer` builds a diagram are cleared by the resource at the end of its loading, as for any resource: they were not a
+   cause.
+
+Declaring the `use` at load made `formod-module` (`FormodUnitsRoundTripTest`) fail: the resource did not list the technologies so
+added (`FMLRTModelSlot`). The resource now adds them to its used model slots right after `manageImports()` (the model factory is not
+rebuilt in the middle of loading).
+
+**Verified.** The 28 usual suites give the baseline (flexo-foundation-test 552 tests, 547 successes, 5 skipped; integration-tests 41,
+`TestNoSpuriousModification` included; formod-module 17/17), and the five touched modules compile with ECJ.
+
+**Left.** `runWithoutMarkingModified()` is a local, explicit exception for derived bookkeeping, used at five places; a new derived link
+built on demand must use it too.
 
 ## FML compilation unit loading
 

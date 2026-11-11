@@ -199,6 +199,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	public void setIsModified();
 
 	/**
+	 * Run the supplied action without this object marking itself, nor its resource data, as modified. For what is derived from the state
+	 * and is not an edition: a cache or a link built on demand, which a persistent property holds (CORE-D-45).
+	 */
+	public void runWithoutMarkingModified(Runnable action);
+
+	/**
 	 * Return the locales attached to this {@link FlexoObject}.<br>
 	 * This is the responsability of subclasses to implements a proper scheme
 	 * 
@@ -405,6 +411,20 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 				removeFromFlexoConceptReferences(referenceToRemove);
 			}
 		}*/
+
+		@Override
+		public void runWithoutMarkingModified(Runnable action) {
+			boolean wasIgnoringNotifications = ignoreNotifications();
+			setIgnoreNotifications();
+			try {
+				action.run();
+			}
+			finally {
+				if (!wasIgnoringNotifications) {
+					resetIgnoreNotifications();
+				}
+			}
+		}
 
 		public boolean ignoreNotifications() {
 			return ignoreNotifications;

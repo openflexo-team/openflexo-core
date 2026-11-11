@@ -68,6 +68,7 @@ import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
@@ -334,6 +335,16 @@ public abstract class CompilationUnitResourceImpl
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
 		if (cuNode != null) {
 			cuNode.getSemanticsAnalyzer().finalizeDeserialization(true);
+		}
+		// The use declarations the concepts need but the text does not state (a model slot of a technology adapter) are added now, so that
+		// the unit is complete in memory and printing it changes nothing (CORE-D-45)
+		getLoadedResourceData().manageImports();
+		// The resource keeps the technologies its unit uses: those declared by manageImports() are added to the list (the model factory
+		// is not rebuilt in the middle of the loading)
+		for (UseModelSlotDeclaration use : getLoadedResourceData().getUseDeclarations()) {
+			if (use.getModelSlotClass() != null && !usedModelSlots.contains(use.getModelSlotClass())) {
+				usedModelSlots.add(use.getModelSlotClass());
+			}
 		}
 		if (!wasModifiedBeforeSecondPass) {
 			getLoadedResourceData().clearIsModified();

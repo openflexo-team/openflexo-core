@@ -213,25 +213,25 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			}
 
 			if (value instanceof ResourceData) {
-				try {
-					ElementImportDeclaration importDeclaration = getCompilationUnit()
-							.ensureResourceImport(((ResourceData) value).getResource(), false);
-					return importDeclaration.getAbbrev();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				// The import is declared because the value is printed: that is not an edition of the unit (CORE-D-45)
+				ElementImportDeclaration[] importDeclaration = new ElementImportDeclaration[1];
+				getCompilationUnit().runWithoutMarkingModified(() -> {
+					try {
+						importDeclaration[0] = getCompilationUnit().ensureResourceImport(((ResourceData) value).getResource(), false);
+					} catch (FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
+						e.printStackTrace();
+					}
+				});
+				if (importDeclaration[0] != null) {
+					return importDeclaration[0].getAbbrev();
 				}
 			}
 
 			if (value instanceof InnerResourceData) {
-				ElementImportDeclaration importDeclaration = getCompilationUnit().ensureElementImport(castType(value), false);
-				return importDeclaration.getAbbrev();
+				ElementImportDeclaration[] importDeclaration = new ElementImportDeclaration[1];
+				getCompilationUnit().runWithoutMarkingModified(
+						() -> importDeclaration[0] = getCompilationUnit().ensureElementImport(castType(value), false));
+				return importDeclaration[0].getAbbrev();
 			}
 
 			// Is that type convertable natively into a String ?

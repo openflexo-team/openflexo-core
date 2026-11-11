@@ -153,6 +153,22 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, modelFactory, typingSpace, bindingFactory);
 	}
 
+	/**
+	 * Parse the supplied node as an expression of the supplied bindable, without notifying that bindable: parsing a text is not editing it
+	 * (CORE-D-45)
+	 */
+	public static Expression makeDetachedExpression(Node node, Bindable bindable, FMLModelFactory modelFactory,
+			AbstractFMLTypingSpace typingSpace, FMLBindingFactory bindingFactory) {
+		DataBindingNode dataBindingNode = new DataBindingNode(node, bindable, BindingDefinitionType.GET, Object.class, null);
+		dataBindingNode.setDetached(true);
+		_makeExpression(node, bindable, modelFactory, typingSpace, bindingFactory, dataBindingNode);
+		DataBinding<?> vehicle = dataBindingNode.getModelObject();
+		// This binding only carries the expression back: stop it listening to the bindable, where it would stay registered forever
+		// (CORE-D-23)
+		vehicle.stopListening();
+		return vehicle.getExpression();
+	}
+
 	public static Expression _makeExpression(Node node, Bindable bindable, FMLSemanticsAnalyzer parentAnalyzer,
 			DataBindingNode dataBindingNode) {
 		ExpressionFactory factory = new ExpressionFactory(node, bindable, parentAnalyzer, dataBindingNode);
