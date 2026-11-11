@@ -53,7 +53,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ClassRole.ClassRoleImpl.class)
@@ -63,7 +62,6 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 	public static final String CONCEPT_URI_KEY = "conceptURI";
 
 	@Getter(value = CONCEPT_URI_KEY)
-	@XMLAttribute(xmlTag = "ontologicType")
 	@FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>ontologic type</html>")
 	public String _getConceptURI();
 

@@ -57,7 +57,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -79,7 +78,6 @@ public abstract interface AbstractSelectIndividual<MS extends TypeAwareModelSlot
 	public static final String ONTOLOGY_CLASS_URI_KEY = "ontologyClassURI";
 
 	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = ONTOLOGY_CLASS_URI_KEY, required = false, description = "<html>reference of the class</html>")
 	public String _getOntologyClassURI();
 

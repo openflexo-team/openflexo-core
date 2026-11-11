@@ -57,8 +57,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * This class represent a column (or a row in inversed layout) in a {@link FlexoTableRole} when an iteration was set
@@ -69,7 +67,6 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(ColumnTableBinding.ColumnTableBindingImpl.class)
-@XMLElement
 @FML("ColumnTableBinding")
 public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends ModelSlotObject<D>, FlexoConceptObject {
@@ -85,7 +82,6 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 	 * @return
 	 */
 	@Getter(value = COLUMN_INDEX_KEY, defaultValue = "-1")
-	@XMLAttribute
 	@FMLAttribute(COLUMN_INDEX_KEY)
 	public int getColumnIndex();
 
@@ -99,7 +95,6 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 	public static final String TABLE_ROLE_KEY = "tableRole";
 
 	@Getter(COLUMN_NAME_KEY)
-	@XMLAttribute
 	@FMLAttribute(COLUMN_NAME_KEY)
 	public String getColumnName();
 
@@ -107,7 +102,6 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 	public void setColumnName(String columnName);
 
 	@Getter(VALUE_KEY)
-	@XMLAttribute
 	@FMLAttribute(VALUE_KEY)
 	public DataBinding<String> getValue();
 

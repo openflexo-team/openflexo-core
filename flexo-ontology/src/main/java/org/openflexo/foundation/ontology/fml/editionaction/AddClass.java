@@ -61,7 +61,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -82,7 +81,6 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?, ?>, M ext
 	// public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Getter(value = CLASS_NAME_KEY)
-	@XMLAttribute(xmlTag = "newClassName")
 	@FMLAttribute(value = CLASS_NAME_KEY, required = true)
 	public DataBinding<String> getClassName();
 
@@ -90,7 +88,6 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?, ?>, M ext
 	public void setClassName(DataBinding<String> className);
 
 	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
-	@XMLAttribute
 	public String _getOntologyClassURI();
 
 	@Setter(ONTOLOGY_CLASS_URI_KEY)
@@ -106,7 +103,6 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<M, ?, ?>, M ext
 
 	/*@Override
 	@Getter(value = MODEL_SLOT_KEY)
-	@XMLAttribute
 	public MS getModelSlot();
 	
 	@Override

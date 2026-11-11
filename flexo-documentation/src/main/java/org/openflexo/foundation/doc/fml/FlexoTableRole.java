@@ -45,8 +45,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
@@ -101,7 +99,6 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	 * Return the represented table id in the template document resource<br>
 	 */
 	@Getter(TABLE_ID_KEY)
-	@XMLAttribute
 	@FMLAttribute(TABLE_ID_KEY)
 	public String getTableId();
 
@@ -114,7 +111,6 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	 * @return
 	 */
 	@Getter(ITERATION_KEY)
-	@XMLAttribute
 	@FMLAttribute(ITERATION_KEY)
 	public DataBinding<List> getIteration();
 
@@ -127,7 +123,6 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	public void setIteration(DataBinding<List> value);
 
 	@Getter(value = START_ITERATION_INDEX_KEY, defaultValue = "-1")
-	@XMLAttribute
 	@FMLAttribute(START_ITERATION_INDEX_KEY)
 	public int getStartIterationIndex();
 
@@ -135,7 +130,6 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	public void setStartIterationIndex(int startIterationIndex);
 
 	@Getter(value = END_ITERATION_INDEX_KEY, defaultValue = "-1")
-	@XMLAttribute
 	@FMLAttribute(END_ITERATION_INDEX_KEY)
 	public int getEndIterationIndex();
 
@@ -143,7 +137,6 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	public void setEndIterationIndex(int endIterationIndex);
 
 	@Getter(value = DATA_ORIENTATION_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = DATA_ORIENTATION_KEY, kind = AttributeKind.Enum)
 	public DataOrientation getDataOrientation();
 
@@ -151,7 +144,6 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	public void setDataOrientation(DataOrientation dataOrientation);
 
 	@Getter(value = COLUMN_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = ColumnTableBinding.TABLE_ROLE_KEY)
-	@XMLElement
 	@FMLAttribute(value = COLUMN_BINDINGS_KEY, kind = AttributeKind.InstancesList)
 	public List<ColumnTableBinding<D, TA>> getColumnBindings();
 

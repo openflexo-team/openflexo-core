@@ -48,7 +48,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ObjectPropertyRole.ObjectPropertyRoleImpl.class)
@@ -58,7 +57,6 @@ public abstract interface ObjectPropertyRole<P extends IFlexoOntologyObjectPrope
 	public static final String RANGE_URI_KEY = "rangeURI";
 
 	@Getter(value = RANGE_URI_KEY)
-	@XMLAttribute(xmlTag = "range")
 	public String _getRangeURI();
 
 	@Setter(RANGE_URI_KEY)

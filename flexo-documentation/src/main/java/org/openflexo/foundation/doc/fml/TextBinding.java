@@ -72,8 +72,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -88,7 +86,6 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity
 @ImplementationClass(TextBinding.TextBindingImpl.class)
-@XMLElement
 @FML("TextBinding")
 public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends ModelSlotObject<D> {
 
@@ -105,7 +102,6 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	public static final String IS_MULTILINE_KEY = "isMultiline";
 
 	@Getter(TEXT_SELECTION_KEY)
-	@XMLElement
 	@FMLAttribute(TEXT_SELECTION_KEY)
 	public TextSelection<D, TA> getTextSelection();
 
@@ -113,7 +109,6 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	public void setTextSelection(TextSelection<D, TA> textSelection);
 
 	@Getter(VALUE_KEY)
-	@XMLAttribute
 	@FMLAttribute(VALUE_KEY)
 	public DataBinding<String> getValue();
 
@@ -127,7 +122,6 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	public void setFragmentRole(FlexoFragmentRole<?, D, TA> fragmentRole);
 
 	@Getter(value = IS_MULTILINE_KEY, defaultValue = "false")
-	@XMLAttribute
 	@FMLAttribute(IS_MULTILINE_KEY)
 	public boolean isMultiline();
 

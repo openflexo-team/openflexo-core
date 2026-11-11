@@ -56,7 +56,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddDataProperty.AddDataPropertyImpl.class)
@@ -71,7 +70,6 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?, ?>
 	public static final String DATA_TYPE_KEY = "dataType";
 
 	@Getter(value = PROPERTY_NAME_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = PROPERTY_NAME_KEY, required = true, description = "<html>Name of property to be created</html>")
 	public DataBinding<String> getPropertyName();
 
@@ -79,7 +77,6 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?, ?>
 	public void setPropertyName(DataBinding<String> propertyName);
 
 	@Getter(value = DYNAMIC_DOMAIN_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = DYNAMIC_DOMAIN_KEY, required = false, description = "<html>Domain of property to be created</html>")
 	public DataBinding<IFlexoOntologyClass<?>> getDynamicDomain();
 
@@ -87,7 +84,6 @@ public abstract interface AddDataProperty<MS extends TypeAwareModelSlot<M, ?, ?>
 	public void setDynamicDomain(DataBinding<IFlexoOntologyClass<?>> dynamicDomain);
 
 	@Getter(value = DATA_TYPE_KEY)
-	@XMLAttribute
 	public BuiltInDataType getDataType();
 
 	@Setter(DATA_TYPE_KEY)

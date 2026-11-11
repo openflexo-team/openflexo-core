@@ -41,7 +41,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
@@ -88,7 +87,6 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 	 * Return the drawingRun id where the drawing run is contained, in the template document resource<br>
 	 */
 	@Getter(PARAGRAPH_ID_KEY)
-	@XMLAttribute
 	public String getParagraphId();
 
 	/**
@@ -103,7 +101,6 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 	 * Return the run index of drawingRun where the drawing run is contained, in the template document resource<br>
 	 */
 	@Getter(value = RUN_INDEX_KEY, defaultValue = "-1")
-	@XMLAttribute
 	public int getRunIndex();
 
 	/**
@@ -120,7 +117,6 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 	 * @return
 	 */
 	@Getter(REPRESENTED_OBJECT_KEY)
-	@XMLAttribute
 	public DataBinding<FlexoObject> getRepresentedObject();
 
 	/**
@@ -135,7 +131,6 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 	 * Return the nature used to extract screenshot<br>
 	 */
 	@Getter(NATURE_KEY)
-	@XMLAttribute
 	public Class<? extends ScreenshotableNature<?>> getNature();
 
 	/**

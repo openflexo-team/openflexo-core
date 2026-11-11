@@ -52,7 +52,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAssertion.AbstractAssertionImpl.class)
@@ -69,7 +68,6 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 	public void setAction(AddIndividual<?, ?, ?, ?> action);
 
 	@Getter(value = CONDITIONAL_KEY)
-	@XMLAttribute
 	public DataBinding<Boolean> getConditional();
 
 	@Setter(CONDITIONAL_KEY)

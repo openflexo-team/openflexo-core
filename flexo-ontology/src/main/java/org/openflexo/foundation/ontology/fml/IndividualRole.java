@@ -59,7 +59,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
@@ -75,7 +74,6 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 	public static final String ONTOLOGIC_TYPE_KEY = "type";
 
 	@Getter(value = CONCEPT_URI_KEY)
-	@XMLAttribute(xmlTag = "ontologicType")
 	// @FMLAttribute(value = CONCEPT_URI_KEY, required = false, description = "<html>ontologic type</html>")
 	public String _getConceptURI();
 

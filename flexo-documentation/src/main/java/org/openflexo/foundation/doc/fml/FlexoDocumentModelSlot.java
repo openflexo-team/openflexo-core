@@ -33,7 +33,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -58,7 +57,6 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, TA>, R extend
 	public static final String TEMPLATE_RESOURCE_KEY = "templateResource";
 
 	@Getter(value = TEMPLATE_DOCUMENT_URI_KEY)
-	@XMLAttribute
 	public String getTemplateDocumentURI();
 
 	@Setter(TEMPLATE_DOCUMENT_URI_KEY)

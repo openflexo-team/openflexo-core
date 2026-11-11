@@ -31,7 +31,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
@@ -72,7 +71,6 @@ public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extend
 	 * Return the represented paragraph id in the template document resource<br>
 	 */
 	@Getter(PARAGRAPH_ID_KEY)
-	@XMLAttribute
 	public String getParagraphId();
 
 	@Setter(PARAGRAPH_ID_KEY)

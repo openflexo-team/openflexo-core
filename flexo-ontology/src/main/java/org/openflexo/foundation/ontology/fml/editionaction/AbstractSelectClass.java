@@ -55,7 +55,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -77,7 +76,6 @@ public abstract interface AbstractSelectClass<MS extends TypeAwareModelSlot<M, ?
 	public static final String PARENT_CLASS_URI_KEY = "parentClassURI";
 
 	@Getter(value = PARENT_CLASS_URI_KEY)
-	@XMLAttribute
 	public String _getParentClassURI();
 
 	@Setter(PARENT_CLASS_URI_KEY)

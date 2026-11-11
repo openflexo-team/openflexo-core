@@ -51,7 +51,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(DataPropertyRole.DataPropertyRoleImpl.class)
@@ -61,7 +60,6 @@ public abstract interface DataPropertyRole<P extends IFlexoOntologyDataProperty>
 	public static final String DATA_TYPE_KEY = "dataType";
 
 	@Getter(value = DATA_TYPE_KEY)
-	@XMLAttribute
 	public BuiltInDataType getDataType();
 
 	@Setter(DATA_TYPE_KEY)

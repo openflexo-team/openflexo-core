@@ -54,7 +54,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(PropertyRole.PropertyRoleImpl.class)
@@ -66,14 +65,12 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 	public static final String DOMAIN_URI = "domainURI";
 
 	@Getter(PARENT_PROPERTY_URI_KEY)
-	@XMLAttribute
 	public String _getParentPropertyURI();
 
 	@Setter(PARENT_PROPERTY_URI_KEY)
 	public void _setParentPropertyURI(String parentPropertyURI);
 
 	@Getter(DOMAIN_URI)
-	@XMLAttribute
 	public String _getDomainURI();
 
 	@Setter(DOMAIN_URI)

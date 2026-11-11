@@ -71,8 +71,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
@@ -99,7 +97,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 	// public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Getter(value = INDIVIDUAL_NAME_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = INDIVIDUAL_NAME_KEY, required = false, description = "<html>name of the individual</html>")
 	public DataBinding<String> getIndividualName();
 
@@ -107,7 +104,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 	public void setIndividualName(DataBinding<String> individualName);
 
 	@Getter(value = DYNAMIC_TYPE_KEY)
-	@XMLAttribute
 	@FMLAttribute(value = DYNAMIC_TYPE_KEY, required = false, description = "<html>dynamic type</html>")
 	public DataBinding<IFlexoOntologyClass<?>> getDynamicType();
 
@@ -115,7 +111,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 	public void setDynamicType(DataBinding<IFlexoOntologyClass<?>> dynamicType);
 
 	@Getter(value = DATA_ASSERTIONS_KEY, cardinality = Cardinality.LIST, inverse = DataPropertyAssertion.ACTION_KEY)
-	@XMLElement(xmlTag = "DataPropertyAssertion")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<DataPropertyAssertion> getDataAssertions();
@@ -130,7 +125,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 	public void removeFromDataAssertions(DataPropertyAssertion aDataAssertion);
 
 	@Getter(value = OBJECT_ASSERTIONS_KEY, cardinality = Cardinality.LIST, inverse = ObjectPropertyAssertion.ACTION_KEY)
-	@XMLElement(xmlTag = "ObjectPropertyAssertion")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	public List<ObjectPropertyAssertion> getObjectAssertions();
@@ -145,7 +139,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 	public void removeFromObjectAssertions(ObjectPropertyAssertion aObjectAssertion);
 
 	@Getter(value = ONTOLOGY_CLASS_URI_KEY)
-	@XMLAttribute
 	@Deprecated
 	@FMLMigration("Will disappear in 3.0")
 	public String _getOntologyClassURI();
@@ -164,7 +157,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?, ?>, 
 
 	/*@Override
 	@Getter(value = MODEL_SLOT_KEY)
-	@XMLElement
 	public MS getModelSlot();
 	
 	@Override

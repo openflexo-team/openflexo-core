@@ -380,6 +380,13 @@ requires distinct XML tags between XML-mapped entities (the tag of an unmapped o
 `DuplicateVirtualModel` and the XML dumps of definitions in the tests are gone (the tests print the FML instead). Batch 2: the
 technology adapters, formod, flexo-ontology and flexo-documentation (their probe runs where their adapter is loaded).
 
+**Phase 6, batch 2 (2026-11-10): the technology adapters.** The same probe, run in the test module of each of the 23 adapters with
+every adapter on its classpath activated, roots extended to every instance, actor reference and model-slot instance type (the
+reflected VirtualModelInstances of xlsx, xml and rest included): 272 definition files (model slots, roles, edition actions, fetch
+requests, URI processors), plus 21 definition classes no meta-model reaches (dead roles and actions); 540 annotations removed, in
+flexo-ontology, flexo-documentation, formod's b-ta and 21 adapter repositories. Kept: every actor reference, model-slot instance and
+reflected instance, and the adapters' own models (none of them points to a definition through an XML-mapped property).
+
 **Acceptance criteria.** No `.fml.xml` read or written by the platform; `XMLToFMLConverter`, `PersistencyStrategy`,
 `FMLMigration` gone; core and touched repositories compile (javac and ECJ) with unchanged test results.
 

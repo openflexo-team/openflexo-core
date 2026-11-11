@@ -42,8 +42,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -79,7 +77,6 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 	 * @return
 	 */
 	@Getter(value = FRAGMENT_KEY, isStringConvertable = true)
-	@XMLAttribute
 	@FMLAttribute(FRAGMENT_KEY)
 	public F getFragment();
 
@@ -93,7 +90,6 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 
 	@Getter(value = TEXT_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = TextBinding.FRAGMENT_ROLE_KEY)
 	@Embedded
-	@XMLElement
 	@FMLAttribute(value = TEXT_BINDINGS_KEY, kind = AttributeKind.InstancesList)
 	public List<TextBinding<D, TA>> getTextBindings();
 
