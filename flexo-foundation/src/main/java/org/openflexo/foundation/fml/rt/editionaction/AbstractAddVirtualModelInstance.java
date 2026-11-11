@@ -86,7 +86,7 @@ public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstanc
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_TITLE_KEY = "virtualModelInstanceTitle";
 
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY)
 	@XMLAttribute
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, required = true)
 	public DataBinding<String> getVirtualModelInstanceName();
@@ -94,7 +94,7 @@ public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstanc
 	@Setter(VIRTUAL_MODEL_INSTANCE_NAME_KEY)
 	public void setVirtualModelInstanceName(DataBinding<String> virtualModelInstanceName);
 
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, ignoreForEquality = true)
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
 	@XMLAttribute
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, required = false)
 	public DataBinding<String> getVirtualModelInstanceTitle();

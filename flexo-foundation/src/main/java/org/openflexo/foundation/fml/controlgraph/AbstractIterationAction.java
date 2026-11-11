@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
 import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -85,8 +84,7 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 	@Setter(ITERATOR_NAME_KEY)
 	public void setIteratorName(String iteratorName);
 
-	@FMLMigration("ignoreForEquality=true to be removed")
-	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)

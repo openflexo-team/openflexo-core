@@ -119,7 +119,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String REPOSITORY_FOLDER_KEY = "folder";
 
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY)
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, required = true)
 	public DataBinding<String> getVirtualModelInstanceName();
 
@@ -127,7 +127,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 	public void setVirtualModelInstanceName(DataBinding<String> virtualModelInstanceName);
 
 	@Deprecated /* Will disappear */
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, ignoreForEquality = true)
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
 	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, required = false)
 	public DataBinding<String> getVirtualModelInstanceTitle();
 

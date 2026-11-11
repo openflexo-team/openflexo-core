@@ -122,7 +122,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 	@Setter(RESOURCE_CENTER_KEY)
 	public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter);
 
-	@Getter(value = RELATIVE_PATH_KEY, ignoreForEquality = true)
+	@Getter(value = RELATIVE_PATH_KEY)
 	@Deprecated // Use getDynamicRelativePath() instead
 	public String getRelativePath();
 

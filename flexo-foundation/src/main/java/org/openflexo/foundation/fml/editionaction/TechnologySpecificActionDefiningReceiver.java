@@ -83,7 +83,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 	@PropertyIdentifier(type = DataBinding.class)
 	String RECEIVER_KEY = "receiver";
 
-	@Getter(value = RECEIVER_KEY, ignoreForEquality = true)
+	@Getter(value = RECEIVER_KEY)
 	@Deprecated
 	DataBinding<R> getReceiver();
 

@@ -144,8 +144,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 * Return the metadata of this object: the annotations ({@code @Xxx}, {@code @Xxx(value)}, {@code @Xxx(key=value,...)}) preceding its
 	 * declaration in FML source
 	 */
-	// TODO: ignoreForEquality to be removed once conversion from XML to FML is done
-	@Getter(value = META_DATA_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY, ignoreForEquality = true)
+	@Getter(value = META_DATA_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY)
 	public List<FMLMetaData> getMetaData();
 
 	@Adder(META_DATA_KEY)

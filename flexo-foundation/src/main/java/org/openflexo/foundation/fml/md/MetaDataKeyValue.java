@@ -81,7 +81,7 @@ public interface MetaDataKeyValue<T> extends FMLObject, FMLPrettyPrintable {
 	@Setter(KEY_KEY)
 	public void setKey(String aKey);
 
-	@Getter(value = OWNING_METADATA_KEY, ignoreForEquality = true)
+	@Getter(value = OWNING_METADATA_KEY)
 	public MultiValuedMetaData getOwningMetaData();
 
 	@Setter(OWNING_METADATA_KEY)

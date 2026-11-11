@@ -116,7 +116,7 @@ public interface FinalizeMatching extends EditionAction {
 	@Setter(MATCHING_SET_KEY)
 	public void setMatchingSet(DataBinding<MatchingSet> matchingSet);
 
-	@Getter(value = CONTAINER_KEY, ignoreForEquality = true)
+	@Getter(value = CONTAINER_KEY)
 	public DataBinding<FlexoConceptInstance> getContainer();
 
 	@Setter(CONTAINER_KEY)

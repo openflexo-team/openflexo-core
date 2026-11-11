@@ -254,7 +254,7 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
 	@Override
-	@Getter(value = CONTAINER_KEY, ignoreForEquality = true)
+	@Getter(value = CONTAINER_KEY)
 	public DataBinding<?> getContainer();
 
 	@Setter(CONTAINER_KEY)

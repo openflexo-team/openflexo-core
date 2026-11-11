@@ -91,14 +91,14 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	@PropertyIdentifier(type = long.class)
 	String FLEXO_ID_KEY = "flexoID";
 
-	@Getter(value = USER_IDENTIFIER_KEY, ignoreForEquality = true)
+	@Getter(value = USER_IDENTIFIER_KEY)
 	@XMLAttribute(xmlTag = "userID")
 	public String getUserIdentifier();
 
 	@Setter(USER_IDENTIFIER_KEY)
 	public void setUserIdentifier(String userIdentifier);
 
-	@Getter(value = FLEXO_ID_KEY, defaultValue = "0", ignoreForEquality = true)
+	@Getter(value = FLEXO_ID_KEY, defaultValue = "0")
 	@XMLAttribute
 	// Here, we dont want to have the FlexoID duplicated (never a good idea for
 	// an ID !!!)

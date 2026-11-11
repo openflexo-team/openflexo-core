@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
@@ -102,8 +101,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 	 *
 	 * @return the declared type of the variable
 	 */
-	@FMLMigration("ignoreForEquality=true to be removed")
-	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)

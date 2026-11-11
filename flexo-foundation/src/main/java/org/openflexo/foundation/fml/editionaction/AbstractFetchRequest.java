@@ -120,7 +120,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 
 	// No more deprecated here, but part of AbstractFetchRequest
 	@Override
-	@Getter(value = RECEIVER_KEY, ignoreForEquality = true)
+	@Getter(value = RECEIVER_KEY)
 	DataBinding<RD> getReceiver();
 
 	// No more deprecated here, but part of AbstractFetchRequest

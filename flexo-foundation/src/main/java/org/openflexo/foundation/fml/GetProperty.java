@@ -91,8 +91,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	@Setter(GET_CONTROL_GRAPH_KEY)
 	public void setGetControlGraph(FMLControlGraph aControlGraph);
 
-	@FMLMigration("ignoreForEquality=true to be removed")
-	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
 	public Type getDeclaredType();
 
 	@Setter(DECLARED_TYPE_KEY)

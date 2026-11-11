@@ -77,7 +77,7 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 	 *
 	 * @return the resource, null when the created VirtualModel has no parent
 	 */
-	@Getter(value = PARENT_VIRTUAL_MODEL_TYPE_KEY, ignoreType = true, ignoreForEquality = true)
+	@Getter(value = PARENT_VIRTUAL_MODEL_TYPE_KEY, ignoreType = true)
 	public CompilationUnitResource getParentVirtualModelType();
 
 	@Setter(PARENT_VIRTUAL_MODEL_TYPE_KEY)

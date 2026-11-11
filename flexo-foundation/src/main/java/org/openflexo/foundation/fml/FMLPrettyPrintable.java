@@ -57,11 +57,9 @@ public interface FMLPrettyPrintable extends FMLObject {
 	@PropertyIdentifier(type = FMLPrettyPrintDelegate.class)
 	public static final String PRETTY_PRINT_DELEGATE_KEY = "prettyPrintDelegate";
 
-	// Very important here:
-	// ignoreForEquality=true MUST remains commented out for the update schemes to work well
-	// But it must be present to locally run migration tests
-	// Not transient: updateWith() carries the delegate (and the text positions it holds) from a re-parsed text to the edited object
-	@Getter(value = PRETTY_PRINT_DELEGATE_KEY, ignoreType = true/*, ignoreForEquality = true*/)
+	// Not transient: updateWith() carries the delegate (and the text positions it holds) from a re-parsed text to the edited object.
+	// It also takes part in equality: each parse builds its own delegate, so updateWith() never takes a re-parsed object for the old one
+	@Getter(value = PRETTY_PRINT_DELEGATE_KEY, ignoreType = true)
 	public FMLPrettyPrintDelegate<?> getPrettyPrintDelegate();
 
 	@Setter(PRETTY_PRINT_DELEGATE_KEY)

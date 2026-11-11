@@ -73,7 +73,7 @@ public interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
 	@Setter(KEY_KEY)
 	public void setKey(String aKey);
 
-	@Getter(value = OWNER_KEY, ignoreForEquality = true)
+	@Getter(value = OWNER_KEY)
 	public FMLObject getOwner();
 
 	@Setter(OWNER_KEY)

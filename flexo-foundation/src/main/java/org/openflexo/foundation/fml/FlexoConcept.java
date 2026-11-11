@@ -641,7 +641,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 *
 	 * @return a new list of the instance types of the parent concepts
 	 */
-	@Getter(value = PARENT_FLEXO_CONCEPT_TYPES_KEY, ignoreType = true, ignoreForEquality = true)
+	@Getter(value = PARENT_FLEXO_CONCEPT_TYPES_KEY, ignoreType = true)
 	public List<FlexoConceptInstanceType> getParentFlexoConceptTypes();
 
 	/**
@@ -668,7 +668,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 *
 	 * @return the parent concepts
 	 */
-	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY, ignoreForEquality = true,
+	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY,
 			isDerived = true)
 	public List<FlexoConcept> getParentFlexoConcepts();
 
