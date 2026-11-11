@@ -1,0 +1,7 @@
+// CORE-D-47, run command by command by KnownDefectsJavaTests: line 5 must fail, lines 6-7 state what it must leave.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDConstruction.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDConstruction() with (name="kd47");
+r = vmi.outer();
+assert vmi.progress != 1;
+assert vmi.bombCount() == 0;

@@ -130,6 +130,25 @@ first milestone. Analysis, examples, hard points and proposed path: [`design/cla
 
 **Acceptance criteria.** To be written per milestone (textual FML@RT, then clabjects in the FME).
 
+### CORE-F-10 — Decide the status of the specification against the implementation  ·  `TODO`
+
+**Problem.** The specification (`spec/`) is ambiguous about what defines the meaning of a program. §1.4 makes the semantic analyzers
+of fml-parser and the meta-model of flexo-foundation authoritative "for the meaning of an accepted program", while Appendix B lists
+the places where that same implementation departs from the intended meaning, and §1.6 defines conformance "within the deviations
+listed in Appendix B". So the implementation is both the reference and the thing judged against it, and a defect can end up
+justifying itself. Raised by the external audit of the FML language of 2026-10-23 (its §4); left open on 2026-11-11 while its
+defects were recorded (CORE-D-46 to CORE-D-55).
+
+**Options.**
+- The chapters are normative; the implementation is authoritative only where they are silent; Appendix B lists the departures,
+  and conformance is defined without them.
+- The implementation stays the reference; the chapters describe it, and Appendix B becomes a list of intended changes.
+- Three explicit layers: normative semantics, known deviations of the implementation, guarantees left to technology adapters
+  (identity, notification, failure) — the shape the audit recommends.
+
+**Acceptance criteria.** §1.4, §1.6 and the introduction of Appendix B state one consistent rule; every Appendix B entry reads
+as a departure from a stated rule, not as the rule.
+
 ## Container-based user interfaces
 
 ### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `DONE`

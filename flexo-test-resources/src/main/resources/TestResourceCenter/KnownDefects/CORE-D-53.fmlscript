@@ -1,0 +1,9 @@
+// CORE-D-53: select from a concept instance must find the instances nested at any depth.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDQueries.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDQueries() with (name="kd53");
+o = vmi.new Outer();
+m = o.newMiddle();
+l = m.newLeaf();
+assert l != null;
+assert o.leafCount() == 1;

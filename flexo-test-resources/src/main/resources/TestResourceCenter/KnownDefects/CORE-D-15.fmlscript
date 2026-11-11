@@ -1,0 +1,6 @@
+// CORE-D-15 (concepts): new Child() through a creation scheme inherited from the parent must create a Child.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDInheritance.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDInheritance() with (name="kd15");
+d = vmi.new Dog();
+assert d.flexoConcept.name == "Dog";

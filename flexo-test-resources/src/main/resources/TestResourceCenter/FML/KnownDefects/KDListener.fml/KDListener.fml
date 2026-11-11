@@ -1,0 +1,33 @@
+/**
+ * CORE-D-55: an inherited event listener is registered twice when the instance is attached to the engine in bulk.
+ * See KnownDefects/CORE-D-55.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDListener.fml")
+public model KDListener {
+
+	int received;
+
+	create() {
+		received = 0;
+	}
+
+	public ping() {
+		fire new Ping();
+	}
+
+	public event Ping {
+		create() {
+		}
+	}
+
+	public concept Base {
+		listen Ping from container {
+			container.received = container.received + 1;
+		}
+	}
+
+	public concept Child extends Base {
+		create() {
+		}
+	}
+}

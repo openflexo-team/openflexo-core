@@ -1,0 +1,31 @@
+/**
+ * CORE-D-46: statements that the control-graph builder does not lower. See KnownDefects/CORE-D-46.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDControlFlow.fml")
+public model KDControlFlow {
+
+	public int nestedIf() {
+		if (true)
+			if (false) return 1; else return 2;
+		else return 3;
+		return 4;
+	}
+
+	public int nestedIfBraced() {
+		if (true) {
+			if (false) { return 1; } else { return 2; }
+		} else { return 3; }
+		return 4;
+	}
+
+	public int whileArm() {
+		if (false) while (false) return 1; else return 3;
+		return 4;
+	}
+
+	public int emptyStatement() {
+		int n = 0;
+		;
+		return 7;
+	}
+}

@@ -1,0 +1,50 @@
+/**
+ * CORE-D-53 (select from a concept instance is not recursive) and CORE-D-54 (unfiltered select exposes the type index).
+ * See KnownDefects/CORE-D-53.fmlscript, CORE-D-54.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDQueries.fml")
+public model KDQueries {
+
+	public List<Item> allItems() {
+		return select Item from this;
+	}
+
+	public int itemCount() {
+		int n = 0;
+		for (Item i : select Item from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public concept Item {
+		create() {
+		}
+	}
+
+	public concept Outer {
+		create() {
+		}
+		public Middle newMiddle() {
+			return new Middle();
+		}
+		public int leafCount() {
+			int n = 0;
+			for (Leaf l : select Leaf from this) {
+				n = n + 1;
+			}
+			return n;
+		}
+		public concept Middle {
+			create() {
+			}
+			public Leaf newLeaf() {
+				return new Leaf();
+			}
+			public concept Leaf {
+				create() {
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,18 @@
+/**
+ * CORE-D-49: overload selection takes the first assignable behaviour. See KnownDefects/CORE-D-49.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDOverloads.fml")
+public model KDOverloads {
+
+	public String choose(Object o) {
+		return "Object";
+	}
+
+	public String choose(String s) {
+		return "String";
+	}
+
+	public String callWithString() {
+		return this.choose("x");
+	}
+}

@@ -104,6 +104,10 @@ these outcomes, which this section collects (they are justified where the constr
 An execution error is signalled to the caller of the behaviour as an `FMLExecutionException`; a script that called
 it stops, and an application reports it.
 
+> **Implementation note.** A failure in a creation scheme does not reach the caller of the `new`: the caller goes on,
+> and the partly built instance stays in its container (`CORE-D-47`). Failures in event listeners, in the deletion
+> scheme run by `delete` and by `end match` are swallowed as well.
+
 The consequence of the first row is the discipline this specification repeats: **a `null` where a value is expected
 is first a name that does not resolve.** Validate (§13.8) before debugging.
 

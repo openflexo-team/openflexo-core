@@ -1,0 +1,6 @@
+// CORE-D-48: a local variable declared in a block stays visible after it and hides the property of the same name.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDScope.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDScope() with (name="kd48");
+assert vmi.name == "property";
+assert vmi.blockScope() == "property";

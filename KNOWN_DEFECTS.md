@@ -93,7 +93,17 @@ public pruneKeepTagged() {
 `from` clause, but never the `where_clause` of the `begin_match_action` production: no `MatchCondition` is added to the
 `InitiateMatching`, although `MatchingSet(InitiateMatching, …)` does filter the instances with those conditions.
 
-**Workaround.** Filter in the matches instead: iterate over the relevant sources only, and match on criteria.
+**Consequence — verified 2026-11-11 by execution (test `KnownDefects/CORE-D-12.fmlscript`, fixture `KDMatching`).** Filtering
+the *sources* does not protect the *targets*: with sources `a` (managed), `b` (unmanaged), `c` (managed) and targets `a`, `b`, a
+reconciliation whose `begin match` and source loop both filter on `managed` creates `c` and **deletes the unmanaged target `b`**,
+because no `match` claims it. The workaround formerly given here and in the spec ("filter in the matches") is therefore wrong; it
+was withdrawn from §10.9.5 and Appendix B. Found by the external audit of the FML language of 2026-10-23 (its §3.2).
+
+Side observation: when the matched concept declares no deletion scheme, `end match … unmatched: delete()` deletes nothing and
+says nothing (the same test passes without the `delete() { }` of `Target`). Related to [`CORE-F-2`](./BACKLOG.md).
+
+**Workaround.** Close with `end match … unmatched: delete()` only a set whose domain is every instance of the concept in that
+container; for a narrower domain, omit the `end match` and delete the leftovers explicitly.
 
 ---
 
@@ -204,6 +214,44 @@ the value is cached (the expression property, its binding path element, or the c
 
 **Workaround.** None at FML level for a value read from outside; inside a behaviour, compute the value directly (`items.size`).
 
+### CORE-D-50 — The default values of inherited properties are not set on a new instance  ·  `TODO`
+
+**Symptom.** A property declared with a default value in a parent concept (`int legs = 4;`) is null on a new instance of a child
+concept that has its own creation scheme. The child's own default values are set.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-50.fmlscript`, fixture `KDInheritance`).** With
+`Animal { int legs = 4; create() { } }` and `OwnDog extends Animal { int tail = 1; create() { } }`, `vmi.new OwnDog()` gives
+`tail == 1` and `legs == null`.
+
+**Mechanism — verified in the code.** `FlexoConceptInstance` initializes default values by iterating
+`getFlexoConcept().getDeclaredProperties(FlexoRole.class)`: declared roles only, not inherited ones (and roles only, not
+`FMLVariable`s). Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+
+**Workaround.** Assign the inherited property in the child's creation scheme.
+
+### CORE-D-51 — Initializers and cardinalities written in a property declaration are lost  ·  `TODO`
+
+**Symptom.** The parser accepts these declarations, but what they say does not reach the model:
+- `Person first = new Person();` — the initializer of a concept-typed property is dropped;
+- `Person selected = select unique Person from container;` — an edition action as initializer is dropped, on every kind of
+  property, although §6.2 of the spec allows it;
+- `Object[0,*] objects;` — the property is built with cardinality `ZeroOne`.
+
+Primitive and `String` properties keep both their initializer and their cardinality.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-51.fmlscript`, fixture `KDPropertyInit`).** The
+cardinality of `objects` is `ZeroOne` (first assert); the script also asserts the initializer of `first` and the value of
+`selected`, not reached once the first assert fails.
+
+**Mechanism — verified in the code.** `FlexoPropertyFactory` routes a concept-typed declaration to `FlexoRolePropertyNode` and a
+non-primitive Java type to `FMLVariableNode`. `FlexoRolePropertyNode.buildModelObjectFromAST` never reads the initializer;
+`ObjectNode` returns null for an `AInitializerFmlActionVariableDeclarator` (`getInitializerFMLAction` has no caller);
+`FMLVariableNode.buildModelObjectFromAST` never sets the cardinality, and `FlexoProperty.getCardinality()` defaults to `ZeroOne`.
+Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+
+**Workaround.** Initialize such properties in the creation scheme; type multi-valued Java properties with a primitive or
+`String` element when possible.
+
 ---
 
 ## FML behaviours
@@ -211,8 +259,8 @@ the value is cached (the expression property, its binding path element, or the c
 ### CORE-D-4 — A parameter default value does not allow omitting the argument in `new`  ·  `TODO`
 
 **Symptom.** A creation scheme parameter declaring a default value (`int capacity=10`) must still be passed explicitly: a `new`
-expression omitting it does not resolve, and evaluates silently to null at run-time. Whether default values are meant to allow
-omitting arguments, or only to pre-fill the parameters user interface, has to be decided as part of the fix.
+expression omitting it does not resolve, and evaluates silently to null at run-time. **Decided 2026-11-11:** a call may omit trailing
+arguments that have a default value (spec §7.2 and §7.4 now say so); this entry stays a defect of the implementation.
 
 **Reproduction (verified 2026-09 by execution).** With the following concept, `newShelf("Fiction")` returns null; the parser logs
 `cannot find constructor null for type Shelf with arguments [parameters.label]`, then
@@ -243,9 +291,61 @@ without considering parameters with a default value; to be confirmed in the code
 (`create::withDefaultCapacity(String label)`, reached with `new Shelf::withDefaultCapacity(...)`), as done in `flexo-test-resources`
 `FML/Library.fml`.
 
+### CORE-D-49 — Behaviour signatures, overload selection and overriding follow inconsistent rules  ·  `TODO`
+
+**Symptom.** Five related observations, each verified 2026-11-11 by execution (fixtures `KDOverloads`, `KDSignatures`; tests
+`KnownDefects/CORE-D-49.fmlscript` and `KnownDefectsJavaTests.coreD49_*`):
+1. `f(int x)` and `f(String x)` are reported as duplicates ("Duplicate behaviour f(x)"), while `g(int x)` and `g(int y)` are not.
+2. With `choose(Object o)` declared before `choose(String s)`, `this.choose("x")` calls the `Object` one.
+3. A child `String h()` overriding a parent `int h()` is accepted without error.
+4. A concrete concept that inherits an abstract behaviour without implementing it is accepted without error.
+5. Not covered by a test: `overrides(FlexoBehaviour)` requires equal parameter types, but dynamic dispatch
+   (`getMostSpecializedBehaviour`) uses the assignable lookup, so a child `f(Object)` is dispatched in place of a parent `f(String)`.
+
+**Mechanism — verified in the code.** `FlexoBehaviour.getSignature()` is built from the parameter *names*
+(`getParameterListAsString`, the type-based version is commented out), and `BehaviourSignatureMustBeUnique` compares those strings.
+`FlexoConcept.getFlexoBehaviour(name, types)` returns the first declared behaviour whose parameters are assignable, not the most
+specific. No validation rule compares the return type of an override. `NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours`
+relies on `abstractRequired()`, which only looks at properties. Found by the external audit of the FML language of 2026-10-23 (its §3.5).
+
+**Workaround.** Give overloads distinct names; declare the most specific overload first; keep override return types identical.
+
 ---
 
 ## FML control structures and edition actions
+
+### CORE-D-46 — A statement the control-graph builder does not handle is dropped, or flattened, without a message  ·  `TODO`
+
+**Symptom.** An accepted behaviour becomes another program, with no parse error and no validation error. This is the common root
+of `CORE-D-6`, `CORE-D-7`, `CORE-D-9` and `CORE-D-18`, which stay open as its symptoms, and of the following ones:
+- an unbraced `if/else` or `while` nested as the *then* arm of an `if/else` is flattened: only a statement inside it is kept;
+- an empty statement `;` makes the enclosing block abort, and the behaviour is rebuilt as a single expression.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-46.fmlscript`, fixture `KDControlFlow`).**
+`nestedIf()` returns 1 instead of 2; the braced `nestedIfBraced()` returns 2. The fixture also holds `whileArm()` (expected 3) and
+`emptyStatement()` (expected 7), not reached by the script once the first assert fails.
+
+```fml
+public int nestedIf() {
+	if (true)
+		if (false) return 1; else return 2;
+	else return 3;
+	return 4;
+}
+```
+
+**Mechanism — verified in the code.** `ConditionalNode` builds the *then* arm of an `if/else` from a `statement_no_short_if`
+(`ControlGraphFactory.makeControlGraphNode(PStatementNoShortIf…)`). `ControlGraphFactory` has no handler for the alternatives
+`if_then_else_statement_no_short_if`, `while_statement_no_short_if` and `for_statement_no_short_if`, nor for `++`/`--` statements;
+`do_statement` and `empty_statement` have empty handlers. The depth-first walk then keeps the first node a descendant pushes.
+`BlockSequenceInfo.finalizeBlockStatements` gives up a block when it has fewer nodes than statements (only a `logger.warning`
+"Expecting to find N statements … Aborting"), and when nothing was pushed `makeControlGraphNode` falls back to an
+`ExpressionActionNode` over the whole fragment. Found by the external audit of the FML language of 2026-10-23 (its §3.1).
+
+**To fix.** A handler for every statement alternative of the grammar (an empty statement as an explicit no-op), and a semantic
+error instead of the fallback whenever a statement produces no node.
+
+**Workaround.** Brace every nested statement; write no empty statement.
 
 ### CORE-D-6 — A `do … while` loop executes its body once and ignores its condition  ·  `TODO`
 
@@ -376,6 +476,30 @@ on a property. `int m = n++; return n;` gives 2.
 What happens to the behaviour instead is not established.
 
 **Workaround.** Write the assignment: `n = n + 1;`.
+
+### CORE-D-48 — A local variable outlives its block and hides the property of the same name  ·  `TODO`
+
+**Symptom.** A local declared inside a block (`if`, loop body, `{ }`) is still visible after it; a later read of a property of the
+same name returns the local's value, although the analysis resolved that name to the property. Validation reports nothing.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-48.fmlscript`, fixture `KDScope`).** With a property
+`name` set to `"property"`, `blockScope()` returns `"local"`:
+
+```fml
+public String blockScope() {
+	if (true) {
+		String name = "local";
+	}
+	return name;
+}
+```
+
+**Mechanism — verified in the code.** `FlexoBehaviourAction` keeps the locals of an execution in one `Hashtable<String, Object>
+variables`; `getValue(BindingVariable)` looks the name up there first, whatever the kind of the binding variable, before going to
+the instance. `Sequence` and `ConditionalAction` push no frame and `DeclarationAction` never removes its variable; only iteration
+variables are removed at the end of a loop. Found by the external audit of the FML language of 2026-10-23 (its §3.4).
+
+**Workaround.** Do not reuse the name of a property for a local, nor the name of an outer local inside a block.
 
 ### CORE-D-10 — Deleting a concept instance leaves it in the multiple roles referencing it  ·  `TODO`
 
@@ -648,7 +772,51 @@ by inheritance is declared by the parent. Not read: how the scheme gets chosen a
 
 **Impact.** Silent: no error at load or at execution of the `new`; the wrong type shows up later, as unresolved paths or `null`.
 
+**Concepts too — verified 2026-11-11 by execution (test `KnownDefects/CORE-D-15.fmlscript`, fixture `KDInheritance`).** The
+observation above that concepts work holds only for a `new Dog()` written in a behaviour of the model. From a script,
+`vmi.new Dog()` (a `CreationSchemePathElement`) on a concept `Dog extends Animal` that inherits `create()` gives an instance whose
+`flexoConcept.name` is `Animal`: `AbstractCreationSchemeAction.getFlexoConceptBeingCreated()` returns the concept that declares
+the scheme. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+
 **Workaround.** Declare a creation scheme in the child, even an empty `create() { }`.
+
+### CORE-D-47 — A creation scheme that fails does not fail the `new` that called it  ·  `TODO`
+
+**Symptom.** When the creation scheme run by `new C(…)` fails, the caller goes on as if it had succeeded: the behaviour that wrote
+the `new` continues and returns normally, and the partly built instance stays registered in its container. The same failure in an
+ordinary behaviour call fails its caller.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsJavaTests.coreD47_failedCreationSchemeFailsTheCaller`,
+script `KnownDefectsSupport/CORE-D-47.fmlscript`, fixture `KDConstruction`).** `outer()` returns 7 and sets `progress` to 1,
+although `create()` of `Bomb` fails on `absent.substring(0)` (`absent` is null):
+
+```fml
+public int outer() {
+	Bomb b = new Bomb();
+	progress = 1;
+	return 7;
+}
+concept Bomb {
+	String absent;
+	create() {
+		String consumed = absent.substring(0);
+	}
+}
+```
+
+**Mechanism — verified in the code.** `CreationSchemePathElement.performExecuteCreationScheme` calls `doAction()` and returns
+`getNewFlexoConceptInstance()` without looking at `hasActionExecutionSucceeded()` (the check is commented out); its
+`FMLExecutionException` catch only prints the stack trace. `FMLRTVirtualModelInstanceModelFactory` registers the new instance in
+its container and its virtual model instance before running the creation scheme, with no rollback. By contrast,
+`FlexoBehaviourPathElement` propagates the thrown exception. Failures are swallowed the same way by event listeners
+(`DefaultFMLRunTimeEngine`: `doAction()` without status check — observed while writing the test of `CORE-D-55`), by
+`FinalizeMatching` (a warning) and by `DeleteFlexoConceptInstance` (deletes even when the deletion scheme failed).
+Found by the external audit of the FML language of 2026-10-23 (its §3.3).
+
+**Decided 2026-11-11.** On failure the partly built instance is removed from its container and from the indexes, then the
+`FMLExecutionException` reaches the caller.
+
+**Workaround.** None: validate the unit, and assert the effects of a creation in tests.
 
 ---
 
@@ -706,6 +874,62 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 
 **Workaround.** Put the logic to reuse in a separate behaviour of the parent and call it on `this`: with
 `public String baseHello() { return "hello"; }` in `Base`, `return "left " + this.baseHello();` gives `left hello` (verified).
+
+---
+
+## FML queries
+
+### CORE-D-53 — `select` from a concept instance does not search the instances nested deeper than one level  ·  `TODO`
+
+**Symptom.** `select X from c`, where `c` is a concept instance, finds only the instances directly embedded in `c`, whereas §10
+of the spec states that the search covers what the source contains, nested instances included. From a virtual model instance the
+search does cover every depth.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-53.fmlscript`, fixture `KDQueries`).** `Outer`
+contains a `Middle` that contains a `Leaf`; `select Leaf from this` in `Outer` finds 0 instances instead of 1.
+
+**Mechanism — verified in the code.** `VirtualModelInstance` (fetch fallback, the indexed path is disabled by `isIndexable`
+returning false) uses the type index of a virtual model instance source, but `getEmbeddedFlexoConceptInstances(type)` of a
+concept instance source, which loops over the direct children only. Found by the external audit of the FML language of 2026-10-23 (its §3.7).
+
+**Workaround.** Query from the virtual model instance and filter on the container, or walk the levels explicitly.
+
+### CORE-D-54 — An unfiltered `select` returns the internal index of the instances  ·  `TODO`
+
+**Symptom.** The list returned by `select X from vmi` without `where` is the type index of the virtual model instance itself:
+modifying it (`clear()`) makes every later query miss instances that still exist. A filtered `select` returns a new list.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-54.fmlscript`, fixture `KDQueries`).** After
+`vmi.allItems().clear()`, `itemCount()` gives 0 although the `Item` was neither removed nor deleted.
+
+**Mechanism — verified in the code.** `VirtualModelInstance.getFlexoConceptInstances(concept)` returns the list held by the index
+map; `filterWithConditions` returns its argument unchanged when there is no condition, and `AbstractFetchRequest` returns the
+computed values without copying. Found by the external audit of the FML language of 2026-10-23 (its §3.7).
+
+**Decided 2026-11-11.** A `select` returns a snapshot (a new list) in every case.
+
+**Workaround.** Do not modify the result of a `select`; copy it first.
+
+---
+
+## FML events
+
+### CORE-D-55 — An inherited event listener is registered twice when instances are attached to the engine in bulk  ·  `TODO`
+
+**Symptom.** When a virtual model instance is attached to the run-time engine with its existing instances — which is what loading
+it does — an instance of a child concept that inherits a listener receives each event twice. Removing the instance afterwards
+removes one registration only.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-55.fmlscript`, fixture `KDListener`).** A `Child`
+created after its model receives one event (control). After `removeFromExecutionContext` / `addToExecutionContext` — the bulk path
+that loading takes — the next event is received twice (`received` goes from 1 to 3).
+
+**Mechanism — verified in the code.** `DefaultFMLRunTimeEngine.addToExecutionContext` loops over every concept of the virtual
+model, then over `vmi.getFlexoConceptInstances(concept)` (which includes the instances of sub-concepts), then over the listeners
+accessible from that concept: a `Child` is met under `Base` and under `Child`. Each registration is a new `EventInstanceListener`
+in a `HashSet`, without `equals`/`hashCode`; `stopEventListening` removes the first match only. Found by the external audit of the FML language of 2026-10-23 (its §3.8).
+
+**Workaround.** None at FML level; declare the listener in the concrete concept rather than in a parent.
 
 ---
 
@@ -1305,6 +1529,21 @@ Mapped on `formod-app` (583 warnings at the start of the application, 4 of them 
 **Impact.** Saving a unit from the Modeller rewrites it entirely (large diffs, noise in review). No loss of meaning was found once CORE-D-31 was fixed (every `B::` and `XLS::` action of `BMethodology` and `GoalModelingDiagram` is printed, 40/40 and 10/10), but the neutrality of `with ConceptInstance()` and of the added imports is not proven.
 
 **To decide.** Whether the printer must give back the parsed text for what the user did not edit, or only normalise; a round-trip test (print, parse again, compare the models) over the units of the test resource center would settle the neutrality.
+
+### CORE-D-52 — The text printed for a concept-typed property with an initializer does not parse again  ·  `TODO`
+
+**Symptom.** `Person first = new Person();` is printed `Person first with ConceptInstance()= new Person();`, which the parser
+rejects (`ParseException: expecting: ';'`). A unit holding such a declaration cannot be saved from the Modeller and loaded again.
+Unlike the rest of `CORE-D-33`, this is a loss of the unit, not a cosmetic difference.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsRoundTripTest` in fml-parser).** Parse the declaration, print
+the compilation unit, parse the printed text.
+
+**Mechanism — verified in the code.** `FlexoRolePropertyNode.preparePrettyPrint` always appends `with <role>(…)` when
+`hasFMLProperties()`, even for a declaration written in the Java style; the `= …` comes from the original text kept around the
+name. The `{fml}` form of the grammar has no slot for an initializer. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+
+**Workaround.** Do not give an initializer to a concept-typed property (it is lost anyway, `CORE-D-51`).
 
 ### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `IN PROGRESS`
 

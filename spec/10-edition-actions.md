@@ -84,6 +84,10 @@ finds the parts of every crate; from one crate, the parts of that crate only. To
 `select MyModel from container`; to fetch a concept of another model, `select AnOtherModel$AConcept from
 instance`.
 
+> **Implementation note.** From a concept instance, only the instances directly embedded in it are found, not those
+> nested deeper (`CORE-D-53`). And the list returned by a `select` without condition is the internal index of the
+> instances: modifying it hides instances from later queries (`CORE-D-54`). Never modify the result of a `select`.
+
 ### 10.2.3 Conditions
 
 In the `where` clause, the candidate under examination is `selected`. A condition is a boolean expression; the
@@ -270,8 +274,11 @@ creates what is missing, and at the end of the behaviour it **deletes** what it 
 Each gives a wrong result without any message; the pattern of §10.9 avoids all of them.
 
 * **The `where` of `begin match` is ignored** (`CORE-D-12`): the set holds every instance of the concept, and
-  an `end match … unmatched: delete()` then deletes those the condition meant to leave out. Filter in the `match`
-  instructions, by choosing what to iterate over.
+  an `end match … unmatched: delete()` then deletes those the condition meant to leave out. Filtering what the
+  `match` instructions iterate over does **not** protect them: an instance that no `match` claims is exactly what
+  the `end match` deletes. While this defect stands, close with `end match … unmatched: delete()` only a set whose
+  domain is every instance of the concept in that container; for a narrower domain, omit the `end match` and
+  delete the leftovers explicitly.
 * **`unmatched:` of an `end match` must be `delete()`.** The grammar also accepts a call
   `unmatched: someBehaviour()`, but that behaviour is not called: the first behaviour that the concept declares
   runs on each leftover instance, which may be a deletion scheme (`CORE-D-2`).

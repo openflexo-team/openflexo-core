@@ -61,6 +61,11 @@ int titi = 2 + 3;
 
 The initializer may also be an edition action (§10): `Person first = select Person from this;`.
 
+> **Implementation note.** Accepted but lost: the initializer of a concept-typed property and an edition action used
+> as initializer (`CORE-D-51`); the printed text of a concept-typed property with an initializer does not parse again
+> (`CORE-D-52`). The default values of properties inherited from a parent concept are not set on a new instance of a
+> child (`CORE-D-50`). Initialize such properties in the creation scheme.
+
 A typed property is settable: `p = v;` in a behaviour, or `instance.p = v;` in a script, replaces its value
 (§6.8).
 
@@ -102,7 +107,9 @@ expression_property = type lidentifier "values" expression ";"
 ```
 
 An *expression property* has no storage: its value is the value of the expression, and follows the properties
-that the expression reads. It is read-only.
+that the expression reads. It is read-only, except when the expression is itself settable, i.e. an alias of a
+settable path (`String title values book.title;`): assigning to the property then writes the value through to that
+path.
 
 ```fml-member
 Book[0,*] books;
@@ -208,8 +215,8 @@ String fixed {
 
 A property is read by its name inside the concept (§9.6.3), `this.name`, or from outside by a path
 `instance.name`. It is written by assignment (§8.3, §9.2) when it is settable, which holds for typed
-properties, role-bound properties, and get/set properties with a `set`; it does not hold for expression
-properties and for get-only properties.
+properties, role-bound properties, get/set properties with a `set`, and expression properties whose expression
+is settable (§6.4); it does not hold for other expression properties and for get-only properties.
 
 Assigning a value equal to the current one does nothing (no notification is raised). Assigning to a property
 notifies the listeners of the instance, which is how user interfaces and expression properties are kept

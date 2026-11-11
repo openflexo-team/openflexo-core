@@ -1,0 +1,14 @@
+// CORE-D-12: begin match ... where is ignored, so end match deletes a target outside the reconciled domain.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDMatching.fml"];
+log virtualModel.fMLPrettyPrint;
+service ResourceCenterService add_temp_rc;
+vmi = new KDMatching() with (name="kd12");
+vmi.new Source("a", true);
+vmi.new Source("b", false);
+vmi.new Source("c", true);
+vmi.new Target("a", true);
+vmi.new Target("b", false);
+assert vmi.targetCount() == 2;
+vmi.reconcile();
+// the unmanaged target "b" is outside the domain of the matching set: it must survive, next to "a" and the new "c"
+assert vmi.targetCount() == 3;

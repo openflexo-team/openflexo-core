@@ -18,6 +18,8 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-9` | `for (init; ; update)` without condition: the behaviour is silently not built | §8.5 | give the condition, or `while (true)` |
 | `CORE-D-8` | an invalid condition in `if` / `while` is taken as true | §8.4 | validate the unit |
 | `CORE-D-19` | a method call on a string literal gives `null` | §9.5.2 | put the literal in a variable |
+| `CORE-D-46` | an unbraced `if/else` or `while` nested in the *then* arm of an `if/else`, or an empty statement `;`, is lost: the behaviour runs another program (root of `CORE-D-6/7/9/18`) | §8 | brace every nested statement; no empty statement |
+| `CORE-D-48` | a local declared in a block stays visible after it, and hides a property of the same name | §8.2 | do not reuse the name of a property or of an outer local |
 
 ## B.2 Properties and behaviours
 
@@ -29,15 +31,22 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-13` | `new C::name()` with fewer arguments than the scheme declares does not resolve; a call must match in number | §7.4 | pass the arguments |
 | `CORE-D-17` | `super.name()` gives `null` when the concept has several parents | §5.3.2 | a helper behaviour called on `this` |
 | `CORE-D-10` | `delete x` does not remove `x` from the multi-valued properties that hold it | §10.4 | remove, then delete |
-| `CORE-D-15` | `new Child()` creates a `Parent` when `Child` only inherits the creation scheme | §5.1.3 | declare a creation scheme in the child |
+| `CORE-D-15` | `new Child()` creates a `Parent` when `Child` only inherits the creation scheme (virtual models; concepts when created by `vmi.new Child()`) | §5.1.3 | declare a creation scheme in the child |
+| `CORE-D-47` | a creation scheme that fails does not fail the `new`: the caller goes on, the partial instance stays | §13.6 | validate; assert the effects of a creation |
+| `CORE-D-49` | signatures compare parameter names, not types; the first assignable overload wins; override return types and inherited abstract behaviours are not checked | §5.3.1, §7.4 | distinct names for overloads; most specific first |
+| `CORE-D-50` | default values of inherited properties are not set on a new instance | §6.2 | assign them in the creation scheme |
+| `CORE-D-51` | the initializer of a concept-typed property, an edition action as initializer, and the cardinality of a Java-typed property are lost | §6.2, §6.3 | initialize in the creation scheme |
+| `CORE-D-55` | an inherited event listener is called twice after its instance is loaded | §7.7 | declare the listener in the concrete concept |
 
-## B.3 Matching
+## B.3 Matching and queries
 
 | Id | Deviation | Specified in | Write instead |
 |---|---|---|---|
 | `CORE-D-1` | the implicit matching set of a behaviour is typed by its first `match` | §10.9.4 | one explicit set per concept |
-| `CORE-D-12` | the `where` of `begin match` is ignored | §10.9.5 | filter in the `match` instructions |
+| `CORE-D-12` | the `where` of `begin match` is ignored: `end match … delete()` deletes the instances it meant to leave out, even if the `match` loop skips them | §10.9.5 | `end match … delete()` only on every instance of the concept; otherwise no `end match`, explicit deletion |
 | `CORE-D-2` | `end match … unmatched: someBehaviour()` does not call that behaviour; the first behaviour of the concept runs | §10.9.5 | `unmatched: delete()` and a single deletion scheme |
+| `CORE-D-53` | `select` from a concept instance misses the instances nested more than one level down | §10.2 | query from the virtual model instance |
+| `CORE-D-54` | the list returned by an unfiltered `select` is the internal index: modifying it hides instances | §10.2 | never modify a `select` result; copy it |
 
 ## B.4 Types, names and loading
 
@@ -47,6 +56,7 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-16` | a namespace alias is not resolved in an annotation | §3.3, §11.3 | write the full address in `@URI` |
 | `CORE-D-34` | loading units that import each other logs transient *Unresolved type* warnings | §3.8 | none: ignore the transient ones |
 | `CORE-D-33` | the text rebuilt from the model is not always the text that was parsed | §1.1 | — |
+| `CORE-D-52` | a concept-typed property with an initializer is printed as text that does not parse again | §1.1 | no initializer on such properties |
 
 ## B.5 Scripts
 

@@ -1,0 +1,43 @@
+/**
+ * CORE-D-49: behaviour signatures, overriding and abstract obligations as seen by validation. See KnownDefectsTests.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDSignatures.fml")
+public model KDSignatures {
+
+	public concept TypedOverloads {
+		public int f(int x) {
+			return 1;
+		}
+		public int f(String x) {
+			return 2;
+		}
+	}
+
+	public concept RenamedDuplicate {
+		public int g(int x) {
+			return 1;
+		}
+		public int g(int y) {
+			return 2;
+		}
+	}
+
+	public concept ReturnBase {
+		public int h() {
+			return 1;
+		}
+	}
+
+	public concept ReturnChild extends ReturnBase {
+		public String h() {
+			return "a";
+		}
+	}
+
+	public abstract concept AbstractBase {
+		public abstract int k();
+	}
+
+	public concept ConcreteChild extends AbstractBase {
+	}
+}

@@ -1,0 +1,9 @@
+// CORE-D-46: an unbraced statement nested in an if/else, or an empty statement, is lost when the behaviour is built.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDControlFlow.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDControlFlow() with (name="kd46");
+// control: the braced form is right
+assert vmi.nestedIfBraced() == 2;
+assert vmi.nestedIf() == 2;
+assert vmi.whileArm() == 3;
+assert vmi.emptyStatement() == 7;

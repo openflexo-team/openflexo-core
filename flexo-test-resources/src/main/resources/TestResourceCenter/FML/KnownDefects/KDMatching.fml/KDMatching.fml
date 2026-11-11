@@ -1,0 +1,43 @@
+/**
+ * CORE-D-12: the target filter of begin match is dropped, so end match deletes targets outside the reconciled domain.
+ * See KnownDefects/CORE-D-12.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDMatching.fml")
+public model KDMatching {
+
+	public reconcile() {
+		MatchingSet<Target> targets = begin match Target from this where (selected.managed);
+		for (Source src : select Source from this where (selected.managed)) {
+			match Target in targets from this where (key = src.key) unmatched: new Target(src.key, true);
+		}
+		end match Target in targets unmatched: delete();
+	}
+
+	public int targetCount() {
+		int n = 0;
+		for (Target t : select Target from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public concept Source {
+		String key;
+		boolean managed;
+		create(String key, boolean managed) {
+			key = parameters.key;
+			managed = parameters.managed;
+		}
+	}
+
+	public concept Target {
+		String key;
+		boolean managed;
+		create(String key, boolean managed) {
+			key = parameters.key;
+			managed = parameters.managed;
+		}
+		delete() {
+		}
+	}
+}

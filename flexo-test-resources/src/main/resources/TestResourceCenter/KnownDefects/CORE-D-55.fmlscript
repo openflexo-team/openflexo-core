@@ -1,0 +1,13 @@
+// CORE-D-55: attaching an instance to the engine in bulk (as loading does) must register an inherited listener once.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDListener.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDListener() with (name="kd55");
+c = vmi.new Child();
+vmi.ping();
+// control: an instance created after its model is registered incrementally, once
+assert vmi.received == 1;
+engine = vmi.fMLRunTimeEngine;
+engine.removeFromExecutionContext(vmi, vmi);
+engine.addToExecutionContext(vmi, vmi);
+vmi.ping();
+assert vmi.received == 2;

@@ -1,0 +1,19 @@
+/**
+ * CORE-D-51: initializers and cardinalities lost when properties are built. See KnownDefects/CORE-D-51.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDPropertyInit.fml")
+public model KDPropertyInit {
+
+	public concept Person {
+		create() {
+		}
+	}
+
+	public concept Holder {
+		Person first = new Person();
+		Person selected = select unique Person from container;
+		Object[0,*] objects;
+		create() {
+		}
+	}
+}

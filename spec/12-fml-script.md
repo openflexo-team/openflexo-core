@@ -164,9 +164,10 @@ only runs proves nothing about behaviour.
 
 A script is checked and executed under rules of its own.
 
-* **The whole script is analysed before any command runs.** An unresolved binding anywhere, even on the last
-  line, aborts the run before the first line executes: none of the `log` lines are printed. When a script does not
-  print what is expected, look at its last lines first.
+* **Commands run one after another, each checked when it is reached.** A command whose binding does not
+  resolve stops the run at its line; the commands before it have run, with their effects. The pre-check of the
+  automated tests (`AutomatedTests`) checks before running that every command is well formed, and that the
+  bindings of a plain expression resolve; it does not check the bindings of an `assert` or of an assignment.
 * **A failed `load` or `new` stops the script**, with a message that names the command; nothing after it runs.
   Inside a behaviour the same mistake often gives a silent `null` (§9.8).
 * **Visibility is ignored.** A script can read and write a `private` property.

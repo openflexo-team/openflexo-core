@@ -1,0 +1,24 @@
+/**
+ * CORE-D-15 (concepts) and CORE-D-50 (inherited default values). See KnownDefects/CORE-D-15.fmlscript, CORE-D-50.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDInheritance.fml")
+public model KDInheritance {
+
+	public concept Animal {
+		int legs = 4;
+		create() {
+		}
+	}
+
+	public concept Dog extends Animal {
+		public String bark() {
+			return "woof";
+		}
+	}
+
+	public concept OwnDog extends Animal {
+		int tail = 1;
+		create() {
+		}
+	}
+}

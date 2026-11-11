@@ -1,0 +1,9 @@
+// CORE-D-54: the result of an unfiltered select must not be the internal index of the instances.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDQueries.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDQueries() with (name="kd54");
+vmi.new Item();
+assert vmi.itemCount() == 1;
+all = vmi.allItems();
+all.clear();
+assert vmi.itemCount() == 1;

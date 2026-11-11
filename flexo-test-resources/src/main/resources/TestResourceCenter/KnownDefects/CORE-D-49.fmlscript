@@ -1,0 +1,5 @@
+// CORE-D-49: the most specific overload must be chosen, whatever the declaration order.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDOverloads.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDOverloads() with (name="kd49");
+assert vmi.callWithString() == "String";

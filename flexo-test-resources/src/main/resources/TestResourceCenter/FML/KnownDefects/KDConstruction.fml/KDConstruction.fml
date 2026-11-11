@@ -1,0 +1,29 @@
+/**
+ * CORE-D-47: a creation scheme that fails does not fail the new that called it. See KnownDefectsTests.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDConstruction.fml")
+public model KDConstruction {
+
+	int progress;
+
+	public int outer() {
+		Bomb b = new Bomb();
+		progress = 1;
+		return 7;
+	}
+
+	public int bombCount() {
+		int n = 0;
+		for (Bomb b : select Bomb from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public concept Bomb {
+		String absent;
+		create() {
+			String consumed = absent.substring(0);
+		}
+	}
+}

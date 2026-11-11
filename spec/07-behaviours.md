@@ -78,7 +78,9 @@ An argument has a type, a name, optionally `required` and optionally a default v
   a formal argument.
 * `required` marks the argument as mandatory: the application that asks for the arguments (a dialog, a
   palette) insists on a value for it.
-* A default value, `= expression`, is the value the argument starts from in such a dialog.
+* A default value, `= expression`, is the value the argument takes when a call omits it (§7.4), and the value it
+  starts from in such a dialog. Only trailing arguments can be omitted: an argument with a default value may be
+  left out of a call only if every argument after it is left out too.
 
 ```fml-member
 create(required String label, int capacity = 10) {
@@ -151,8 +153,9 @@ concept that is closed by a matching set should declare exactly one.
 A call is an expression `target.name(arguments)` (§9.6.4). The behaviour called is selected by
 
 1. the **name**, and
-2. the **number** of arguments, which must be exactly the number of declared arguments (default values do not
-   change this), and
+2. the **number** of arguments, which lies between the number of declared arguments without a trailing default
+   value and the number of declared arguments (§7.2; currently it must be exactly the number of declared
+   arguments, `CORE-D-4`), and
 3. the **types** of the arguments, to choose among behaviours of the same name and number.
 
 The lookup starts at the concept of the instance the call is made on and goes up the inheritance graph; the most
@@ -179,6 +182,11 @@ public String thisCall() {
 from the model.
 
 A behaviour that is recursive calls itself the same way (`this.fact(n - 1)`).
+
+> **Implementation note.** Signatures are compared by parameter *names*: `f(int x)` and `f(String x)` are reported as
+> duplicates, `g(int x)` and `g(int y)` are not. Among overloads, the first declared one whose parameters accept the
+> arguments is called, not the most specific. The return type of an override and the implementation of an inherited
+> abstract behaviour are not checked (`CORE-D-49`).
 
 ## 7.5 Return
 
@@ -213,6 +221,10 @@ The event type must resolve to an event or concept type; otherwise the semantic
 issue *Unexpected event type* is reported.
 
 A listener with a body of `;` is accepted and does nothing.
+
+> **Implementation note.** A listener inherited from a parent concept is registered twice for an instance attached
+> to the engine in bulk, as happens when it is loaded, and then runs twice per event (`CORE-D-55`). Declare the listener
+> in the concrete concept.
 
 ## 7.8 Technology-specific behaviours
 

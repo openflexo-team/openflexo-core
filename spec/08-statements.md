@@ -32,6 +32,11 @@ variable_declarator  = lidentifier | lidentifier "=" expression | lidentifier "=
 `statement_no_short_if` is `statement` without an `if` lacking an `else`; it resolves the dangling `else` as in
 Java: an `else` belongs to the nearest preceding `if`.
 
+> **Implementation note.** An unbraced `if/else`, `while` or `for` nested in the *then* arm of an `if/else` is
+> flattened when the behaviour is built (only a statement inside it is kept), and an empty statement `;` makes its
+> block be rebuilt as a single expression; neither is reported (`CORE-D-46`). Brace every nested statement and write
+> no empty statement.
+
 There is no `break`, no `continue`, no `switch`, no `try`/`catch`/`throw`, and no labelled statement. A
 loop ends when its condition does, or with `return`.
 
@@ -60,6 +65,10 @@ public int scoped() {
 }
 ```
 
+
+> **Implementation note.** At run time a local outlives its block: after the closing brace, its name still gives
+> its last value, and hides a property of the same name although the analysis resolved that name to the property
+> (`CORE-D-48`). Do not reuse the name of a property, or of an outer local, inside a block.
 A local variable that is not initialised holds `null`, as a property does (§4.2).
 
 The initial value of a declaration may be an expression or an edition action (§10): a `select`, a `match`,
