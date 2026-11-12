@@ -254,7 +254,7 @@ fml_action_exp =
   | "notify" expression in_clause?
   | "begin" "match" uidentifier from_clause where_clause?
   | "match" uidentifier in_clause? from_clause qualified_where_clause? "unmatched" ":" new_instance
-  | "end" "match" uidentifier in_clause "unmatched" ":" end_match_action_clause
+  | "end" "match" uidentifier in_clause ( "unmatched" ":" end_match_action_clause )?
   | "(" fml_action_exp ")"
 
 select_type = reference_type | technology_specific_type      (* may be empty in the source grammar *)
