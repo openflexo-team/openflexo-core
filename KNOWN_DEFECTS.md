@@ -314,10 +314,12 @@ relies on `abstractRequired()`, which only looks at properties. Found by the ext
 
 ## FML control structures and edition actions
 
-### CORE-D-46 — A statement the control-graph builder does not handle is dropped, or flattened, without a message  ·  `TODO`
+### CORE-D-46 — A statement the control-graph builder does not handle is dropped, or flattened, without a message  ·  `DONE`
+
+**Fixed (2026-11-11).** Every statement alternative of the grammar now has a node in `ControlGraphFactory`: the three `*_no_short_if` forms (`ConditionalNode`, `WhileActionNode`, `ExpressionIterationActionNode` accept them), the empty statement (an `EmptyControlGraph`), `do … while`, `++`/`--` statements. A statement that still produces no node, or a block that cannot be completed, is reported as a semantic issue instead of being dropped. Tests: `AutomatedTests/TestStatementLowering.fmlscript` (fixture `StatementLowering`, which replaces `KDControlFlow`) and `TestStatementLowering` in fml-parser (no issue, the normalized and the parsed text parse again, an unbuildable `for` is reported).
 
 **Symptom.** An accepted behaviour becomes another program, with no parse error and no validation error. This is the common root
-of `CORE-D-6`, `CORE-D-7`, `CORE-D-9` and `CORE-D-18`, which stay open as its symptoms, and of the following ones:
+of `CORE-D-6`, `CORE-D-7`, `CORE-D-9` and `CORE-D-18` (its symptoms, fixed with it), and of the following ones:
 - an unbraced `if/else` or `while` nested as the *then* arm of an `if/else` is flattened: only a statement inside it is kept;
 - an empty statement `;` makes the enclosing block abort, and the behaviour is rebuilt as a single expression.
 
@@ -347,7 +349,9 @@ error instead of the fallback whenever a statement produces no node.
 
 **Workaround.** Brace every nested statement; write no empty statement.
 
-### CORE-D-6 — A `do … while` loop executes its body once and ignores its condition  ·  `TODO`
+### CORE-D-6 — A `do … while` loop executes its body once and ignores its condition  ·  `DONE`
+
+**Fixed (2026-11-11).** A `do … while` is a `WhileAction` with `evaluateConditionAfterCycle`, printed back as `do { … } while (…);` (see `CORE-D-46`).
 
 **Symptom.** `do { … } while (condition);` parses without any warning, but the body is executed exactly once, whatever the condition.
 
@@ -370,7 +374,9 @@ public int doWhileCount() {
 
 **Workaround.** Use a `while` loop.
 
-### CORE-D-7 — A compound assignment statement ignores its operator  ·  `TODO`
+### CORE-D-7 — A compound assignment statement ignores its operator  ·  `DONE`
+
+**Fixed (2026-11-11).** `AssignationAction` has an `assignmentOperator` (enum `AssignmentOperator`). As in Java, `x op= v` reads `x` first, applies the FML binary operator, and converts the result to the type of `x` (`n /= 2` on an int gives an int; `+=` on a String concatenates anything, `null` included); validation accepts what Java accepts. Printed back with its operator (see `CORE-D-46`).
 
 **Symptom.** In a statement `x += value;` (and likewise `-=`, `*=`, `/=`…), the operator is ignored: `x` receives `value`.
 
@@ -421,7 +427,9 @@ public String invalidCondition() {
 **Workaround.** Validate the compilation unit: the invalid condition is reported by the validation rule
 `ConditionBindingIsRequiredAndMustBeValid`.
 
-### CORE-D-9 — A `for (init; ; update)` loop without condition makes its behaviour disappear  ·  `TODO`
+### CORE-D-9 — A `for (init; ; update)` loop without condition makes its behaviour disappear  ·  `DONE`
+
+**Fixed (2026-11-11).** The node is built without a condition, a missing condition is true (as in Java), the update is optional; the validation rules require neither (see `CORE-D-46`).
 
 **Symptom.** A behaviour containing a classic `for` loop whose condition is omitted is not built: the compilation unit loads, but
 the behaviour is missing, and any call to it is an unresolved binding (evaluated as null).
@@ -450,7 +458,9 @@ public int forWithoutCondition() {
 
 **Workaround.** Always write the condition; to loop until a `return`, use `while (true)`.
 
-### CORE-D-18 — An increment or decrement used as a statement makes its behaviour return null  ·  `TODO`
+### CORE-D-18 — An increment or decrement used as a statement makes its behaviour return null  ·  `DONE`
+
+**Fixed (2026-11-11).** `++` and `--` statements are built as expression actions, as the update of a `for` already was (see `CORE-D-46`).
 
 **Symptom.** A behaviour containing `n++;`, `++n;`, `n--;` or `--n;` as a statement returns null, whatever it returns and whatever the
 variable is (a local variable or a property). Nothing is reported. The same operator works in the update part of a `for`
@@ -476,6 +486,25 @@ on a property. `int m = n++; return n;` gives 2.
 What happens to the behaviour instead is not established.
 
 **Workaround.** Write the assignment: `n = n + 1;`.
+
+### CORE-D-56 — A statement written without braces is printed back with braces and a broken indentation  ·  `TODO`
+
+**Symptom.** When a compilation unit is printed back from its parsed text (what the FML editor saves), an `if`, `else`, `while`,
+`for` or `do` whose body is a single statement written without braces gets braces, and the closing brace goes on a line of its own
+with a wrong indentation: `if (n > 0) n = 1; else n = 2;` is saved as `if (n > 0) { n = 1;⏎} else { n = 2;⏎}`. The meaning is kept;
+the file is rewritten at every save.
+
+**Reproduction (verified 2026-11-12 by execution, `KnownDefectsRoundTripTest.coreD56_*` in fml-parser, run with
+`OPENFLEXO_KNOWN_DEFECTS` set).** Parse a unit whose behaviour holds the statement, print it with `getFMLPrettyPrint()`, compare
+with the source. Simple `if/else` and `while` fail as well as the nested and `do` forms.
+
+**Mechanism — read in the code.** `ConditionalNode`, `WhileActionNode` and `ExpressionIterationActionNode` always append
+`staticContents("{")` / `staticContents(LINE_SEPARATOR, "}", "")` around the body, with the brace fragment of the parsed text when it
+exists; when the source has no brace there is no fragment, so the static text is inserted. Older than `CORE-D-46`; before that fix
+the nested and `do` forms were not built at all, so they were kept word for word (with a wrong meaning). Found by the review of
+`CORE-D-46`.
+
+**Workaround.** Brace the bodies of control statements.
 
 ### CORE-D-48 — A local variable outlives its block and hides the property of the same name  ·  `TODO`
 

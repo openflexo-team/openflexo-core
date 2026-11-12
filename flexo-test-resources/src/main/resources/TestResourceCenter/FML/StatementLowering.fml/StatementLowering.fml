@@ -1,0 +1,138 @@
+/**
+ * Every statement of the grammar is built into the control graph with its meaning: unbraced statements nested in an if/else,
+ * the empty statement, do ... while, compound assignments, ++ / -- statements, for loops without condition or update.
+ * See TestStatementLowering.fmlscript (CORE-D-46, CORE-D-6, CORE-D-7, CORE-D-9, CORE-D-18).
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/StatementLowering.fml")
+public model StatementLowering {
+
+	int counter;
+
+	create() {
+		counter = 10;
+	}
+
+	public int nestedIf() {
+		if (true)
+			if (false) return 1; else return 2;
+		else return 3;
+		return 4;
+	}
+
+	public int nestedIfBraced() {
+		if (true) {
+			if (false) { return 1; } else { return 2; }
+		} else { return 3; }
+		return 4;
+	}
+
+	public int whileArm() {
+		if (false) while (false) return 1; else return 3;
+		return 4;
+	}
+
+	public int forArm() {
+		int n = 0;
+		if (true) for (int i = 0; i < 3; i++) n = n + 1; else n = 100;
+		return n;
+	}
+
+	public int emptyStatement() {
+		int n = 0;
+		;
+		return 7;
+	}
+
+	public int emptyArm() {
+		if (true) ; else return 1;
+		return 2;
+	}
+
+	public int doWhileCount() {
+		int n = 0;
+		do {
+			n = n + 1;
+		} while (n < 3);
+		return n;
+	}
+
+	public int doWhileOnce() {
+		int n = 0;
+		do {
+			n = n + 1;
+		} while (false);
+		return n;
+	}
+
+	public int compound() {
+		int n = 5;
+		n += 2;
+		n -= 1;
+		n *= 3;
+		return n;
+	}
+
+	public String compoundString() {
+		String s = "a";
+		s += "b";
+		return s;
+	}
+
+	public int compoundDivision() {
+		int n = 5;
+		n /= 2;
+		return n;
+	}
+
+	public int compoundNarrowing() {
+		int n = 3;
+		n *= 1.5;
+		return n;
+	}
+
+	public String compoundStringNumber() {
+		String s = "a";
+		s += 1;
+		return s;
+	}
+
+	public String compoundNullString() {
+		String s;
+		s += "b";
+		return s;
+	}
+
+	public int compoundProperty() {
+		counter += 5;
+		return counter;
+	}
+
+	public int increments() {
+		int n = 0;
+		n++;
+		++n;
+		n++;
+		n--;
+		return n;
+	}
+
+	public int forWithoutCondition() {
+		for (int i = 0; ; i++) {
+			if (i == 4) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public int forWithoutUpdate() {
+		int n = 0;
+		for (int i = 0; i < 3; ) {
+			n = n + 1;
+			if (n > 2) {
+				return n;
+			}
+		}
+		return -1;
+	}
+}

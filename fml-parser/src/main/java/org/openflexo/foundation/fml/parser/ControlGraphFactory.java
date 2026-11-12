@@ -56,6 +56,14 @@ import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANoTrailStatement;
+import org.openflexo.foundation.fml.parser.node.AEmptyForStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.AExpressionForStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.AIfThenElseStatementNoShortIfStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.AWhileStatementNoShortIfStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.APreIncrementStatementExpression;
+import org.openflexo.foundation.fml.parser.node.APreDecrementStatementExpression;
+import org.openflexo.foundation.fml.parser.node.APostIncrementStatementExpression;
+import org.openflexo.foundation.fml.parser.node.APostDecrementStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANotifyActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnValueStatementWithoutTrailingSubstatement;
@@ -134,7 +142,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
 		cgNode.apply(f);
 		if (f.rootControlGraphNode == null) {
+			// An expression (the right-hand side of an assignment, for instance) is an ExpressionAction
 			f.rootControlGraphNode = new ExpressionActionNode(cgNode, analyzer);
+			if (cgNode instanceof PStatement || cgNode instanceof PStatementNoShortIf) {
+				// Every statement of the grammar has a node: reaching this point means that this statement could not be built
+				// faithfully. It is kept as an expression so that the unit still loads, but reported, never silently (CORE-D-46)
+				analyzer.throwIssue(f.rootControlGraphNode.getModelObject(), "Cannot build this statement: " + cgNode.toString().trim(),
+						analyzer.getFragment(cgNode), null);
+			}
 		}
 
 		// Register this new node
@@ -350,9 +365,9 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 				pop();
 			}
 			else {
-				logger.warning("Expecting to find " + initialBlockStatements.size() + " statements but having parsed only "
-						+ currentSequenceNodes.size() + ". Aborting");
-				System.err.println("currentBlockNode=" + currentBlockNode);
+				// A statement of the block produced no node: report it, never drop it silently (CORE-D-46)
+				getCompilationUnitAnalyzer().throwIssue(null, "Cannot build this block: " + initialBlockStatements.size()
+						+ " statements, but only " + currentSequenceNodes.size() + " could be built", getFragment(currentBlockNode), null);
 				currentBlockNode = null;
 			}
 
@@ -615,11 +630,88 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAEmptyStatementStatementWithoutTrailingSubstatement(AEmptyStatementStatementWithoutTrailingSubstatement node) {
 		super.inAEmptyStatementStatementWithoutTrailingSubstatement(node);
+		// An empty statement is an explicit no-op (CORE-D-46)
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAEmptyStatementStatementWithoutTrailingSubstatement(AEmptyStatementStatementWithoutTrailingSubstatement node) {
+		super.outAEmptyStatementStatementWithoutTrailingSubstatement(node);
+		pop();
 	}
 
 	@Override
 	public void inADoStatementStatementWithoutTrailingSubstatement(ADoStatementStatementWithoutTrailingSubstatement node) {
 		super.inADoStatementStatementWithoutTrailingSubstatement(node);
+		// do ... while: a WhileAction evaluating its condition after each cycle (CORE-D-6)
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new WhileActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outADoStatementStatementWithoutTrailingSubstatement(ADoStatementStatementWithoutTrailingSubstatement node) {
+		super.outADoStatementStatementWithoutTrailingSubstatement(node);
+		pop();
+	}
+
+	/*
+	 * <pre>
+	 *   statement_no_short_if =
+	 *       {statement_without_trailing_substatement} statement_without_trailing_substatement
+	 *     | {if_then_else_statement_no_short_if}      kw_if l_par expression r_par statement_no_short_if kw_else statement_no_short_if
+	 *     | {while_statement_no_short_if}             kw_while l_par expression r_par statement_no_short_if
+	 *     | {for_statement_no_short_if}               for_statement_no_short_if
+	 *     ;
+	 * </pre>
+	 * 
+	 * The forms of a statement nested, unbraced, in the then arm of an if/else (CORE-D-46). The first one is handled through its child.
+	 */
+
+	@Override
+	public void inAIfThenElseStatementNoShortIfStatementNoShortIf(AIfThenElseStatementNoShortIfStatementNoShortIf node) {
+		super.inAIfThenElseStatementNoShortIfStatementNoShortIf(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ConditionalNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAIfThenElseStatementNoShortIfStatementNoShortIf(AIfThenElseStatementNoShortIfStatementNoShortIf node) {
+		super.outAIfThenElseStatementNoShortIfStatementNoShortIf(node);
+		pop();
+	}
+
+	@Override
+	public void inAWhileStatementNoShortIfStatementNoShortIf(AWhileStatementNoShortIfStatementNoShortIf node) {
+		super.inAWhileStatementNoShortIfStatementNoShortIf(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new WhileActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAWhileStatementNoShortIfStatementNoShortIf(AWhileStatementNoShortIfStatementNoShortIf node) {
+		super.outAWhileStatementNoShortIfStatementNoShortIf(node);
+		pop();
+	}
+
+	@Override
+	public void inAEmptyForStatementNoShortIf(AEmptyForStatementNoShortIf node) {
+		super.inAEmptyForStatementNoShortIf(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionIterationActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAEmptyForStatementNoShortIf(AEmptyForStatementNoShortIf node) {
+		super.outAEmptyForStatementNoShortIf(node);
+		pop();
+	}
+
+	@Override
+	public void inAExpressionForStatementNoShortIf(AExpressionForStatementNoShortIf node) {
+		super.inAExpressionForStatementNoShortIf(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionIterationActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAExpressionForStatementNoShortIf(AExpressionForStatementNoShortIf node) {
+		super.outAExpressionForStatementNoShortIf(node);
+		pop();
 	}
 
 	/*
@@ -721,6 +813,56 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAMethodInvocationStatementExpression(AMethodInvocationStatementExpression node) {
 		super.outAMethodInvocationStatementExpression(node);
+		pop();
+	}
+
+	// ++ and -- used as statements are expressions evaluated for their effect (CORE-D-18)
+
+	@Override
+	public void inAPreIncrementStatementExpression(APreIncrementStatementExpression node) {
+		super.inAPreIncrementStatementExpression(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAPreIncrementStatementExpression(APreIncrementStatementExpression node) {
+		super.outAPreIncrementStatementExpression(node);
+		pop();
+	}
+
+	@Override
+	public void inAPreDecrementStatementExpression(APreDecrementStatementExpression node) {
+		super.inAPreDecrementStatementExpression(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAPreDecrementStatementExpression(APreDecrementStatementExpression node) {
+		super.outAPreDecrementStatementExpression(node);
+		pop();
+	}
+
+	@Override
+	public void inAPostIncrementStatementExpression(APostIncrementStatementExpression node) {
+		super.inAPostIncrementStatementExpression(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAPostIncrementStatementExpression(APostIncrementStatementExpression node) {
+		super.outAPostIncrementStatementExpression(node);
+		pop();
+	}
+
+	@Override
+	public void inAPostDecrementStatementExpression(APostDecrementStatementExpression node) {
+		super.inAPostDecrementStatementExpression(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAPostDecrementStatementExpression(APostDecrementStatementExpression node) {
+		super.outAPostDecrementStatementExpression(node);
 		pop();
 	}
 

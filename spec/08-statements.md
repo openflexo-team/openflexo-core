@@ -32,10 +32,12 @@ variable_declarator  = lidentifier | lidentifier "=" expression | lidentifier "=
 `statement_no_short_if` is `statement` without an `if` lacking an `else`; it resolves the dangling `else` as in
 Java: an `else` belongs to the nearest preceding `if`.
 
-> **Implementation note.** An unbraced `if/else`, `while` or `for` nested in the *then* arm of an `if/else` is
-> flattened when the behaviour is built (only a statement inside it is kept), and an empty statement `;` makes its
-> block be rebuilt as a single expression; neither is reported (`CORE-D-46`). Brace every nested statement and write
-> no empty statement.
+A statement may be written without braces wherever the grammar accepts a statement, including inside the *then*
+arm of an `if/else`. The empty statement `;` does nothing. A statement that cannot be built into the control graph
+is reported as a semantic issue when the unit is parsed.
+
+> **Implementation note.** A body written without braces is printed back with braces, and a broken indentation,
+> when the unit is saved from the FML editor (`CORE-D-56`); the meaning is kept.
 
 There is no `break`, no `continue`, no `switch`, no `try`/`catch`/`throw`, and no labelled statement. A
 loop ends when its condition does, or with `return`.
@@ -90,10 +92,11 @@ assignment to a property that is not settable (an expression property, a get-onl
 error (§6.8).
 
 The assignment operators are `=`, `+=`, `-=`, `*=`, `/=`, `%=`, `<<=`, `>>=`, `>>>=`, `&=`, `|=`, `^=`.
-
-> **Implementation note.** A compound assignment used as a **statement** ignores its operator: `n += 2;` on
-> `n = 5` leaves `n` equal to `2`, because it is executed as `n = 2` (`CORE-D-7`). Write `n = n + 2;`. As an
-> expression nested in another one, `+=` is supported by the expression grammar; avoid it.
+A compound assignment `x op= v` behaves as in Java: `x` is read, then `v` is evaluated, and `x op v`, computed with
+the operators of §9.5, is converted to the type of `x` before it is assigned. `n += 2;` on `n = 5` gives 7;
+`n /= 2;` on an `int` `n = 5` gives 2 (where `n = n / 2` gives 2.5, §9.5.1); `s += 1;` on `s = "a"` gives `"a1"`,
+and on a `null` string `s += "b";` gives `"nullb"`. Prefer the statement form; as an expression nested in another
+one, only `=` and `+=` are supported by the expression grammar.
 
 ## 8.4 Conditions
 
@@ -144,10 +147,17 @@ public int sumWhile(int n) {
 
 ### do … while
 
-Accepted by the grammar:
+The body runs once, then again as long as the condition, evaluated after each run, is true:
 
-> **Implementation note.** A `do … while` executes its body **once** and drops the condition (`CORE-D-6`).
-> Use `while`.
+```fml-member
+public int doWhileCount() {
+	int n = 0;
+	do {
+		n = n + 1;
+	} while (n < 3);
+	return n;
+}
+```
 
 ### for
 
@@ -161,13 +171,12 @@ public int sumFor(int n) {
 }
 ```
 
-A classic `for` has an initialisation (a declaration or a statement expression), a condition and an update, each
-optional in the grammar. The update is a single statement expression. `i++` is supported in the update.
+A classic `for` has an initialisation, a condition and an update. The initialisation must declare and initialize
+the loop variable (`int i = 0`); a statement expression there (`i = 0`) is accepted by the grammar but reported as a
+semantic issue. The condition is optional: without it the loop runs until a `return`, as in Java
+(`for (int i = 0; ; i++)`). The update is optional too, and is a single statement expression (`i++`, `i += 2`).
 
-> **Implementation note.** A `for` without a **condition** (`for (int i = 0; ; i++)`) is accepted by the
-> grammar and silently not built: the behaviour that contains it disappears and a call to it is an unresolved
-> binding (`CORE-D-9`). Always write the condition; to loop until a `return`, write `while (true)`.
-> Also, after the first `;` of a `for` header the lexer is back in the `normal` state (§2.3.1).
+> After the first `;` of a `for` header the lexer is back in the `normal` state (§2.3.1).
 
 ### enhanced for
 
@@ -195,10 +204,7 @@ are visited in the order of the list; for a `select` this is the order of creati
 
 ## 8.6 Increment and decrement
 
-`++` and `--` are accepted as statements and as expressions.
-
-> **Implementation note.** `n++;`, `++n;`, `n--;` and `--n;` used as **statements** make the behaviour return
-> `null` (`CORE-D-18`). They work in the update part of a `for`. Write `n = n + 1;`.
+`++` and `--` are accepted as statements and as expressions: `n++;` adds 1 to `n`, `n--;` removes 1.
 
 ## 8.7 Expression statements
 

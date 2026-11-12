@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
+import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -64,9 +65,6 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.validation.ValidationError;
-import org.openflexo.pamela.validation.ValidationIssue;
-import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
@@ -208,7 +206,11 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 
 		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
 			DataBinding<Boolean> conditionExpression = getConditionExpression();
-			if (conditionExpression.isSet() && conditionExpression.isValid()) {
+			if (conditionExpression == null || !conditionExpression.isSet()) {
+				// for (init; ; update) without condition loops until a return, as in Java (CORE-D-9)
+				return true;
+			}
+			if (conditionExpression.isValid()) {
 				try {
 					Boolean returned = conditionExpression.getBindingValue(evaluationContext);
 					if (returned == null) {
@@ -246,8 +248,10 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 					throw e;
 				}
 
-				// Evaluate statement expression
-				getStatementExpression().execute(evaluationContext);
+				// Evaluate statement expression (the update is optional)
+				if (getStatementExpression() != null) {
+					getStatementExpression().execute(evaluationContext);
+				}
 
 			}
 
@@ -259,12 +263,10 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 		@Override
 		public String getStringRepresentation() {
 			// NPE Protection when action has been deleted e.g.
-			if (getStatementExpression() != null) {
-				return getHeaderContext() + " for (" + TypeUtils.simpleRepresentation(getItemType()) + " " + getIteratorName() + "="
-						+ getInitExpression() + " ; " + getConditionExpression() + " ; "
-						+ getStatementExpression().getStringRepresentation() + ")";
-			}
-			return "NULL ITERATION ACTION";
+			// The condition and the update are optional (CORE-D-9)
+			return getHeaderContext() + " for (" + TypeUtils.simpleRepresentation(getItemType()) + " " + getIteratorName() + "="
+					+ getInitExpression() + " ; " + (getConditionExpression() != null ? getConditionExpression() : "") + " ; "
+					+ (getStatementExpression() != null ? getStatementExpression().getStringRepresentation() : "") + ")";
 		}
 
 		@Override
@@ -362,10 +364,12 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 		}
 	}
 
+	/**
+	 * The condition is optional (a missing one is true, CORE-D-9), but must be valid when it is set
+	 */
 	@DefineValidationRule
-	public static class ConditionExpressionBindingIsRequiredAndMustBeValid
-			extends BindingIsRequiredAndMustBeValid<ExpressionIterationAction> {
-		public ConditionExpressionBindingIsRequiredAndMustBeValid() {
+	public static class ConditionExpressionBindingMustBeValid extends BindingMustBeValid<ExpressionIterationAction> {
+		public ConditionExpressionBindingMustBeValid() {
 			super("'condition_expression'_binding_is_not_valid", ExpressionIterationAction.class);
 		}
 
@@ -373,25 +377,6 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 		public DataBinding<?> getBinding(ExpressionIterationAction object) {
 			return object.getConditionExpression();
 		}
-	}
-
-	@DefineValidationRule
-	public static class ExpressionIterationActionMustDefineAStatementExpression
-			extends ValidationRule<ExpressionIterationActionMustDefineAStatementExpression, ExpressionIterationAction> {
-		public ExpressionIterationActionMustDefineAStatementExpression() {
-			super(ExpressionIterationAction.class, "iteration_action_must_define_a_valid_statement_expression");
-		}
-
-		@Override
-		public ValidationIssue<ExpressionIterationActionMustDefineAStatementExpression, ExpressionIterationAction> applyValidation(
-				ExpressionIterationAction action) {
-			if (action.getStatementExpression() == null) {
-				return new ValidationError<>(this, action, "iteration_action_does_not_define_a_valid_statement_expression");
-			}
-
-			return null;
-		}
-
 	}
 
 }

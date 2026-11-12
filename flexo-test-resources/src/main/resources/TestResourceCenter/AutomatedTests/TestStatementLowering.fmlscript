@@ -1,0 +1,30 @@
+// Every statement keeps its meaning when the behaviour is built (CORE-D-46, CORE-D-6, CORE-D-7, CORE-D-9, CORE-D-18).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/StatementLowering.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new StatementLowering() with (name="lowering");
+// unbraced statements nested in the then arm of an if/else, and their braced equivalent
+assert vmi.nestedIfBraced() == 2;
+assert vmi.nestedIf() == 2;
+assert vmi.whileArm() == 3;
+assert vmi.forArm() == 3;
+// the empty statement is a no-op
+assert vmi.emptyStatement() == 7;
+assert vmi.emptyArm() == 2;
+// do ... while evaluates its condition after each cycle
+assert vmi.doWhileCount() == 3;
+assert vmi.doWhileOnce() == 1;
+// compound assignments apply their operator
+assert vmi.compound() == 18;
+assert vmi.compoundString() == "ab";
+// as in Java, the result is converted to the type of the target, and += on a String concatenates anything
+assert vmi.compoundDivision() == 2;
+assert vmi.compoundNarrowing() == 4;
+assert vmi.compoundStringNumber() == "a1";
+assert vmi.compoundNullString() == "nullb";
+assert vmi.compoundProperty() == 15;
+assert vmi.counter == 15;
+// ++ and -- as statements
+assert vmi.increments() == 2;
+// a for without condition loops until a return; a for without update is accepted
+assert vmi.forWithoutCondition() == 4;
+assert vmi.forWithoutUpdate() == 3;

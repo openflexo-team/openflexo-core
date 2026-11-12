@@ -49,9 +49,9 @@ import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
+import org.openflexo.foundation.fml.parser.node.AIfThenElseStatementNoShortIfStatementNoShortIf;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PExpression;
-import org.openflexo.foundation.fml.parser.node.PStatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -75,24 +75,32 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 	@Override
 	public ConditionalAction buildModelObjectFromAST(Node astNode) {
 		ConditionalAction returned = getFactory().newConditionalAction();
-		// DataBinding<Boolean> condition = makeBinding(getExpression(astNode), returned);
 		DataBinding<Boolean> condition = ExpressionFactory.makeDataBinding(getExpression(astNode), returned, BindingDefinitionType.GET,
 				Boolean.class, getSemanticsAnalyzer(), this);
 
 		returned.setCondition(condition);
+		ControlGraphNode<?, ?> thenCGNode = null;
+		ControlGraphNode<?, ?> elseCGNode = null;
 		if (astNode instanceof AIfSimpleStatement) {
-			ControlGraphNode<?, ?> thenCGNode = ControlGraphFactory.makeControlGraphNode(((AIfSimpleStatement) astNode).getStatement(),
+			thenCGNode = ControlGraphFactory.makeControlGraphNode(((AIfSimpleStatement) astNode).getStatement(), getSemanticsAnalyzer());
+		}
+		else if (astNode instanceof AIfElseStatement) {
+			thenCGNode = ControlGraphFactory.makeControlGraphNode(((AIfElseStatement) astNode).getStatementNoShortIf(),
 					getSemanticsAnalyzer());
+			elseCGNode = ControlGraphFactory.makeControlGraphNode(((AIfElseStatement) astNode).getStatement(), getSemanticsAnalyzer());
+		}
+		else if (astNode instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			// An if/else nested, unbraced, in the then arm of another if/else (CORE-D-46)
+			thenCGNode = ControlGraphFactory.makeControlGraphNode(
+					((AIfThenElseStatementNoShortIfStatementNoShortIf) astNode).getStatementNoShortIf1(), getSemanticsAnalyzer());
+			elseCGNode = ControlGraphFactory.makeControlGraphNode(
+					((AIfThenElseStatementNoShortIfStatementNoShortIf) astNode).getStatementNoShortIf2(), getSemanticsAnalyzer());
+		}
+		if (thenCGNode != null) {
 			returned.setThenControlGraph(thenCGNode.getModelObject());
 			addToChildren(thenCGNode);
 		}
-		if (astNode instanceof AIfElseStatement) {
-			ControlGraphNode<?, ?> thenCGNode = ControlGraphFactory
-					.makeControlGraphNode(((AIfElseStatement) astNode).getStatementNoShortIf(), getSemanticsAnalyzer());
-			returned.setThenControlGraph(thenCGNode.getModelObject());
-			addToChildren(thenCGNode);
-			ControlGraphNode<?, ?> elseCGNode = ControlGraphFactory.makeControlGraphNode(((AIfElseStatement) astNode).getStatement(),
-					getSemanticsAnalyzer());
+		if (elseCGNode != null) {
 			returned.setElseControlGraph(elseCGNode.getModelObject());
 			addToChildren(elseCGNode);
 		}
@@ -127,7 +135,7 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		if (getASTNode() instanceof AIfSimpleStatement) {
 			return false;
 		}
-		if (getASTNode() instanceof AIfElseStatement) {
+		if (getASTNode() instanceof AIfElseStatement || getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
 			return true;
 		}
 		if (getModelObject() != null) {
@@ -143,12 +151,18 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		if (getASTNode() instanceof AIfElseStatement) {
 			return getFragment(((AIfElseStatement) getASTNode()).getKwIf());
 		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getKwIf());
+		}
 		return null;
 	}
 
 	protected RawSourceFragment getElseFragment() {
 		if (getASTNode() instanceof AIfElseStatement) {
 			return getFragment(((AIfElseStatement) getASTNode()).getKwElse());
+		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getKwElse());
 		}
 		return null;
 	}
@@ -160,17 +174,15 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		if (getASTNode() instanceof AIfElseStatement) {
 			return getFragment(((AIfElseStatement) getASTNode()).getLPar());
 		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getLPar());
+		}
 		return null;
 	}
 
 	protected RawSourceFragment getConditionFragment() {
-		if (getASTNode() instanceof AIfSimpleStatement) {
-			return getFragment(((AIfSimpleStatement) getASTNode()).getExpression());
-		}
-		if (getASTNode() instanceof AIfElseStatement) {
-			return getFragment(((AIfElseStatement) getASTNode()).getExpression());
-		}
-		return null;
+		PExpression expression = getExpression(getASTNode());
+		return expression != null ? getFragment(expression) : null;
 	}
 
 	protected RawSourceFragment getRParFragment() {
@@ -180,26 +192,34 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		if (getASTNode() instanceof AIfElseStatement) {
 			return getFragment(((AIfElseStatement) getASTNode()).getRPar());
 		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getRPar());
+		}
 		return null;
 	}
 
 	public PExpression getExpression(Node astNode) {
-		if (getASTNode() instanceof AIfSimpleStatement) {
-			return ((AIfSimpleStatement) getASTNode()).getExpression();
+		if (astNode instanceof AIfSimpleStatement) {
+			return ((AIfSimpleStatement) astNode).getExpression();
 		}
-		if (getASTNode() instanceof AIfElseStatement) {
-			return ((AIfElseStatement) getASTNode()).getExpression();
+		if (astNode instanceof AIfElseStatement) {
+			return ((AIfElseStatement) astNode).getExpression();
+		}
+		if (astNode instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return ((AIfThenElseStatementNoShortIfStatementNoShortIf) astNode).getExpression();
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getThenLBrcFragment() {
-
 		if (getASTNode() instanceof AIfSimpleStatement) {
 			return getFragment(getLBrc(((AIfSimpleStatement) getASTNode()).getStatement()));
 		}
 		if (getASTNode() instanceof AIfElseStatement) {
 			return getFragment(getLBrc(((AIfElseStatement) getASTNode()).getStatementNoShortIf()));
+		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(getLBrc(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getStatementNoShortIf1()));
 		}
 		return null;
 	}
@@ -211,20 +231,28 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		if (getASTNode() instanceof AIfElseStatement) {
 			return getFragment(getRBrc(((AIfElseStatement) getASTNode()).getStatementNoShortIf()));
 		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(getRBrc(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getStatementNoShortIf1()));
+		}
 		return null;
 	}
 
 	protected RawSourceFragment getElseLBrcFragment() {
-		return getFragment(getLBrc(getElseStatement()));
+		if (getASTNode() instanceof AIfElseStatement) {
+			return getFragment(getLBrc(((AIfElseStatement) getASTNode()).getStatement()));
+		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(getLBrc(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getStatementNoShortIf2()));
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getElseRBrcFragment() {
-		return getFragment(getRBrc(getElseStatement()));
-	}
-
-	protected PStatement getElseStatement() {
 		if (getASTNode() instanceof AIfElseStatement) {
-			return (((AIfElseStatement) getASTNode()).getStatement());
+			return getFragment(getRBrc(((AIfElseStatement) getASTNode()).getStatement()));
+		}
+		if (getASTNode() instanceof AIfThenElseStatementNoShortIfStatementNoShortIf) {
+			return getFragment(getRBrc(((AIfThenElseStatementNoShortIfStatementNoShortIf) getASTNode()).getStatementNoShortIf2()));
 		}
 		return null;
 	}

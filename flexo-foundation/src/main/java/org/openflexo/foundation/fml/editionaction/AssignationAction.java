@@ -83,11 +83,21 @@ import org.openflexo.pamela.validation.ValidationRule;
  */
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
-// TODO: manage assignment operator
 public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ASSIGNATION_KEY = "assignation";
+	@PropertyIdentifier(type = AssignmentOperator.class)
+	public static final String ASSIGNMENT_OPERATOR_KEY = "assignmentOperator";
+
+	/**
+	 * The operator of this assignment: {@code =}, or a compound operator such as {@code +=} (CORE-D-7)
+	 */
+	@Getter(value = ASSIGNMENT_OPERATOR_KEY, defaultValue = "ASSIGN")
+	public AssignmentOperator getAssignmentOperator();
+
+	@Setter(ASSIGNMENT_OPERATOR_KEY)
+	public void setAssignmentOperator(AssignmentOperator assignmentOperator);
 
 	@Getter(value = ASSIGNATION_KEY)
 	public DataBinding<? super T> getAssignation();
@@ -148,9 +158,27 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			return null;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			AssignmentOperator operator = getAssignmentOperator();
+			Object currentValue = null;
+			if (operator != null && operator.isCompound()) {
+				// x op= v assigns x op v (CORE-D-7); as in Java, x is read before v is evaluated
+				try {
+					currentValue = getAssignation().getBindingValue(evaluationContext);
+				} catch (Exception e) {
+					throw new FMLExecutionException(e);
+				}
+			}
 			T value = getAssignationValue(evaluationContext);
+			if (operator != null && operator.isCompound()) {
+				try {
+					value = (T) operator.apply(currentValue, value, getAssignation().getAnalyzedType());
+				} catch (Exception e) {
+					throw new FMLExecutionException(e);
+				}
+			}
 			try {
 				getAssignation().setBindingValue(value, evaluationContext);
 			} catch (Exception e) {
@@ -163,7 +191,8 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + (getAssignation() != null ? getAssignation().toString() : "") + " = "
+			return getHeaderContext() + (getAssignation() != null ? getAssignation().toString() : "") + " "
+					+ (getAssignmentOperator() != null ? getAssignmentOperator().getSymbol() : "=") + " "
 					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "<no_assignable_action>");
 		}
 
@@ -200,6 +229,11 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			Type expected = assignation.getAssignation().getAnalyzedType();
 			Type analyzed = assignation.getAssignableType();
 
+			AssignmentOperator operator = assignation.getAssignmentOperator();
+			if (operator != null && operator.isCompound() && operator.acceptsCompound(expected, analyzed)) {
+				// x op= v converts x op v to the type of x, as in Java (CORE-D-7)
+				return null;
+			}
 			if (!TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
 				return new NotCompatibleTypesIssue(this, assignation, expected, analyzed);
 			}

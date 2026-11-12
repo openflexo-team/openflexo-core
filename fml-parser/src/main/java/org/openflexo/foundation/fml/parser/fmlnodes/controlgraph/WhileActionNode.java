@@ -47,24 +47,41 @@ import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AWhileStatement;
+import org.openflexo.foundation.fml.parser.node.AWhileStatementNoShortIfStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PStatement;
+import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.TKwWhile;
+import org.openflexo.foundation.fml.parser.node.TLPar;
+import org.openflexo.foundation.fml.parser.node.TRPar;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
+ * A {@link WhileAction}, built from one of
+ * 
  * <pre>
- *      | {while}     kw_while l_par expression r_par statement
+ *      statement                {while}                       kw_while l_par expression r_par statement
+ *      statement_no_short_if    {while_statement_no_short_if} kw_while l_par expression r_par statement_no_short_if
+ *      statement_without_trailing_substatement
+ *                               {do_statement}                kw_do statement kw_while l_par expression r_par semi
  * </pre>
+ * 
+ * The second form is a while nested, unbraced, in the then arm of an if/else; the third one is a loop whose condition is evaluated
+ * after each cycle (CORE-D-46, CORE-D-6).
  * 
  * @author sylvain
  * 
  */
-public class WhileActionNode extends ControlGraphNode<AWhileStatement, WhileAction> {
+public class WhileActionNode extends ControlGraphNode<Node, WhileAction> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WhileActionNode.class.getPackage().getName());
 
-	public WhileActionNode(AWhileStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public WhileActionNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 	}
 
@@ -73,18 +90,40 @@ public class WhileActionNode extends ControlGraphNode<AWhileStatement, WhileActi
 	}
 
 	@Override
-	public WhileAction buildModelObjectFromAST(AWhileStatement astNode) {
+	public WhileAction buildModelObjectFromAST(Node astNode) {
 		WhileAction returned = getFactory().newWhileAction();
 
-		DataBinding<Boolean> condition = ExpressionFactory.makeDataBinding(astNode.getExpression(), returned, BindingDefinitionType.GET,
+		DataBinding<Boolean> condition = ExpressionFactory.makeDataBinding(getExpression(astNode), returned, BindingDefinitionType.GET,
 				Boolean.class, getSemanticsAnalyzer(), this);
 		returned.setCondition(condition);
 
-		ControlGraphNode<?, ?> iterationCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getStatement(), getSemanticsAnalyzer());
-		returned.setControlGraph(iterationCGNode.getModelObject());
-		addToChildren(iterationCGNode);
+		ControlGraphNode<?, ?> iterationCGNode = null;
+		if (astNode instanceof AWhileStatement) {
+			iterationCGNode = ControlGraphFactory.makeControlGraphNode(((AWhileStatement) astNode).getStatement(), getSemanticsAnalyzer());
+		}
+		else if (astNode instanceof AWhileStatementNoShortIfStatementNoShortIf) {
+			iterationCGNode = ControlGraphFactory.makeControlGraphNode(
+					((AWhileStatementNoShortIfStatementNoShortIf) astNode).getStatementNoShortIf(), getSemanticsAnalyzer());
+		}
+		else if (astNode instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			returned.setEvaluateConditionAfterCycle(true);
+			iterationCGNode = ControlGraphFactory.makeControlGraphNode(
+					((ADoStatementStatementWithoutTrailingSubstatement) astNode).getStatement(), getSemanticsAnalyzer());
+		}
+		if (iterationCGNode != null) {
+			returned.setControlGraph(iterationCGNode.getModelObject());
+			addToChildren(iterationCGNode);
+		}
 
 		return returned;
+	}
+
+	// The model decides (the inspector can change it); the parsed text only when there is no model yet
+	private boolean isDoWhile() {
+		if (getModelObject() != null) {
+			return getModelObject().getEvaluateConditionAfterCycle();
+		}
+		return getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement;
 	}
 
 	@Override
@@ -93,57 +132,133 @@ public class WhileActionNode extends ControlGraphNode<AWhileStatement, WhileActi
 
 		// @formatter:off
 
-		append(staticContents(FMLKeywords.While.getKeyword()), getWhileFragment());
-		append(staticContents(SPACE, "(", ""), getLParFragment());
-		append(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment());
-		append(staticContents(")"), getRParFragment());
-
-		append(staticContents(SPACE, "{", ""), getLBrcFragment());
-		append(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), "", Indentation.Indent));
-		append(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
+		when(() -> !isDoWhile())
+				.thenAppend(staticContents(FMLKeywords.While.getKeyword()), getWhileFragment())
+				.thenAppend(staticContents(SPACE, "(", ""), getLParFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment())
+				.thenAppend(staticContents(")"), getRParFragment())
+				.thenAppend(staticContents(SPACE, "{", ""), getLBrcFragment())
+				.thenAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), "", Indentation.Indent))
+				.thenAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment())
+				.elseAppend(staticContents(FMLKeywords.Do.getKeyword()), getDoFragment())
+				.elseAppend(staticContents(SPACE, "{", ""), getLBrcFragment())
+				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), "", Indentation.Indent))
+				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment())
+				.elseAppend(staticContents(SPACE, FMLKeywords.While.getKeyword(), ""), getWhileFragment())
+				.elseAppend(staticContents(SPACE, "(", ""), getLParFragment())
+				.elseAppend(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment())
+				.elseAppend(staticContents(")"), getRParFragment())
+				.elseAppend(staticContents(";"), getSemiFragment());
 
 		// @formatter:on
 
 	}
 
+	private static PExpression getExpression(Node astNode) {
+		if (astNode instanceof AWhileStatement) {
+			return ((AWhileStatement) astNode).getExpression();
+		}
+		if (astNode instanceof AWhileStatementNoShortIfStatementNoShortIf) {
+			return ((AWhileStatementNoShortIfStatementNoShortIf) astNode).getExpression();
+		}
+		if (astNode instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return ((ADoStatementStatementWithoutTrailingSubstatement) astNode).getExpression();
+		}
+		return null;
+	}
+
+	private TKwWhile getKwWhile() {
+		if (getASTNode() instanceof AWhileStatement) {
+			return ((AWhileStatement) getASTNode()).getKwWhile();
+		}
+		if (getASTNode() instanceof AWhileStatementNoShortIfStatementNoShortIf) {
+			return ((AWhileStatementNoShortIfStatementNoShortIf) getASTNode()).getKwWhile();
+		}
+		if (getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return ((ADoStatementStatementWithoutTrailingSubstatement) getASTNode()).getKwWhile();
+		}
+		return null;
+	}
+
+	private TLPar getLPar() {
+		if (getASTNode() instanceof AWhileStatement) {
+			return ((AWhileStatement) getASTNode()).getLPar();
+		}
+		if (getASTNode() instanceof AWhileStatementNoShortIfStatementNoShortIf) {
+			return ((AWhileStatementNoShortIfStatementNoShortIf) getASTNode()).getLPar();
+		}
+		if (getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return ((ADoStatementStatementWithoutTrailingSubstatement) getASTNode()).getLPar();
+		}
+		return null;
+	}
+
+	private TRPar getRPar() {
+		if (getASTNode() instanceof AWhileStatement) {
+			return ((AWhileStatement) getASTNode()).getRPar();
+		}
+		if (getASTNode() instanceof AWhileStatementNoShortIfStatementNoShortIf) {
+			return ((AWhileStatementNoShortIfStatementNoShortIf) getASTNode()).getRPar();
+		}
+		if (getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return ((ADoStatementStatementWithoutTrailingSubstatement) getASTNode()).getRPar();
+		}
+		return null;
+	}
+
 	protected RawSourceFragment getWhileFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwWhile());
+		return getKwWhile() != null ? getFragment(getKwWhile()) : null;
+	}
+
+	protected RawSourceFragment getDoFragment() {
+		if (getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return getFragment(((ADoStatementStatementWithoutTrailingSubstatement) getASTNode()).getKwDo());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getSemiFragment() {
+		if (getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return getFragment(((ADoStatementStatementWithoutTrailingSubstatement) getASTNode()).getSemi());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getLParFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getLPar());
-		}
-		return null;
+		return getLPar() != null ? getFragment(getLPar()) : null;
 	}
 
 	protected RawSourceFragment getConditionFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getExpression());
-		}
-		return null;
+		PExpression expression = getExpression(getASTNode());
+		return expression != null ? getFragment(expression) : null;
 	}
 
 	protected RawSourceFragment getRParFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getRPar());
-		}
-		return null;
+		return getRPar() != null ? getFragment(getRPar()) : null;
 	}
 
 	protected RawSourceFragment getLBrcFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getLBrc(getASTNode().getStatement()));
+		if (getASTNode() instanceof AWhileStatement) {
+			return getFragment(getLBrc(((AWhileStatement) getASTNode()).getStatement()));
+		}
+		if (getASTNode() instanceof AWhileStatementNoShortIfStatementNoShortIf) {
+			return getFragment(getLBrc(((AWhileStatementNoShortIfStatementNoShortIf) getASTNode()).getStatementNoShortIf()));
+		}
+		if (getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return getFragment(getLBrc(((ADoStatementStatementWithoutTrailingSubstatement) getASTNode()).getStatement()));
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getRBrcFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getRBrc(getASTNode().getStatement()));
+		if (getASTNode() instanceof AWhileStatement) {
+			return getFragment(getRBrc(((AWhileStatement) getASTNode()).getStatement()));
+		}
+		if (getASTNode() instanceof AWhileStatementNoShortIfStatementNoShortIf) {
+			return getFragment(getRBrc(((AWhileStatementNoShortIfStatementNoShortIf) getASTNode()).getStatementNoShortIf()));
+		}
+		if (getASTNode() instanceof ADoStatementStatementWithoutTrailingSubstatement) {
+			return getFragment(getRBrc(((ADoStatementStatementWithoutTrailingSubstatement) getASTNode()).getStatement()));
 		}
 		return null;
 	}

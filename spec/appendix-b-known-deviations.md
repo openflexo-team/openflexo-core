@@ -12,13 +12,8 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 
 | Id | Deviation | Specified in | Write instead |
 |---|---|---|---|
-| `CORE-D-6` | `do … while` runs its body once and ignores its condition | §8.5 | `while` |
-| `CORE-D-7` | a compound assignment *statement* (`n += 2;`) assigns the right-hand side | §8.3 | `n = n + 2;` |
-| `CORE-D-18` | `n++;` / `--n;` as a statement make the behaviour return `null` | §8.6 | `n = n + 1;` (the update of a `for` is fine) |
-| `CORE-D-9` | `for (init; ; update)` without condition: the behaviour is silently not built | §8.5 | give the condition, or `while (true)` |
 | `CORE-D-8` | an invalid condition in `if` / `while` is taken as true | §8.4 | validate the unit |
 | `CORE-D-19` | a method call on a string literal gives `null` | §9.5.2 | put the literal in a variable |
-| `CORE-D-46` | an unbraced `if/else` or `while` nested in the *then* arm of an `if/else`, or an empty statement `;`, is lost: the behaviour runs another program (root of `CORE-D-6/7/9/18`) | §8 | brace every nested statement; no empty statement |
 | `CORE-D-48` | a local declared in a block stays visible after it, and hides a property of the same name | §8.2 | do not reuse the name of a property or of an outer local |
 
 ## B.2 Properties and behaviours
@@ -56,6 +51,7 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-16` | a namespace alias is not resolved in an annotation | §3.3, §11.3 | write the full address in `@URI` |
 | `CORE-D-34` | loading units that import each other logs transient *Unresolved type* warnings | §3.8 | none: ignore the transient ones |
 | `CORE-D-33` | the text rebuilt from the model is not always the text that was parsed | §1.1 | — |
+| `CORE-D-56` | a control statement whose body has no braces is saved with braces and a broken indentation | §8.1 | brace the bodies |
 | `CORE-D-52` | a concept-typed property with an initializer is printed as text that does not parse again | §1.1 | no initializer on such properties |
 
 ## B.5 Scripts

@@ -47,38 +47,47 @@ import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
+import org.openflexo.foundation.fml.parser.node.AEmptyForStatementNoShortIf;
+import org.openflexo.foundation.fml.parser.node.AExpressionForStatementNoShortIf;
 import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
 import org.openflexo.foundation.fml.parser.node.AInitializerExpressionVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationForInit;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PForInit;
 import org.openflexo.foundation.fml.parser.node.PStatement;
 import org.openflexo.foundation.fml.parser.node.PStatementExpression;
+import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
 import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.TKwFor;
+import org.openflexo.foundation.fml.parser.node.TLPar;
+import org.openflexo.foundation.fml.parser.node.TRPar;
+import org.openflexo.foundation.fml.parser.node.TSemi;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
+ * An {@link ExpressionIterationAction}, built from a classic {@code for} loop, in one of the forms
+ * 
  * <pre>
- *    | {for_basic}               kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
- *    | {for_basic_expression}    kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
+ *    statement             | {for_basic}            kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
+ *                          | {for_basic_expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
+ *    for_statement_no_short_if
+ *                          | {empty}                kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement_no_short_if
+ *                          | {expression}           kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement_no_short_if
  * </pre>
  * 
- * @author sylvain
- * 
+ * The last two are loops nested, unbraced, in the then arm of an if/else (CORE-D-46). The condition and the update are optional: a
+ * missing condition is true, as in Java (CORE-D-9).
  */
-public class ExpressionIterationActionNode extends ControlGraphNode<PStatement, ExpressionIterationAction> {
+public class ExpressionIterationActionNode extends ControlGraphNode<Node, ExpressionIterationAction> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExpressionIterationActionNode.class.getPackage().getName());
 
-	public ExpressionIterationActionNode(AForBasicStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
-		super(astNode, analyzer);
-	}
-
-	public ExpressionIterationActionNode(AForBasicExpressionStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public ExpressionIterationActionNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 	}
 
@@ -86,143 +95,124 @@ public class ExpressionIterationActionNode extends ControlGraphNode<PStatement, 
 		super(iteration, analyzer);
 	}
 
+	/**
+	 * The parts of a for header, whatever the production it comes from
+	 */
+	private static class ForParts {
+		TKwFor kwFor;
+		TLPar lPar;
+		PForInit forInit;
+		TSemi semi1;
+		PExpression condition;
+		TSemi semi2;
+		PStatementExpression update;
+		TRPar rPar;
+		PStatement body;
+		PStatementNoShortIf bodyNoShortIf;
+	}
+
+	private static ForParts getParts(Node astNode) {
+		ForParts parts = new ForParts();
+		if (astNode instanceof AForBasicStatement) {
+			AForBasicStatement n = (AForBasicStatement) astNode;
+			parts.kwFor = n.getKwFor();
+			parts.lPar = n.getLPar();
+			parts.forInit = n.getForInit();
+			parts.semi1 = n.getSemi1();
+			parts.semi2 = n.getSemi2();
+			parts.update = n.getStatementExpression();
+			parts.rPar = n.getRPar();
+			parts.body = n.getStatement();
+		}
+		else if (astNode instanceof AForBasicExpressionStatement) {
+			AForBasicExpressionStatement n = (AForBasicExpressionStatement) astNode;
+			parts.kwFor = n.getKwFor();
+			parts.lPar = n.getLPar();
+			parts.forInit = n.getForInit();
+			parts.semi1 = n.getSemi1();
+			parts.condition = n.getExpression();
+			parts.semi2 = n.getSemi2();
+			parts.update = n.getStatementExpression();
+			parts.rPar = n.getRPar();
+			parts.body = n.getStatement();
+		}
+		else if (astNode instanceof AEmptyForStatementNoShortIf) {
+			AEmptyForStatementNoShortIf n = (AEmptyForStatementNoShortIf) astNode;
+			parts.kwFor = n.getKwFor();
+			parts.lPar = n.getLPar();
+			parts.forInit = n.getForInit();
+			parts.semi1 = n.getSemi1();
+			parts.semi2 = n.getSemi2();
+			parts.update = n.getStatementExpression();
+			parts.rPar = n.getRPar();
+			parts.bodyNoShortIf = n.getStatementNoShortIf();
+		}
+		else if (astNode instanceof AExpressionForStatementNoShortIf) {
+			AExpressionForStatementNoShortIf n = (AExpressionForStatementNoShortIf) astNode;
+			parts.kwFor = n.getKwFor();
+			parts.lPar = n.getLPar();
+			parts.forInit = n.getForInit();
+			parts.semi1 = n.getSemi1();
+			parts.condition = n.getExpression();
+			parts.semi2 = n.getSemi2();
+			parts.update = n.getStatementExpression();
+			parts.rPar = n.getRPar();
+			parts.bodyNoShortIf = n.getStatementNoShortIf();
+		}
+		return parts;
+	}
+
+	private ForParts getParts() {
+		return getParts(getASTNode());
+	}
+
 	@Override
-	public ExpressionIterationAction buildModelObjectFromAST(PStatement astNode) {
+	public ExpressionIterationAction buildModelObjectFromAST(Node astNode) {
 		ExpressionIterationAction returned = getFactory().newExpressionIterationAction();
+		ForParts parts = getParts(astNode);
 
-		// System.out.println("buildModelObjectFromAST() for " + astNode);
-		// System.out.println("iteratorName=" + getIteratorName(astNode));
-		// System.out.println("iteratorType=" + getIteratoType(astNode));
-		// System.out.println("initExpression:" + getInitExpression(astNode));
-		// System.out.println("conditionExpression:" + getConditionExpression(astNode));
-		// System.out.println("statementExpression:" + getStatementExpression(astNode));
+		AVariableDeclarationForInit declaration = parts.forInit instanceof AVariableDeclarationForInit
+				? (AVariableDeclarationForInit) parts.forInit
+				: null;
+		PVariableDeclarator declarator = declaration != null ? declaration.getVariableDeclarator() : null;
+		if (declarator instanceof AInitializerExpressionVariableDeclarator) {
+			returned.setIteratorName(((AInitializerExpressionVariableDeclarator) declarator).getLidentifier().getText());
+			returned.setDeclaredType(TypeFactory.makeType(declaration.getType(), getSemanticsAnalyzer().getTypingSpace()));
+			returned.setInitExpression(ExpressionFactory.makeDataBinding(((AInitializerExpressionVariableDeclarator) declarator).getExpression(),
+					returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this));
+		}
+		else {
+			getSemanticsAnalyzer().throwIssue(returned, "A for loop must declare and initialize its iteration variable (for (int i = 0; ...))",
+					getFragment(astNode), getStartPosition());
+		}
 
-		returned.setIteratorName(getIteratorName(astNode));
-		returned.setDeclaredType(TypeFactory.makeType(getIteratoType(astNode), getSemanticsAnalyzer().getTypingSpace()));
+		if (parts.condition != null) {
+			DataBinding<Boolean> conditionExpression = ExpressionFactory.makeDataBinding(parts.condition, returned,
+					BindingDefinitionType.GET, Boolean.class, getSemanticsAnalyzer(), this);
+			returned.setConditionExpression(conditionExpression);
+		}
 
-		DataBinding<?> initExpression = ExpressionFactory.makeDataBinding(getInitExpression(astNode), returned, BindingDefinitionType.GET,
-				Object.class, getSemanticsAnalyzer(), this);
-		DataBinding<Boolean> conditionExpression = ExpressionFactory.makeDataBinding(getConditionExpression(astNode), returned,
-				BindingDefinitionType.GET, Boolean.class, getSemanticsAnalyzer(), this);
+		if (parts.update != null) {
+			ControlGraphNode<?, ?> statementExpressionCGNode = ControlGraphFactory.makeControlGraphNode(parts.update,
+					getSemanticsAnalyzer());
+			returned.setStatementExpression(statementExpressionCGNode.getModelObject());
+			addToChildren(statementExpressionCGNode);
+		}
 
-		ControlGraphNode<?, ?> statementExpressionCGNode = ControlGraphFactory.makeControlGraphNode(getStatementExpression(astNode),
-				getSemanticsAnalyzer());
-
-		// System.out.println("initExpression:" + initExpression);
-		// System.out.println("conditionExpression:" + conditionExpression);
-		// System.out.println("statementExpressionCGNode:" + statementExpressionCGNode + " of " + statementExpressionCGNode.getClass());
-
-		returned.setInitExpression(initExpression);
-		returned.setConditionExpression(conditionExpression);
-		returned.setStatementExpression(statementExpressionCGNode.getModelObject());
-		addToChildren(statementExpressionCGNode);
-
-		ControlGraphNode<?, ?> iterationCGNode = ControlGraphFactory.makeControlGraphNode(getIterationStatement(astNode),
-				getSemanticsAnalyzer());
+		ControlGraphNode<?, ?> iterationCGNode = parts.body != null
+				? ControlGraphFactory.makeControlGraphNode(parts.body, getSemanticsAnalyzer())
+				: ControlGraphFactory.makeControlGraphNode(parts.bodyNoShortIf, getSemanticsAnalyzer());
 		returned.setControlGraph(iterationCGNode.getModelObject());
 		addToChildren(iterationCGNode);
 
 		return returned;
 	}
 
-	private String getIteratorName(PStatement astNode) {
-		PVariableDeclarator variableDeclarator = getVariableDeclarator(astNode);
-		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
-			return ((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier().getText();
-		}
-		else {
-			System.err.println("Unexpected variableDeclarator " + variableDeclarator);
-			Thread.dumpStack();
-		}
-		return null;
+	private boolean hasCondition() {
+		return getModelObject() != null && getModelObject().getConditionExpression() != null
+				&& getModelObject().getConditionExpression().isSet();
 	}
 
-	private PExpression getInitExpression(PStatement astNode) {
-		PVariableDeclarator variableDeclarator = getVariableDeclarator(astNode);
-		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
-			return ((AInitializerExpressionVariableDeclarator) variableDeclarator).getExpression();
-		}
-		else {
-			System.err.println("Unexpected variableDeclarator " + variableDeclarator);
-			Thread.dumpStack();
-		}
-		return null;
-	}
-
-	private PType getIteratoType(PStatement astNode) {
-		PForInit variableDeclarator = getForInit(astNode);
-		if (variableDeclarator instanceof AVariableDeclarationForInit) {
-			return ((AVariableDeclarationForInit) variableDeclarator).getType();
-		}
-		else {
-			System.err.println("Unexpected variableDeclarator " + variableDeclarator);
-			Thread.dumpStack();
-		}
-		return null;
-	}
-
-	private PForInit getForInit(PStatement astNode) {
-		if (astNode instanceof AForBasicStatement) {
-			return ((AForBasicStatement) astNode).getForInit();
-		}
-		if (astNode instanceof AForBasicExpressionStatement) {
-			return ((AForBasicExpressionStatement) astNode).getForInit();
-		}
-		return null;
-	}
-
-	private AVariableDeclarationForInit getVariableDeclaration(PStatement astNode) {
-		PForInit forInit = getForInit(astNode);
-		if (forInit instanceof AVariableDeclarationForInit) {
-			return (AVariableDeclarationForInit) forInit;
-		}
-		return null;
-	}
-
-	private PVariableDeclarator getVariableDeclarator(PStatement astNode) {
-		AVariableDeclarationForInit variableDeclaration = getVariableDeclaration(astNode);
-		if (variableDeclaration != null) {
-			return variableDeclaration.getVariableDeclarator();
-		}
-		return null;
-	}
-
-	private PExpression getConditionExpression(PStatement astNode) {
-		if (astNode instanceof AForBasicStatement) {
-			return null;
-		}
-		if (astNode instanceof AForBasicExpressionStatement) {
-			return ((AForBasicExpressionStatement) astNode).getExpression();
-		}
-		return null;
-	}
-
-	private PStatementExpression getStatementExpression(PStatement astNode) {
-		if (astNode instanceof AForBasicStatement) {
-			return ((AForBasicStatement) astNode).getStatementExpression();
-		}
-		if (astNode instanceof AForBasicExpressionStatement) {
-			return ((AForBasicExpressionStatement) astNode).getStatementExpression();
-		}
-		return null;
-	}
-
-	private PStatement getIterationStatement(PStatement astNode) {
-		if (astNode instanceof AForBasicStatement) {
-			return ((AForBasicStatement) astNode).getStatement();
-		}
-		if (astNode instanceof AForBasicExpressionStatement) {
-			return ((AForBasicExpressionStatement) astNode).getStatement();
-		}
-		return null;
-	}
-
-	/**
-	 * <pre>
-	 *    | {for_basic}               kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
-	 *    | {for_basic_expression}    kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
-	 * </pre>
-	 */
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
@@ -236,7 +226,8 @@ public class ExpressionIterationActionNode extends ControlGraphNode<PStatement, 
 		append(staticContents("="), getAssignFragment());
 		append(dynamicContents(() -> getModelObject().getInitExpression().toString()), getInitExpressionFragment());
 		append(staticContents(SPACE,";",SPACE), getSemi1Fragment());
-		append(dynamicContents(() -> getModelObject().getConditionExpression().toString()), getConditionExpressionFragment());
+		when(() -> hasCondition())
+				.thenAppend(dynamicContents(() -> getModelObject().getConditionExpression().toString()), getConditionExpressionFragment());
 		append(staticContents(SPACE,";",SPACE), getSemi2Fragment());
 		append(childContents("", () -> getModelObject().getStatementExpression(), "", Indentation.DoNotIndent));
 		append(staticContents(")"), getRParFragment());
@@ -249,16 +240,22 @@ public class ExpressionIterationActionNode extends ControlGraphNode<PStatement, 
 
 	}
 
+	private PVariableDeclarator getVariableDeclarator() {
+		PForInit forInit = getParts().forInit;
+		return forInit instanceof AVariableDeclarationForInit ? ((AVariableDeclarationForInit) forInit).getVariableDeclarator() : null;
+	}
+
 	protected RawSourceFragment getTypeFragment() {
-		PForInit variableDeclarator = getForInit(getASTNode());
-		if (variableDeclarator instanceof AVariableDeclarationForInit) {
-			return getFragment(((AVariableDeclarationForInit) variableDeclarator).getType());
+		PForInit forInit = getParts().forInit;
+		if (forInit instanceof AVariableDeclarationForInit) {
+			PType type = ((AVariableDeclarationForInit) forInit).getType();
+			return getFragment(type);
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getIteratorNameFragment() {
-		PVariableDeclarator variableDeclarator = getVariableDeclarator(getASTNode());
+		PVariableDeclarator variableDeclarator = getVariableDeclarator();
 		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
 			return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier());
 		}
@@ -266,27 +263,15 @@ public class ExpressionIterationActionNode extends ControlGraphNode<PStatement, 
 	}
 
 	protected RawSourceFragment getForFragment() {
-		if (getASTNode() instanceof AForBasicStatement) {
-			return getFragment(((AForBasicStatement) getASTNode()).getKwFor());
-		}
-		if (getASTNode() instanceof AForBasicExpressionStatement) {
-			return getFragment(((AForBasicExpressionStatement) getASTNode()).getKwFor());
-		}
-		return null;
+		return getParts().kwFor != null ? getFragment(getParts().kwFor) : null;
 	}
 
 	protected RawSourceFragment getLParFragment() {
-		if (getASTNode() instanceof AForBasicStatement) {
-			return getFragment(((AForBasicStatement) getASTNode()).getLPar());
-		}
-		if (getASTNode() instanceof AForBasicExpressionStatement) {
-			return getFragment(((AForBasicExpressionStatement) getASTNode()).getLPar());
-		}
-		return null;
+		return getParts().lPar != null ? getFragment(getParts().lPar) : null;
 	}
 
 	protected RawSourceFragment getAssignFragment() {
-		PVariableDeclarator variableDeclarator = getVariableDeclarator(getASTNode());
+		PVariableDeclarator variableDeclarator = getVariableDeclarator();
 		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
 			return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getAssign());
 		}
@@ -294,7 +279,7 @@ public class ExpressionIterationActionNode extends ControlGraphNode<PStatement, 
 	}
 
 	protected RawSourceFragment getInitExpressionFragment() {
-		PVariableDeclarator variableDeclarator = getVariableDeclarator(getASTNode());
+		PVariableDeclarator variableDeclarator = getVariableDeclarator();
 		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
 			return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getExpression());
 		}
@@ -302,56 +287,39 @@ public class ExpressionIterationActionNode extends ControlGraphNode<PStatement, 
 	}
 
 	protected RawSourceFragment getSemi1Fragment() {
-		if (getASTNode() instanceof AForBasicStatement) {
-			return getFragment(((AForBasicStatement) getASTNode()).getSemi1());
-		}
-		if (getASTNode() instanceof AForBasicExpressionStatement) {
-			return getFragment(((AForBasicExpressionStatement) getASTNode()).getSemi1());
-		}
-		return null;
+		return getParts().semi1 != null ? getFragment(getParts().semi1) : null;
 	}
 
 	protected RawSourceFragment getConditionExpressionFragment() {
-		if (getASTNode() instanceof AForBasicExpressionStatement) {
-			return getFragment(((AForBasicExpressionStatement) getASTNode()).getExpression());
-		}
-		return null;
+		return getParts().condition != null ? getFragment(getParts().condition) : null;
 	}
 
 	protected RawSourceFragment getSemi2Fragment() {
-		if (getASTNode() instanceof AForBasicStatement) {
-			return getFragment(((AForBasicStatement) getASTNode()).getSemi2());
-		}
-		if (getASTNode() instanceof AForBasicExpressionStatement) {
-			return getFragment(((AForBasicExpressionStatement) getASTNode()).getSemi2());
-		}
-		return null;
+		return getParts().semi2 != null ? getFragment(getParts().semi2) : null;
 	}
 
 	protected RawSourceFragment getRParFragment() {
-		if (getASTNode() instanceof AForBasicStatement) {
-			return getFragment(((AForBasicStatement) getASTNode()).getRPar());
+		return getParts().rPar != null ? getFragment(getParts().rPar) : null;
+	}
+
+	protected RawSourceFragment getLBrcFragment() {
+		ForParts parts = getParts();
+		if (parts.body != null) {
+			return getFragment(getLBrc(parts.body));
 		}
-		if (getASTNode() instanceof AForBasicExpressionStatement) {
-			return getFragment(((AForBasicExpressionStatement) getASTNode()).getRPar());
+		if (parts.bodyNoShortIf != null) {
+			return getFragment(getLBrc(parts.bodyNoShortIf));
 		}
 		return null;
 	}
 
-	protected RawSourceFragment getLBrcFragment() {
-		return getFragment(getLBrc(getStatement()));
-	}
-
 	protected RawSourceFragment getRBrcFragment() {
-		return getFragment(getRBrc(getStatement()));
-	}
-
-	protected PStatement getStatement() {
-		if (getASTNode() instanceof AForBasicStatement) {
-			return ((AForBasicStatement) getASTNode()).getStatement();
+		ForParts parts = getParts();
+		if (parts.body != null) {
+			return getFragment(getRBrc(parts.body));
 		}
-		if (getASTNode() instanceof AForBasicExpressionStatement) {
-			return ((AForBasicExpressionStatement) getASTNode()).getStatement();
+		if (parts.bodyNoShortIf != null) {
+			return getFragment(getRBrc(parts.bodyNoShortIf));
 		}
 		return null;
 	}

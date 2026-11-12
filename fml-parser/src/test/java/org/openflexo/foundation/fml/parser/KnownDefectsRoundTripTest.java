@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -125,5 +126,36 @@ public class KnownDefectsRoundTripTest {
 		} catch (Exception e) {
 			fail("CORE-D-52: the printed text does not parse again (" + e + "):\n" + printed);
 		}
+	}
+
+	private static void assertPrintedBack(String body) throws Exception {
+		String fml = "@URI(\"http://openflexo.org/test/KnownDefectsUnbraced.fml\")\npublic model KnownDefectsUnbraced {\n\tpublic int m() {\n"
+				+ "\t\tint n = 0;\n" + body + "\t\treturn n;\n\t}\n}\n";
+		FMLCompilationUnit compilationUnit = new FMLCompilationUnitParser().parse(fml, new FMLModelFactory(null, serviceManager),
+				modelSlotClasses -> null, true);
+		assertEquals("CORE-D-56: the text printed back from the parsed text differs", fml, compilationUnit.getFMLPrettyPrint());
+	}
+
+	/**
+	 * CORE-D-56: a statement written without braces is printed back, from the parsed text, as it was written.
+	 */
+	@Test
+	public void coreD56_unbracedIfElseIsPrintedBackAsWritten() throws Exception {
+		assertPrintedBack("\t\tif (n > 0) n = 1; else n = 2;\n");
+	}
+
+	@Test
+	public void coreD56_unbracedWhileIsPrintedBackAsWritten() throws Exception {
+		assertPrintedBack("\t\twhile (n < 3) n = n + 1;\n");
+	}
+
+	@Test
+	public void coreD56_unbracedDoWhileIsPrintedBackAsWritten() throws Exception {
+		assertPrintedBack("\t\tdo n = n + 1; while (n < 3);\n");
+	}
+
+	@Test
+	public void coreD56_nestedUnbracedIfElseIsPrintedBackAsWritten() throws Exception {
+		assertPrintedBack("\t\tif (n > 0)\n\t\t\tif (n > 1) n = 1; else n = 2;\n\t\telse n = 3;\n");
 	}
 }

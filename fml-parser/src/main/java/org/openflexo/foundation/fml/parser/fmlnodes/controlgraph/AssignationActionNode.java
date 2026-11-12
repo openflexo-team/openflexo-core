@@ -44,6 +44,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
+import org.openflexo.foundation.fml.editionaction.AssignmentOperator;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -88,6 +89,18 @@ public class AssignationActionNode extends AssignableActionNode<PAssignmentState
 		// Left
 		returned.setAssignation((DataBinding) extractLeft(returned));
 
+		// Operator: = or a compound one such as += (CORE-D-7)
+		if (getOperator() != null) {
+			AssignmentOperator operator = AssignmentOperator.fromSymbol(getOperator().toString().trim());
+			if (operator != null) {
+				returned.setAssignmentOperator(operator);
+			}
+			else {
+				getSemanticsAnalyzer().throwIssue(returned, "Unknown assignment operator " + getOperator().toString().trim(),
+						getFragment(getOperator()), getStartPosition());
+			}
+		}
+
 		// Right
 		ControlGraphNode<?, ?> assignableActionNode = null;
 		if (astNode instanceof AExpressionAssignmentStatementExpression) {
@@ -120,7 +133,9 @@ public class AssignationActionNode extends AssignableActionNode<PAssignmentState
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(dynamicContents(() -> getModelObject().getAssignation().toString()), getLeftHandSideFragment());
-		append(dynamicContents(SPACE, () -> "="), getOperatorFragment());
+		append(dynamicContents(SPACE, () -> getModelObject().getAssignmentOperator() != null
+				? getModelObject().getAssignmentOperator().getSymbol()
+				: AssignmentOperator.ASSIGN.getSymbol()), getOperatorFragment());
 		append(childContents(SPACE, () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// append(staticContents(";"), getSemiFragment());
