@@ -80,6 +80,8 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	}
 
 	private List<FlexoConceptInstanceType> parentTypes;
+	// every parent declared, in order (parentTypes loses those attached)
+	private List<FlexoConceptInstanceType> declaredParentTypes;
 
 	@Override
 	public void finalizeDeserialization() {
@@ -112,6 +114,7 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 			return true;
 		}
 		boolean returned = true;
+		boolean someNotFound = false;
 		for (FlexoConceptInstanceType parentType : new ArrayList<>(parentTypes)) {
 			if (parentType != null && parentType.getFlexoConcept() != null) {
 				try {
@@ -125,11 +128,17 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 				if (reportUnresolved) {
 					throwIssue("Parent concept " + parentType.getSerializationRepresentation() + " not found", getSuperTypeListFragment());
 					parentTypes.remove(parentType);
+					someNotFound = true;
 				}
 				else {
 					returned = false;
 				}
 			}
+		}
+		if (someNotFound && declaredParentTypes != null) {
+			// A parent that does not resolve (an import of a unit that is not there) is kept by the concept, with the name written,
+			// beside the parents attached (CORE-D-62)
+			getModelObject().setParentFlexoConceptTypes(declaredParentTypes);
 		}
 		return returned;
 	}
@@ -138,12 +147,17 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
+		declaredParentTypes = new ArrayList<>();
 		for (PCompositeTident pCompositeTident : extractIdentifiers(superTypeList)) {
 			Type parentType = TypeFactory.makeType(pCompositeTident, getSemanticsAnalyzer().getTypingSpace());
 			// FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeTident),
 			// getFragment(pCompositeTident));
-			if (parentType instanceof FlexoConceptInstanceType) {
-				parentTypes.add((FlexoConceptInstanceType) parentType);
+			// a parent that does not resolve is kept as an unresolved concept type, reported when the parents are resolved (CORE-D-62)
+			FlexoConceptInstanceType conceptType = TypeFactory.asFlexoConceptInstanceType(parentType,
+					getSemanticsAnalyzer().getTypingSpace());
+			if (conceptType != null) {
+				parentTypes.add(conceptType);
+				declaredParentTypes.add(conceptType);
 			}
 			else {
 				throwIssue("Unexpected parent concept " + getText(pCompositeTident), getSuperTypeListFragment());

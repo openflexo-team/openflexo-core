@@ -119,7 +119,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		append(staticContents("", FMLKeywords.Concept.getKeyword(), SPACE), getConceptFragment(),"Concept");
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment(),"Name");
 
-		when(() -> getModelObject().getParentFlexoConcepts().size() > 0, "ParentConceptsDefinition")
+		when(() -> !getModelObject().getParentFlexoConceptTypes().isEmpty(), "ParentConceptsDefinition")
 				.thenAppend(staticContents(SPACE, FMLKeywords.Extends.getKeyword(), SPACE), getExtendsFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment());
 

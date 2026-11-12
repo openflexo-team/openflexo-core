@@ -1,11 +1,19 @@
 package org.openflexo.foundation.fml.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.openflexo.foundation.fml.parser.TestFMLReindent.parse;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.editionaction.DeclarationAction;
+import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
+import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 
 /**
@@ -68,5 +76,52 @@ public class TestCoreD58 {
 	public void aNewOfAnUnresolvedConceptIsKept() throws Exception {
 		// the expression was printed empty ('o = ;'), with no issue at all
 		check("\t\tUnknown o = new Unknown::ctor(1,\"a\");", "= new Unknown::ctor(1,\"a\");", "Unresolved concept Unknown");
+	}
+
+	private static <T> T statement(FMLCompilationUnit unit, Class<T> type) {
+		for (FMLControlGraph s : unit.getVirtualModel().getFlexoBehaviour("f").getControlGraph().getFlattenedSequence()) {
+			if (type.isInstance(s)) {
+				return type.cast(s);
+			}
+			if (s instanceof DeclarationAction && type.isInstance(((DeclarationAction<?>) s).getAssignableAction())) {
+				return type.cast(((DeclarationAction<?>) s).getAssignableAction());
+			}
+		}
+		return null;
+	}
+
+	/** The merge of the FML editor (updateWith): an unresolved type of the parsed unit is translated into the unit merged into */
+	private static void checkMerged(FlexoConceptInstanceType merged, FlexoConceptInstanceType ofParsedUnit, String name) {
+		assertEquals(name, merged.getConceptURI());
+		assertNotSame(ofParsedUnit, merged);
+	}
+
+	@Test
+	public void theEditorMergeTranslatesUnresolvedTypes() throws Exception {
+		String before = String.join("\n", //
+				"\t\tselect Unknown from (this);", //
+				"\t\tMatchingSet ms = begin match Unknown from (this);", //
+				"\t\tend match Unknown in (ms);");
+		FMLCompilationUnit existing = parseBody(before);
+		FMLCompilationUnit parsed = parseBody(before.replace("Unknown", "Other"));
+		existing.updateWith(parsed);
+		checkMerged(statement(existing, AbstractSelectFlexoConceptInstance.class).getType(),
+				statement(parsed, AbstractSelectFlexoConceptInstance.class).getType(), "Other");
+		checkMerged(statement(existing, InitiateMatching.class).getMatchedType(), statement(parsed, InitiateMatching.class).getMatchedType(),
+				"Other");
+		checkMerged(statement(existing, FinalizeMatching.class).getMatchedType(), statement(parsed, FinalizeMatching.class).getMatchedType(),
+				"Other");
+		String normalized = existing.getNormalizedFML();
+		assertTrue(normalized, normalized.contains("select Other from this;"));
+		assertTrue(normalized, normalized.contains("begin match Other from this;"));
+		assertTrue(normalized, normalized.contains("end match Other in ms;"));
+	}
+
+	@Test
+	public void theEditorMergeKeepsANewOfAnUnresolvedConcept() throws Exception {
+		FMLCompilationUnit existing = parseBody("\t\tObject o = new Unknown::ctor(1);");
+		existing.updateWith(parseBody("\t\tObject o = new Other::ctor(2);"));
+		String normalized = existing.getNormalizedFML();
+		assertTrue(normalized, normalized.contains("Object o = new Other::ctor(2);"));
 	}
 }

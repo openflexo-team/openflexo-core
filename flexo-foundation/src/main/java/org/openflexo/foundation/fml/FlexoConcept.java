@@ -2490,20 +2490,34 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 		}
 
+		/**
+		 * The parents as declared, in order: the name of a parent concept, or the name written for a parent that does not resolve
+		 * (CORE-D-62)
+		 */
 		@Override
 		public String getParentFlexoConceptsDeclaration() {
 			StringBuffer sb = new StringBuffer();
 			boolean isFirst = true;
-			for (FlexoConcept parent : getParentFlexoConcepts()) {
-				sb.append((isFirst ? "" : ",") + parent.getName());
+			for (FlexoConceptInstanceType parentType : getParentFlexoConceptTypes()) {
+				sb.append((isFirst ? "" : ",") + parentName(parentType));
 				isFirst = false;
 			}
 			return sb.toString();
 		}
 
+		private static String parentName(FlexoConceptInstanceType parentType) {
+			if (parentType.getFlexoConcept() != null) {
+				return parentType.getFlexoConcept().getName();
+			}
+			String uri = parentType.getConceptURI();
+			return uri != null && uri.contains("#") ? uri.substring(uri.lastIndexOf('#') + 1) : uri;
+		}
+
 		private List<FlexoConcept> parentFlexoConcepts = new ArrayList<>();
 
-		// Types of the parent concepts set by setParentFlexoConceptTypes() and not resolved yet
+		// The types of the parent concepts as declared, in order, while at least one of them is not resolved: set by
+		// setParentFlexoConceptTypes(), the resolved ones are already parents, the others are attached as soon as they resolve. A parent
+		// that never resolves (an import of a unit that is not there) stays here: it is printed back as written (CORE-D-62)
 		private List<FlexoConceptInstanceType> pendingParentTypes;
 		private boolean isResolvingParentTypes = false;
 
@@ -2517,6 +2531,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public List<FlexoConceptInstanceType> getParentFlexoConceptTypes() {
+			if (pendingParentTypes != null && !isResolvingParentTypes) {
+				resolvePendingParentTypes();
+			}
 			if (pendingParentTypes != null) {
 				return new ArrayList<>(pendingParentTypes);
 			}
@@ -2548,25 +2565,31 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Sets the parent concepts from {@link #pendingParentTypes} when all of them are resolved, otherwise waits for the next read
+		 * Attaches the parent concepts of {@link #pendingParentTypes} which resolve, in order; the others stay pending (the concept may
+		 * not be merged yet, or never resolve) and are tried again at the next read. A current parent is detached only when no declared
+		 * type designates it: a resolved type, or a pending one with its name (it may be resolvable again after a merge)
 		 */
 		private void resolvePendingParentTypes() {
 			isResolvingParentTypes = true;
 			try {
 				List<FlexoConcept> resolved = new ArrayList<>();
+				List<String> pendingNames = new ArrayList<>();
 				for (FlexoConceptInstanceType parentType : pendingParentTypes) {
 					if (!parentType.isResolved()) {
 						parentType.resolve();
 					}
-					if (parentType.getFlexoConcept() == null) {
-						// Not resolvable yet (the concept may not be merged yet): wait for the next read
-						return;
+					if (parentType.getFlexoConcept() != null) {
+						resolved.add(parentType.getFlexoConcept());
 					}
-					resolved.add(parentType.getFlexoConcept());
+					else {
+						pendingNames.add(parentName(parentType));
+					}
 				}
-				pendingParentTypes = null;
+				if (pendingNames.isEmpty()) {
+					pendingParentTypes = null;
+				}
 				for (FlexoConcept parent : new ArrayList<>(parentFlexoConcepts)) {
-					if (!resolved.contains(parent)) {
+					if (!resolved.contains(parent) && !pendingNames.contains(parent.getName())) {
 						removeFromParentFlexoConcepts(parent);
 					}
 				}

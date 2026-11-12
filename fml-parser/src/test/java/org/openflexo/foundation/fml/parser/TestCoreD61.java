@@ -83,4 +83,13 @@ public class TestCoreD61 {
 		assertEquals(Object.class, unit.getVirtualModel().getFlexoBehaviour("g").getDeclaredType());
 		assertTrue(unit.getNormalizedFML(), unit.getNormalizedFML().contains("public Object g()"));
 	}
+
+	@Test
+	public void theEditorMergeSetsADeclaredObject() throws Exception {
+		// the merge of the FML editor goes through updateDeclaredType, hence setDeclaredType
+		FMLCompilationUnit existing = unit("String o = \"a\";");
+		existing.updateWith(unit("Object o = 1;"));
+		assertEquals(Object.class, declaration(existing).getDeclaredType());
+		assertTrue(existing.getNormalizedFML(), existing.getNormalizedFML().contains("Object o = 1;"));
+	}
 }

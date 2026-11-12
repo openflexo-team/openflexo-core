@@ -1634,8 +1634,7 @@ A criterion prints the name written when its property is not resolved. All 32 `F
 again (`TestFMLReindent` no longer skips any). Tests: `TestCoreD58` (fml-parser).
 
 **Left out.**
-- `extends` of a concept that does not resolve is still dropped: the model holds the parents as `FlexoConcept` objects, not as
-  references by name (CORE-D-62).
+- `extends` of a concept that does not resolve: fixed separately (CORE-D-62).
 - `Object o = …` is printed with the type of the right-hand side, even when everything resolves: not this defect (CORE-D-61).
 - `MyVM _model with FMLRTVirtualModelInstanceModelSlot;` (MatchingVM) is dropped with `role_not_found`, whatever the type: an
   obsolete role syntax in the fixture (the current one is `with ModelInstance()`), not a defect.
@@ -1661,14 +1660,24 @@ type `Object` is kept (the analyzed type is not `Object` when it is set: tested)
 that moment would not be stored. `FlexoRole.getCardinality()` / `getCloningStrategy()`, `LogAction.getLogLevel()` and
 `AbstractCreateResource.getRelativePath()` fall back on a constant: setting that constant is not stored, with no visible effect.
 
-### CORE-D-62 — `extends` of a concept that does not resolve is dropped from the model  ·  `TODO`
+### CORE-D-62 — `extends` of a concept that does not resolve is dropped from the model  ·  `DONE`
 
 **Symptom.** `model M extends Unknown` (or a concept), where `Unknown` comes from an import that does not resolve: the semantic issue
-`Unexpected parent concept Unknown` is raised and the parent is dropped; the normalized pretty-print writes `model M {`.
+was raised and the parent dropped; the normalized pretty-print wrote `model M {`. With `extends A, Unknown`, only `A` was kept.
 
-**Mechanism — verified in the code.** `AbstractFlexoConceptNode.buildParentConcepts` keeps only `FlexoConceptInstanceType` parents,
-and the model holds the parents as `FlexoConcept` objects (`getParentFlexoConcepts()`): an unresolved parent has no object to hold.
-Keeping it needs a reference by name in the metamodel (as `FMLNamedReference`, CORE-F-8) — left out of CORE-D-58 for that reason.
+**Mechanism — verified in the code.** `AbstractFlexoConceptNode.buildParentConcepts` kept only `FlexoConceptInstanceType` parents (an
+`UnresolvedType` was dropped at once), `resolveParentConcepts` removed a parent it could not resolve after reporting it, and
+`extends` was printed from `getParentFlexoConcepts()`, which holds `FlexoConcept` objects only. The model already had what was needed:
+`parentFlexoConceptTypes` and its pending types (CORE-F-8), but resolved them all or nothing.
+
+**Fix (2026-11-12, plan agreed with the user; no new persistent property).**
+- The parser keeps every declared parent (an unresolved one as an unresolved concept type, `TypeFactory.asFlexoConceptInstanceType`),
+  still reports the one not found, and hands all of them to the concept (`setParentFlexoConceptTypes`).
+- `FlexoConcept` attaches the parents that resolve and keeps the others pending, in the order written, trying them again at each read;
+  a current parent is detached only when no declared type designates it.
+- `extends` is printed from `getParentFlexoConceptTypes()` (the name of a resolved parent, the name written otherwise).
+A parent whose unit appears later is attached at the next parse. Tests: `TestCoreD62` (fml-parser), including the merge of the FML
+editor (`updateWith`).
 
 ### CORE-D-60 — A role declared without `with` is printed `nameXwith ConceptInstance()`, which does not parse  ·  `DONE`
 
