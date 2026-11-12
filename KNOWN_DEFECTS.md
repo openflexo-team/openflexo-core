@@ -1637,22 +1637,25 @@ the 4 units whose normalized text does not parse, with a reference to this entry
 **Mechanism — not investigated.** Presumably each node building its model object gives up when `TypeFactory.makeType` returns an
 unresolved type, silently; whether a semantic issue is raised was not checked.
 
-### CORE-D-60 — A role declared without `with` is printed `nameXwith ConceptInstance()`, which does not parse  ·  `TODO`
+### CORE-D-60 — A role declared without `with` is printed `nameXwith ConceptInstance()`, which does not parse  ·  `DONE`
 
-**Symptom.** `public ConceptB myConceptB;` is printed back by `getFMLPrettyPrint()` (what the FML editor saves) as
+**Symptom.** `public ConceptB myConceptB;` was printed back by `getFMLPrettyPrint()` (what the FML editor saves) as
 `public ConceptB myConceptBwith ConceptInstance();`: the `with` clause added to the role (CORE-D-33) lost the space before it, and
-the text no longer parses (`ParseException: expecting: ';'`). Any unit holding a concept-typed role declared without `with` is
-saved unreadable.
+the text no longer parsed (`ParseException: expecting: ';'`). Any unit holding a concept-typed role declared without `with` was saved
+unreadable. `flexo-foundation-test` showed it: `TestBehaviourAvailability` (3 tests), `TestDerivedInspector.test4RoundTripsThroughTheFMLSource`,
+`TestRendererUpdateFromText` (2 tests).
 
-**Reproduction (verified 2026-11-12 by execution).** `flexo-foundation-test`: `TestBehaviourAvailability` (3 tests),
-`TestDerivedInspector.test4RoundTripsThroughTheFMLSource`, `TestRendererUpdateFromText` (2 tests) fail on it; the printed text of
-`TestResourceCenter/FML/TestDerivedInspector.fml` shows the three roles of its concepts written that way.
+**Mechanism — verified in the code and by execution (2026-11-12).** A regression of p2pp, commit `af3231a` (fix of P2PP-D-6): when the
+canonical postlude of a contents is whitespace that the source does not have, `PrettyPrintableContents.getPostludeFragment()` now
+returns an empty fragment (the source "chose" no separator, a layout to keep) instead of null. `FlexoRolePropertyNode` writes the name
+with postlude `" "` and then `with` with an empty prelude: `with` is inserted at the end of the name, postlude included, and the name
+no longer writes its space since its postlude counts as present.
 
-**Mechanism — not established.** `FlexoRolePropertyNode` writes the name with postlude `" "`, then `with` with no fragment in the
-source; the derived print inserts `with` right after the name without that postlude. The node has not changed since 2026-09-14; the
-derived print of p2pp was changed by the fixes of P2PP-D-1 to P2PP-D-14 (2026-11-11/12), the probable cause — not checked by running
-the tests against the previous p2pp. Not related to CORE-D-57/CORE-D-2, whose changes (end match, the `;` of a loop statement, `lookupClass`) do not touch
-roles; not checked by running these tests without them.
+**Fix (2026-11-12, p2pp).** A contents inserted right after a parsed one whose whitespace postlude the source wrote empty starts with
+that postlude (`PrettyPrintableContents.separatorMissingBeforeInsertion`, used by `StaticContents` and `DynamicContents`): only the
+first contents inserted, and not when the inserted text starts with whitespace. As long as nothing is inserted, the layout of the
+source is kept (P2PP-D-6 holds). Tests: `TestCoreD60` (fml-parser); the 6 tests above pass; p2pp-test, fml-cli-test and formod
+(b-ta-test, formod-test) unchanged.
 
 ### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `IN PROGRESS`
 
