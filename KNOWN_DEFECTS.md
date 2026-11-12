@@ -1574,6 +1574,40 @@ name. The `{fml}` form of the grammar has no slot for an initializer. Found by t
 
 **Workaround.** Do not give an initializer to a concept-typed property (it is lost anyway, `CORE-D-51`).
 
+### CORE-D-57 — The normalized pretty-print of some units loses expressions and does not parse again  ·  `TODO`
+
+**Symptom.** `getNormalizedFML()` (the text built from the model alone, used for objects created from scratch) drops parts of
+statements on 5 of the 32 `FMLParsingExamples` units, and the text it gives cannot be parsed again:
+- the collection of a `for` is lost: `for (Concept _concept : ) {` (MatchingVM, PathologicCase);
+- the right side of an assignment is lost: `myModel =;` (TestAddVirtualModelInstance);
+- the concept of a `begin match` is printed `null`: `begin match null from this;` (PathologicCase, TestMatch);
+- TestNamespaces: parsing the normalized text throws `NullPointerException: … "rawClass" is null`.
+
+The text printed from the parsed source (`getFMLPrettyPrint()`) is not affected: it keeps the source.
+
+**Reproduction (verified 2026-11-12 by execution, `TestFMLReindent.aNormalizedPrettyPrintIsAFixedPoint` in fml-parser, which
+skips these 5 units with a reference to this entry).** Parse the unit, take `getNormalizedFML()`, parse it.
+
+**Mechanism — not investigated.** Presumably the normalized branch of the nodes concerned (iteration, assignment, initiate-matching)
+reads a value the model does not hold in that form; not checked in the code.
+
+**Impact.** An object created by a model action (not parsed) whose rendering takes this path would be saved as invalid FML.
+
+### CORE-D-58 — The body of a behaviour selecting a type of an unresolved import is dropped from the model  ·  `TODO`
+
+**Symptom.** In `FMLParsingExamples/TestSelect.fml`, which imports `http://some_uri/AnOtherModel.fml` (no such unit), the
+behaviours `testSelectExternalVirtualModel()` and `testSelectExternalFlexoConcept()` (`select AnOtherModel from (…)`,
+`select AnOtherModel$AConcept from (…)`) have no body in the model: the normalized pretty-print writes them
+`testSelectExternalVirtualModel();`, and the node tree holds no node for the statement nor for the closing brace. The text printed
+from the source keeps the body (it is not touched), so the loss shows only from the model: a validation, an execution, a rendering
+from scratch.
+
+**Reproduction (verified 2026-11-12 by execution).** Parse `TestSelect.fml`, look at `getNormalizedFML()`. Found by
+`Reindenter.explain(…)` (P2PP-F-1), which reports these rows as text that no node describes.
+
+**Mechanism — not investigated.** Presumably a statement whose type does not resolve produces no control graph, silently; whether
+a semantic issue is raised was not checked.
+
 ### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `IN PROGRESS`
 
 **Symptom.** At the start of formod-app, about 135 warnings: `Unresolved type: DefaultDataType | DomainModel | DocumentAnnotationMethodology` (32), `Preventing StackOverflow while loading resource CompilationUnitResource…/BMethodology | DomainModelMethodology | DomainModel | DocumentAnnotationMethodology` (32), `DataBinding … still invalid at the end of process, reason: BindingVariable X does not exist` (70, X being a constant imported from a diagram specification: `C_CONTAINER`, `GOAL_DIAGRAM`…, or `unresolved path element new DefaultDataType(…)`).
