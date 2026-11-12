@@ -52,4 +52,35 @@ public class TestFMLReindentCases {
 				"}", "");
 		assertEquals(show(expected), show(reindent(parse(source))));
 	}
+
+	@Test
+	public void anExpressionOnSeveralRowsIsOneTokenLeftAsItIs() throws Exception {
+		// a call in a statement is a single expression token: its following rows are inside a token spanning several rows, left as they are
+		// (the leading whitespace of a string literal is meaningful)
+		String source = String.join("\n", //
+				"@URI(\"http://openflexo.org/test/ReindentArguments.fml\")", //
+				"public model TestReindentArguments {", //
+				"public void b(Boolean x, Boolean y) {", //
+				"}", //
+				"public void a(Boolean c) {", //
+				"b(parameters.c,", //
+				"parameters.c);", //
+				"b(", //
+				"parameters.c, parameters.c);", //
+				"}", //
+				"}", "");
+		String expected = String.join("\n", //
+				"@URI(\"http://openflexo.org/test/ReindentArguments.fml\")", //
+				"public model TestReindentArguments {", //
+				"\tpublic void b(Boolean x, Boolean y) {", //
+				"\t}", //
+				"\tpublic void a(Boolean c) {", //
+				"\t\tb(parameters.c,", //
+				"parameters.c);", //
+				"\t\tb(", //
+				"parameters.c, parameters.c);", //
+				"\t}", //
+				"}", "");
+		assertEquals(show(expected), show(reindent(parse(source))));
+	}
 }
