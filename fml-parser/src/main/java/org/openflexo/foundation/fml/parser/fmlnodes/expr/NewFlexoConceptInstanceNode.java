@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.fml.FMLPropertyValue;
@@ -203,6 +204,12 @@ public class NewFlexoConceptInstanceNode extends AbstractNewFlexoConceptInstance
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
 				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(),
 						getSemanticsAnalyzer().getTypingSpace());
+				if (type instanceof UnresolvedType) {
+					// a concept that does not resolve: kept, with the name written (CORE-D-58)
+					throwIssue("Unresolved concept " + ((UnresolvedType) type).getUnresolvedTypeName(),
+							getFragment(((AFullQualifiedNewInstance) astNode).getConceptName()));
+					type = TypeFactory.asFlexoConceptInstanceType(type, getSemanticsAnalyzer().getTypingSpace());
+				}
 				pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type, getParentPathElement(),
 						((AFullQualifiedNewInstance) astNode).getConstructorName().getText(), getArguments(), getBindable());
 			}

@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.DeletionScheme;
@@ -184,11 +185,11 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		FinalizeMatching returned = getFactory().newFinalizeMatching();
 
 		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
-		if (type instanceof FlexoConceptInstanceType) {
-			conceptType = (FlexoConceptInstanceType) type;
-			returned.setMatchedType((FlexoConceptInstanceType) type);
+		conceptType = TypeFactory.asFlexoConceptInstanceType(type, getSemanticsAnalyzer().getTypingSpace());
+		if (conceptType != null) {
+			returned.setMatchedType(conceptType);
 		}
-		else {
+		if (conceptType == null || type instanceof UnresolvedType) {
 			throwIssue("Unexpected matched type " + getText(astNode.getConceptName()), getConceptNameFragment());
 		}
 

@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -94,10 +95,11 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		// getFragment(astNode.getConceptName()));
 
 		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
-		if (type instanceof FlexoConceptInstanceType) {
-			returned.setMatchedType((FlexoConceptInstanceType) type);
+		FlexoConceptInstanceType conceptType = TypeFactory.asFlexoConceptInstanceType(type, getSemanticsAnalyzer().getTypingSpace());
+		if (conceptType != null) {
+			returned.setMatchedType(conceptType);
 		}
-		else {
+		if (conceptType == null || type instanceof UnresolvedType) {
 			throwIssue("Unexpected matched type " + getText(astNode.getConceptName()), getConceptNameFragment());
 		}
 

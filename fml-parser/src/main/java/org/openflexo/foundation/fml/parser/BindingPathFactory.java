@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.binding.BindingPathElement;
@@ -527,6 +528,11 @@ public class BindingPathFactory {
 		// System.out.println("Found type " + type + " of " + type.getClass());
 
 		final IBindingPathElement parent = retrieveActualParent();
+
+		// 'new X::ctor(...)' names a concept: one that does not resolve is kept as an unresolved concept (CORE-D-58), the node reports it
+		if (type instanceof UnresolvedType) {
+			type = TypeFactory.asFlexoConceptInstanceType(type, expressionFactory.getTypingSpace());
+		}
 
 		if (type instanceof VirtualModelInstanceType) {
 			NewVirtualModelInstanceNode pathElementNode = expressionFactory.retrieveFMLNode(node,

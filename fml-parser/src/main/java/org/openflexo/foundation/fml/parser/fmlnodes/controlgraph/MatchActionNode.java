@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FMLKeywords;
@@ -148,11 +149,11 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		MatchFlexoConceptInstance returned = getFactory().newMatchFlexoConceptInstance();
 
 		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
-		if (type instanceof FlexoConceptInstanceType) {
-			conceptType = (FlexoConceptInstanceType) type;
-			returned.setMatchedType((FlexoConceptInstanceType) type);
+		conceptType = TypeFactory.asFlexoConceptInstanceType(type, getSemanticsAnalyzer().getTypingSpace());
+		if (conceptType != null) {
+			returned.setMatchedType(conceptType);
 		}
-		else {
+		if (conceptType == null || type instanceof UnresolvedType) {
 			throwIssue("Unexpected matched type " + getText(astNode.getConceptName()), getConceptNameFragment());
 		}
 		if (astNode.getInClause() instanceof AInClause) {
@@ -258,6 +259,20 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		return null;
 	}
 
+	/**
+	 * The name of the property of a criterion: the one of the property when resolved, else the name written (the matched concept may
+	 * not resolve, CORE-D-58)
+	 */
+	private static String criteriaName(MatchingCriteria matchingCriteria) {
+		if (matchingCriteria.getFlexoProperty() != null) {
+			return matchingCriteria.getFlexoProperty().getName();
+		}
+		if (matchingCriteria.getPropertyReference() != null && matchingCriteria.getPropertyReference().getName() != null) {
+			return matchingCriteria.getPropertyReference().getName();
+		}
+		return "?";
+	}
+
 	private String getWhereAsString() {
 		if (getModelObject() != null) {
 			StringBuffer sb = new StringBuffer();
@@ -265,7 +280,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 			for (MatchingCriteria matchingCriteria : getModelObject().getMatchingCriterias()) {
 				if (matchingCriteria.getValue().isSet()) {
 					sb.append((isFirst ? "" : ",")
-							+ (matchingCriteria.getFlexoProperty() != null ? matchingCriteria.getFlexoProperty().getName() : "?") + "="
+							+ criteriaName(matchingCriteria) + "="
 							+ matchingCriteria.getValue());
 					isFirst = false;
 				}

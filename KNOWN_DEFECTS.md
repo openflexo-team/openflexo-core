@@ -1612,30 +1612,53 @@ the printer and the parser, and a family that is CORE-D-58:
 
 Tests: `TestCoreD57` (fml-parser). The 4 units still skipped by `TestFMLReindent` are CORE-D-58.
 
-### CORE-D-58 — What refers to a type that does not resolve is dropped from the model  ·  `TODO`
+### CORE-D-58 — What refers to a type that does not resolve is dropped from the model  ·  `DONE`
 
-**Symptom.** When a reference does not resolve (an import of a unit that does not exist, a technology adapter that is not there), the
-objects referring to it are not built, or built incomplete, and the model silently loses them. The text printed from the source keeps
-them (it is not touched), so the loss shows only from the model: a validation, an execution, a rendering from scratch, the normalized
-pretty-print. Seen in `FMLParsingExamples` (verified 2026-11-12 by execution):
-- `TestSelect.fml` (import `http://some_uri/AnOtherModel.fml`): the bodies of `testSelectExternalVirtualModel()` and
-  `testSelectExternalFlexoConcept()` (`select AnOtherModel from (…)`, `select AnOtherModel$AConcept from (…)`) are gone: the normalized
-  pretty-print writes `testSelectExternalVirtualModel();`, and the node tree holds no node for the statement nor for the closing brace;
-- `MatchingVM.fml` (`MyVM` from an unresolved import): the role `MyVM _model with FMLRTVirtualModelInstanceModelSlot;` is dropped,
-  and the collection of `for (Concept _concept : select Concept from (_model))` is printed empty;
-- `TestAddVirtualModelInstance.fml`: `new MyVM::constructor1(1,"foo") with (name="tutu")` is printed empty (`myModel =;`),
-  `with (name=…)` is dropped, `this.new MyVM()` becomes `this.new MyVM(null,null,null,null)`, `this.new MyVM::constructor1(…)` becomes
-  `this`;
-- `PathologicCase.fml`, `TestMatch.fml` (concepts that do not resolve): `begin match null`, `match null`, `where (?=conceptA)`;
-- `TestNamespaces.fml`: `extends AnOtherModel,AThirdModel` is dropped.
-The same constructs with references that resolve are printed and parsed again correctly (CORE-D-57).
+**Symptom.** When a concept referred to does not resolve (an import of a unit that does not exist), the parser raised a semantic issue
+and then dropped the object referring to it, so that the model lost it while the text printed from the source kept it. Seen in
+`FMLParsingExamples` (verified 2026-11-12 by execution): the whole body of a behaviour holding `select AnOtherModel from (…)`
+(TestSelect, printed `testSelectExternalVirtualModel();`), the collection of `for (Concept c : select Concept from (_model))`,
+`new MyVM::constructor1(1,"foo") with (…)` printed empty (`myModel =;`, with NO issue), `begin match null`, `match null`,
+`where (?=conceptA)`.
 
-**Reproduction.** Parse one of these units, look at `getNormalizedFML()`. `TestFMLReindent.aNormalizedPrettyPrintIsAFixedPoint` skips
-the 4 units whose normalized text does not parse, with a reference to this entry. Found by
-`Reindenter.explain(…)` (P2PP-F-1), which reports the lost rows of TestSelect as text that no node describes.
+**Mechanism — verified in the code.** A type name that does not resolve becomes a connie `UnresolvedType`. Each node expecting a
+concept tested `type instanceof FlexoConceptInstanceType` and gave up otherwise: `FetchRequestNode` (no select built, hence no
+statement), `BeginMatchActionNode`, `MatchActionNode`, `EndMatchActionNode` (no matched type), `BindingPathFactory` for
+`new X::ctor(...)` (no path element, an empty expression). `MatchActionNode` printed `?` for the property of a criterion that the
+unresolved concept could not resolve, although the model keeps its name.
 
-**Mechanism — not investigated.** Presumably each node building its model object gives up when `TypeFactory.makeType` returns an
-unresolved type, silently; whether a semantic issue is raised was not checked.
+**Fix (2026-11-12, decided with the user: keep the object, typed by an unresolved type).** `TypeFactory.asFlexoConceptInstanceType`
+turns an `UnresolvedType` into an unresolved `FlexoConceptInstanceType` keeping the name written, as
+`makeVirtualModelInstanceType` already did for virtual models; the nodes above use it, still raise their issue, and build the object.
+A criterion prints the name written when its property is not resolved. All 32 `FMLParsingExamples` print a normalized text that parses
+again (`TestFMLReindent` no longer skips any). Tests: `TestCoreD58` (fml-parser).
+
+**Left out.**
+- `extends` of a concept that does not resolve is still dropped: the model holds the parents as `FlexoConcept` objects, not as
+  references by name (CORE-D-62).
+- `Object o = …` is printed with the type of the right-hand side, even when everything resolves: not this defect (CORE-D-61).
+- `MyVM _model with FMLRTVirtualModelInstanceModelSlot;` (MatchingVM) is dropped with `role_not_found`, whatever the type: an
+  obsolete role syntax in the fixture (the current one is `with ModelInstance()`), not a defect.
+
+### CORE-D-61 — The declared type `Object` of a local variable is printed as the type of its value  ·  `TODO`
+
+**Symptom.** In the normalized pretty-print (`getNormalizedFML()`), `Object o = 1;` is printed `long o = 1;` and
+`Object o = select Item from (this);` is printed `List<Item> o = …;`, even when everything resolves. `String o = "a";` is kept.
+
+**Reproduction (verified 2026-11-12 by execution).** Parse a behaviour holding such a declaration, look at `getNormalizedFML()`.
+
+**Mechanism — not established.** `DeclarationActionNode` prints `getModelObject().getType()`, which is the declared type when one is
+stored and the analyzed type of the right-hand side otherwise (`DeclarationAction.getDeclaredType()`): the declared `Object` does not
+seem to be stored, or not as `Object`. Not checked further.
+
+### CORE-D-62 — `extends` of a concept that does not resolve is dropped from the model  ·  `TODO`
+
+**Symptom.** `model M extends Unknown` (or a concept), where `Unknown` comes from an import that does not resolve: the semantic issue
+`Unexpected parent concept Unknown` is raised and the parent is dropped; the normalized pretty-print writes `model M {`.
+
+**Mechanism — verified in the code.** `AbstractFlexoConceptNode.buildParentConcepts` keeps only `FlexoConceptInstanceType` parents,
+and the model holds the parents as `FlexoConcept` objects (`getParentFlexoConcepts()`): an unresolved parent has no object to hold.
+Keeping it needs a reference by name in the metamodel (as `FMLNamedReference`, CORE-F-8) — left out of CORE-D-58 for that reason.
 
 ### CORE-D-60 — A role declared without `with` is printed `nameXwith ConceptInstance()`, which does not parse  ·  `DONE`
 

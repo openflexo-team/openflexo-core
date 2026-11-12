@@ -58,6 +58,7 @@ import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.type.WildcardTypeImpl.DefaultWildcardType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
@@ -150,6 +151,25 @@ public class TypeFactory extends DepthFirstAdapter {
 					fmlTechnologyAdapter.getVirtualModelInstanceTypeFactory());
 		}
 		logger.warning("Unexpected type: " + type);
+		return null;
+	}
+
+	/**
+	 * The concept type of a place where only a concept is expected (a select, a match, a new with a creation scheme): a type that does
+	 * not resolve (an import of a unit that is not there) becomes an unresolved {@link FlexoConceptInstanceType} keeping the name
+	 * written, so that what refers to it is kept in the model and printed back as written (CORE-D-58); the caller reports it. Null
+	 * for a type that is neither.
+	 */
+	public static FlexoConceptInstanceType asFlexoConceptInstanceType(Type type, AbstractFMLTypingSpace typingSpace) {
+		if (type instanceof FlexoConceptInstanceType) {
+			return (FlexoConceptInstanceType) type;
+		}
+		if (type instanceof UnresolvedType && typingSpace != null && typingSpace.getServiceManager() != null) {
+			FMLTechnologyAdapter fmlTechnologyAdapter = typingSpace.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLTechnologyAdapter.class);
+			return new FlexoConceptInstanceType(((UnresolvedType) type).getUnresolvedTypeName(),
+					fmlTechnologyAdapter.getFlexoConceptInstanceTypeFactory());
+		}
 		return null;
 	}
 

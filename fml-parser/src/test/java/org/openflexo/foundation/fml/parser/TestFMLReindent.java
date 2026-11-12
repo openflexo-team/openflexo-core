@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,8 +33,8 @@ import org.openflexo.rm.Resources;
  * <ul>
  * <li>only the leading whitespace of rows changes;</li>
  * <li>the result parses to the same model (same normalized pretty-print), and re-indenting it again changes nothing;</li>
- * <li>a normalized pretty-print is a fixed point: the indentation declared by the FML nodes is the one the structure gives (skipped
- * when that pretty-print does not parse again, CORE-D-58).</li>
+ * <li>a normalized pretty-print parses again and is a fixed point: the indentation declared by the FML nodes is the one the structure
+ * gives.</li>
  * </ul>
  */
 @RunWith(Parameterized.class)
@@ -101,15 +100,8 @@ public class TestFMLReindent {
 	@Test
 	public void aNormalizedPrettyPrintIsAFixedPoint() throws Exception {
 		String normalized = parse(source()).getNormalizedFML();
-		FMLCompilationUnit reparsed;
-		try {
-			reparsed = parse(normalized);
-		} catch (Exception e) {
-			// CORE-D-58: the normalized pretty-print of a unit whose references do not resolve does not parse again
-			Assume.assumeNoException("CORE-D-58: the normalized pretty-print of " + name + " does not parse", e);
-			return;
-		}
-		assertEquals(name, show(normalized), show(reindent(reparsed)));
+		// the normalized pretty-print parses again (CORE-D-57, CORE-D-58)
+		assertEquals(name, show(normalized), show(reindent(parse(normalized))));
 	}
 
 	@BeforeClass

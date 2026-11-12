@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.ProxyType;
@@ -110,6 +111,13 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		else if (selectedType instanceof AFmlSelectType) {
 			type = TypeFactory.makeType((((AFmlSelectType) selectedType).getTechnologySpecificType()),
 					getSemanticsAnalyzer().getTypingSpace());
+		}
+
+		if (type instanceof UnresolvedType && selectedType instanceof ANormalSelectType) {
+			// A concept that does not resolve (an import of a unit that is not there): the select is kept, typed by an unresolved
+			// concept type keeping the name written (CORE-D-58)
+			throwIssue("Unresolved type " + ((UnresolvedType) type).getUnresolvedTypeName(), getFragment(selectedType));
+			type = TypeFactory.asFlexoConceptInstanceType(type, getSemanticsAnalyzer().getTypingSpace());
 		}
 
 		if (type instanceof VirtualModelInstanceType) {
