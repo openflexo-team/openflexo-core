@@ -398,6 +398,10 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 
 		@Override
 		public synchronized void setIsModified() {
+			if (ignoreNotifications()) {
+				// runWithoutMarkingModified(): the owner is not modified either
+				return;
+			}
 			super.setIsModified();
 			if (getOwner() != null) {
 				getOwner().setIsModified();

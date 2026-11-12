@@ -472,6 +472,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 		@Override
 		public synchronized void setIsModified() {
+			if (ignoreNotifications()) {
+				// runWithoutMarkingModified(): linking a pretty-print node is not an edition, notify nobody (it looped with the FML
+				// editor, which prints again on "FMLPrettyPrint")
+				return;
+			}
 			super.setIsModified();
 			getPropertyChangeSupport().firePropertyChange("FMLPrettyPrint", false, true);
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", false, true);

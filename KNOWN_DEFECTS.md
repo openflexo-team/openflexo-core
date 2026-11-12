@@ -1608,6 +1608,24 @@ from scratch.
 **Mechanism — not investigated.** Presumably a statement whose type does not resolve produces no control graph, silently; whether
 a semantic issue is raised was not checked.
 
+### CORE-D-59 — Creating a concept in the Free Modelling Editor freezes the application (print / notify loop)  ·  `DONE`
+
+**Symptom.** Creating a concept in the FME: the application freezes, `StackOverflowError` dialogs come one after another
+(`Openflexo.err.log` grew to 37 MB).
+
+**Cause — verified by execution (live thread dumps and log of 2026-11-12, then `TestPrintNewConceptNotifiesNothing`).** The FML
+editor prints the unit again, synchronously on the EDT, on each `FMLPrettyPrint` notification. The new concept was never parsed:
+it is printed normalized, and the empty body of its behaviour gets a new `EmptyControlGraphNode` at each print. Linking that node
+goes through `runWithoutMarkingModified()` (CORE-D-45), which silenced the object itself only: `FMLControlGraph.setIsModified()`
+still marked its owner, and `FMLObject.setIsModified()` fired `FMLPrettyPrint` even while notifications were ignored. The unit
+notified the editor, which printed again, and so on.
+
+**Fix.** `FMLObject.setIsModified()` and `FMLControlGraph.setIsModified()` do nothing while the object ignores notifications; the
+FML editor ignores a request to update its text made while it is updating it (openflexo-ui). Test: `TestPrintNewConceptNotifiesNothing`
+(fml-parser), which fails without the fix (two `FMLPrettyPrint` fired by the unit while printing).
+
+**Left.** A new node is still built at each print of an object that was never parsed (the cost, not the loop).
+
 ### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `IN PROGRESS`
 
 **Symptom.** At the start of formod-app, about 135 warnings: `Unresolved type: DefaultDataType | DomainModel | DocumentAnnotationMethodology` (32), `Preventing StackOverflow while loading resource CompilationUnitResource…/BMethodology | DomainModelMethodology | DomainModel | DocumentAnnotationMethodology` (32), `DataBinding … still invalid at the end of process, reason: BindingVariable X does not exist` (70, X being a constant imported from a diagram specification: `C_CONTAINER`, `GOAL_DIAGRAM`…, or `unresolved path element new DefaultDataType(…)`).
