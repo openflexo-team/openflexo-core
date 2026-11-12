@@ -1,0 +1,32 @@
+# Files of TestFMLPrettyPrintInvariants whose untouched source is not reproduced, as: file  defects (KNOWN_DEFECTS.md of openflexo-core).
+# They fail like any other test, unless the run tolerates the known defects (-Dp2pp.tolerateKnownDefects=true, the default of this module):
+# they then must fail, and the test asks to remove the row when they do not. Only the first difference of a file is classified: others may
+# hide behind it. Java imports are not compared (the parser adds the ones that the types need, which is intended).
+FMLParsingExamples/BasicDeclaration.fml                  CORE-D-63
+FMLParsingExamples/MatchingVM.fml                        CORE-D-65
+FMLParsingExamples/PathologicCase.fml                    CORE-D-33
+FMLParsingExamples/TestAddFlexoConceptInstance.fml       CORE-D-33
+FMLParsingExamples/TestAddVirtualModelInstance.fml       CORE-D-64, CORE-D-66
+FMLParsingExamples/TestAnonymousCreationScheme.fml       CORE-D-33
+FMLParsingExamples/TestAssignations.fml                  CORE-D-33
+FMLParsingExamples/TestBasicTypes.fml                    CORE-D-33
+FMLParsingExamples/TestBehaviours2.fml                   CORE-D-65
+FMLParsingExamples/TestBindingPath.fml                   CORE-D-33
+FMLParsingExamples/TestExpression.fml                    CORE-D-33
+FMLParsingExamples/TestExpressions.fml                   CORE-D-33
+FMLParsingExamples/TestImports.fml                       CORE-D-33
+FMLParsingExamples/TestInvariants.fml                    CORE-D-33
+FMLParsingExamples/TestMatch.fml                         CORE-D-63
+FMLParsingExamples/TestMiscellaneousActions.fml          CORE-D-65
+FMLParsingExamples/TestNamespaces.fml                    CORE-D-63
+FMLParsingExamples/TestProperties.fml                    CORE-D-33
+FMLParsingExamples/TestSelect.fml                        CORE-D-33
+FMLParsingExamples/TestStatements.fml                    CORE-D-33
+FMLParsingExamples/TestTypeVersions.fml                  CORE-D-33
+FMLParsingExamples/TestTypes.fml                         CORE-D-33
+FMLParsingExamples/TestUseOfKeywordsInBindings.fml       CORE-D-33
+FMLParsingExamples/UIAnnotations.fml                     CORE-D-63
+TestFMLPrettyPrint2/TestBasicTypesWithComments.fml       CORE-D-33
+TestFMLPrettyPrint5/InitialModel.fml                     CORE-D-33
+TestFMLPrettyPrint8/InitialModel.fml                     CORE-D-33
+TestFMLPrettyPrint8/Step1Normalized.fml                  CORE-D-33

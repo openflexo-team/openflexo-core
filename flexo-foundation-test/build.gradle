@@ -8,4 +8,38 @@ dependencies {
   // testing dep
 //  testCompile testUtils()
   testImplementation project(':flexo-test-resources')
+
+  // Test harness of p2pp: the pretty-print of FML is checked with its invariants (see TestFMLPrettyPrintInvariants)
+  testImplementation p2ppTest()
+}
+
+// Known differences of the FML pretty-print, as the p2pp test harness sees them (see KnownDefects in p2pp-test): they are TOLERATED here by
+// default, until they are looked at (CORE-D-33, CORE-D-63 to CORE-D-66), and the summary below says which ones the run waits for.
+// './gradlew :flexo-foundation-test:test -Dp2pp.tolerateKnownDefects=false' makes the tests that show one fail.
+def knownDefectsFile = layout.buildDirectory.file('known-defects.txt')
+
+tasks.withType(Test).configureEach {
+  // tolerated unless the command line says otherwise (the property is passed to the test JVM as it is when given with -D)
+  if (System.getProperty('p2pp.tolerateKnownDefects') == null) {
+    jvmArgs '-Dp2pp.tolerateKnownDefects=true'
+  }
+  systemProperty 'p2pp.knownDefectsFile', knownDefectsFile.get().asFile.path
+  doFirst {
+    knownDefectsFile.get().asFile.delete()
+  }
+  doLast {
+    def report = knownDefectsFile.get().asFile
+    if (report.exists()) {
+      def byDefect = new TreeMap({ a, b -> (a.replaceAll('\\D', '') as int) <=> (b.replaceAll('\\D', '') as int) } as Comparator)
+      report.eachLine { row ->
+        def parts = row.split('\t')
+        if (parts.length == 2) {
+          byDefect.computeIfAbsent(parts[0]) { new TreeSet() }.add(parts[1])
+        }
+      }
+      println ''
+      println "Known p2pp defects waited for by this run: ${byDefect.size()} defects"
+      byDefect.each { id, tests -> println "  ${id.padRight(10)} ${tests.size()} test(s)" }
+    }
+  }
 }

@@ -1557,7 +1557,7 @@ Mapped on `formod-app` (583 warnings at the start of the application, 4 of them 
 ### CORE-D-33 — The text rebuilt from the model is not the text that was parsed  ·  `TODO`
 
 **Symptom.** `FMLCompilationUnit.getFMLPrettyPrint()` — what the FML editor of the Modeller shows and saves — differs from the source file on the 10 Formose units compared (2026-10-09). With the whitespace, the comments and the `java.lang.String` imports left out, the differences measured are:
-- **Imports added**: `import java.lang.String;` (and `ExcelCell`, `FlexoEnumInstance` once) appears where the source has none.
+- **Imports added**: `import java.lang.String;` (and `ExcelCell`, `FlexoEnumInstance` once) appears where the source has none. **Intended behaviour, not a defect** (confirmed 2026-11-12): the parser adds the imports that the types of a unit need. The p2pp tests do not compare Java imports.
 - **Arguments reformatted**: the space after a comma is dropped (`createRequirement(a,b)`) and wrapped lines are joined into one very long line.
 - **Parentheses**: `in (container.diagram)` is written `in container.diagram` (123 times in `DomainModelDiagram`), and an extra pair appears around two string concatenations.
 - **`with ConceptInstance()` added** to a role declared without it (`Requirement requirement;` in an event of `FormoseCore`; 4 times in `SysMLKaosModel`). Whether this is neutral (it is the default role of a concept-typed property) was NOT verified.
@@ -1565,9 +1565,16 @@ Mapped on `formod-app` (583 warnings at the start of the application, 4 of them 
 
 **Not a defect, measured:** `@Renderer("x")` is written `@Renderer(x)`. The source was wrong, the printer is right (FORMOD-D-7).
 
-**Impact.** Saving a unit from the Modeller rewrites it entirely (large diffs, noise in review). No loss of meaning was found once CORE-D-31 was fixed (every `B::` and `XLS::` action of `BMethodology` and `GoalModelingDiagram` is printed, 40/40 and 10/10), but the neutrality of `with ConceptInstance()` and of the added imports is not proven.
+**Impact.** Saving a unit from the Modeller rewrites it entirely (large diffs, noise in review). No loss of meaning was found once CORE-D-31 was fixed (every `B::` and `XLS::` action of `BMethodology` and `GoalModelingDiagram` is printed, 40/40 and 10/10), but the neutrality of `with ConceptInstance()` is not proven (the added imports are intended).
 
 **To decide.** Whether the printer must give back the parsed text for what the user did not edit, or only normalise; a round-trip test (print, parse again, compare the models) over the units of the test resource center would settle the neutrality.
+
+**Measured again by the p2pp harness (2026-11-12).** `TestFMLPrettyPrintInvariants` (`flexo-foundation-test`) checks that the preserving
+pretty-print of an UNTOUCHED source is that source, on the 103 FML files of `FMLParsingExamples` and of the `TestFMLPrettyPrintN`
+directories: **28 differ**, Java imports not compared (the added imports are intended). Besides the families above, the expressions are written again from the model: `1+2` becomes `1 + 2`, `i>0` becomes
+`i > 0`, `a+b*c-9` becomes `a + b * c - 9`, `ns+"x"` becomes `ns + "x"`, parentheses go (`assert (i != -1)`, `from (this)`), and a qualified type
+is shortened (`java.lang.String aString` becomes `String aString`). The files and their family are in
+`flexo-foundation-test/src/test/resources/fml-invariants-known-defects.txt`. Four more differences are not cosmetic, see CORE-D-63 to CORE-D-66.
 
 ### CORE-D-52 — The text printed for a concept-typed property with an initializer does not parse again  ·  `TODO`
 
@@ -1757,3 +1764,33 @@ After the fix: `xml-ta-test` 8 -> 0, `formod-test` 574 -> 1 (then 0, see below),
 **Blast radius, read in the code.** The only implementations of `getObjectIdentifier` in the workspace are `PamelaResourceImpl` (the `FlexoID`), `EMFModelResourceImpl` / `EMFMetaModelResourceImpl` (`EcoreUtil.getID`) and `BResourceImpl` (the path of the B object). The first three are stable, so the refresh is a no-op for them; the B one is what needed it.
 
 **Tests.** No test in `openflexo-core`: the defect needs a resource whose identifiers depend on the place of the object, which only the B technology adapter has. It is guarded by `TestBMethology.testReloadProject` in `formod`, red before this change. Non-regression here: `flexo-foundation-test` 525 (520 successes, 5 skipped), `fml-cli-test` 99/99.
+
+
+## Found by the p2pp harness on the FML parsing examples (2026-11-12)
+
+Measured by `TestFMLPrettyPrintInvariants` (`flexo-foundation-test`), by execution, on the files of `FMLParsingExamples`. The mechanism of
+each is NOT investigated. The harness reports only the first difference of a file: another defect may hide behind it.
+
+### CORE-D-63 — A `use` of a class that does not resolve is rewritten as the generic `ModelSlot`  ·  `TODO`
+
+**Symptom.** `use some.package.name.AModelSlot as MS;` is printed `use org.openflexo.foundation.technologyadapter.ModelSlot as MS;`, in the
+preserving and in the normalized pretty-print. What the source said is lost. Files: `BasicDeclaration`, `TestNamespaces`, `UIAnnotations`,
+`TestMatch` (`FMLParsingExamples`). Same family as CORE-D-58 (what refers to a type that does not resolve is dropped), for the `use` declaration.
+
+### CORE-D-64 — The `with (...)` of a `new X()` without a constructor name is lost  ·  `TODO`
+
+**Symptom.** `myModel = new MyVM() with (name="toto");` is printed `myModel = new MyVM();`, in the preserving and in the normalized pretty-print:
+the assignment of `name` is not in the model. The same clause is kept after `new MyVM::constructor1(1,"foo")` (`with (name="tutu")`).
+File: `TestAddVirtualModelInstance` (`FMLParsingExamples`).
+
+### CORE-D-65 — `log("x")` is printed `log"x"` by the preserving pretty-print  ·  `TODO`
+
+**Symptom.** `log("Hello world!");` is printed `log"Hello world!";` by the preserving pretty-print and `log "Hello world!";` by the normalized one;
+the source has parentheses and no such spacing. Not checked: whether `log"x"` parses again. Files: `MatchingVM`, `TestBehaviours2`,
+`TestMiscellaneousActions` (`FMLParsingExamples`).
+
+### CORE-D-66 — The normalized pretty-print of a constructor call with arguments is not stable  ·  `TODO`
+
+**Symptom.** `this.new MyVM(null,null,null,null)` (as the normalized pretty-print writes it) is parsed and normalized again as
+`this.new MyVM(null,null,null,null,null,null,null,null)`: the arguments double at each round trip. File: `TestAddVirtualModelInstance`
+(`FMLParsingExamples`), invariant `normalized-stable`.
