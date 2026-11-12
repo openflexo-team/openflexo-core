@@ -145,10 +145,29 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 		private ControlGraphBindingModel<?> inferedBindingModel = null;
 
+		// True while the declared type is being set: the getter then gives the stored value, not its fallback (CORE-D-61)
+		private boolean settingDeclaredType = false;
+
+		/**
+		 * PAMELA sets a property only when the new value differs from the one its getter returns, and {@link #getDeclaredType()} falls
+		 * back on the analyzed type when none is stored: before the right-hand side is set (as the FML parser does), the analyzed type is
+		 * {@code Object}, so that a declared {@code Object} was never stored, and the variable was then printed with the type of its value
+		 * ({@code Object o = 1;} printed {@code long o = 1;}, CORE-D-61). The comparison is made against the stored value instead.
+		 */
+		@Override
+		public void setDeclaredType(Type type) {
+			settingDeclaredType = true;
+			try {
+				performSuperSetter(DECLARED_TYPE_KEY, type);
+			} finally {
+				settingDeclaredType = false;
+			}
+		}
+
 		@Override
 		public Type getDeclaredType() {
 			Type returned = (Type) performSuperGetter(DECLARED_TYPE_KEY);
-			if (returned == null) {
+			if (returned == null && !settingDeclaredType) {
 				if (getAnalyzedType() instanceof Class) {
 					return TypeUtils.toPrimitive((Class) getAnalyzedType());
 				}

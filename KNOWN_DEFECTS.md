@@ -1640,16 +1640,26 @@ again (`TestFMLReindent` no longer skips any). Tests: `TestCoreD58` (fml-parser)
 - `MyVM _model with FMLRTVirtualModelInstanceModelSlot;` (MatchingVM) is dropped with `role_not_found`, whatever the type: an
   obsolete role syntax in the fixture (the current one is `with ModelInstance()`), not a defect.
 
-### CORE-D-61 — The declared type `Object` of a local variable is printed as the type of its value  ·  `TODO`
+### CORE-D-61 — The declared type `Object` of a local variable is printed as the type of its value  ·  `DONE`
 
-**Symptom.** In the normalized pretty-print (`getNormalizedFML()`), `Object o = 1;` is printed `long o = 1;` and
-`Object o = select Item from (this);` is printed `List<Item> o = …;`, even when everything resolves. `String o = "a";` is kept.
+**Symptom.** `Object o = 1;` was printed `long o = 1;` and `Object o = select Item from (this);` was printed `List<Item> o = …;`, even
+when everything resolves: the declared type `Object` (or `java.lang.Object`) of a local variable with an initializer was lost.
+`Object o;` (no initializer), `String`, `Number` or `Integer` were kept.
 
-**Reproduction (verified 2026-11-12 by execution).** Parse a behaviour holding such a declaration, look at `getNormalizedFML()`.
+**Mechanism — verified in the code and by execution (2026-11-12).** A trap of PAMELA: a setter changes nothing when the new value
+equals the one the getter returns (`DefaultSinglePropertyImplementation.set` compares with `invokeGetter`, which calls the overridden
+getter). `DeclarationAction.getDeclaredType()` falls back on the analyzed type of the right-hand side when no type is stored, and
+`DeclarationActionNode` sets the declared type before the right-hand side: the analyzed type is then `Object`, so that
+`setDeclaredType(Object.class)` was ignored; once the right-hand side was set, the getter returned its type (`long`).
 
-**Mechanism — not established.** `DeclarationActionNode` prints `getModelObject().getType()`, which is the declared type when one is
-stored and the analyzed type of the right-hand side otherwise (`DeclarationAction.getDeclaredType()`): the declared `Object` does not
-seem to be stored, or not as `Object`. Not checked further.
+**Fix (2026-11-12).** `DeclarationActionImpl.setDeclaredType` makes the getter return the stored value while it sets it, so that the
+comparison is made against the stored value. What `getDeclaredType()` returns otherwise is unchanged. Tests: `TestCoreD61`
+(fml-parser).
+
+**Same pattern, not affected today.** `FlexoBehaviour.getDeclaredType()` falls back on the analyzed return type the same way; a return
+type `Object` is kept (the analyzed type is not `Object` when it is set: tested), but a declared type equal to the analyzed one at
+that moment would not be stored. `FlexoRole.getCardinality()` / `getCloningStrategy()`, `LogAction.getLogLevel()` and
+`AbstractCreateResource.getRelativePath()` fall back on a constant: setting that constant is not stored, with no visible effect.
 
 ### CORE-D-62 — `extends` of a concept that does not resolve is dropped from the model  ·  `TODO`
 
