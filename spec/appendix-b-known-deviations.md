@@ -39,7 +39,6 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 |---|---|---|---|
 | `CORE-D-1` | the implicit matching set of a behaviour is typed by its first `match` | §10.9.4 | one explicit set per concept |
 | `CORE-D-12` | the `where` of `begin match` is ignored: `end match … delete()` deletes the instances it meant to leave out, even if the `match` loop skips them | §10.9.5 | `end match … delete()` only on every instance of the concept; otherwise no `end match`, explicit deletion |
-| `CORE-D-2` | `end match … unmatched: someBehaviour()` does not call that behaviour; the first behaviour of the concept runs | §10.9.5 | `unmatched: delete()` and a single deletion scheme |
 | `CORE-D-53` | `select` from a concept instance misses the instances nested more than one level down | §10.2 | query from the virtual model instance |
 | `CORE-D-54` | the list returned by an unfiltered `select` is the internal index: modifying it hides instances | §10.2 | never modify a `select` result; copy it |
 

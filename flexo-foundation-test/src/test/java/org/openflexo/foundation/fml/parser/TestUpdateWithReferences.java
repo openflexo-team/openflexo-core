@@ -48,7 +48,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -196,25 +195,13 @@ public class TestUpdateWithReferences extends OpenflexoTestCase {
 	}
 
 	/**
-	 * The parser does not resolve the behaviour of 'unmatched: someMethod(...)' yet (CORE-D-2): from this step on, each merge first sets
-	 * on the parsed action what the parser should, so that the merge of the behaviour and of its arguments is checked
+	 * The behaviour of 'unmatched: someMethod(...)' and its arguments, resolved by the parser (CORE-D-2), are merged
 	 */
 	@Test
 	@TestOrder(7)
 	public void retargetUnmatchedBehaviour() throws Exception {
 		unmatched = "markGamma(\"gone\")";
 		mergeAndCheck();
-	}
-
-	/**
-	 * Sets on the parsed 'end match' the behaviour and the argument of the text, which the parser does not do yet (CORE-D-2)
-	 */
-	private static void setUnmatchedBehaviourAsWritten(FMLCompilationUnit parsed) {
-		FinalizeMatching parsedAction = action(parsed.getVirtualModel(), "sync", FinalizeMatching.class);
-		FlexoBehaviour markGamma = parsed.getVirtualModel().getFlexoConcept("Gamma").getFlexoBehaviour("markGamma");
-		parsedAction.setFlexoBehaviour(markGamma);
-		assertEquals(1, parsedAction.getParameters().size());
-		parsedAction.getParameters().get(0).setValue(new DataBinding<>("\"gone\""));
 	}
 
 	@Test
@@ -231,9 +218,6 @@ public class TestUpdateWithReferences extends OpenflexoTestCase {
 		FMLCompilationUnit parsed = fmlParser.parse(text(), fmlResource.getFactory(),
 				(modelSlotClasses) -> fmlResource.updateFMLModelFactory(modelSlotClasses), true);
 		assertEquals(5, parsed.getVirtualModel().getFlexoConcepts().size());
-		if (unmatched.startsWith("markGamma")) {
-			setUnmatchedBehaviourAsWritten(parsed);
-		}
 		compilationUnit.updateWith(parsed);
 		compilationUnit.getTypingSpace().resolveUnresolvedTypes();
 		checkReferences();

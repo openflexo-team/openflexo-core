@@ -45,6 +45,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLKeywords;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -52,7 +55,12 @@ import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AComplexEndMatchActionClause;
+import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
+import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
+import org.openflexo.foundation.fml.parser.node.PMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AEndMatchUnmatchedClause;
 import org.openflexo.foundation.fml.parser.node.AInClause;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
@@ -140,7 +148,13 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 					getModelObject().setFlexoBehaviour(flexoConceptType.getDefaultDeletionScheme());
 				}
 				else if (behaviourName != null) {
-					getModelObject().setFlexoBehaviour(flexoConceptType.getFlexoBehaviour(behaviourName));
+					FlexoBehaviour behaviour = flexoConceptType.getFlexoBehaviour(behaviourName);
+					if (behaviour != null) {
+						getModelObject().setFlexoBehaviour(behaviour);
+					}
+					else {
+						throwIssue("No behaviour " + behaviourName + " in " + flexoConceptType.getName(), getConceptNameFragment());
+					}
 				}
 				if (getModelObject().getFlexoBehaviour() != null && behaviourArgs != null) {
 					int index = 0;
@@ -189,19 +203,29 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			returned.setMatchingSet(matchingSet);
 		}
 
-		PEndMatchActionClause clause = astNode.getEndMatchActionClause();
+		PEndMatchActionClause clause = getEndMatchActionClause(astNode);
 		if (clause instanceof ASimpleEndMatchActionClause) {
 			// 'unmatched: delete(args?)' -> resolved to the concept default DeletionScheme in finalizeDeserialization
 			deleteClause = true;
 			handleArguments(((ASimpleEndMatchActionClause) clause).getArgumentList(), returned);
 		}
 		else if (clause instanceof AComplexEndMatchActionClause) {
-			// 'unmatched: someBehaviour(args)'. Restoring this branch requires decomposing a
-			// method_invocation (not a PExpression) into behaviour name + arguments. Not re-supported
-			// yet: leave the behaviour unresolved rather than binding an arbitrary behaviour (which used
-			// to happen through getFlexoBehaviour(null) and surfaced as a spurious validation error).
-			logger.warning("'end match ... unmatched: <method invocation>' is not yet supported by the parser; "
-					+ "the unmatched behaviour call is ignored");
+			// 'unmatched: someBehaviour(args)': a behaviour of the matched concept, by its name, resolved in finalizeDeserialization
+			// (CORE-D-2). Anything else ('a.b()', 'super()', 'T.m()') is not a behaviour of the concept: no behaviour runs.
+			PMethodInvocation invocation = ((AComplexEndMatchActionClause) clause).getMethodInvocation();
+			if (invocation instanceof APrimaryMethodInvocation && ((APrimaryMethodInvocation) invocation).getPrimary() instanceof AIdentifierPrimary
+					&& ((AIdentifierPrimary) ((APrimaryMethodInvocation) invocation).getPrimary()).getCompositeIdent() instanceof ANormalCompositeIdent) {
+				ANormalCompositeIdent ident = (ANormalCompositeIdent) ((AIdentifierPrimary) ((APrimaryMethodInvocation) invocation).getPrimary())
+						.getCompositeIdent();
+				if (ident.getPrefixes().isEmpty()) {
+					behaviourName = ident.getIdentifier().getText();
+					handleArguments(((APrimaryMethodInvocation) invocation).getArgumentList(), returned);
+				}
+			}
+			if (behaviourName == null) {
+				throwIssue("'unmatched:' expects delete(...) or a behaviour of " + getText(astNode.getConceptName()) + " by its name: "
+						+ getText(clause), getFragment(clause));
+			}
 		}
 		return returned;
 
@@ -225,6 +249,10 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		//append(staticContents(SPACE, "(", ""), getLParInFragment());
 		append(dynamicContents(SPACE,() -> getInAsString()), getInExpressionFragment());
 		//append(staticContents(")"), getRParInFragment());
+		// 'unmatched: <clause>' is optional: without it, the instances left unmatched are left as they are (CORE-D-57)
+		when(() -> hasUnmatchedClause()).thenAppend(staticContents(SPACE, FMLKeywords.Unmatched.getKeyword(), ""), getUnmatchedFragment())
+		.thenAppend(staticContents(":"), getColonFragment())
+		.thenAppend(dynamicContents(SPACE, () -> getUnmatchedClauseAsString()), getUnmatchedClauseFragment());
 
 		/*when(() -> isNormalAction()).thenAppend(staticContents(SPACE, "action", ""), getActionFragment())
 				.thenAppend(staticContents("::"), getColonColonFragment())
@@ -263,6 +291,53 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			return getASTNode() != null && getASTNode().getAbstractActionClause() instanceof ADeleteAbstractActionClause;
 		}
 	}*/
+
+	/** The 'unmatched: ...' clause of the AST, null when there is none */
+	private static AEndMatchUnmatchedClause getUnmatchedClause(AEndMatchActionFmlActionExp astNode) {
+		return astNode != null && astNode.getEndMatchUnmatchedClause() instanceof AEndMatchUnmatchedClause
+				? (AEndMatchUnmatchedClause) astNode.getEndMatchUnmatchedClause()
+				: null;
+	}
+
+	private static PEndMatchActionClause getEndMatchActionClause(AEndMatchActionFmlActionExp astNode) {
+		AEndMatchUnmatchedClause unmatched = getUnmatchedClause(astNode);
+		return unmatched != null ? unmatched.getEndMatchActionClause() : null;
+	}
+
+	/**
+	 * A behaviour runs on the instances left unmatched, or the parsed text has a clause. The text is looked at too because the behaviour
+	 * is resolved after the pretty-print is initialized (finalizeDeserialization), and because a clause the parser does not support yet
+	 * ('unmatched: someBehaviour(...)') leaves no behaviour.
+	 */
+	private boolean hasUnmatchedClause() {
+		return getExplicitBehaviour() != null || getUnmatchedClause(getASTNode()) != null;
+	}
+
+	/**
+	 * The behaviour set on the action, not the one {@link FinalizeMatching#getFlexoBehaviour()} falls back to when none is (the first
+	 * action scheme of the concept, CORE-D-2): the text must say what the model holds
+	 */
+	private FlexoBehaviour getExplicitBehaviour() {
+		return getModelObject() != null && getModelObject().getBehaviourReference() != null ? getModelObject().getFlexoBehaviour() : null;
+	}
+
+	/**
+	 * The clause after 'unmatched:': 'delete(args)' for a deletion scheme, 'name(args)' for another behaviour, or the parsed text when no
+	 * behaviour was resolved from it
+	 */
+	private String getUnmatchedClauseAsString() {
+		FlexoBehaviour behaviour = getExplicitBehaviour();
+		// 'delete(...)' is the default deletion scheme of the concept; another one is called by its name
+		if (behaviour instanceof DeletionScheme && getModelObject().getFlexoConceptType() != null
+				&& behaviour == getModelObject().getFlexoConceptType().getDefaultDeletionScheme()) {
+			return "delete(" + serializeArguments(getModelObject().getParameters()) + ")";
+		}
+		if (behaviour != null) {
+			return behaviour.getName() + "(" + serializeArguments(getModelObject().getParameters()) + ")";
+		}
+		PEndMatchActionClause clause = getEndMatchActionClause(getASTNode());
+		return clause != null ? getText(clause) : null;
+	}
 
 	private String getConceptName() {
 		if (getASTNode() != null) {
@@ -340,17 +415,18 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	}
 
 	private RawSourceFragment getUnmatchedFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwUnmatched());
-		}
-		return null;
+		AEndMatchUnmatchedClause unmatched = getUnmatchedClause(getASTNode());
+		return unmatched != null ? getFragment(unmatched.getKwUnmatched()) : null;
+	}
+
+	private RawSourceFragment getUnmatchedClauseFragment() {
+		PEndMatchActionClause clause = getEndMatchActionClause(getASTNode());
+		return clause != null ? getFragment(clause) : null;
 	}
 
 	private RawSourceFragment getColonFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getColon());
-		}
-		return null;
+		AEndMatchUnmatchedClause unmatched = getUnmatchedClause(getASTNode());
+		return unmatched != null ? getFragment(unmatched.getColon()) : null;
 	}
 
 	/*private AActionClause getActionClause() {
@@ -440,7 +516,8 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	private String serializeArguments(List<ExecuteBehaviourParameter> arguments) {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < arguments.size(); i++) {
-			sb.append((i > 0 ? "," : "") + arguments.get(i).getValue().toString());
+			DataBinding<?> value = arguments.get(i).getValue();
+			sb.append((i > 0 ? "," : "") + (value != null ? value.toString() : "null"));
 		}
 		return sb.toString();
 	}

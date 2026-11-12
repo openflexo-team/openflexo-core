@@ -1017,10 +1017,13 @@ Productions
      | {notify_action}                         kw_notify expression in_clause?
      | {begin_match_action}                    kw_begin kw_match [concept_name]:uidentifier from_clause where_clause?
      | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? kw_unmatched colon new_instance
-     | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause kw_unmatched colon end_match_action_clause
+     | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause end_match_unmatched_clause?
      | {parenthesed}                           l_par fml_action_exp r_par
      ;
        
+   // optional: without it, the instances left unmatched are left as they are (CORE-D-57)
+   end_match_unmatched_clause = kw_unmatched colon end_match_action_clause;
+
    end_match_action_clause =
    	 // TODO : this has to be refactored (see EndMatchActionNode.java)
      | {simple}  kw_delete l_par argument_list? r_par

@@ -90,7 +90,9 @@ import org.openflexo.pamela.annotations.Updater;
  * deletes the instance; a deleted instance is not removed from the roles of multiple cardinality holding it (known defect
  * {@code CORE-D-10}).
  * <p>
- * {@code unmatched: method()} is not supported by the parser (known defect {@code CORE-D-2}). For a complete example, see
+ * {@code unmatched: someBehaviour(args)} runs that behaviour of the concept, a deletion scheme other than the default one included. The
+ * {@code unmatched:} clause is optional: without it, nothing runs and the unmatched instances are left as they are. For a complete
+ * example, see
  * {@link MatchFlexoConceptInstance}.
  *
  * @author sylvain
@@ -180,10 +182,8 @@ public interface FinalizeMatching extends EditionAction {
 	public void updateBehaviourReference(FMLNamedReference<FlexoBehaviour> behaviourReference);
 
 	/**
-	 * Return the behaviour executed on the instances which have not been matched.
-	 * <p>
-	 * Beware: when none was set, the first action scheme of the concept is returned ({@link #getAvailableFlexoBehaviours()}), which may be a
-	 * deletion scheme (known defect {@code CORE-D-2}).
+	 * Return the behaviour executed on the instances which have not been matched, null when none was set (no {@code unmatched:} clause):
+	 * nothing runs then.
 	 *
 	 * @return the behaviour executed on unmatched instances
 	 */
@@ -381,12 +381,10 @@ public interface FinalizeMatching extends EditionAction {
 		public FlexoBehaviour getFlexoBehaviour() {
 			FlexoConcept matchedConcept = getFlexoConceptType();
 			FlexoBehaviour returned = null;
+			// No behaviour set ('end match ... in set;' with no 'unmatched:' clause): nothing runs on the unmatched instances. There used to be
+			// a fallback on the first action scheme of the concept, which ran a deletion scheme declared first (CORE-D-2, CORE-D-57)
 			if (behaviourReference != null) {
 				returned = behaviourReference.resolve(matchedConcept != null ? name -> matchedConcept.getFlexoBehaviour(name) : null);
-			}
-			else if (matchedConcept != null && getAvailableFlexoBehaviours() != null && getAvailableFlexoBehaviours().size() > 0) {
-				// No behaviour set: the first action scheme of the concept (known defect CORE-D-2)
-				returned = getAvailableFlexoBehaviours().get(0);
 			}
 			if (returned != listenedBehaviour) {
 				FlexoBehaviour oldValue = listenedBehaviour;

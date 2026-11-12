@@ -83,8 +83,8 @@ depends on declaration order (and inheritance), and its intended semantics are u
 - `DeleteFlexoConceptInstance` when no deletion scheme is given.
 
 **Why it matters.** A concept closed by an `end match` that declares several deletion schemes silently gets the first one — possibly
-one that deletes federated artifacts instead of only releasing references. `CORE-D-2` makes it worse: `unmatched: method()` falls back
-to the first action scheme, which may be a deletion scheme.
+one that deletes federated artifacts instead of only releasing references. (`CORE-D-2`, fixed: `unmatched: method()`
+no longer falls back on the first action scheme.)
 
 **To decide.**
 - Drop the notion: require an explicit deletion scheme wherever more than one is accessible (validation error), or
@@ -303,7 +303,7 @@ the storage, and `ClassRole.conceptURI` / `AbstractSelectIndividual.ontologyClas
   deletion scheme of `DeleteFlexoConceptInstance`, and the parameter of the four argument classes.
 - Left out: the deprecated creation scheme of `FlexoConceptInstanceRole` is a plain field (no FML syntax, for phase 5); the URI property
   of jdbc-ta `AbstractPerformSQLQuery` and those of flexo-ontology / owl-ta (to do with the ontology rework); the behaviour of
-  `end match ... unmatched: someMethod(...)` is still not parsed (CORE-D-2): the test sets it on the parsed action.
+  `end match ... unmatched: someMethod(...)` is parsed since CORE-D-2 was fixed (2026-11-12): the test no longer sets it.
 - For phase 6: PAMELA calls a property "serializable" only when it carries `@XMLAttribute`/`@XMLElement`
   (`ModelProperty.isSerializable()`), and that decides the list matching of `updateWith()` (`CompareAndMergeUtils.getDistance`) and
   the "modified" marking. The XML annotations cannot be removed before this definition changes.

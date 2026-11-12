@@ -1738,6 +1738,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		private Class<?> lookupClass(String className, Type potentialType) {
 			Class rawClass = TypeUtils.getRawType(potentialType);
+			if (rawClass == null) {
+				// a type variable (the model slot declared is ModelSlot itself, not a specialization): nothing to find here (CORE-D-57)
+				return null;
+			}
 			if (className.equals(rawClass.getName()) || className.equals(rawClass.getSimpleName())) {
 				return rawClass;
 			}

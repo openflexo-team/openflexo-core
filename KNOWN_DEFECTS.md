@@ -47,7 +47,7 @@ matches are used.
 (`begin match X from this` / `match X in set …` / `end match X in set unmatched: delete()`), as done in
 `openflexo-integration-tests/city-mapping` (`Mapping.fml`, `synchronization()`).
 
-### CORE-D-2 — `end match … unmatched: method()` runs the first action scheme instead  ·  `TODO`
+### CORE-D-2 — `end match … unmatched: method()` runs the first action scheme instead  ·  `DONE`
 
 **Symptom.** `end match X in set unmatched: someMethod();` parses, logs a warning, and then runs on each leftover instance NOT
 `someMethod()` but the first accessible action scheme of `X` — a deletion scheme when one is declared first. The leftovers are then
@@ -73,6 +73,16 @@ pruneWithMethod() {
    runs it on each unmatched instance.
 
 **Workaround.** Only use `unmatched: delete()`, on a concept declaring exactly ONE deletion scheme (see `CORE-F-2`).
+
+**Fix (2026-11-12, with CORE-D-57).**
+1. `EndMatchActionNode` decomposes `unmatched: name(args)` into a behaviour of the matched concept and its arguments, resolved in
+   `finalizeDeserialization` (a deletion scheme other than the default one is called this way); an unknown name, or a call that is not
+   a behaviour of the concept (`a.b()`), raises a semantic issue and runs nothing.
+2. `FinalizeMatching.getFlexoBehaviour()` no longer falls back on the first action scheme: without a behaviour nothing runs. This made
+   the `unmatched:` clause optional in the grammar (`end match C in set;`, CORE-D-57).
+Two tests passed only through the fallback, which happened to pick the behaviour written: `TestUpdateWithReferences` (its workaround
+setting the behaviour on the parsed action is gone) and `TestMatchFlexoConceptInstances` (`unmatched: performDelete()`). Tests:
+`TestCoreD57` (fml-parser).
 
 ### CORE-D-12 — The `where` clause of `begin match` is ignored  ·  `TODO`
 
@@ -601,7 +611,7 @@ of a concept and the event of a listener carried their reference outside any PAM
 
 **Fix (2026-11-09, CORE-F-8 phase 4).** Concepts are carried by `FlexoConceptInstanceType` properties with a translating `@Updater`;
 behaviours, parameters and properties by `FMLNamedReference` (compared by name, resolved by the holder). All eight steps pass. The
-behaviour of `end match ... unmatched: someMethod(...)` is not parsed at all (CORE-D-2): the test sets it on the parsed action.
+behaviour of `end match ... unmatched: someMethod(...)` is parsed since CORE-D-2 was fixed (2026-11-12): the test no longer sets it.
 
 ### CORE-D-44 — Looking up an unknown concept loops forever between compilation units that import each other  ·  `TODO`
 
@@ -1574,57 +1584,75 @@ name. The `{fml}` form of the grammar has no slot for an initializer. Found by t
 
 **Workaround.** Do not give an initializer to a concept-typed property (it is lost anyway, `CORE-D-51`).
 
-### CORE-D-57 — The normalized pretty-print of some units loses expressions and does not parse again  ·  `TODO`
+### CORE-D-57 — The normalized pretty-print of some units loses expressions and does not parse again  ·  `DONE`
 
-**Symptom.** `getNormalizedFML()` (the text built from the model alone, used for objects created from scratch) drops parts of
-statements on 5 of the 32 `FMLParsingExamples` units, and the text it gives cannot be parsed again:
-- the collection of a `for` is lost: `for (Concept _concept : ) {` (MatchingVM, PathologicCase);
-- the right side of an assignment is lost: `myModel =;` (TestAddVirtualModelInstance);
-- the concept of a `begin match` is printed `null`: `begin match null from this;` (PathologicCase, TestMatch);
-- TestNamespaces: parsing the normalized text throws `NullPointerException: … "rawClass" is null`.
+**Symptom.** `getNormalizedFML()` (the text built from the model alone, used for objects created from scratch) dropped parts of
+statements on 5 of the 32 `FMLParsingExamples` units, and the text it gave could not be parsed again (found by
+`TestFMLReindent.aNormalizedPrettyPrintIsAFixedPoint`, P2PP-F-1).
 
-The text printed from the parsed source (`getFMLPrettyPrint()`) is not affected: it keeps the source.
+**What it was (verified 2026-11-12 by execution, each construct rebuilt in a unit where every reference resolves).** Three defects of
+the printer and the parser, and a family that is CORE-D-58:
+1. `end match C in set unmatched: delete();` was printed without its clause, which the grammar required: the print specification of
+   `EndMatchActionNode` had no contents for it (its former version, commented out, aimed at a syntax that no longer exists).
+2. A statement in a `for` loop whose collection could not be built lost its `;`: `AssignableActionNode.requiresSemi()` took the child
+   of index 0 of the loop for its collection.
+3. `use ...ModelSlot as X` threw a `NullPointerException` while parsing (`FMLCompilationUnit.lookupClass`: the type argument of
+   `ModelSlot` itself is a type variable, its raw type is null) — TestNamespaces.
+4. Everything else (the collection of `for (X x : select X from (m))`, a role, `new MyVM::constructor1(...)`, `extends`,
+   `begin match null`, `where (?=x)`) is lost because the reference does not resolve (an import of a unit that does not exist): the
+   object is not built in the model. Rebuilt with references that resolve, each of them prints and parses again. Moved to CORE-D-58.
 
-**Reproduction (verified 2026-11-12 by execution, `TestFMLReindent.aNormalizedPrettyPrintIsAFixedPoint` in fml-parser, which
-skips these 5 units with a reference to this entry).** Parse the unit, take `getNormalizedFML()`, parse it.
+**Fix (2026-11-12).**
+1. The `unmatched:` clause of `end match` is optional in the grammar (decided with the user): without it nothing runs on the
+   unmatched instances. `EndMatchActionNode` prints `unmatched: delete(args)` for the default deletion scheme, `unmatched: name(args)`
+   for another behaviour, the parsed text when no behaviour was resolved from it, and nothing without a behaviour. Making the clause
+   optional required removing the fallback of `FinalizeMatching.getFlexoBehaviour()` on the first action scheme, hence CORE-D-2.
+2. The collection of a loop is recognized by identity (`getIterationAction()`), as the update of a `for` already was (CORE-D-9).
+3. `lookupClass` returns null for a type variable.
 
-**Mechanism — not investigated.** Presumably the normalized branch of the nodes concerned (iteration, assignment, initiate-matching)
-reads a value the model does not hold in that form; not checked in the code.
+Tests: `TestCoreD57` (fml-parser). The 4 units still skipped by `TestFMLReindent` are CORE-D-58.
 
-**Impact.** An object created by a model action (not parsed) whose rendering takes this path would be saved as invalid FML.
+### CORE-D-58 — What refers to a type that does not resolve is dropped from the model  ·  `TODO`
 
-### CORE-D-58 — The body of a behaviour selecting a type of an unresolved import is dropped from the model  ·  `TODO`
+**Symptom.** When a reference does not resolve (an import of a unit that does not exist, a technology adapter that is not there), the
+objects referring to it are not built, or built incomplete, and the model silently loses them. The text printed from the source keeps
+them (it is not touched), so the loss shows only from the model: a validation, an execution, a rendering from scratch, the normalized
+pretty-print. Seen in `FMLParsingExamples` (verified 2026-11-12 by execution):
+- `TestSelect.fml` (import `http://some_uri/AnOtherModel.fml`): the bodies of `testSelectExternalVirtualModel()` and
+  `testSelectExternalFlexoConcept()` (`select AnOtherModel from (…)`, `select AnOtherModel$AConcept from (…)`) are gone: the normalized
+  pretty-print writes `testSelectExternalVirtualModel();`, and the node tree holds no node for the statement nor for the closing brace;
+- `MatchingVM.fml` (`MyVM` from an unresolved import): the role `MyVM _model with FMLRTVirtualModelInstanceModelSlot;` is dropped,
+  and the collection of `for (Concept _concept : select Concept from (_model))` is printed empty;
+- `TestAddVirtualModelInstance.fml`: `new MyVM::constructor1(1,"foo") with (name="tutu")` is printed empty (`myModel =;`),
+  `with (name=…)` is dropped, `this.new MyVM()` becomes `this.new MyVM(null,null,null,null)`, `this.new MyVM::constructor1(…)` becomes
+  `this`;
+- `PathologicCase.fml`, `TestMatch.fml` (concepts that do not resolve): `begin match null`, `match null`, `where (?=conceptA)`;
+- `TestNamespaces.fml`: `extends AnOtherModel,AThirdModel` is dropped.
+The same constructs with references that resolve are printed and parsed again correctly (CORE-D-57).
 
-**Symptom.** In `FMLParsingExamples/TestSelect.fml`, which imports `http://some_uri/AnOtherModel.fml` (no such unit), the
-behaviours `testSelectExternalVirtualModel()` and `testSelectExternalFlexoConcept()` (`select AnOtherModel from (…)`,
-`select AnOtherModel$AConcept from (…)`) have no body in the model: the normalized pretty-print writes them
-`testSelectExternalVirtualModel();`, and the node tree holds no node for the statement nor for the closing brace. The text printed
-from the source keeps the body (it is not touched), so the loss shows only from the model: a validation, an execution, a rendering
-from scratch.
+**Reproduction.** Parse one of these units, look at `getNormalizedFML()`. `TestFMLReindent.aNormalizedPrettyPrintIsAFixedPoint` skips
+the 4 units whose normalized text does not parse, with a reference to this entry. Found by
+`Reindenter.explain(…)` (P2PP-F-1), which reports the lost rows of TestSelect as text that no node describes.
 
-**Reproduction (verified 2026-11-12 by execution).** Parse `TestSelect.fml`, look at `getNormalizedFML()`. Found by
-`Reindenter.explain(…)` (P2PP-F-1), which reports these rows as text that no node describes.
+**Mechanism — not investigated.** Presumably each node building its model object gives up when `TypeFactory.makeType` returns an
+unresolved type, silently; whether a semantic issue is raised was not checked.
 
-**Mechanism — not investigated.** Presumably a statement whose type does not resolve produces no control graph, silently; whether
-a semantic issue is raised was not checked.
+### CORE-D-60 — A role declared without `with` is printed `nameXwith ConceptInstance()`, which does not parse  ·  `TODO`
 
-### CORE-D-59 — Creating a concept in the Free Modelling Editor freezes the application (print / notify loop)  ·  `DONE`
+**Symptom.** `public ConceptB myConceptB;` is printed back by `getFMLPrettyPrint()` (what the FML editor saves) as
+`public ConceptB myConceptBwith ConceptInstance();`: the `with` clause added to the role (CORE-D-33) lost the space before it, and
+the text no longer parses (`ParseException: expecting: ';'`). Any unit holding a concept-typed role declared without `with` is
+saved unreadable.
 
-**Symptom.** Creating a concept in the FME: the application freezes, `StackOverflowError` dialogs come one after another
-(`Openflexo.err.log` grew to 37 MB).
+**Reproduction (verified 2026-11-12 by execution).** `flexo-foundation-test`: `TestBehaviourAvailability` (3 tests),
+`TestDerivedInspector.test4RoundTripsThroughTheFMLSource`, `TestRendererUpdateFromText` (2 tests) fail on it; the printed text of
+`TestResourceCenter/FML/TestDerivedInspector.fml` shows the three roles of its concepts written that way.
 
-**Cause — verified by execution (live thread dumps and log of 2026-11-12, then `TestPrintNewConceptNotifiesNothing`).** The FML
-editor prints the unit again, synchronously on the EDT, on each `FMLPrettyPrint` notification. The new concept was never parsed:
-it is printed normalized, and the empty body of its behaviour gets a new `EmptyControlGraphNode` at each print. Linking that node
-goes through `runWithoutMarkingModified()` (CORE-D-45), which silenced the object itself only: `FMLControlGraph.setIsModified()`
-still marked its owner, and `FMLObject.setIsModified()` fired `FMLPrettyPrint` even while notifications were ignored. The unit
-notified the editor, which printed again, and so on.
-
-**Fix.** `FMLObject.setIsModified()` and `FMLControlGraph.setIsModified()` do nothing while the object ignores notifications; the
-FML editor ignores a request to update its text made while it is updating it (openflexo-ui). Test: `TestPrintNewConceptNotifiesNothing`
-(fml-parser), which fails without the fix (two `FMLPrettyPrint` fired by the unit while printing).
-
-**Left.** A new node is still built at each print of an object that was never parsed (the cost, not the loop).
+**Mechanism — not established.** `FlexoRolePropertyNode` writes the name with postlude `" "`, then `with` with no fragment in the
+source; the derived print inserts `with` right after the name without that postlude. The node has not changed since 2026-09-14; the
+derived print of p2pp was changed by the fixes of P2PP-D-1 to P2PP-D-14 (2026-11-11/12), the probable cause — not checked by running
+the tests against the previous p2pp. Not related to CORE-D-57/CORE-D-2, whose changes (end match, the `;` of a loop statement, `lookupClass`) do not touch
+roles; not checked by running these tests without them.
 
 ### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `IN PROGRESS`
 

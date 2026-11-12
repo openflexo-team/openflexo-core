@@ -72,7 +72,10 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 
 		return !((getParent().getModelObject() instanceof AbstractAssignationAction)
 				// If parent id AbstractAssignationAction, the parent will do it
-				|| ((getParent() instanceof IterationActionNode) && getIndex() == 0)
+				// The collection of a for loop: identified by identity, not by its index (when the collection could not be built, the
+				// first child is the body: CORE-D-57)
+				|| ((getParent() instanceof IterationActionNode) && ((IterationActionNode) getParent()).getModelObject() != null
+						&& ((IterationActionNode) getParent()).getModelObject().getIterationAction() == getModelObject())
 				// The update of a for loop: identified by identity, its index depends on the optional condition (CORE-D-9)
 				|| ((getParent() instanceof ExpressionIterationActionNode)
 						&& ((ExpressionIterationActionNode) getParent()).getModelObject() != null

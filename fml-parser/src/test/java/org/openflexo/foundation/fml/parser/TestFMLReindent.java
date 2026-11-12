@@ -35,7 +35,7 @@ import org.openflexo.rm.Resources;
  * <li>only the leading whitespace of rows changes;</li>
  * <li>the result parses to the same model (same normalized pretty-print), and re-indenting it again changes nothing;</li>
  * <li>a normalized pretty-print is a fixed point: the indentation declared by the FML nodes is the one the structure gives (skipped
- * when that pretty-print does not parse again, CORE-D-57).</li>
+ * when that pretty-print does not parse again, CORE-D-58).</li>
  * </ul>
  */
 @RunWith(Parameterized.class)
@@ -105,8 +105,8 @@ public class TestFMLReindent {
 		try {
 			reparsed = parse(normalized);
 		} catch (Exception e) {
-			// CORE-D-57: the normalized pretty-print of some units does not parse again; nothing to re-indent then
-			Assume.assumeNoException("CORE-D-57: the normalized pretty-print of " + name + " does not parse", e);
+			// CORE-D-58: the normalized pretty-print of a unit whose references do not resolve does not parse again
+			Assume.assumeNoException("CORE-D-58: the normalized pretty-print of " + name + " does not parse", e);
 			return;
 		}
 		assertEquals(name, show(normalized), show(reindent(reparsed)));
