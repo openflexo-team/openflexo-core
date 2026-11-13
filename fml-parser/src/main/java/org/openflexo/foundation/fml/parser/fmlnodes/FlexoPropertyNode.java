@@ -70,15 +70,15 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 	 * Emit the property-level FML meta-data (annotations such as <code>@Property(...)</code>) before the property declaration itself.
 	 *
 	 * <p>
-	 * Concrete property nodes all call <code>super.preparePrettyPrint(...)</code> as the very first statement of their own
-	 * {@code preparePrettyPrint}, so appending the meta-data here renders them just before the property, mirroring what
+	 * Concrete property nodes all call <code>super.definePrettyPrint(...)</code> as the very first statement of their own
+	 * {@code definePrettyPrint}, so appending the meta-data here renders them just before the property, mirroring what
 	 * {@code FlexoConceptNode} / {@code VirtualModelNode} do for concept- and model-level annotations. Without this, property annotations
 	 * were parsed and kept in the model but silently dropped on (normalized) pretty-print.
 	 * </p>
 	 */
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class,
 				"MetaData"));
 	}

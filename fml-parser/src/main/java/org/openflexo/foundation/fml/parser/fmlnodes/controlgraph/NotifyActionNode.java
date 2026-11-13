@@ -93,8 +93,8 @@ public class NotifyActionNode extends ControlGraphNode<ANotifyActionFmlActionExp
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Notify.getKeyword(), SPACE), getNotifyFragment());
 		append(bindingContents(() -> getModelObject().getPropertyName()), getExpressionFragment());

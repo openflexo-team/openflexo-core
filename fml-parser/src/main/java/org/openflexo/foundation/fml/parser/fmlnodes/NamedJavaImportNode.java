@@ -67,8 +67,8 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", "import", SPACE), getImportFragment());
 		append(dynamicContents(() -> getModelObject().getFullQualifiedClassName()), getFullQualifiedFragment());

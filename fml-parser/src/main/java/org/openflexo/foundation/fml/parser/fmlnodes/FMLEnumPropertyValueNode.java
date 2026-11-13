@@ -104,8 +104,8 @@ public class FMLEnumPropertyValueNode<M extends FMLObject, E extends Enum<E>>
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(dynamicContents(() -> getModelObject().getPropertyName()), getArgNameFragment());
 		append(staticContents("="), getAssignFragment());

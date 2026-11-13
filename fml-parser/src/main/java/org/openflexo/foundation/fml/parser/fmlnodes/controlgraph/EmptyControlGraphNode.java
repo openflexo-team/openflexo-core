@@ -95,8 +95,8 @@ public class EmptyControlGraphNode extends ControlGraphNode<Node, EmptyControlGr
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 		// Nothing to do
 	}
 

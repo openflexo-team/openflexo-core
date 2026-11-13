@@ -121,8 +121,8 @@ public abstract class ExpressionNode<N extends Node, T extends Expression> exten
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 		if (!hasParsedVersion || getModelObject() == null) {
 			append(dynamicContents(() -> getNormalizedText()), null);
 			return;

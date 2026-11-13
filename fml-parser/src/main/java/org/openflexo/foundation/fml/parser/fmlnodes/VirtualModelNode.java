@@ -119,9 +119,9 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
+	public void definePrettyPrint(boolean hasParsedVersion) {
 
-		super.preparePrettyPrint(hasParsedVersion);
+		super.definePrettyPrint(hasParsedVersion);
 
 		// @formatter:off
 		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class));

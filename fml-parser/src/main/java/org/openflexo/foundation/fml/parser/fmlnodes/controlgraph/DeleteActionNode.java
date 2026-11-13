@@ -83,8 +83,8 @@ public class DeleteActionNode extends ControlGraphNode<ADeleteActionFmlActionExp
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", "delete", SPACE), getDeleteFragment());
 		// append(staticContents("("), getLParFragment());

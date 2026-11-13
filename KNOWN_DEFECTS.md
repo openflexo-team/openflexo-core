@@ -806,7 +806,7 @@ Unlike the rest of `CORE-D-33`, this is a loss of the unit, not a cosmetic diffe
 **Reproduction (verified 2026-11-11 by execution, test `KnownDefectsRoundTripTest` in fml-parser).** Parse the declaration, print
 the compilation unit, parse the printed text.
 
-**Mechanism — verified in the code.** `FlexoRolePropertyNode.preparePrettyPrint` always appends `with <role>(…)` when
+**Mechanism — verified in the code.** `FlexoRolePropertyNode.definePrettyPrint` always appends `with <role>(…)` when
 `hasFMLProperties()`, even for a declaration written in the Java style; the `= …` comes from the original text kept around the
 name. The `{fml}` form of the grammar has no slot for an initializer. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
 

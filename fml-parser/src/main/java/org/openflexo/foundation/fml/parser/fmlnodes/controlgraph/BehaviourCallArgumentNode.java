@@ -98,8 +98,8 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(bindingContents(() -> getModelObject().getValue()), getFragment());
 	}

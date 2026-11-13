@@ -115,8 +115,8 @@ public class SimpleAssertNode extends AbstractAssertNode<PSimpleAssertDeclaratio
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		// @formatter:off
 		append(staticContents("", FMLKeywords.Assert.getKeyword(), SPACE), getAssertFragment());

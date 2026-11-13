@@ -96,8 +96,8 @@ public class TypeDeclarationNode extends FMLObjectNode<ATypeDecl, TypeDeclaratio
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Typedef.getKeyword(), SPACE), getTypeKeywordFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getReferencedType(), false), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());

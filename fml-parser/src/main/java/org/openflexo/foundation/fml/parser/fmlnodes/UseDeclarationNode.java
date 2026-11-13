@@ -88,8 +88,8 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", "use", SPACE), getUseFragment());
 		append(dynamicContents(() -> getModelSlotClassName()), getModelSlotClassFragment());

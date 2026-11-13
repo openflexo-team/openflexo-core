@@ -86,8 +86,8 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("","log",SPACE), getLogFragment());
 		// append(staticContents("("), getLParFragment());

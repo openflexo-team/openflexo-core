@@ -98,8 +98,8 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(dynamicContents(() -> getModelObject().getPropertyName()), getArgNameFragment());
 		append(staticContents("="), getAssignFragment());

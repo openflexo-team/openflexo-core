@@ -95,8 +95,8 @@ public class ConnectActionNode extends ControlGraphNode<AConnectActionFmlActionE
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Connect.getKeyword(), SPACE), getConnectKeywordFragment());
 		append(bindingContents(() -> getModelObject().getConnect(), SPACE), getConnectFragment());

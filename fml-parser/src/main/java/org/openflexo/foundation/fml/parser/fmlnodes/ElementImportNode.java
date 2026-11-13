@@ -114,8 +114,8 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", "import", SPACE), getImportFragment());
 

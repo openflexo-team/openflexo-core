@@ -91,9 +91,9 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
+	public void definePrettyPrint(boolean hasParsedVersion) {
 
-		super.preparePrettyPrint(hasParsedVersion);
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(childrenContents("", "", () -> getModelObject().getNamespaces(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
 				Indentation.DoNotIndent, NamespaceDeclaration.class, "Namespaces"));

@@ -75,7 +75,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		super(aFMLObject, analyzer);
 
 		linkToModelObject();
-		preparePrettyPrint(false);
+		definePrettyPrint(false);
 	}
 
 	/**

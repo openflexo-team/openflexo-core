@@ -69,8 +69,8 @@ public class MultiValuedMetaDataNode
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("@"), getAtFragment());
 		append(dynamicContents(() -> getModelObject().getKey()), getKeyFragment());

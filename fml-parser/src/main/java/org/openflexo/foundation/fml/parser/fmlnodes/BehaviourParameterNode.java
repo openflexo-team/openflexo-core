@@ -138,8 +138,8 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		// @formatter:off
 		when(() -> isRequired()).thenAppend(staticContents("", "required", SPACE), getRequiredFragment());

@@ -81,8 +81,8 @@ public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, Name
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", "namespace", SPACE), getNamespaceFragment());
 		append(dynamicContents("\"", () -> getModelObject().getValue(), "\""), getStringLiteralFragment());

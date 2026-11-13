@@ -129,8 +129,8 @@ public class AssignationActionNode extends AssignableActionNode<PAssignmentState
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(bindingContents(() -> getModelObject().getAssignation()), getLeftHandSideFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getAssignmentOperator() != null

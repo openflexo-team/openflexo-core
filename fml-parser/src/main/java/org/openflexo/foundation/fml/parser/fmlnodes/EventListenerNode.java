@@ -132,8 +132,8 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 	 * </pre>
 	 */
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
 		//append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,

@@ -123,8 +123,8 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	@SuppressWarnings({ "rawtypes" })
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		// @formatter:off
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());

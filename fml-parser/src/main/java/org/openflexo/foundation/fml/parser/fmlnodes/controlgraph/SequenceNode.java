@@ -77,8 +77,8 @@ public class SequenceNode extends ControlGraphNode<Node, Sequence> {
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 		append(childContents("", () -> getModelObject().getControlGraph1(), LINE_SEPARATOR, Indentation.DoNotIndent));
 		append(childContents("", () -> getModelObject().getControlGraph2(), "", Indentation.DoNotIndent));
 	}

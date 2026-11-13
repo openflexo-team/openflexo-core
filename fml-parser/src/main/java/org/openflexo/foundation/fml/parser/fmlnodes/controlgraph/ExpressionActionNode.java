@@ -81,8 +81,8 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(bindingContents(() -> getModelObject().getExpression()), getExpressionFragment());
 

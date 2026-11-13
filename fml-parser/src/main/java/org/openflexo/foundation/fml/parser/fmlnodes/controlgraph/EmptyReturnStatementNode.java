@@ -74,8 +74,8 @@ public class EmptyReturnStatementNode extends AssignableActionNode<AReturnEmptyS
 	}
 
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 
 		append(staticContents("return"), getReturnFragment());
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());

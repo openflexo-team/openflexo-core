@@ -338,8 +338,8 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 
 	// Make this method visible
 	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public void definePrettyPrint(boolean hasParsedVersion) {
+		super.definePrettyPrint(hasParsedVersion);
 	}
 
 	/*protected void handleToken(Token token) {
