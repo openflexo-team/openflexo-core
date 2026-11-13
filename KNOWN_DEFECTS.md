@@ -1794,3 +1794,14 @@ the source has parentheses and no such spacing. Not checked: whether `log"x"` pa
 **Symptom.** `this.new MyVM(null,null,null,null)` (as the normalized pretty-print writes it) is parsed and normalized again as
 `this.new MyVM(null,null,null,null,null,null,null,null)`: the arguments double at each round trip. File: `TestAddVirtualModelInstance`
 (`FMLParsingExamples`), invariant `normalized-stable`.
+
+### CORE-D-67 — A reference in an expression follows a first rename of its target, not a second one  ·  `TODO`
+
+**Symptom.** In `FMLParsingExamples/TestAddFlexoConceptInstance.fml`, rename the constructor `ConceptB::constructor1` to `q`, print the unit
+(`new ConceptB::constructor1()` is now written `new ConceptB::q()`, as expected), rename it back to `constructor1`, print again: the expression
+still reads `new ConceptB::q()`. Same for a concept (`new ConceptA(name)` stays `new Qx(name)` after `Qx` is renamed back to `ConceptA`). On a
+document that is NOT printed between the two renames, the text is right. A print in between changes what a later print gives.
+
+**Verified** by execution (2026-11-13) with the edit matrix of the p2pp harness (`TestFMLEditMatrix`): the groups `rename-concept/*` and
+`rename-behaviour/*` fail on the oracle "undo-after-print", on `TestAddFlexoConceptInstance` and `TestFMLPrettyPrint8/InitialModel` only. The
+mechanism is NOT investigated: the text of an expression is probably kept by its binding once the first print has used it.

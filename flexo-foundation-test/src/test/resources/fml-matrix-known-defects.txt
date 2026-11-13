@@ -1,0 +1,8 @@
+# Groups of the FML edit matrix (TestFMLEditMatrix) that show a known difference, as: kind/position  defects (see the p2pp harness, EditMatrix).
+rename-concept/first      CORE-D-67
+rename-concept/middle     CORE-D-67
+rename-concept/last       CORE-D-67
+rename-behaviour/only     CORE-D-67
+rename-behaviour/first    CORE-D-67
+rename-behaviour/middle   CORE-D-67
+rename-behaviour/last     CORE-D-67

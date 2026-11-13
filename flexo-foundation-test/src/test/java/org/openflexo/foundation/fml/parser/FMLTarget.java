@@ -64,7 +64,7 @@ public class FMLTarget implements PrettyPrintTarget {
 	/** The text without its Java imports, implicit or not: the invariants do not tell the two apart */
 	static String withoutJavaImports(String text) {
 		// the blank rows that were around an import are not told apart either
-		return JAVA_IMPORT.matcher(text).replaceAll("").replaceAll("\n{3,}", "\n\n");
+		return JAVA_IMPORT.matcher(text).replaceAll("").replaceAll("\n{3,}", "\n\n").replaceAll("^\n+", "");
 	}
 
 	@Override
