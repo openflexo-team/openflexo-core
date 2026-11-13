@@ -386,8 +386,8 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		attemptToFixInvalidBindings(warnOnInvalidBinding && !isWaitingForReferencedUnits());
 
 		// The model is now built from the source: record what the parsed text of the expressions stands for, so that the preserving
-		// pretty-print keeps that text while it does not change (CORE-D-33). Done once: a later capture (when a referenced unit completes,
-		// for instance) could take an edit for the parsed text
+		// pretty-print keeps that text while it does not change (CORE-D-33). Captured again when a referenced unit completes later, only if
+		// the unit was not modified meanwhile (CompilationUnitResourceImpl): otherwise an edit could be taken for the parsed text
 		if (compilationUnitNode != null && !referenceValuesCaptured) {
 			compilationUnitNode.captureReferenceValues();
 			referenceValuesCaptured = true;

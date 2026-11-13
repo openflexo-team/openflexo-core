@@ -827,6 +827,9 @@ Test: `TestRenameInWithClause` (flexo-foundation-test).
 **Masked, not fixed.** Since a declaration keeps the type written, two model losses no longer show in the preserving pretty-print of an
 untouched source, but are still in the model (and in the normalized pretty-print): CORE-D-69 and CORE-D-70.
 
+**Capture revised after review (2026-11-13), decided with the user.** The reference values are captured again when referenced units
+complete (`CompilationUnitResourceImpl`), only if the unit was not modified since it was parsed. Not covered by a dedicated test.
+
 ### CORE-D-37 — A reference serializes the identifier the object had when it was assigned, not the one it has  ·  `DONE`
 
 **Symptom.** A FML role pointing at a technology object is empty after a reload, its reference serialized as `<resource>#FLX_null`, although the object does give a serialization identifier at the time the project is saved.

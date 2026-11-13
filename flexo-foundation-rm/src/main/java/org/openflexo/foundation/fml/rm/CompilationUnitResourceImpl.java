@@ -388,6 +388,9 @@ public abstract class CompilationUnitResourceImpl
 					node.getSemanticsAnalyzer().attemptToFixInvalidBindings(!resource.isWaitingForReferencedUnits());
 					if (!wasModified.get(resource)) {
 						resource.getLoadedResourceData().clearIsModified();
+						// Nobody edited the unit since it was parsed: what its parsed text stands for is captured again now that its
+						// references are complete, so that the preserving pretty-print does not rewrite what they resolved (CORE-D-33)
+						node.captureReferenceValues();
 					}
 				}
 			}
