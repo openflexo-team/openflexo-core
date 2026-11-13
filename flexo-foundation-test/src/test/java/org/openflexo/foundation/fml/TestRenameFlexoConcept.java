@@ -43,6 +43,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
@@ -50,8 +54,13 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.action.RenameCompilationUnit;
 import org.openflexo.foundation.fml.action.RenameFlexoConcept;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -63,26 +72,48 @@ import org.openflexo.test.TestOrder;
  * {@link FlexoConcept#freezeConventionalUIComponentNames()}.
  *
  * <p>
- * Uses the same <code>TestContainerUI.fml</code> fixture as {@link TestContainerUIComponents}, but its own service manager, so
- * renaming a nested {@link FlexoConcept}'s PAMELA <code>name</code> property (which {@link RenameFlexoConcept} succeeds at) must not
- * affect the fixture other tests load unrenamed. The compilation unit itself is a different story: it is loaded from
- * <code>flexo-test-resources</code>' PACKAGED JAR, which is read-only, so {@link RenameCompilationUnit} cannot rename its underlying
- * resource here - see that test's own javadoc.
+ * Uses the same <code>TestContainerUI.fml</code> fixture as {@link TestContainerUIComponents}, but works on a COPY of it, in a temporary
+ * directory resource center, and never on <code>flexo-test-resources</code> itself. {@link RenameCompilationUnit} really renames the
+ * container and its file on disk, and that resource center is not always read-only: Gradle reads it from the packaged jar, but Eclipse
+ * reads it from the project's <code>bin/main</code> directory, where the rename succeeded and left a <code>RenamedContainer.fml</code>
+ * in place of the fixture, failing every later test that loads it (CORE-D-72).
  */
 @RunWith(OrderedRunner.class)
 public class TestRenameFlexoConcept extends OpenflexoTestCase {
 
 	private static final String FIXTURE_URI = "http://openflexo.org/test/TestResourceCenter/TestContainerUI.fml";
+	private static final String FIXTURE_PATH = "TestResourceCenter/FML/TestContainerUI.fml";
+	private static final String TEST_RESOURCES_RC_URI = "http://openflexo.org/test/flexo-test-resources";
 
 	private static VirtualModel virtualModel;
 	private static FlexoEditor editor;
 
 	@Test
 	@TestOrder(1)
-	public void test0LoadFixture() {
+	public void test0LoadFixture() throws IOException {
 
 		instanciateTestServiceManager();
 		editor = new DefaultFlexoEditor(null, serviceManager);
+
+		// The fixture keeps its @URI in the copy: unregister the resource center of flexo-test-resources first, so that only the copy
+		// declares it
+		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();
+		FlexoResourceCenter<?> testResources = rcService.getFlexoResourceCenter(TEST_RESOURCES_RC_URI);
+		assertNotNull("No resource center " + TEST_RESOURCES_RC_URI, testResources);
+		rcService.removeFromResourceCenters(testResources);
+
+		DirectoryResourceCenter copyRC = makeNewDirectoryResourceCenter();
+		Resource fixture = ResourceLocator.locateResource(FIXTURE_PATH);
+		assertNotNull("No fixture " + FIXTURE_PATH, fixture);
+		File staging = Files.createTempDirectory("TestRenameFlexoConcept").toFile();
+		try {
+			File container = new File(staging, "TestContainerUI.fml");
+			container.mkdirs();
+			FileUtils.copyResourceToDir(fixture, container);
+			copyIntoResourceCenter(container, copyRC);
+		} finally {
+			FileUtils.deleteDir(staging);
+		}
 
 		CompilationUnitResource resource = serviceManager.getVirtualModelLibrary().getCompilationUnitResource(FIXTURE_URI);
 		assertNotNull("No compilation unit for " + FIXTURE_URI, resource);
@@ -128,11 +159,9 @@ public class TestRenameFlexoConcept extends OpenflexoTestCase {
 	 * delegation, so the freeze does not depend on the rest of the rename succeeding.
 	 *
 	 * <p>
-	 * It does not, here: this fixture is loaded from <code>flexo-test-resources</code>' PACKAGED JAR (see this repo's
-	 * <code>CLAUDE.md</code>), and a resource read from a jar is read-only - <code>InJarIODelegateImpl.hasWritePermission()</code>
-	 * always answers false, so <code>FlexoResourceImpl.setName()</code> refuses the rename before it ever reaches an IODelegate. Correct,
-	 * unrelated to CORE-F-4. This test only asserts what CORE-F-4 owns: the freeze already ran, and by itself is enough to make the
-	 * components survive - whatever becomes of the resource-level rename around it.
+	 * The fixture is a writable copy (see the class javadoc), so the rename itself succeeds too: the container and its FML file are
+	 * renamed on disk, and the components it ships - still named <code>TestContainerUI.*</code> - keep resolving through the frozen
+	 * annotations.
 	 */
 	@Test
 	@TestOrder(3)
@@ -147,14 +176,27 @@ public class TestRenameFlexoConcept extends OpenflexoTestCase {
 		action.setDefaultURI(true);
 		assertTrue(action.isValid());
 		action.doAction();
-		assertFalse("Expected to fail: this fixture is read-only (loaded from flexo-test-resources' packaged jar) - "
-				+ "see the class javadoc", action.hasActionExecutionSucceeded());
+		assertTrue(action.hasActionExecutionSucceeded());
+		assertEquals("RenamedContainer", virtualModel.getName());
+
+		File renamedContainer = new File(getResourceCenter().getRootDirectory(), "RenamedContainer.fml");
+		assertTrue("Container not renamed on disk", new File(renamedContainer, "RenamedContainer.fml").isFile());
+		assertFalse(new File(getResourceCenter().getRootDirectory(), "TestContainerUI.fml").exists());
 
 		assertEquals("TestContainerUI.fib", virtualModel.getSingleMetaData(FlexoConcept.UI_METADATA, String.class));
 		assertEquals("TestContainerUI.inspector", virtualModel.getSingleMetaData(FlexoConcept.INSPECTOR_METADATA, String.class));
 
 		assertResolvesTo("TestContainerUI.fib", virtualModel.getUIComponentResource());
 		assertResolvesTo("TestContainerUI.inspector", virtualModel.getInspectorComponentResource());
+		assertTrue(new File(renamedContainer, "TestContainerUI.fib").isFile());
+	}
+
+	/** The fixture of flexo-test-resources was never touched: only its copy was renamed. */
+	@Test
+	@TestOrder(4)
+	public void test3TheSharedFixtureIsUntouched() {
+		assertNotNull(ResourceLocator.locateResource(FIXTURE_PATH + "/TestContainerUI.fml"));
+		assertTrue(ResourceLocator.locateResource("TestResourceCenter/FML/RenamedContainer.fml") == null);
 	}
 
 	/**
