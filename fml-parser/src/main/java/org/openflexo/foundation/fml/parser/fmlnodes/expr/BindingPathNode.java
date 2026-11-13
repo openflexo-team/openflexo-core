@@ -47,6 +47,8 @@ import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.expr.BindingPath;
+import org.openflexo.foundation.fml.FMLPropertyValue;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.BindingPathFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
@@ -173,6 +175,22 @@ public class BindingPathNode extends ExpressionNode<Node, BindingPath> {
 		return lpar >= 0 ? serialization.substring(0, lpar) : serialization;
 	}
 
+	/** The 'with (...)' clause of the instantiation at the supplied position, written from the model as its element writes it */
+	private String withClauseValue(int position) {
+		IBindingPathElement element = currentElement(position);
+		if (!(element instanceof CreationSchemePathElement) || ((CreationSchemePathElement<?>) element).getFMLPropertyValues() == null
+				|| ((CreationSchemePathElement<?>) element).getFMLPropertyValues().isEmpty()) {
+			return null;
+		}
+		StringBuilder returned = new StringBuilder("with (");
+		boolean isFirst = true;
+		for (FMLPropertyValue<?, ?> value : ((CreationSchemePathElement<?>) element).getFMLPropertyValues()) {
+			returned.append(isFirst ? "" : ",").append(value.getPropertyName()).append("=").append(value.getValue());
+			isFirst = false;
+		}
+		return returned.append(")").toString();
+	}
+
 	@Override
 	protected void prepareParsedPrettyPrint() {
 		List<AbstractBindingPathElementNode<?, ?>> elements = getParsedElements();
@@ -197,6 +215,13 @@ public class BindingPathNode extends ExpressionNode<Node, BindingPath> {
 						final int argumentIndex = k;
 						append(childContents("", () -> currentArgument(position, argumentIndex), "", Indentation.DoNotIndent));
 					}
+				}
+				// The 'with (...)' clause of an instantiation: kept as written while its values do not change (a property it names may be
+				// renamed)
+				if (callNode instanceof AbstractNewFlexoConceptInstanceNode
+						&& ((AbstractNewFlexoConceptInstanceNode) callNode).getFMLParametersClause() != null) {
+					appendLeaf(() -> withClauseValue(position),
+							getFragment(((AbstractNewFlexoConceptInstanceNode) callNode).getFMLParametersClause()));
 				}
 			}
 			else {
