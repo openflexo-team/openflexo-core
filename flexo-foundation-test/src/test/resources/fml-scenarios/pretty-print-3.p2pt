@@ -1,0 +1,40 @@
+# Converted from TestFMLPrettyPrint3 (source and expected files of flexo-test-resources); the positions of the nodes are still checked by that test.
+
+=== a model with a constructor
+--- source
+/**
+ * Testing dynamic contents
+ */
+model MyModel {
+
+	// An anonymous constructor
+	create () {  
+		int j;
+		i = 1;
+		i = j;
+	}
+
+}
+--- expect
+/**
+ * Testing dynamic contents
+ */
+model MyModel {
+
+	// An anonymous constructor
+	create () {  
+		int j;
+		i = 1;
+		i = j;
+	}
+
+}
+--- expect-normalized
+model MyModel {
+
+	create() {
+		int j;
+		i = 1;
+		i = j;
+	}
+}

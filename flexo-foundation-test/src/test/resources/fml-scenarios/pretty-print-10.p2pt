@@ -1,0 +1,254 @@
+# Converted from TestFMLPrettyPrint10 (source and expected files of flexo-test-resources); the positions of the nodes are still checked by that test.
+
+=== failure clauses of invariants: add, complete, remove
+--- source
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+		
+	concept AConcept {
+
+		boolean a;
+		boolean b;
+		boolean c;
+
+		assert a;
+		assert b onfailure: { 
+			b = true; 
+		}
+		assert !b onfailure: b = false; 
+		assert c onfailure: { 
+			log "c is false";
+			c = true;
+		}
+		
+	}
+	
+}
+--- expect
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+		
+	concept AConcept {
+
+		boolean a;
+		boolean b;
+		boolean c;
+
+		assert a;
+		assert b onfailure: { 
+			b = true; 
+		}
+		assert !b onfailure: b = false; 
+		assert c onfailure: { 
+			log "c is false";
+			c = true;
+		}
+		
+	}
+	
+}
+--- expect-normalized
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+
+	concept AConcept {
+		boolean a;
+		boolean b;
+		boolean c;
+		assert a;
+		assert b onfailure: {
+			b = true;
+		}
+		assert !b onfailure: b = false;
+		assert c onfailure: {
+			log "c is false";
+			c = true;
+		}
+	}
+}
+--- edit
+set failure AConcept 0 log "a is false!"
+--- expect
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+		
+	concept AConcept {
+
+		boolean a;
+		boolean b;
+		boolean c;
+
+		assert a onfailure: log "a is false!";
+		assert b onfailure: { 
+			b = true; 
+		}
+		assert !b onfailure: b = false; 
+		assert c onfailure: { 
+			log "c is false";
+			c = true;
+		}
+		
+	}
+	
+}
+--- expect-normalized
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+
+	concept AConcept {
+		boolean a;
+		boolean b;
+		boolean c;
+		assert a onfailure: log "a is false!";
+		assert b onfailure: {
+			b = true;
+		}
+		assert !b onfailure: b = false;
+		assert c onfailure: {
+			log "c is false";
+			c = true;
+		}
+	}
+}
+--- edit
+append failure AConcept 0 log "we must do something"
+--- expect
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+		
+	concept AConcept {
+
+		boolean a;
+		boolean b;
+		boolean c;
+
+		assert a onfailure: {
+	log "a is false!";
+	log "we must do something";
+}
+		assert b onfailure: { 
+			b = true; 
+		}
+		assert !b onfailure: b = false; 
+		assert c onfailure: { 
+			log "c is false";
+			c = true;
+		}
+		
+	}
+	
+}
+--- expect-normalized
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+
+	concept AConcept {
+		boolean a;
+		boolean b;
+		boolean c;
+		assert a onfailure: {
+			log "a is false!";
+			log "we must do something";
+		}
+		assert b onfailure: {
+			b = true;
+		}
+		assert !b onfailure: b = false;
+		assert c onfailure: {
+			log "c is false";
+			c = true;
+		}
+	}
+}
+--- edit
+set failure AConcept 1 none
+--- expect
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+		
+	concept AConcept {
+
+		boolean a;
+		boolean b;
+		boolean c;
+
+		assert a onfailure: {
+	log "a is false!";
+	log "we must do something";
+}
+		assert b;
+		assert !b onfailure: b = false; 
+		assert c onfailure: { 
+			log "c is false";
+			c = true;
+		}
+		
+	}
+	
+}
+--- expect-normalized
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+
+	concept AConcept {
+		boolean a;
+		boolean b;
+		boolean c;
+		assert a onfailure: {
+			log "a is false!";
+			log "we must do something";
+		}
+		assert b;
+		assert !b onfailure: b = false;
+		assert c onfailure: {
+			log "c is false";
+			c = true;
+		}
+	}
+}
+--- edit
+set failure AConcept 2 none
+--- expect
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+		
+	concept AConcept {
+
+		boolean a;
+		boolean b;
+		boolean c;
+
+		assert a onfailure: {
+	log "a is false!";
+	log "we must do something";
+}
+		assert b;
+		assert !b; 
+		assert c onfailure: { 
+			log "c is false";
+			c = true;
+		}
+		
+	}
+	
+}
+--- expect-normalized
+@URI("http://openflexo.org/test/TestResourceCenter/TestSimpleInvariants.fml")
+model TestSimpleInvariants {
+
+	concept AConcept {
+		boolean a;
+		boolean b;
+		boolean c;
+		assert a onfailure: {
+			log "a is false!";
+			log "we must do something";
+		}
+		assert b;
+		assert !b;
+		assert c onfailure: {
+			log "c is false";
+			c = true;
+		}
+	}
+}

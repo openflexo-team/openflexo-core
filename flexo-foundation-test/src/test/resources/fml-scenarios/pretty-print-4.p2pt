@@ -1,0 +1,123 @@
+# Converted from TestFMLPrettyPrint4 (source and expected files of flexo-test-resources); the positions of the nodes are still checked by that test.
+
+=== a unit updated from text, then a property added
+--- source
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
+
+	create(required MyVM aModel, boolean aFlag) {
+		myModel = parameters.aModel;
+	}
+}
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
+
+	create(required MyVM aModel, boolean aFlag) {
+		myModel = parameters.aModel;
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
+
+	create(required MyVM aModel, boolean aFlag) {
+		myModel = parameters.aModel;
+	}
+}
+--- edit
+update add-line String foo;
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
+
+	create(required MyVM aModel, boolean aFlag) {
+		myModel = parameters.aModel;
+	}
+
+String foo;
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
+	String foo;
+
+	create(required MyVM aModel, boolean aFlag) {
+		myModel = parameters.aModel;
+	}
+}
+--- edit
+add primitive newDate date
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.Date;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
+
+	create(required MyVM aModel, boolean aFlag) {
+		myModel = parameters.aModel;
+	}
+
+String foo;
+	Date newDate;
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.Date;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	MyVM myModel with ModelInstance(isRequired=true,isReadOnly=false);
+	String foo;
+	Date newDate;
+
+	create(required MyVM aModel, boolean aFlag) {
+		myModel = parameters.aModel;
+	}
+}

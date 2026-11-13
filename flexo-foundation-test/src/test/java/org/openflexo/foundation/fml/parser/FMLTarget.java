@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -15,8 +17,7 @@ import org.openflexo.p2pp.testing.PrettyPrintTarget;
  * of the supplied service manager.
  * <p>
  * The model of a compilation unit is compared through its normalized pretty-print, which is computed from the model alone: two units are the
- * same when that text is, Java imports left out (the parser adds the ones that the types need). There is no language of edits yet, so only the
- * invariants of an untouched source can be checked.
+ * same when that text is, Java imports left out (the parser adds the ones that the types need). The edits are those of {@link FMLEdits}.
  */
 public class FMLTarget implements PrettyPrintTarget {
 
@@ -26,9 +27,11 @@ public class FMLTarget implements PrettyPrintTarget {
 	private static final Pattern JAVA_IMPORT = Pattern.compile("(?m)^import [A-Za-z_][A-Za-z0-9_.]*;[ \t]*(\n|$)");
 
 	private final FlexoServiceManager serviceManager;
+	private final FlexoEditor editor;
 
 	public FMLTarget(FlexoServiceManager serviceManager) {
 		this.serviceManager = serviceManager;
+		this.editor = new DefaultFlexoEditor(null, serviceManager);
 	}
 
 	@Override
@@ -53,14 +56,15 @@ public class FMLTarget implements PrettyPrintTarget {
 
 			@Override
 			public void apply(String command) {
-				throw new UnsupportedOperationException("FML has no language of edits yet: " + command);
+				FMLEdits.apply(unit, editor, command);
 			}
 		};
 	}
 
 	/** The text without its Java imports, implicit or not: the invariants do not tell the two apart */
 	static String withoutJavaImports(String text) {
-		return JAVA_IMPORT.matcher(text).replaceAll("");
+		// the blank rows that were around an import are not told apart either
+		return JAVA_IMPORT.matcher(text).replaceAll("").replaceAll("\n{3,}", "\n\n");
 	}
 
 	@Override

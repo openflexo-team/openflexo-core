@@ -1,0 +1,645 @@
+# Converted from TestFMLPrettyPrint5 (source and expected files of flexo-test-resources); the positions of the nodes are still checked by that test.
+
+=== concepts and behaviours: abstract, visibility, body
+--- source
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	concept ConceptA {
+	
+	}
+	
+	protected concept ConceptB {
+	
+	}
+	
+	abstract concept ConceptC {
+	}
+	
+	public abstract concept ConceptD {
+	}
+	
+	protected concept ConceptE {
+	
+		protected firstBehaviour() {
+		}
+		
+		abstract void secondBehaviour(String a);
+		
+		String thirdBehaviour();
+	}
+}
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	concept ConceptA {
+	
+	}
+	
+	protected concept ConceptB {
+	
+	}
+	
+	abstract concept ConceptC {
+	}
+	
+	public abstract concept ConceptD {
+	}
+	
+	protected concept ConceptE {
+	
+		protected firstBehaviour() {
+		}
+		
+		abstract void secondBehaviour(String a);
+		
+		String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	concept ConceptA {
+	}
+
+	protected concept ConceptB {
+	}
+
+	abstract concept ConceptC {
+	}
+
+	public abstract concept ConceptD {
+	}
+
+	protected concept ConceptE {
+		protected firstBehaviour() {
+		}
+		abstract void secondBehaviour(String a);
+		String thirdBehaviour();
+	}
+}
+--- edit
+set abstract ConceptA true
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	abstract concept ConceptA {
+	
+	}
+	
+	protected concept ConceptB {
+	
+	}
+	
+	abstract concept ConceptC {
+	}
+	
+	public abstract concept ConceptD {
+	}
+	
+	protected concept ConceptE {
+	
+		protected firstBehaviour() {
+		}
+		
+		abstract void secondBehaviour(String a);
+		
+		String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	abstract concept ConceptA {
+	}
+
+	protected concept ConceptB {
+	}
+
+	abstract concept ConceptC {
+	}
+
+	public abstract concept ConceptD {
+	}
+
+	protected concept ConceptE {
+		protected firstBehaviour() {
+		}
+		abstract void secondBehaviour(String a);
+		String thirdBehaviour();
+	}
+}
+--- edit
+set abstract ConceptA false
+set visibility ConceptA public
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	public concept ConceptA {
+	
+	}
+	
+	protected concept ConceptB {
+	
+	}
+	
+	abstract concept ConceptC {
+	}
+	
+	public abstract concept ConceptD {
+	}
+	
+	protected concept ConceptE {
+	
+		protected firstBehaviour() {
+		}
+		
+		abstract void secondBehaviour(String a);
+		
+		String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	public concept ConceptA {
+	}
+
+	protected concept ConceptB {
+	}
+
+	abstract concept ConceptC {
+	}
+
+	public abstract concept ConceptD {
+	}
+
+	protected concept ConceptE {
+		protected firstBehaviour() {
+		}
+		abstract void secondBehaviour(String a);
+		String thirdBehaviour();
+	}
+}
+--- edit
+set visibility ConceptB default
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	public concept ConceptA {
+	
+	}
+	
+	concept ConceptB {
+	
+	}
+	
+	abstract concept ConceptC {
+	}
+	
+	public abstract concept ConceptD {
+	}
+	
+	protected concept ConceptE {
+	
+		protected firstBehaviour() {
+		}
+		
+		abstract void secondBehaviour(String a);
+		
+		String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	public concept ConceptA {
+	}
+
+	concept ConceptB {
+	}
+
+	abstract concept ConceptC {
+	}
+
+	public abstract concept ConceptD {
+	}
+
+	protected concept ConceptE {
+		protected firstBehaviour() {
+		}
+		abstract void secondBehaviour(String a);
+		String thirdBehaviour();
+	}
+}
+--- edit
+set abstract ConceptC false
+set visibility ConceptC public
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	public concept ConceptA {
+	
+	}
+	
+	concept ConceptB {
+	
+	}
+	
+	public concept ConceptC {
+	}
+	
+	public abstract concept ConceptD {
+	}
+	
+	protected concept ConceptE {
+	
+		protected firstBehaviour() {
+		}
+		
+		abstract void secondBehaviour(String a);
+		
+		String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	public concept ConceptA {
+	}
+
+	concept ConceptB {
+	}
+
+	public concept ConceptC {
+	}
+
+	public abstract concept ConceptD {
+	}
+
+	protected concept ConceptE {
+		protected firstBehaviour() {
+		}
+		abstract void secondBehaviour(String a);
+		String thirdBehaviour();
+	}
+}
+--- edit
+set visibility ConceptA private
+set abstract ConceptD false
+set visibility ConceptD protected
+set visibility ConceptE default
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	private concept ConceptA {
+	
+	}
+	
+	concept ConceptB {
+	
+	}
+	
+	public concept ConceptC {
+	}
+	
+	protected concept ConceptD {
+	}
+	
+	concept ConceptE {
+	
+		protected firstBehaviour() {
+		}
+		
+		abstract void secondBehaviour(String a);
+		
+		String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	private concept ConceptA {
+	}
+
+	concept ConceptB {
+	}
+
+	public concept ConceptC {
+	}
+
+	protected concept ConceptD {
+	}
+
+	concept ConceptE {
+		protected firstBehaviour() {
+		}
+		abstract void secondBehaviour(String a);
+		String thirdBehaviour();
+	}
+}
+--- edit
+set visibility ConceptE.firstBehaviour default
+set visibility ConceptE.secondBehaviour public
+set visibility ConceptE.thirdBehaviour public
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	private concept ConceptA {
+	
+	}
+	
+	concept ConceptB {
+	
+	}
+	
+	public concept ConceptC {
+	}
+	
+	protected concept ConceptD {
+	}
+	
+	concept ConceptE {
+	
+		firstBehaviour() {
+		}
+		
+		public abstract void secondBehaviour(String a);
+		
+		public String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	private concept ConceptA {
+	}
+
+	concept ConceptB {
+	}
+
+	public concept ConceptC {
+	}
+
+	protected concept ConceptD {
+	}
+
+	concept ConceptE {
+		firstBehaviour() {
+		}
+		public abstract void secondBehaviour(String a);
+		public String thirdBehaviour();
+	}
+}
+--- edit
+set abstract ConceptE.firstBehaviour true
+set body ConceptE.firstBehaviour none
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	private concept ConceptA {
+	
+	}
+	
+	concept ConceptB {
+	
+	}
+	
+	public concept ConceptC {
+	}
+	
+	protected concept ConceptD {
+	}
+	
+	concept ConceptE {
+	
+		abstract firstBehaviour();
+		
+		public abstract void secondBehaviour(String a);
+		
+		public String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	private concept ConceptA {
+	}
+
+	concept ConceptB {
+	}
+
+	public concept ConceptC {
+	}
+
+	protected concept ConceptD {
+	}
+
+	concept ConceptE {
+		abstract firstBehaviour();
+		public abstract void secondBehaviour(String a);
+		public String thirdBehaviour();
+	}
+}
+--- edit
+set abstract ConceptE.secondBehaviour false
+set body ConceptE.secondBehaviour empty
+set abstract ConceptE.thirdBehaviour true
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	private concept ConceptA {
+	
+	}
+	
+	concept ConceptB {
+	
+	}
+	
+	public concept ConceptC {
+	}
+	
+	protected concept ConceptD {
+	}
+	
+	concept ConceptE {
+	
+		abstract firstBehaviour();
+		
+		public void secondBehaviour(String a) {
+}
+		
+		public abstract String thirdBehaviour();
+	}
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+import VirtualModel MyVM from ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	private concept ConceptA {
+	}
+
+	concept ConceptB {
+	}
+
+	public concept ConceptC {
+	}
+
+	protected concept ConceptD {
+	}
+
+	concept ConceptE {
+		abstract firstBehaviour();
+		public void secondBehaviour(String a) {
+		}
+		public abstract String thirdBehaviour();
+	}
+}

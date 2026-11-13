@@ -1,0 +1,68 @@
+# Converted from TestFMLPrettyPrint6 (source and expected files of flexo-test-resources); the positions of the nodes are still checked by that test.
+
+=== a behaviour of the model becomes abstract
+--- source
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	public firstBehaviour() {
+	}
+		
+}
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	public firstBehaviour() {
+	}
+		
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	public firstBehaviour() {
+	}
+}
+--- edit
+set abstract model.firstBehaviour true
+--- expect
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+	
+	public abstract firstBehaviour() {
+	}
+		
+}
+--- expect-normalized
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://openflexo.org/test/TestResourceCenter/MyVM.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+@Version("0.1")
+model TestViewPointA {
+
+	public abstract firstBehaviour() {
+	}
+}

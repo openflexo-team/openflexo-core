@@ -5,7 +5,6 @@
 FMLParsingExamples/BasicDeclaration.fml                  CORE-D-63
 FMLParsingExamples/MatchingVM.fml                        CORE-D-65
 FMLParsingExamples/PathologicCase.fml                    CORE-D-33
-FMLParsingExamples/TestAddFlexoConceptInstance.fml       CORE-D-33
 FMLParsingExamples/TestAddVirtualModelInstance.fml       CORE-D-64, CORE-D-66
 FMLParsingExamples/TestAnonymousCreationScheme.fml       CORE-D-33
 FMLParsingExamples/TestAssignations.fml                  CORE-D-33
@@ -27,6 +26,3 @@ FMLParsingExamples/TestTypes.fml                         CORE-D-33
 FMLParsingExamples/TestUseOfKeywordsInBindings.fml       CORE-D-33
 FMLParsingExamples/UIAnnotations.fml                     CORE-D-63
 TestFMLPrettyPrint2/TestBasicTypesWithComments.fml       CORE-D-33
-TestFMLPrettyPrint5/InitialModel.fml                     CORE-D-33
-TestFMLPrettyPrint8/InitialModel.fml                     CORE-D-33
-TestFMLPrettyPrint8/Step1Normalized.fml                  CORE-D-33

@@ -1,0 +1,173 @@
+# Converted from TestFMLPrettyPrint1 (source and expected files of flexo-test-resources); the positions of the nodes are still checked by that test.
+
+=== imports and properties: modify, add, remove
+--- source
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.List;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	private String foo;
+}
+--- expect
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.List;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	private String foo;
+}
+--- expect-normalized
+import java.lang.String;
+import java.util.List;
+
+model MyModel {
+	int i;
+	private String foo;
+}
+--- edit
+set import 1 java.util.ArrayList
+--- expect
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.ArrayList;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	private String foo;
+}
+--- expect-normalized
+import java.lang.String;
+import java.util.ArrayList;
+
+model MyModel {
+	int i;
+	private String foo;
+}
+--- edit
+add primitive newString string
+--- expect
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.ArrayList;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	private String foo;
+	String newString;
+}
+--- expect-normalized
+import java.lang.String;
+import java.util.ArrayList;
+
+model MyModel {
+	int i;
+	private String foo;
+	String newString;
+}
+--- edit
+add primitive newDate date
+--- expect
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	private String foo;
+	String newString;
+	Date newDate;
+}
+--- expect-normalized
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+model MyModel {
+	int i;
+	private String foo;
+	String newString;
+	Date newDate;
+}
+--- edit
+remove property foo
+--- expect
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	String newString;
+	Date newDate;
+}
+--- expect-normalized
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+model MyModel {
+	int i;
+	String newString;
+	Date newDate;
+}
+--- edit
+remove property newDate
+--- expect
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	String newString;
+}
+--- expect-normalized
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+model MyModel {
+	int i;
+	String newString;
+}
