@@ -87,7 +87,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("", "abstract", SPACE), getAbstractFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents(";"), getSemiFragment());
 	}

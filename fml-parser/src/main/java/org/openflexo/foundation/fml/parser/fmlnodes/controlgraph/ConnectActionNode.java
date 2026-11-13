@@ -99,9 +99,9 @@ public class ConnectActionNode extends ControlGraphNode<AConnectActionFmlActionE
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Connect.getKeyword(), SPACE), getConnectKeywordFragment());
-		append(dynamicContents(() -> getModelObject().getConnect().toString(), SPACE), getConnectFragment());
+		append(bindingContents(() -> getModelObject().getConnect(), SPACE), getConnectFragment());
 		append(staticContents("", FMLKeywords.Using.getKeyword(), SPACE), getUsingKeywordFragment());
-		append(dynamicContents(() -> getModelObject().getUsing().toString()), getUsingFragment());
+		append(bindingContents(() -> getModelObject().getUsing()), getUsingFragment());
 		append(staticContents(";"), getSemiFragment());
 
 	}

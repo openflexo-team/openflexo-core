@@ -127,7 +127,7 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off
-		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getVariableName()), getNameFragment());
 		when(() -> hasInitializer()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignOperatorFragment())
 		.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));

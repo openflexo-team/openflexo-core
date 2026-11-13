@@ -89,7 +89,7 @@ public class FireEventNode extends ControlGraphNode<AFireActionFmlActionExp, Fir
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Fire.getKeyword(), SPACE), getFireFragment());
-		append(dynamicContents(() -> getModelObject().getEventInstance().toString()), getExpressionFragment());
+		append(bindingContents(() -> getModelObject().getEventInstance()), getExpressionFragment());
 		append(staticContents(";"), getSemiFragment());
 
 	}

@@ -144,13 +144,13 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		// @formatter:off
 		when(() -> isRequired()).thenAppend(staticContents("", "required", SPACE), getRequiredFragment());
 
-		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType())).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
 
 		when(() -> hasDefaultValue())
 				// .thenAppend(staticContents(SPACE, "default",""), getDefaultFragment())
 				.thenAppend(staticContents("="), getDefaultAssignFragment())
-				.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultExpressionFragment());
+				.thenAppend(bindingContents(() -> getModelObject().getDefaultValue()), getDefaultExpressionFragment());
 		// @formatter:on
 	}
 

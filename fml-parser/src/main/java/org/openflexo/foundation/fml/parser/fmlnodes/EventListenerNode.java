@@ -141,10 +141,10 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 		
 		append(staticContents("", FMLKeywords.Listen.getKeyword(), SPACE), getListenFragment());
 
-		append(dynamicContents(() -> serializeType(getModelObject().getEventType())), getEventTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getEventType())).keepingParsedTextWhileUnchanged(), getEventTypeFragment());
 
 		append(staticContents(SPACE, "from", ""), getFromFragment());
-		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		append(bindingContents(SPACE, () -> getFromBinding()), getFromExpressionFragment());
 
 		when(() -> hasNoImplementation())
 			.thenAppend(staticContents(";"), getSemiFragment())
@@ -156,8 +156,8 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 
 	}
 
-	private String getFromAsString() {
-		return getModelObject().getListenedVirtualModelInstance().toString();
+	private DataBinding<?> getFromBinding() {
+		return getModelObject().getListenedVirtualModelInstance();
 	}
 
 	private RawSourceFragment getListenFragment() {

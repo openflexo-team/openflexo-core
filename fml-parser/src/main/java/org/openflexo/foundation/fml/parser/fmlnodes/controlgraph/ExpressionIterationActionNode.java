@@ -221,13 +221,13 @@ public class ExpressionIterationActionNode extends ControlGraphNode<Node, Expres
 
 		append(staticContents("for"), getForFragment());
 		append(staticContents(SPACE, "(", ""), getLParFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getItemType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getItemType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getIteratorName()), getIteratorNameFragment());
 		append(staticContents("="), getAssignFragment());
-		append(dynamicContents(() -> getModelObject().getInitExpression().toString()), getInitExpressionFragment());
+		append(bindingContents(() -> getModelObject().getInitExpression()), getInitExpressionFragment());
 		append(staticContents(SPACE,";",SPACE), getSemi1Fragment());
 		when(() -> hasCondition())
-				.thenAppend(dynamicContents(() -> getModelObject().getConditionExpression().toString()), getConditionExpressionFragment());
+				.thenAppend(bindingContents(() -> getModelObject().getConditionExpression()), getConditionExpressionFragment());
 		append(staticContents(SPACE,";",SPACE), getSemi2Fragment());
 		append(childContents("", () -> getModelObject().getStatementExpression(), "", Indentation.DoNotIndent));
 		append(staticContents(")"), getRParFragment());

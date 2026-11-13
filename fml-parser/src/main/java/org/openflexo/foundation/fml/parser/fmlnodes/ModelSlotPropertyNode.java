@@ -137,7 +137,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 
 		// @formatter:off
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType())).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(cardinalityContents(() -> getModelObject().getCardinality(), () -> getPCardinality()), getCardinalityFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "with", SPACE), getWithFragment());

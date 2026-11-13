@@ -132,7 +132,7 @@ public class AssignationActionNode extends AssignableActionNode<PAssignmentState
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getAssignation().toString()), getLeftHandSideFragment());
+		append(bindingContents(() -> getModelObject().getAssignation()), getLeftHandSideFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getAssignmentOperator() != null
 				? getModelObject().getAssignmentOperator().getSymbol()
 				: AssignmentOperator.ASSIGN.getSymbol()), getOperatorFragment());

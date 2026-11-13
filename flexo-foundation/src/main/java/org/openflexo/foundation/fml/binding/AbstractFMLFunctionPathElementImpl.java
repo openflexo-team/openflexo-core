@@ -204,6 +204,10 @@ public abstract class AbstractFMLFunctionPathElementImpl<F extends Function> ext
 	}
 
 	public void clearSerializationRepresentation() {
+		// The path that activated this element caches its text: it must forget it too (CORE-D-67)
+		if (getBindingPath() != null) {
+			getBindingPath().clearSerializationRepresentation();
+		}
 		serializationRepresentation = null;
 	}
 

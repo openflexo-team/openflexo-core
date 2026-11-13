@@ -1554,7 +1554,7 @@ anything about the race, which the local runs never triggered.
 
 Mapped on `formod-app` (583 warnings at the start of the application, 4 of them from opening a project) and on the headless tests (the same families, hundreds of times). Fixed since: CORE-D-31 (technologies forgotten at load), CORE-D-32 (stale "not implemented yet"), and the OWL adapter ones (`openflexo-owl/KNOWN_DEFECTS.md`). What is left is below, with what was measured and what was not.
 
-### CORE-D-33 — The text rebuilt from the model is not the text that was parsed  ·  `TODO`
+### CORE-D-33 — The text rebuilt from the model is not the text that was parsed  ·  `IN PROGRESS`
 
 **Symptom.** `FMLCompilationUnit.getFMLPrettyPrint()` — what the FML editor of the Modeller shows and saves — differs from the source file on the 10 Formose units compared (2026-10-09). With the whitespace, the comments and the `java.lang.String` imports left out, the differences measured are:
 - **Imports added**: `import java.lang.String;` (and `ExcelCell`, `FlexoEnumInstance` once) appears where the source has none. **Intended behaviour, not a defect** (confirmed 2026-11-12): the parser adds the imports that the types of a unit need. The p2pp tests do not compare Java imports.
@@ -1575,6 +1575,25 @@ directories: **28 differ**, Java imports not compared (the added imports are int
 `i > 0`, `a+b*c-9` becomes `a + b * c - 9`, `ns+"x"` becomes `ns + "x"`, parentheses go (`assert (i != -1)`, `from (this)`), and a qualified type
 is shortened (`java.lang.String aString` becomes `String aString`). The files and their family are in
 `flexo-foundation-test/src/test/resources/fml-invariants-known-defects.txt`. Four more differences are not cosmetic, see CORE-D-63 to CORE-D-66.
+
+**Expressions and types fixed (2026-11-13).** The preserving pretty-print no longer writes an expression again from the model when it did
+not change: it is printed through the p2pp nodes of the expression (one per operator, operand and path element, `fml-parser/.../fmlnodes/expr`),
+whose text is the parsed fragment where the operands are replaced by their own print, and whose leaves (constants, names, the head of a call,
+types) keep their parsed text while their value is the one captured once the unit was built (P2PP-F-2). An FML node prints a binding with
+`binding.getPrettyPrint()` (CONNIE-F-3: the `DataBindingNode` of a binding is its pretty-print delegate) instead of `binding.toString()`,
+which stays normalized, as the normalized pretty-print. A binding typed in an inspector keeps its syntax too: its text is parsed with p2pp
+nodes over it. Kept as written: spacing (`1+2`, `i>0`), parentheses (`assert (i != -1)`,
+`from (this)`), qualified types (`java.lang.String`, in expressions and in declarations), the separators of argument and `where` lists,
+annotation values (`@URI(local+"x")`). An edited expression is written from the model, as before: a binding whose expression object was
+replaced (its text edited), an operator or operand replaced in place, a path whose shape changed (another number of elements or of
+arguments). Measured with `TestFMLPrettyPrintInvariants` (strict run): 24 files differed, 11 still do, none on an expression.
+
+**Still open (measured 2026-11-13, every differing row of the 103 files listed).** `with ConceptInstance()` is added to a concept-typed role
+declared without it (`ConceptB aConceptB;`, 5 files), and `Concept _concept with FlexoConceptInstanceRole;` is written
+`... with ConceptInstance();` (`MatchingVM`). The other rows are CORE-D-63, CORE-D-64, CORE-D-66 and CORE-D-68.
+
+**Masked, not fixed.** Since a declaration keeps the type written, two model losses no longer show in the preserving pretty-print of an
+untouched source, but are still in the model (and in the normalized pretty-print): CORE-D-69 and CORE-D-70.
 
 ### CORE-D-52 — The text printed for a concept-typed property with an initializer does not parse again  ·  `TODO`
 
@@ -1783,11 +1802,15 @@ preserving and in the normalized pretty-print. What the source said is lost. Fil
 the assignment of `name` is not in the model. The same clause is kept after `new MyVM::constructor1(1,"foo")` (`with (name="tutu")`).
 File: `TestAddVirtualModelInstance` (`FMLParsingExamples`).
 
-### CORE-D-65 — `log("x")` is printed `log"x"` by the preserving pretty-print  ·  `TODO`
+### CORE-D-65 — `log("x")` is printed `log"x"` by the preserving pretty-print  ·  `DONE`
 
 **Symptom.** `log("Hello world!");` is printed `log"Hello world!";` by the preserving pretty-print and `log "Hello world!";` by the normalized one;
 the source has parentheses and no such spacing. Not checked: whether `log"x"` parses again. Files: `MatchingVM`, `TestBehaviours2`,
 `TestMiscellaneousActions` (`FMLParsingExamples`).
+
+**Fixed (2026-11-13)** with CORE-D-33: the parentheses belong to the parsed text of the binding, which is kept while the binding does not change.
+The three files are reproduced. The normalized pretty-print still writes `log "x"`, which parses back to the same model (invariant
+`normalized-parse-back`).
 
 ### CORE-D-66 — The normalized pretty-print of a constructor call with arguments is not stable  ·  `TODO`
 
@@ -1795,7 +1818,7 @@ the source has parentheses and no such spacing. Not checked: whether `log"x"` pa
 `this.new MyVM(null,null,null,null,null,null,null,null)`: the arguments double at each round trip. File: `TestAddVirtualModelInstance`
 (`FMLParsingExamples`), invariant `normalized-stable`.
 
-### CORE-D-67 — A reference in an expression follows a first rename of its target, not a second one  ·  `TODO`
+### CORE-D-67 — A reference in an expression follows a first rename of its target, not a second one  ·  `DONE`
 
 **Symptom.** In `FMLParsingExamples/TestAddFlexoConceptInstance.fml`, rename the constructor `ConceptB::constructor1` to `q`, print the unit
 (`new ConceptB::constructor1()` is now written `new ConceptB::q()`, as expected), rename it back to `constructor1`, print again: the expression
@@ -1805,3 +1828,52 @@ document that is NOT printed between the two renames, the text is right. A print
 **Verified** by execution (2026-11-13) with the edit matrix of the p2pp harness (`TestFMLEditMatrix`): the groups `rename-concept/*` and
 `rename-behaviour/*` fail on the oracle "undo-after-print", on `TestAddFlexoConceptInstance` and `TestFMLPrettyPrint8/InitialModel` only. The
 mechanism is NOT investigated: the text of an expression is probably kept by its binding once the first print has used it.
+
+**What it was (verified 2026-11-13 by execution, `TestRenameInExpressions` in `flexo-foundation-test`).** Wider than the symptom: once
+`toString()` had been called, the text of a binding (`DataBinding.toString()`, what the pretty-print used and what an inspector shows) did not
+follow even a FIRST rename. `BindingPath.toString()` caches its text. A renamed constructor clears the cache of its path element and fires
+`BINDING_PATH_ELEMENT_NAME_CHANGED` on the binding model of its concept, which only reaches the bindings whose owner has that binding model:
+`new ConceptB::q()`, written in a behaviour of the model, never heard of it. `AbstractFMLFunctionPathElementImpl` overrode
+`clearSerializationRepresentation()` without clearing the path that activated the element (connie's `FunctionPathElementImpl` does), a
+`new X(...)` did not listen to its concept at all, and a renamed property did not clear its path either.
+
+**Fix.** An element now clears the cache of the path that activated it when its text changes (a renamed constructor, behaviour or property;
+`CreationSchemePathElement` listens to its concept while activated). In connie, a path caches its text only while every element is activated
+by it, i.e. able to tell it (CONNIE-D-3). The preserving pretty-print does not depend on this cache any more (its leaves read the names from
+the model). Tests: `TestRenameInExpressions` (4, toString and both pretty-prints, a constructor and a concept renamed twice) and the 7 groups
+of `TestFMLEditMatrix`, which pass, except one case of `rename-behaviour/only` that is another defect (CORE-D-71).
+
+### CORE-D-68 — The parameter of a setter is written `value`, whatever its name  ·  `TODO`
+
+**Symptom.** In a `get/set` property, `set(int aValue) { internalValue = aValue; }` is printed `set(int value) { internalValue = aValue; }`:
+the body still uses `aValue`, which the printed text no longer declares. File: `TestProperties` (`FMLParsingExamples`), found by listing every
+differing row of the invariants files (2026-11-13), hidden until then behind an earlier difference of the file. Not checked: whether the name
+is lost by the model or only by the printer, and whether the printed text still parses and runs.
+
+### CORE-D-69 — A wrapper type of a behaviour parameter becomes the primitive type  ·  `TODO`
+
+**Symptom.** `required Boolean aC2, Boolean aC3=true` (parameters of a behaviour) were printed `boolean`: the model holds the primitive type.
+File: `UIAnnotations` (`FMLParsingExamples`). Seen in the pretty-print written from the model (2026-11-13); since CORE-D-33 the preserving
+pretty-print of an untouched source keeps `Boolean`, but the model still says `boolean` (the normalized pretty-print shows it). Not checked:
+where the type is changed (parser, typing space, parameter), and whether other wrappers are concerned.
+
+### CORE-D-70 — The version of a type reference is lost  ·  `TODO`
+
+**Symptom.** `Foo@(1) foo1;` (a type with a version, `typedef String as Foo`) was printed `Foo foo1;`: the version is not in the model.
+File: `TestTypeVersions` (`FMLParsingExamples`). As for CORE-D-69, the preserving pretty-print of an untouched source now keeps `Foo@(1)`, the
+model and the normalized pretty-print do not. Not checked: whether a version is meant to be kept by the model at all.
+
+### CORE-D-71 — A call of a behaviour loses its behaviour when the behaviour is renamed  ·  `TODO`
+
+**Symptom.** In `FMLParsingExamples/TestInvariants.fml`, rename `AConcept.incrementA` to `q` then back to `incrementA`: `this.incrementA();`
+is printed `this.q();` (both pretty-prints, and `DataBinding.toString()`). Verified by execution (2026-11-13): after the first rename the
+`FlexoBehaviourPathElement` of the call is unresolved (`getFunction()` null, text `q()`), so it no longer listens to the behaviour and the
+second rename does not reach it. Same result on the code before CORE-D-33 / CORE-D-67 were fixed (test run alone).
+
+**Order-dependent.** `TestFMLEditMatrix` (group `rename-behaviour/only`, oracle "undo") passed on this case in some runs of the whole module
+and failed in others: something done by the tests that run before (in the same JVM) lets the call resolve again. Not investigated: why the
+element is not resolved again against the renamed behaviour (its parsed name is set to the new one before the binding is invalidated).
+
+**Tests.** `TestRenameInExpressions.aBehaviourRenamedAndBackGivesTheSourceBack` (skipped while known defects are tolerated), row
+`rename-behaviour/only` of `fml-matrix-known-defects.txt`.
+

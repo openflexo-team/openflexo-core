@@ -142,7 +142,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 		//		FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		when(() -> hasReturnType())
-			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getReturnType()),SPACE), getTypeFragment());
+			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getReturnType()),SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,

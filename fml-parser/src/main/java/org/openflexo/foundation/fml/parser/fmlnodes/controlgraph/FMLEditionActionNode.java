@@ -152,13 +152,13 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		when(() -> hasInClause())
 		.thenAppend(staticContents(SPACE, "in",""), getInFragment())
 		//.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
-		.thenAppend(dynamicContents(SPACE, () -> getInAsString()), getInExpressionFragment());
+		.thenAppend(bindingContents(SPACE, () -> getInBinding()), getInExpressionFragment());
 		//.thenAppend(staticContents(")"), getRParInFragment());
 
 		when(() -> hasFromClause())
 		.thenAppend(staticContents(SPACE, "from",""), getFromFragment())
 		//.thenAppend(staticContents(SPACE, "(",""), getLParFromFragment())
-		.thenAppend(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		.thenAppend(bindingContents(SPACE, () -> getFromBinding()), getFromExpressionFragment());
 		//.thenAppend(staticContents(")"), getRParFromFragment());
 
 		// Append semi only when required
@@ -195,9 +195,9 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		}
 	}
 
-	private String getInAsString() {
+	private DataBinding<?> getInBinding() {
 		if (getModelObject() instanceof TechnologySpecificActionDefiningReceiver) {
-			return ((TechnologySpecificActionDefiningReceiver) getModelObject()).getReceiver().toString();
+			return ((TechnologySpecificActionDefiningReceiver) getModelObject()).getReceiver();
 		}
 		return null;
 	}
@@ -206,7 +206,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		return false;
 	}
 
-	private String getFromAsString() {
+	private DataBinding<?> getFromBinding() {
 		return null;
 	}
 

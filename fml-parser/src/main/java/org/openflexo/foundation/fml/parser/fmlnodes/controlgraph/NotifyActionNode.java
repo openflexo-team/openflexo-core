@@ -97,10 +97,10 @@ public class NotifyActionNode extends ControlGraphNode<ANotifyActionFmlActionExp
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Notify.getKeyword(), SPACE), getNotifyFragment());
-		append(dynamicContents(() -> getModelObject().getPropertyName().toString()), getExpressionFragment());
+		append(bindingContents(() -> getModelObject().getPropertyName()), getExpressionFragment());
 		when(() -> getModelObject().getObject().isSet())
 				.thenAppend(staticContents(SPACE, FMLKeywords.In.getKeyword(), SPACE), getInFragment())
-				.thenAppend(dynamicContents(() -> getModelObject().getObject().toString()), getObjectFragment());
+				.thenAppend(bindingContents(() -> getModelObject().getObject()), getObjectFragment());
 		append(staticContents(";"), getSemiFragment());
 
 	}

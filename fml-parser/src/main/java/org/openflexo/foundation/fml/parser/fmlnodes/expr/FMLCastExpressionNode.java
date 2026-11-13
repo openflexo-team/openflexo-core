@@ -73,4 +73,11 @@ public class FMLCastExpressionNode extends ExpressionNode<ACastUnaryExpNotPlusMi
 		return this;
 	}
 
+	@Override
+	protected void prepareParsedPrettyPrint() {
+		// The type keeps the text written by the user (a qualified name, for instance) while it does not change
+		appendLeaf(() -> serializeType(getModelObject().getCastType()), getFragment(getASTNode().getType()));
+		appendOperand(() -> getModelObject().getArgument());
+	}
+
 }

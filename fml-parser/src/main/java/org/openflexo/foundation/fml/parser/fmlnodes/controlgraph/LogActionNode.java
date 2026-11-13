@@ -91,7 +91,7 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 
 		append(staticContents("","log",SPACE), getLogFragment());
 		// append(staticContents("("), getLParFragment());
-		append(dynamicContents(() -> getModelObject().getLogString().toString()), getExpressionFragment());
+		append(bindingContents(() -> getModelObject().getLogString()), getExpressionFragment());
 		// append(staticContents(")"), getRParFragment());
 		append(staticContents(";"), getSemiFragment());
 

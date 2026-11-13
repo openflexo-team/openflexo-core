@@ -98,7 +98,7 @@ public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair,
 
 		append(dynamicContents(() -> getModelObject().getKey()), getKeyFragment());
 		append(staticContents("="), getAssignFragment());
-		append(dynamicContents(() -> getModelObject().getSerializationRepresentation()), getValueFragment());
+		append(dynamicContents(() -> getModelObject().getSerializationRepresentation()).keepingParsedTextWhileUnchanged(), getValueFragment());
 	}
 
 	private RawSourceFragment getKeyFragment() {

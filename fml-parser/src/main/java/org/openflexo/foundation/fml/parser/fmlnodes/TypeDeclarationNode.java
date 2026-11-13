@@ -100,7 +100,7 @@ public class TypeDeclarationNode extends FMLObjectNode<ATypeDecl, TypeDeclaratio
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("", FMLKeywords.Typedef.getKeyword(), SPACE), getTypeKeywordFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getReferencedType(), false), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getReferencedType(), false), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(staticContents("", FMLKeywords.As.getKeyword(), SPACE), getAsFragment());
 		append(dynamicContents(() -> getModelObject().getAbbrev()), getAbbrevFragment());
 		append(staticContents(";"), getSemiFragment());

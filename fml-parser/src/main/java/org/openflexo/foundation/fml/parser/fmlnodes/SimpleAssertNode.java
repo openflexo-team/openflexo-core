@@ -120,7 +120,7 @@ public class SimpleAssertNode extends AbstractAssertNode<PSimpleAssertDeclaratio
 
 		// @formatter:off
 		append(staticContents("", FMLKeywords.Assert.getKeyword(), SPACE), getAssertFragment());
-		append(dynamicContents(() -> getModelObject().getConstraint().toString()), getExpressionFragment());
+		append(bindingContents(() -> getModelObject().getConstraint()), getExpressionFragment());
 
 		// With onfailure clause with single line violation control graph
 		when(() -> getModelObject().hasFailureClause() && isSingleLineControlGraph(getModelObject().getViolationControlGraph()))

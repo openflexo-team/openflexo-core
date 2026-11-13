@@ -250,6 +250,10 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 				if (evt.getPropertyName().equals(FlexoProperty.NAME_KEY) || evt.getPropertyName().equals(FlexoProperty.PROPERTY_NAME_KEY)) {
 					// System.out.println("Notify name changing for " + getFlexoProperty() + " new=" + getVariableName());
 					setParsed(getFlexoProperty().getName());
+					// The path that activated this element caches its text (CORE-D-67)
+					if (getBindingPath() != null) {
+						getBindingPath().clearSerializationRepresentation();
+					}
 					getPropertyChangeSupport().firePropertyChange(NAME_PROPERTY, evt.getOldValue(), getLabel());
 				}
 				if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoProperty.RESULTING_TYPE_PROPERTY)) {

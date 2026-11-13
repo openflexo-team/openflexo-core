@@ -84,7 +84,7 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
+		append(bindingContents(() -> getModelObject().getExpression()), getExpressionFragment());
 
 		// Append semi only when required
 		// final to true is here a little hack to prevent semi to be removed at pretty-print

@@ -1,5 +1,8 @@
 package org.openflexo.foundation.fml.parser;
 
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.connie.DataBindingPrettyPrintDelegate;
+import java.util.function.Consumer;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -166,6 +169,29 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 		// This binding only carries the expression back: stop it listening to the bindable, where it would stay registered forever
 		// (CORE-D-23)
 		vehicle.stopListening();
+		return vehicle.getExpression();
+	}
+
+	/**
+	 * Parse the supplied node, read from the supplied source (the text of a binding alone), as an expression of the supplied bindable,
+	 * without notifying that bindable (CORE-D-45), and give to the receiver the delegate that writes that expression back as it was typed
+	 * (its node, whose pretty-print is prepared)
+	 */
+	public static Expression makeDetachedExpression(Node node, RawSource rawSource, Bindable bindable, FMLModelFactory modelFactory,
+			AbstractFMLTypingSpace typingSpace, FMLBindingFactory bindingFactory, Consumer<DataBindingPrettyPrintDelegate> delegateReceiver) {
+		DetachedBindingAnalyzer analyzer = new DetachedBindingAnalyzer(modelFactory, node, rawSource, typingSpace, bindingFactory);
+		DataBindingNode dataBindingNode = new DataBindingNode(node, bindable, BindingDefinitionType.GET, Object.class, analyzer);
+		dataBindingNode.setDetached(true);
+		_makeExpression(node, bindable, analyzer, dataBindingNode);
+		DataBinding<?> vehicle = dataBindingNode.getModelObject();
+		// This binding only carries the expression back: stop it listening to the bindable, where it would stay registered forever
+		// (CORE-D-23)
+		vehicle.stopListening();
+		if (delegateReceiver != null && vehicle.getExpression() != null) {
+			dataBindingNode.initializePrettyPrint(dataBindingNode, dataBindingNode.makePrettyPrintContext());
+			dataBindingNode.captureReferenceValues();
+			delegateReceiver.accept(dataBindingNode);
+		}
 		return vehicle.getExpression();
 	}
 

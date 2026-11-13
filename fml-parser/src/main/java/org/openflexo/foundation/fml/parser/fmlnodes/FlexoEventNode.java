@@ -124,7 +124,7 @@ public class FlexoEventNode extends AbstractFlexoConceptNode<AEventDecl, FlexoEv
 
 		when(() -> getModelObject().requiresExternalContainerDeclaration(),"ExternalContainer")
 			.thenAppend(staticContents(SPACE, FMLKeywords.Inside.getKeyword(), SPACE), getInsideFragment())
-			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getContainerFlexoConcept())), getInsideTypeFragment());	
+			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getContainerFlexoConcept())).keepingParsedTextWhileUnchanged(), getInsideTypeFragment());	
 		
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment(),"LBrc");
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class),"Properties");

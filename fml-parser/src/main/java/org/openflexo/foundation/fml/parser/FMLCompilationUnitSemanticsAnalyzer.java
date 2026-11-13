@@ -117,6 +117,8 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
+import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
@@ -289,6 +291,23 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	 */
 	public void initializePrettyPrint() {
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
+		// The nodes of the expressions are not reached through the contents of the FML nodes, which print a binding as a text: their
+		// pretty-print is prepared here, so that this text keeps what the source said (CORE-D-33)
+		initializeDataBindingsPrettyPrint(compilationUnitNode);
+	}
+
+	private void initializeDataBindingsPrettyPrint(P2PPNode<?, ?> node) {
+		for (P2PPNode<?, ?> child : new ArrayList<>(node.getChildren())) {
+			if (child instanceof DataBindingNode) {
+				// A binding inside an expression (an argument) is prepared by the expression that holds it
+				if (!((DataBindingNode) child).isPrettyPrintPrepared() && child.getASTNode() != null) {
+					child.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
+				}
+			}
+			else {
+				initializeDataBindingsPrettyPrint(child);
+			}
+		}
 	}
 
 	private final List<AbstractFlexoConceptNode<?, ?>> nodesWaitingForReferencedUnits = new ArrayList<>();
@@ -366,7 +385,17 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		// Idem: the bindings found invalid are reported once the referenced units are complete
 		attemptToFixInvalidBindings(warnOnInvalidBinding && !isWaitingForReferencedUnits());
 
+		// The model is now built from the source: record what the parsed text of the expressions stands for, so that the preserving
+		// pretty-print keeps that text while it does not change (CORE-D-33). Done once: a later capture (when a referenced unit completes,
+		// for instance) could take an edit for the parsed text
+		if (compilationUnitNode != null && !referenceValuesCaptured) {
+			compilationUnitNode.captureReferenceValues();
+			referenceValuesCaptured = true;
+		}
+
 	}
+
+	private boolean referenceValuesCaptured = false;
 
 	private void reportUnresolvedTypes() {
 		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {

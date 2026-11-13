@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import org.openflexo.connie.DataBindingPrettyPrintDelegate;
+import java.util.function.Consumer;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -135,6 +137,13 @@ public abstract class CompilationUnitResourceImpl
 	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException {
 		return FMLExpressionParser.parse(expressionAsString, bindable, getCompilationUnit().getTypingSpace(),
 				getCompilationUnit().getFMLModelFactory());
+	}
+
+	@Override
+	public Expression parseExpression(String expressionAsString, Bindable bindable, Consumer<DataBindingPrettyPrintDelegate> delegateReceiver)
+			throws ParseException {
+		return FMLExpressionParser.parse(expressionAsString, bindable, getCompilationUnit().getTypingSpace(),
+				getCompilationUnit().getFMLModelFactory(), delegateReceiver);
 	}
 
 	@Override

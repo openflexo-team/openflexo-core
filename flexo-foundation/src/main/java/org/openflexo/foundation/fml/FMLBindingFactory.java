@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.DataBindingPrettyPrintDelegate;
+import java.util.function.Consumer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
@@ -144,6 +146,15 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException {
 		if (virtualModel.getDeclaringCompilationUnitResource() != null) {
 			return virtualModel.getDeclaringCompilationUnitResource().parseExpression(expressionAsString, bindable);
+		}
+		return null;
+	}
+
+	@Override
+	public Expression parseExpression(String expressionAsString, Bindable bindable, Consumer<DataBindingPrettyPrintDelegate> delegateReceiver)
+			throws ParseException {
+		if (virtualModel.getDeclaringCompilationUnitResource() != null) {
+			return virtualModel.getDeclaringCompilationUnitResource().parseExpression(expressionAsString, bindable, delegateReceiver);
 		}
 		return null;
 	}

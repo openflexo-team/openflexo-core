@@ -279,15 +279,15 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		when(() -> isUnique()).thenAppend(staticContents(SPACE, "unique", ""), getUniqueFragment());
 
-		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getFetchedType())), getTypeFragment());
+		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getFetchedType())).keepingParsedTextWhileUnchanged(), getTypeFragment());
 
 		append(staticContents(SPACE, "from", ""), getFromFragment());
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		append(bindingContents(SPACE, () -> getFromBinding()), getFromExpressionFragment());
 
 		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, FMLKeywords.Where.getKeyword(), ""), getWhereFragment())
 		.thenAppend(staticContents(SPACE, "(", ""), getLParWhereFragment())
-		.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereConditionsFragment())
+		.thenAppend(textContents(preserving -> getWhereAsString(preserving)).keepingParsedTextWhileUnchanged(), getWhereConditionsFragment())
 		.thenAppend(staticContents(")"), getRParWhereFragment());
 
 		//append(staticContents(")"), getRParFromFragment());
@@ -299,30 +299,30 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		// @formatter:on
 	}
 
-	private String getFromAsString() {
+	private DataBinding<?> getFromBinding() {
 		if (getModelObject() instanceof AbstractSelectFlexoConceptInstance) {
 			if (((AbstractSelectFlexoConceptInstance) getModelObject()).getContainer().isSet()) {
-				return ((AbstractSelectFlexoConceptInstance) getModelObject()).getContainer().toString();
+				return ((AbstractSelectFlexoConceptInstance) getModelObject()).getContainer();
 			}
 		}
 		if (getModelObject() instanceof AbstractSelectVirtualModelInstance) {
 			if (((AbstractSelectVirtualModelInstance) getModelObject()).getContainer().isSet()) {
-				return ((AbstractSelectVirtualModelInstance) getModelObject()).getContainer().toString();
+				return ((AbstractSelectVirtualModelInstance) getModelObject()).getContainer();
 			}
 		}
 		if (getModelObject() != null) {
-			return getModelObject().getReceiver().toString();
+			return getModelObject().getReceiver();
 		}
 		return null;
 	}
 
-	private String getWhereAsString() {
+	private String getWhereAsString(boolean preserving) {
 		if (getModelObject() != null) {
 			StringBuffer sb = new StringBuffer();
 			boolean isFirst = true;
 			for (FetchRequestCondition condition : getModelObject().getConditions()) {
 				if (condition.getCondition().isSet()) {
-					sb.append((isFirst ? "" : ",") + condition.getCondition());
+					sb.append((isFirst ? "" : ",") + print(condition.getCondition(), preserving));
 					isFirst = false;
 				}
 			}

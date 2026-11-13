@@ -135,7 +135,7 @@ public class WhileActionNode extends ControlGraphNode<Node, WhileAction> {
 		when(() -> !isDoWhile())
 				.thenAppend(staticContents(FMLKeywords.While.getKeyword()), getWhileFragment())
 				.thenAppend(staticContents(SPACE, "(", ""), getLParFragment())
-				.thenAppend(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment())
+				.thenAppend(bindingContents(() -> getModelObject().getCondition()), getConditionFragment())
 				.thenAppend(staticContents(")"), getRParFragment())
 				.thenAppend(staticContents(SPACE, "{", ""), getLBrcFragment())
 				.thenAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), "", Indentation.Indent))
@@ -146,7 +146,7 @@ public class WhileActionNode extends ControlGraphNode<Node, WhileAction> {
 				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment())
 				.elseAppend(staticContents(SPACE, FMLKeywords.While.getKeyword(), ""), getWhileFragment())
 				.elseAppend(staticContents(SPACE, "(", ""), getLParFragment())
-				.elseAppend(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment())
+				.elseAppend(bindingContents(() -> getModelObject().getCondition()), getConditionFragment())
 				.elseAppend(staticContents(")"), getRParFragment())
 				.elseAppend(staticContents(";"), getSemiFragment());
 

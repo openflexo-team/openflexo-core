@@ -72,10 +72,10 @@ public class FMLVariableNode extends BasicPropertyNode<FMLVariable<?>> {
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType())).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
 		when(() -> getModelObject().getDefaultValue().isSet()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignFragment())
-				.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultValueFragment());
+				.thenAppend(bindingContents(() -> getModelObject().getDefaultValue()), getDefaultValueFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 

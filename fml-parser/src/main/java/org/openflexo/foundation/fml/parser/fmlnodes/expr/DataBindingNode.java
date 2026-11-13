@@ -43,16 +43,23 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.DataBindingPrettyPrintDelegate;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.ChildContents;
+import org.openflexo.p2pp.DerivedRawSource;
+import org.openflexo.p2pp.PrettyPrintContext;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
  * @author sylvain
  * 
  */
-public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompilationUnitSemanticsAnalyzer> {
+public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompilationUnitSemanticsAnalyzer>
+		implements DataBindingPrettyPrintDelegate {
 
 	private Bindable bindable;
 	private BindingDefinitionType bindingDefinitionType;
@@ -110,9 +117,73 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompila
 		}
 	}
 
+	// ------------------------------------------------------------------------------------------------------------------------------
+	// Preserving pretty-print (CORE-D-33)
+	// The text of a DataBinding is the text of its source in which the text of its expression is replaced by the pretty-print of the
+	// expression node: what surrounds the expression (parentheses around the whole expression) is kept. A DataBinding whose expression
+	// was replaced (another Expression object, after an edit of its text) is written again from the model.
+	// ------------------------------------------------------------------------------------------------------------------------------
+
+	private ChildContents<Node, DataBinding<?>, Object, Expression> expressionContents;
+	private boolean prettyPrintPrepared = false;
+
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
+		if (prettyPrintPrepared) {
+			return;
+		}
+		prettyPrintPrepared = true;
+		if (hasParsedVersion && getModelObject() != null && getModelObject().getExpression() != null
+				&& getObjectNode(getModelObject().getExpression()) instanceof ExpressionNode) {
+			expressionContents = append(childContents("", () -> getModelObject().getExpression(), "", Indentation.DoNotIndent));
+			if (!isDetached()) {
+				// The binding of the model is written through this node; a detached one is a vehicle, whose parser gives this node to the
+				// binding that takes the expression
+				getModelObject().setPrettyPrintDelegate(this);
+			}
+		}
+	}
+
+	/** Tells whether the pretty-print of this node was prepared (it is not reached through the contents of its parent node) */
+	public boolean isPrettyPrintPrepared() {
+		return prettyPrintPrepared;
+	}
+
+	private boolean canPreserveParsedText() {
+		return getLastParsedFragment() != null && expressionContents != null && expressionContents.getParsedChildNode() != null
+				&& getModelObject() != null && getModelObject().getExpression() == expressionContents.getParsedChildNode().getModelObject();
+	}
+
+	private String getNormalizedText() {
+		return getModelObject() != null ? getModelObject().toString() : "";
+	}
+
+	@Override
+	protected DerivedRawSource computeTextualRepresentation(PrettyPrintContext context) {
+		if (getLastParsedFragment() != null && !canPreserveParsedText()) {
+			DerivedRawSource returned = new DerivedRawSource(getLastParsedFragment());
+			returned.replace(getLastParsedFragment(), getNormalizedText());
+			return returned;
+		}
+		return super.computeTextualRepresentation(context);
+	}
+
+	/**
+	 * The text of the supplied binding (the one this node was built for, or the one that took its expression after a parse of a typed text):
+	 * the parsed text, where it did not change, when the binding still holds the expression parsed by this node; the normalized text
+	 * otherwise
+	 */
+	@Override
+	public String getPrettyPrint(DataBinding<?> binding) {
+		if (binding == null) {
+			return null;
+		}
+		if (getASTNode() == null || expressionContents == null || expressionContents.getParsedChildNode() == null
+				|| binding.getExpression() != expressionContents.getParsedChildNode().getModelObject()) {
+			return binding.toString();
+		}
+		return getTextualRepresentation(makePrettyPrintContext());
 	}
 
 }

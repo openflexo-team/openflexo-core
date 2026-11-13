@@ -130,18 +130,18 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 
 		append(staticContents("begin"), getBeginFragment());
 		append(staticContents(SPACE, "match", ""), getMatchFragment());
-		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
+		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())).keepingParsedTextWhileUnchanged(), getConceptNameFragment());
 		append(staticContents(SPACE, "from", ""), getFromFragment());
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		append(bindingContents(SPACE, () -> getFromBinding()), getFromExpressionFragment());
 		//append(staticContents(")"), getRParFromFragment());
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on
 	}
 
-	private String getFromAsString() {
+	private DataBinding<?> getFromBinding() {
 		if (getModelObject() != null) {
-			return getModelObject().getContainer().toString();
+			return getModelObject().getContainer();
 		}
 		return null;
 	}

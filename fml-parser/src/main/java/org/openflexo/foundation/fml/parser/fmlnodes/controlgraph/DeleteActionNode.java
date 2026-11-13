@@ -88,7 +88,7 @@ public class DeleteActionNode extends ControlGraphNode<ADeleteActionFmlActionExp
 
 		append(staticContents("", "delete", SPACE), getDeleteFragment());
 		// append(staticContents("("), getLParFragment());
-		append(dynamicContents(() -> getModelObject().getObject().toString()), getExpressionFragment());
+		append(bindingContents(() -> getModelObject().getObject()), getExpressionFragment());
 		// append(staticContents(")"), getRParFragment());
 		append(staticContents(";"), getSemiFragment());
 

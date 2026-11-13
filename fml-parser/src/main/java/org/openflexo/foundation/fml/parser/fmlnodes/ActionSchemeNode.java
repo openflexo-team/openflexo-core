@@ -115,7 +115,7 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 		//		FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		when(() -> isAbstract()).thenAppend(staticContents("","abstract", SPACE), getAbstractFragment());
-		when(() -> hasDeclaredType()).thenAppend(dynamicContents(() -> serializeType(getModelObject().getDeclaredType()),SPACE), getTypeFragment());
+		when(() -> hasDeclaredType()).thenAppend(dynamicContents(() -> serializeType(getModelObject().getDeclaredType()),SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,

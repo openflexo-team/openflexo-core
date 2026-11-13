@@ -119,14 +119,14 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 
 		append(staticContents("", "import", SPACE), getImportFragment());
 
-		when(() -> isNamedImport()).thenAppend(dynamicContents(() -> serializeType(getTypeToSerialize()), SPACE), getTypeFragment())
+		when(() -> isNamedImport()).thenAppend(dynamicContents(() -> serializeType(getTypeToSerialize()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getAbbrev(), SPACE), getAbbrevFragment())
 				.thenAppend(staticContents("", "from", SPACE), getFromFragment());
 
 		append(staticContents("["), getLBktFragment());
-		append(dynamicContents(() -> getModelObject().getResourceReference().toString()), getResourceReferenceFragment());
+		append(bindingContents(() -> getModelObject().getResourceReference()), getResourceReferenceFragment());
 		when(() -> isObjectReference()).thenAppend(staticContents(":"), getColonFragment())
-				.thenAppend(dynamicContents(() -> getModelObject().getObjectReference().toString()), getObjectReferenceFragment());
+				.thenAppend(bindingContents(() -> getModelObject().getObjectReference()), getObjectReferenceFragment());
 		append(staticContents("]"), getRBktFragment());
 		append(staticContents(";"), getSemiFragment());
 	}

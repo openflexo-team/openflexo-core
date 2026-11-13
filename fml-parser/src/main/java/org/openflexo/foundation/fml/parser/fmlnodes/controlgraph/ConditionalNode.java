@@ -115,7 +115,7 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 
 		append(staticContents("if"), getIfFragment());
 		append(staticContents(SPACE, "(", ""), getLParFragment());
-		append(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment());
+		append(bindingContents(() -> getModelObject().getCondition()), getConditionFragment());
 		append(staticContents(")"), getRParFragment());
 
 		append(staticContents(SPACE, "{", ""), getThenLBrcFragment());

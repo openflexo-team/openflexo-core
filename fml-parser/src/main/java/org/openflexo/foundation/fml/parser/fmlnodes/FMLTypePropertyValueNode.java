@@ -103,7 +103,7 @@ public class FMLTypePropertyValueNode<M extends FMLObject, T extends Type>
 
 		append(dynamicContents(() -> getModelObject().getPropertyName()), getArgNameFragment());
 		append(staticContents("="), getAssignFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType())).keepingParsedTextWhileUnchanged(), getTypeFragment());
 	}
 
 	private RawSourceFragment getArgNameFragment() {

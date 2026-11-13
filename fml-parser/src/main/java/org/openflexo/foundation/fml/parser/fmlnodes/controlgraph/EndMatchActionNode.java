@@ -245,21 +245,21 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 		append(staticContents("end"), getEndFragment());
 		append(staticContents(SPACE, "match", ""), getMatchFragment());
-		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
+		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())).keepingParsedTextWhileUnchanged(), getConceptNameFragment());
 		append(staticContents(SPACE, "in", ""), getInFragment());
 		//append(staticContents(SPACE, "(", ""), getLParInFragment());
-		append(dynamicContents(SPACE,() -> getInAsString()), getInExpressionFragment());
+		append(bindingContents(SPACE, () -> getInBinding()), getInExpressionFragment());
 		//append(staticContents(")"), getRParInFragment());
 		// 'unmatched: <clause>' is optional: without it, the instances left unmatched are left as they are (CORE-D-57)
 		when(() -> hasUnmatchedClause()).thenAppend(staticContents(SPACE, FMLKeywords.Unmatched.getKeyword(), ""), getUnmatchedFragment())
 		.thenAppend(staticContents(":"), getColonFragment())
-		.thenAppend(dynamicContents(SPACE, () -> getUnmatchedClauseAsString()), getUnmatchedClauseFragment());
+		.thenAppend(textContents(SPACE, preserving -> getUnmatchedClauseAsString(preserving)), getUnmatchedClauseFragment());
 
 		/*when(() -> isNormalAction()).thenAppend(staticContents(SPACE, "action", ""), getActionFragment())
 				.thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getFlexoBehaviour().getName()), getBehaviourNameFragment())
 				.thenAppend(staticContents("("), getAbstractActionLParFragment())
-				.thenAppend(dynamicContents(() -> serializeArguments(getModelObject().getParameters())),
+				.thenAppend(textContents(preserving -> serializeArguments(getModelObject().getParameters(), preserving)).keepingParsedTextWhileUnchanged(),
 						getAbstractActionArgumentsFragment())
 				.thenAppend(staticContents(")"), getAbstractActionRParFragment());
 
@@ -267,7 +267,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 				.thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getFlexoBehaviour().getName()), getBehaviourNameFragment())
 				.thenAppend(staticContents("("), getAbstractActionLParFragment())
-				.thenAppend(dynamicContents(() -> serializeArguments(getModelObject().getParameters())),
+				.thenAppend(textContents(preserving -> serializeArguments(getModelObject().getParameters(), preserving)).keepingParsedTextWhileUnchanged(),
 						getAbstractActionArgumentsFragment())
 				.thenAppend(staticContents(")"), getAbstractActionRParFragment());*/
 
@@ -326,15 +326,15 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	 * The clause after 'unmatched:': 'delete(args)' for a deletion scheme, 'name(args)' for another behaviour, or the parsed text when no
 	 * behaviour was resolved from it
 	 */
-	private String getUnmatchedClauseAsString() {
+	private String getUnmatchedClauseAsString(boolean preserving) {
 		FlexoBehaviour behaviour = getExplicitBehaviour();
 		// 'delete(...)' is the default deletion scheme of the concept; another one is called by its name
 		if (behaviour instanceof DeletionScheme && getModelObject().getFlexoConceptType() != null
 				&& behaviour == getModelObject().getFlexoConceptType().getDefaultDeletionScheme()) {
-			return "delete(" + serializeArguments(getModelObject().getParameters()) + ")";
+			return "delete(" + serializeArguments(getModelObject().getParameters(), preserving) + ")";
 		}
 		if (behaviour != null) {
-			return behaviour.getName() + "(" + serializeArguments(getModelObject().getParameters()) + ")";
+			return behaviour.getName() + "(" + serializeArguments(getModelObject().getParameters(), preserving) + ")";
 		}
 		PEndMatchActionClause clause = getEndMatchActionClause(getASTNode());
 		return clause != null ? getText(clause) : null;
@@ -347,9 +347,9 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		return null;
 	}
 
-	private String getInAsString() {
+	private DataBinding<?> getInBinding() {
 		if (getModelObject() != null) {
-			return getModelObject().getMatchingSet().toString();
+			return getModelObject().getMatchingSet();
 		}
 		return null;
 	}
@@ -514,11 +514,11 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		return null;
 	}*/
 
-	private String serializeArguments(List<ExecuteBehaviourParameter> arguments) {
+	private String serializeArguments(List<ExecuteBehaviourParameter> arguments, boolean preserving) {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < arguments.size(); i++) {
 			DataBinding<?> value = arguments.get(i).getValue();
-			sb.append((i > 0 ? "," : "") + (value != null ? value.toString() : "null"));
+			sb.append((i > 0 ? "," : "") + (value != null ? print(value, preserving) : "null"));
 		}
 		return sb.toString();
 	}

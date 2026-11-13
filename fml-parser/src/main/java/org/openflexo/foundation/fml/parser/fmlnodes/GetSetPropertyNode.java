@@ -128,13 +128,13 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 		// @formatter:off
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
 
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
 
 		appendBlock()
-			.append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getGetTypeFragment())
+			.append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE).keepingParsedTextWhileUnchanged(), getGetTypeFragment())
 			.append(staticContents("get"), getGetFragment())
 			.append(staticContents("("), getGetLParFragment())
 			.append(staticContents(")"), getGetRParFragment())
@@ -145,7 +145,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 	
 		when(() -> isSettable()).thenAppend(staticContents(LINE_SEPARATOR, "set", ""), getSetFragment())
 				.thenAppend(staticContents("("), getSetLParFragment())
-				.thenAppend(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getSetTypeFragment())
+				.thenAppend(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE).keepingParsedTextWhileUnchanged(), getSetTypeFragment())
 				.thenAppend(dynamicContents(() -> ((GetSetProperty<?>) getModelObject()).getValueVariableName()),
 						getSetVariableValueFragment())
 				.thenAppend(staticContents(")"), getSetRParFragment())

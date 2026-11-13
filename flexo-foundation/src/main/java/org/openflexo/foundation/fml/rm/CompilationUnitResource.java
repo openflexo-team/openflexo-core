@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import org.openflexo.connie.DataBindingPrettyPrintDelegate;
+import java.util.function.Consumer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -383,5 +385,13 @@ public interface CompilationUnitResource
 	}
 
 	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException;
+
+	/**
+	 * Parse as {@link #parseExpression(String, Bindable)}, giving to the receiver the delegate that writes the expression back as it was typed
+	 */
+	default Expression parseExpression(String expressionAsString, Bindable bindable, Consumer<DataBindingPrettyPrintDelegate> delegateReceiver)
+			throws ParseException {
+		return parseExpression(expressionAsString, bindable);
+	}
 
 }

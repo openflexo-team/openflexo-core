@@ -101,7 +101,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getValue().toString()), getFragment());
+		append(bindingContents(() -> getModelObject().getValue()), getFragment());
 	}
 
 }

@@ -193,22 +193,22 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		// @formatter:off
 
 		append(staticContents("match"), getMatchFragment());
-		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
+		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())).keepingParsedTextWhileUnchanged(), getConceptNameFragment());
 		when(() -> hasInClause()).thenAppend(staticContents(SPACE, "in", ""), getInFragment())
 		//.thenAppend(staticContents(SPACE, "(", ""), getLParInFragment())
-		.thenAppend(dynamicContents(SPACE, () -> getInAsString()), getInExpressionFragment());
+		.thenAppend(bindingContents(SPACE, () -> getInBinding()), getInExpressionFragment());
 		//.thenAppend(staticContents(")"), getRParInFragment());
 		append(staticContents(SPACE, "from", ""), getFromFragment());
 		//append(staticContents(SPACE, "(", ""), getLParFromFragment());
-		append(dynamicContents(SPACE, () -> getFromAsString()), getFromExpressionFragment());
+		append(bindingContents(SPACE, () -> getFromBinding()), getFromExpressionFragment());
 		//append(staticContents(")"), getRParFromFragment());
 		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, FMLKeywords.Where.getKeyword(), ""), getWhereFragment())
 		.thenAppend(staticContents(SPACE, "(", ""), getLParWhereFragment())
-		.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereCriteriasFragment())
+		.thenAppend(textContents(preserving -> getWhereAsString(preserving)).keepingParsedTextWhileUnchanged(), getWhereCriteriasFragment())
 		.thenAppend(staticContents(")"), getRParWhereFragment());
 		append(staticContents(SPACE, FMLKeywords.Unmatched.getKeyword(), ""), getUnmatchedFragment());
 		append(staticContents(":"), getColonFragment());
-		append(dynamicContents(() -> getModelObject().getNewInstance().toString()), getNewInstanceFragment());
+		append(bindingContents(() -> getModelObject().getNewInstance()), getNewInstanceFragment());
 		// Append semi only when required
 		// final to true is here a little hack to prevent semi to be removed at pretty-print
 		// This is due to a wrong management of semi
@@ -242,19 +242,19 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		return null;
 	}
 
-	private String getInAsString() {
+	private DataBinding<?> getInBinding() {
 		if (getModelObject() != null) {
-			return getModelObject().getMatchingSet().toString();
+			return getModelObject().getMatchingSet();
 		}
 		return null;
 	}
 
-	private String getFromAsString() {
+	private DataBinding<?> getFromBinding() {
 		if (getModelObject() != null) {
 			if (getModelObject().getContainer().isSet()) {
-				return getModelObject().getContainer().toString();
+				return getModelObject().getContainer();
 			}
-			return getModelObject().getReceiver().toString();
+			return getModelObject().getReceiver();
 		}
 		return null;
 	}
@@ -273,7 +273,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		return "?";
 	}
 
-	private String getWhereAsString() {
+	private String getWhereAsString(boolean preserving) {
 		if (getModelObject() != null) {
 			StringBuffer sb = new StringBuffer();
 			boolean isFirst = true;
@@ -281,7 +281,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 				if (matchingCriteria.getValue().isSet()) {
 					sb.append((isFirst ? "" : ",")
 							+ criteriaName(matchingCriteria) + "="
-							+ matchingCriteria.getValue());
+							+ print(matchingCriteria.getValue(), preserving));
 					isFirst = false;
 				}
 			}

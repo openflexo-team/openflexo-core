@@ -97,10 +97,10 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "values", SPACE), getValuesFragment());
-		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
+		append(bindingContents(() -> getModelObject().getExpression()), getExpressionFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 

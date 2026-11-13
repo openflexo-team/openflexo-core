@@ -73,4 +73,11 @@ public class FMLInstanceOfExpressionNode extends ExpressionNode<AInstanceofRelat
 		return this;
 	}
 
+	@Override
+	protected void prepareParsedPrettyPrint() {
+		// The type keeps the text written by the user (a qualified name, for instance) while it does not change
+		appendOperand(() -> getModelObject().getArgument());
+		appendLeaf(() -> serializeType(getModelObject().getType()), getFragment(getASTNode().getType()));
+	}
+
 }

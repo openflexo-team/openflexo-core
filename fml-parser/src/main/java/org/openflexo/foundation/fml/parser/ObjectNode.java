@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -1042,6 +1043,60 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			return behaviour.getName();
 		}
 		return "undefinedBehaviour";
+	}
+
+	/** The normalized text of a binding, written from the model: what the normalized pretty-print writes. Null for a null binding */
+	protected static String normalized(DataBinding<?> binding) {
+		return binding != null ? binding.toString() : null;
+	}
+
+	/**
+	 * The text of a binding as it was written, its changed parts written again ({@link DataBinding#getPrettyPrint()}, given by its p2pp
+	 * nodes, CORE-D-33): what the preserving pretty-print writes. Null for a null binding
+	 */
+	protected static String prettyPrint(DataBinding<?> binding) {
+		return binding != null ? binding.getPrettyPrint() : null;
+	}
+
+	/** The text of a binding for the preserving pretty-print, or for the normalized one */
+	protected static String print(DataBinding<?> binding, boolean preserving) {
+		return preserving ? prettyPrint(binding) : normalized(binding);
+	}
+
+	/**
+	 * The contents that writes a binding: written as it was written in the preserving pretty-print ({@link DataBinding#getPrettyPrint()},
+	 * CORE-D-33), normalized ({@link DataBinding#toString()}) in the normalized pretty-print
+	 */
+	protected DynamicContents<N, T> bindingContents(Supplier<? extends DataBinding<?>> binding) {
+		return bindingContents(null, binding, null);
+	}
+
+	/** {@link #bindingContents(Supplier)}, with a prelude */
+	protected DynamicContents<N, T> bindingContents(String prelude, Supplier<? extends DataBinding<?>> binding) {
+		return bindingContents(prelude, binding, null);
+	}
+
+	/** {@link #bindingContents(Supplier)}, with a postlude */
+	protected DynamicContents<N, T> bindingContents(Supplier<? extends DataBinding<?>> binding, String postlude) {
+		return bindingContents(null, binding, postlude);
+	}
+
+	/** {@link #bindingContents(Supplier)}, with a prelude and a postlude */
+	protected DynamicContents<N, T> bindingContents(String prelude, Supplier<? extends DataBinding<?>> binding, String postlude) {
+		return dynamicContents(prelude, () -> normalized(binding.get()), postlude).derivedWith(() -> prettyPrint(binding.get()));
+	}
+
+	/**
+	 * The contents that writes a text made of several bindings (a list of arguments, a 'where' clause): the supplied function writes it,
+	 * with the bindings as they were written when its argument is true (the preserving pretty-print), normalized otherwise
+	 */
+	protected DynamicContents<N, T> textContents(Function<Boolean, String> text) {
+		return textContents(null, text);
+	}
+
+	/** {@link #textContents(Function)}, with a prelude */
+	protected DynamicContents<N, T> textContents(String prelude, Function<Boolean, String> text) {
+		return dynamicContents(prelude, () -> text.apply(false), null).derivedWith(() -> text.apply(true));
 	}
 
 	protected DataBindingNode makeDataBinding(PExpression expression, Bindable bindable) {

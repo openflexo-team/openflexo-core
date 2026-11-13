@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.DataBindingPrettyPrintDelegate;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -79,6 +81,15 @@ public class CompilationUnitBindingFactory extends AbstractFMLBindingFactory {
 	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException {
 		if (compilationUnit.getResource() != null) {
 			return ((CompilationUnitResource) compilationUnit.getResource()).parseExpression(expressionAsString, bindable);
+		}
+		return null;
+	}
+
+	@Override
+	public Expression parseExpression(String expressionAsString, Bindable bindable, Consumer<DataBindingPrettyPrintDelegate> delegateReceiver)
+			throws ParseException {
+		if (compilationUnit.getResource() != null) {
+			return ((CompilationUnitResource) compilationUnit.getResource()).parseExpression(expressionAsString, bindable, delegateReceiver);
 		}
 		return null;
 	}

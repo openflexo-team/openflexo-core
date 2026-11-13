@@ -88,7 +88,7 @@ public class SingleMetaDataNode
 		append(staticContents("@"), getAtFragment());
 		append(dynamicContents(() -> getModelObject().getKey()), getKeyFragment());
 		append(staticContents("("), getLParFragment());
-		append(dynamicContents(() -> getModelObject().getSerializationRepresentation()), getValueFragment());
+		append(dynamicContents(() -> getModelObject().getSerializationRepresentation()).keepingParsedTextWhileUnchanged(), getValueFragment());
 		append(staticContents(")"), getRParFragment());
 	}
 

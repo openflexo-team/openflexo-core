@@ -92,10 +92,10 @@ public class IterationAssertNode extends AbstractAssertNode<AIterationAssertDecl
 
 		append(staticContents("", FMLKeywords.Assert.getKeyword(), SPACE), getAssertFragment());
 		append(staticContents(SPACE, "(", ""), getLParFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getIteratorType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getIteratorType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getIteratorName()), getIteratorNameFragment());
 		append(staticContents(SPACE, ":", SPACE), getColonFragment());
-		append(dynamicContents(() -> getModelObject().getIteration().toString()), getIterationFragment());
+		append(bindingContents(() -> getModelObject().getIteration()), getIterationFragment());
 		append(staticContents(")"), getRParFragment());
 
 		append(staticContents(SPACE, "{", ""), getLBrcFragment());

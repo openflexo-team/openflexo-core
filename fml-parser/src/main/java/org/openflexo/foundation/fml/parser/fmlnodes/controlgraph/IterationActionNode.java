@@ -158,7 +158,7 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 
 		append(staticContents("for"), getForFragment());
 		append(staticContents(SPACE, "(", ""), getLParFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getItemType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getItemType()), SPACE).keepingParsedTextWhileUnchanged(), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getIteratorName()), getIteratorNameFragment());
 		append(staticContents(SPACE, ":", SPACE), getColonFragment());
 		append(childContents("", () -> getModelObject().getIterationAction(), "", Indentation.DoNotIndent));

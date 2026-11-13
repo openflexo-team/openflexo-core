@@ -183,9 +183,31 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		private DataBinding<FlexoResourceCenter<?>> resourceCenter;
 		private DataBinding<RepositoryFolder> repositoryFolder;
 
+		/** The concept this element instantiates, listened to while activated: its name is part of the text of this element */
+		private FlexoConcept listenedConcept;
+
+		private void listenToConcept() {
+			FlexoConcept concept = getFlexoConcept();
+			if (concept != listenedConcept) {
+				stopListeningToConcept();
+				if (concept != null && concept.getPropertyChangeSupport() != null) {
+					concept.getPropertyChangeSupport().addPropertyChangeListener(this);
+					listenedConcept = concept;
+				}
+			}
+		}
+
+		private void stopListeningToConcept() {
+			if (listenedConcept != null && listenedConcept.getPropertyChangeSupport() != null) {
+				listenedConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			listenedConcept = null;
+		}
+
 		@Override
 		public void activate(BindingPath bindingPath) {
 			super.activate(bindingPath);
+			listenToConcept();
 			// Do not instanciate parameters now, we will do it later
 			// instanciateParameters(owner);
 			if (getCreationScheme() != null) {
@@ -207,6 +229,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		@Override
 		public void desactivate() {
+			stopListeningToConcept();
 			if (getCreationScheme() != null && getCreationScheme().getPropertyChangeSupport() != null) {
 				getCreationScheme().getPropertyChangeSupport().removePropertyChangeListener(this);
 			}
@@ -248,6 +271,11 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getSource() == listenedConcept && evt.getSource() != getCreationScheme()
+					&& FlexoConcept.NAME_KEY.equals(evt.getPropertyName())) {
+				// The concept was renamed: "new <concept>(...)" is written with its new name (CORE-D-67)
+				clearSerializationRepresentation();
+			}
 			if (evt.getSource() == getCreationScheme()) {
 				if (evt.getPropertyName().equals(FlexoBehaviourArgument.NAME_KEY)) {
 					// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +

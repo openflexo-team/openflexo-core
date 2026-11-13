@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.connie.DataBindingPrettyPrintDelegate;
+import java.util.function.Consumer;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
@@ -54,6 +57,8 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
+import org.openflexo.foundation.fml.parser.node.ABindingEntryPoint;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
@@ -87,11 +92,20 @@ public class FMLExpressionParser {
 	 */
 	public static Expression parse(String data, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory)
 			throws ParseException {
-		return parse(new StringReader(data), new StringReader(data), bindable, typingSpace, modelFactory);
+		return parse(new StringReader(data), new StringReader(data), bindable, typingSpace, modelFactory, null);
+	}
+
+	/**
+	 * Parse as {@link #parse(String, Bindable, AbstractFMLTypingSpace, FMLModelFactory)}, and give to the receiver the delegate that writes
+	 * the expression back as it was typed (see {@link DataBindingPrettyPrintDelegate})
+	 */
+	public static Expression parse(String data, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory,
+			Consumer<DataBindingPrettyPrintDelegate> delegateReceiver) throws ParseException {
+		return parse(new StringReader(data), new StringReader(data), bindable, typingSpace, modelFactory, delegateReceiver);
 	}
 
 	private static Expression parse(Reader reader, Reader rawSourceReader, Bindable bindable, AbstractFMLTypingSpace typingSpace,
-			FMLModelFactory modelFactory) throws ParseException {
+			FMLModelFactory modelFactory, Consumer<DataBindingPrettyPrintDelegate> delegateReceiver) throws ParseException {
 		try {
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.Binding));
@@ -104,6 +118,15 @@ public class FMLExpressionParser {
 			// Print the AST
 			// ASTDebugger.debug(tree);
 
+			if (delegateReceiver != null) {
+				// The nodes of the expression keep the text they were parsed from: the binding is written back as it was typed
+				RawSource rawSource = new RawSource(rawSourceReader);
+				// The expression itself: the entry point starts with a token the lexer adds, which is not in the text
+				Node expression = tree.getPEntryPoint() instanceof ABindingEntryPoint ? ((ABindingEntryPoint) tree.getPEntryPoint()).getExpr()
+						: tree;
+				return ExpressionFactory.makeDetachedExpression(expression, rawSource, bindable, modelFactory, typingSpace,
+						new FMLBindingFactory(modelFactory), delegateReceiver);
+			}
 			return ExpressionFactory.makeDetachedExpression(tree, bindable, modelFactory, typingSpace, new FMLBindingFactory(modelFactory));
 
 		} catch (ParserException e) {
