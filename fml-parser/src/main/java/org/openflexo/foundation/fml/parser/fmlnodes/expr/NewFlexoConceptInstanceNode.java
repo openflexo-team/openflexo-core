@@ -197,6 +197,12 @@ public class NewFlexoConceptInstanceNode extends AbstractNewFlexoConceptInstance
 			if (astNode instanceof ASimpleNewInstance) {
 				handleArguments(((ASimpleNewInstance) astNode).getArgumentList());
 				type = TypeFactory.makeType(((ASimpleNewInstance) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
+				if (type instanceof UnresolvedType) {
+					// a concept that does not resolve, recognized by its 'with' clause: kept, with the name written (CORE-D-58, CORE-D-64)
+					throwIssue("Unresolved concept " + ((UnresolvedType) type).getUnresolvedTypeName(),
+							getFragment(((ASimpleNewInstance) astNode).getType()));
+					type = TypeFactory.asFlexoConceptInstanceType(type, getSemanticsAnalyzer().getTypingSpace());
+				}
 				pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type, getParentPathElement(), null,
 						getArguments(), getBindable());
 			}

@@ -2,14 +2,3 @@
 # They fail like any other test, unless the run tolerates the known defects (-Dp2pp.tolerateKnownDefects=true, the default of this module):
 # they then must fail, and the test asks to remove the row when they do not. Only the first difference of a file is classified: others may
 # hide behind it. Java imports are not compared (the parser adds the ones that the types need, which is intended).
-FMLParsingExamples/BasicDeclaration.fml                  CORE-D-63
-FMLParsingExamples/MatchingVM.fml                        CORE-D-33
-FMLParsingExamples/TestAddVirtualModelInstance.fml       CORE-D-64, CORE-D-66
-FMLParsingExamples/TestBasicTypes.fml                    CORE-D-33
-FMLParsingExamples/TestMatch.fml                         CORE-D-63
-FMLParsingExamples/TestNamespaces.fml                    CORE-D-63
-FMLParsingExamples/TestProperties.fml                    CORE-D-33, CORE-D-68
-FMLParsingExamples/TestTypes.fml                         CORE-D-33
-FMLParsingExamples/TestUseOfKeywordsInBindings.fml       CORE-D-33
-FMLParsingExamples/UIAnnotations.fml                     CORE-D-63
-TestFMLPrettyPrint2/TestBasicTypesWithComments.fml       CORE-D-33

@@ -62,13 +62,19 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 	@Override
 	public UseModelSlotDeclaration buildModelObjectFromAST(AUseDecl astNode) {
 		Class<? extends ModelSlot<?, ?>> modelSlotClass = null;
+		String className = makeFullQualifiedIdentifier(astNode.getIdentifier());
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?, ?>>) Class.forName(makeFullQualifiedIdentifier(astNode.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?, ?>>) Class.forName(className);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			// Reported below; the name written is kept
 		}
 		UseModelSlotDeclaration returned = getFactory().newUseModelSlotDeclaration(modelSlotClass);
 		returned.setAbbrev(getText(astNode.getTaId()));
+		if (modelSlotClass == null) {
+			// The declaration keeps the class written, and is written back so (CORE-D-63)
+			returned.setUnresolvedModelSlotClassName(className);
+			throwWarning(returned, "Cannot find model slot class " + className, getFragment(astNode.getIdentifier()));
+		}
 		return returned;
 	}
 
@@ -95,6 +101,9 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 	private String getModelSlotClassName() {
 		if (getModelObject() != null && getModelObject().getModelSlotClass() != null) {
 			return getModelObject().getModelSlotClass().getCanonicalName();
+		}
+		if (getModelObject() != null && getModelObject().getUnresolvedModelSlotClassName() != null) {
+			return getModelObject().getUnresolvedModelSlotClassName();
 		}
 		return ModelSlot.class.getCanonicalName();
 	}

@@ -72,6 +72,8 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 	public static final String MODEL_SLOT_CLASS_KEY = "modelSlotClass";
 	@PropertyIdentifier(type = String.class)
 	public static final String ABBREV_KEY = "abbrev";
+	@PropertyIdentifier(type = String.class)
+	public static final String UNRESOLVED_MODEL_SLOT_CLASS_NAME_KEY = "unresolvedModelSlotClassName";
 
 	@Getter(value = MODEL_SLOT_CLASS_KEY)
 	public Class<? extends ModelSlot<?,?>> getModelSlotClass();
@@ -85,6 +87,16 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 
 	@Setter(COMPILATION_UNIT_KEY)
 	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
+
+	/**
+	 * The full qualified name of the model slot class as written, kept when that class does not resolve ({@link #getModelSlotClass()} is
+	 * then null): the declaration is written back as it was (CORE-D-63)
+	 */
+	@Getter(value = UNRESOLVED_MODEL_SLOT_CLASS_NAME_KEY)
+	public String getUnresolvedModelSlotClassName();
+
+	@Setter(UNRESOLVED_MODEL_SLOT_CLASS_NAME_KEY)
+	public void setUnresolvedModelSlotClassName(String unresolvedModelSlotClassName);
 
 	@Getter(value = ABBREV_KEY)
 	public String getAbbrev();
@@ -107,7 +119,7 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 
 		@Override
 		public String toString() {
-			return "UseModelSlotDeclaration:" + getModelSlotClass();
+			return "UseModelSlotDeclaration:" + (getModelSlotClass() != null ? getModelSlotClass() : getUnresolvedModelSlotClassName());
 		}
 
 		@Override

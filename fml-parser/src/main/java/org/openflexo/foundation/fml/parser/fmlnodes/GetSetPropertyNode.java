@@ -109,6 +109,9 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 		if (astNode.getSetDecl() != null) {
 			ASetDecl setDeclaration = (ASetDecl) astNode.getSetDecl();
+			// The name of the value, as written: the body of the setter refers to it (CORE-D-68). Set before the body is built, whose
+			// binding model declares it
+			((GetSetProperty<?>) returned).setValueVariableName(setDeclaration.getLidentifier().getText());
 			ControlGraphNode<?, ?> setCGNode = makeControlGraphNode(setDeclaration.getFlexoBehaviourBody());
 			((GetSetProperty<?>) returned).setSetControlGraph(setCGNode.getModelObject());
 			addToChildren(setCGNode);

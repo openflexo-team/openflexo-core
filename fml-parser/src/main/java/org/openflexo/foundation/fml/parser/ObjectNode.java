@@ -626,12 +626,18 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		}
 		if (node instanceof Token) {
 			Token token = (Token) node;
+			if (getRawSource() == null) {
+				// An expression parsed alone, without source
+				return null;
+			}
 			return getRawSource().makeFragment(getRawSource().makePositionBeforeChar(token.getLine(), token.getPos()),
 					getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length()));
 		}
-		else {
+		else if (getSemanticsAnalyzer() != null && getSemanticsAnalyzer().getFragmentManager() != null) {
 			return getSemanticsAnalyzer().getFragmentManager().retrieveFragment(node);
 		}
+		// An expression parsed alone, without source (no fragment manager)
+		return null;
 	}
 
 	/**

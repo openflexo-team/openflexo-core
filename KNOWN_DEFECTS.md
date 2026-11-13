@@ -1554,7 +1554,7 @@ anything about the race, which the local runs never triggered.
 
 Mapped on `formod-app` (583 warnings at the start of the application, 4 of them from opening a project) and on the headless tests (the same families, hundreds of times). Fixed since: CORE-D-31 (technologies forgotten at load), CORE-D-32 (stale "not implemented yet"), and the OWL adapter ones (`openflexo-owl/KNOWN_DEFECTS.md`). What is left is below, with what was measured and what was not.
 
-### CORE-D-33 — The text rebuilt from the model is not the text that was parsed  ·  `IN PROGRESS`
+### CORE-D-33 — The text rebuilt from the model is not the text that was parsed  ·  `DONE`
 
 **Symptom.** `FMLCompilationUnit.getFMLPrettyPrint()` — what the FML editor of the Modeller shows and saves — differs from the source file on the 10 Formose units compared (2026-10-09). With the whitespace, the comments and the `java.lang.String` imports left out, the differences measured are:
 - **Imports added**: `import java.lang.String;` (and `ExcelCell`, `FlexoEnumInstance` once) appears where the source has none. **Intended behaviour, not a defect** (confirmed 2026-11-12): the parser adds the imports that the types of a unit need. The p2pp tests do not compare Java imports.
@@ -1586,11 +1586,16 @@ nodes over it. Kept as written: spacing (`1+2`, `i>0`), parentheses (`assert (i 
 `from (this)`), qualified types (`java.lang.String`, in expressions and in declarations), the separators of argument and `where` lists,
 annotation values (`@URI(local+"x")`). An edited expression is written from the model, as before: a binding whose expression object was
 replaced (its text edited), an operator or operand replaced in place, a path whose shape changed (another number of elements or of
-arguments). Measured with `TestFMLPrettyPrintInvariants` (strict run): 24 files differed, 11 still do, none on an expression.
+arguments). Measured with `TestFMLPrettyPrintInvariants` (strict run): 24 files differed, 11 still did, none on an expression; with the
+roles below, CORE-D-63, D-64, D-66 and D-68, none does (2026-11-13).
 
-**Still open (measured 2026-11-13, every differing row of the 103 files listed).** `with ConceptInstance()` is added to a concept-typed role
-declared without it (`ConceptB aConceptB;`, 5 files), and `Concept _concept with FlexoConceptInstanceRole;` is written
-`... with ConceptInstance();` (`MatchingVM`). The other rows are CORE-D-63, CORE-D-64, CORE-D-66 and CORE-D-68.
+**Roles fixed (2026-11-13).** `with ConceptInstance()` was added to a concept-typed role declared without it (`ConceptB aConceptB;`, 5
+files), and `Concept _concept with FlexoConceptInstanceRole;` was written `... with ConceptInstance();` (`MatchingVM`). `FlexoRolePropertyNode`
+now writes the `with` clause of a declaration written in the Java style only once its role is no longer the default one (another kind of
+role, or a property value), writes the parentheses of a clause written without them only when a property has a value, and keeps the name
+of the role as written while it does not change. A role created by a model change is written as before. `TestCoreD60` checks the insertion
+of the clause (and its spacing, CORE-D-60) once a property is given a value. The remaining rows of the invariants test are CORE-D-63,
+CORE-D-64, CORE-D-66 and CORE-D-68.
 
 **Masked, not fixed.** Since a declaration keeps the type written, two model losses no longer show in the preserving pretty-print of an
 untouched source, but are still in the model (and in the normalized pretty-print): CORE-D-69 and CORE-D-70.
@@ -1609,6 +1614,10 @@ the compilation unit, parse the printed text.
 name. The `{fml}` form of the grammar has no slot for an initializer. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
 
 **Workaround.** Do not give an initializer to a concept-typed property (it is lost anyway, `CORE-D-51`).
+
+**Partly fixed (2026-11-13) by CORE-D-33.** A declaration written in the Java style no longer gets a `with` clause while its role is the
+default one: `Person first = new Person();` is printed as written and parses again (`KnownDefectsRoundTripTest`, run with
+`OPENFLEXO_KNOWN_DEFECTS`). Still broken: once the role is given a property value, the clause is inserted after the name, before `= ...`.
 
 ### CORE-D-57 — The normalized pretty-print of some units loses expressions and does not parse again  ·  `DONE`
 
@@ -1790,17 +1799,28 @@ After the fix: `xml-ta-test` 8 -> 0, `formod-test` 574 -> 1 (then 0, see below),
 Measured by `TestFMLPrettyPrintInvariants` (`flexo-foundation-test`), by execution, on the files of `FMLParsingExamples`. The mechanism of
 each is NOT investigated. The harness reports only the first difference of a file: another defect may hide behind it.
 
-### CORE-D-63 — A `use` of a class that does not resolve is rewritten as the generic `ModelSlot`  ·  `TODO`
+### CORE-D-63 — A `use` of a class that does not resolve is rewritten as the generic `ModelSlot`  ·  `DONE`
 
 **Symptom.** `use some.package.name.AModelSlot as MS;` is printed `use org.openflexo.foundation.technologyadapter.ModelSlot as MS;`, in the
 preserving and in the normalized pretty-print. What the source said is lost. Files: `BasicDeclaration`, `TestNamespaces`, `UIAnnotations`,
 `TestMatch` (`FMLParsingExamples`). Same family as CORE-D-58 (what refers to a type that does not resolve is dropped), for the `use` declaration.
 
-### CORE-D-64 — The `with (...)` of a `new X()` without a constructor name is lost  ·  `TODO`
+**Fixed (2026-11-13), decided with the user: the name is kept by the model.** `UseModelSlotDeclaration` has a new property,
+`unresolvedModelSlotClassName`, the class written, set by the parser when it does not resolve (the class stays null); both pretty-prints
+write it. The parser reports a warning (`Cannot find model slot class ...`) instead of printing a stack trace. The four files are reproduced.
+
+### CORE-D-64 — The `with (...)` of a `new X()` without a constructor name is lost  ·  `DONE`
 
 **Symptom.** `myModel = new MyVM() with (name="toto");` is printed `myModel = new MyVM();`, in the preserving and in the normalized pretty-print:
 the assignment of `name` is not in the model. The same clause is kept after `new MyVM::constructor1(1,"foo")` (`with (name="tutu")`).
 File: `TestAddVirtualModelInstance` (`FMLParsingExamples`).
+
+**What it was (verified 2026-11-13 by execution).** `MyVM` does not resolve there (its import names no reachable unit), and a `new MyVM()`
+whose type does not resolve was built as the instantiation of a Java class (`NewClassInstanceNode`, `JavaNewInstanceMethodPathElement`),
+which has no `with` clause; `new MyVM::ctor(...)` already took an unresolved name for a concept (CORE-D-58). **Fix:** the simple form does the
+same when it has a `with` clause, which only a concept has (`BindingPathFactory`, `NewFlexoConceptInstanceNode`), and reports the
+unresolved concept as the qualified form does. Without the clause an unresolved name is left as before: it may be a Java class
+(`new a.MyA()`, `TestExpressionWithTypesParser`).
 
 ### CORE-D-65 — `log("x")` is printed `log"x"` by the preserving pretty-print  ·  `DONE`
 
@@ -1812,11 +1832,15 @@ the source has parentheses and no such spacing. Not checked: whether `log"x"` pa
 The three files are reproduced. The normalized pretty-print still writes `log "x"`, which parses back to the same model (invariant
 `normalized-parse-back`).
 
-### CORE-D-66 — The normalized pretty-print of a constructor call with arguments is not stable  ·  `TODO`
+### CORE-D-66 — The normalized pretty-print of a constructor call with arguments is not stable  ·  `DONE`
 
 **Symptom.** `this.new MyVM(null,null,null,null)` (as the normalized pretty-print writes it) is parsed and normalized again as
 `this.new MyVM(null,null,null,null,null,null,null,null)`: the arguments double at each round trip. File: `TestAddVirtualModelInstance`
 (`FMLParsingExamples`), invariant `normalized-stable`.
+
+**Fixed (2026-11-13) with CORE-D-64.** The arguments came from the Java instantiation that `this.new MyVM()` was built as (its type does not
+resolve): taken for a concept, it has no argument, and the normalized pretty-print is stable. Not checked: whether `this.new X()` of a real
+Java class doubles its arguments too.
 
 ### CORE-D-67 — A reference in an expression follows a first rename of its target, not a second one  ·  `DONE`
 
@@ -1843,12 +1867,19 @@ by it, i.e. able to tell it (CONNIE-D-3). The preserving pretty-print does not d
 the model). Tests: `TestRenameInExpressions` (4, toString and both pretty-prints, a constructor and a concept renamed twice) and the 7 groups
 of `TestFMLEditMatrix`, which pass (one case of `rename-behaviour/only` needed CORE-D-71 too).
 
-### CORE-D-68 — The parameter of a setter is written `value`, whatever its name  ·  `TODO`
+### CORE-D-68 — The parameter of a setter is written `value`, whatever its name  ·  `DONE`
 
 **Symptom.** In a `get/set` property, `set(int aValue) { internalValue = aValue; }` is printed `set(int value) { internalValue = aValue; }`:
 the body still uses `aValue`, which the printed text no longer declares. File: `TestProperties` (`FMLParsingExamples`), found by listing every
 differing row of the invariants files (2026-11-13), hidden until then behind an earlier difference of the file. Not checked: whether the name
 is lost by the model or only by the printer, and whether the printed text still parses and runs.
+
+**What it was (verified 2026-11-13 by execution).** Lost by the model: the parser never set `GetSetProperty.valueVariableName` from the
+source, so it kept its default `value`, which both pretty-prints write and which names the variable the body of the setter is analyzed
+against (`SetValueBindingVariable`). Not checked: whether `aValue` resolved in the body before the fix.
+
+**Fix.** `GetSetPropertyNode` sets the name written before building the body of the setter. Test: `TestCoreD68` (fml-parser: the name is
+kept, `aValue` is valid in the body, both pretty-prints write it); `TestProperties` of the invariants is reproduced.
 
 ### CORE-D-69 — A wrapper type of a behaviour parameter becomes the primitive type  ·  `TODO`
 

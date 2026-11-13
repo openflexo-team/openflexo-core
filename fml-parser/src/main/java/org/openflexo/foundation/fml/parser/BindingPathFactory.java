@@ -493,6 +493,13 @@ public class BindingPathFactory {
 		Type type = TypeFactory.makeType(node.getType(), expressionFactory.getTypingSpace());
 		// System.out.println("Found type " + type);
 
+		// 'new X(...) with (...)' whose X does not resolve (a missing import) names a concept: only a concept has a 'with' clause. It is
+		// taken for one, as 'new X::ctor(...)' is (CORE-D-58); instantiated as a Java class, it lost its clause and got arguments of a Java
+		// constructor (CORE-D-64, CORE-D-66). Without the clause, an unresolved name may be a Java class ('new a.MyA()'): left as it was
+		if (type instanceof UnresolvedType && node.getPreciseFmlParametersClause() != null) {
+			type = TypeFactory.asFlexoConceptInstanceType(type, expressionFactory.getTypingSpace());
+		}
+
 		final IBindingPathElement parent = retrieveActualParent();
 
 		if (type instanceof VirtualModelInstanceType) {

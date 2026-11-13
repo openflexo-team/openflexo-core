@@ -138,12 +138,16 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 						.thenAppend(staticContents(")"), getFMLParametersRParFragment()))
 				.thenAppend(staticContents(";"), getSemiFragment());*/
 
-		append(staticContents("", "with", SPACE), getWithFragment());
-		when(() -> isFullQualified())
+		// A declaration written in the Java style ("ConceptB b;") has no 'with' clause: it is written only once the role is no longer the
+		// default one (CORE-D-33)
+		when(() -> requiresWithClause()).thenAppend(staticContents("", "with", SPACE), getWithFragment());
+		when(() -> requiresWithClause() && isFullQualified())
 				.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
 				.thenAppend(staticContents("::"), getColonColonFragment());
-		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
-		when(() -> hasFMLProperties())
+		// The name of the role keeps the text written ("FlexoConceptInstanceRole" for "ConceptInstance") while it does not change
+		when(() -> requiresWithClause())
+				.thenAppend(dynamicContents(() -> serializeFlexoRoleName(getModelObject())).keepingParsedTextWhileUnchanged(), getRoleFragment());
+		when(() -> requiresWithClause() && requiresFMLParameters())
 				.thenAppend(staticContents("("), getFMLParametersLParFragment())
 				.thenAppend(childrenContents("", "",() -> getModelObject().getFMLPropertyValues(getFactory()), ",", "", Indentation.DoNotIndent, FMLPropertyValue.class))
 				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
@@ -151,9 +155,33 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		// @formatter:on
 	}
 
-	/*public boolean requiresWithClause() {
-		System.out.println("HasFMLProperties for " + getASTNode() + "=" + hasFMLProperties());
+	/** The FML properties of the role that have a value */
+	private boolean hasFMLPropertyValues() {
+		return getModelObject() != null && getModelObject().getFMLPropertyValues(getFactory()) != null
+				&& !getModelObject().getFMLPropertyValues(getFactory()).isEmpty();
+	}
+
+	/**
+	 * The 'with' clause is written, except for a declaration written in the Java style ("ConceptB b;") whose role is still the default one: a
+	 * concept instance role without property value
+	 */
+	protected boolean requiresWithClause() {
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			return !(getModelObject() instanceof FlexoConceptInstanceRole) || hasFMLPropertyValues();
+		}
 		return true;
-	}*/
+	}
+
+	/**
+	 * The parameters of the role ("(container=this)") are written when the source has them, or when a property has a value; a clause written
+	 * without parentheses ("with FlexoConceptInstanceRole") stays so while no property has a value. An object created by a model change
+	 * writes them as before
+	 */
+	protected boolean requiresFMLParameters() {
+		if (getASTNode() != null) {
+			return getFMLParameters() != null || hasFMLPropertyValues();
+		}
+		return hasFMLProperties();
+	}
 
 }
