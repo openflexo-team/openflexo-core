@@ -133,16 +133,27 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 		super.desactivate();
 	}
 
+	/**
+	 * The behaviour this element listens to. Kept apart from the function: an invalidated element has no function until it is resolved
+	 * again, and must still follow the renames of its behaviour meanwhile, otherwise it looks for a name that no longer exists (CORE-D-71)
+	 */
+	private FlexoBehaviour listenedBehaviour;
+
 	private void startListenToBehaviour() {
-		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
+		if (getFlexoBehaviour() != listenedBehaviour) {
+			stopListenToBehaviour();
+		}
+		if (listenedBehaviour == null && getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
 			getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
+			listenedBehaviour = getFlexoBehaviour();
 		}
 	}
 
 	private void stopListenToBehaviour() {
-		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
-			getFlexoBehaviour().getPropertyChangeSupport().removePropertyChangeListener(this);
+		if (listenedBehaviour != null && listenedBehaviour.getPropertyChangeSupport() != null) {
+			listenedBehaviour.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
+		listenedBehaviour = null;
 	}
 
 	@Override
@@ -172,17 +183,18 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == getFlexoBehaviour()) {
-			if (evt.getPropertyName().equals(FlexoBehaviour.NAME_KEY)) {
-				clearSerializationRepresentation();
-				setParsed(getFlexoBehaviour().getName());
-				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
-						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
-						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
-					getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
-							.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_NAME_CHANGED, null, this);
-				}
+		if (evt.getSource() == listenedBehaviour && evt.getPropertyName().equals(FlexoBehaviour.NAME_KEY)) {
+			// Also when this element was invalidated (no function until resolved again): it is resolved later by this name (CORE-D-71)
+			FlexoBehaviour behaviour = listenedBehaviour;
+			clearSerializationRepresentation();
+			setParsed(behaviour.getName());
+			if (behaviour.getFlexoConcept() != null && behaviour.getFlexoConcept().getBindingModel() != null
+					&& behaviour.getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
+				behaviour.getFlexoConcept().getBindingModel().getPropertyChangeSupport()
+						.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_NAME_CHANGED, null, this);
 			}
+		}
+		if (evt.getSource() == getFlexoBehaviour()) {
 			if (lastKnownType != getType()) {
 				lastKnownType = getType();
 				clearSerializationRepresentation();

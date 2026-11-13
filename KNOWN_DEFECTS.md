@@ -1841,7 +1841,7 @@ follow even a FIRST rename. `BindingPath.toString()` caches its text. A renamed 
 `CreationSchemePathElement` listens to its concept while activated). In connie, a path caches its text only while every element is activated
 by it, i.e. able to tell it (CONNIE-D-3). The preserving pretty-print does not depend on this cache any more (its leaves read the names from
 the model). Tests: `TestRenameInExpressions` (4, toString and both pretty-prints, a constructor and a concept renamed twice) and the 7 groups
-of `TestFMLEditMatrix`, which pass, except one case of `rename-behaviour/only` that is another defect (CORE-D-71).
+of `TestFMLEditMatrix`, which pass (one case of `rename-behaviour/only` needed CORE-D-71 too).
 
 ### CORE-D-68 — The parameter of a setter is written `value`, whatever its name  ·  `TODO`
 
@@ -1863,7 +1863,7 @@ where the type is changed (parser, typing space, parameter), and whether other w
 File: `TestTypeVersions` (`FMLParsingExamples`). As for CORE-D-69, the preserving pretty-print of an untouched source now keeps `Foo@(1)`, the
 model and the normalized pretty-print do not. Not checked: whether a version is meant to be kept by the model at all.
 
-### CORE-D-71 — A call of a behaviour loses its behaviour when the behaviour is renamed  ·  `TODO`
+### CORE-D-71 — A call of a behaviour loses its behaviour when the behaviour is renamed  ·  `DONE`
 
 **Symptom.** In `FMLParsingExamples/TestInvariants.fml`, rename `AConcept.incrementA` to `q` then back to `incrementA`: `this.incrementA();`
 is printed `this.q();` (both pretty-prints, and `DataBinding.toString()`). Verified by execution (2026-11-13): after the first rename the
@@ -1874,6 +1874,33 @@ second rename does not reach it. Same result on the code before CORE-D-33 / CORE
 and failed in others: something done by the tests that run before (in the same JVM) lets the call resolve again. Not investigated: why the
 element is not resolved again against the renamed behaviour (its parsed name is set to the new one before the binding is invalidated).
 
-**Tests.** `TestRenameInExpressions.aBehaviourRenamedAndBackGivesTheSourceBack` (skipped while known defects are tolerated), row
-`rename-behaviour/only` of `fml-matrix-known-defects.txt`.
+**What it was (verified 2026-11-13 in the code, fixed).** At a rename, `FlexoBehaviourPathElement` sets its parsed name and has its binding
+invalidated; `invalidate()` sets its function to null until the binding is validated again (lazily). It stayed registered on the behaviour,
+but `propertyChange()` only handled the events of `getFlexoBehaviour()`, now null: the rename back was ignored, the parsed name stayed `q`,
+and a later resolution looked for `q`. When something validated the binding between the two renames (other tests in the same JVM), the
+element was resolved again in time: hence the order dependency. `stopListenToBehaviour()` could not unregister either, for the same reason.
 
+**Fix.** The element keeps the behaviour it listens to (`listenedBehaviour`) apart from its function, follows its renames whether resolved
+or not, and unregisters from it.
+
+**Tests.** `TestRenameInExpressions.aBehaviourRenamedAndBackGivesTheSourceBack` (also alone), group `rename-behaviour/only` of
+`TestFMLEditMatrix`; their known-defect marks are removed.
+
+
+### CORE-D-72 — Under Eclipse, a rename test destroys the `TestContainerUI.fml` fixture  ·  `DONE`
+
+**Symptom.** Run under Eclipse, every test of `TestContainerUIComponents` fails on `No compilation unit for
+http://openflexo.org/test/TestResourceCenter/TestContainerUI.fml`; green under Gradle. Verified 2026-11-13: in
+`flexo-test-resources/bin/main/TestResourceCenter/FML/`, `TestContainerUI.fml/` was gone and a `RenamedContainer.fml/` was there instead.
+
+**What it was.** `TestRenameFlexoConcept.test2…` runs `RenameCompilationUnit` (new name `RenamedContainer`) on the shared fixture, and
+expected the rename to be refused because Gradle reads `flexo-test-resources` from its packaged jar, which is read-only. Eclipse reads it
+from the `bin/main` directory, which is writable: the rename succeeded on disk, and the fixture stayed missing for every later run until
+Eclipse copied the resources again (Project > Clean).
+
+**Fix.** `TestRenameFlexoConcept` unregisters the resource center of `flexo-test-resources` and works on a copy of the fixture alone, in a
+temporary directory resource center; it now asserts the real rename (container and file renamed on disk, components still resolved
+through the frozen annotations) and that the shared fixture is untouched.
+
+**Tests.** `TestRenameFlexoConcept` and `TestContainerUIComponents`, run under Gradle (jar) and with `flexo-test-resources` as a
+directory on the classpath (the Eclipse case): 26/26 both ways, the directory left unchanged.

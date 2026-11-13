@@ -17,7 +17,6 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.p2pp.testing.KnownDefects;
 import org.openflexo.p2pp.testing.PrettyPrintTarget.Document;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -98,11 +97,12 @@ public class TestRenameInExpressions {
 		FMLEdits.apply(unit, editor, "rename Qx to ConceptA");
 		assertEquals("new ConceptA(name)", binding.toString());
 	}
-	/** A behaviour renamed and renamed back, without a print in between: the source is given back (the edit matrix, "undo") */
+	/**
+	 * A behaviour renamed and renamed back, without a print in between: the source is given back (the edit matrix, "undo"). The call is
+	 * invalidated by the first rename and not resolved again before the second one (CORE-D-71)
+	 */
 	@Test
 	public void aBehaviourRenamedAndBackGivesTheSourceBack() throws Exception {
-		// The call loses its behaviour at the first rename (CORE-D-71)
-		KnownDefects.skipIfTolerated("CORE-D-71");
 		Resource resource = ResourceLocator.locateResource("FMLParsingExamples/TestInvariants.fml");
 		String source;
 		try (InputStream in = resource.openInputStream()) {
