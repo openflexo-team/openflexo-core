@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -292,6 +292,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 						deletionSchemeAction.doAction();
 						if (deletionSchemeAction.hasActionExecutionFailed()) {
 							// The deletion scheme failed: the instance is not deleted, and the failure reaches the caller (CORE-D-47)
+							deletionSchemeAction.rethrowUncheckedFailure();
 							throw new FMLExecutionException("Deletion scheme failed for " + objectToDelete,
 									deletionSchemeAction.getThrownException());
 						}

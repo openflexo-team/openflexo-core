@@ -2,6 +2,8 @@
  * A failure during an execution reaches the caller: a creation scheme, an event listener, a deletion scheme, the behaviour run by
  * an end match, and an invalid condition (CORE-D-47, CORE-D-8). See the scripts of ExecutionFailures/ and TestExecutionFailures.
  * The property absent is never set: reading a method of it fails.
+ * The FML stack of a failure, and a return in a creation or deletion scheme (CORE-F-11): the scripts of ExecutionStack/ and
+ * TestFMLExecutionStack. The line numbers of nested(), middle(), inner() and of Bomb are asserted there.
  */
 @URI("http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml")
 public model ExecutionFailures {
@@ -81,6 +83,33 @@ public model ExecutionFailures {
 		return "else";
 	}
 
+	// Called with this.: a bare call to a behaviour of the model is not resolved in a behaviour of the model (CORE-D-80)
+	public int inner() {
+		String consumed = absent.substring(0);
+		return 1;
+	}
+
+	public int middle() {
+		return this.inner();
+	}
+
+	public int nested() {
+		return this.middle();
+	}
+
+	public deleteReturner(Returner r) {
+		delete parameters.r;
+		progress = 5;
+	}
+
+	public int returnerCount() {
+		int n = 0;
+		for (Returner r : select Returner from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+
 	public event Ping {
 		create() {
 		}
@@ -95,6 +124,28 @@ public model ExecutionFailures {
 		String absent;
 		create() {
 			String consumed = absent.substring(0);
+		}
+	}
+
+	// A return ends a creation or a deletion scheme: it is not a failure
+	public concept Returner {
+		int step;
+		create() {
+			step = 1;
+			if (step == 1) {
+				return;
+			}
+			step = 2;
+		}
+		delete() {
+			return;
+		}
+	}
+
+	// A creation scheme returns no value: a valued return is a failure
+	public concept ValuedReturner {
+		create() {
+			return 1;
 		}
 	}
 

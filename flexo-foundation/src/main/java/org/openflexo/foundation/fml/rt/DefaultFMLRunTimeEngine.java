@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.action.EventListenerAction;
 import org.openflexo.foundation.fml.rt.action.EventListenerActionFactory;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 
 /**
  * Base implementation for {@link FMLRunTimeEngine}
@@ -289,11 +290,16 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		EventListenerActionFactory actionType = new EventListenerActionFactory(eventListener, fci);
 		EventListenerAction action = actionType.makeNewAction(fci, null, fci.getEditor());
 		action.setEventInstance(event);
-		action.doAction();
+		try {
+			action.doAction();
+		} catch (RuntimeException e) {
+			// An unchecked failure of the listener (CORE-F-11) is carried like a checked one, so that the other listeners still run
+			throw new EventListenerFailedException(e);
+		}
 		if (action.hasActionExecutionFailed()) {
 			// A failing listener fails the fire that dispatched the event (CORE-D-47); a disabled one (@Enable) is skipped
 			throw new EventListenerFailedException(
-					action.getThrownException() != null ? action.getThrownException() : new FMLExecutionException("Listener failed: " + action));
+					action.getFailure() != null ? action.getFailure() : new FMLExecutionException("Listener failed: " + action));
 		}
 	}
 

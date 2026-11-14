@@ -149,6 +149,7 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 			creationSchemeAction.assignNewFlexoConceptInstance(newVirtualModelInstance);
 			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
 			creationSchemeAction.doAction();
+			creationSchemeAction.rethrowUncheckedFailure();
 			if (creationSchemeAction.getThrownException() != null) {
 				throw creationSchemeAction.getThrownException();
 			}

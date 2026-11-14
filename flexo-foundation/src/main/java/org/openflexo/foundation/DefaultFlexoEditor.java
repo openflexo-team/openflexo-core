@@ -40,6 +40,7 @@
 package org.openflexo.foundation;
 
 import java.util.EventObject;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.Icon;
@@ -54,6 +55,8 @@ import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
+import org.openflexo.foundation.fml.rt.error.FMLErrorReporter;
+import org.openflexo.foundation.fml.rt.error.FMLErrorReporter.ExecutionScope;
 
 /**
  * Default implementation of {@link FlexoEditor}
@@ -152,12 +155,48 @@ public class DefaultFlexoEditor implements FlexoEditor {
 				&& !action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 			return null;
 		}
+		// Only the outermost action run on this thread reports a failure (CORE-F-11): a nested action leaves its failure to its caller
+		ExecutionScope scope = FMLErrorReporter.enterAction();
+		boolean outermost = (scope != null);
 		try {
 			return action.doActionInContext();
 		} catch (FlexoException e1) {
-			e1.printStackTrace();
+			// Foreseen failure (an FMLError among others) or cancellation, checked: kept in the status of the action, which its caller
+			// reads; reported here for an outermost action (a cancellation is not)
+			if (outermost) {
+				getFMLErrorReporter().report(action, e1);
+			}
+			else {
+				FMLErrorReporter.currentScope().nestedActionFailed(action);
+			}
 			return null;
+		} catch (RuntimeException | Error e1) {
+			// Unforeseen failure: a defect of the platform, never swallowed
+			if (outermost) {
+				getFMLErrorReporter().report(action, e1);
+			}
+			throw e1;
+		} finally {
+			if (outermost) {
+				FMLErrorReporter.exitOutermostAction();
+				List<FlexoAction<?, ?, ?>> unreported = FMLErrorReporter.unreportedNestedFailures(scope, action);
+				if (!unreported.isEmpty()) {
+					getFMLErrorReporter().reportIgnoredFailures(unreported);
+				}
+			}
 		}
+	}
+
+	private FMLErrorReporter errorReporter;
+
+	/**
+	 * The reporter of the failures of the actions run by this editor (CORE-F-11)
+	 */
+	public FMLErrorReporter getFMLErrorReporter() {
+		if (errorReporter == null) {
+			errorReporter = new FMLErrorReporter(this);
+		}
+		return errorReporter;
 	}
 
 	/**

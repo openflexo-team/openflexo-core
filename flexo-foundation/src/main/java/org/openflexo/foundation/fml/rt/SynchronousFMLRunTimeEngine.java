@@ -78,6 +78,10 @@ public class SynchronousFMLRunTimeEngine extends DefaultFMLRunTimeEngine {
 							if (firstFailure == null) {
 								firstFailure = e;
 							}
+							else if (firstFailure.getCause() != null && e.getCause() != null) {
+								// The failures of the other listeners go with the first one, which is what the fire throws (CORE-F-11)
+								firstFailure.getCause().addSuppressed(e.getCause());
+							}
 						}
 					}
 				}

@@ -53,7 +53,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.annotations.UsageExample;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -72,7 +72,7 @@ import org.openflexo.pamela.annotations.Setter;
  * The concept to instantiate is given as a value of type {@code Concept<...>}
  * ({@link org.openflexo.foundation.fml.ta.FlexoConceptType}), obtained for instance from {@code someInstance.conceptType}. The arguments of
  * the creation scheme are passed as a list ({@link #getArguments()}): the creation scheme executed is the one whose parameters match that
- * list, in number and in type; when none matches, execution fails with an {@link org.openflexo.foundation.fml.rt.FMLExecutionException}.
+ * list, in number and in type; when none matches, execution fails with an {@link org.openflexo.foundation.fml.rt.error.FMLExecutionException}.
  * When no container is given, the instance is created in the VirtualModelInstance of the receiver.
  * <p>
  * Example (excerpt of {@code FML/TestFMLReflection.fml} in the {@code flexo-test-resources} test resource center, run by
@@ -255,6 +255,7 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 
 			creationSchemeAction.assignNewFlexoConceptInstance(newInstance);
 			creationSchemeAction.doAction();
+			creationSchemeAction.rethrowUncheckedFailure();
 			if (creationSchemeAction.getThrownException() instanceof FMLExecutionException) {
 				throw (FMLExecutionException) creationSchemeAction.getThrownException();
 			}

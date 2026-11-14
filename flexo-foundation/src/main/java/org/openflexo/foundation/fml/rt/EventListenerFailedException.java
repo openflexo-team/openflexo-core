@@ -43,7 +43,7 @@ package org.openflexo.foundation.fml.rt;
  * <p>
  * Events reach the engine through the {@link java.beans.PropertyChangeSupport} of the {@link VirtualModelInstance} that fires them,
  * which only lets unchecked exceptions through: this one carries the failure of the listener back to the {@code fire} statement,
- * which rethrows it as an {@link FMLExecutionException}, so that a failing listener fails the behaviour that fired the event
+ * which rethrows it as an {@link org.openflexo.foundation.fml.rt.error.FMLExecutionException}, so that a failing listener fails the behaviour that fired the event
  * (CORE-D-47).
  */
 @SuppressWarnings("serial")

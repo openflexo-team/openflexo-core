@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.AbstractFMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
@@ -198,6 +198,7 @@ public interface ExecuteFlexoBehaviour<T>
 				logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + fci);
 				return (T) actionSchemeAction.getReturnedValue();
 			}
+			actionSchemeAction.rethrowUncheckedFailure();
 			if (actionSchemeAction.getThrownException() != null) {
 				throw new FMLExecutionException(new InvocationTargetException(actionSchemeAction.getThrownException()));
 			}

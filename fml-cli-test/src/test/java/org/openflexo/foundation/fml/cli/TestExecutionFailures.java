@@ -48,6 +48,9 @@ import org.junit.runners.Parameterized;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.fml.cli.test.FMLScriptParserTestCase;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionFailure;
+import org.openflexo.foundation.fml.rt.error.FMLStack;
+import org.openflexo.foundation.fml.rt.error.FMLStackFrame;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resources;
@@ -62,8 +65,8 @@ public class TestExecutionFailures extends FMLScriptParserTestCase {
 
 	private static final String MUST_FAIL = "mustFail";
 
-	/** The causes the fixture provokes: reading a method of a null property, or an invalid condition */
-	private static final String[] EXPECTED_CAUSES = { "NullReferenceException", "Invalid condition" };
+	/** The causes the fixture provokes: reading a method of a null property, an invalid condition, a valued return in a creation scheme */
+	private static final String[] EXPECTED_CAUSES = { "NullReferenceException", "Invalid condition", "A creation scheme returns no value" };
 
 	private static boolean causeChainMentions(Throwable t, String[] markers) {
 		for (Throwable c = t; c != null; c = c.getCause()) {
@@ -109,6 +112,13 @@ public class TestExecutionFailures extends FMLScriptParserTestCase {
 					// one such as an unresolved behaviour
 					assertTrue(fmlResource.getRelativePath() + ", line " + command.getLine() + ": unexpected cause " + e,
 							causeChainMentions(e, EXPECTED_CAUSES));
+					// The failure tells where it happened: the statement and the line of the innermost frame (CORE-F-11)
+					FMLStack stack = FMLExecutionFailure.findFMLStack(e);
+					assertTrue(fmlResource.getRelativePath() + ", line " + command.getLine() + ": no FML stack in " + e,
+							stack != null && !stack.getFrames().isEmpty());
+					FMLStackFrame innermost = stack.getFrames().get(0);
+					assertTrue(fmlResource.getRelativePath() + ": no location in " + innermost,
+							innermost.getLine() > 0 && innermost.getStatement() != null);
 					failures++;
 					continue;
 				}

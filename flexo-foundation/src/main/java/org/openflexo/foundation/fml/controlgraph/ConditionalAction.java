@@ -54,10 +54,11 @@ import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -250,9 +251,9 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			if (evaluateCondition(evaluationContext))
-				return getThenControlGraph().execute(evaluationContext);
+				return FMLExecution.executeStatement(getThenControlGraph(), evaluationContext);
 			if (getElseControlGraph() != null)
-				return getElseControlGraph().execute(evaluationContext);
+				return FMLExecution.executeStatement(getElseControlGraph(), evaluationContext);
 			return null;
 		}
 

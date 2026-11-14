@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.EventListenerFailedException;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -148,7 +148,13 @@ public interface FireEvent extends EditionAction {
 				try {
 					vmi.getPropertyChangeSupport().firePropertyChange(FMLRTVirtualModelInstance.EVENT_FIRED, null, eventInstance);
 				} catch (EventListenerFailedException e) {
-					// A listener of this event failed: the fire fails (CORE-D-47)
+					// A listener of this event failed: the fire fails (CORE-D-47), with the failure of the listener itself (CORE-F-11)
+					if (e.getCause() instanceof FMLExecutionException) {
+						throw (FMLExecutionException) e.getCause();
+					}
+					if (e.getCause() instanceof RuntimeException) {
+						throw (RuntimeException) e.getCause();
+					}
 					throw new FMLExecutionException(e.getCause());
 				}
 			}

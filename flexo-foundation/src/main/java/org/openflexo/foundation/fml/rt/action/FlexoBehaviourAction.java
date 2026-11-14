@@ -58,11 +58,10 @@ import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.IterationActionBindingVariable;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -71,6 +70,7 @@ import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 
 /**
  * Provides execution environment of a {@link FlexoBehaviour} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
@@ -372,16 +372,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	protected void executeControlGraph() throws OperationCancelledException, FMLExecutionException {
 
 		if (getApplicableFlexoBehaviour() != null && getApplicableFlexoBehaviour().getControlGraph() != null) {
-			try {
-				getApplicableFlexoBehaviour().getControlGraph().execute(this);
-			} catch (ReturnException e) {
-				returnedValue = e.getReturnedValue();
-			} catch (FMLExecutionException e) {
-				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getApplicableFlexoBehaviour().getFMLPrettyPrint());
-				e.printStackTrace();
-				throw e;
-			}
+			// A failure gets the frame of this behaviour and propagates; it is reported once, by the editor (CORE-F-11)
+			returnedValue = FMLExecution.executeBehaviourBody(getApplicableFlexoBehaviour().getControlGraph(), this,
+					getApplicableFlexoBehaviour(), getFlexoConceptInstance());
 			if (defaultMatchingSet != null) {
 				finalizeDefaultMatchingSet();
 			}

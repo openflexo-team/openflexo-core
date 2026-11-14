@@ -48,9 +48,10 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -236,20 +237,12 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 
 			if (getEvaluateConditionAfterCycle()) {
 				do {
-					try {
-						getControlGraph().execute(evaluationContext);
-					} catch (ReturnException e) {
-						throw e;
-					}
+					FMLExecution.executeStatement(getControlGraph(), evaluationContext);
 				} while (evaluateCondition(evaluationContext));
 			}
 			else {
 				while (evaluateCondition(evaluationContext)) {
-					try {
-						getControlGraph().execute(evaluationContext);
-					} catch (ReturnException e) {
-						throw e;
-					}
+					FMLExecution.executeStatement(getControlGraph(), evaluationContext);
 				}
 			}
 			return null;

@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 
 /**
  * The native implementation of a {@link VirtualModelInstance}, managed by the {@link FMLRTTechnologyAdapter}.<br>

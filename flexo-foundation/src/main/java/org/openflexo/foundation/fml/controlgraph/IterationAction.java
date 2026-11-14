@@ -47,9 +47,10 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -129,16 +130,15 @@ public interface IterationAction extends AbstractIterationAction {
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			List<?> items = evaluateIteration(evaluationContext);
 			if (items != null) {
-				for (Object item : new ArrayList<Object>(items)) {
-					evaluationContext.declareVariable(getIteratorName(), item);
-					try {
-						getControlGraph().execute(evaluationContext);
-					} catch (ReturnException e) {
-						evaluationContext.dereferenceVariable(getIteratorName());
-						throw e;
+				try {
+					for (Object item : new ArrayList<Object>(items)) {
+						evaluationContext.declareVariable(getIteratorName(), item);
+						FMLExecution.executeStatement(getControlGraph(), evaluationContext);
 					}
+				} finally {
+					// Also when the body fails or returns: the iterator does not outlive the loop (CORE-D-76)
+					evaluationContext.dereferenceVariable(getIteratorName());
 				}
-				evaluationContext.dereferenceVariable(getIteratorName());
 			}
 			return null;
 		}

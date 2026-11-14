@@ -1,0 +1,5 @@
+// CORE-F-11: a failure in a creation scheme carries the frame of the scheme, then the frame of the behaviour that ran new.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="creationStack");
+mustFail = vmi.outer();

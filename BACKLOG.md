@@ -443,3 +443,217 @@ or the wizard step moves to fml-gina-extension.
 **Acceptance criteria.** Creating a concept (core, diagram-ta, jdbc-ta, gina-ta wizards) can produce its container `.inspector`, saved
 with the model and shown in the running application.
 
+
+## FML runtime errors
+
+### CORE-F-11 — Typed FML runtime errors, raised where detected, reported once with the FML location  ·  `IN PROGRESS`
+
+**Problem (audit of every execution primitive, 2026-11-13).** Errors raised while FML runs are handled ad hoc:
+- **Errors become values.** About 60 blocks catch `TypeMismatchException` / `NullReferenceException` / `InvocationTargetException` /
+  `ReflectiveOperationException` four at a time, print the stack and go on with `null`. They are found in receivers, containers,
+  matching sets, behaviour references, behaviour arguments (`BehaviourCallArgument`), the get/set of properties
+  (`FlexoConceptInstance`, getters, setters, expression properties), and `where` (`FetchRequestCondition`, gives `false`). A failing `enable` /
+  `visible` condition counts as true (`AbstractActionScheme.evaluateCondition`). The fault shows up later as an NPE
+  (`ExecuteFlexoBehaviour`, `MatchFlexoConceptInstance`, `FinalizeMatching`), an empty `select` or a null parameter. A null in the path
+  of an `if` / `while` / `for` condition is silently `false`.
+- **Inconsistent wrapping.** A failure in a behaviour called from an expression is wrapped as `FMLExecutionException` → `InvocationTargetException` →
+  `InvocationTargetTransformException`, then each caller unwraps it in its own way (`getCause()` loses the message, some sites wrap
+  twice). The stack and the whole pretty-print of the behaviour are printed again at every nesting level
+  (`FlexoBehaviourAction.executeControlGraph`, `FMLRTVirtualModelInstanceModelFactory.executeCreationScheme`).
+- **Two channels.** `DefaultFlexoEditor.performAction` and `FlexoAction.doAction` without an editor print the exception and keep it in
+  `getThrownException()`; callers often test only the status. A `RuntimeException` escapes `doActionInContext` and leaves the status at
+  `EXECUTING_CORE`.
+- **`return` treated as an error.** A plain `return` fails in a creation scheme (factory), is printed in a deletion scheme
+  (`deleteWithScheme`), and is an error at the top of an fml-cli script. `ReturnException` builds a full stack trace on every `return`.
+- **No location.** No runtime error names the failing statement, its line, the behaviour or the instance, although the position is
+  available (`getPrettyPrintDelegate().getStartLocation()`). In the application only `NotImplementedException` reaches the user (the
+  initializers of the behaviour actions); the `FMLConsole` only receives `log` statements; GINA swallows binding and button errors
+  (`FIBController.handleException` is never called). fml-cli prints `getMessage()` only, gives a line for `assert` only, and its interactive
+  loop ends on a `RuntimeException`.
+- **Connie and PAMELA (lower layers).** Connie is permissive: an invalid binding gives null on get and only warns on set. Other
+  `TransformException`s, `IllegalArgumentException` / `IllegalAccessException` of a method call, and a `ConcurrentModificationException` become null.
+  Several Connie exceptions lose their message or their cause (`CONNIE-F-4`); PAMELA `ModelExecutionException` loses its cause
+  (`PAMELA-D-6`).
+- **Technology adapters.** 66 edition actions of the technology adapters declare no exception and return null after a warning or a
+  printed stack.
+
+Measured in `flexo-foundation`, `org.openflexo.foundation.fml.**` (grep, 2026-11-13): 370 `printStackTrace`, 15 `Thread.dumpStack`, 181
+`System.out/err`, 69 `return null` within 4 lines after a `catch`. The bugs found by the audit are `CORE-D-75` to `CORE-D-79`; `CORE-D-73`
+is the creation-scheme part already recorded. Not verified (read, not run): `NewFlexoConceptInstance` may run its creation scheme twice,
+in the factory and again in `doAction`.
+
+**Decided with the user (2026-11-13).**
+1. Foreseen errors are checked, under `FMLExecutionException`; a defect of the platform (`FMLInternalError`) is unchecked. Revised on
+   2026-11-14, before the first commit: the first decision (an unchecked root) was reversed after weighing the two. A foreseen error is a
+   condition the caller can recover from, which is what a checked exception is for. Every execution method already declares
+   `FMLExecutionException` (81 in the core, 45 in the adapters), so the typed errors fit the existing contract. The compiler then points at
+   every caller when phase 3 makes the helpers raise instead of returning null. Against it: the execution crosses interfaces whose signature
+   is fixed (the path elements of Connie, `PropertyChangeListener`, GINA, PAMELA getters). There a failure travels wrapped in a single,
+   normalized way, and is unwrapped by one helper that rethrows the same object.
+2. A null dereference in a condition is an error, no longer `false`.
+3. In the application an error is reported in the `FMLConsole` and in a dialog.
+4. FML `throw` / `try … catch` come in a late phase.
+5. Connie gets a strict evaluation mode; GINA stays lenient.
+
+**Typology.** Two axes: who is at fault (the FML or its data, the user, the platform), and whether the semantics of the language foresee the case.
+
+```
+ReturnException (checked, without stack trace)   control flow, never an error; does not leave execute()
+FMLExecutionException (checked, a FlexoException) carries the FML stack (frames); the plain type is the untyped form, for the throw
+│                                                sites not migrated yet
+├── FMLCancellation                              the user cancelled (parameters dialog, OperationCancelledException,
+│                                                ActionExecutionCancelledException): compensated (undo), never reported as an error
+├── FMLError (abstract) — foreseen               the FML or its data break the semantics; catchable by FML try/catch (phase 7)
+│   ├── FMLNullReferenceError                    null in a path, null receiver / container / target, null condition
+│   ├── FMLTypeError                             type mismatch, invalid cast, argument of the wrong type
+│   ├── FMLResolutionError                       invalid binding at runtime, unknown behaviour / property / concept,
+│   │                                            unresolved technology action (validation should have reported it)
+│   ├── FMLAssignmentError                       target not settable
+│   ├── FMLArgumentError                         missing or invalid behaviour parameter (replaces InvalidParametersException there)
+│   ├── FMLCardinalityError                      UNIQUE select with several results, required role null, [1,1] broken
+│   ├── FMLTechnologyError                       foreseen failure of a technology operation (missing sheet, no common
+│   │                                            ancestor, duplicate URI…), raised by the adapter with its own key
+│   ├── FMLHostError                             exception of Java code called from FML (target of an ITE), kept as cause
+│   └── FMLUserError                             raised by FML `throw` (phase 7); FMLAssertionError for `assert` in scripts
+
+FMLInternalError (unchecked) — unforeseen        defect of the platform (NPE, ClassCastException, IllegalStateException,
+                                                 ModelExecutionException, ConcurrentModificationException in OpenFlexo code):
+                                                 wrapped once at the first statement it crosses, with the FML stack; not
+                                                 catchable from FML; reported as a bug (bug report dialog)
+```
+
+Both carry the FML stack through the interface `FMLExecutionFailure`.
+
+`FMLExecutionException` stays the checked root, so existing `throws` and `catch` clauses keep their meaning; it moved from
+`org.openflexo.foundation.fml.rt` to `org.openflexo.foundation.fml.rt.error`, with its hierarchy (2026-11-14, about 100 files in some fifteen
+repositories: only the import changes; `ReturnException`, control flow and not an error, stays in `fml.rt`). Its untyped `new
+FMLExecutionException(...)` throw sites are replaced by typed ones site by site (phases 3 and 6).
+
+An FML stack frame holds the behaviour, the concept, the instance (its renderer), the innermost statement, the binding text, and the
+line and column given by `FMLPrettyPrintDelegate.getStartLocation()` (or the pretty-print of the statement when there is no source). `getMessage()`
+gives the localized message and the innermost frame; `getFMLStackTrace()` gives the whole FML stack for the console.
+
+**Levels: where an error is raised, enriched, caught and reported.**
+
+| Level | Where | Rule |
+|---|---|---|
+| L0 detection | edition action, helper, Connie in strict mode | raises the typed error where the fault is detected; never `printStackTrace`, never `return null` on error |
+| L1 statement | one helper `FMLExecution.executeStatement(cg, ctx)` used by `Sequence`, `ConditionalAction`, the loops | records the innermost statement if none is set yet; removes declared variables in a `finally`; catches nothing else |
+| L1' evaluation | `FMLEvaluation.evaluate(binding, ctx, owner)`, `evaluateCondition`, `assign` | replaces the four-catch blocks: TME → Type, NRE → NullReference, invalid → Resolution, not settable → Assignment, ITE (or ITTE) whose target is an `FMLExecutionException` or an `FMLInternalError` → that target rethrown as is, other ITE → Host; null condition → NullReference |
+| L2 behaviour | `FlexoBehaviourAction.executeControlGraph`, the creation scheme of the factory, `deleteWithScheme`, the listeners | pushes the behaviour frame; `ReturnException` → returned value, in every kind of scheme; unforeseen `RuntimeException` → `FMLInternalError`, once; logs nothing |
+| L2' calls from an expression | `FlexoBehaviourPathElement`, `CreationSchemePathElement`, `ExecuteFlexoBehaviour`, `NewFlexoConceptInstance`, `FireEvent` | the one normalized tunnel: a checked failure crosses Connie as `InvocationTargetTransformException(InvocationTargetException(failure))`, and a listener as `EventListenerFailedException`; on the other side it is unwrapped and the same object is rethrown, never wrapped again. An `FMLInternalError` crosses unwrapped |
+| L3 action | `FlexoAction.doActionInContext` | catches any `Throwable`, given by `getFailure()` (`getThrownException()` keeps the checked one); the status is always set (FAILED or CANCELLED); undo is compensated before reporting |
+| L4 report, the only one | `FlexoEditor` → a new `FMLErrorReporter` per editor | a failing non-embedded action is reported once: a SEVERE `FMLConsole` record with the FML stack, and a log line. Interactive editor: an "FML error" dialog ("show in console", "open in the FML editor") for an `FMLError`, the bug report dialog for an `FMLInternalError`, nothing for an `FMLCancellation`. Headless `DefaultFlexoEditor`: console and log. The editor of the tests rethrows, so a test fails loudly |
+
+Other entry points report to `FMLErrorReporter`, console only:
+- listeners: `CORE-D-47` stays, so a failing listener fails the `fire`;
+- synchronization at load;
+- GINA actions: `FIBController.handleException` is revived and `FlexoFIBController` routes it;
+- the diagram controls, which check the outcome.
+
+The server answers JSON {kind, key, message, FML location}, 4xx for a foreseen error and 5xx otherwise. fml-cli reports the script line
+and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteDirective` writes to err.
+
+**Phases.** Each phase is a session of its own, with its tests and a review.
+1. **Core foundations.**
+   - The hierarchy, the frames, the helpers `FMLExecution` and `FMLEvaluation`.
+   - L2 to L4, `FMLErrorReporter`, the SEVERE records, the test editor that rethrows.
+   - `ReturnException` without stack trace, and handled in every scheme.
+   - The `catch (FlexoException)` sites fixed before `FMLExecutionException` moves.
+   - The coding conventions: no `printStackTrace` / `System.out` / `return null` on error in `fml/**`, evaluation through
+     `FMLEvaluation` only, reporting at L4 only.
+2. **Connie and PAMELA** (independent repositories): `CONNIE-F-4`, `PAMELA-D-6`. The version bumps are decided at that time.
+3. **The core primitives.**
+   - The four-catch blocks move to `FMLEvaluation`.
+   - Properties, `where` and `enable` / `visible` become strict, and so do conditions.
+   - The double logs are removed.
+   - `CORE-D-75` to `CORE-D-79` are fixed.
+   - Strict null in conditions: run fml-cli-test, openflexo-integration-tests and formod-test, list here every FML that relied on
+     `false`, and fix it with explicit null checks.
+   - The counts above are measured again.
+4. **User interface.**
+   - The dialog, and navigation from the console to the FML editor through the location of the frame.
+   - A default exception handler for the initializers of the behaviour actions (no more `NotImplementedException` special case).
+   - GINA and the diagram controls.
+5. **fml-cli and the server.**
+6. **Technology adapters**, one repository at a time, each with its own entry: the silent actions raise `FMLTechnologyError` or go
+   through the helpers; `CORE-D-73` is fixed here.
+7. **FML language.**
+   - `throw <expr>` and `try { … } catch (<ErrorType> e) { … }` in `fml.sablecc`, the pretty-print and the semantics.
+   - The `FMLError` types become FML types; `FMLInternalError` and `FMLCancellation` cannot be caught.
+   - The specification in `openflexo-core/spec` is updated and regenerated.
+
+**Phase 1 done (2026-11-14), decided with the user.**
+- The typed errors are in `org.openflexo.foundation.fml.rt.error`: `FMLError` and its subclasses, and `FMLCancellation`, all under the
+  checked `FMLExecutionException`; `FMLInternalError`, unchecked. All carry an `FMLStack` (interface `FMLExecutionFailure`). A failure that
+  wraps one that has a stack starts with its frames. None of the ~200 `catch (FlexoException)` of the workspace catches a failure that used to pass
+  through it unchecked.
+- `FlexoAction.getFailure()` gives any failure, checked or not; `getThrownException()` gives the checked one, foreseen errors included. The
+  status is now `FAILED_EXECUTION` for any failure (`HAS_BEEN_CANCELLED` for an `FMLCancellation`).
+- Reporting is done once, for the outermost action run on a thread (`FMLErrorReporter.enterAction`, a `ThreadLocal`), by
+  `DefaultFlexoEditor.performAction` and by `FlexoAction.doAction()` without an editor. A nested action leaves its failure to its caller.
+  A nested checked failure that the caller went on after is reported when the outermost action succeeds ("failed, and its caller went
+  on"). An unforeseen failure is reported and rethrown, as before; a foreseen one stays in the status of an outermost action. This is the
+  behaviour of the test editor too (it extends `DefaultFlexoEditor`): unforeseen failures fail the test, foreseen ones are read from the
+  status.
+- L1 is `FMLExecution.executeStatement` (`Sequence`, `if`, the loops, `while`); L2 is `FMLExecution.executeBehaviourBody`
+  (`FlexoBehaviourAction.executeControlGraph`, the creation scheme of the factory, `deleteWithScheme`). They print nothing, and an
+  unforeseen `RuntimeException` becomes an `FMLInternalError` at the first statement it crosses. A `return` ends a creation or a
+  deletion scheme without error, and builds no stack trace. `CORE-D-76` is fixed on the way.
+- A listener failure reaches the `fire` unchanged when it is an `FMLExecutionException` or unchecked (another checked one is wrapped),
+  and the other listeners still run; their failures go with the first one (suppressed exceptions, printed by the report).
+- After review (decided with the user):
+  - An unforeseen failure is recognized through the whole cause chain (`FMLErrorReporter.isForeseen`): a `RuntimeException` that is not under an
+    `InvocationTargetException` (a failure of Java code called from FML, foreseen), or an `FMLInternalError`, is a defect, logged with its
+    Java stack, even when wrapped into a checked exception.
+  - `AbstractAssignationAction`, `AssignationAction` and `DeleteAction` no longer wrap an unchecked exception into an untyped
+    `FMLExecutionException`, and `DeleteAction` no longer swallows one. `FMLExecution.convertUnchecked` converts it once, into an
+    `FMLInternalError`: it stays unchecked and propagates as before. Turning the foreseen ones (a failing Java accessor, a missing Java
+    property) into the checked `FMLHostError` / `FMLResolutionError` waits for phase 3: until the `catch (FlexoException) → null` of the
+    getters, setters and adapters are strict, they would swallow a failure that used to reach the caller.
+  - The fml-cli commands no longer print the stack of a failure that the editor reported.
+  - A valued `return` in a creation scheme is an error (`FMLTypeError`); a bare `return` ends the scheme.
+  - A nested failure that is not part of the failure of the outermost action is reported too.
+  - The callers that read the outcome of an action they ran call `rethrowUncheckedFailure()` first: `FlexoBehaviourPathElement`,
+    `CreationSchemePathElement`, `ExecuteFlexoBehaviour`, `NewFlexoConceptInstance`, `DeleteFlexoConceptInstance`, `FinalizeMatching`,
+    `CreateFMLRTVirtualModelInstance`. Since foreseen errors are checked, an unchecked failure always propagates out of `doAction()`, so
+    this is only a guard. The callers of other repositories read `getThrownException()`, which gives every foreseen failure: they lose
+    nothing.
+  - The getter and the setter of a property run through `FMLExecution.executePropertyBody`, with a frame of their own.
+  - A stack keeps no model object: a statement is described when it is recorded.
+- Known limits of phase 1:
+  - A cancellation (`FMLCancellation`, raised by nothing yet, phase 4) is a checked failure: the callers of a cancelled nested action
+    rethrow it, wrapped, and their own action ends `FAILED_EXECUTION`. The report skips it, even wrapped (`FMLErrorReporter.isCancellation`).
+    The status of the callers is to be settled when phase 4 raises it.
+  - The report goes to the FML console and the log. The running application shows nothing more until phase 4 (`InteractiveFlexoEditor`
+    unchanged), and the former `System.err` pretty-print of the failing behaviour is gone.
+  - An action started by an expression (fml-cli, GINA, server) is an outermost action: it is reported, and its caller still receives the
+    failure. GINA prints it again until phase 4.
+  - A `ConcurrentModificationException` raised in a behaviour called from an expression is now an `FMLInternalError`; Connie
+    (`BindingPath`) used to turn it into null.
+  - `DeleteAction` no longer swallows an unchecked exception: a deletion path of a technology adapter that threw one silently now fails
+    (`XML-D-1`, `PPTX-D-6`). The other adapters were not run.
+
+Deferred from phase 1:
+- `FMLEvaluation` moves to phase 3: its conversions depend on the strict mode of Connie.
+- Localized messages move to phase 4.
+- `InteractiveFlexoEditor` (openflexo-ui) is unchanged until phase 4.
+
+Found by the tests of phase 1: `CORE-D-80`. In the fixture, `this.middle()` is needed.
+
+Tests:
+- `TestFMLExecutionStack` (fml-cli-test, scripts of `ExecutionStack/`) checks the frames of a failure three behaviours deep and of a failing
+  creation scheme, and a `return` in creation and deletion schemes.
+- `TestExecutionFailures` checks that every failure has a located innermost frame, and gains `ValuedReturnInCreationScheme`.
+- `TestFMLErrorReporting` (flexo-foundation-test) checks the branches of the editor, the outermost-action scope, the no-editor path and the
+  classification of failures.
+
+**Acceptance criteria.**
+- The scripts of `ExecutionFailures/` (`TestExecutionFailures`, fml-cli-test) gain one script per kind of error. Each asserts the type,
+  the line of the failing statement and the frame of the behaviour, and that nothing is printed to stderr.
+- An error three behaviour calls deep (through an expression, `new` and `fire`) reaches the top unwrapped, with three frames, and is
+  reported once.
+- A `return` in a creation or a deletion scheme is not an error.
+- In the application, a failing action scheme shows one dialog, the console holds the record, and its edits are undone.
+- The full suites stay green once the FML that relied on a lenient null is fixed: core through the openflexo-dev composite,
+  openflexo-integration-tests, formod. The `openflexo-reviewer` agent is run on every phase.

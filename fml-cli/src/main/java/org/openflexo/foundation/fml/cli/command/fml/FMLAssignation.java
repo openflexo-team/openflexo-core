@@ -181,7 +181,7 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 				try {
 					assignedValue = expression.getBindingValue(getCommandInterpreter());
 				} catch (Exception e) {
-					e.printStackTrace();
+					// Not printed: an FML failure was reported by the editor that ran its action (CORE-F-11)
 					cmdOutput = "Cannot execute " + expression;
 
 					output.add(cmdOutput);

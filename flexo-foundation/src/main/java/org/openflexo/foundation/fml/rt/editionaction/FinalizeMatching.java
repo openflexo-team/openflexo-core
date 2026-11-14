@@ -61,7 +61,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
@@ -489,6 +489,7 @@ public interface FinalizeMatching extends EditionAction {
 							}
 							else if (behaviourAction.hasActionExecutionFailed()) {
 								// The behaviour run on an unmatched instance failed: the end match fails (CORE-D-47)
+								behaviourAction.rethrowUncheckedFailure();
 								throw new FMLExecutionException("Could not execute " + behaviourAction.getFlexoBehaviour().getSignature()
 										+ " on unmatched " + fci, behaviourAction.getThrownException());
 							}

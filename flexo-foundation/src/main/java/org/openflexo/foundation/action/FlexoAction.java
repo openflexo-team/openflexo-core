@@ -58,6 +58,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
+import org.openflexo.foundation.fml.rt.error.FMLErrorReporter;
+import org.openflexo.foundation.fml.rt.error.FMLErrorReporter.ExecutionScope;
 
 /**
  * Abstract representation of an action at model level (model edition primitive)
@@ -128,6 +131,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	protected ExecutionStatus executionStatus = ExecutionStatus.NEVER_EXECUTED;
 	private FlexoException thrownException = null;
+	private Throwable failure = null;
 
 	/**
 	 * Instantiate a {@link FlexoAction} with a factory, a focused object and a global selection
@@ -232,10 +236,30 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		}
 		else {
 			logger.warning("No editor for action " + this);
+			// No editor to report to: the failure of the outermost action is logged, a nested one is left to its caller (CORE-F-11)
+			ExecutionScope scope = FMLErrorReporter.enterAction();
 			try {
 				doActionInContext();
 			} catch (FlexoException e) {
-				e.printStackTrace();
+				if (scope != null) {
+					FMLErrorReporter.logFailure(this, e);
+				}
+				else {
+					FMLErrorReporter.currentScope().nestedActionFailed(this);
+				}
+			} catch (RuntimeException | Error e) {
+				if (scope != null) {
+					FMLErrorReporter.logFailure(this, e);
+				}
+				throw e;
+			} finally {
+				if (scope != null) {
+					FMLErrorReporter.exitOutermostAction();
+					List<FlexoAction<?, ?, ?>> unreported = FMLErrorReporter.unreportedNestedFailures(scope, this);
+					if (!unreported.isEmpty()) {
+						FMLErrorReporter.logIgnoredFailures(unreported);
+					}
+				}
 			}
 		}
 		return (A) this;
@@ -257,8 +281,36 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return getExecutionStatus() == ExecutionStatus.FAILED_EXECUTION;
 	}
 
+	/**
+	 * The checked failure of this action: a foreseen FML failure ({@link org.openflexo.foundation.fml.rt.error.FMLExecutionException} and its
+	 * subclasses) or any other {@link FlexoException}. Null for an unchecked failure (a defect of the platform), which
+	 * {@link #getFailure()} gives, and {@link #rethrowUncheckedFailure()} rethrows (CORE-F-11)
+	 */
 	public FlexoException getThrownException() {
 		return thrownException;
+	}
+
+	/**
+	 * The failure of the last execution of this action: whatever it threw (checked or not), null when it succeeded or was never executed.
+	 * Set when the status is {@link ExecutionStatus#FAILED_EXECUTION}, or {@link ExecutionStatus#HAS_BEEN_CANCELLED} when the execution
+	 * was cancelled by an {@link FMLCancellation}.
+	 */
+	public Throwable getFailure() {
+		return failure;
+	}
+
+	/**
+	 * Rethrow the failure of this action when it is unchecked (a defect of the platform: an
+	 * {@link org.openflexo.foundation.fml.rt.error.FMLInternalError}, any {@link RuntimeException} or {@link Error}). A caller that reads the outcome of an action it ran calls this first, then reads a
+	 * checked failure from {@link #getThrownException()} (CORE-F-11)
+	 */
+	public void rethrowUncheckedFailure() {
+		if (failure instanceof RuntimeException) {
+			throw (RuntimeException) failure;
+		}
+		if (failure instanceof Error) {
+			throw (Error) failure;
+		}
 	}
 
 	public void cancelExecution() {
@@ -274,13 +326,21 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		if (getActionFactory() != null && !getActionFactory().isEnabled(getFocusedObject(), getGlobalSelection())) {
 			throw new InactiveFlexoActionException(getActionFactory(), getFocusedObject(), getGlobalSelection());
 		}
+		thrownException = null;
+		failure = null;
 		try {
 			executionStatus = ExecutionStatus.EXECUTING_CORE;
 			doAction(getContext());
 			executionStatus = ExecutionStatus.HAS_SUCCESSFULLY_EXECUTED;
 		} catch (FlexoException e) {
-			executionStatus = ExecutionStatus.FAILED_EXECUTION;
+			executionStatus = e instanceof FMLCancellation ? ExecutionStatus.HAS_BEEN_CANCELLED : ExecutionStatus.FAILED_EXECUTION;
 			thrownException = e;
+			failure = e;
+			throw e;
+		} catch (RuntimeException | Error e) {
+			// Whatever the action throws, its status tells it failed (CORE-F-11)
+			executionStatus = ExecutionStatus.FAILED_EXECUTION;
+			failure = e;
 			throw e;
 		}
 		return (A) this;

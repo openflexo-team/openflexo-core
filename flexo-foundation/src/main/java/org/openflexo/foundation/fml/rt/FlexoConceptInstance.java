@@ -124,6 +124,8 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 
 /**
  * A {@link FlexoConceptInstance} is an instance of a {@link FlexoConcept}, at run-time (FML@RT).
@@ -973,13 +975,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					if (getControlGraph != null) {
 						try {
 							RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-							T returnedValue = null;
-							try {
-								getControlGraph.execute(localEvaluationContext);
-							} catch (ReturnException e) {
-								returnedValue = (T) e.getReturnedValue();
-							}
-							return returnedValue;
+							// A failure gets the frame of the getter (CORE-F-11)
+							return (T) FMLExecution.executePropertyBody(getControlGraph, localEvaluationContext,
+									"get " + flexoProperty.getName(), this);
 						} catch (FlexoException e) {
 							e.printStackTrace();
 							logger.warning("Unexpected exception " + e + " while executing get property=" + flexoProperty);
@@ -1098,11 +1096,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 								}
 							};
 							// FD unused T returnedValue = null;
-							try {
-								setControlGraph.execute(localEvaluationContext);
-							} catch (ReturnException e) {
-								// Ignore
-							}
+							// A return ends the setter; a failure gets the frame of the setter (CORE-F-11)
+							FMLExecution.executePropertyBody(setControlGraph, localEvaluationContext, "set " + flexoProperty.getName(), this);
 						} catch (FlexoException e) {
 							e.printStackTrace();
 						}
@@ -2145,10 +2140,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (deletionScheme != null && deletionScheme.getControlGraph() != null) {
 				try {
-					deletionScheme.getControlGraph().execute(evaluationContext);
-				} catch (ReturnException e) {
-					// TODO: think about that
-					e.printStackTrace();
+					// A return ends the deletion scheme; a failure gets the frame of the scheme (CORE-F-11)
+					FMLExecution.executeBehaviourBody(deletionScheme.getControlGraph(), evaluationContext, deletionScheme, this);
 				} catch (FlexoException e) {
 					if (failOnSchemeFailure) {
 						throw e;

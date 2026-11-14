@@ -281,6 +281,7 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 						logger.fine("Successfully performed FlexoBehaviour " + getFlexoBehaviour() + " for " + fci);
 						return actionSchemeAction.getReturnedValue();
 					}
+					actionSchemeAction.rethrowUncheckedFailure();
 					if (actionSchemeAction.getThrownException() != null) {
 						throw new InvocationTargetTransformException(
 								new InvocationTargetException(actionSchemeAction.getThrownException()));
@@ -312,6 +313,7 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 						logger.fine("Successfully performed FlexoBehaviour " + getFlexoBehaviour() + " for " + fci);
 						return actionSchemeAction.getReturnedValue();
 					}
+					actionSchemeAction.rethrowUncheckedFailure();
 					if (actionSchemeAction.getThrownException() != null) {
 						throw new InvocationTargetTransformException(
 								new InvocationTargetException(actionSchemeAction.getThrownException()));

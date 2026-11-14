@@ -46,7 +46,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -58,6 +58,7 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 
 /**
  * The FML assignation statement {@code target = value;}.
@@ -167,6 +168,9 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 				// x op= v assigns x op v (CORE-D-7); as in Java, x is read before v is evaluated
 				try {
 					currentValue = getAssignation().getBindingValue(evaluationContext);
+				} catch (RuntimeException e) {
+					// Unchecked: converted once, a defect of the platform stays one (CORE-F-11)
+					throw FMLExecution.convertUnchecked(e);
 				} catch (Exception e) {
 					throw new FMLExecutionException(e);
 				}
@@ -175,12 +179,18 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			if (operator != null && operator.isCompound()) {
 				try {
 					value = (T) operator.apply(currentValue, value, getAssignation().getAnalyzedType());
+				} catch (RuntimeException e) {
+					// Unchecked: converted once, a defect of the platform stays one (CORE-F-11)
+					throw FMLExecution.convertUnchecked(e);
 				} catch (Exception e) {
 					throw new FMLExecutionException(e);
 				}
 			}
 			try {
 				getAssignation().setBindingValue(value, evaluationContext);
+			} catch (RuntimeException e) {
+				// Unchecked: converted once, a defect of the platform stays one (CORE-F-11)
+				throw FMLExecution.convertUnchecked(e);
 			} catch (Exception e) {
 				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
 				e.printStackTrace();

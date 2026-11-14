@@ -45,7 +45,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -56,6 +56,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 
 /**
  * Abstract {@link AssignableAction} which is composed with an other {@link AssignableAction} (right hand side)
@@ -91,6 +92,12 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 					return getAssignableAction().execute(evaluationContext);
 				} catch (ReturnException e) {
 					return (T) e.getReturnedValue();
+				} catch (FMLExecutionException e) {
+					// Already an FML failure: not wrapped again (CORE-F-11)
+					throw e;
+				} catch (RuntimeException e) {
+					// Unchecked: a defect of the platform stays one, not taken for a foreseen failure (CORE-F-11)
+					throw FMLExecution.convertUnchecked(e);
 				} catch (Exception e) {
 					logger.warning("Unexpected issue while, computing assignable action " + getAssignableAction() + ", exception: " + e);
 					e.printStackTrace();

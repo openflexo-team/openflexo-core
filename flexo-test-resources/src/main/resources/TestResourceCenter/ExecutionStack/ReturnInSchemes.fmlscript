@@ -1,0 +1,10 @@
+// CORE-F-11: a return ends a creation scheme or a deletion scheme, it is not a failure.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="returns");
+r = vmi.new Returner();
+assert r.step == 1;
+assert vmi.returnerCount() == 1;
+done = vmi.deleteReturner(r);
+assert vmi.progress == 5;
+assert vmi.returnerCount() == 0;

@@ -60,6 +60,9 @@ import org.openflexo.pamela.converter.RelativePathResourceConverter;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.pamela.factory.PamelaModelFactory;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLTypeError;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 
 /**
  * The {@link PamelaModelFactory} building the objects of a {@link FMLRTVirtualModelInstance}: the instance itself, its concept instances,
@@ -300,19 +303,15 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 
 		// Perform execute creation scheme
 		if (creationScheme != null && creationScheme.getControlGraph() != null) {
-			try {
-				creationScheme.getControlGraph().execute(evaluationContext);
-			} catch (ReturnException e) {
-				logger.warning("CreationScheme is not supposed to return any values: " + e);
-				System.err.println(creationScheme.getFMLPrettyPrint());
-				throw new FMLExecutionException("CreationScheme is not supposed to return any value");
-			} catch (FMLExecutionException e) {
-				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(creationScheme.getFMLPrettyPrint());
-				e.printStackTrace();
-				throw e;
+			// A bare return ends the creation scheme; a failure gets the frame of the scheme (CORE-F-11)
+			Object returned = FMLExecution.executeBehaviourBody(creationScheme.getControlGraph(), evaluationContext, creationScheme,
+					newInstance);
+			if (returned != null) {
+				FMLTypeError error = new FMLTypeError("A creation scheme returns no value: " + creationScheme.getSignature() + " returned " + returned);
+				error.getFMLStack().recordLocation(creationScheme);
+				error.getFMLStack().pushBehaviourFrame(creationScheme, newInstance);
+				throw error;
 			}
-
 		}
 	}
 

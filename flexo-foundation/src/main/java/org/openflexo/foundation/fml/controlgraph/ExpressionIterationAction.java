@@ -51,9 +51,10 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -237,24 +238,22 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 			Object initValue = evaluateInitExpression(evaluationContext);
 			evaluationContext.declareVariable(getIteratorName(), initValue);
 
-			while (evaluateCondition(evaluationContext)) {
+			try {
+				while (evaluateCondition(evaluationContext)) {
 
-				// Evaluate CG
-				try {
-					getControlGraph().execute(evaluationContext);
-				} catch (ReturnException e) {
-					evaluationContext.dereferenceVariable(getIteratorName());
-					throw e;
+					// Evaluate CG
+					FMLExecution.executeStatement(getControlGraph(), evaluationContext);
+
+					// Evaluate statement expression (the update is optional)
+					if (getStatementExpression() != null) {
+						FMLExecution.executeStatement(getStatementExpression(), evaluationContext);
+					}
+
 				}
-
-				// Evaluate statement expression (the update is optional)
-				if (getStatementExpression() != null) {
-					getStatementExpression().execute(evaluationContext);
-				}
-
+			} finally {
+				// Also when the body fails or returns: the iterator does not outlive the loop (CORE-D-76)
+				evaluationContext.dereferenceVariable(getIteratorName());
 			}
-
-			evaluationContext.dereferenceVariable(getIteratorName());
 
 			return null;
 		}

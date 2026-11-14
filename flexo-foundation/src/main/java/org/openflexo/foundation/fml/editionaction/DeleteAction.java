@@ -49,7 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -62,6 +62,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 
 /**
  * The FML deletion statement {@code delete expression;}.
@@ -215,6 +216,9 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 
 			} catch (FMLExecutionException e) {
 				throw e;
+			} catch (RuntimeException e) {
+				// Unchecked: propagates, a defect of the platform is not swallowed (CORE-F-11)
+				throw FMLExecution.convertUnchecked(e);
 			} catch (Exception e) {
 				logger.warning("Unexpected exception occured during deletion: " + e.getMessage());
 				e.printStackTrace();

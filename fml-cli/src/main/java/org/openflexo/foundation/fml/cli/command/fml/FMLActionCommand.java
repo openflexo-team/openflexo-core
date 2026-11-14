@@ -136,10 +136,9 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 			try {
 				return editionAction.execute(getCommandInterpreter());
 			} catch (ReturnException e) {
-				e.printStackTrace();
 				throw new FMLCommandExecutionException(e);
 			} catch (FlexoException e) {
-				e.printStackTrace();
+				// Not printed: the failure is the one of the command (CORE-F-11)
 				throw new FMLCommandExecutionException(e);
 			}
 

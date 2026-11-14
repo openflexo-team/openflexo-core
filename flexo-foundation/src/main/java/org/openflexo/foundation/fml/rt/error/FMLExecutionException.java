@@ -37,29 +37,47 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt;
+package org.openflexo.foundation.fml.rt.error;
 
 import org.openflexo.foundation.FlexoException;
 
 /**
- * This is an exception which may be thrown during FML execution
+ * A failure of an FML execution that the semantics of the language foresee, or a cancellation: the checked exception that every execution
+ * method declares (CORE-F-11).
+ * <p>
+ * New code raises one of its typed subclasses: an {@link FMLError} (the FML or its data are at fault) or an
+ * {@link FMLCancellation}. A plain {@code FMLExecutionException} is the untyped form, kept for the
+ * throw sites not migrated yet. A defect of the platform is not one: it is an unchecked
+ * {@link FMLInternalError}.
+ * <p>
+ * It carries the FML stack it went through; when it wraps a failure that carries one, it starts with its frames.
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FMLExecutionException extends FlexoException {
+public class FMLExecutionException extends FlexoException implements FMLExecutionFailure {
+
+	private final FMLStack stack;
 
 	public FMLExecutionException(Throwable exception) {
 		super(exception);
+		stack = FMLExecutionFailure.stackFor(exception);
 	}
 
 	public FMLExecutionException(String message) {
 		super(message);
+		stack = new FMLStack();
 	}
 
 	public FMLExecutionException(String message, Throwable e) {
 		super(message, e);
+		stack = FMLExecutionFailure.stackFor(e);
+	}
+
+	@Override
+	public FMLStack getFMLStack() {
+		return stack;
 	}
 
 }

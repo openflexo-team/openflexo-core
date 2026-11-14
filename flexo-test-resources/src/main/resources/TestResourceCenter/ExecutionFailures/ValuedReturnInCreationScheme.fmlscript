@@ -1,0 +1,5 @@
+// CORE-F-11: a creation scheme returns no value; a valued return fails the new.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="valuedReturn");
+mustFail = vmi.new ValuedReturner();

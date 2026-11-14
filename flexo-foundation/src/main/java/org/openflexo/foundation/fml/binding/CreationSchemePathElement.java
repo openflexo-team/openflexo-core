@@ -78,7 +78,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
-import org.openflexo.foundation.fml.rt.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -909,6 +909,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		 */
 		private static void failIfNotSucceeded(FlexoAction<?, ?, ?> action) throws InvocationTargetTransformException {
 			if (action.hasActionExecutionFailed()) {
+				action.rethrowUncheckedFailure();
 				Throwable cause = action.getThrownException() != null ? action.getThrownException()
 						: new FMLExecutionException("Creation failed: " + action);
 				throw new InvocationTargetTransformException(new InvocationTargetException(cause));

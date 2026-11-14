@@ -1,0 +1,5 @@
+// CORE-F-11: a failure three behaviours deep carries one frame per behaviour, innermost first, with the line of each statement.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="nested");
+mustFail = vmi.nested();

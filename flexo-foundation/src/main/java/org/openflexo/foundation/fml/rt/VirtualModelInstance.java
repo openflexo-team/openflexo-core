@@ -101,6 +101,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 
 /**
  * A {@link VirtualModelInstance} is an instance of a {@link VirtualModel}, at run-time. It is itself a {@link FlexoConceptInstance} whose

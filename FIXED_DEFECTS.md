@@ -1312,3 +1312,19 @@ through the frozen annotations) and that the shared fixture is untouched.
 
 **Tests.** `TestRenameFlexoConcept` and `TestContainerUIComponents`, run under Gradle (jar) and with `flexo-test-resources` as a
 directory on the classpath (the Eclipse case): 26/26 both ways, the directory left unchanged.
+
+---
+
+## FML runtime errors (found by the audit of `CORE-F-11`, 2026-11-13)
+
+### CORE-D-76 — The iterator variable of `for (x : …)` stays declared when the loop body fails  ·  `DONE`
+
+**Symptom (read).** `IterationAction.execute` dereferences the iterator only on a `ReturnException`: an `FMLExecutionException`
+thrown by the body leaves `x` declared in the evaluation context. The same holds for `ExpressionIterationAction`. Also: a `return` inside the
+iteration expression is cast to `List` and used as the collection (`evaluateIteration`).
+
+**Fixed (2026-11-14, `CORE-F-11` phase 1).** `IterationAction` and `ExpressionIterationAction` remove the iterator in a `finally`, whatever
+ends the loop (a failure, a `return`, the end). Not changed: a `return` inside the iteration expression is still taken as the collection
+(an iteration expression is an expression, it does not hold a `return` in practice). Tests: none fails without the fix (no script makes the body of a loop fail); correct by
+reading.
+
