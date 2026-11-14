@@ -95,18 +95,28 @@ these outcomes, which this section collects (they are justified where the constr
 | a path whose element does not resolve (misspelling, missing import, bare parameter name, bare call) | the expression is `null`; execution goes on | §9.8 |
 | a path that goes through a `null` value | in a value position, an **execution error** that stops the behaviour; in an `if` condition, the condition is false | §9.8, §8.4 |
 | a type error (`1 + "a"`, string used as a number) | an execution error that stops the behaviour | §9.5 |
-| an `if` or `while` whose condition is invalid | the condition is true | §8.4 (`CORE-D-8`) |
+| an `if`, `while` or `for` whose condition is invalid | an execution error that stops the behaviour | §8.4 |
 | a `new` that does not resolve to a creation scheme | `null` | §7.2, §9.7 |
 | a technology-specific action that cannot be built | reported at load; the unit keeps its text | §10.10.2 |
 | `assert` false in a script | the run fails with a message naming the line | §12.6 |
 | a failed `load` or `new` in a script | the script stops | §12.7 |
 
 An execution error is signalled to the caller of the behaviour as an `FMLExecutionException`; a script that called
-it stops, and an application reports it.
+it stops, and an application reports it. This holds whatever runs the failing code:
 
-> **Implementation note.** A failure in a creation scheme does not reach the caller of the `new`: the caller goes on,
-> and the partly built instance stays in its container (`CORE-D-47`). Failures in event listeners, in the deletion
-> scheme run by `delete` and by `end match` are swallowed as well.
+* a creation scheme run by `new`: the `new` fails, and the instance being built is taken out of its container, with
+  what it contains; a virtual model instance being created is not removed;
+* an event listener: the other listeners of the event still run, then the `fire` that dispatched it fails;
+* the deletion scheme run by `delete` (§10.4), or chosen in the user interface: the deletion fails and the
+  instance is not deleted;
+* the behaviour run on an unmatched instance by `end match` (§10.9): the `end match` fails.
+
+A behaviour that does not run because it is disabled (`@Enable`, §11) is not a failure: a disabled listener is
+skipped, and an unmatched instance whose behaviour is disabled is left as it is.
+
+There is no transaction: what the failing code did before the failure (instances created elsewhere, values assigned,
+technology actions, instances deleted before the failing one) is kept. A creation run by a technology action may
+still hide the failure of its creation scheme (`CORE-D-73`).
 
 The consequence of the first row is the discipline this specification repeats: **a `null` where a value is expected
 is first a name that does not resolve.** Validate (§13.8) before debugging.

@@ -1,0 +1,109 @@
+/**
+ * A failure during an execution reaches the caller: a creation scheme, an event listener, a deletion scheme, the behaviour run by
+ * an end match, and an invalid condition (CORE-D-47, CORE-D-8). See the scripts of ExecutionFailures/ and TestExecutionFailures.
+ * The property absent is never set: reading a method of it fails.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml")
+public model ExecutionFailures {
+
+	int progress;
+	String absent;
+
+	public int outer() {
+		Bomb b = new Bomb();
+		progress = 1;
+		return 7;
+	}
+
+	public int bombCount() {
+		int n = 0;
+		for (Bomb b : select Bomb from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public fireIt() {
+		fire new Ping();
+		progress = 1;
+	}
+
+	listen Ping from this {
+		String consumed = absent.substring(0);
+	}
+
+	public fireQuiet() {
+		fire new Quiet();
+		progress = 2;
+	}
+
+	// A disabled listener does not run: it is not a failure
+	@Enable(false)
+	listen Quiet from this {
+		String consumed = absent.substring(0);
+	}
+
+	public deleteIt(Fragile f) {
+		delete parameters.f;
+		progress = 1;
+	}
+
+	public pruneAll() {
+		MatchingSet<Fragile> fragiles = begin match Fragile from this;
+		end match Fragile in fragiles unmatched: delete();
+		progress = 1;
+	}
+
+	public int fragileCount() {
+		int n = 0;
+		for (Fragile f : select Fragile from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public String invalidCondition() {
+		String r = "none";
+		if (zzUnknownVariable.foo) {
+			r = "then";
+		}
+		else {
+			r = "else";
+		}
+		return r;
+	}
+
+	public String nullCondition() {
+		Boolean b;
+		if (b) {
+			return "then";
+		}
+		return "else";
+	}
+
+	public event Ping {
+		create() {
+		}
+	}
+
+	public event Quiet {
+		create() {
+		}
+	}
+
+	public concept Bomb {
+		String absent;
+		create() {
+			String consumed = absent.substring(0);
+		}
+	}
+
+	public concept Fragile {
+		String absent;
+		create() {
+		}
+		delete() {
+			String consumed = absent.substring(0);
+		}
+	}
+}

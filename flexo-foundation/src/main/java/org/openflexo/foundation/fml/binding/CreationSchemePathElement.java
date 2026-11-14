@@ -62,6 +62,7 @@ import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.TypingSpace;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLBindingFactory;
@@ -70,6 +71,9 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -541,6 +545,28 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 			}
 
+			else if (getFlexoConcept() != null && !(getFlexoConcept() instanceof VirtualModel) && !(getFlexoConcept() instanceof FlexoEvent)
+					&& getBindable() instanceof FlexoConceptObject && !(getBindable() instanceof MatchFlexoConceptInstance)) {
+				// A bare new, written in a behaviour of a concept: the instance is created inside the current instance, so the
+				// instantiated concept must be nested in the concept of the behaviour (or in one of its parents); a concept declared
+				// elsewhere needs container.new (the same rule as for an explicit receiver, above). The unmatched: new of a match
+				// is not concerned: it creates the instance in the container of the match (CORE-D-41)
+				FlexoConcept context = ((FlexoConceptObject) getBindable()).getFlexoConcept();
+				if (context != null && !(context instanceof VirtualModel)) {
+					FlexoConcept applicableContainer = getFlexoConcept().getApplicableContainerFlexoConcept();
+					// A behaviour of a parent concept may create a concept nested in one of its children: it succeeds when run on an
+					// instance of that child
+					if (applicableContainer == null
+							|| !(applicableContainer.isAssignableFrom(context) || context.isAssignableFrom(applicableContainer))) {
+						check.invalidBindingReason = "cannot instantiate " + getFlexoConcept().getName() + " in " + context.getName()
+								+ ": " + getFlexoConcept().getName() + " is not nested in " + context.getName() + ", use container.new "
+								+ getFlexoConcept().getName() + "(...)";
+						check.valid = false;
+						return check;
+					}
+				}
+			}
+
 			for (FMLPropertyValue<?, ?> pValue : getFMLPropertyValues()) {
 				if (pValue.getProperty() == null && StringUtils.isNotEmpty(pValue.getUnresolvedPropertyName())) {
 					check.invalidBindingReason = "unresolved property " + pValue.getUnresolvedPropertyName();
@@ -811,8 +837,9 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						}
 					}
 
-					// System.out.println("Doing the action...");
 					createVMIAction.doAction();
+					// A creation that failed fails the new that asked for it (CORE-D-47)
+					failIfNotSucceeded(createVMIAction);
 					FMLRTVirtualModelInstance returned = createVMIAction.getNewVirtualModelInstance();
 					// System.out.println("returned=" + returned);
 					return returned;
@@ -841,10 +868,23 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (FMLExecutionException e) {
-				e.printStackTrace();
+				// An execution failure of the creation reaches the caller (CORE-D-47)
+				throw new InvocationTargetTransformException(new InvocationTargetException(e));
 			}
 			return null;
 
+		}
+
+		/**
+		 * Throw the failure of a creation action that failed, as {@link FlexoBehaviourPathElement} does for a behaviour call. An action
+		 * that was not executed (disabled) has not failed: the new then gives null
+		 */
+		private static void failIfNotSucceeded(FlexoAction<?, ?, ?> action) throws InvocationTargetTransformException {
+			if (action.hasActionExecutionFailed()) {
+				Throwable cause = action.getThrownException() != null ? action.getThrownException()
+						: new FMLExecutionException("Creation failed: " + action);
+				throw new InvocationTargetTransformException(new InvocationTargetException(cause));
+			}
 		}
 
 		private AbstractCreationSchemeAction<?, CS, ?> makeCreationSchemeAction(CS behaviour, VirtualModelInstance<?, ?> vmInstance,
@@ -870,8 +910,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		}
 
 		private FlexoConceptInstance performExecuteCreationScheme(FlexoConceptInstance containerFCI, VirtualModelInstance<?, ?> vmInstance,
-				BindingEvaluationContext evaluationContext)
-				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, FMLExecutionException {
+				BindingEvaluationContext evaluationContext) throws TypeMismatchException, NullReferenceException, ReflectiveOperationException,
+				FMLExecutionException, InvocationTargetTransformException {
 
 			if (getCreationScheme() == null) {
 				System.out.println("Zut, pas de CS, mais le concept c'est " + getFlexoConcept());
@@ -899,7 +939,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 			creationSchemeAction.doAction();
 
-			// return creationSchemeAction.hasActionExecutionSucceeded();
+			// A creation scheme that failed fails the new that called it; the partly built instance has been discarded (CORE-D-47)
+			failIfNotSucceeded(creationSchemeAction);
 
 			return creationSchemeAction.getNewFlexoConceptInstance();
 

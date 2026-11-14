@@ -1,0 +1,8 @@
+// CORE-D-47: a deletion scheme that fails fails the delete, and the instance is not deleted.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="deletion");
+f = vmi.new Fragile();
+mustFail = vmi.deleteIt(f);
+assert vmi.progress != 1;
+assert vmi.fragileCount() == 1;

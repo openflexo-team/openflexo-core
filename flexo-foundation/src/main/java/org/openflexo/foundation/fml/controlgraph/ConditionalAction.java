@@ -79,7 +79,7 @@ import org.openflexo.pamela.validation.ValidationRule;
  * otherwise the optional else branch ({@link #getElseControlGraph()}). The inferred type of the conditional combines the inferred types
  * of its branches, which must be compatible (validation rule {@link InferedTypesMustBeCompatible}).
  * <p>
- * Beware of an invalid condition, which is evaluated as true: see {@link #evaluateCondition(BindingEvaluationContext)}.
+ * An invalid condition fails the execution: see {@link #evaluateCondition(BindingEvaluationContext)}.
  * <p>
  * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
  *
@@ -127,15 +127,16 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 	/**
 	 * Evaluate the condition in supplied context.
 	 * <p>
-	 * A null value, or a {@code NullReferenceException} raised by the evaluation, yields {@code false}. Beware: a condition which is not
-	 * set or not valid, or whose evaluation raises another exception, yields {@code true}, so that the then branch is executed (known
-	 * defect {@code CORE-D-8}).
+	 * A null value, or a {@code NullReferenceException} raised by the evaluation, yields {@code false}. A condition which is not set or
+	 * not valid, or whose evaluation raises another exception, fails the execution.
 	 *
 	 * @param evaluationContext
 	 *            context in which the condition is evaluated
 	 * @return the value of the condition
+	 * @throws FMLExecutionException
+	 *             when the condition is not set, not valid, or cannot be evaluated
 	 */
-	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
+	public boolean evaluateCondition(BindingEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class ConditionalActionImpl extends ControlStructureActionImpl implements ConditionalAction {
 
@@ -214,27 +215,28 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
+		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) throws FMLExecutionException {
 			DataBinding<Boolean> condition = getCondition();
-			if (condition.isSet() && condition.isValid()) {
-				try {
-					Boolean returned = condition.getBindingValue(evaluationContext);
-					if (returned == null) {
-						return false;
-					}
-					return returned;
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-					return false;
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
+			if (condition == null || !condition.isSet() || !condition.isValid()) {
+				// An invalid condition fails the execution, it is never taken as true (CORE-D-8)
+				throw new FMLExecutionException("Invalid condition " + condition + (condition != null && condition.isSet()
+						? ": " + condition.invalidBindingReason()
+						: ""));
 			}
-			return true;
+			try {
+				Boolean returned = condition.getBindingValue(evaluationContext);
+				if (returned == null) {
+					return false;
+				}
+				return returned;
+			} catch (NullReferenceException e) {
+				// A condition that goes through a null value is false
+				return false;
+			} catch (InvocationTargetException e) {
+				throw new FMLExecutionException(e.getCause() != null ? e.getCause() : e);
+			} catch (TypeMismatchException | ReflectiveOperationException e) {
+				throw new FMLExecutionException(e);
+			}
 		}
 
 		@Override

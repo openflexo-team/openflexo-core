@@ -1,0 +1,6 @@
+// CORE-D-8: an invalid condition fails the execution; a condition that is null is false.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="condition");
+assert vmi.nullCondition() == "else";
+mustFail = vmi.invalidCondition();

@@ -124,10 +124,10 @@ The evaluation of a condition has a rule of its own:
 | evaluates to `true` / `false` | that value |
 | evaluates to `null` | false |
 | goes through a `null` value (null reference) | false |
-| is not set, is **invalid** (an unresolved name), or raises any other error | **true** |
+| is not set, is **invalid** (an unresolved name), or raises any other error | an **execution error**: the behaviour stops |
 
-> **Implementation note.** The last row is a defect (`CORE-D-8`): an `if` whose condition does not resolve runs the
-> `then` branch, and a `while` loops forever. Nothing is reported at run time; validate the unit (§13.8).
+The same rule holds for the condition of `while`, of `do … while` and of a classic `for` (a `for` without condition
+apart, §8.5).
 
 ## 8.5 Loops
 

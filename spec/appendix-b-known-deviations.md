@@ -12,7 +12,6 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 
 | Id | Deviation | Specified in | Write instead |
 |---|---|---|---|
-| `CORE-D-8` | an invalid condition in `if` / `while` is taken as true | §8.4 | validate the unit |
 | `CORE-D-19` | a method call on a string literal gives `null` | §9.5.2 | put the literal in a variable |
 | `CORE-D-48` | a local declared in a block stays visible after it, and hides a property of the same name | §8.2 | do not reuse the name of a property or of an outer local |
 
@@ -26,8 +25,8 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-13` | `new C::name()` with fewer arguments than the scheme declares does not resolve; a call must match in number | §7.4 | pass the arguments |
 | `CORE-D-17` | `super.name()` gives `null` when the concept has several parents | §5.3.2 | a helper behaviour called on `this` |
 | `CORE-D-10` | `delete x` does not remove `x` from the multi-valued properties that hold it | §10.4 | remove, then delete |
+| `CORE-D-73` | a creation run by a technology action, or through a technology factory, hides a failing creation scheme | §13.6 | assert the effects of the creation |
 | `CORE-D-15` | `new Child()` creates a `Parent` when `Child` only inherits the creation scheme (virtual models; concepts when created by `vmi.new Child()`) | §5.1.3 | declare a creation scheme in the child |
-| `CORE-D-47` | a creation scheme that fails does not fail the `new`: the caller goes on, the partial instance stays | §13.6 | validate; assert the effects of a creation |
 | `CORE-D-49` | signatures compare parameter names, not types; the first assignable overload wins; override return types and inherited abstract behaviours are not checked | §5.3.1, §7.4 | distinct names for overloads; most specific first |
 | `CORE-D-50` | default values of inherited properties are not set on a new instance | §6.2 | assign them in the creation scheme |
 | `CORE-D-51` | the initializer of a concept-typed property, an edition action as initializer, and the cardinality of a Java-typed property are lost | §6.2, §6.3 | initialize in the creation scheme |
@@ -71,7 +70,7 @@ for convenience.
 | a string is never converted to a number; `1 + "a"` is an error | §9.5.2 |
 | a parameter is read as `parameters.x`; a bare name gives `null` | §7.2.1, §9.6.3 |
 | a behaviour of the same instance is called on `this` | §7.4 |
-| a bare `new` of a concept that is not nested in the current one gives `null` | §9.7 |
+| a bare `new` of a concept that is not nested in the current one is an invalid binding, `null` at run time | §9.7 |
 | a path that does not resolve evaluates to `null` | §9.8 |
 | a missing `import` gives `null` and no error | §3.5.2 |
 | an unassigned primitive property holds `null`, not `0` | §4.2 |

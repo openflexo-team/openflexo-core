@@ -290,6 +290,11 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		EventListenerAction action = actionType.makeNewAction(fci, null, fci.getEditor());
 		action.setEventInstance(event);
 		action.doAction();
+		if (action.hasActionExecutionFailed()) {
+			// A failing listener fails the fire that dispatched the event (CORE-D-47); a disabled one (@Enable) is skipped
+			throw new EventListenerFailedException(
+					action.getThrownException() != null ? action.getThrownException() : new FMLExecutionException("Listener failed: " + action));
+		}
 	}
 
 }

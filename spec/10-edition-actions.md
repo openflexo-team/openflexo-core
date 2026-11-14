@@ -125,7 +125,7 @@ delete shape from diagram;
 ```
 
 `delete e` deletes the object the expression designates. For an instance of a concept, the deletion scheme of the
-concept runs (§7.3.2). `delete e from c` deletes the object from the container `c`; it is the form used for
+concept runs (§7.3.2); if it fails, the instance is not deleted and the `delete` fails (§13.6). `delete e from c` deletes the object from the container `c`; it is the form used for
 technology objects that are removed from a resource.
 
 Deleting an instance does not remove it from the multi-valued properties that hold it (`CORE-D-10`):

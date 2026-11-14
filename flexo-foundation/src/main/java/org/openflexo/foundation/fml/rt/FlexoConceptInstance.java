@@ -562,8 +562,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	/**
 	 * Delete this FlexoConcept instance using supplied DeletionScheme
+	 * 
+	 * @throws FMLExecutionException
+	 *             when the deletion scheme fails; the instance is then not deleted (CORE-D-47)
 	 */
-	public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext);
+	public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext)
+			throws FMLExecutionException;
+
+	/**
+	 * Delete this FlexoConcept instance with the default deletion scheme of its concept, as the FML statement {@code delete x} does
+	 * 
+	 * @throws FMLExecutionException
+	 *             when the deletion scheme fails; the instance is then not deleted (CORE-D-47)
+	 */
+	public boolean deleteWithDefaultScheme() throws FMLExecutionException;
 
 	/**
 	 * Return a identifier for this FlexoConceptInstance under the form 'ConceptName'+ID
@@ -2020,12 +2032,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			// Also implement properly #getDeletedProperty()
 			if (getFlexoConcept() != null) {
-				if (getFlexoConcept().getDefaultDeletionScheme() != null) {
-					return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme(), new LocalRunTimeEvaluationContext());
+				// The generic deletion (user interface, release) deletes the instance even when its deletion scheme fails
+				try {
+					return deleteWithScheme(getApplicableDefaultDeletionScheme(), new LocalRunTimeEvaluationContext(), false);
+				} catch (FlexoException e) {
+					// Not thrown when failOnSchemeFailure is false
+					logger.warning("Unexpected " + e);
+					return false;
 				}
-				// Generate on-the-fly default deletion scheme
-				DeletionScheme ds = getFlexoConcept().generateDefaultDeletionScheme();
-				return deleteWithScheme(ds, new LocalRunTimeEvaluationContext());
 			}
 			/*boolean returned = performSuperDelete(context);
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
@@ -2056,6 +2070,22 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return returned;
 		}
 
+		private DeletionScheme getApplicableDefaultDeletionScheme() {
+			if (getFlexoConcept().getDefaultDeletionScheme() != null) {
+				return getFlexoConcept().getDefaultDeletionScheme();
+			}
+			// Generate on-the-fly default deletion scheme
+			return getFlexoConcept().generateDefaultDeletionScheme();
+		}
+
+		@Override
+		public boolean deleteWithDefaultScheme() throws FMLExecutionException {
+			if (getFlexoConcept() == null) {
+				return delete();
+			}
+			return deleteWithScheme(getApplicableDefaultDeletionScheme(), new LocalRunTimeEvaluationContext());
+		}
+
 		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme<br>
 		 * The scheme runs first, then the contained instances are deleted, each with its own default deletion scheme, while they still are
@@ -2063,12 +2093,32 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * is this instance detached and deleted.
 		 */
 		@Override
-		public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext) {
+		public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
+			try {
+				return deleteWithScheme(deletionScheme, evaluationContext, true);
+			} catch (FMLExecutionException e) {
+				throw e;
+			} catch (FlexoException e) {
+				throw new FMLExecutionException(e);
+			}
+		}
+
+		/**
+		 * Delete this instance with supplied deletion scheme
+		 * 
+		 * @param failOnSchemeFailure
+		 *            when true, a failure of the deletion scheme is thrown and the instance is not deleted (CORE-D-47); when false, the
+		 *            failure is logged and the instance is deleted anyway
+		 */
+		private boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext,
+				boolean failOnSchemeFailure) throws FlexoException {
 			if (isDeleted()) {
 				return false;
 			}
 
-			storedFactoryAfterDeletion = getFactory();
+			// The containment is read before the deletion scheme runs (CORE-D-22)
+			AbstractVirtualModelInstanceModelFactory factory = getFactory();
 			FlexoConceptInstance container = getContainerFlexoConceptInstance();
 			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 
@@ -2079,9 +2129,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					// TODO: think about that
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					e.printStackTrace();
+					if (failOnSchemeFailure) {
+						throw e;
+					}
+					logger.warning("Deletion scheme failed, " + this + " is deleted anyway: " + e);
 				}
 			}
+
+			storedFactoryAfterDeletion = factory;
 
 			deleteContainedFlexoConceptInstances();
 

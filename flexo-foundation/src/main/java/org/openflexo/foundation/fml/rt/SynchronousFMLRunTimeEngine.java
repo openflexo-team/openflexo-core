@@ -68,10 +68,21 @@ public class SynchronousFMLRunTimeEngine extends DefaultFMLRunTimeEngine {
 		if (event != null) {
 			Set<EventInstanceListener> listeners = listeningInstances.get(event.getSourceVirtualModelInstance());
 			if (listeners != null) {
+				// Every listener runs, even when one fails; the first failure is then thrown to the fire (CORE-D-47)
+				EventListenerFailedException firstFailure = null;
 				for (EventInstanceListener l : new ArrayList<>(listeners)) {
 					if (l.getListener().getEvent().isAssignableFrom(event.getFlexoEvent())) {
-						fireEventListener(l.getInstanceBeeingListening(), l.getListener(), event);
+						try {
+							fireEventListener(l.getInstanceBeeingListening(), l.getListener(), event);
+						} catch (EventListenerFailedException e) {
+							if (firstFailure == null) {
+								firstFailure = e;
+							}
+						}
 					}
+				}
+				if (firstFailure != null) {
+					throw firstFailure;
 				}
 			}
 		}

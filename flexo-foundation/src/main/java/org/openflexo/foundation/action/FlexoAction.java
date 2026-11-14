@@ -249,6 +249,14 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return getExecutionStatus().hasActionExecutionSucceeded();
 	}
 
+	/**
+	 * Tell if this action was executed and failed (its exception is {@link #getThrownException()}). Unlike
+	 * {@code !hasActionExecutionSucceeded()}, an action that was never executed (disabled, cancelled) has not failed.
+	 */
+	public boolean hasActionExecutionFailed() {
+		return getExecutionStatus() == ExecutionStatus.FAILED_EXECUTION;
+	}
+
 	public FlexoException getThrownException() {
 		return thrownException;
 	}

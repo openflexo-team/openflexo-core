@@ -49,7 +49,9 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -157,7 +159,7 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 		}
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			T objectToDelete = null;
 			try {
@@ -192,7 +194,14 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 				if (objectToDelete instanceof FlexoConceptInstance) {
 					logger.info("On supprime " + objectToDelete + " of " + ((FlexoConceptInstance) objectToDelete).getFlexoConcept());
 				}
-				objectToDelete.delete();
+				if (objectToDelete instanceof FlexoConceptInstance && !(objectToDelete instanceof VirtualModelInstance)) {
+					// A failure of the deletion scheme fails the statement, and the instance is not deleted (CORE-D-47); a
+					// VirtualModelInstance keeps its own deletion, which also releases its resource and observers
+					((FlexoConceptInstance) objectToDelete).deleteWithDefaultScheme();
+				}
+				else {
+					objectToDelete.delete();
+				}
 				logger.info("END Deleting object " + objectToDelete + " for object " + getObject() + " this=" + this);
 				if (objectToDelete instanceof FlexoConceptInstance) {
 					logger.info("END On vient de supprimer " + objectToDelete + " of "
@@ -204,6 +213,8 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 					resourceToDelete.delete();
 				}
 
+			} catch (FMLExecutionException e) {
+				throw e;
 			} catch (Exception e) {
 				logger.warning("Unexpected exception occured during deletion: " + e.getMessage());
 				e.printStackTrace();

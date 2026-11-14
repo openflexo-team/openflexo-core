@@ -113,6 +113,38 @@ inside an expression, as in `i = i += 2`, is evaluated by Connie and is not affe
 
 **Workaround.** Write the full expression: `n = n + 2;`.
 
+### CORE-D-8 — An invalid condition is evaluated as true by `if` and `while`  ·  `DONE`
+
+**Fixed (2026-11-13).** `ConditionalAction`, `WhileAction` and `ExpressionIterationAction` evaluate their condition strictly: a condition that is not set (a `for` without condition apart, which is true) or not valid, or whose evaluation raises an error other than a null reference, throws an `FMLExecutionException`; `null` and a null reference stay false. Test: `ExecutionFailures/InvalidCondition.fmlscript` run by `TestExecutionFailures` (fml-cli-test).
+
+**Symptom.** When the condition of an `if` is invalid (unresolved binding), its `then` branch is executed; a `while` with an invalid
+condition loops forever. Nothing is reported at run-time.
+
+**Reproduction (verified 2026-09-15 by execution for `if`).** The following behaviour returns `"then"`:
+
+```fml
+public String invalidCondition() {
+	String r = "none";
+	if (zzUnknownVariable.foo) {
+		r = "then";
+	}
+	else {
+		r = "else";
+	}
+	return r;
+}
+```
+
+**Mechanism — verified in the code.**
+1. `ConditionalActionImpl.evaluateCondition()` returns `true` when the condition is not set or not valid, and when its evaluation
+   throws a `TypeMismatchException` or a `ReflectiveOperationException`; it returns `false` for a null value or a
+   `NullReferenceException`.
+2. `WhileActionImpl.evaluateCondition()` has the same code, except that a `NullReferenceException` also yields `true`. The `while`
+   case was read in the code, not executed (it would not terminate).
+
+**Workaround.** Validate the compilation unit: the invalid condition is reported by the validation rule
+`ConditionBindingIsRequiredAndMustBeValid`.
+
 ### CORE-D-9 — A `for (init; ; update)` loop without condition makes its behaviour disappear  ·  `DONE`
 
 **Fixed (2026-11-11).** The node is built without a condition, a missing condition is true (as in Java), the update is optional; the validation rules require neither (see `CORE-D-46`).
@@ -956,6 +988,50 @@ was raised and the parent dropped; the normalized pretty-print wrote `model M {`
 - `extends` is printed from `getParentFlexoConceptTypes()` (the name of a resolved parent, the name written otherwise).
 A parent whose unit appears later is attached at the next parse. Tests: `TestCoreD62` (fml-parser), including the merge of the FML
 editor (`updateWith`).
+
+---
+
+## Instantiation
+
+### CORE-D-47 — A creation scheme that fails does not fail the `new` that called it  ·  `DONE`
+
+**Fixed (2026-11-13).** `CreationSchemePathElement` checks the status of the creation action (instance and virtual model instance) and throws its failure, as a behaviour call does; `FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance` takes the partly built instance, and what it contains, out of its container and of its virtual model instance before rethrowing (what the scheme did elsewhere is kept). A failing listener fails the `fire` once every listener of the event has run (`EventListenerFailedException` carried through the `PropertyChangeSupport`); a failing deletion scheme fails `delete x`, `DeletionSchemeAction` (contextual menu) and the deletion of diagram elements, and the instance is not deleted (`deleteWithScheme` / new `deleteWithDefaultScheme`; the generic `delete()`, used by release and for contained instances, still deletes with a warning; `delete` of a VirtualModelInstance keeps its own deletion); a failing behaviour on an unmatched instance fails the `end match`. Only an executed and failed action counts (new `FlexoAction.hasActionExecutionFailed()`): a disabled one (`@Enable`) is not a failure. The partly built instance is deleted with `performCoreDeletion` (no deletion scheme, notified as deleted). A virtual model instance whose creation fails is kept (decided). Not covered: `CORE-D-73`. Tests: the scripts of `ExecutionFailures/` (fixture `ExecutionFailures`, which replaces `KDConstruction`) run command by command by `TestExecutionFailures` (fml-cli-test).
+
+**Symptom.** When the creation scheme run by `new C(…)` fails, the caller goes on as if it had succeeded: the behaviour that wrote
+the `new` continues and returns normally, and the partly built instance stays registered in its container. The same failure in an
+ordinary behaviour call fails its caller.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsJavaTests.coreD47_failedCreationSchemeFailsTheCaller`,
+script `KnownDefectsSupport/CORE-D-47.fmlscript`, fixture `KDConstruction`).** `outer()` returns 7 and sets `progress` to 1,
+although `create()` of `Bomb` fails on `absent.substring(0)` (`absent` is null):
+
+```fml
+public int outer() {
+	Bomb b = new Bomb();
+	progress = 1;
+	return 7;
+}
+concept Bomb {
+	String absent;
+	create() {
+		String consumed = absent.substring(0);
+	}
+}
+```
+
+**Mechanism — verified in the code.** `CreationSchemePathElement.performExecuteCreationScheme` calls `doAction()` and returns
+`getNewFlexoConceptInstance()` without looking at `hasActionExecutionSucceeded()` (the check is commented out); its
+`FMLExecutionException` catch only prints the stack trace. `FMLRTVirtualModelInstanceModelFactory` registers the new instance in
+its container and its virtual model instance before running the creation scheme, with no rollback. By contrast,
+`FlexoBehaviourPathElement` propagates the thrown exception. Failures are swallowed the same way by event listeners
+(`DefaultFMLRunTimeEngine`: `doAction()` without status check — observed while writing the test of `CORE-D-55`), by
+`FinalizeMatching` (a warning) and by `DeleteFlexoConceptInstance` (deletes even when the deletion scheme failed).
+Found by the external audit of the FML language of 2026-10-23 (its §3.3).
+
+**Decided 2026-11-11.** On failure the partly built instance is removed from its container and from the indexes, then the
+`FMLExecutionException` reaches the caller.
+
+**Workaround.** None: validate the unit, and assert the effects of a creation in tests.
 
 ---
 

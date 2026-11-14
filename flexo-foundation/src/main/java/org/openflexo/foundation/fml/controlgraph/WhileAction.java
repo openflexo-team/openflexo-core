@@ -67,10 +67,9 @@ import org.openflexo.pamela.annotations.Setter;
  * ({@link #getCondition()}) evaluates to true. A return statement executed in the body leaves the loop and the enclosing behaviour.
  * <p>
  * When {@link #getEvaluateConditionAfterCycle()} is true, the condition is evaluated after each execution of the body, as in a
- * {@code do ... while} loop. The FML parser never sets it: a {@code do ... while} statement is parsed, but its body is executed once and
- * its condition ignored (known defect {@code CORE-D-6}).
+ * {@code do ... while} loop: the FML parser sets it for a {@code do ... while} statement.
  * <p>
- * Beware of an invalid condition, which is evaluated as true: see {@link #evaluateCondition(BindingEvaluationContext)}.
+ * An invalid condition fails the execution: see {@link #evaluateCondition(BindingEvaluationContext)}.
  * <p>
  * Example (excerpt of {@code FML/Library.fml} in the {@code flexo-test-resources} test resource center):
  *
@@ -120,14 +119,16 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 	/**
 	 * Evaluate the condition in supplied context.
 	 * <p>
-	 * A null value yields {@code false}. Beware: a condition which is not set or not valid, or whose evaluation raises an exception, yields
-	 * {@code true}, which makes the loop endless (known defect {@code CORE-D-8}).
+	 * A null value, or a {@code NullReferenceException} raised by the evaluation, yields {@code false}. A condition which is not set or
+	 * not valid, or whose evaluation raises another exception, fails the execution.
 	 *
 	 * @param evaluationContext
 	 *            context in which the condition is evaluated
 	 * @return the value of the condition
+	 * @throws FMLExecutionException
+	 *             when the condition is not set, not valid, or cannot be evaluated
 	 */
-	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
+	public boolean evaluateCondition(BindingEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class WhileActionImpl extends ControlStructureActionImpl implements WhileAction {
 
@@ -192,26 +193,28 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 		}
 
 		@Override
-		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
+		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) throws FMLExecutionException {
 			DataBinding<Boolean> condition = getCondition();
-			if (condition.isSet() && condition.isValid()) {
-				try {
-					Boolean returned = condition.getBindingValue(evaluationContext);
-					if (returned == null) {
-						return false;
-					}
-					return returned;
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
+			if (condition == null || !condition.isSet() || !condition.isValid()) {
+				// An invalid condition fails the execution, it is never taken as true (CORE-D-8)
+				throw new FMLExecutionException("Invalid condition " + condition + (condition != null && condition.isSet()
+						? ": " + condition.invalidBindingReason()
+						: ""));
 			}
-			return true;
+			try {
+				Boolean returned = condition.getBindingValue(evaluationContext);
+				if (returned == null) {
+					return false;
+				}
+				return returned;
+			} catch (NullReferenceException e) {
+				// A condition that goes through a null value is false
+				return false;
+			} catch (InvocationTargetException e) {
+				throw new FMLExecutionException(e.getCause() != null ? e.getCause() : e);
+			} catch (TypeMismatchException | ReflectiveOperationException e) {
+				throw new FMLExecutionException(e);
+			}
 		}
 
 		@Override

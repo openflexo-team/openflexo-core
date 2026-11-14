@@ -200,13 +200,33 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 			logger.warning("makeNewFlexoConceptInstance() with null evaluationContext");
 		}
 
-		// Initialize default values
-		returned.initializeDefaultValues(evaluationContext);
+		try {
+			// Initialize default values
+			returned.initializeDefaultValues(evaluationContext);
 
-		executeCreationScheme(returned, creationScheme, evaluationContext);
+			executeCreationScheme(returned, creationScheme, evaluationContext);
+		} catch (FMLExecutionException e) {
+			// The creation failed: the partly built instance, and what it contains, is taken out of its container and of the
+			// owner VirtualModelInstance before the failure reaches the caller (CORE-D-47). What the creation scheme did elsewhere
+			// before failing is kept: partial effects are not rolled back.
+			discardPartlyBuiltInstance(returned, container, ownerVirtualModelInstance);
+			throw e;
+		}
 
 		return returned;
 
+	}
+
+	/**
+	 * Delete, without running any deletion scheme, an instance whose creation failed, and the instances it contains: they are taken
+	 * out of their container and of their VirtualModelInstance, released, and notified as deleted
+	 */
+	private static void discardPartlyBuiltInstance(FlexoConceptInstance instance, FlexoConceptInstance container,
+			VirtualModelInstance<?, ?> ownerVirtualModelInstance) {
+		for (FlexoConceptInstance embedded : new ArrayList<>(instance.getEmbeddedFlexoConceptInstances())) {
+			discardPartlyBuiltInstance(embedded, instance, ownerVirtualModelInstance);
+		}
+		instance.performCoreDeletion();
 	}
 
 	/**

@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
+import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -254,7 +255,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		}
 
 		@Override
-		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
+		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 			try {
 				FlexoConceptInstance objectToDelete = getObject().getBindingValue(evaluationContext);
@@ -289,6 +290,11 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 						}
 						logger.info("Performing action");
 						deletionSchemeAction.doAction();
+						if (deletionSchemeAction.hasActionExecutionFailed()) {
+							// The deletion scheme failed: the instance is not deleted, and the failure reaches the caller (CORE-D-47)
+							throw new FMLExecutionException("Deletion scheme failed for " + objectToDelete,
+									deletionSchemeAction.getThrownException());
+						}
 						// Finally delete the FlexoConcept
 						objectToDelete.delete();
 
@@ -312,7 +318,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			} catch (NullReferenceException e1) {
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
-				e1.printStackTrace();
+				throw new FMLExecutionException(e1.getCause());
 			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}

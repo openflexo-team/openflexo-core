@@ -296,9 +296,10 @@ public List<Task> fresh() {
 * **A virtual model** — a new virtual model instance, which needs a `with (name = "…")`.
 * **A Java class** — the Java constructor is called; the `with` clause is not used.
 
-> **A bare `new` of a concept that is not nested in the current one gives `null`**, without an error. From a
-> behaviour declared on the **model**, the enclosing context is the instance of the model, so a bare `new` of
-> any concept of the model is correct.
+> **A bare `new` of a concept that is not nested in the current one is an invalid binding**: it is reported
+> when the unit is loaded and validated ("cannot instantiate X in C … use container.new X(...)"), and, as any
+> invalid binding (§9.8), it gives `null` at run time. From a behaviour declared on the **model**, the enclosing
+> context is the instance of the model, so a bare `new` of any concept of the model is correct.
 
 The `with` clause supplies the parameters of the instantiation of a virtual model: `name` (mandatory; the name of
 the instance), and, where relevant, `virtualModelInstanceTitle`, `uri`, `rc` (the resource center),
@@ -348,6 +349,6 @@ embedding component; the first element of a path is then a variable of that mode
 | a path through a `null` value, in a value position | execution error: the behaviour stops |
 | a path through a `null` value, in an `if` condition | the condition is false |
 | a type error (`1 + "a"`, `"4.5" * 1.0`) | execution error: the behaviour stops |
-| an invalid condition in `if` / `while` | taken as true (`CORE-D-8`) |
+| an invalid condition in `if` / `while` / `for` | execution error: the behaviour stops |
 
 Validation (§13.8) reports unresolved paths; it is the only place where they surface before execution.

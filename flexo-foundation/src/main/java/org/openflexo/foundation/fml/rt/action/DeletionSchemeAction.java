@@ -133,6 +133,7 @@ public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSch
 						"Inconsistent data: DeletionScheme is not defined in any FlexoConcept: " + getDeletionScheme());
 			}
 			if (getDeletionScheme().getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
+				// A failure of the deletion scheme fails this action, and the instance is not deleted (CORE-D-47)
 				getFlexoConceptInstance().deleteWithScheme(getDeletionScheme(), this);
 			}
 			else {

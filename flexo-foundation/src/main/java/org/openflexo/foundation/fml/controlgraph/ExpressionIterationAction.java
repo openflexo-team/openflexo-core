@@ -204,31 +204,30 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 			return true;
 		}
 
-		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
+		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) throws FMLExecutionException {
 			DataBinding<Boolean> conditionExpression = getConditionExpression();
 			if (conditionExpression == null || !conditionExpression.isSet()) {
 				// for (init; ; update) without condition loops until a return, as in Java (CORE-D-9)
 				return true;
 			}
-			if (conditionExpression.isValid()) {
-				try {
-					Boolean returned = conditionExpression.getBindingValue(evaluationContext);
-					if (returned == null) {
-						return false;
-					}
-					return returned;
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-					return false;
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
+			if (!conditionExpression.isValid()) {
+				// An invalid condition fails the execution, as in if and while (CORE-D-8)
+				throw new FMLExecutionException("Invalid condition " + conditionExpression + ": " + conditionExpression.invalidBindingReason());
 			}
-			return false;
+			try {
+				Boolean returned = conditionExpression.getBindingValue(evaluationContext);
+				if (returned == null) {
+					return false;
+				}
+				return returned;
+			} catch (NullReferenceException e) {
+				// A condition that goes through a null value is false
+				return false;
+			} catch (InvocationTargetException e) {
+				throw new FMLExecutionException(e.getCause() != null ? e.getCause() : e);
+			} catch (TypeMismatchException | ReflectiveOperationException e) {
+				throw new FMLExecutionException(e);
+			}
 		}
 
 		@Override

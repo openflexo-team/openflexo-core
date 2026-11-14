@@ -1,0 +1,8 @@
+// CORE-D-47: a behaviour that fails on an unmatched instance fails the end match.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="endmatch");
+f = vmi.new Fragile();
+mustFail = vmi.pruneAll();
+assert vmi.progress != 1;
+assert vmi.fragileCount() == 1;

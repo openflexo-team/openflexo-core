@@ -11,7 +11,7 @@ assert slot != null;
 assert slot.code == "s1";
 assert slot.container == bin;
 
-// A concept declared at the model level: a bare new gives null, container.new creates it
+// A concept declared at the model level: a bare new is an invalid binding (reported), which gives null; container.new creates it
 assert bin.bareTool("saw") == null;
 hammer = bin.containerTool("hammer");
 assert hammer != null;

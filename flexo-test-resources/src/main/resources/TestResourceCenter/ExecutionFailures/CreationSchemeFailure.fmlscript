@@ -1,0 +1,7 @@
+// CORE-D-47: a creation scheme that fails fails the new that called it, and leaves no instance behind.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="creation");
+mustFail = vmi.outer();
+assert vmi.progress != 1;
+assert vmi.bombCount() == 0;

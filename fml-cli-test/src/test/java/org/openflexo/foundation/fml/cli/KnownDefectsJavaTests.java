@@ -51,16 +51,14 @@ import org.junit.Test;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.fml.cli.test.FMLScriptParserTestCase;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationReport;
-import org.openflexo.rm.ResourceLocator;
 
 /**
- * Known defects of KNOWN_DEFECTS.md that an FML-script alone cannot state: a call that must fail, and what validation must
- * report. Each test asserts the intended behaviour and fails until its defect is fixed. Skipped unless
+ * Known defects of KNOWN_DEFECTS.md that an FML-script alone cannot state: what validation must report. Each test asserts the
+ * intended behaviour and fails until its defect is fixed. Skipped unless
  * {@value KnownDefectsTests#ENABLING_VARIABLE} is set (see {@link KnownDefectsTests}).
  */
 public class KnownDefectsJavaTests extends FMLScriptParserTestCase {
@@ -70,34 +68,6 @@ public class KnownDefectsJavaTests extends FMLScriptParserTestCase {
 	@BeforeClass
 	public static void checkEnabled() {
 		KnownDefectsTests.assumeKnownDefectsEnabled();
-	}
-
-	/**
-	 * CORE-D-47: a creation scheme that fails must fail the {@code new} that called it, and leave no instance behind.
-	 * <p>
-	 * Runs {@code KnownDefectsSupport/CORE-D-47.fmlscript} command by command: the call of line 5 must fail, and the asserts
-	 * that follow it state what it must leave.
-	 */
-	@Test
-	public void coreD47_failedCreationSchemeFailsTheCaller() throws Exception {
-		instanciateTestServiceManager();
-		CommandInterpreter interpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err, HOME_DIR);
-		FMLScript script = parseFMLScript(ResourceLocator.locateResource("TestResourceCenter/KnownDefectsSupport/CORE-D-47.fmlscript"),
-				interpreter);
-		boolean callFailed = false;
-		for (AbstractCommand command : script.getCommands()) {
-			if (command.getLine() == 5) {
-				try {
-					command.execute();
-				} catch (Exception e) {
-					callFailed = true;
-				}
-			}
-			else {
-				command.execute();
-			}
-		}
-		assertTrue("CORE-D-47: outer() reported success although the creation scheme of Bomb failed", callFailed);
 	}
 
 	private VirtualModel signatures() throws Exception {

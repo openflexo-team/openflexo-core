@@ -49,6 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.rt.EventListenerFailedException;
 import org.openflexo.foundation.fml.rt.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
@@ -144,7 +145,12 @@ public interface FireEvent extends EditionAction {
 
 			// And we fire the new event to the listening FMLRunTimeEngine(s)
 			if (vmi != null) {
-				vmi.getPropertyChangeSupport().firePropertyChange(FMLRTVirtualModelInstance.EVENT_FIRED, null, eventInstance);
+				try {
+					vmi.getPropertyChangeSupport().firePropertyChange(FMLRTVirtualModelInstance.EVENT_FIRED, null, eventInstance);
+				} catch (EventListenerFailedException e) {
+					// A listener of this event failed: the fire fails (CORE-D-47)
+					throw new FMLExecutionException(e.getCause());
+				}
 			}
 
 			return null;

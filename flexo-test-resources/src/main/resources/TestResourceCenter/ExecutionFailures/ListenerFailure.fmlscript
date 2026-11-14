@@ -1,0 +1,9 @@
+// CORE-D-47: a listener that fails fails the fire that dispatched its event.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="listener");
+// control: a disabled listener is skipped, the fire goes on
+vmi.fireQuiet();
+assert vmi.progress == 2;
+mustFail = vmi.fireIt();
+assert vmi.progress != 1;

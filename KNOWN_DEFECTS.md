@@ -272,36 +272,6 @@ built with a null concept).
 
 ## FML control structures and edition actions
 
-### CORE-D-8 — An invalid condition is evaluated as true by `if` and `while`  ·  `TODO`
-
-**Symptom.** When the condition of an `if` is invalid (unresolved binding), its `then` branch is executed; a `while` with an invalid
-condition loops forever. Nothing is reported at run-time.
-
-**Reproduction (verified 2026-09-15 by execution for `if`).** The following behaviour returns `"then"`:
-
-```fml
-public String invalidCondition() {
-	String r = "none";
-	if (zzUnknownVariable.foo) {
-		r = "then";
-	}
-	else {
-		r = "else";
-	}
-	return r;
-}
-```
-
-**Mechanism — verified in the code.**
-1. `ConditionalActionImpl.evaluateCondition()` returns `true` when the condition is not set or not valid, and when its evaluation
-   throws a `TypeMismatchException` or a `ReflectiveOperationException`; it returns `false` for a null value or a
-   `NullReferenceException`.
-2. `WhileActionImpl.evaluateCondition()` has the same code, except that a `NullReferenceException` also yields `true`. The `while`
-   case was read in the code, not executed (it would not terminate).
-
-**Workaround.** Validate the compilation unit: the invalid condition is reported by the validation rule
-`ConditionBindingIsRequiredAndMustBeValid`.
-
 ### CORE-D-10 — Deleting a concept instance leaves it in the multiple roles referencing it  ·  `TODO`
 
 **Symptom.** After `delete x;`, the deleted instance is still an element of a multiple-cardinality role (`Book[0,*] books`) holding
@@ -460,43 +430,24 @@ the scheme. Found by the external audit of the FML language of 2026-10-23 (its �
 
 **Workaround.** Declare a creation scheme in the child, even an empty `create() { }`.
 
-### CORE-D-47 — A creation scheme that fails does not fail the `new` that called it  ·  `TODO`
+### CORE-D-73 — A creation run by a technology action, or through a technology factory, still hides a failing creation scheme  ·  `TODO`
 
-**Symptom.** When the creation scheme run by `new C(…)` fails, the caller goes on as if it had succeeded: the behaviour that wrote
-the `new` continues and returns normally, and the partly built instance stays registered in its container. The same failure in an
-ordinary behaviour call fails its caller.
+**Symptom.** Since `CORE-D-47`, a failing creation scheme fails the `new` that runs it and leaves no partly built instance. Two
+creation paths do not follow that rule yet: a creation through a technology action built on `AbstractAddFlexoConceptInstance`
+(for instance `CreateHbnObject` of the JDBC adapter) goes on after the scheme failed, and an instance created through the
+VirtualModelInstance factory of an adapter that overrides `makeNewFlexoConceptInstance` (Excel, XML, Hibernate, REST) stays in its
+container when its scheme fails.
 
-**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsJavaTests.coreD47_failedCreationSchemeFailsTheCaller`,
-script `KnownDefectsSupport/CORE-D-47.fmlscript`, fixture `KDConstruction`).** `outer()` returns 7 and sets `progress` to 1,
-although `create()` of `Bomb` fails on `absent.substring(0)` (`absent` is null):
+**Mechanism — read in the code, not run.** `AbstractAddFlexoConceptInstance._performExecuteCreationScheme` runs a
+`CreationSchemeAction` and returns `hasActionExecutionSucceeded()`, which its callers do not turn into a failure. The core factory
+discards the partly built instance (`FMLRTVirtualModelInstanceModelFactory.discardPartlyBuiltInstance`), but
+`XLSVirtualModelInstanceModelFactory`, `XMLVirtualModelInstanceModelFactory`, `HbnVirtualModelInstanceModelFactory` (and the REST one)
+build and register their instances themselves. Found by the review of `CORE-D-47` (2026-11-13).
 
-```fml
-public int outer() {
-	Bomb b = new Bomb();
-	progress = 1;
-	return 7;
-}
-concept Bomb {
-	String absent;
-	create() {
-		String consumed = absent.substring(0);
-	}
-}
-```
+**To fix.** Throw the failure of the creation action in `_performExecuteCreationScheme` (only `hasActionExecutionFailed()`: a
+disabled action is not a failure), and discard the partly built instance in the adapters' factories, as the core factory does.
 
-**Mechanism — verified in the code.** `CreationSchemePathElement.performExecuteCreationScheme` calls `doAction()` and returns
-`getNewFlexoConceptInstance()` without looking at `hasActionExecutionSucceeded()` (the check is commented out); its
-`FMLExecutionException` catch only prints the stack trace. `FMLRTVirtualModelInstanceModelFactory` registers the new instance in
-its container and its virtual model instance before running the creation scheme, with no rollback. By contrast,
-`FlexoBehaviourPathElement` propagates the thrown exception. Failures are swallowed the same way by event listeners
-(`DefaultFMLRunTimeEngine`: `doAction()` without status check — observed while writing the test of `CORE-D-55`), by
-`FinalizeMatching` (a warning) and by `DeleteFlexoConceptInstance` (deletes even when the deletion scheme failed).
-Found by the external audit of the FML language of 2026-10-23 (its §3.3).
-
-**Decided 2026-11-11.** On failure the partly built instance is removed from its container and from the indexes, then the
-`FMLExecutionException` reaches the caller.
-
-**Workaround.** None: validate the unit, and assert the effects of a creation in tests.
+**Workaround.** None.
 
 ---
 
