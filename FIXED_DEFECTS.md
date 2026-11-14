@@ -330,6 +330,32 @@ error instead of the fallback whenever a statement produces no node.
 
 **Workaround.** Brace every nested statement; write no empty statement.
 
+### CORE-D-48 — A local variable outlives its block and hides the property of the same name  ·  `DONE`
+
+**Fixed (2026-11-14).** `FlexoBehaviourAction.getValue` reads the variables of the execution only for a local variable (`DeclarationBindingVariable` or `IterationActionBindingVariable`, new `isLocalVariable`); any other name, a property in particular, is resolved where the analysis bound it. The local context of `FlexoConceptInstance` (deletion schemes, get/set bodies, default values) follows the same rule. The other half (an inner local, or a loop variable, with the name of a visible local overwrote or erased it) is closed as in Java: such a redeclaration is invalid, reported by the new validation rule `LocalVariableMustNotRedeclareAVisibleLocal` (on `DeclarationAction` and `AbstractIterationAction`; decided 2026-11-14), so two visible locals never share a name and the single map of the execution is enough. Tests: `AutomatedTests/TestLocalScope.fmlscript` (fixture `LocalScope`, which replaces `KDScope`; a getter body included) and `TestLocalRedeclarationValidation` (fixture `LocalRedeclaration`) in fml-cli-test.
+
+**Symptom.** A local declared inside a block (`if`, loop body, `{ }`) is still visible after it; a later read of a property of the
+same name returns the local's value, although the analysis resolved that name to the property. Validation reports nothing.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-48.fmlscript`, fixture `KDScope`).** With a property
+`name` set to `"property"`, `blockScope()` returns `"local"`:
+
+```fml
+public String blockScope() {
+	if (true) {
+		String name = "local";
+	}
+	return name;
+}
+```
+
+**Mechanism — verified in the code.** `FlexoBehaviourAction` keeps the locals of an execution in one `Hashtable<String, Object>
+variables`; `getValue(BindingVariable)` looks the name up there first, whatever the kind of the binding variable, before going to
+the instance. `Sequence` and `ConditionalAction` push no frame and `DeclarationAction` never removes its variable; only iteration
+variables are removed at the end of a loop. Found by the external audit of the FML language of 2026-10-23 (its §3.4).
+
+**Workaround.** Do not reuse the name of a property for a local, nor the name of an outer local inside a block.
+
 ---
 
 ## FML compilation unit loading

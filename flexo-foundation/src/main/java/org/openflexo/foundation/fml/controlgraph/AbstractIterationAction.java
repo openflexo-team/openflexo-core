@@ -41,6 +41,9 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
@@ -314,6 +317,31 @@ public interface AbstractIterationAction extends ControlStructureAction, FMLCont
 
 		}
 
+	}
+
+	/**
+	 * A local variable cannot have the name of a local that is visible where it is declared (a local of an enclosing block, an
+	 * earlier local of the same block, the variable of an enclosing loop), as in Java (CORE-D-48)
+	 */
+	@DefineValidationRule
+	public static class LocalVariableMustNotRedeclareAVisibleLocal
+			extends ValidationRule<LocalVariableMustNotRedeclareAVisibleLocal, AbstractIterationAction> {
+
+		public LocalVariableMustNotRedeclareAVisibleLocal() {
+			super(AbstractIterationAction.class, "local_variable_must_not_redeclare_a_visible_local");
+		}
+
+		@Override
+		public ValidationIssue<LocalVariableMustNotRedeclareAVisibleLocal, AbstractIterationAction> applyValidation(AbstractIterationAction action) {
+			BindingModel bindingModel = action.getBindingModel();
+			if (bindingModel != null && action.getIteratorName() != null) {
+				BindingVariable visible = bindingModel.bindingVariableNamed(action.getIteratorName());
+				if (FlexoBehaviourAction.isLocalVariable(visible)) {
+					return new ValidationError<>(this, action, "local_variable_is_already_declared_in_an_enclosing_block");
+				}
+			}
+			return null;
+		}
 	}
 
 }

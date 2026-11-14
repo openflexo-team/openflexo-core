@@ -1,0 +1,60 @@
+/**
+ * A local variable lives in the block that declares it: after the block, its name is the property of the same name again
+ * (CORE-D-48). See TestLocalScope.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/LocalScope.fml")
+public model LocalScope {
+
+	String name;
+	String item;
+
+	// The body of a getter runs in the local context of the instance: the same rule holds there
+	String scopedGet {
+		String get() {
+			if (true) {
+				String name = "local";
+			}
+			return name;
+		}
+	};
+
+	create() {
+		name = "property";
+		item = "property item";
+	}
+
+	public String blockScope() {
+		if (true) {
+			String name = "local";
+		}
+		return name;
+	}
+
+	public String localHidesProperty() {
+		String name = "local";
+		return name;
+	}
+
+	public String thisReachesProperty() {
+		String name = "local";
+		return this.name;
+	}
+
+	public String loopVariableScope() {
+		List<String> words = new ArrayList<String>();
+		words.add("a");
+		words.add("b");
+		for (String item : words) {
+		}
+		return item;
+	}
+
+	public String loopBodyScope() {
+		int n = 0;
+		while (n < 2) {
+			String name = "in loop";
+			n = n + 1;
+		}
+		return name;
+	}
+}

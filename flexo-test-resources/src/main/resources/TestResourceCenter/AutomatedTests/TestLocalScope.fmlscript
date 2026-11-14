@@ -1,0 +1,15 @@
+// A local variable lives in the block that declares it, then its name is the property again (CORE-D-48).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/LocalScope.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new LocalScope() with (name="scope");
+assert vmi.name == "property";
+// inside its block, a local hides the property; this.name still reaches the property
+assert vmi.localHidesProperty() == "local";
+assert vmi.thisReachesProperty() == "property";
+// after its block, the name is the property again
+assert vmi.blockScope() == "property";
+assert vmi.loopBodyScope() == "property";
+// after a loop, the name of its variable is the property again
+assert vmi.loopVariableScope() == "property item";
+// the same in the body of a getter
+assert vmi.scopedGet == "property";

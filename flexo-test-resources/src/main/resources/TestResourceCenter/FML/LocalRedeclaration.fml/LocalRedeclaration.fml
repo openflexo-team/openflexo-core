@@ -1,0 +1,63 @@
+/**
+ * A local variable cannot redeclare a local visible where it is declared, as in Java (CORE-D-48): four behaviours below are
+ * reported by validation (their names start with redeclared), the others are valid. See TestLocalRedeclarationValidation.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/LocalRedeclaration.fml")
+public model LocalRedeclaration {
+
+	String name;
+
+	public String redeclaredInBlock() {
+		String x = "outer";
+		if (true) {
+			String x = "inner";
+		}
+		return x;
+	}
+
+	public String redeclaredInSameBlock() {
+		String x = "first";
+		String x = "second";
+		return x;
+	}
+
+	public String redeclaredByLoopVariable() {
+		String item = "outer";
+		List<String> words = new ArrayList<String>();
+		for (String item : words) {
+		}
+		return item;
+	}
+
+	public int redeclaredInLoopBody() {
+		int n = 0;
+		for (int i = 0; i < 2; i++) {
+			int n = 1;
+		}
+		return n;
+	}
+
+	public String siblingBlocks() {
+		if (true) {
+			String x = "a";
+		}
+		if (true) {
+			String x = "b";
+		}
+		return "ok";
+	}
+
+	public String siblingLoops() {
+		List<String> words = new ArrayList<String>();
+		for (String w : words) {
+		}
+		for (String w : words) {
+		}
+		return "ok";
+	}
+
+	public String localHidesProperty() {
+		String name = "local";
+		return name;
+	}
+}

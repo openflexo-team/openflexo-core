@@ -309,6 +309,14 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	/**
+	 * Tell if supplied variable is a local variable of a behaviour: one declared by a declaration, or the variable of a loop. Only
+	 * those are held by the evaluation context; every other variable is resolved where the analysis bound it (CORE-D-48)
+	 */
+	public static boolean isLocalVariable(BindingVariable variable) {
+		return variable instanceof DeclarationBindingVariable || variable instanceof IterationActionBindingVariable;
+	}
+
+	/**
 	 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoBehaviourAction} instance in
 	 * the context of its implementation of {@link RunTimeEvaluationContext}.<br>
 	 * Variable is initialized with supplied name and value
@@ -553,13 +561,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	@Override
 	public Object getValue(BindingVariable variable) {
 
-		if (variables.get(variable.getVariableName()) != null) {
+		// Only a local variable (a declaration or the variable of a loop) is read from the variables of this execution. Any other
+		// name, a property in particular, is what the analysis resolved it to, even when a local of the same name was declared in a
+		// block that has ended (CORE-D-48)
+		if (isLocalVariable(variable)) {
 			return variables.get(variable.getVariableName());
 		}
-		// TODO: I think code above should be replaced by that:
-		/*if (variable instanceof DeclarationBindingVariable) {
-			return variables.get(variable.getVariableName());
-		}*/
 
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();

@@ -325,30 +325,6 @@ the calls never end.
 **Expected.** A lookup visits each compilation unit once (a set of visited units), or the method goes with the other deprecated API
 (phase 5 of CORE-F-8).
 
-### CORE-D-48 — A local variable outlives its block and hides the property of the same name  ·  `TODO`
-
-**Symptom.** A local declared inside a block (`if`, loop body, `{ }`) is still visible after it; a later read of a property of the
-same name returns the local's value, although the analysis resolved that name to the property. Validation reports nothing.
-
-**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-48.fmlscript`, fixture `KDScope`).** With a property
-`name` set to `"property"`, `blockScope()` returns `"local"`:
-
-```fml
-public String blockScope() {
-	if (true) {
-		String name = "local";
-	}
-	return name;
-}
-```
-
-**Mechanism — verified in the code.** `FlexoBehaviourAction` keeps the locals of an execution in one `Hashtable<String, Object>
-variables`; `getValue(BindingVariable)` looks the name up there first, whatever the kind of the binding variable, before going to
-the instance. `Sequence` and `ConditionalAction` push no frame and `DeclarationAction` never removes its variable; only iteration
-variables are removed at the end of a loop. Found by the external audit of the FML language of 2026-10-23 (its §3.4).
-
-**Workaround.** Do not reuse the name of a property for a local, nor the name of an outer local inside a block.
-
 ### CORE-D-56 — A statement written without braces is printed back with braces and a broken indentation  ·  `TODO`
 
 **Symptom.** When a compilation unit is printed back from its parsed text (what the FML editor saves), an `if`, `else`, `while`,

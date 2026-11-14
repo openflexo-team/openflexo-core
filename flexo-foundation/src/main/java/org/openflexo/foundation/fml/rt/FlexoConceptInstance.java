@@ -90,6 +90,7 @@ import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ReleasableObject;
@@ -819,7 +820,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			@Override
 			public Object getValue(BindingVariable variable) {
-				if (localVariables.containsKey(variable.getVariableName())) {
+				// Only a local variable is read from the variables of this context, never a property of the same name (CORE-D-48)
+				if (FlexoBehaviourAction.isLocalVariable(variable)) {
 					return localVariables.get(variable.getVariableName());
 				}
 				return FlexoConceptInstanceImpl.this.getValue(variable);
@@ -827,7 +829,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			@Override
 			public void setValue(Object value, BindingVariable variable) {
-				if (localVariables.containsKey(variable.getVariableName())) {
+				if (FlexoBehaviourAction.isLocalVariable(variable)) {
 					localVariables.put(variable.getVariableName(), value);
 				}
 				else {

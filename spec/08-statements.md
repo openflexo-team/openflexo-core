@@ -68,9 +68,12 @@ public int scoped() {
 ```
 
 
-> **Implementation note.** At run time a local outlives its block: after the closing brace, its name still gives
-> its last value, and hides a property of the same name although the analysis resolved that name to the property
-> (`CORE-D-48`). Do not reuse the name of a property, or of an outer local, inside a block.
+A local cannot have the name of a local visible where it is declared — a local of an enclosing block, an earlier
+local of the same block, the variable of an enclosing loop — as in Java; validation reports such a redeclaration.
+Two sibling blocks, or two loops one after the other, may each declare a local of the same name. After the closing
+brace of its block, the name of a local is again the property of the same name, if any; the same holds for the
+variable of a loop after the loop.
+
 A local variable that is not initialised holds `null`, as a property does (§4.2).
 
 The initial value of a declaration may be an expression or an edition action (§10): a `select`, a `match`,

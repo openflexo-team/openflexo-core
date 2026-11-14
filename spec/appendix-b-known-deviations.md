@@ -13,7 +13,6 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | Id | Deviation | Specified in | Write instead |
 |---|---|---|---|
 | `CORE-D-19` | a method call on a string literal gives `null` | §9.5.2 | put the literal in a variable |
-| `CORE-D-48` | a local declared in a block stays visible after it, and hides a property of the same name | §8.2 | do not reuse the name of a property or of an outer local |
 
 ## B.2 Properties and behaviours
 
