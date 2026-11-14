@@ -634,6 +634,21 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
   - `DeleteAction` no longer swallows an unchecked exception: a deletion path of a technology adapter that threw one silently now fails
     (`XML-D-1`, `PPTX-D-6`). The other adapters were not run.
 
+**Phase 2 done (2026-11-14), decided with the user.**
+- Connie: `CONNIE-F-4` (strict evaluation policy, unchecked `BindingEvaluationException`, messages and causes kept).
+- PAMELA: `PAMELA-D-6` (`ModelExecutionException` keeps its cause).
+- FML contexts stay `LENIENT`: phase 3 switches them to `STRICT`, `FMLEvaluation` converting a `BindingEvaluationException` into the
+  checked `FMLError` of its kind (invalid binding → `FMLResolutionError`, not settable → `FMLAssignmentError`, illegal argument →
+  `FMLTypeError`, illegal access, incomplete evaluation, transformation failure → to decide then). The FML delegating contexts must pass
+  the policy on.
+- To check in phase 3, before switching FML to `STRICT` (found by the review of phase 2):
+  - `INCOMPLETE_EVALUATION` is thrown where an expression does not reduce to a constant; the code says that happens "very often". List the
+    valid FML expressions that do not reduce before making it an error.
+  - `BindingPath.getBindingValue` without context throws `INVALID_BINDING` in strict mode: check that no FML caller evaluates with a context
+    it has not built yet.
+  - A `BindingEvaluationException` that escapes `FMLEvaluation` becomes an `FMLInternalError` at `executeStatement`: every evaluation
+    site has to go through `FMLEvaluation`, or `convertUnchecked` has to map it.
+
 Deferred from phase 1:
 - `FMLEvaluation` moves to phase 3: its conversions depend on the strict mode of Connie.
 - Localized messages move to phase 4.
