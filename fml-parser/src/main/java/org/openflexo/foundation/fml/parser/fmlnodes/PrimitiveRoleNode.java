@@ -40,6 +40,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.PrimitiveType;
@@ -79,6 +81,8 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
 		when(() -> getModelObject().getDefaultValue().isSet()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignFragment())
 				.thenAppend(bindingContents(() -> getModelObject().getDefaultValue()), getDefaultValueFragment());
+		when(() -> hasInitializer()).thenAppend(staticContents(SPACE, "=", SPACE), getInitializerActionAssignFragment(getASTNode() != null ? getASTNode().getVariableDeclarator() : null))
+				.thenAppend(childContents("", () -> ((FlexoRole<?>) getModelObject()).getInitializer(), "", Indentation.DoNotIndent));
 		append(staticContents(";"), getSemiFragment());
 	}
 
@@ -101,6 +105,7 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 					BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
 			returned.setDefaultValue(defaultValueExpression);
 		}
+		buildInitializer(astNode.getVariableDeclarator(), returned);
 
 		return returned;
 	}

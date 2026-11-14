@@ -1,0 +1,30 @@
+/**
+ * new Child() through a creation scheme inherited from the parent creates a Child (CORE-D-15), and the default values of inherited
+ * properties are set (CORE-D-50). See TestInheritedCreation.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/InheritedCreation.fml")
+public model InheritedCreation {
+
+	public String dogFromBehaviour() {
+		Dog d = new Dog();
+		return d.bark();
+	}
+
+	public concept Animal {
+		int legs = 4;
+		create() {
+		}
+	}
+
+	public concept Dog extends Animal {
+		public String bark() {
+			return "woof";
+		}
+	}
+
+	public concept OwnDog extends Animal {
+		int tail = 1;
+		create() {
+		}
+	}
+}

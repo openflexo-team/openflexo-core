@@ -128,11 +128,36 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 		return getFlexoBehaviour();
 	}
 
+	private FlexoConcept flexoConceptBeingCreated;
+
+	/**
+	 * Return the concept of the instance this action creates: the one requested by the {@code new} when it was set (see
+	 * {@link #setFlexoConceptBeingCreated(FlexoConcept)}), otherwise the concept that declares the creation scheme
+	 */
 	public FlexoConcept getFlexoConceptBeingCreated() {
+		if (flexoConceptBeingCreated != null) {
+			return flexoConceptBeingCreated;
+		}
 		if (getFlexoBehaviour() != null) {
 			return getFlexoBehaviour().getFlexoConcept();
 		}
 		return null;
+	}
+
+	/**
+	 * Set the concept to instantiate when it is not the concept declaring the creation scheme: {@code new Child()} reaching a
+	 * creation scheme inherited from a parent creates a {@code Child} (CORE-D-15). Ignored unless the concept declaring the scheme is
+	 * a parent of (or is) supplied concept.
+	 */
+	public void setFlexoConceptBeingCreated(FlexoConcept concept) {
+		if (concept != null && getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
+				&& getFlexoBehaviour().getFlexoConcept().isAssignableFrom(concept)) {
+			flexoConceptBeingCreated = concept;
+		}
+		else if (concept != null && getFlexoBehaviour() != null) {
+			logger.warning("Ignored: " + concept + " cannot be created with " + getFlexoBehaviour() + " of "
+					+ getFlexoBehaviour().getFlexoConcept());
+		}
 	}
 
 	@Override

@@ -144,43 +144,22 @@ the value is cached (the expression property, its binding path element, or the c
 
 **Workaround.** None at FML level for a value read from outside; inside a behaviour, compute the value directly (`items.size`).
 
-### CORE-D-50 — The default values of inherited properties are not set on a new instance  ·  `TODO`
+### CORE-D-74 — The initializer of a property is lost on save once the property has a `with` clause  ·  `TODO`
 
-**Symptom.** A property declared with a default value in a parent concept (`int legs = 4;`) is null on a new instance of a child
-concept that has its own creation scheme. The child's own default values are set.
+**Symptom.** A property declared with an initializer in the Java style (`Part first = new Part();`, or
+`Person selected = select unique Person from container;`) loses it on save as soon as its role is given a property value (in the
+inspector, for instance its `container`): the text is written `Part first with ConceptInstance(container=this);`, without the
+initializer, and the initializer is gone after the next load.
 
-**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-50.fmlscript`, fixture `KDInheritance`).** With
-`Animal { int legs = 4; create() { } }` and `OwnDog extends Animal { int tail = 1; create() { } }`, `vmi.new OwnDog()` gives
-`tail == 1` and `legs == null`.
+**Mechanism — verified by the review of `CORE-D-51` (probe, 2026-11-14).** The grammar has no place for an initializer in the `with`
+form of a declaration (`{fml}` and `{fml_fully_qualified}` alternatives of `inner_concept_decl` in `fml.sablecc`), so
+`FlexoRolePropertyNode` writes the initializer only when no `with` clause is required (`writesInitializer`, `hasInitializer()` with
+`!requiresWithClause()`).
 
-**Mechanism — verified in the code.** `FlexoConceptInstance` initializes default values by iterating
-`getFlexoConcept().getDeclaredProperties(FlexoRole.class)`: declared roles only, not inherited ones (and roles only, not
-`FMLVariable`s). Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+**Options.** Extend the grammar so that a `with` declaration may end with `= initializer` (then build and print it); or refuse to set a
+property value on a role that has an initializer.
 
-**Workaround.** Assign the inherited property in the child's creation scheme.
-
-### CORE-D-51 — Initializers and cardinalities written in a property declaration are lost  ·  `TODO`
-
-**Symptom.** The parser accepts these declarations, but what they say does not reach the model:
-- `Person first = new Person();` — the initializer of a concept-typed property is dropped;
-- `Person selected = select unique Person from container;` — an edition action as initializer is dropped, on every kind of
-  property, although §6.2 of the spec allows it;
-- `Object[0,*] objects;` — the property is built with cardinality `ZeroOne`.
-
-Primitive and `String` properties keep both their initializer and their cardinality.
-
-**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-51.fmlscript`, fixture `KDPropertyInit`).** The
-cardinality of `objects` is `ZeroOne` (first assert); the script also asserts the initializer of `first` and the value of
-`selected`, not reached once the first assert fails.
-
-**Mechanism — verified in the code.** `FlexoPropertyFactory` routes a concept-typed declaration to `FlexoRolePropertyNode` and a
-non-primitive Java type to `FMLVariableNode`. `FlexoRolePropertyNode.buildModelObjectFromAST` never reads the initializer;
-`ObjectNode` returns null for an `AInitializerFmlActionVariableDeclarator` (`getInitializerFMLAction` has no caller);
-`FMLVariableNode.buildModelObjectFromAST` never sets the cardinality, and `FlexoProperty.getCardinality()` defaults to `ZeroOne`.
-Found by the external audit of the FML language of 2026-10-23 (its §3.6).
-
-**Workaround.** Initialize such properties in the creation scheme; type multi-valued Java properties with a primitive or
-`String` element when possible.
+**Workaround.** Do not set a property of the role of a property that has an initializer; initialize it in the creation scheme instead.
 
 ---
 
@@ -348,64 +327,6 @@ the nested and `do` forms were not built at all, so they were kept word for word
 
 ## Instantiation
 
-### CORE-D-15 — `new Child()` creates an instance of the parent when the child virtual model only inherits its creation scheme  ·  `TODO`
-
-**Symptom.** A virtual model that `extends` another and declares no creation scheme of its own, while its parent declares one, is
-instantiated as the **parent**: none of the members declared by the child resolve on the result (`unresolved path element hello()`),
-although the members inherited from the parent do.
-
-**Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** Two files:
-
-```fml
-@URI("http://openflexo.org/test/TestResourceCenter/Parent.fml")
-public model Parent {
-	create() {
-	}
-}
-```
-
-```fml
-import ["http://openflexo.org/test/TestResourceCenter/Parent.fml"];
-
-@URI("http://openflexo.org/test/TestResourceCenter/Son.fml")
-public model Son extends Parent {
-	public String hello() {
-		return "hello";
-	}
-}
-```
-
-```
-virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Son.fml"];
-service ResourceCenterService add_temp_rc;
-c = new Son() with (name="x");
-assert c.hello() == "hello";
-```
-
-The assert fails (with `log "…" + c.hello()` the line is reported as an invalid binding, `unresolved path element hello()`), and
-`c.flexoConcept.name` gives `Parent`. Isolating the trigger, each measured on its own: a parent with no creation scheme, with a property
-only, with a behaviour only, or with a concept only works; a parent with a `create()` fails, with or without a property; a `Son` that
-declares its own `create() { }` works; the base and the child loaded in either order, and the alias or the plain address in the
-import, make no difference. The same shape between two **concepts** of one model (`concept Animal { create() { } }`,
-`concept Dog extends Animal { … }`, instantiated by `new Dog()` from a behaviour of the model) works: only inheritance between
-virtual models is affected.
-
-**Mechanism — read in the code, consistent with every observation, not confirmed with a debugger.**
-`AbstractAddFlexoConceptInstanceImpl.getFlexoConceptType()` returns `getCreationScheme().getFlexoConcept()` as soon as a creation
-scheme is set, i.e. the concept that **declares** the scheme; `AbstractAddVirtualModelInstance` derives both its result type
-(`FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType())`) and `getVirtualModelType()` from it. A scheme reached
-by inheritance is declared by the parent. Not read: how the scheme gets chosen at parse time (`AddVirtualModelInstanceNode`).
-
-**Impact.** Silent: no error at load or at execution of the `new`; the wrong type shows up later, as unresolved paths or `null`.
-
-**Concepts too — verified 2026-11-11 by execution (test `KnownDefects/CORE-D-15.fmlscript`, fixture `KDInheritance`).** The
-observation above that concepts work holds only for a `new Dog()` written in a behaviour of the model. From a script,
-`vmi.new Dog()` (a `CreationSchemePathElement`) on a concept `Dog extends Animal` that inherits `create()` gives an instance whose
-`flexoConcept.name` is `Animal`: `AbstractCreationSchemeAction.getFlexoConceptBeingCreated()` returns the concept that declares
-the scheme. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
-
-**Workaround.** Declare a creation scheme in the child, even an empty `create() { }`.
-
 ### CORE-D-73 — A creation run by a technology action, or through a technology factory, still hides a failing creation scheme  ·  `TODO`
 
 **Symptom.** Since `CORE-D-47`, a failing creation scheme fails the `new` that runs it and leaves no partly built instance. Two
@@ -418,7 +339,9 @@ container when its scheme fails.
 `CreationSchemeAction` and returns `hasActionExecutionSucceeded()`, which its callers do not turn into a failure. The core factory
 discards the partly built instance (`FMLRTVirtualModelInstanceModelFactory.discardPartlyBuiltInstance`), but
 `XLSVirtualModelInstanceModelFactory`, `XMLVirtualModelInstanceModelFactory`, `HbnVirtualModelInstanceModelFactory` (and the REST one)
-build and register their instances themselves. Found by the review of `CORE-D-47` (2026-11-13).
+build and register their instances themselves. Found by the review of `CORE-D-47` (2026-11-13). The same path also derives the
+concept to instantiate from the creation scheme (`AbstractAddFlexoConceptInstance.getFlexoConceptType()`): a creation scheme inherited
+from a parent creates an instance of the parent there, unlike `new` since `CORE-D-15` (review of `CORE-D-15`, 2026-11-14).
 
 **To fix.** Throw the failure of the creation action in `_performExecuteCreationScheme` (only `hasActionExecutionFailed()`: a
 disabled action is not a failure), and discard the partly built instance in the adapters' factories, as the core factory does.
@@ -723,25 +646,6 @@ After the fix: `xml-ta-test` 8 -> 0, `formod-test` 574 -> 1 (then 0, see below),
 **Worked around in the tests (2026-10-10).** `FormodAutomatedTests.provisionAtelierBProject` and `TestCreateBlankAtelierBProject` wait again, up to 10 times, until the resource is registered.
 
 **To decide.** Making `waitNextWatching` wait for a watching that STARTED after the call (a counter of started and completed runs, both `volatile`, waiting for `completed >= startedAtCall + 1`), and not turning the timeout into an `InterruptedException` the callers cannot tell from a real interruption. The default delay of 5 s must be checked against the period of the watcher before making the wait stricter.
-
-### CORE-D-52 — The text printed for a concept-typed property with an initializer does not parse again  ·  `TODO`
-
-**Symptom.** `Person first = new Person();` is printed `Person first with ConceptInstance()= new Person();`, which the parser
-rejects (`ParseException: expecting: ';'`). A unit holding such a declaration cannot be saved from the Modeller and loaded again.
-Unlike the rest of `CORE-D-33`, this is a loss of the unit, not a cosmetic difference.
-
-**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsRoundTripTest` in fml-parser).** Parse the declaration, print
-the compilation unit, parse the printed text.
-
-**Mechanism — verified in the code.** `FlexoRolePropertyNode.definePrettyPrint` always appends `with <role>(…)` when
-`hasFMLProperties()`, even for a declaration written in the Java style; the `= …` comes from the original text kept around the
-name. The `{fml}` form of the grammar has no slot for an initializer. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
-
-**Workaround.** Do not give an initializer to a concept-typed property (it is lost anyway, `CORE-D-51`).
-
-**Partly fixed (2026-11-13) by CORE-D-33.** A declaration written in the Java style no longer gets a `with` clause while its role is the
-default one: `Person first = new Person();` is printed as written and parses again (`KnownDefectsRoundTripTest`, run with
-`OPENFLEXO_KNOWN_DEFECTS`). Still broken: once the role is given a property value, the clause is inserted after the name, before `= ...`.
 
 ---
 

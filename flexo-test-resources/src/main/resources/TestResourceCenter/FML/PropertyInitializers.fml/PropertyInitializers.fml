@@ -1,0 +1,26 @@
+/**
+ * What a property declaration writes reaches the model: an initializer of a concept-typed property, an edition action as initializer,
+ * the cardinality of a Java-typed property (CORE-D-51). See TestPropertyInitializers.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/PropertyInitializers.fml")
+public model PropertyInitializers {
+
+	public concept Person {
+		create() {
+		}
+	}
+
+	public concept Holder {
+		Part first = new Part();
+		Person selected = select unique Person from container;
+		List<Person> everybody = select Person from container;
+		Object[0,*] objects;
+		int count = 3;
+		create() {
+		}
+		public concept Part {
+			create() {
+			}
+		}
+	}
+}

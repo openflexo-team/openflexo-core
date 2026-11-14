@@ -40,6 +40,12 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerFmlActionVariableDeclarator;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.md.FMLMetaData;
@@ -102,4 +108,28 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 		return getSemanticsAnalyzer().getCompilationUnit();
 	}
 
+	/**
+	 * Build the edition action written as the initializer of a declaration ({@code Person p = select unique Person from container;})
+	 * and give it to supplied role (CORE-D-51)
+	 */
+	protected void buildInitializer(PVariableDeclarator variableDeclarator, FlexoRole<?> role) {
+		if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+			ControlGraphNode<?, ?> initializerNode = ControlGraphFactory
+					.makeControlGraphNode(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getFmlActionExp(), getSemanticsAnalyzer());
+			role.setInitializer(initializerNode.getModelObject());
+			addToChildren(initializerNode);
+		}
+	}
+
+	/** The assign token of an initializer written as an edition action */
+	protected RawSourceFragment getInitializerActionAssignFragment(PVariableDeclarator variableDeclarator) {
+		if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
+			return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getAssign());
+		}
+		return null;
+	}
+
+	protected boolean hasInitializer() {
+		return getModelObject() instanceof FlexoRole && ((FlexoRole<?>) getModelObject()).getInitializer() != null;
+	}
 }

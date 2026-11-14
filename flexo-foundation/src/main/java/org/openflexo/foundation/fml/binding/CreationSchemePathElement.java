@@ -244,11 +244,43 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		public FlexoConceptInstanceType getType() {
 			if (getCreationScheme() != null) {
 				if (getCreationScheme().getNewInstanceType() instanceof FlexoConceptInstanceType) {
+					// new Child() reaching a creation scheme inherited from a parent creates a Child: the requested type is kept when
+					// the scheme belongs to one of its parents (CORE-D-15)
+					if (isRequestedTypeASpecialization(requestedType, getCreationScheme())) {
+						return requestedType;
+					}
 					return (FlexoConceptInstanceType) getCreationScheme().getNewInstanceType();
 				}
 				return null;
 			}
 			return (FlexoConceptInstanceType) super.getType();
+		}
+
+		/**
+		 * Tell if supplied requested type is a concept that specializes the concept declaring supplied creation scheme
+		 */
+		private static boolean isRequestedTypeASpecialization(Type requested, AbstractCreationScheme creationScheme) {
+			if (requested instanceof FlexoConceptInstanceType && creationScheme != null && creationScheme.getFlexoConcept() != null) {
+				FlexoConcept requestedConcept = ((FlexoConceptInstanceType) requested).getFlexoConcept();
+				return requestedConcept != null && requestedConcept != creationScheme.getFlexoConcept()
+						&& creationScheme.getFlexoConcept().isAssignableFrom(requestedConcept);
+			}
+			return false;
+		}
+
+		/**
+		 * The type written in the new ({@code Dog} in {@code new Dog()}), kept apart from the type of the constructor found, which
+		 * may be inherited from a parent ({@code Animal}) (CORE-D-15)
+		 */
+		private FlexoConceptInstanceType requestedType;
+
+		@Override
+		public void setType(Type type) {
+			if (type instanceof FlexoConceptInstanceType
+					&& (getCreationScheme() == null || isRequestedTypeASpecialization(type, getCreationScheme()))) {
+				requestedType = (FlexoConceptInstanceType) type;
+			}
+			super.setType(type);
 		}
 
 		public FlexoConcept getFlexoConcept() {
@@ -767,12 +799,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 
 					VirtualModel instantiatedVirtualModel;
 
-					if (getCreationScheme() != null) {
-						instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
-					}
-					else {
-						instantiatedVirtualModel = (VirtualModel) getFlexoConcept();
-					}
+					// The virtual model requested by the new, even when its creation scheme is inherited from a parent (CORE-D-15)
+					instantiatedVirtualModel = (VirtualModel) getFlexoConcept();
 
 					// We have to instantiate a VirtualModel
 					// At this point, 3 cases may happen:
@@ -936,6 +964,8 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			}
 
 			creationSchemeAction.setContainer(containerFCI);
+			// The concept requested by the new, even when its creation scheme is inherited from a parent (CORE-D-15)
+			creationSchemeAction.setFlexoConceptBeingCreated(getFlexoConcept());
 
 			creationSchemeAction.doAction();
 

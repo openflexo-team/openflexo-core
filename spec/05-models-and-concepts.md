@@ -49,8 +49,8 @@ without importing it is the common cause of an unresolved parent.
 
 A virtual model instance of the child can instantiate the concepts it inherits from the parent models.
 
-> **Implementation note.** A child model that does not declare a creation scheme of its own and only
-> inherits one is instantiated as an instance of the parent, not of the child (`CORE-D-15`).
+A child model, or a child concept, that declares no creation scheme of its own uses the one it inherits: `new Child()`
+then runs the creation scheme of the parent and creates an instance of `Child`, whose static type is `Child`.
 
 ### 5.1.4 Contained models
 

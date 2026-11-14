@@ -24,11 +24,9 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-13` | `new C::name()` with fewer arguments than the scheme declares does not resolve; a call must match in number | §7.4 | pass the arguments |
 | `CORE-D-17` | `super.name()` gives `null` when the concept has several parents | §5.3.2 | a helper behaviour called on `this` |
 | `CORE-D-10` | `delete x` does not remove `x` from the multi-valued properties that hold it | §10.4 | remove, then delete |
+| `CORE-D-74` | the initializer of a property that also has a `with` clause is lost on save | §6.2 | initialize it in the creation scheme |
 | `CORE-D-73` | a creation run by a technology action, or through a technology factory, hides a failing creation scheme | §13.6 | assert the effects of the creation |
-| `CORE-D-15` | `new Child()` creates a `Parent` when `Child` only inherits the creation scheme (virtual models; concepts when created by `vmi.new Child()`) | §5.1.3 | declare a creation scheme in the child |
 | `CORE-D-49` | signatures compare parameter names, not types; the first assignable overload wins; override return types and inherited abstract behaviours are not checked | §5.3.1, §7.4 | distinct names for overloads; most specific first |
-| `CORE-D-50` | default values of inherited properties are not set on a new instance | §6.2 | assign them in the creation scheme |
-| `CORE-D-51` | the initializer of a concept-typed property, an edition action as initializer, and the cardinality of a Java-typed property are lost | §6.2, §6.3 | initialize in the creation scheme |
 | `CORE-D-55` | an inherited event listener is called twice after its instance is loaded | §7.7 | declare the listener in the concrete concept |
 
 ## B.3 Matching and queries
@@ -49,7 +47,6 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-34` | loading units that import each other logs transient *Unresolved type* warnings | §3.8 | none: ignore the transient ones |
 | `CORE-D-33` | the text rebuilt from the model is not always the text that was parsed | §1.1 | — |
 | `CORE-D-56` | a control statement whose body has no braces is saved with braces and a broken indentation | §8.1 | brace the bodies |
-| `CORE-D-52` | a concept-typed property with an initializer is printed as text that does not parse again | §1.1 | no initializer on such properties |
 
 ## B.5 Scripts
 

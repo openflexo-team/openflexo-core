@@ -1,0 +1,21 @@
+// new Child() through an inherited creation scheme creates a Child (CORE-D-15); inherited default values are set (CORE-D-50).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/InheritedCreation.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new InheritedCreation() with (name="inherited");
+// a concept inheriting the creation scheme of its parent, created from a script and from a behaviour
+d = vmi.new Dog();
+assert d.flexoConcept.name == "Dog";
+assert d.bark() == "woof";
+assert d.legs == 4;
+assert vmi.dogFromBehaviour() == "woof";
+// the default values of inherited properties are set, also when the child has its own creation scheme
+o = vmi.new OwnDog();
+assert o.flexoConcept.name == "OwnDog";
+assert o.tail == 1;
+assert o.legs == 4;
+// a virtual model inheriting the creation scheme of its parent
+childModel = load -r ["http://openflexo.org/test/TestResourceCenter/InheritedCreationChild.fml"];
+c = new InheritedCreationChild() with (name="child");
+assert c.flexoConcept.name == "InheritedCreationChild";
+assert c.hello() == "hello";
+assert c.level == 1;

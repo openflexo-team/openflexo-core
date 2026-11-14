@@ -290,7 +290,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * 
 	 * @param evaluationContext
 	 */
-	public void initializeDefaultValues(RunTimeEvaluationContext evaluationContext);
+	public void initializeDefaultValues(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	// Debug method
 	public String debug();
@@ -870,25 +870,44 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public void initializeDefaultValues(RunTimeEvaluationContext evaluationContext) {
-			// We initialize the default values
-			for (FlexoRole role : getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
-				if (role.getDefaultValue() != null && role.getDefaultValue().isSet() && evaluationContext != null) {
+		public void initializeDefaultValues(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			if (evaluationContext == null) {
+				return;
+			}
+			// The default values and the initializers are evaluated in the context of the new instance itself ("this", "container"): the
+			// creation action is not attached to it yet. A virtual model instance is its own evaluation context
+			RunTimeEvaluationContext context = this instanceof VirtualModelInstance ? this : new LocalRunTimeEvaluationContext();
+			// We initialize the default values of the roles of the concept, inherited ones included (CORE-D-50): the accessible
+			// properties, keeping those declared by the concept or one of its parents (not those of a container concept), a property
+			// redefined by a child giving its own default value
+			for (FlexoProperty<?> property : getFlexoConcept().getAccessibleProperties()) {
+				if (!(property instanceof FlexoRole) || property.getFlexoConcept() == null
+						|| !property.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+					continue;
+				}
+				FlexoRole role = (FlexoRole) property;
+				if (role.getInitializer() != null) {
+					// An edition action written as the initializer of the declaration (CORE-D-51); its failure fails the creation
+					try {
+						setFlexoPropertyValue(role, role.getInitializer().execute(context));
+					} catch (ReturnException e) {
+						setFlexoPropertyValue(role, e.getReturnedValue());
+					}
+				}
+				else if (role.getDefaultValue() != null && role.getDefaultValue().isSet()) {
+					// A default value that cannot be evaluated fails the creation, as an initializer action does; a null reference
+					// gives null
 					Object defaultValue;
 					try {
-						defaultValue = role.getDefaultValue().getBindingValue(evaluationContext);
-						// System.out.println("defaultValue=" + defaultValue);
-						setFlexoPropertyValue(role, defaultValue);
-					} catch (TypeMismatchException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						defaultValue = role.getDefaultValue().getBindingValue(context);
 					} catch (NullReferenceException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ReflectiveOperationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						defaultValue = null;
+					} catch (InvocationTargetException e) {
+						throw new FMLExecutionException(e.getCause() != null ? e.getCause() : e);
+					} catch (TypeMismatchException | ReflectiveOperationException e) {
+						throw new FMLExecutionException(e);
 					}
+					setFlexoPropertyValue(role, defaultValue);
 				}
 			}
 		}

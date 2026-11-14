@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -71,6 +72,8 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 		// We define here the conditions under which this action requires a final semi
 
 		return !((getParent().getModelObject() instanceof AbstractAssignationAction)
+				// The initializer of a property declaration: the declaration writes the semi (CORE-D-51)
+				|| (getParent().getModelObject() instanceof FlexoRole)
 				// If parent id AbstractAssignationAction, the parent will do it
 				// The collection of a for loop: identified by identity, not by its index (when the collection could not be built, the
 				// first child is the body: CORE-D-57)

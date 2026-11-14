@@ -1,0 +1,9 @@
+/**
+ * The parent of InheritedCreationChild, which inherits its creation scheme (CORE-D-15). See TestInheritedCreation.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/InheritedCreationParent.fml")
+public model InheritedCreationParent {
+	int level = 1;
+	create() {
+	}
+}

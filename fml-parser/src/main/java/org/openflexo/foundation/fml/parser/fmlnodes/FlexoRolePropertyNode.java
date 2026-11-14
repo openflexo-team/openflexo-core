@@ -41,6 +41,13 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.AInitializerExpressionVariableDeclarator;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -108,7 +115,45 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		}
 		returned.setCardinality(getCardinality(getPCardinality(), returned));
 		returned.setType(type);
+		// The initializer of a declaration written in the Java style ("Person first = new Person();") is the default value of the
+		// role (CORE-D-51)
+		PExpression initializerExpression = getJavaInitializerExpression();
+		if (initializerExpression != null) {
+			DataBinding defaultValueExpression = ExpressionFactory.makeDataBinding(initializerExpression, returned,
+					BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
+			returned.setDefaultValue(defaultValueExpression);
+		}
+		buildInitializer(getJavaVariableDeclarator(), returned);
 		return returned;
+	}
+
+	private PVariableDeclarator getJavaVariableDeclarator() {
+		if (getASTNode() instanceof AJavaInnerConceptDecl) {
+			return ((AJavaInnerConceptDecl) getASTNode()).getVariableDeclarator();
+		}
+		return null;
+	}
+
+	private PExpression getJavaInitializerExpression() {
+		return getInitializerExpression(getJavaVariableDeclarator());
+	}
+
+	private RawSourceFragment getInitializerAssignFragment() {
+		if (getJavaVariableDeclarator() instanceof AInitializerExpressionVariableDeclarator) {
+			return getFragment(((AInitializerExpressionVariableDeclarator) getJavaVariableDeclarator()).getAssign());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getInitializerExpressionFragment() {
+		PExpression expression = getJavaInitializerExpression();
+		return expression != null ? getFragment(expression) : null;
+	}
+
+	/** The default value is written as an initializer of a declaration in the Java style, which has no 'with' clause */
+	private boolean writesInitializer() {
+		return getModelObject() != null && getModelObject().getDefaultValue() != null && getModelObject().getDefaultValue().isSet()
+				&& !requiresWithClause();
 	}
 
 	/*
@@ -151,6 +196,11 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 				.thenAppend(staticContents("("), getFMLParametersLParFragment())
 				.thenAppend(childrenContents("", "",() -> getModelObject().getFMLPropertyValues(getFactory()), ",", "", Indentation.DoNotIndent, FMLPropertyValue.class))
 				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+		// The initializer of a declaration in the Java style, which has no 'with' clause (CORE-D-51)
+		when(() -> writesInitializer()).thenAppend(staticContents("", "=", SPACE), getInitializerAssignFragment())
+				.thenAppend(bindingContents(() -> getModelObject().getDefaultValue()), getInitializerExpressionFragment());
+		when(() -> hasInitializer() && !requiresWithClause()).thenAppend(staticContents("", "=", SPACE), getInitializerActionAssignFragment(getJavaVariableDeclarator()))
+				.thenAppend(childContents("", () -> getModelObject().getInitializer(), "", Indentation.DoNotIndent));
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on
 	}

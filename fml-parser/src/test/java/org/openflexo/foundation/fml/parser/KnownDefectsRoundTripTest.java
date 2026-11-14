@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -99,33 +98,6 @@ public class KnownDefectsRoundTripTest {
 		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class), true);
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class), true);
-	}
-
-	/**
-	 * CORE-D-52: the text printed for a concept-typed property with an initializer must parse again.
-	 */
-	@Test
-	public void coreD52_printedPropertyWithInitializerParsesAgain() throws Exception {
-		String fml = "@URI(\"http://openflexo.org/test/KnownDefectsRoundTrip.fml\")\n" //
-				+ "public model KnownDefectsRoundTrip {\n" //
-				+ "\tpublic concept Person {\n" //
-				+ "\t}\n" //
-				+ "\tpublic concept Holder {\n" //
-				+ "\t\tPerson first = new Person();\n" //
-				+ "\t}\n" //
-				+ "}\n";
-
-		FMLModelFactory factory = new FMLModelFactory(null, serviceManager);
-		FMLCompilationUnit compilationUnit = new FMLCompilationUnitParser().parse(fml, factory, modelSlotClasses -> null, true);
-		assertNotNull(compilationUnit);
-		String printed = compilationUnit.getFMLPrettyPrint();
-		System.out.println("===== CORE-D-52 printed =====\n" + printed);
-		try {
-			assertNotNull(new FMLCompilationUnitParser().parse(printed, new FMLModelFactory(null, serviceManager), modelSlotClasses -> null,
-					true));
-		} catch (Exception e) {
-			fail("CORE-D-52: the printed text does not parse again (" + e + "):\n" + printed);
-		}
 	}
 
 	private static void assertPrintedBack(String body) throws Exception {

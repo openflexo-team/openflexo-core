@@ -1,0 +1,12 @@
+import ["http://openflexo.org/test/TestResourceCenter/InheritedCreationParent.fml"];
+
+/**
+ * A virtual model that declares no creation scheme and inherits the one of its parent (CORE-D-15). See
+ * TestInheritedCreation.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/InheritedCreationChild.fml")
+public model InheritedCreationChild extends InheritedCreationParent {
+	public String hello() {
+		return "hello";
+	}
+}

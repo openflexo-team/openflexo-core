@@ -59,12 +59,16 @@ List<String> tags = new ArrayList<String>();
 int titi = 2 + 3;
 ```
 
-The initializer may also be an edition action (§10): `Person first = select Person from this;`.
+The initializer may also be an edition action (§10): `Person first = select unique Person from container;`.
 
-> **Implementation note.** Accepted but lost: the initializer of a concept-typed property and an edition action used
-> as initializer (`CORE-D-51`); the printed text of a concept-typed property with an initializer does not parse again
-> (`CORE-D-52`). The default values of properties inherited from a parent concept are not set on a new instance of a
-> child (`CORE-D-50`). Initialize such properties in the creation scheme.
+Initializers are evaluated when an instance is created, before its creation scheme, in the context of the new
+instance (`this`, `container`): `Part first = new Part();` creates a `Part` nested in the new instance. A property
+inherited from a parent concept is initialized too; a property redefined by a child uses the initializer of the
+child. An initializer that fails — an edition action, or an expression that cannot be evaluated — makes the creation
+fail (§13.6); an expression that goes through a null value gives `null`.
+
+> **Implementation note.** The initializer of a property whose role is also given a `with` clause (a property value
+> set in the inspector, for instance) is lost when the unit is saved (`CORE-D-74`).
 
 A typed property is settable: `p = v;` in a behaviour, or `instance.p = v;` in a script, replaces its value
 (§6.8).

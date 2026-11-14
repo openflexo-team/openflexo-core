@@ -1,0 +1,16 @@
+// What a property declaration writes reaches the model (CORE-D-51).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/PropertyInitializers.fml"];
+holder = virtualModel.getFlexoConcept("Holder");
+assert holder.getAccessibleProperty("objects").cardinality.toString() == "ZeroMany";
+service ResourceCenterService add_temp_rc;
+vmi = new PropertyInitializers() with (name="initializers");
+p = vmi.new Person();
+q = vmi.new Person();
+h = vmi.new Holder();
+// an expression initializer of a concept-typed property: a nested concept, created inside the instance
+assert h.first != null;
+assert h.first.container == h;
+// an edition action as initializer, run when the instance is created
+assert h.selected != null;
+assert h.everybody.size() == 2;
+assert h.count == 3;

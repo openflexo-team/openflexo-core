@@ -396,6 +396,110 @@ fails line 31, `root.applicableDerivedB[null] == derivedB`. First met in `formod
 
 ---
 
+## Instantiation
+
+### CORE-D-15 — `new Child()` creates an instance of the parent when the child virtual model only inherits its creation scheme  ·  `DONE`
+
+**Fixed (2026-11-14).** `CreationSchemePathElement` keeps the type written in the `new` (`requestedType`) when the constructor found belongs to a parent, so the static type of `new Dog()` is `Dog`; the creation action allocates that concept (`AbstractCreationSchemeAction.setFlexoConceptBeingCreated`), and a virtual model is instantiated as the one written, not as the one declaring the scheme. Not covered: the edition-action form `AbstractAddFlexoConceptInstance` used by technology actions still derives the concept from the scheme. Test: `AutomatedTests/TestInheritedCreation.fmlscript` (fixtures `InheritedCreation`, `InheritedCreationParent`, `InheritedCreationChild`, which replace `KDInheritance`).
+
+**Symptom.** A virtual model that `extends` another and declares no creation scheme of its own, while its parent declares one, is
+instantiated as the **parent**: none of the members declared by the child resolve on the result (`unresolved path element hello()`),
+although the members inherited from the parent do.
+
+**Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** Two files:
+
+```fml
+@URI("http://openflexo.org/test/TestResourceCenter/Parent.fml")
+public model Parent {
+	create() {
+	}
+}
+```
+
+```fml
+import ["http://openflexo.org/test/TestResourceCenter/Parent.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/Son.fml")
+public model Son extends Parent {
+	public String hello() {
+		return "hello";
+	}
+}
+```
+
+```
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Son.fml"];
+service ResourceCenterService add_temp_rc;
+c = new Son() with (name="x");
+assert c.hello() == "hello";
+```
+
+The assert fails (with `log "…" + c.hello()` the line is reported as an invalid binding, `unresolved path element hello()`), and
+`c.flexoConcept.name` gives `Parent`. Isolating the trigger, each measured on its own: a parent with no creation scheme, with a property
+only, with a behaviour only, or with a concept only works; a parent with a `create()` fails, with or without a property; a `Son` that
+declares its own `create() { }` works; the base and the child loaded in either order, and the alias or the plain address in the
+import, make no difference. The same shape between two **concepts** of one model (`concept Animal { create() { } }`,
+`concept Dog extends Animal { … }`, instantiated by `new Dog()` from a behaviour of the model) works: only inheritance between
+virtual models is affected.
+
+**Mechanism — read in the code, consistent with every observation, not confirmed with a debugger.**
+`AbstractAddFlexoConceptInstanceImpl.getFlexoConceptType()` returns `getCreationScheme().getFlexoConcept()` as soon as a creation
+scheme is set, i.e. the concept that **declares** the scheme; `AbstractAddVirtualModelInstance` derives both its result type
+(`FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType())`) and `getVirtualModelType()` from it. A scheme reached
+by inheritance is declared by the parent. Not read: how the scheme gets chosen at parse time (`AddVirtualModelInstanceNode`).
+
+**Impact.** Silent: no error at load or at execution of the `new`; the wrong type shows up later, as unresolved paths or `null`.
+
+**Concepts too — verified 2026-11-11 by execution (test `KnownDefects/CORE-D-15.fmlscript`, fixture `KDInheritance`).** The
+observation above that concepts work holds only for a `new Dog()` written in a behaviour of the model. From a script,
+`vmi.new Dog()` (a `CreationSchemePathElement`) on a concept `Dog extends Animal` that inherits `create()` gives an instance whose
+`flexoConcept.name` is `Animal`: `AbstractCreationSchemeAction.getFlexoConceptBeingCreated()` returns the concept that declares
+the scheme. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+
+**Workaround.** Declare a creation scheme in the child, even an empty `create() { }`.
+
+### CORE-D-47 — A creation scheme that fails does not fail the `new` that called it  ·  `DONE`
+
+**Fixed (2026-11-13).** `CreationSchemePathElement` checks the status of the creation action (instance and virtual model instance) and throws its failure, as a behaviour call does; `FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance` takes the partly built instance, and what it contains, out of its container and of its virtual model instance before rethrowing (what the scheme did elsewhere is kept). A failing listener fails the `fire` once every listener of the event has run (`EventListenerFailedException` carried through the `PropertyChangeSupport`); a failing deletion scheme fails `delete x`, `DeletionSchemeAction` (contextual menu) and the deletion of diagram elements, and the instance is not deleted (`deleteWithScheme` / new `deleteWithDefaultScheme`; the generic `delete()`, used by release and for contained instances, still deletes with a warning; `delete` of a VirtualModelInstance keeps its own deletion); a failing behaviour on an unmatched instance fails the `end match`. Only an executed and failed action counts (new `FlexoAction.hasActionExecutionFailed()`): a disabled one (`@Enable`) is not a failure. The partly built instance is deleted with `performCoreDeletion` (no deletion scheme, notified as deleted). A virtual model instance whose creation fails is kept (decided). Not covered: `CORE-D-73`. Tests: the scripts of `ExecutionFailures/` (fixture `ExecutionFailures`, which replaces `KDConstruction`) run command by command by `TestExecutionFailures` (fml-cli-test).
+
+**Symptom.** When the creation scheme run by `new C(…)` fails, the caller goes on as if it had succeeded: the behaviour that wrote
+the `new` continues and returns normally, and the partly built instance stays registered in its container. The same failure in an
+ordinary behaviour call fails its caller.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsJavaTests.coreD47_failedCreationSchemeFailsTheCaller`,
+script `KnownDefectsSupport/CORE-D-47.fmlscript`, fixture `KDConstruction`).** `outer()` returns 7 and sets `progress` to 1,
+although `create()` of `Bomb` fails on `absent.substring(0)` (`absent` is null):
+
+```fml
+public int outer() {
+	Bomb b = new Bomb();
+	progress = 1;
+	return 7;
+}
+concept Bomb {
+	String absent;
+	create() {
+		String consumed = absent.substring(0);
+	}
+}
+```
+
+**Mechanism — verified in the code.** `CreationSchemePathElement.performExecuteCreationScheme` calls `doAction()` and returns
+`getNewFlexoConceptInstance()` without looking at `hasActionExecutionSucceeded()` (the check is commented out); its
+`FMLExecutionException` catch only prints the stack trace. `FMLRTVirtualModelInstanceModelFactory` registers the new instance in
+its container and its virtual model instance before running the creation scheme, with no rollback. By contrast,
+`FlexoBehaviourPathElement` propagates the thrown exception. Failures are swallowed the same way by event listeners
+(`DefaultFMLRunTimeEngine`: `doAction()` without status check — observed while writing the test of `CORE-D-55`), by
+`FinalizeMatching` (a warning) and by `DeleteFlexoConceptInstance` (deletes even when the deletion scheme failed).
+Found by the external audit of the FML language of 2026-10-23 (its §3.3).
+
+**Decided 2026-11-11.** On failure the partly built instance is removed from its container and from the indexes, then the
+`FMLExecutionException` reaches the caller.
+
+**Workaround.** None: validate the unit, and assert the effects of a creation in tests.
+
+---
+
 ## Resources: unloading and deletion
 
 ### CORE-D-21 — Closing a project runs the deletion schemes of every loaded instance  ·  `DONE`
@@ -900,6 +1004,27 @@ complete (`CompilationUnitResourceImpl`), only if the unit was not modified sinc
 
 **Tests.** No test in `openflexo-core`: the defect needs a resource whose identifiers depend on the place of the object, which only the B technology adapter has. It is guarded by `TestBMethology.testReloadProject` in `formod`, red before this change. Non-regression here: `flexo-foundation-test` 525 (520 successes, 5 skipped), `fml-cli-test` 99/99.
 
+### CORE-D-52 — The text printed for a concept-typed property with an initializer does not parse again  ·  `DONE`
+
+**Fixed (2026-11-14).** Fixed by the work on `CORE-D-33` / `CORE-D-60` (a Java-style declaration is printed without `with ConceptInstance()`), and the initializer is now printed from the model (`CORE-D-51`). The case of a property that also has a `with` clause is no longer unparsable but loses its initializer: `CORE-D-74`. Test: `TestPropertyInitializerRoundTrip` (fml-parser), which replaces the known-defect test.
+
+**Symptom.** `Person first = new Person();` is printed `Person first with ConceptInstance()= new Person();`, which the parser
+rejects (`ParseException: expecting: ';'`). A unit holding such a declaration cannot be saved from the Modeller and loaded again.
+Unlike the rest of `CORE-D-33`, this is a loss of the unit, not a cosmetic difference.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsRoundTripTest` in fml-parser).** Parse the declaration, print
+the compilation unit, parse the printed text.
+
+**Mechanism — verified in the code.** `FlexoRolePropertyNode.definePrettyPrint` always appends `with <role>(…)` when
+`hasFMLProperties()`, even for a declaration written in the Java style; the `= …` comes from the original text kept around the
+name. The `{fml}` form of the grammar has no slot for an initializer. Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+
+**Workaround.** Do not give an initializer to a concept-typed property (it is lost anyway, `CORE-D-51`).
+
+**Partly fixed (2026-11-13) by CORE-D-33.** A declaration written in the Java style no longer gets a `with` clause while its role is the
+default one: `Person first = new Person();` is printed as written and parses again (`KnownDefectsRoundTripTest`, run with
+`OPENFLEXO_KNOWN_DEFECTS`). Still broken: once the role is given a property value, the clause is inserted after the name, before `= ...`.
+
 ### CORE-D-57 — The normalized pretty-print of some units loses expressions and does not parse again  ·  `DONE`
 
 **Symptom.** `getNormalizedFML()` (the text built from the model alone, used for objects created from scratch) dropped parts of
@@ -1017,47 +1142,49 @@ editor (`updateWith`).
 
 ---
 
-## Instantiation
+## FML properties
 
-### CORE-D-47 — A creation scheme that fails does not fail the `new` that called it  ·  `DONE`
+### CORE-D-50 — The default values of inherited properties are not set on a new instance  ·  `DONE`
 
-**Fixed (2026-11-13).** `CreationSchemePathElement` checks the status of the creation action (instance and virtual model instance) and throws its failure, as a behaviour call does; `FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance` takes the partly built instance, and what it contains, out of its container and of its virtual model instance before rethrowing (what the scheme did elsewhere is kept). A failing listener fails the `fire` once every listener of the event has run (`EventListenerFailedException` carried through the `PropertyChangeSupport`); a failing deletion scheme fails `delete x`, `DeletionSchemeAction` (contextual menu) and the deletion of diagram elements, and the instance is not deleted (`deleteWithScheme` / new `deleteWithDefaultScheme`; the generic `delete()`, used by release and for contained instances, still deletes with a warning; `delete` of a VirtualModelInstance keeps its own deletion); a failing behaviour on an unmatched instance fails the `end match`. Only an executed and failed action counts (new `FlexoAction.hasActionExecutionFailed()`): a disabled one (`@Enable`) is not a failure. The partly built instance is deleted with `performCoreDeletion` (no deletion scheme, notified as deleted). A virtual model instance whose creation fails is kept (decided). Not covered: `CORE-D-73`. Tests: the scripts of `ExecutionFailures/` (fixture `ExecutionFailures`, which replaces `KDConstruction`) run command by command by `TestExecutionFailures` (fml-cli-test).
+**Fixed (2026-11-14).** `FlexoConceptInstance.initializeDefaultValues` iterates the accessible roles of the concept declared by it or one of its parents (a redefinition giving its own value), and evaluates default values and initializers in the context of the instance itself, the creation action not being attached to it yet. Test: `AutomatedTests/TestInheritedCreation.fmlscript`.
 
-**Symptom.** When the creation scheme run by `new C(…)` fails, the caller goes on as if it had succeeded: the behaviour that wrote
-the `new` continues and returns normally, and the partly built instance stays registered in its container. The same failure in an
-ordinary behaviour call fails its caller.
+**Symptom.** A property declared with a default value in a parent concept (`int legs = 4;`) is null on a new instance of a child
+concept that has its own creation scheme. The child's own default values are set.
 
-**Reproduction (verified 2026-11-11 by execution, test `KnownDefectsJavaTests.coreD47_failedCreationSchemeFailsTheCaller`,
-script `KnownDefectsSupport/CORE-D-47.fmlscript`, fixture `KDConstruction`).** `outer()` returns 7 and sets `progress` to 1,
-although `create()` of `Bomb` fails on `absent.substring(0)` (`absent` is null):
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-50.fmlscript`, fixture `KDInheritance`).** With
+`Animal { int legs = 4; create() { } }` and `OwnDog extends Animal { int tail = 1; create() { } }`, `vmi.new OwnDog()` gives
+`tail == 1` and `legs == null`.
 
-```fml
-public int outer() {
-	Bomb b = new Bomb();
-	progress = 1;
-	return 7;
-}
-concept Bomb {
-	String absent;
-	create() {
-		String consumed = absent.substring(0);
-	}
-}
-```
+**Mechanism — verified in the code.** `FlexoConceptInstance` initializes default values by iterating
+`getFlexoConcept().getDeclaredProperties(FlexoRole.class)`: declared roles only, not inherited ones (and roles only, not
+`FMLVariable`s). Found by the external audit of the FML language of 2026-10-23 (its §3.6).
 
-**Mechanism — verified in the code.** `CreationSchemePathElement.performExecuteCreationScheme` calls `doAction()` and returns
-`getNewFlexoConceptInstance()` without looking at `hasActionExecutionSucceeded()` (the check is commented out); its
-`FMLExecutionException` catch only prints the stack trace. `FMLRTVirtualModelInstanceModelFactory` registers the new instance in
-its container and its virtual model instance before running the creation scheme, with no rollback. By contrast,
-`FlexoBehaviourPathElement` propagates the thrown exception. Failures are swallowed the same way by event listeners
-(`DefaultFMLRunTimeEngine`: `doAction()` without status check — observed while writing the test of `CORE-D-55`), by
-`FinalizeMatching` (a warning) and by `DeleteFlexoConceptInstance` (deletes even when the deletion scheme failed).
-Found by the external audit of the FML language of 2026-10-23 (its §3.3).
+**Workaround.** Assign the inherited property in the child's creation scheme.
 
-**Decided 2026-11-11.** On failure the partly built instance is removed from its container and from the indexes, then the
-`FMLExecutionException` reaches the caller.
+### CORE-D-51 — Initializers and cardinalities written in a property declaration are lost  ·  `DONE`
 
-**Workaround.** None: validate the unit, and assert the effects of a creation in tests.
+**Fixed (2026-11-14).** `FlexoRolePropertyNode` keeps the initializer of a declaration in the Java style as the default value, and prints it back; `FMLVariableNode` keeps and prints the cardinality. An edition action as initializer is supported (decided): `FlexoRole` is now an `FMLControlGraphOwner` with an embedded `initializer` control graph, built by the property nodes, printed back, and run when the instance is created, as default values are; its failure fails the creation. Tests: `AutomatedTests/TestPropertyInitializers.fmlscript` (fixture `PropertyInitializers`, which replaces `KDPropertyInit`), `TestPropertyInitializersValidation` (fml-cli-test), `TestPropertyInitializerRoundTrip` (fml-parser).
+
+**Symptom.** The parser accepts these declarations, but what they say does not reach the model:
+- `Person first = new Person();` — the initializer of a concept-typed property is dropped;
+- `Person selected = select unique Person from container;` — an edition action as initializer is dropped, on every kind of
+  property, although §6.2 of the spec allows it;
+- `Object[0,*] objects;` — the property is built with cardinality `ZeroOne`.
+
+Primitive and `String` properties keep both their initializer and their cardinality.
+
+**Reproduction (verified 2026-11-11 by execution, test `KnownDefects/CORE-D-51.fmlscript`, fixture `KDPropertyInit`).** The
+cardinality of `objects` is `ZeroOne` (first assert); the script also asserts the initializer of `first` and the value of
+`selected`, not reached once the first assert fails.
+
+**Mechanism — verified in the code.** `FlexoPropertyFactory` routes a concept-typed declaration to `FlexoRolePropertyNode` and a
+non-primitive Java type to `FMLVariableNode`. `FlexoRolePropertyNode.buildModelObjectFromAST` never reads the initializer;
+`ObjectNode` returns null for an `AInitializerFmlActionVariableDeclarator` (`getInitializerFMLAction` has no caller);
+`FMLVariableNode.buildModelObjectFromAST` never sets the cardinality, and `FlexoProperty.getCardinality()` defaults to `ZeroOne`.
+Found by the external audit of the FML language of 2026-10-23 (its §3.6).
+
+**Workaround.** Initialize such properties in the creation scheme; type multi-valued Java properties with a primitive or
+`String` element when possible.
 
 ---
 

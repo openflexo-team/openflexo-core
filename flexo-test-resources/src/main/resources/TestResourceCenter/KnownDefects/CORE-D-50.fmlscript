@@ -1,8 +1,0 @@
-// CORE-D-50: the default values of inherited properties must be set on a new instance.
-virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDInheritance.fml"];
-service ResourceCenterService add_temp_rc;
-vmi = new KDInheritance() with (name="kd50");
-o = vmi.new OwnDog();
-assert o.flexoConcept.name == "OwnDog";
-assert o.tail == 1;
-assert o.legs == 4;

@@ -43,6 +43,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -108,7 +114,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoRole.FlexoRoleImpl.class)
 @Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class), @Import(FMLVariable.class) })
-public interface FlexoRole<T> extends FlexoProperty<T> {
+public interface FlexoRole<T> extends FlexoProperty<T>, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = String.class)
 	String ROLE_NAME_KEY = "roleName";
@@ -183,6 +189,22 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	@Setter(DEFAULT_VALUE_KEY)
 	void setDefaultValue(DataBinding<T> defaultValue);
+
+	@PropertyIdentifier(type = FMLControlGraph.class)
+	String INITIALIZER_KEY = "initializer";
+
+	/**
+	 * Return the edition action that initializes this role on a new instance, when the declaration is written with one
+	 * ({@code Person selected = select unique Person from container;}), null otherwise (CORE-D-51). It runs, as the default value
+	 * does, before the creation scheme; its result is the initial value of the role.
+	 */
+	@Getter(value = INITIALIZER_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
+	FMLControlGraph getInitializer();
+
+	@Setter(INITIALIZER_KEY)
+	void setInitializer(FMLControlGraph initializer);
 
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	boolean getIsRequired();
@@ -297,6 +319,47 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	public void updateType(Type type);
 
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
+
+		@Override
+		public void setInitializer(FMLControlGraph initializer) {
+			// Deleting the initializer replaces it by an empty control graph: the role then has no initializer
+			if (initializer instanceof EmptyControlGraph) {
+				initializer = null;
+			}
+			if (initializer != null) {
+				initializer.setOwnerContext(INITIALIZER_KEY);
+			}
+			performSuperSetter(INITIALIZER_KEY, initializer);
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			if (INITIALIZER_KEY.equals(ownerContext)) {
+				return getInitializer();
+			}
+			return null;
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+			if (INITIALIZER_KEY.equals(ownerContext)) {
+				setInitializer(controlGraph);
+			}
+		}
+
+		@Override
+		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
+			// The initializer is evaluated in the context of the instance, as the default value
+			return getBindingModel();
+		}
+
+		@Override
+		public void reduce() {
+			if (getInitializer() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getInitializer()).reduce();
+			}
+		}
+
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
