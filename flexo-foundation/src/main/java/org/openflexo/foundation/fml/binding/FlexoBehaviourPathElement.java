@@ -268,6 +268,10 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 						actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(),
 								null, fci.getEditor());
 					}
+					// Started by an expression: reported to the console only, its failure reaches the expression (CORE-F-11)
+					if (!actionSchemeAction.isEmbedded()) {
+						actionSchemeAction.setStartedFromExpression(true);
+					}
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
 					for (FlexoBehaviourArgument p : getFlexoBehaviour().getParameters()) {

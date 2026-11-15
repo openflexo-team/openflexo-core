@@ -44,6 +44,7 @@ import java.util.Date;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.error.FMLStack;
 
 /**
  * This class is used to encode a simple log record in Flexo
@@ -61,6 +62,8 @@ public class FMLLogRecord {
 	public String message;
 	public FMLConsole.LogLevel level;
 	public StackTraceElement[] stackTrace;
+	/** The FML stack of the failure this record reports, or null (CORE-F-11) */
+	public FMLStack fmlStack;
 
 	protected String _dateAsString = null;
 	protected String _classAsString = null;
@@ -112,6 +115,11 @@ public class FMLLogRecord {
 			_threadAsString = "" + threadId;
 		}
 		return _threadAsString;
+	}
+
+	/** The FML stack of the failure this record reports, or null when it reports none */
+	public FMLStack getFMLStack() {
+		return fmlStack;
 	}
 
 	public String getStackTraceAsString() {

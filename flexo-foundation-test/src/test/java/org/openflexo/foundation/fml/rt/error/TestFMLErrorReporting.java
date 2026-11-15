@@ -41,12 +41,15 @@ package org.openflexo.foundation.fml.rt.error;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +60,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoAction.ExecutionStatus;
+import org.openflexo.foundation.action.NotImplementedException;
 
 /**
  * How the editor reports the failures of the actions it runs, and what an action keeps of its failure (CORE-F-11): the branches of
@@ -249,4 +253,142 @@ public class TestFMLErrorReporting {
 		assertEquals("inner()", wrapper.getFMLStack().getFrames().get(0).getBehaviour());
 		assertSame(cause.getFMLStack(), FMLExecutionFailure.findFMLStack(new RuntimeException(cause)));
 	}
+
+	/** An editor whose reporter records what it is asked to present (CORE-F-11, phase 4) */
+	private static class PresentingEditor extends DefaultFlexoEditor {
+		final List<Throwable> presented = new ArrayList<>();
+
+		PresentingEditor() {
+			super(null, null);
+		}
+
+		@Override
+		protected FMLErrorReporter makeFMLErrorReporter() {
+			return new FMLErrorReporter(this) {
+				@Override
+				protected void present(FlexoAction<?, ?, ?> action, Throwable failure) {
+					presented.add(failure);
+				}
+			};
+		}
+	}
+
+	@Test
+	public void aReportedFailureIsMarkedAndNotReportedAgain() {
+		FMLTypeError failure = new FMLTypeError("foreseen");
+		TestAction action = new TestAction(editor, () -> {
+			throw failure;
+		});
+		action.doAction();
+		assertTrue(FMLErrorReporter.isReported(failure));
+		// Wrapped, as an expression receives it through Connie
+		assertTrue(FMLErrorReporter.isReported(new InvocationTargetException(failure)));
+		editor.getFMLErrorReporter().reportToConsole("Failure in the user interface", new InvocationTargetException(failure));
+		assertEquals(1, severe());
+		editor.getFMLErrorReporter().report(action, failure);
+		assertEquals(1, severe());
+	}
+
+	@Test
+	public void aFailureNoActionReportedGoesToTheConsoleOnce() {
+		FMLNullReferenceError failure = new FMLNullReferenceError("from a binding");
+		editor.getFMLErrorReporter().reportToConsole("Failure in the user interface", failure);
+		editor.getFMLErrorReporter().reportToConsole("Failure in the user interface", failure);
+		assertEquals(1, severe());
+		assertTrue(editor.getFMLConsole().getRecords().get(0).message
+				.startsWith("Failure in the user interface: Null reference: from a binding"));
+		editor.getFMLErrorReporter().reportToConsole("Failure in the user interface", new FMLCancellation("cancelled"));
+		assertEquals(1, severe());
+	}
+
+	@Test
+	public void theConsoleRecordKeepsTheFMLStack() {
+		FMLTypeError failure = new FMLTypeError("foreseen");
+		failure.getFMLStack().pushFrame("doIt()", "C", null);
+		new TestAction(editor, () -> {
+			throw failure;
+		}).doAction();
+		assertSame(failure.getFMLStack(), editor.getFMLConsole().getRecords().get(0).getFMLStack());
+	}
+
+	@Test
+	public void kinds() {
+		assertEquals("fml_null_reference_error", FMLErrorReporter.kindKey(new FMLNullReferenceError("x")));
+		assertEquals("fml_type_error", FMLErrorReporter.kindKey(new FMLTypeError("x")));
+		assertEquals("fml_resolution_error", FMLErrorReporter.kindKey(new FMLResolutionError("x")));
+		assertEquals("fml_assignment_error", FMLErrorReporter.kindKey(new FMLAssignmentError("x")));
+		assertEquals("fml_argument_error", FMLErrorReporter.kindKey(new FMLArgumentError("x")));
+		assertEquals("fml_cardinality_error", FMLErrorReporter.kindKey(new FMLCardinalityError("x")));
+		assertEquals("fml_technology_error", FMLErrorReporter.kindKey(new FMLTechnologyError("x")));
+		assertEquals("fml_host_error", FMLErrorReporter.kindKey(new FMLHostError("x", new IllegalStateException())));
+		assertEquals("fml_execution_error", FMLErrorReporter.kindKey(new FMLExecutionException("x")));
+		assertEquals("fml_not_implemented", FMLErrorReporter.kindKey(new NotImplementedException("x")));
+		assertEquals("fml_internal_error", FMLErrorReporter.kindKey(new FMLInternalError(new IllegalStateException())));
+		// The kind of a wrapped failure is the kind of the failure it carries
+		assertEquals("fml_type_error", FMLErrorReporter.kindKey(new InvocationTargetException(new FMLTypeError("x"))));
+		assertNotNull(FMLErrorReporter.localizedKind(new FMLTypeError("x")));
+	}
+
+	@Test
+	public void aCancellationCancelsTheCallersEvenWrapped() {
+		TestAction outer = new TestAction(editor, () -> {
+			TestAction inner = new TestAction(editor, () -> {
+				throw new FMLCancellation("cancelled");
+			});
+			inner.doAction();
+			assertTrue(inner.hasBeenCancelled());
+			// A caller that wraps the failure of the action it called
+			throw new FMLExecutionException("caller", inner.getThrownException());
+		});
+		outer.doAction();
+		assertEquals(ExecutionStatus.HAS_BEEN_CANCELLED, outer.getExecutionStatus());
+		assertEquals(0, severe());
+	}
+
+	@Test
+	public void anActionCancelledBeforeItRunsGivesItsCancellationToItsCaller() {
+		FMLCancellation cancellation = new FMLCancellation("parameters dialog cancelled");
+		TestAction inner = new TestAction(editor, () -> {
+			fail("A cancelled action does not run");
+		});
+		inner.cancelExecution(cancellation);
+		assertTrue(inner.hasBeenCancelled());
+		assertFalse(inner.hasActionExecutionFailed());
+		assertSame(cancellation, inner.getFailure());
+		try {
+			FMLExecution.rethrowFailure(inner);
+			fail("The caller of a cancelled action is cancelled");
+		} catch (FMLExecutionException e) {
+			assertSame(cancellation, e);
+		}
+	}
+
+	@Test
+	public void onlyTheOutermostFailureIsPresented() {
+		PresentingEditor presenting = new PresentingEditor();
+		FMLTypeError nested = new FMLTypeError("nested");
+		TestAction outer = new TestAction(presenting, () -> {
+			TestAction inner = new TestAction(presenting, () -> {
+				throw nested;
+			});
+			inner.doAction();
+			throw inner.getThrownException();
+		});
+		outer.doAction();
+		assertEquals(1, presenting.presented.size());
+		assertSame(nested, presenting.presented.get(0));
+		// A nested failure that its caller went on after is recorded, not presented
+		PresentingEditor other = new PresentingEditor();
+		new TestAction(other, () -> new TestAction(other, () -> {
+			throw new FMLTypeError("ignored");
+		}).doAction()).doAction();
+		assertEquals(0, other.presented.size());
+		assertEquals(1, other.getFMLConsole().getSevereLogs());
+		// A cancellation is not presented
+		new TestAction(other, () -> {
+			throw new FMLCancellation("cancelled");
+		}).doAction();
+		assertEquals(0, other.presented.size());
+	}
+
 }

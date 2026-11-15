@@ -317,6 +317,32 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		executionStatus = ExecutionStatus.HAS_BEEN_CANCELLED;
 	}
 
+	/**
+	 * Cancel this action before it runs, because the user cancelled it (for instance its parameters dialog): its status becomes
+	 * {@link ExecutionStatus#HAS_BEEN_CANCELLED} and supplied cancellation its failure, which a calling action rethrows, so that its callers
+	 * are cancelled too (CORE-F-11)
+	 */
+	public void cancelExecution(FMLCancellation cancellation) {
+		executionStatus = ExecutionStatus.HAS_BEEN_CANCELLED;
+		thrownException = cancellation;
+		failure = cancellation;
+	}
+
+	private boolean startedFromExpression = false;
+
+	/**
+	 * Tell if this action was started by the evaluation of an expression (a behaviour called from a binding of the user interface, a
+	 * command, a script) or by an event (a listener), rather than by the user through an action of the editor: its failure is reported to
+	 * the console only, never in a dialog, and also reaches the code that evaluated the expression or fired the event (CORE-F-11)
+	 */
+	public boolean isStartedFromExpression() {
+		return startedFromExpression;
+	}
+
+	public void setStartedFromExpression(boolean startedFromExpression) {
+		this.startedFromExpression = startedFromExpression;
+	}
+
 	public boolean hasBeenCancelled() {
 		return getExecutionStatus() == ExecutionStatus.HAS_BEEN_CANCELLED;
 	}
@@ -349,7 +375,8 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			doAction(getContext());
 			executionStatus = ExecutionStatus.HAS_SUCCESSFULLY_EXECUTED;
 		} catch (FlexoException e) {
-			executionStatus = e instanceof FMLCancellation ? ExecutionStatus.HAS_BEEN_CANCELLED : ExecutionStatus.FAILED_EXECUTION;
+			// A cancellation cancels the callers of the cancelled action too, even when they wrapped it (CORE-F-11)
+			executionStatus = FMLErrorReporter.isCancellation(e) ? ExecutionStatus.HAS_BEEN_CANCELLED : ExecutionStatus.FAILED_EXECUTION;
 			thrownException = e;
 			failure = e;
 			throw e;

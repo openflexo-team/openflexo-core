@@ -290,6 +290,8 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		EventListenerActionFactory actionType = new EventListenerActionFactory(eventListener, fci);
 		EventListenerAction action = actionType.makeNewAction(fci, null, fci.getEditor());
 		action.setEventInstance(event);
+		// Started by an event, not by the user: reported to the console only (CORE-F-11)
+		action.setStartedFromExpression(true);
 		try {
 			action.doAction();
 		} catch (RuntimeException e) {

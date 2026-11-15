@@ -853,6 +853,10 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 						return null;
 					}
 
+					// Started by an expression: reported to the console only, its failure reaches the expression (CORE-F-11)
+					if (!createVMIAction.isEmbedded()) {
+						createVMIAction.setStartedFromExpression(true);
+					}
 					createVMIAction.setSkipChoosePopup(true);
 					createVMIAction.setNewVirtualModelInstanceName(vmiName);
 					createVMIAction.setVirtualModel(instantiatedVirtualModel);
@@ -907,11 +911,12 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 		}
 
 		/**
-		 * Throw the failure of a creation action that failed, as {@link FlexoBehaviourPathElement} does for a behaviour call. An action
-		 * that was not executed (disabled) has not failed: the new then gives null
+		 * Throw the failure of a creation action that failed, as {@link FlexoBehaviourPathElement} does for a behaviour call, or its
+		 * cancellation, so that the caller is cancelled too (CORE-F-11). An action that was not executed (disabled) has not failed: the new
+		 * then gives null
 		 */
 		private static void failIfNotSucceeded(FlexoAction<?, ?, ?> action) throws InvocationTargetTransformException {
-			if (action.hasActionExecutionFailed()) {
+			if (action.hasActionExecutionFailed() || (action.hasBeenCancelled() && action.getThrownException() != null)) {
 				action.rethrowUncheckedFailure();
 				Throwable cause = action.getThrownException() != null ? action.getThrownException()
 						: new FMLExecutionException("Creation failed: " + action);
@@ -967,6 +972,10 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 			}
 
+			// Started by an expression: reported to the console only, its failure reaches the expression (CORE-F-11)
+			if (!creationSchemeAction.isEmbedded()) {
+				creationSchemeAction.setStartedFromExpression(true);
+			}
 			creationSchemeAction.setContainer(containerFCI);
 			// The concept requested by the new, even when its creation scheme is inherited from a parent (CORE-D-15)
 			creationSchemeAction.setFlexoConceptBeingCreated(getFlexoConcept());

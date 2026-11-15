@@ -40,7 +40,10 @@ package org.openflexo.foundation.fml.rt.error;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,11 +52,14 @@ import org.openflexo.connie.binding.javareflect.InvalidKeyValuePropertyException
 import org.openflexo.connie.exception.BindingEvaluationException;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -64,7 +70,11 @@ import org.openflexo.logging.FlexoLogger;
  * one (an {@link FMLInternalError}, any other unchecked exception, even wrapped into a checked one) is a defect of the platform, logged with
  * its Java stack. A cancellation ({@link FMLCancellation}) is not reported.
  * <p>
- * An interactive editor adds its own presentation (a dialog) on top of this one.
+ * An interactive editor adds its own presentation (a dialog) on top of this one, by overriding
+ * {@link #present(FlexoAction, Throwable)}.
+ * <p>
+ * A failure is reported once: the reporter remembers the failures it reported ({@link #isReported(Throwable)}), so that the code that
+ * receives the same failure later (a GINA binding, the uncaught exception handler of the application) does not report it again.
  */
 public class FMLErrorReporter {
 
@@ -85,6 +95,26 @@ public class FMLErrorReporter {
 	}
 
 	private static final ThreadLocal<ExecutionScope> CURRENT_SCOPE = new ThreadLocal<>();
+
+	/** The failures already reported, by identity (a throwable does not redefine equals), weakly held */
+	private static final Map<Throwable, Boolean> REPORTED = Collections.synchronizedMap(new WeakHashMap<>());
+
+	/** Remember that supplied failure was reported: whoever receives it later does not report it again */
+	public static void markReported(Throwable failure) {
+		if (failure != null) {
+			REPORTED.put(failure, Boolean.TRUE);
+		}
+	}
+
+	/** Tell if supplied failure, or one of its causes, was already reported */
+	public static boolean isReported(Throwable failure) {
+		for (Throwable c = failure; c != null; c = next(c)) {
+			if (REPORTED.containsKey(c)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Enter the execution of an action on the current thread
@@ -164,11 +194,34 @@ public class FMLErrorReporter {
 	 * Report the failure of supplied outermost action
 	 */
 	public void report(FlexoAction<?, ?, ?> action, Throwable failure) {
-		if (failure == null || isCancellation(failure)) {
+		if (failure == null || isCancellation(failure) || isReported(failure)) {
 			return;
 		}
 		String text = describe("Action " + actionName(action) + " failed", failure);
 		publish(action, text, failure);
+		present(action, failure);
+	}
+
+	/**
+	 * Present the failure of supplied outermost action to the user, once it is written to the console. Does nothing here: an
+	 * interactive editor overrides it (a dialog)
+	 */
+	protected void present(FlexoAction<?, ?, ?> action, Throwable failure) {
+	}
+
+	/**
+	 * Report a failure that no action of this editor reported: raised by a binding of the user interface (GINA), a listener, a
+	 * synchronization. Written to the console only, never presented in a dialog; nothing is done when the failure was already reported
+	 * (by the action that failed) or is a cancellation
+	 * 
+	 * @param title
+	 *            what was being done (English, as the console records are)
+	 */
+	public void reportToConsole(String title, Throwable failure) {
+		if (failure == null || isCancellation(failure) || isReported(failure)) {
+			return;
+		}
+		publish(null, describe(title, failure), failure);
 	}
 
 	/**
@@ -183,6 +236,7 @@ public class FMLErrorReporter {
 			}
 			String text = describe("Nested action " + actionName(action) + " failed, and its caller went on", failure);
 			publish(action, text, failure);
+			markReported(failure);
 		}
 	}
 
@@ -191,12 +245,13 @@ public class FMLErrorReporter {
 	 * is always logged with its Java stack
 	 */
 	private void publish(FlexoAction<?, ?, ?> action, String text, Throwable failure) {
+		markReported(failure);
 		FMLConsole console = editor != null ? editor.getFMLConsole() : null;
 		if (console == null) {
 			log(text, failure);
 			return;
 		}
-		writeToConsole(console, action, text);
+		writeToConsole(console, action, text, failure);
 		if (!isForeseen(failure)) {
 			logger.log(Level.SEVERE, text, failure);
 		}
@@ -205,14 +260,14 @@ public class FMLErrorReporter {
 		}
 	}
 
-	private static void writeToConsole(FMLConsole console, FlexoAction<?, ?, ?> action, String text) {
+	private static void writeToConsole(FMLConsole console, FlexoAction<?, ?, ?> action, String text, Throwable failure) {
 		FlexoConceptInstance fci = null;
 		FlexoBehaviour behaviour = null;
 		if (action instanceof FlexoBehaviourAction) {
 			fci = ((FlexoBehaviourAction<?, ?, ?>) action).getFlexoConceptInstance();
 			behaviour = ((FlexoBehaviourAction<?, ?, ?>) action).getFlexoBehaviour();
 		}
-		console.log(text, FMLConsole.LogLevel.SEVERE, fci, behaviour);
+		console.logFailure(text, fci, behaviour, failure);
 	}
 
 	/**
@@ -234,6 +289,7 @@ public class FMLErrorReporter {
 		if (failure == null || isCancellation(failure)) {
 			return;
 		}
+		markReported(failure);
 		log(describe("Action " + actionName(action) + " failed", failure), failure);
 	}
 
@@ -291,7 +347,9 @@ public class FMLErrorReporter {
 	 */
 	public static String describe(String title, Throwable failure) {
 		StringBuilder sb = new StringBuilder(title);
-		sb.append(": ").append(failure.getMessage() != null ? failure.getMessage() : failure.getClass().getSimpleName());
+		// The kind in English, as the rest of the record: the console, the logs, fml-cli and the server give a stable text
+		sb.append(": ").append(defaultKindText(kindKey(failure))).append(": ")
+				.append(failure.getMessage() != null ? failure.getMessage() : failure.getClass().getSimpleName());
 		FMLStack stack = FMLExecutionFailure.findFMLStack(failure);
 		if (stack != null && !stack.isEmpty()) {
 			sb.append('\n').append(stack);
@@ -303,6 +361,95 @@ public class FMLErrorReporter {
 			}
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * The localization key of the kind of supplied failure (one per type of {@link FMLError}, and one for an untyped failure, a
+	 * {@link NotImplementedException} and a defect of the platform), in the dictionary of the core
+	 */
+	public static String kindKey(Throwable failure) {
+		if (!isForeseen(failure)) {
+			return "fml_internal_error";
+		}
+		for (Throwable c = failure; c != null; c = next(c)) {
+			if (c instanceof NotImplementedException) {
+				return "fml_not_implemented";
+			}
+		}
+		FMLExecutionFailure typed = FMLExecutionFailure.findFailure(failure);
+		if (typed instanceof FMLNullReferenceError) {
+			return "fml_null_reference_error";
+		}
+		if (typed instanceof FMLTypeError) {
+			return "fml_type_error";
+		}
+		if (typed instanceof FMLResolutionError) {
+			return "fml_resolution_error";
+		}
+		if (typed instanceof FMLAssignmentError) {
+			return "fml_assignment_error";
+		}
+		if (typed instanceof FMLArgumentError) {
+			return "fml_argument_error";
+		}
+		if (typed instanceof FMLCardinalityError) {
+			return "fml_cardinality_error";
+		}
+		if (typed instanceof FMLTechnologyError) {
+			return "fml_technology_error";
+		}
+		if (typed instanceof FMLHostError) {
+			return "fml_host_error";
+		}
+		return "fml_execution_error";
+	}
+
+	/** The English title of the kind of supplied failure, as written in the console and the logs */
+	public static String kind(Throwable failure) {
+		return defaultKindText(kindKey(failure));
+	}
+
+	/** English texts of the kinds, written in the records, and used when no dictionary is available */
+	private static String defaultKindText(String key) {
+		switch (key) {
+			case "fml_internal_error":
+				return "Internal error";
+			case "fml_not_implemented":
+				return "Not implemented";
+			case "fml_null_reference_error":
+				return "Null reference";
+			case "fml_type_error":
+				return "Type error";
+			case "fml_resolution_error":
+				return "Resolution error";
+			case "fml_assignment_error":
+				return "Assignment error";
+			case "fml_argument_error":
+				return "Argument error";
+			case "fml_cardinality_error":
+				return "Cardinality error";
+			case "fml_technology_error":
+				return "Technology error";
+			case "fml_host_error":
+				return "Failure of Java code";
+			default:
+				return "FML execution error";
+		}
+	}
+
+	/** The localized title of the kind of supplied failure (for instance "Null reference"), in the current language */
+	public static String localizedKind(Throwable failure) {
+		String key = kindKey(failure);
+		try {
+			LocalizedDelegate locales = FlexoLocalization.getMainLocalizer();
+			String localized = locales != null ? locales.localizedForKey(key) : null;
+			if (localized != null && !localized.equals(key)) {
+				return localized;
+			}
+		} catch (RuntimeException e) {
+			// The localization must never hide the failure being reported
+		}
+		return defaultKindText(key);
 	}
 
 	private static String actionName(FlexoAction<?, ?, ?> action) {

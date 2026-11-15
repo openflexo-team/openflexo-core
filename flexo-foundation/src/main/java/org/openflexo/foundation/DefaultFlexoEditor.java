@@ -202,9 +202,16 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	 */
 	public FMLErrorReporter getFMLErrorReporter() {
 		if (errorReporter == null) {
-			errorReporter = new FMLErrorReporter(this);
+			errorReporter = makeFMLErrorReporter();
 		}
 		return errorReporter;
+	}
+
+	/**
+	 * Build the reporter of this editor: an interactive editor gives one that also presents the failures to the user
+	 */
+	protected FMLErrorReporter makeFMLErrorReporter() {
+		return new FMLErrorReporter(this);
 	}
 
 	/**

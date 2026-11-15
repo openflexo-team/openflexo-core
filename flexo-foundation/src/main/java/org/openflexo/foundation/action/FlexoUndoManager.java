@@ -136,6 +136,20 @@ public class FlexoUndoManager extends UndoManager {
 		}
 	}
 
+	/**
+	 * Called when a FlexoAction was not executed (its initializer declined it): its recording is closed, keeping the edits made so far
+	 * (CORE-F-11)
+	 */
+	public void actionHasNotBeenPerformed(FlexoAction<?, ?, ?> action) {
+		if (!action.isEmbedded()) {
+			CompoundEdit currentEdition = getCurrentEdition();
+			actionBeeingCurrentlyExecuted = null;
+			if (currentEdition != null) {
+				stopRecording(currentEdition);
+			}
+		}
+	}
+
 	@Override
 	public synchronized CompoundEdit startRecording(String presentationName) {
 		if (logger.isLoggable(Level.FINE)) {

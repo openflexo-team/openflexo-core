@@ -45,6 +45,7 @@ import java.util.List;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionFailure;
 import org.openflexo.foundation.fml.rt.logging.FMLLoggingFilter.FilterType;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
@@ -125,6 +126,25 @@ public class FMLConsole extends PropertyChangedSupportDefaultImplementation {
 			add(logRecord);
 			System.out.println(formatter.format(logRecord));
 		}
+	}
+
+	/**
+	 * Record the failure of an FML execution, with its FML stack, at {@link LogLevel#SEVERE} (CORE-F-11): the record keeps the stack, so
+	 * that the console can lead to the FML source of each frame
+	 * 
+	 * @param text
+	 *            the description of the failure
+	 * @return the record added, or null when the console does not monitor that level
+	 */
+	public FMLLogRecord logFailure(String text, FlexoConceptInstance fci, FlexoBehaviour behaviour, Throwable failure) {
+		if (getMonitoredLogLevel().ordinal() >= LogLevel.SEVERE.ordinal()) {
+			FMLLogRecord logRecord = new FMLLogRecord(text, LogLevel.SEVERE, fci, behaviour, this);
+			logRecord.fmlStack = FMLExecutionFailure.findFMLStack(failure);
+			add(logRecord);
+			System.out.println(formatter.format(logRecord));
+			return logRecord;
+		}
+		return null;
 	}
 
 	public FMLConsole.LogLevel getMonitoredLogLevel() {

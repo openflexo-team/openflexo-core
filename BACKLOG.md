@@ -624,7 +624,7 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
 - Known limits of phase 1:
   - A cancellation (`FMLCancellation`, raised by nothing yet, phase 4) is a checked failure: the callers of a cancelled nested action
     rethrow it, wrapped, and their own action ends `FAILED_EXECUTION`. The report skips it, even wrapped (`FMLErrorReporter.isCancellation`).
-    The status of the callers is to be settled when phase 4 raises it.
+    The status of the callers is to be settled when phase 4 raises it. Settled in phase 4: the callers end `HAS_BEEN_CANCELLED`.
   - The report goes to the FML console and the log. The running application shows nothing more until phase 4 (`InteractiveFlexoEditor`
     unchanged), and the former `System.err` pretty-print of the failing behaviour is gone.
   - An action started by an expression (fml-cli, GINA, server) is an outermost action: it is reported, and its caller still receives the
@@ -735,6 +735,56 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
   openflexo-rest (its tests need the network). `TestBehaviourAvailability` evaluates `@Enable` on a stub instance, not strictly.
 - Reviewed by `openflexo-reviewer` (2026-11-15); its findings were fixed or are recorded here. openflexo-xlsx: the debug `log` of
   `TestLoadPersonListing1/2.fmlscript` called an unresolved method and is removed (decided with the user).
+
+
+**Phase 4 done (2026-11-15), decided with the user.**
+- `InteractiveFlexoEditor` (openflexo-ui) runs an action like `DefaultFlexoEditor`: the outermost action of a thread reports, a nested one
+  leaves its failure to its caller; the edits of a failing action are undone before the report (`actionHasBeenPerformed(action, false)`,
+  also for an unchecked failure, which used to leave the recording open); the exception handler of the initializer still comes first, for
+  a nested action too; the finalizer runs once the action has left its execution scope. A long-running action reports in its task. The
+  dialogs always come later on the event dispatch thread (`invokeLater`), once the failed action has left its scope: an action started
+  from the dialog or while it is shown is an outermost one (found by the review). No more `System.out` / `printStackTrace`.
+- Presentation (`InteractiveFMLErrorReporter`, `present()` hook of `FMLErrorReporter`): a foreseen failure opens the `FMLErrorDialog` (kind,
+  action, message, the FML stack one row per frame, innermost selected; "Show in console", "Open in the FML editor" on the selected frame,
+  "Close"; not modal, it stays open while the user goes from frame to frame (a double click opening one) or to the console); a defect of the platform proposes the bug report (the confirmation of the uncaught exception handler, then the issue dialog),
+  and is still rethrown; a cancellation shows nothing. An action started by an expression or an event (`FlexoAction.isStartedFromExpression()`:
+  set by `FlexoBehaviourPathElement`, `CreationSchemePathElement`, `ExecuteFlexoBehaviour` outside a behaviour, and the listeners) goes to
+  the console only, a defect too (its Java stack in the log at SEVERE: a binding may be evaluated again and again, decided after review),
+  and its failure still reaches the expression; a cancelled one aborts the expression silently.
+- Reported once: `FMLErrorReporter` marks what it reported (`isReported`, by identity, through the cause chain); the uncaught exception
+  handler of the application and `reportToConsole` (GINA, other entry points) skip a failure already reported.
+- Localized kind titles (decided: one per type, the text built by the throw site stays English): `kindKey` / `localizedKind`, keys
+  `fml_*_error`, `fml_not_implemented`, `fml_internal_error` in the `General` dictionary of the core; the dialog shows the translated kind,
+  the console records and the logs the English one (`kind`), so that fml-cli and the server keep a stable text (decided after review). The
+  texts of the dialog are in the dictionary of flexo-ui (`FlexoUILocalization`).
+- Navigation: the console record keeps the FML stack (`FMLConsole.logFailure`, `FMLLogRecord.getFMLStack()`); `FMLSourceNavigator`
+  (flexo-ui), implemented by `FMLTechnologyAdapterController`, shows the compilation unit of a frame in the FML perspective and its line in
+  the FML editor; the button is disabled when the active module has no FML perspective, or the frame no URI or no line. The FML console
+  gets the same action on a record.
+- The initializers of the behaviour actions (action, navigation, synchronization schemes in openflexo-ui; drop, link, draw-rectangle schemes
+  in openflexo-diagram) no longer special-case `NotImplementedException`: the editor reports it, with the kind "Not implemented".
+- GINA: `FIBController.handleException` is called by the model invocations (button action, setting the data of a widget, including a failing
+  Java setter, value-changed action, click / double-click / right-click actions, table and browser actions); the reads for display are
+  unchanged. Its default logs the failure once with its stack. `FlexoFIBController` routes an FML failure to `reportToConsole` and skips one
+  already reported; any other failure (Java code of a controller, a binding of the component) keeps the GINA log with its Java stack.
+- The diagram controls check the outcome of their action (`DrawEdgeControl`, `ContextualPalette`, `FMLControlledDiagramFloatingPalette`)
+  and stop instead of going on with a missing shape or connector.
+- Cancellation (known limit of phase 1, settled with the user): a cancelled initializer of a behaviour action (its parameters dialog)
+  cancels the action (`FlexoAction.cancelExecution(FMLCancellation)`), whose cancellation is rethrown by its caller; for any other action an
+  initializer returning false keeps the former status, and its undo recording is closed with its edits kept
+  (`FlexoUndoManager.actionHasNotBeenPerformed`, decided after review); `doActionInContext` sets
+  `HAS_BEEN_CANCELLED` for a cancellation anywhere in the cause chain, so every caller ends cancelled; `CreationSchemePathElement` passes a
+  cancelled creation on. The edits of the outermost action are undone, nothing is reported. A cancelled initializer of an outermost action
+  also closes the undo recording, which it used to leave open.
+- Tests: `TestFMLErrorReporting` (flexo-foundation-test) gains the marking, `reportToConsole`, the kinds, the stack of the record, the
+  cancellation of the callers, the presentation hook; `TestInteractiveFMLErrorReporting` (flexo-ui-test, UI test) checks the undo, one
+  record and one presentation per failure, console only from an expression, the cancellation; `FIBWidgetFailureHandlingTest` (gina-swing,
+  UI test) checks that a failing button action and a failing data set reach `handleException`. Not covered by a test: the dialog itself,
+  the navigation to the FML editor, the cancelled initializer of `InteractiveFlexoEditor` (it needs a module), the diagram controls.
+- Found by the review, not changed: a behaviour called from a `where` / `match` clause runs as a non-embedded nested action, which takes
+  over the recording of the outer action (`FlexoUndoManager.willDo` / `hasSuccessfullyDone`): the edits of the outer action are then not
+  undone when it fails, and a failing nested one undoes the whole outer recording. The other initializers keeping a `NotImplementedException`
+  case (`CreateBasicVirtualModelInstanceInitializer`, `CreateDiagramInitializer`...) are not behaviour actions and are left as they are.
 
 Deferred from phase 1:
 - `FMLEvaluation` moves to phase 3: its conversions depend on the strict mode of Connie.
