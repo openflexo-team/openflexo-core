@@ -1374,3 +1374,18 @@ and both sites build the action outside a behaviour with the editor of the insta
 resource center; the failure of the behaviour is rethrown unchanged. The path element raises an `FMLResolutionError` / `FMLTypeError` in a
 strict evaluation instead of returning null after a warning. Not run: the call outside a behaviour without a resource center has no test;
 correct by reading.
+
+### CORE-D-81 — A failed action that edited nothing undoes the previous action, deleting the instance it ran on  ·  `DONE`
+
+**Symptom (seen 2026-11-15 in the application, Maintainer launched from Eclipse).** A behaviour of a virtual model instance, run from its
+contextual menu, fails (`log "longueur=" + tutu.length` with `tutu` null, an `FMLNullReferenceError` since `CORE-F-11` phase 3). Right after,
+the three views of the virtual model instance close (`deleteModuleView()` three times in `Openflexo.out.log`): the instance has been deleted.
+
+**Cause (read, from the logs and the code).** `InteractiveFlexoEditor.runExceptionHandler` calls `FlexoUndoManager.actionHasBeenPerformed(action,
+false)`, whose `compensateFailedAction` did `if (canUndo()) undo();`. The behaviour edited nothing, so its compound edit is not significant;
+Swing's `UndoManager.undo()` skips it and undoes the last significant edit instead: the creation of the instance, recorded just before
+("PAMELA edit received outside official recording"). Older than `CORE-F-11`, which made such failures frequent: a null used to be silent.
+
+**Fixed (2026-11-15).** `compensateFailedAction` undoes the edit of the failed action only, when it is significant and the next to be undone;
+otherwise it drops it. Test: `TestFlexoUndoManager` (flexo-foundation-test), whose `aFailedActionThatEditedNothingUndoesNothing` fails
+without the fix. Not checked in the application yet (needs a restart).

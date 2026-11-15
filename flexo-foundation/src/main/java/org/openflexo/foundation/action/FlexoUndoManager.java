@@ -242,12 +242,17 @@ public class FlexoUndoManager extends UndoManager {
 	private void compensateFailedAction(FlexoAction<?, ?, ?> action) {
 		if (!action.isEmbedded()) {
 			CompoundEdit currentEdition = getCurrentEdition();
-			stopRecording(currentEdition);
 			actionBeeingCurrentlyExecuted = null;
-			if (canUndo()) {
-				undo();
-				currentEdition.die();
+			if (currentEdition == null) {
+				return;
 			}
+			stopRecording(currentEdition);
+			// Only the edits of the failed action are undone. An action that edited nothing has an edit that is not significant: undo()
+			// would skip it and undo the previous action instead, for instance the creation of the instance it ran on (CORE-D-81)
+			if (currentEdition.isSignificant() && editToBeUndone() == currentEdition) {
+				undo();
+			}
+			currentEdition.die();
 		}
 	}
 
