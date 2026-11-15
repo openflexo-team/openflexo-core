@@ -161,8 +161,8 @@ A call is an expression `target.name(arguments)` (§9.6.4). The behaviour called
 The lookup starts at the concept of the instance the call is made on and goes up the inheritance graph; the most
 specific matching behaviour is called.
 
-**A behaviour of the same instance is called on `this`.** A bare call, `twin()`, does not resolve and evaluates
-to `null` without an error:
+**A behaviour of the same instance is called on `this`.** A bare call, `twin()`, does not resolve: it is an invalid
+binding, an execution error when it runs (§9.8):
 
 ```fml-member
 public String twin() {
@@ -178,7 +178,7 @@ public String thisCall() {
 }
 ```
 
-`bareCall()` returns `null`, `thisCall()` returns `"twin"`. The rule holds for behaviours of a model called
+`bareCall()` fails, `thisCall()` returns `"twin"`. The rule holds for behaviours of a model called
 from the model.
 
 A behaviour that is recursive calls itself the same way (`this.fact(n - 1)`).
@@ -198,7 +198,8 @@ behaviour, which is how a search stops early.
 Inside a behaviour of a **model**, `new Shelf(…)` creates an instance of the concept `Shelf` in the model
 instance. Inside a behaviour of a **concept**, `new` creates a concept **nested in that concept**, inside the
 current instance. A concept declared elsewhere (at the model level for instance) is created through its
-container, `container.new Tool(…)`; a bare `new` of such a concept gives `null` (§9.7).
+container, `container.new Tool(…)`; a bare `new` of such a concept is an invalid binding, an execution error when it
+runs (§9.7).
 
 ## 7.7 Event listeners
 

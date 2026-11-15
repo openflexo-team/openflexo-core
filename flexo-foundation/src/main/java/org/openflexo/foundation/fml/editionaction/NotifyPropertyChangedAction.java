@@ -38,14 +38,13 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.validation.BindingMustBeValid;
@@ -138,28 +137,15 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			HasPropertyChangeSupport hasPCSupport = null;
-			String propertyName = null;
-			try {
-				propertyName = getPropertyName().getBindingValue(evaluationContext);
-				if (getObject().isSet()) {
-					hasPCSupport = getObject().getBindingValue(evaluationContext);
-				}
-				else {
-					hasPCSupport = evaluationContext.getFlexoConceptInstance();
-				}
-			} catch (TypeMismatchException e1) {
-				e1.printStackTrace();
-			} catch (NullReferenceException e1) {
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				e1.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
+			String propertyName = FMLEvaluation.evaluate(getPropertyName(), evaluationContext, this);
+			if (getObject().isSet()) {
+				hasPCSupport = FMLEvaluation.evaluate(getObject(), evaluationContext, this);
 			}
-
-			System.out.println("FirePropertyChangeSupport for " + hasPCSupport + " propertyName=" + getPropertyName());
+			else {
+				hasPCSupport = evaluationContext.getFlexoConceptInstance();
+			}
 
 			if (hasPCSupport != null) {
 				hasPCSupport.getPropertyChangeSupport().firePropertyChange(propertyName, false, true);

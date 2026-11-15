@@ -38,18 +38,17 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -115,19 +114,8 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 			return "delete " + getObject().toString();
 		}
 
-		public Object getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {
-			try {
-				return getObject().getBindingValue(action);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public Object getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getObject(), action, this);
 		}
 
 		@Override
@@ -162,18 +150,8 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
-			T objectToDelete = null;
-			try {
-				objectToDelete = getObject().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e1) {
-				e1.printStackTrace();
-			} catch (NullReferenceException e1) {
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				e1.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
+			// An object that fails to evaluate fails the deletion (CORE-F-11); a null object deletes nothing
+			T objectToDelete = FMLEvaluation.evaluate(getObject(), evaluationContext, this);
 
 			// Handle special case of explicit call to super delete
 			if (objectToDelete instanceof FlexoConceptInstance && getObject() != null && getObject().toString().equals("this")) {
@@ -220,8 +198,8 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 				// Unchecked: propagates, a defect of the platform is not swallowed (CORE-F-11)
 				throw FMLExecution.convertUnchecked(e);
 			} catch (Exception e) {
-				logger.warning("Unexpected exception occured during deletion: " + e.getMessage());
-				e.printStackTrace();
+				// A checked failure of the deletion of a technology object (CORE-F-11)
+				throw new FMLTechnologyError("Deletion of " + objectToDelete + " failed: " + e.getMessage(), e);
 			}
 			return objectToDelete;
 		}

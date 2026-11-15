@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLTypeError;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -883,18 +885,19 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 
 			} catch (IllegalArgumentException e) {
-				StringBuffer warningMessage = new StringBuffer(
-						"While evaluating edition scheme " + getCreationScheme() + " exception occured: " + e.getMessage());
-				warningMessage.append(", object = " + target);
-				logger.warning(warningMessage.toString());
+				// An argument that does not fit its parameter (CORE-F-11)
+				FlexoBehaviourPathElement.failIfStrict(evaluationContext,
+						new FMLTypeError("Invalid argument for " + getCreationScheme() + ": " + e.getMessage(), e));
+				logger.warning("While evaluating edition scheme " + getCreationScheme() + " exception occured: " + e.getMessage()
+						+ ", object = " + target);
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				// The evaluation of an argument failed: the failure reaches the caller (CORE-F-11)
 				throw new InvocationTargetTransformException(e);
 			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
 				throw new InvocationTargetTransformException(e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new InvocationTargetTransformException(new InvocationTargetException(
+						new FMLTechnologyError("Cannot create the virtual model instance: " + e.getMessage(), e)));
 			} catch (FMLExecutionException e) {
 				// An execution failure of the creation reaches the caller (CORE-D-47)
 				throw new InvocationTargetTransformException(new InvocationTargetException(e));

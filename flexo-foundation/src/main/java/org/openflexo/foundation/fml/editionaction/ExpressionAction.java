@@ -38,14 +38,12 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.fml.binding.DataBindingPropertyImplementation;
 import org.openflexo.foundation.fml.binding.DataBindingPropertyImplementation.DataBindingProperty;
@@ -214,20 +212,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				getExpression().revalidate();
 			}
 
-			try {
-				return getExpression().getBindingValue(evaluationContext);
-			} catch (InvocationTargetException e) {
-				if (e.getTargetException() instanceof FMLExecutionException) {
-					throw (FMLExecutionException) e.getTargetException();
-				}
-				throw new FMLExecutionException(e);
-			} catch (NullReferenceException e) {
-				throw new FMLExecutionException(e);
-			} catch (TypeMismatchException e) {
-				throw new FMLExecutionException(e);
-			} catch (ReflectiveOperationException e) {
-				throw new FMLExecutionException(e);
-			}
+			return FMLEvaluation.evaluate(getExpression(), evaluationContext, this);
 		}
 
 		@Override

@@ -38,15 +38,13 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
@@ -154,18 +152,7 @@ public interface ConnectAction<RD extends ResourceData<RD> & TechnologyObject<?>
 
 		@Override
 		public RD execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-			R resource = null;
-			try {
-				resource = getUsing().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e1) {
-				e1.printStackTrace();
-			} catch (NullReferenceException e1) {
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				throw new FMLExecutionException(e1.getCause());
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
+			R resource = FMLEvaluation.evaluate(getUsing(), evaluationContext, this);
 
 			/*System.out.println("Hop, il faudrait connecter la resource " + resource);
 			System.out.println("MS: " + getModelSlot());

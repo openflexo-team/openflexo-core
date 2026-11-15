@@ -322,12 +322,28 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	public A doActionInContext() throws FlexoException {
-		// If the factory is not null, check that factory allows execution in its context
-		if (getActionFactory() != null && !getActionFactory().isEnabled(getFocusedObject(), getGlobalSelection())) {
-			throw new InactiveFlexoActionException(getActionFactory(), getFocusedObject(), getGlobalSelection());
-		}
 		thrownException = null;
 		failure = null;
+		// If the factory is not null, check that factory allows execution in its context; a condition that fails fails the action
+		// (CORE-F-11)
+		if (getActionFactory() != null) {
+			boolean enabled;
+			try {
+				enabled = getActionFactory().isEnabledForExecution(getFocusedObject(), getGlobalSelection());
+			} catch (FlexoException e) {
+				executionStatus = ExecutionStatus.FAILED_EXECUTION;
+				thrownException = e;
+				failure = e;
+				throw e;
+			} catch (RuntimeException | Error e) {
+				executionStatus = ExecutionStatus.FAILED_EXECUTION;
+				failure = e;
+				throw e;
+			}
+			if (!enabled) {
+				throw new InactiveFlexoActionException(getActionFactory(), getFocusedObject(), getGlobalSelection());
+			}
+		}
 		try {
 			executionStatus = ExecutionStatus.EXECUTING_CORE;
 			doAction(getContext());

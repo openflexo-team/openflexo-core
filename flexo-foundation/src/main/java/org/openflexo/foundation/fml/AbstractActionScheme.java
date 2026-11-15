@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 
 import java.util.Objects;
@@ -76,13 +79,19 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 	/**
 	 * Whether this behaviour is enabled on supplied instance: its {@link #getEnable() @Enable} expression, true when not set
+	 * 
+	 * @throws FMLExecutionException
+	 *             the expression is invalid, null or fails (CORE-F-11)
 	 */
-	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
+	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance) throws FMLExecutionException;
 
 	/**
 	 * Whether this behaviour is offered on supplied instance: its {@link #getVisible() @Visible} expression, true when not set
+	 * 
+	 * @throws FMLExecutionException
+	 *             the expression is invalid, null or fails (CORE-F-11)
 	 */
-	public boolean evaluateVisible(FlexoConceptInstance flexoConceptInstance);
+	public boolean evaluateVisible(FlexoConceptInstance flexoConceptInstance) throws FMLExecutionException;
 
 	/** Metadata (<code>@Visible(expression)</code>) holding {@link #getVisible()} */
 	public static final String VISIBLE_METADATA = "Visible";
@@ -126,37 +135,33 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 		}
 
 		@Override
-		public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance) {
+		public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance) throws FMLExecutionException {
 			return evaluate(getEnable(), flexoConceptInstance);
 		}
 
 		@Override
-		public boolean evaluateVisible(FlexoConceptInstance flexoConceptInstance) {
+		public boolean evaluateVisible(FlexoConceptInstance flexoConceptInstance) throws FMLExecutionException {
 			return evaluate(getVisible(), flexoConceptInstance);
 		}
 
 		/**
-		 * Evaluate supplied expression on supplied instance: true when it is not set, not valid, null, or fails
+		 * Evaluate supplied expression on supplied instance, strictly: true when it is not set; an invalid, null or failing expression is
+		 * an error, no longer taken as true (CORE-F-11)
 		 */
-		private boolean evaluate(DataBinding<Boolean> expression, FlexoConceptInstance flexoConceptInstance) {
-			if (expression.isSet() && expression.isValid()) {
-				try {
-					Boolean returned = expression.getBindingValue(flexoConceptInstance);
-					if (returned != null) {
-						return returned;
-					}
-					return true;
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					// A path through a null: nothing to say about the behaviour
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
+		private boolean evaluate(DataBinding<Boolean> expression, FlexoConceptInstance flexoConceptInstance) throws FMLExecutionException {
+			if (expression == null || !expression.isSet()) {
+				return true;
 			}
-			return true;
+			if (flexoConceptInstance == null) {
+				throw new FMLNullReferenceError("No instance to evaluate '" + expression + "' on");
+			}
+			try {
+				return FMLEvaluation.evaluateCondition(expression, flexoConceptInstance.newLocalEvaluationContext(), this);
+			} catch (FMLExecutionException e) {
+				// The failure belongs to this behaviour, not to the statement that asked for it
+				e.getFMLStack().pushBehaviourFrame(this, flexoConceptInstance);
+				throw e;
+			}
 		}
 
 		private AvailabilityContext availabilityContext;

@@ -1,0 +1,5 @@
+// CORE-F-11: a null in the path of a condition is an error (FMLNullReferenceError), no longer false.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="nullpath");
+mustFail = vmi.nullInConditionPath();

@@ -125,9 +125,11 @@ The evaluation of a condition has a rule of its own:
 | The condition… | …is taken as |
 |---|---|
 | evaluates to `true` / `false` | that value |
-| evaluates to `null` | false |
-| goes through a `null` value (null reference) | false |
+| evaluates to `null`, or goes through a `null` value (null reference) | an **execution error**: the behaviour stops |
 | is not set, is **invalid** (an unresolved name), or raises any other error | an **execution error**: the behaviour stops |
+
+A null check guards the rest of a condition, since `&&` and `||` short-circuit (§9.3): `if (p != null && p.age > 18)`.
+Before 3.0 (`CORE-F-11`), a `null` condition, and a null reference in a condition, were taken as false.
 
 The same rule holds for the condition of `while`, of `do … while` and of a classic `for` (a `for` without condition
 apart, §8.5).

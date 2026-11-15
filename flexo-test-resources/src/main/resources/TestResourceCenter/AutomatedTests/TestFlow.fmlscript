@@ -26,8 +26,8 @@ assert flow.firstLong(10) == null;
 // An instruction that writes to the log, then the behaviour goes on
 assert flow.logged("hello") == "hello";
 
-// && and || evaluate both operands: touch() is called although the result is known
-assert flow.andOperands() == 1;
-assert flow.orOperands() == 101;
+// && and || are lazy, as in Java (CORE-F-11): touch() is not called when the left operand decides the result
+assert flow.andOperands() == 0;
+assert flow.orOperands() == 100;
 
 log "Test PASSED: the control structures of Flow behave as the guide states";

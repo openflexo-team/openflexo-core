@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -283,39 +284,15 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			return getOwningVirtualModel();
 		}
 
-		public VMI getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
-			if (getReceiver() != null && getReceiver().isSet() && getReceiver().isValid()) {
-				try {
-					return getReceiver().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+		public VMI getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			// Not set gives null; invalid, or failing, is an error (CORE-F-11)
+			return FMLEvaluation.evaluate(getReceiver(), evaluationContext, this);
 
 		}
 
-		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) {
-			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
-				try {
-					return getContainer().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			// Not set gives null; invalid, or failing, is an error (CORE-F-11)
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 		}
 
 		@Override

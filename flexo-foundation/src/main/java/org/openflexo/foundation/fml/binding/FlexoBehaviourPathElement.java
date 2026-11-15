@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import org.openflexo.connie.EvaluationPolicy;
+import org.openflexo.foundation.fml.rt.error.FMLTypeError;
+import org.openflexo.foundation.fml.rt.error.FMLResolutionError;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -209,6 +213,15 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 		}
 	}
 
+	/**
+	 * In a strict evaluation, throw supplied failure through the normalized tunnel of Connie (CORE-F-11); return normally otherwise
+	 */
+	static void failIfStrict(BindingEvaluationContext context, FMLExecutionException failure) throws InvocationTargetTransformException {
+		if (EvaluationPolicy.isStrict(context)) {
+			throw new InvocationTargetTransformException(new InvocationTargetException(failure));
+		}
+	}
+
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
@@ -250,20 +263,10 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 								.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, (FlexoBehaviourAction<?, ?, ?>) context);
 					}
 					else {
-						FlexoEditor editor = null;
-						if (fci.getResourceCenter() != null) {
-							if (fci.getResourceCenter() instanceof FlexoProject) {
-								FlexoProject<?> prj = (FlexoProject<?>) fci.getResourceCenter();
-								editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-							}
-							else if (fci.getResourceCenter().getDelegatingProjectResource() != null) {
-								FlexoProject<?> prj = fci.getResourceCenter().getDelegatingProjectResource().getFlexoProject();
-								editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-							}
-
-							actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType
-									.makeNewAction(fci.getVirtualModelInstance(), null, editor);
-						}
+						// Outside a behaviour, the action runs with the editor of the instance, if any: no resource center is needed
+						// (CORE-D-79)
+						actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(),
+								null, fci.getEditor());
 					}
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
@@ -321,26 +324,26 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 				}
 
 				else {
+					failIfStrict(context, new FMLResolutionError("Unexpected behaviour " + getFlexoBehaviour().getSignature() + " for context: " + context));
 					logger.warning("Unexpected behaviour " + getFlexoBehaviour().getSignature() + " for context: " + context);
 				}
 			}
 
 			else {
+				failIfStrict(context, new FMLResolutionError("Cannot call " + getFlexoBehaviour().getSignature() + " on " + target));
 				logger.warning("Don't know what to do with " + target);
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);
 		} catch (IllegalArgumentException e) {
-			StringBuffer warningMessage = new StringBuffer(
-					"While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage());
-			warningMessage.append(", object = " + target);
-			/*for (i = 0; i < getFunction().getArguments().size(); i++) {
-				warningMessage.append(", arg[" + i + "] = " + args[i]);
-			}*/
-			logger.warning(warningMessage.toString());
+			// An argument that does not fit its parameter (CORE-F-11)
+			failIfStrict(context, new FMLTypeError("Invalid argument for " + getFlexoBehaviour().getSignature() + ": " + e.getMessage(), e));
+			logger.warning("While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage() + ", object = "
+					+ target);
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			// The evaluation of an argument failed: the failure reaches the caller (CORE-F-11)
+			throw new InvocationTargetTransformException(e);
 		} catch (ReflectiveOperationException e) {
-			e.printStackTrace();
+			throw new InvocationTargetTransformException(e);
 		}
 		return null;
 

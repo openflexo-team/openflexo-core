@@ -20,12 +20,12 @@ assert pen.sameNameInBoth() == "of the item";
 assert pen.local() == "local";
 assert pen.localAndProperty() == "local/Pen";
 
-// A parameter is read through parameters; a bare parameter name is null
+// A parameter is read through parameters; a bare parameter name is an invalid binding, an error when it runs since CORE-F-11
+// (ErrorKinds/BareParameterName)
 assert pen.parameter("Arg") == "Arg/Pen";
-assert pen.bareParameter("Arg") == null;
 
-// A behaviour of the same concept is called on this; a bare call gives null
+// A behaviour of the same concept is called on this; a bare call is an invalid binding, an error when it runs since CORE-F-11
+// (ErrorKinds/BareCall)
 assert pen.thisCall() == "twin";
-assert pen.bareCall() == null;
 
 log "Test PASSED: names resolve as the language tour states";

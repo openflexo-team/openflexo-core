@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -55,7 +56,9 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 /**
@@ -130,6 +133,8 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 		if (creationSchemeAction != null) {
 
 			creationSchemeAction.doAction();
+			// A failing creation scheme fails the creation, it is no longer taken for a successful one (CORE-D-78)
+			FMLExecution.rethrowFailure(creationSchemeAction);
 			fciBeingCreated = creationSchemeAction.getFlexoConceptInstance();
 		}
 		else {
@@ -141,8 +146,10 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 						getContainer() != null ? getContainer() : getFocusedObject().getVirtualModelInstance());
 			}
 			else {
-				logger.warning("Not implemented feature for "
-						+ ((FMLRTVirtualModelInstance) getFocusedObject().getVirtualModelInstance()).getClass());
+				// The message no longer casts the instance it reports (CORE-D-78)
+				VirtualModelInstance<?, ?> vmi = getFocusedObject().getVirtualModelInstance();
+				throw new InvalidParametersException(
+						"Cannot create a concept instance in " + vmi + (vmi != null ? " (" + vmi.getClass().getSimpleName() + ")" : ""));
 			}
 
 		}

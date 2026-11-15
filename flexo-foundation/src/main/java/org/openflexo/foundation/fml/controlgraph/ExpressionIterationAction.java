@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -48,8 +48,6 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
@@ -186,23 +184,11 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 			this.conditionExpression = conditionExpression;
 		}
 
-		public Object evaluateInitExpression(BindingEvaluationContext evaluationContext) {
-			DataBinding<?> initExpression = getInitExpression();
-			if (initExpression.isSet() && initExpression.isValid()) {
-				try {
-					return initExpression.getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-					return false;
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return true;
+		/**
+		 * The initial value of the iterator: a failure of its expression fails the loop (CORE-D-75); null when no initial value is given
+		 */
+		public Object evaluateInitExpression(BindingEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getInitExpression(), evaluationContext, this);
 		}
 
 		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) throws FMLExecutionException {
@@ -211,24 +197,8 @@ public interface ExpressionIterationAction extends AbstractIterationAction {
 				// for (init; ; update) without condition loops until a return, as in Java (CORE-D-9)
 				return true;
 			}
-			if (!conditionExpression.isValid()) {
-				// An invalid condition fails the execution, as in if and while (CORE-D-8)
-				throw new FMLExecutionException("Invalid condition " + conditionExpression + ": " + conditionExpression.invalidBindingReason());
-			}
-			try {
-				Boolean returned = conditionExpression.getBindingValue(evaluationContext);
-				if (returned == null) {
-					return false;
-				}
-				return returned;
-			} catch (NullReferenceException e) {
-				// A condition that goes through a null value is false
-				return false;
-			} catch (InvocationTargetException e) {
-				throw new FMLExecutionException(e.getCause() != null ? e.getCause() : e);
-			} catch (TypeMismatchException | ReflectiveOperationException e) {
-				throw new FMLExecutionException(e);
-			}
+			// An invalid condition fails the execution, as in if and while (CORE-D-8); so does a null (CORE-F-11)
+			return FMLEvaluation.evaluateCondition(conditionExpression, evaluationContext, this);
 		}
 
 		@Override

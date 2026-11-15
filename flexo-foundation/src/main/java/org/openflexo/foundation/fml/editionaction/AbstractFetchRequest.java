@@ -232,7 +232,8 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 			removeFromConditions(aCondition);
 		}
 
-		public List<T> filterWithConditions(List<T> fetchResult, final RunTimeEvaluationContext evaluationContext) {
+		public List<T> filterWithConditions(List<T> fetchResult, final RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
 			if (getConditions().size() == 0) {
 				return fetchResult;
 			}

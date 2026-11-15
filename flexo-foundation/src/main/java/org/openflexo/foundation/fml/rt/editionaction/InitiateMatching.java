@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -282,7 +283,7 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		}
 
 		@Override
-		public MatchingSet execute(RunTimeEvaluationContext evaluationContext) {
+		public MatchingSet execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			MatchingSet returned = new MatchingSet(this, evaluationContext);
 			return returned;
 		}

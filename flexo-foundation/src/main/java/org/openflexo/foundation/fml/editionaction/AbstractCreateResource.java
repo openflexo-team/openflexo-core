@@ -38,15 +38,14 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -155,31 +154,23 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 			return super.getAssignedFlexoProperty();
 		}
 
-		public <T> T evaluateDataBinding(DataBinding<T> dataBinding, RunTimeEvaluationContext evaluationContext) {
-			if (dataBinding != null && dataBinding.isSet() && dataBinding.isValid()) {
-				try {
-					return dataBinding.getBindingValue(evaluationContext);
-				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
-					logger.log(Level.WARNING,
-							"Can't evaluate data binding " + dataBinding.getBindingName() + " (" + dataBinding.getExpression() + ")");
-				}
-			}
-			return null;
+		public <T> T evaluateDataBinding(DataBinding<T> dataBinding, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(dataBinding, evaluationContext, this);
 		}
 
-		public String getResourceName(RunTimeEvaluationContext evaluationContext) {
+		public String getResourceName(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			return evaluateDataBinding(getResourceName(), evaluationContext);
 		}
 
-		public String getResourceURI(RunTimeEvaluationContext evaluationContext) {
+		public String getResourceURI(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			return evaluateDataBinding(getResourceURI(), evaluationContext);
 		}
 
-		public FlexoResourceCenter<?> getResourceCenter(RunTimeEvaluationContext evaluationContext) {
+		public FlexoResourceCenter<?> getResourceCenter(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			return evaluateDataBinding(getResourceCenter(), evaluationContext);
 		}
 
-		public String getRelativePath(RunTimeEvaluationContext evaluationContext) {
+		public String getRelativePath(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (getDynamicRelativePath().isSet()) {
 				return evaluateDataBinding(getDynamicRelativePath(), evaluationContext);
 			}
@@ -273,9 +264,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 
 		protected <I, R extends TechnologyAdapterResource<RD, TA>, RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>> R createResource(
 				TA technologyAdapter, Class<RF> resourceFactoryClass, RunTimeEvaluationContext evaluationContext, String extension,
-				boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
-
-			System.out.println("Creating resource from " + resourceFactoryClass);
+				boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException, FMLExecutionException {
 
 			if (technologyAdapter == null) {
 				logger.warning("Could not access TechnologyAdapter while creating resource from " + resourceFactoryClass);

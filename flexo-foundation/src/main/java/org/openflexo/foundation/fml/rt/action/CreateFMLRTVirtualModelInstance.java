@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.security.InvalidParameterException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -55,6 +54,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
@@ -110,7 +110,8 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 		// System.out.println("getNewVirtualModelInstanceTitle()=" + getNewVirtualModelInstanceTitle());
 
 		if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
-			throw new InvalidParameterException("virtual model instance name is undefined");
+			// An invalid parameter of the action, no longer a RuntimeException of the JDK (CORE-D-77)
+			throw new InvalidParametersException("virtual model instance name is undefined");
 		}
 
 		/*int index = 1;

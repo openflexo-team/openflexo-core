@@ -157,4 +157,101 @@ public model ExecutionFailures {
 			String consumed = absent.substring(0);
 		}
 	}
+
+	// One behaviour per kind of error (CORE-F-11 phase 3): the scripts of ErrorKinds/ and TestFMLErrorKinds assert the type of the error,
+	// the line of the failing statement and the frame of the behaviour. Appended at the end: the lines asserted above do not move.
+
+	int failingGetter {
+		int get() {
+			return absent.length();
+		}
+	};
+
+	int failingExpression values absent.length();
+
+	public boolean nullInConditionPath() {
+		if (absent.length() > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean guardedByAnd() {
+		return absent != null && absent.length() > 0;
+	}
+
+	public boolean guardedByOr() {
+		return absent == null || absent.length() > 0;
+	}
+
+	public String nullTernaryCondition() {
+		Boolean b;
+		String r = b ? "then" : "else";
+		return r;
+	}
+
+	public String hostFailure() {
+		String s = "abc";
+		String r = s.substring(5);
+		return r;
+	}
+
+	public List<String> noList() {
+		return null;
+	}
+
+	public int nullIteration() {
+		int n = 0;
+		for (String s : this.noList()) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public int failingLoopInitializer() {
+		int n = 0;
+		for (int i = absent.length(); i < 3; i = i + 1) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public int readFailingGetter() {
+		int v = failingGetter;
+		return v;
+	}
+
+	public int readFailingGetterThroughThis() {
+		int v = this.failingGetter;
+		return v;
+	}
+
+	public int readFailingExpression() {
+		int v = failingExpression;
+		return v;
+	}
+
+	public int nullInWhere() {
+		Fragile f = new Fragile();
+		int n = 0;
+		for (Fragile g : select Fragile from this where (selected.absent.length() > 0)) {
+			n = n + 1;
+		}
+		return n;
+	}
+
+	public firePong() {
+		fire new Pong();
+	}
+
+	// A failing @Enable fails the fire: it is no longer taken as true
+	@Enable(absent.length() > 0)
+	listen Pong from this {
+		progress = 9;
+	}
+
+	public event Pong {
+		create() {
+		}
+	}
 }

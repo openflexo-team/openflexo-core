@@ -1,0 +1,6 @@
+// CORE-F-11: a failing @Enable of a listener fails the fire (FMLNullReferenceError), no longer taken as true.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="enable");
+mustFail = vmi.firePong();
+assert vmi.progress != 9;

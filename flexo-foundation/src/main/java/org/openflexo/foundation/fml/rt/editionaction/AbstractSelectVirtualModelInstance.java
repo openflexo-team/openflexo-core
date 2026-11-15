@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -251,26 +253,14 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 			}
 		}
 
-		public VirtualModelInstance<?, ?> getContainer(RunTimeEvaluationContext evaluationContext) {
-			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
-				try {
-					return getContainer().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+		public VirtualModelInstance<?, ?> getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			// Not set gives null; invalid, or failing, is an error (CORE-F-11)
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 
 		}
 
 		@Override
-		public List<VirtualModelInstance<?, ?>> performExecute(RunTimeEvaluationContext evaluationContext) {
+		public List<VirtualModelInstance<?, ?>> performExecute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			VirtualModelInstance<?, ?> container = getContainer(evaluationContext);
 			if (container != null) {
 				return filterWithConditions(container.getVirtualModelInstancesForVirtualModel(getVirtualModelType()), evaluationContext);

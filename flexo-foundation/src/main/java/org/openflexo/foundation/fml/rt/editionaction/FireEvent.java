@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
@@ -129,17 +130,7 @@ public interface FireEvent extends EditionAction {
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			FlexoEventInstance eventInstance = null;
-			try {
-				eventInstance = getEventInstance().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e1) {
-				e1.printStackTrace();
-			} catch (NullReferenceException e1) {
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				throw new FMLExecutionException(e1.getCause());
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
+			eventInstance = FMLEvaluation.evaluate(getEventInstance(), evaluationContext, this);
 
 			VirtualModelInstance<?, ?> vmi = evaluationContext.getVirtualModelInstance();
 

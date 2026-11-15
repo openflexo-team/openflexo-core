@@ -1,0 +1,6 @@
+// CORE-F-11: a bare new of a concept declared at the model level is an invalid binding: an FMLResolutionError when it runs, no longer null.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Depot.fml"];
+service ResourceCenterService add_temp_rc;
+depot = new Depot() with (name="depot");
+bin = depot.newBin("b1");
+mustFail = bin.bareTool("saw");

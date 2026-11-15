@@ -38,15 +38,14 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -89,72 +88,62 @@ public class MatchingSet {
 	 * @param initiateMatchingRequest
 	 * @param evaluationContext
 	 */
-	public MatchingSet(InitiateMatching initiateMatchingRequest, RunTimeEvaluationContext evaluationContext) {
+	public MatchingSet(InitiateMatching initiateMatchingRequest, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
 		flexoConceptType = initiateMatchingRequest.getFlexoConceptType();
 
-		try {
-			container = initiateMatchingRequest.getContainer().getBindingValue(evaluationContext);
-			if (container instanceof FMLRTVirtualModelInstance) {
-				if (flexoConceptType != null) {
-					allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
-				}
-				else {
-					allInstances = ((VirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+		container = FMLEvaluation.evaluate(initiateMatchingRequest.getContainer(), evaluationContext, initiateMatchingRequest);
+		if (container instanceof FMLRTVirtualModelInstance) {
+			if (flexoConceptType != null) {
+				allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
+			}
+			else {
+				allInstances = ((VirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+			}
+		}
+		else {
+			if (flexoConceptType != null) {
+				List<FlexoConceptInstance> allEmbedded = container.getEmbeddedFlexoConceptInstances();
+				allInstances = new ArrayList<>();
+				for (FlexoConceptInstance fci : allEmbedded) {
+					if (flexoConceptType.isAssignableFrom(fci.getFlexoConcept())) {
+						allInstances.add(fci);
+					}
 				}
 			}
 			else {
-				if (flexoConceptType != null) {
-					List<FlexoConceptInstance> allEmbedded = container.getEmbeddedFlexoConceptInstances();
-					allInstances = new ArrayList<>();
-					for (FlexoConceptInstance fci : allEmbedded) {
-						if (flexoConceptType.isAssignableFrom(fci.getFlexoConcept())) {
-							allInstances.add(fci);
-						}
+				allInstances = new ArrayList<>(container.getEmbeddedFlexoConceptInstances());
+			}
+		}
+
+		// System.out.println("Before filtering: " + allInstances);
+
+		if (initiateMatchingRequest.getConditions().size() > 0) {
+
+			List<FlexoConceptInstance> filteredMatchedInstances = new ArrayList<>();
+			for (final FlexoConceptInstance proposedFCI : allInstances) {
+				boolean takeIt = true;
+				for (MatchCondition condition : initiateMatchingRequest.getConditions()) {
+					if (!condition.evaluateCondition(proposedFCI, evaluationContext)) {
+						takeIt = false;
+						// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
+						// + condition.getCondition().isValid());
+						break;
 					}
+				}
+				if (takeIt) {
+					filteredMatchedInstances.add(proposedFCI);
+					// System.out.println("I take " + proposedFetchResult);
 				}
 				else {
-					allInstances = new ArrayList<>(container.getEmbeddedFlexoConceptInstances());
 				}
 			}
+			allInstances = filteredMatchedInstances;
 
-			// System.out.println("Before filtering: " + allInstances);
+			// System.out.println("After filtering: " + allInstances);
 
-			if (initiateMatchingRequest.getConditions().size() > 0) {
-
-				List<FlexoConceptInstance> filteredMatchedInstances = new ArrayList<>();
-				for (final FlexoConceptInstance proposedFCI : allInstances) {
-					boolean takeIt = true;
-					for (MatchCondition condition : initiateMatchingRequest.getConditions()) {
-						if (!condition.evaluateCondition(proposedFCI, evaluationContext)) {
-							takeIt = false;
-							// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
-							// + condition.getCondition().isValid());
-							break;
-						}
-					}
-					if (takeIt) {
-						filteredMatchedInstances.add(proposedFCI);
-						// System.out.println("I take " + proposedFetchResult);
-					}
-					else {
-					}
-				}
-				allInstances = filteredMatchedInstances;
-
-				// System.out.println("After filtering: " + allInstances);
-
-			}
-
-		} catch (TypeMismatchException e) {
-			e.printStackTrace();
-		} catch (NullReferenceException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (ReflectiveOperationException e) {
-			e.printStackTrace();
 		}
+
 
 		unmatchedInstances = new ArrayList<>(allInstances);
 	}
@@ -166,7 +155,7 @@ public class MatchingSet {
 	 * @param matchRequest
 	 * @param evaluationContext
 	 */
-	public MatchingSet(MatchFlexoConceptInstance matchRequest, RunTimeEvaluationContext evaluationContext) {
+	public MatchingSet(MatchFlexoConceptInstance matchRequest, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 		// In this case, we don't know the type, otherwise some instances might be missed
 
 		if (matchRequest != null && matchRequest.getMatchedType() != null) {
@@ -176,35 +165,25 @@ public class MatchingSet {
 			this.flexoConceptType = null;
 		}
 
-		try {
 
-			// If container is defined, use container
-			container = matchRequest.getContainer().getBindingValue(evaluationContext);
+		// If container is defined, use container
+		container = FMLEvaluation.evaluate(matchRequest.getContainer(), evaluationContext, matchRequest);
 
-			// Still this problem with double API: please fix this one day
-			if (container instanceof VirtualModelInstance) {
-				if (flexoConceptType != null) {
-					allInstances = new ArrayList<>(((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType));
-				}
-				else {
-					allInstances = new ArrayList<>(((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances());
-				}
-			}
-			else if (container != null) {
-				allInstances = new ArrayList<>(container.getEmbeddedFlexoConceptInstances());
+		// Still this problem with double API: please fix this one day
+		if (container instanceof VirtualModelInstance) {
+			if (flexoConceptType != null) {
+				allInstances = new ArrayList<>(((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType));
 			}
 			else {
-				logger.warning("No container for " + matchRequest);
-				allInstances = Collections.emptyList();
+				allInstances = new ArrayList<>(((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances());
 			}
-		} catch (TypeMismatchException e) {
-			e.printStackTrace();
-		} catch (NullReferenceException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (ReflectiveOperationException e) {
-			e.printStackTrace();
+		}
+		else if (container != null) {
+			allInstances = new ArrayList<>(container.getEmbeddedFlexoConceptInstances());
+		}
+		else {
+			logger.warning("No container for " + matchRequest);
+			allInstances = Collections.emptyList();
 		}
 
 		unmatchedInstances = new ArrayList<>(allInstances);
@@ -216,12 +195,12 @@ public class MatchingSet {
 	 * @param criterias
 	 * @return
 	 */
-	public FlexoConceptInstance matchFlexoConceptInstance(Hashtable<FlexoProperty<?>, Object> criterias) {
+	public FlexoConceptInstance matchFlexoConceptInstance(Hashtable<FlexoProperty<?>, Object> criterias) throws FMLExecutionException {
 		// System.out.println("MATCH fci on " + allInstances + " for " + flexoConceptType + " with " + criterias);
 		for (FlexoConceptInstance fci : unmatchedInstances) {
 			boolean allCriteriasMatching = true;
 			for (FlexoProperty<?> pr : criterias.keySet()) {
-				if (!FlexoObjectImpl.areSameValue(fci.getFlexoPropertyValue(pr), criterias.get(pr))) {
+				if (!FlexoObjectImpl.areSameValue(fci.getFlexoPropertyValueOrFail(pr), criterias.get(pr))) {
 					allCriteriasMatching = false;
 				}
 			}

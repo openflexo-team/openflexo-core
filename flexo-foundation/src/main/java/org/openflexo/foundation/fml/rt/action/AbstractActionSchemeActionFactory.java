@@ -39,12 +39,16 @@
 package org.openflexo.foundation.fml.rt.action;
 
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.ActionGroup;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 
 /**
  * Factory for {@link AbstractActionSchemeAction} (an execution environment of a {@link AbstractActionScheme} on a given
@@ -62,18 +66,60 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 public abstract class AbstractActionSchemeActionFactory<A extends AbstractActionSchemeAction<A, FB, O>, FB extends AbstractActionScheme, O extends FlexoConceptInstance>
 		extends FlexoBehaviourActionFactory<A, FB, O> {
 
+	private static final Logger logger = Logger.getLogger(AbstractActionSchemeActionFactory.class.getPackage().getName());
+
 	public AbstractActionSchemeActionFactory(FB actionScheme, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
 		super(actionScheme, flexoConceptInstance, actionGroup, actionCategory);
 	}
 
+	/**
+	 * A behaviour whose {@code @Enable} expression fails is shown disabled (CORE-F-11, decided with the user): running it anyway raises the
+	 * failure
+	 */
 	@Override
 	public boolean isEnabledForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return getActionScheme().evaluateCondition(object);
+		try {
+			return getActionScheme().evaluateCondition(target(object));
+		} catch (FMLExecutionException e) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("@Enable of " + getActionScheme() + " fails on " + object + ": " + e.getMessage());
+			}
+			return false;
+		}
 	}
 
+	/**
+	 * When the behaviour is about to run, its {@code @Enable} expression is evaluated strictly: its failure fails the action (CORE-F-11)
+	 */
+	@Override
+	public boolean isEnabledForExecution(O object, Vector<VirtualModelInstanceObject> globalSelection) throws FlexoException {
+		// As isEnabled() for a behaviour, no registration on the object type is required
+		return getActionScheme().evaluateCondition(target(object));
+	}
+
+	/**
+	 * A behaviour whose {@code @Visible} expression fails is shown (and disabled, see
+	 * {@link #isEnabledForSelection(FlexoConceptInstance, Vector)}), so that the user sees it (CORE-F-11, decided with the user)
+	 */
 	@Override
 	public boolean isVisibleForSelection(O object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return getActionScheme().evaluateVisible(object);
+		try {
+			return getActionScheme().evaluateVisible(target(object));
+		} catch (FMLExecutionException e) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("@Visible of " + getActionScheme() + " fails on " + object + ": " + e.getMessage());
+			}
+			return true;
+		}
+	}
+
+	/**
+	 * The instance on which the availability of the behaviour is evaluated: the one this factory was made for (the instance the behaviour is
+	 * called on), the focused object of the action otherwise. A behaviour of a concept called as {@code x.doIt()} focuses the virtual model
+	 * instance, but its {@code @Enable} speaks of {@code x} (CORE-F-11)
+	 */
+	private FlexoConceptInstance target(O object) {
+		return getFlexoConceptInstance() != null ? getFlexoConceptInstance() : object;
 	}
 
 	public AbstractActionScheme getActionScheme() {

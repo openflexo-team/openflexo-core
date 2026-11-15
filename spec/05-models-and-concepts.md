@@ -188,8 +188,8 @@ A query on a concept returns the instances of that concept and of every concept 
   runs a *named* one (`create::name`). The two spellings are not interchangeable.
 * In any other behaviour, `super.name(args)` calls the parent's version of `name`.
 
-> **Implementation note.** With several parents, `super.name()` gives `null` and nothing reports it
-> (`CORE-D-17`). Put the logic to reuse in a separate behaviour of the parent and call it on `this`.
+> **Implementation note.** With several parents, `super.name()` does not resolve: an execution error when it runs, a `null`
+> without any report before 3.0 (`CORE-D-17`). Put the logic to reuse in a separate behaviour of the parent and call it on `this`.
 
 ### 5.3.3 Constraints
 

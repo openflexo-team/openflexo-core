@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -147,19 +150,8 @@ public interface ExecuteFlexoBehaviour<T>
 			this.flexoBehaviour = flexoBehaviour;
 		}
 
-		private AbstractActionScheme getFlexoBehaviour(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getFlexoBehaviour().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private AbstractActionScheme getFlexoBehaviour(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getFlexoBehaviour(), evaluationContext, this);
 		}
 
 		@Override
@@ -168,29 +160,25 @@ public interface ExecuteFlexoBehaviour<T>
 				logger.fine("Perform perform ExecuteFlexoBehaviour " + evaluationContext);
 			}
 			FlexoConceptInstance fci = getReceiver(evaluationContext);
+			if (fci == null) {
+				// A null receiver is an error, no longer a NullPointerException (CORE-D-79)
+				throw new FMLNullReferenceError("Null receiver for the call of " + getFlexoBehaviour());
+			}
 			AbstractActionScheme actionScheme = getFlexoBehaviour(evaluationContext);
+			if (actionScheme == null) {
+				throw new FMLNullReferenceError("Null behaviour: " + getFlexoBehaviour());
+			}
 			AbstractActionSchemeActionFactory actionType = actionScheme.getActionFactory(fci);
-			AbstractActionSchemeAction<?, ?, ?> actionSchemeAction = null;
+			AbstractActionSchemeAction<?, ?, ?> actionSchemeAction;
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 				actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewEmbeddedAction(fci, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 			}
 			else {
-				FlexoEditor editor = null;
-				if (fci.getResourceCenter() != null) {
-					if (fci.getResourceCenter() instanceof FlexoProject) {
-						FlexoProject<?> prj = (FlexoProject<?>) fci.getResourceCenter();
-						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-					}
-					else if (fci.getResourceCenter().getDelegatingProjectResource() != null) {
-						FlexoProject<?> prj = fci.getResourceCenter().getDelegatingProjectResource().getFlexoProject();
-						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-					}
-
-					actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(), null,
-							editor);
-				}
+				// Outside a behaviour, the action runs with the editor of the instance, if any: no resource center is needed (CORE-D-79)
+				actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(), null,
+						fci.getEditor());
 			}
 			actionSchemeAction.doAction();
 
@@ -198,10 +186,8 @@ public interface ExecuteFlexoBehaviour<T>
 				logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + fci);
 				return (T) actionSchemeAction.getReturnedValue();
 			}
-			actionSchemeAction.rethrowUncheckedFailure();
-			if (actionSchemeAction.getThrownException() != null) {
-				throw new FMLExecutionException(new InvocationTargetException(actionSchemeAction.getThrownException()));
-			}
+			// The failure of the behaviour, rethrown unchanged (CORE-F-11)
+			FMLExecution.rethrowFailure(actionSchemeAction);
 
 			return null;
 		}

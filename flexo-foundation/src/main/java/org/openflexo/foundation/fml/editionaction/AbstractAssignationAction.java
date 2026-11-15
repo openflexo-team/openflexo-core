@@ -98,10 +98,6 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 				} catch (RuntimeException e) {
 					// Unchecked: a defect of the platform stays one, not taken for a foreseen failure (CORE-F-11)
 					throw FMLExecution.convertUnchecked(e);
-				} catch (Exception e) {
-					logger.warning("Unexpected issue while, computing assignable action " + getAssignableAction() + ", exception: " + e);
-					e.printStackTrace();
-					throw new FMLExecutionException(e);
 				}
 			}
 			return null;

@@ -38,7 +38,9 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
@@ -107,7 +109,7 @@ public class NavigationSchemeAction extends AbstractActionSchemeAction<Navigatio
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 
-		if (evaluateCondition()) {
+		if (getFlexoBehaviour() != null && getFlexoBehaviour().evaluateCondition(getFlexoConceptInstance())) {
 
 			// Quick and dirty hack because found invalid binding
 			// TODO: please investigate
@@ -134,15 +136,26 @@ public class NavigationSchemeAction extends AbstractActionSchemeAction<Navigatio
 		return targetObject;
 	}
 
+	/**
+	 * Tell if the navigation is enabled, for the user interface: a failing {@code @Enable} disables it (CORE-F-11); the execution evaluates
+	 * it strictly
+	 */
 	public boolean evaluateCondition() {
 		if (getFlexoBehaviour() == null) {
 			logger.warning("No navigation scheme. Please investigate !");
 			return false;
 		}
-		return getFlexoBehaviour().evaluateCondition(getFlexoConceptInstance());
+		try {
+			return getFlexoBehaviour().evaluateCondition(getFlexoConceptInstance());
+		} catch (FMLExecutionException e) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("@Enable of " + getFlexoBehaviour() + " fails: " + e.getMessage());
+			}
+			return false;
+		}
 	}
 
-	public FlexoObject evaluateTargetObject() {
+	public FlexoObject evaluateTargetObject() throws FMLExecutionException {
 		if (getFlexoBehaviour() == null) {
 			logger.warning("No navigation scheme. Please investigate !");
 			return null;

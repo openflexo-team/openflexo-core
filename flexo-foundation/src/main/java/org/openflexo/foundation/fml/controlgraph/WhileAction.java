@@ -38,15 +38,14 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.connie.exception.NullReferenceException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
@@ -195,28 +194,11 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 
 		@Override
 		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) throws FMLExecutionException {
-			DataBinding<Boolean> condition = getCondition();
-			if (condition == null || !condition.isSet() || !condition.isValid()) {
-				// An invalid condition fails the execution, it is never taken as true (CORE-D-8)
-				throw new FMLExecutionException("Invalid condition " + condition + (condition != null && condition.isSet()
-						? ": " + condition.invalidBindingReason()
-						: ""));
-			}
-			try {
-				Boolean returned = condition.getBindingValue(evaluationContext);
-				if (returned == null) {
-					return false;
-				}
-				return returned;
-			} catch (NullReferenceException e) {
-				// A condition that goes through a null value is false
-				return false;
-			} catch (InvocationTargetException e) {
-				throw new FMLExecutionException(e.getCause() != null ? e.getCause() : e);
-			} catch (TypeMismatchException | ReflectiveOperationException e) {
-				throw new FMLExecutionException(e);
-			}
+			// An invalid condition fails the execution, it is never taken as true (CORE-D-8); a null, a null in its path included, is an
+			// error too, no longer false (CORE-F-11)
+			return FMLEvaluation.evaluateCondition(getCondition(), evaluationContext, this);
 		}
+
 
 		@Override
 		public String getStringRepresentation() {

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -518,19 +519,8 @@ public interface FinalizeMatching extends EditionAction {
 			}
 		}
 
-		public MatchingSet getMatchingSet(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getMatchingSet().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public MatchingSet getMatchingSet(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getMatchingSet(), evaluationContext, this);
 		}
 
 		@Override

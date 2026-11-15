@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
@@ -109,7 +111,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 	public void setParam(FlexoBehaviourArgument param);
 
-	public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext);
+	public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	@Override
 	public CreateFlexoConceptInstanceParameterBindingModel getBindingModel();
@@ -175,7 +177,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext) {
+		public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -190,24 +192,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 				}*/
 				return null;
 			}
-			else if (getValue().isValid()) {
-				try {
-					return getValue().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-			else {
-				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
-			}
-			return null;
+			// Invalid, or failing, is an error (CORE-F-11)
+			return FMLEvaluation.evaluate(getValue(), evaluationContext, this);
 		}
 
 		private CreateFlexoConceptInstanceParameterBindingModel bindingModel;

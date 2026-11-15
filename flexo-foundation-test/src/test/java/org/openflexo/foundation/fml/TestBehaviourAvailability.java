@@ -41,6 +41,10 @@ public class TestBehaviourAvailability extends OpenflexoTestCase {
 					if (method.getName().equals("getEvaluator")) {
 						return new FMLExpressionEvaluator(null);
 					}
+					if (method.getName().equals("newLocalEvaluationContext")) {
+						// The availability expressions are evaluated in an execution context of the instance (CORE-F-11)
+						return proxy;
+					}
 					switch (method.getName()) {
 						case "hashCode":
 							return System.identityHashCode(proxy);

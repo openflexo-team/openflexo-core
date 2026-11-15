@@ -6,8 +6,8 @@ point — in the data bindings of user interfaces and inspectors.
 
 FML expressions are evaluated by **Connie**, the expression language of the platform. They look like Java
 expressions and mostly behave like them; the differences are specified in this chapter and are not details:
-division is decimal, `&&` and `||` do not short-circuit, strings are never converted to numbers, and a path
-that does not resolve evaluates to `null` instead of failing.
+division is decimal and strings are never converted to numbers. As in Java, `&&` and `||` short-circuit (§9.3), and a
+path that does not resolve, or goes through a `null` value, is an error when it is evaluated (§9.8).
 
 ## 9.1 Syntax
 
@@ -86,9 +86,10 @@ n > 0 ? "pos" : (n < 0 ? "neg" : "zero")
 The operators supported by the evaluator are the binary `&&` `||` `==` `!=` `<` `<=` `>` `>=` `+` `-` `*` `/`
 `%` `<<` `>>` `>>>` `&` `|` `^` and `=`, `+=`, and the unary `!` `+` `-` `++` `--` `~`.
 
-## 9.3 Boolean operators do not short-circuit
+## 9.3 Boolean operators short-circuit
 
-`&&` and `||` evaluate **both** operands, even when the first one decides the result.
+As in Java, `&&` does not evaluate its right operand when the left one is `false`, and `||` does not evaluate it when
+the left one is `true`.
 
 ```fml-member
 public int andOperands() {
@@ -100,22 +101,12 @@ public int andOperands() {
 }
 ```
 
-Here `touch()` is called although the left operand is `false`. Consequences:
+Here `touch()` is not called: the left operand is `false`, and `andOperands()` returns `0`. So a guard can be written in
+one expression: `parameters.p != null && parameters.p.name == "Ann"` does not evaluate `parameters.p.name` when
+`parameters.p` is `null`.
 
-* a guard such as `x != null && x.foo == 1` evaluates `x.foo` when `x` is null, which raises a null
-  reference (§9.8);
-* an expensive right-hand side is always paid for.
-
-A guard must be written with nested `if`s, which are the only short-circuiting construct:
-
-```fml-member
-public boolean safe(Person p) {
-	if (parameters.p == null) {
-		return false;
-	}
-	return parameters.p.name == "Ann";
-}
-```
+> **Implementation note.** Before 3.0 (`CORE-F-11`), both operands were evaluated, and a guard had to be written with
+> nested `if`s.
 
 ## 9.4 Literals and values
 
@@ -144,8 +135,8 @@ concepts (§2.6). The null literal designates the absence of a value (§13.6).
 * The Java methods of a string are available on a variable, a parameter or a property
   (`s.toUpperCase()`, `s.replace("a", "b").length()`).
 
-> **Implementation note.** A method called directly on a **string literal**, `"hello".length()`, evaluates to
-> `null` without a message (`CORE-D-19`). Put the literal in a variable first.
+> **Implementation note.** A method called directly on a **string literal**, `"hello".length()`, does not resolve: an
+> execution error when it runs, a `null` without a message before 3.0 (`CORE-D-19`). Put the literal in a variable first.
 
 ### 9.5.3 Comparison
 
@@ -239,9 +230,9 @@ The built-in names are always available:
 
 The two forms to remember are
 
-* **a parameter is read through `parameters`.** A bare parameter name resolves to nothing and yields `null`,
-  without an error; this is the most frequent source of a missing value;
-* **a behaviour of the same instance is called on `this`**: a bare call yields `null` too.
+* **a parameter is read through `parameters`.** A bare parameter name resolves to nothing: it is an invalid binding,
+  reported by validation, and an execution error when it runs (§9.8);
+* **a behaviour of the same instance is called on `this`**: a bare call is an invalid binding too.
 
 A local variable hides a property of the same name; `this.name` still reaches the property. The property of a
 nested concept hides that of its container; `container.name` reaches the container's.
@@ -298,7 +289,7 @@ public List<Task> fresh() {
 
 > **A bare `new` of a concept that is not nested in the current one is an invalid binding**: it is reported
 > when the unit is loaded and validated ("cannot instantiate X in C … use container.new X(...)"), and, as any
-> invalid binding (§9.8), it gives `null` at run time. From a behaviour declared on the **model**, the enclosing
+> invalid binding (§9.8), it is an execution error at run time. From a behaviour declared on the **model**, the enclosing
 > context is the instance of the model, so a bare `new` of any concept of the model is correct.
 
 The `with` clause supplies the parameters of the instantiation of a virtual model: `name` (mandatory; the name of
@@ -317,15 +308,19 @@ with no argument.
 `null` belongs to every non-primitive type and is also the value of an unassigned primitive-typed property
 (§4.2). Two different things are called "null" when an expression is evaluated, and they must not be confused:
 
-* a path whose elements **do not resolve** (a misspelled name, a missing import, a bare parameter name) is an
-  *invalid* binding, and evaluates to `null` without any message;
+* a path whose elements **do not resolve** (a misspelled name, a missing import, a bare parameter name, a bare call)
+  is an *invalid* binding: it is reported when the unit is loaded and validated, and evaluating it is an
+  **execution error** (a *resolution error*) that stops the behaviour;
 * a path that resolves but **goes through a `null` value** (`p.name` where `p` is `null`) raises a *null
-  reference*. In an expression statement, an assignment or a `return`, it is an **execution error** that stops the
-  behaviour. In the condition of an `if`, a null reference makes the condition **false**, and so does a `null`
-  value (§8.4).
+  reference*: an **execution error** that stops the behaviour, wherever the expression is, in a condition too
+  (§8.4).
 
-A comparison to `null` is written `== null` or `!= null`. Because `&&` does not short-circuit (§9.3), a null
-guard must be a separate `if`.
+A comparison to `null` is written `== null` or `!= null`; since `&&` and `||` short-circuit (§9.3), it guards the rest of
+the condition: `p != null && p.name == "Ann"`.
+
+> **Implementation note.** Before 3.0 (`CORE-F-11`), an invalid binding evaluated to `null` without any message, and a
+> null reference in the condition of an `if` made the condition false. An initial value that goes through a `null` value
+> still gives `null` (§6.2).
 
 ## 9.9 Type tests and casts
 
@@ -345,9 +340,9 @@ embedding component; the first element of a path is then a variable of that mode
 
 | Situation | Result |
 |---|---|
-| a path element that does not resolve (invalid binding) | `null`, and the behaviour goes on |
-| a path through a `null` value, in a value position | execution error: the behaviour stops |
-| a path through a `null` value, in an `if` condition | the condition is false |
+| a path element that does not resolve (invalid binding) | execution error (resolution error): the behaviour stops |
+| a path through a `null` value, anywhere (conditions included) | execution error (null reference): the behaviour stops |
+| a failure of Java code called from FML | execution error (host error): the behaviour stops |
 | a type error (`1 + "a"`, `"4.5" * 1.0`) | execution error: the behaviour stops |
 | an invalid condition in `if` / `while` / `for` | execution error: the behaviour stops |
 

@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.fml.expr;
 
+import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.TransformException;
@@ -66,6 +67,18 @@ public class FMLBinaryOperatorExpression extends BinaryOperatorExpression {
 
 		Expression expression = this;
 		Expression transformedLeftArgument = getLeftArgument().transform(transformer);
+
+		// While evaluating, && and || are lazy, as in Java: the right operand is not evaluated when the left one decides, so that a null
+		// check can guard it (a != null && a.b > 0) (CORE-F-11, decided with the user)
+		if (transformer instanceof FMLExpressionEvaluator) {
+			if (getOperator() == FMLBooleanBinaryOperator.AND && transformedLeftArgument == BooleanConstant.FALSE) {
+				return BooleanConstant.FALSE;
+			}
+			if (getOperator() == FMLBooleanBinaryOperator.OR && transformedLeftArgument == BooleanConstant.TRUE) {
+				return BooleanConstant.TRUE;
+			}
+		}
+
 		Expression transformedRightArgument = getRightArgument().transform(transformer);
 
 		if (!transformedLeftArgument.equals(getLeftArgument()) || !transformedRightArgument.equals(getRightArgument())) {

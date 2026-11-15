@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.rt.error.FMLTypeError;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 
 import org.openflexo.connie.DataBinding;
@@ -81,7 +84,7 @@ public interface NavigationScheme extends AbstractActionScheme {
 	@Setter(TARGET_OBJECT_KEY)
 	public void setTargetObject(DataBinding<?> targetObject);
 
-	public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext);
+	public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	/**
 	 * Returns nature which we will try to use to display target object
@@ -119,21 +122,12 @@ public interface NavigationScheme extends AbstractActionScheme {
 		}
 
 		@Override
-		public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext) {
-			if (getTargetObject().isValid()) {
-				try {
-					return (FlexoObject) getTargetObject().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
+		public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			Object target = FMLEvaluation.evaluate(getTargetObject(), evaluationContext, this);
+			if (target != null && !(target instanceof FlexoObject)) {
+				throw new FMLTypeError("The target of " + getName() + " is not an object of Openflexo: " + target);
 			}
-			return null;
+			return (FlexoObject) target;
 		}
 
 		@Override

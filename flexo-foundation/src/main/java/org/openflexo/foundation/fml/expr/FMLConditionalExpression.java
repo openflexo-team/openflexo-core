@@ -39,6 +39,9 @@
 
 package org.openflexo.foundation.fml.expr;
 
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.EvaluationPolicy;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.expr.ConditionalExpression;
 import org.openflexo.connie.expr.Expression;
@@ -77,6 +80,11 @@ public class FMLConditionalExpression extends ConditionalExpression {
 		else if (transformedCondition == BooleanConstant.FALSE) {
 			// No need to analyze further
 			return getElseExpression().transform(transformer);
+		}
+		else if (transformedCondition == ObjectSymbolicConstant.NULL && transformer instanceof FMLExpressionEvaluator
+				&& EvaluationPolicy.isStrict(((FMLExpressionEvaluator) transformer).getContext())) {
+			// A null condition is an error in a strict evaluation (CORE-F-11); a lenient one leaves the expression unreduced (null)
+			throw new NullReferenceException("Null condition in " + this);
 		}
 
 		Expression transformedThenExpression = getThenExpression().transform(transformer);

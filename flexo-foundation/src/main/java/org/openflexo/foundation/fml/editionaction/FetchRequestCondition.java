@@ -38,20 +38,16 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.CandidateEvaluationContext;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionBindingModel;
-import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.logging.FlexoLogger;
@@ -92,7 +88,8 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 	@Setter(CONDITION_KEY)
 	public void setCondition(DataBinding<Boolean> condition);
 
-	public boolean evaluateCondition(final Object proposedFetchResult, final RunTimeEvaluationContext evaluationContext);
+	public boolean evaluateCondition(final Object proposedFetchResult, final RunTimeEvaluationContext evaluationContext)
+			throws FMLExecutionException;
 
 	public static abstract class FetchRequestConditionImpl extends FlexoConceptObjectImpl implements FetchRequestCondition {
 
@@ -144,36 +141,11 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 		}
 
 		@Override
-		public boolean evaluateCondition(final Object proposedFetchResult, final RunTimeEvaluationContext evaluationContext) {
-			Boolean returned = null;
-			try {
-				returned = condition.getBindingValue(new BindingEvaluationContext() {
-					@Override
-					public Object getValue(BindingVariable variable) {
-						if (variable.getVariableName().equals(SELECTED)) {
-							return proposedFetchResult;
-						}
-						return evaluationContext.getValue(variable);
-					}
-
-					@Override
-					public ExpressionEvaluator getEvaluator() {
-						return new FMLExpressionEvaluator(this);
-					}
-				});
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			if (returned == null) {
-				return false;
-			}
-			return returned;
+		public boolean evaluateCondition(final Object proposedFetchResult, final RunTimeEvaluationContext evaluationContext)
+				throws FMLExecutionException {
+			// A failure, or a null, is an error, no longer a candidate left out (CORE-F-11)
+			return FMLEvaluation.evaluateCondition(getCondition(),
+					new CandidateEvaluationContext(SELECTED, proposedFetchResult, evaluationContext), this);
 		}
 
 		@Override

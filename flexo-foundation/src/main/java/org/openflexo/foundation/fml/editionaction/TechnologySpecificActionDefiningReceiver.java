@@ -38,15 +38,14 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
@@ -112,7 +111,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 	 * @param evaluationContext
 	 * @return
 	 */
-	public R getReceiver(BindingEvaluationContext evaluationContext);
+	public R getReceiver(BindingEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class TechnologySpecificActionDefiningReceiverImpl<MS extends ModelSlot<?,?>, R /*extends TechnologyObject<?>*/, T>
 			extends TechnologySpecificActionImpl<MS, T> implements TechnologySpecificActionDefiningReceiver<MS, R, T> {
@@ -179,21 +178,9 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 		 * @return
 		 */
 		@Override
-		public R getReceiver(BindingEvaluationContext evaluationContext) {
-			if (getReceiver().isValid()) {
-				try {
-					return getReceiver().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+		public R getReceiver(BindingEvaluationContext evaluationContext) throws FMLExecutionException {
+			// A receiver that fails to evaluate fails the action, it is no longer taken as null (CORE-F-11)
+			return FMLEvaluation.evaluate(getReceiver(), evaluationContext, this);
 		}
 
 		@Override

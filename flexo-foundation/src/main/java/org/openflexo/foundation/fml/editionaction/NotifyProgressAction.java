@@ -38,14 +38,13 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
@@ -108,19 +107,8 @@ public interface NotifyProgressAction extends EditionAction {
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) {
-			String logString = null;
-			try {
-				logString = getLogString().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e1) {
-				e1.printStackTrace();
-			} catch (NullReferenceException e1) {
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				e1.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			String logString = FMLEvaluation.evaluate(getLogString(), evaluationContext, this);
 
 			Progress.progress(logString);
 

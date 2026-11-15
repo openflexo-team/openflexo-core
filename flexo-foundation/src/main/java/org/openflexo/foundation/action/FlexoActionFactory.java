@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -313,6 +314,15 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 		}
 
 		return isEnabledForSelection(object, globalSelection);
+	}
+
+	/**
+	 * Tell if this action may be executed on supplied object, when it is about to be: {@link #isEnabled(FlexoObject, Vector)} by default.
+	 * A factory whose condition can fail (the {@code @Enable} of an FML behaviour) throws the failure here, while
+	 * {@link #isEnabled(FlexoObject, Vector)}, asked by the user interface, only answers (CORE-F-11)
+	 */
+	public boolean isEnabledForExecution(T1 object, Vector<T2> globalSelection) throws FlexoException {
+		return isEnabled(object, globalSelection);
 	}
 
 	public String getDisabledReason(T1 object, Vector<T2> globalSelection, FlexoEditor editor) {

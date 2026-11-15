@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -257,72 +258,63 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
-			try {
-				FlexoConceptInstance objectToDelete = getObject().getBindingValue(evaluationContext);
-				// if VmInstance is null, use the one of the EPI
-				if (objectToDelete != null) {
+			// An object that fails to evaluate fails the deletion (CORE-F-11); a null object deletes nothing
+			FlexoConceptInstance objectToDelete = FMLEvaluation.evaluate(getObject(), evaluationContext, this);
+			// if VmInstance is null, use the one of the EPI
+			if (objectToDelete != null) {
 
-					if (getDeletionScheme() == null) {
-						logger.warning("No deletion scheme !");
-						return objectToDelete;
-					}
-
-					if (evaluationContext instanceof FlexoBehaviourAction) {
-
-						FMLRTVirtualModelInstanceResource resourceToDelete = null;
-
-						if (objectToDelete instanceof FMLRTVirtualModelInstance) {
-							resourceToDelete = (FMLRTVirtualModelInstanceResource) ((VirtualModelInstance<?, ?>) objectToDelete)
-									.getResource();
-						}
-
-						DeletionSchemeAction deletionSchemeAction = new DeletionSchemeAction(getDeletionScheme(), objectToDelete, null,
-								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-
-						for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
-							FlexoBehaviourArgument param = p.getParam();
-							Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-							logger.info("For parameter " + param + " value is " + value);
-							if (value != null) {
-								deletionSchemeAction.setParameterValue(p.getParam(),
-										p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
-							}
-						}
-						logger.info("Performing action");
-						deletionSchemeAction.doAction();
-						if (deletionSchemeAction.hasActionExecutionFailed()) {
-							// The deletion scheme failed: the instance is not deleted, and the failure reaches the caller (CORE-D-47)
-							deletionSchemeAction.rethrowUncheckedFailure();
-							throw new FMLExecutionException("Deletion scheme failed for " + objectToDelete,
-									deletionSchemeAction.getThrownException());
-						}
-						// Finally delete the FlexoConcept
-						objectToDelete.delete();
-
-						if (resourceToDelete != null) {
-							System.out.println("Cool, on supprime la resource: " + resourceToDelete);
-							resourceToDelete.delete();
-						}
-
-						if (deletionSchemeAction.hasActionExecutionSucceeded()) {
-							logger.info("Successfully performed performDeleteFlexoConcept " + evaluationContext);
-							return deletionSchemeAction.getFlexoConceptInstance();
-						}
-					}
-					else {
-						logger.warning("Unexpected " + evaluationContext);
-					}
+				if (getDeletionScheme() == null) {
+					logger.warning("No deletion scheme !");
+					return objectToDelete;
 				}
 
-			} catch (TypeMismatchException e1) {
-				e1.printStackTrace();
-			} catch (NullReferenceException e1) {
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				throw new FMLExecutionException(e1.getCause());
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
+				if (evaluationContext instanceof FlexoBehaviourAction) {
+
+					FMLRTVirtualModelInstanceResource resourceToDelete = null;
+
+					if (objectToDelete instanceof FMLRTVirtualModelInstance) {
+						resourceToDelete = (FMLRTVirtualModelInstanceResource) ((VirtualModelInstance<?, ?>) objectToDelete)
+								.getResource();
+					}
+
+					DeletionSchemeAction deletionSchemeAction = new DeletionSchemeAction(getDeletionScheme(), objectToDelete, null,
+							(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+
+					for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
+						FlexoBehaviourArgument param = p.getParam();
+						Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						if (value != null) {
+							deletionSchemeAction.setParameterValue(param, value);
+						}
+					}
+					deletionSchemeAction.doAction();
+					if (deletionSchemeAction.hasActionExecutionFailed()) {
+						// The deletion scheme failed: the instance is not deleted, and the failure reaches the caller (CORE-D-47)
+						deletionSchemeAction.rethrowUncheckedFailure();
+						if (deletionSchemeAction.getThrownException() instanceof FMLExecutionException) {
+							// Rethrown unchanged: it carries its FML stack (CORE-F-11)
+							throw (FMLExecutionException) deletionSchemeAction.getThrownException();
+						}
+						throw new FMLExecutionException("Deletion scheme failed for " + objectToDelete,
+								deletionSchemeAction.getThrownException());
+					}
+					// Finally delete the FlexoConcept
+					objectToDelete.delete();
+
+					if (resourceToDelete != null) {
+						resourceToDelete.delete();
+					}
+
+					if (deletionSchemeAction.hasActionExecutionSucceeded()) {
+						logger.info("Successfully performed performDeleteFlexoConcept " + evaluationContext);
+						return deletionSchemeAction.getFlexoConceptInstance();
+					}
+				}
+				else {
+					logger.warning("Unexpected " + evaluationContext);
+				}
 			}
+
 			return null;
 		}
 

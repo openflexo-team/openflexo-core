@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -179,7 +180,7 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
+		public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			FMLRTVirtualModelInstance returned = super.getVirtualModelInstance(evaluationContext);
 			if (returned == null) {
 				FlexoConceptInstance container = getContainer(evaluationContext);
@@ -269,12 +270,7 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 
 		private List<?> retrieveArguments(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			List<?> arguments;
-			try {
-				arguments = getArguments().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
-				e.printStackTrace();
-				throw new FMLExecutionException(e);
-			}
+			arguments = FMLEvaluation.evaluate(getArguments(), evaluationContext, this);
 			if (arguments == null) {
 				arguments = Collections.emptyList();
 			}

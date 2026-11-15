@@ -1,0 +1,5 @@
+// CORE-F-11: a failing getter, read through its name, fails its reader (FMLNullReferenceError, frame of the getter).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="getter");
+mustFail = vmi.readFailingGetter();

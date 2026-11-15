@@ -150,10 +150,18 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(A action, EventObject e) {
-		// If the factory is not null, check that factory allows execution in its context
-		if (action.getActionFactory() != null
-				&& !action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
-			return null;
+		// If the factory is not null, check that factory allows execution in its context. A condition that fails is not taken as
+		// disabled: doActionInContext() raises its failure and sets the status of the action (CORE-F-11)
+		if (action.getActionFactory() != null) {
+			boolean enabled;
+			try {
+				enabled = action.getActionFactory().isEnabledForExecution(action.getFocusedObject(), action.getGlobalSelection());
+			} catch (FlexoException | RuntimeException failure) {
+				enabled = true;
+			}
+			if (!enabled) {
+				return null;
+			}
 		}
 		// Only the outermost action run on this thread reports a failure (CORE-F-11): a nested action leaves its failure to its caller
 		ExecutionScope scope = FMLErrorReporter.enterAction();

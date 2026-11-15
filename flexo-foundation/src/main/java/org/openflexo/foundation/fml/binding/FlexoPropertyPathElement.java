@@ -38,6 +38,11 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import java.lang.reflect.InvocationTargetException;
+import org.openflexo.connie.EvaluationPolicy;
+import org.openflexo.connie.exception.InvocationTargetTransformException;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLFailureTunnel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -177,7 +182,7 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 
 		@Override
 		public Object getBindingValue(Object target, BindingEvaluationContext context)
-				throws TypeMismatchException, NullReferenceException {
+				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 			if (target instanceof FlexoConceptInstance) {
 				FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
 
@@ -201,7 +206,7 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 							&& ((FlexoRole<?>) effectiveProperty).getCardinality().isMultipleCardinality()) {
 						return flexoConceptInstance.getVirtualModelInstance().getFlexoActorList((FlexoRole<?>) effectiveProperty);
 					}
-					return flexoConceptInstance.getVirtualModelInstance().getFlexoPropertyValue(effectiveProperty);
+					return getPropertyValue(flexoConceptInstance.getVirtualModelInstance(), effectiveProperty, context);
 				}
 
 				// TODO: see https://bugs.openflexo.org/browse/CORE-309
@@ -225,11 +230,27 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 					}
 				}
 				else {
-					return flexoConceptInstance.getFlexoPropertyValue((FlexoProperty) effectiveProperty);
+					return getPropertyValue(flexoConceptInstance, effectiveProperty, context);
 				}
 			}
 			logger.warning("Please implement me, target=" + target + " context=" + context);
 			return null;
+		}
+
+		/**
+		 * The value of supplied property in supplied instance: in a strict evaluation, the failure of its getter or of its expression is
+		 * thrown, through the normalized tunnel of Connie (CORE-F-11)
+		 */
+		private static Object getPropertyValue(FlexoConceptInstance instance, FlexoProperty<?> property, BindingEvaluationContext context)
+				throws InvocationTargetTransformException {
+			if (EvaluationPolicy.isStrict(context)) {
+				try {
+					return instance.getFlexoPropertyValueOrFail((FlexoProperty) property);
+				} catch (FMLExecutionException e) {
+					throw new InvocationTargetTransformException(new InvocationTargetException(e));
+				}
+			}
+			return instance.getFlexoPropertyValue((FlexoProperty) property);
 		}
 
 		@Override
@@ -238,7 +259,17 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 			if (target instanceof FlexoConceptInstance) {
 				FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
 				FlexoProperty<?> effectiveProperty = getEffectiveProperty(flexoConceptInstance);
-				flexoConceptInstance.setFlexoPropertyValue((FlexoProperty) effectiveProperty, value);
+				if (EvaluationPolicy.isStrict(context)) {
+					try {
+						flexoConceptInstance.setFlexoPropertyValueOrFail((FlexoProperty) effectiveProperty, value);
+					} catch (FMLExecutionException e) {
+						// SettableBindingPathElement.setBindingValue() can only declare a TransformException of its own (CORE-F-11)
+						throw new FMLFailureTunnel(e);
+					}
+				}
+				else {
+					flexoConceptInstance.setFlexoPropertyValue((FlexoProperty) effectiveProperty, value);
+				}
 				return;
 			}
 			logger.warning("Please implement me, target=" + target + " context=" + context);

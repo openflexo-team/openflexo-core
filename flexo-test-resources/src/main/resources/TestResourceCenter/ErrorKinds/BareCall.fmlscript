@@ -1,0 +1,6 @@
+// CORE-F-11: a bare call to a behaviour of the same concept is an invalid binding: an FMLResolutionError when it runs, no longer null.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/NameLookup.fml"];
+service ResourceCenterService add_temp_rc;
+shop = new NameLookup() with (name="shop");
+pen = shop.addItem("Pen");
+mustFail = pen.bareCall();

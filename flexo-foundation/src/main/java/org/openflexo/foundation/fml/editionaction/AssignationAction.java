@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -166,36 +169,20 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			Object currentValue = null;
 			if (operator != null && operator.isCompound()) {
 				// x op= v assigns x op v (CORE-D-7); as in Java, x is read before v is evaluated
-				try {
-					currentValue = getAssignation().getBindingValue(evaluationContext);
-				} catch (RuntimeException e) {
-					// Unchecked: converted once, a defect of the platform stays one (CORE-F-11)
-					throw FMLExecution.convertUnchecked(e);
-				} catch (Exception e) {
-					throw new FMLExecutionException(e);
-				}
+				currentValue = FMLEvaluation.evaluate(getAssignation(), evaluationContext, this);
 			}
 			T value = getAssignationValue(evaluationContext);
 			if (operator != null && operator.isCompound()) {
 				try {
 					value = (T) operator.apply(currentValue, value, getAssignation().getAnalyzedType());
+				} catch (TypeMismatchException | NullReferenceException e) {
+					throw FMLEvaluation.convert(e, getAssignation());
 				} catch (RuntimeException e) {
 					// Unchecked: converted once, a defect of the platform stays one (CORE-F-11)
 					throw FMLExecution.convertUnchecked(e);
-				} catch (Exception e) {
-					throw new FMLExecutionException(e);
 				}
 			}
-			try {
-				getAssignation().setBindingValue(value, evaluationContext);
-			} catch (RuntimeException e) {
-				// Unchecked: converted once, a defect of the platform stays one (CORE-F-11)
-				throw FMLExecution.convertUnchecked(e);
-			} catch (Exception e) {
-				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
-				e.printStackTrace();
-				throw new FMLExecutionException(e);
-			}
+			FMLEvaluation.assign(getAssignation(), value, evaluationContext, this);
 			return value;
 		}
 

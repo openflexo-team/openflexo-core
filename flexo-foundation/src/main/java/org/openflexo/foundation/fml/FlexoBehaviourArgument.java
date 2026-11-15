@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -526,20 +528,7 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 
 		@Override
 		public Object getContainer(BindingEvaluationContext evaluationContext) {
-			if (getContainer().isValid()) {
-				try {
-					return getContainer().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+			return evaluateLeniently(getContainer(), evaluationContext);
 		}
 
 		@Override
@@ -572,20 +561,7 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 
 		@Override
 		public Object getList(BindingEvaluationContext evaluationContext) {
-			if (getList().isValid()) {
-				try {
-					return getList().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+			return evaluateLeniently(getList(), evaluationContext);
 		}
 
 		@Override
@@ -608,22 +584,25 @@ public interface FlexoBehaviourArgument extends FlexoBehaviourObject, FunctionAr
 			this.defaultValue = defaultValue;
 		}
 
+		/**
+		 * Evaluate supplied expression of this argument (default value, container, list): they serve the parameters dialog as well as the
+		 * execution, so a failure gives null with a warning, as an invalid expression does (CORE-F-11)
+		 */
+		private Object evaluateLeniently(DataBinding<?> expression, BindingEvaluationContext evaluationContext) {
+			if (expression == null || !expression.isSet() || !expression.isValid()) {
+				return null;
+			}
+			try {
+				return FMLEvaluation.evaluate(expression, evaluationContext, this);
+			} catch (FMLExecutionException e) {
+				logger.warning("Cannot evaluate " + expression.getBindingName() + " of argument " + getName() + ": " + e.getMessage());
+				return null;
+			}
+		}
+
 		@Override
 		public Object getDefaultValue(BindingEvaluationContext evaluationContext) {
-			if (getDefaultValue().isValid()) {
-				try {
-					return getDefaultValue().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
+			return evaluateLeniently(getDefaultValue(), evaluationContext);
 		}
 
 		/*private boolean isRequired = false;

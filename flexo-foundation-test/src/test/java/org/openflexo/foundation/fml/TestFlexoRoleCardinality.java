@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
@@ -51,6 +52,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
@@ -348,6 +350,13 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		assertNotNull(project.getResource(newView.getURI()));
 		assertNotNull(project.getVirtualModelInstanceRepository().getResource(newView.getURI()));
+
+		// Without a name, the creation fails on an invalid parameter, not on a RuntimeException of the JDK (CORE-D-77)
+		CreateBasicVirtualModelInstance unnamed = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
+		unnamed.setVirtualModel(virtualModel);
+		unnamed.doAction();
+		assertFalse(unnamed.hasActionExecutionSucceeded());
+		assertTrue(String.valueOf(unnamed.getFailure()), unnamed.getThrownException() instanceof InvalidParametersException);
 
 		CreateBasicVirtualModelInstance createVMI = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		createVMI.setNewVirtualModelInstanceName("MyVirtualModelInstance");

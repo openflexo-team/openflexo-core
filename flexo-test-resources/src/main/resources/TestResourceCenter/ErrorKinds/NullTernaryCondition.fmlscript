@@ -1,0 +1,5 @@
+// CORE-F-11: the null condition of a ternary is an error (FMLNullReferenceError).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="nullternary");
+mustFail = vmi.nullTernaryCondition();

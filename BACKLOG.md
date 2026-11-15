@@ -649,6 +649,93 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
   - A `BindingEvaluationException` that escapes `FMLEvaluation` becomes an `FMLInternalError` at `executeStatement`: every evaluation
     site has to go through `FMLEvaluation`, or `convertUnchecked` has to map it.
 
+**Phase 3 done (2026-11-15), decided with the user.**
+- `FMLEvaluation` (`org.openflexo.foundation.fml.rt.error`): `evaluate`, `evaluateCondition`, `assign`, `execute`, and `convert` for the sites
+  that call Connie themselves. Type mismatch and invalid cast → `FMLTypeError`, null reference → `FMLNullReferenceError`, not settable →
+  `FMLAssignmentError`, invalid binding → `FMLResolutionError`; an invocation whose target is an FML failure → that very object (also through
+  `InvocationTargetTransformException` and `FMLFailureTunnel`), another target → `FMLHostError`; a missing Java property → `FMLResolutionError`.
+  The kinds of `BindingEvaluationException`: `INVALID_BINDING`, `INCOMPLETE_EVALUATION` → `FMLResolutionError`; `NOT_SETTABLE` →
+  `FMLAssignmentError`; `ILLEGAL_ARGUMENT` → `FMLTypeError`; `ILLEGAL_ACCESS` → `FMLHostError`; `TRANSFORMATION_FAILURE` by its cause
+  (invalid cast → type, not settable → assignment, other → resolution); `CONCURRENT_MODIFICATION` → `FMLInternalError` (unchecked). The failure
+  is located at the FML object owning the binding unless a statement was recorded already.
+- `FMLExecution.convertUnchecked` throws the checked error for `AccessorInvocationException` (host), `InvalidKeyValuePropertyException`
+  (resolution), `BindingEvaluationException` (its kind) and `FMLFailureTunnel` (the failure carried); any other unchecked exception stays an
+  `FMLInternalError`. `FMLExecution.rethrowFailure(action)` rethrows the failure of a nested action unchanged.
+- `INCOMPLETE_EVALUATION`, checked first (to check 1): in FML it fires for a ternary whose condition is not a boolean constant (null), a cast to
+  an unresolved type and an invalid nested path, all faults. A null ternary condition raises a null reference in a strict evaluation
+  (`FMLConditionalExpression`). No FML caller evaluates without a context (to check 2): the only null-context evaluations are static ones of the
+  compilation unit, which stay lenient. Every evaluation site of the core goes through `FMLEvaluation`, and `convertUnchecked` maps what
+  escapes (to check 3).
+- Policies: the execution contexts are `STRICT` (`FlexoBehaviourAction`, `LocalRunTimeEvaluationContext`, the interpreter of fml-cli); the
+  delegating contexts pass the policy on (`DelegatedRunTimeEvaluationContext`, `CandidateEvaluationContext` for `where` and `match`). An
+  instance used itself as a context stays `LENIENT` (user interface, renderer); `FlexoConceptInstance.newLocalEvaluationContext()` gives a
+  strict one.
+- Properties: `getFlexoPropertyValueOrFail` / `setFlexoPropertyValueOrFail` throw the failure of a getter, a setter or an expression property
+  (which gets a frame of its own); `getFlexoPropertyValue` / `setFlexoPropertyValue` stay lenient for the user interface (null and one
+  warning). The path element uses the strict ones in a strict evaluation and crosses Connie through `InvocationTargetTransformException`; a
+  property read through its bare name (`BindingEvaluationContext.getValue`, which declares nothing) crosses through the new unchecked
+  `FMLFailureTunnel`, unwrapped by `FMLEvaluation`. The former value read by a set does not fail the set. The strict methods are the entry
+  points to override (`getFlexoPropertyValueOrFail`, `setFlexoPropertyValueOrFail`, `getValue(variable, policy)`): the instances of
+  openflexo-rest (`HttpFlexoConceptInstance`, `RestFlexoConceptInstance`) and openflexo-jdbc (`HbnFlexoConceptInstance`) override them instead
+  of the lenient ones (decided with the user after review), so FML and the user interface both reach their mapping.
+- Strict: conditions (`if`, `while`, `for`, `where`, `match`), receivers, containers, arguments, matching criteria, `@Enable` / `@Visible`
+  when a scheme runs (synchronization, listeners, navigation). In the user interface a failing `@Enable` shows the behaviour disabled, a
+  failing `@Visible` shows it (FINE log). A null receiver, container or concept to instantiate is an `FMLNullReferenceError`; iterating over
+  `null` too. The selection by index is not made strict: indexes are not used (`VirtualModelInstance.isIndexable()` is false); to do if they
+  are enabled.
+- `&&` and `||` short-circuit (`FMLBinaryOperatorExpression`), so that a null check can guard a condition; the specification is updated
+  (chapters 3, 7, 8, 9, 12, 13, appendix B).
+- An action about to run asks its factory `isEnabledForExecution` (`FlexoAction.doActionInContext`, `DefaultFlexoEditor.performAction`,
+  `InteractiveFlexoEditor.performAction` of openflexo-ui, decided with the user after review): for
+  a behaviour it evaluates `@Enable` strictly, so a failing `@Enable` fails the action (a listener fails the `fire`), while `isEnabled`, asked
+  by the user interface, only answers. The expressions of a behaviour argument (default value, container, list) serve the parameters dialog
+  too: they go through `FMLEvaluation` and give null with a warning on failure, also when the execution uses them (a limit: the
+  specification says an error). `@Enable` / `@Visible` are evaluated on the instance the behaviour is called on (the instance of its
+  factory), no longer on the focused object of the action, which is the virtual model instance for `x.doIt()`. Every kind of scheme is
+  concerned, deletion schemes included.
+- Other choices made while implementing, to keep in mind: the local context of a virtual model instance answers that instance as its
+  virtual model instance (it used to answer its owner), and its default values are evaluated in that strict local context, no longer on the
+  instance itself; an expression property is always evaluated strictly, the lenient reading wrapping the failure; a behaviour called outside
+  a behaviour runs with `FlexoConceptInstance.getEditor()` (which falls back on the default editor); the strict interpreter of fml-cli is
+  also the base of the terminal of the application and of the REST terminal of the server; in `FlexoBehaviourPathElement` and
+  `CreationSchemePathElement`, the failure of an argument now reaches the caller in a lenient context too (it was printed and gave null);
+  a JVM `Error` is never converted into an FML error.
+- Double logs removed: Connie no longer prints the failure of Java code it propagates (`CONNIE-F-4` follow-up), the four-catch blocks are gone
+  from `fml/editionaction`, `fml/rt/editionaction`, `fml/controlgraph`, `fml/binding`, `fml/rt/action`. Left for later: `fml/ta` (the FML
+  technology adapter, phase 6), the static evaluations of `FMLCompilationUnit`, `md/`, `ElementImportDeclaration`, the renderer and the
+  inspector of an instance (user interface, lenient), the unused `FlexoRole.getDefaultValue(context)` / `getContainer(context)`.
+- `CORE-D-75`, `CORE-D-77`, `CORE-D-78`, `CORE-D-79` are fixed (`FIXED_DEFECTS.md`); `CORE-D-80` is not (binding resolution, not error handling).
+- Technology adapters: `throws FMLExecutionException` added where the compiler required it, signature only (agreed with the user): capella,
+  csv, diagram, docx, emf, jdbc, json, kafka, markdown, opc-ua, oslc, owl, pptx, technology-adapters (dsl, xx), xlsx, xml, formod (b-ta).
+- FML that relied on a lenient null or on eager `&&` / `||` (found by the suites):
+  - core fixtures, documenting the former behaviour: `Flow.fml` (`andOperands`, `orOperands`), `Depot.fml` (`bareTool`),
+    `ReceptionWithoutImport.fml` (`guestName`), `NameLookup.fml` (`bareParameter`, `bareCall`), `ExecutionFailures.fml` (`nullCondition`): the
+    scripts assert the new behaviour (`ErrorKinds/`);
+  - openflexo-integration-tests, fixed with explicit null checks (agreed with the user): city-mapping `Mapping.fml`, `cityOfModel1Named` and
+    `cityOfModel2Named` (`where (selected.cityInModel1 != null && …)`); multi-process-challenge `MetaModel.fml`, `getTaskType`
+    (`taskType != null && …`). Not explained: the multiple role `taskTypes` holds a null element in `T6_AcmeFixture`. Same pattern, not
+    exercised by a null so far: `Mapping.fml` lines 238, 242, 246;
+  - formod, xml-ta-test, pptx-ta-test, integration-tests: nothing.
+- Revealed, not fixed: `XLSX-D-2` (openflexo-xlsx): after an external edit and a refresh, the reflected Excel slot was rebuilt over a stale
+  sheet; the `NullPointerException` used to be swallowed by the container of a `select`. Seen once (`ExternalWorkbookEditTest`,
+  digital-twin-demo), not reproduced in the three later runs; recorded, not investigated (decided with the user).
+- Not attributed to phase 3 (failures seen in the final run, outside the suites listed in the task): markdown-ta-test
+  `TestMarkdownEditionActions` (an `UnresolvedTechnologySpecificAction`, whose throw is older than this phase), diagram-ta
+  `TestFMLDiagramPrettyPrint3` (a pretty-print location), capella-ta-test `TestLoadXXDocuments` (a null resource center). Not compared with
+  the state before phase 3.
+- Counts in `flexo-foundation`, `org.openflexo.foundation.fml.**`, comment lines excluded (before phase 3 → after): `printStackTrace` 364 → 216,
+  `Thread.dumpStack` 15 → 14, `System.out/err` 168 → 163, `return null` within 4 lines after a `catch` 67 → 45.
+- Tests: `TestFMLErrorKinds` (fml-cli-test, scripts `ErrorKinds/`, behaviours appended to `ExecutionFailures.fml`): one script per kind
+  (null in a condition path, null condition, null ternary condition, null iteration, failing loop initializer, failing getter by name and
+  through `this.`, failing expression property, null in `where`, failing `@Enable`, invalid binding, bare `new`, missing import, bare
+  parameter, bare call, failure of Java code), each asserting the type, the line and the behaviour frame, and that nothing is printed to
+  stderr; `&&` / `||` laziness. `TestFMLEvaluation` (flexo-foundation-test): the conversions of `FMLEvaluation` and `convertUnchecked`.
+  `TestFlexoRoleCardinality`: `CORE-D-77`. Not covered by a test: `FMLAssignmentError` from FML (a target that cannot be set is rejected by
+  the analysis), `CORE-D-78`, `CORE-D-79`, `@Enable` in the application (`InteractiveFlexoEditor`) and on `x.doIt()`, the overrides of
+  openflexo-rest (its tests need the network). `TestBehaviourAvailability` evaluates `@Enable` on a stub instance, not strictly.
+- Reviewed by `openflexo-reviewer` (2026-11-15); its findings were fixed or are recorded here. openflexo-xlsx: the debug `log` of
+  `TestLoadPersonListing1/2.fmlscript` called an unresolved method and is removed (decided with the user).
+
 Deferred from phase 1:
 - `FMLEvaluation` moves to phase 3: its conversions depend on the strict mode of Connie.
 - Localized messages move to phase 4.

@@ -1,0 +1,5 @@
+// CORE-F-11: an invalid binding at runtime is an FMLResolutionError.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="invalid");
+mustFail = vmi.invalidCondition();

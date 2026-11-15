@@ -92,8 +92,9 @@ these outcomes, which this section collects (they are justified where the constr
 
 | Situation | Outcome | Reference |
 |---|---|---|
-| a path whose element does not resolve (misspelling, missing import, bare parameter name, bare call) | the expression is `null`; execution goes on | §9.8 |
-| a path that goes through a `null` value | in a value position, an **execution error** that stops the behaviour; in an `if` condition, the condition is false | §9.8, §8.4 |
+| a path whose element does not resolve (misspelling, missing import, bare parameter name, bare call) | an **execution error** (resolution error) that stops the behaviour | §9.8 |
+| a path that goes through a `null` value, a `null` condition, a `for` over `null` | an **execution error** (null reference) that stops the behaviour, in a condition too (`if`, loops, `where`, `@Enable`) | §9.8, §8.4 |
+| a failure of Java code called from FML | an execution error (host error) that stops the behaviour | §9.8 |
 | a type error (`1 + "a"`, string used as a number) | an execution error that stops the behaviour | §9.5 |
 | an `if`, `while` or `for` whose condition is invalid | an execution error that stops the behaviour | §8.4 |
 | a `new` that does not resolve to a creation scheme | `null` | §7.2, §9.7 |
@@ -101,8 +102,9 @@ these outcomes, which this section collects (they are justified where the constr
 | `assert` false in a script | the run fails with a message naming the line | §12.6 |
 | a failed `load` or `new` in a script | the script stops | §12.7 |
 
-An execution error is signalled to the caller of the behaviour as an `FMLExecutionException`; a script that called
-it stops, and an application reports it. This holds whatever runs the failing code:
+An execution error is signalled to the caller of the behaviour as an `FMLExecutionException` of its kind
+(`FMLNullReferenceError`, `FMLResolutionError`, `FMLTypeError`, `FMLHostError`, …), which tells the failing statement, its
+line and the behaviours it went through; a script that called it stops, and an application reports it. This holds whatever runs the failing code:
 
 * a creation scheme run by `new`: the `new` fails, and the instance being built is taken out of its container, with
   what it contains; a virtual model instance being created is not removed;
@@ -141,8 +143,8 @@ A compilation unit and an instance can be **validated**. Validation checks the r
 * the types of declarations resolve; the parents of a concept resolve; the container named by `inside` exists;
 * the invariants of an instance hold (§5.6.1).
 
-Validation is the way to find the errors that execution hides: an unresolved path is `null` at run time (§9.8), an
-invalid condition is true (§8.4), a missing `import` gives `null` (§3.5.2). It can be run on a unit and on an instance, and the editors
+Validation is the way to find, before execution, the errors that execution would raise: an unresolved path (§9.8), an
+invalid condition (§8.4), a missing `import` (§3.5.2). It can be run on a unit and on an instance, and the editors
 report its results.
 
 A caution on the empty unit. A parse error leaves an **empty** compilation unit behind (§1.5), and an empty unit

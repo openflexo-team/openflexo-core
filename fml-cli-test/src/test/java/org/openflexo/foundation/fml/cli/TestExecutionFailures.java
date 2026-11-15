@@ -66,7 +66,8 @@ public class TestExecutionFailures extends FMLScriptParserTestCase {
 	private static final String MUST_FAIL = "mustFail";
 
 	/** The causes the fixture provokes: reading a method of a null property, an invalid condition, a valued return in a creation scheme */
-	private static final String[] EXPECTED_CAUSES = { "NullReferenceException", "Invalid condition", "A creation scheme returns no value" };
+	private static final String[] EXPECTED_CAUSES = { "NullReferenceException", "Null reference", "Invalid binding", "Invalid condition",
+			"A creation scheme returns no value" };
 
 	private static boolean causeChainMentions(Throwable t, String[] markers) {
 		for (Throwable c = t; c != null; c = c.getCause()) {

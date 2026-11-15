@@ -398,6 +398,8 @@ only parsed by `TestFMLParser`, never loaded, so it does not exercise this.
 (a `+` with a null operand gives null). No error is reported at validation or at execution. With a single parent, the same call works,
 over several levels.
 
+**Since `CORE-F-11` phase 3 (verified 2026-11-15 by execution).** No longer silent: the binding is invalid ("BindingVariable super does not exist"), and evaluating it is an `FMLResolutionError`.
+
 **Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** One model, one behaviour called from a script:
 
 ```fml
@@ -454,6 +456,8 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 **Symptom.** A Java method called directly on a string literal evaluates to null, without any message: `"hello".length()` is null
 instead of 5. The same methods work on a variable or a parameter holding the same string.
 
+**Since `CORE-F-11` phase 3 (verified 2026-11-15 by execution).** No longer silent: the binding is invalid ("unresolved path element length()"), and evaluating it is an `FMLResolutionError`.
+
 **Reproduction (verified 2026-09-21 by execution, in `flexo-test-resources`).** Called from a script, the following behaviour
 returns null instead of 5, and so do `"abc".toUpperCase()`, `"kiwi-banana".substring(5)`, `"EQ-12-3".replace("EQ-", "")` and
 `"ab".equals("a" + "b")` written as `return` expressions:
@@ -481,7 +485,9 @@ path element middle()", `cannot find parent for JavaInstanceMethodPathElement:mi
 any error, so the caller goes on: here `nested()` returned without running `middle()`. The order of declaration does not matter (callee declared
 before or after the caller, same result). `return this.middle();` is resolved and runs. In a concept, a bare call to a behaviour of the
 same concept is resolved (`NameLookup`, `bareCall()` → `twin()`). Not checked: where the resolution of a bare call looks for the behaviour
-(binding model of a virtual model versus a concept). The silent null is `CONNIE-F-4`.
+(binding model of a virtual model versus a concept). Since `CORE-F-11` phase 3 the call is no longer a silent null: evaluating the invalid
+binding is an `FMLResolutionError`. Seen then: in a concept too, `NameLookup.bareCall()` does not resolve (`ErrorKinds/BareCall`), contrary to
+what is written above.
 
 **Workaround.** Write `this.middle()`.
 
@@ -734,39 +740,3 @@ where the type is changed (parser, typing space, parameter), and whether other w
 **Symptom.** `Foo@(1) foo1;` (a type with a version, `typedef String as Foo`) was printed `Foo foo1;`: the version is not in the model.
 File: `TestTypeVersions` (`FMLParsingExamples`). As for CORE-D-69, the preserving pretty-print of an untouched source now keeps `Foo@(1)`, the
 model and the normalized pretty-print do not. Not checked: whether a version is meant to be kept by the model at all.
-
----
-
-## FML runtime errors (found by the audit of `CORE-F-11`, 2026-11-13)
-
-Verified by reading the code, not by running it. They are fixed in phase 3 of [`CORE-F-11`](./BACKLOG.md); `CORE-D-76` was fixed
-in phase 1.
-
-### CORE-D-75 — The initial value of a `for (init; cond; update)` loop is a Boolean when its initializer fails  ·  `TODO`
-
-**Symptom (read).** `ExpressionIterationAction.evaluateInitExpression` prints the stack and returns `Boolean.TRUE` on a
-`TypeMismatchException`, `InvocationTargetException` or `ReflectiveOperationException`, returns `false` on a `NullReferenceException`, and returns `true` when the
-initializer is unset or invalid. The loop then runs with a Boolean as the value of its variable, and the failure is not reported.
-
-### CORE-D-77 — Creating a virtual model instance without a name throws a `java.security.InvalidParameterException`  ·  `TODO`
-
-**Symptom (read).** `CreateFMLRTVirtualModelInstance` imports `java.security.InvalidParameterException` (a `RuntimeException` of the JDK security
-API) and throws it when the name is undefined. The project's `InvalidParametersException` was meant. Since `CORE-F-11` phase 1 the status of
-the action is set (`FAILED_EXECUTION`), but the failure is taken for a defect of the platform (an unchecked exception), not for an invalid
-parameter.
-
-### CORE-D-78 — `CreateFlexoConceptInstance` throws a `ClassCastException` while logging, and ignores a failing creation scheme  ·  `TODO`
-
-**Symptom (read).** In `doAction`, when the virtual model instance is not an `FMLRTVirtualModelInstance`, the warning "Not implemented feature
-for …" casts that instance to `FMLRTVirtualModelInstance` to build its message: the log itself throws a `ClassCastException`. In the other
-branch, `creationSchemeAction.doAction()` is called without checking its outcome, so a failing creation scheme still reads as a successful
-creation.
-
-### CORE-D-79 — A behaviour call gives a `NullPointerException` instead of an FML error  ·  `TODO`
-
-**Symptom (read).**
-- `ExecuteFlexoBehaviour.execute`: when the behaviour reference fails to evaluate, `getFlexoBehaviour` prints the stack and returns null, then
-  `actionScheme.getActionFactory(fci)` throws an NPE.
-- `FlexoBehaviourPathElement.getBindingValue`, called outside a behaviour: when the instance has no resource center, the action is never built
-  and `actionSchemeAction.setDeclaredConceptualLevel(…)` throws an NPE.
-- `ExecuteFlexoBehaviour.execute` has the same structure: no resource center outside a behaviour, then an NPE on `actionSchemeAction.doAction()`.

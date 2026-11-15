@@ -38,12 +38,16 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.exception.NullReferenceException;
+import java.lang.reflect.InvocationTargetException;
+import org.openflexo.connie.BindingVariable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.EvaluationPolicy;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
@@ -411,7 +415,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}
 	}
 
-	public MatchingSet initiateDefaultMatchingSet(MatchFlexoConceptInstance action) {
+	public MatchingSet initiateDefaultMatchingSet(MatchFlexoConceptInstance action) throws FMLExecutionException {
 		if (defaultMatchingSet == null) {
 			defaultMatchingSet = new MatchingSet(action, this);
 		}
@@ -551,6 +555,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	}
 
+	/** The execution of a behaviour evaluates strictly: a failure is an error, never a null (CORE-F-11) */
+	@Override
+	public EvaluationPolicy getEvaluationPolicy() {
+		return EvaluationPolicy.STRICT;
+	}
+
 	@Override
 	public Object getValue(BindingVariable variable) {
 
@@ -576,12 +586,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 		// Not found at this level, delegate it to the FlexoConceptInstance
 		if (getApplicableFlexoConceptInstance() != null) {
-			return getApplicableFlexoConceptInstance().getValue(variable);
+			return getApplicableFlexoConceptInstance().getValue(variable, getEvaluationPolicy());
 		}
 
 		// Maybe to the FMLRTVirtualModelInstance ?
 		if (getVirtualModelInstance() != null) {
-			return getVirtualModelInstance().getValue(variable);
+			return getVirtualModelInstance().getValue(variable, getEvaluationPolicy());
 		}
 
 		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
@@ -618,12 +628,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}*/
 
 		if (getFlexoConceptInstance() != null) {
-			getFlexoConceptInstance().setValue(value, variable);
+			getFlexoConceptInstance().setValue(value, variable, getEvaluationPolicy());
 			return;
 		}
 
 		if (getVirtualModelInstance() != null) {
-			getVirtualModelInstance().setValue(value, variable);
+			getVirtualModelInstance().setValue(value, variable, getEvaluationPolicy());
 			return;
 		}
 

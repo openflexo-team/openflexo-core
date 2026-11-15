@@ -40,6 +40,7 @@
 package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.EvaluationPolicy;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -58,6 +59,12 @@ public class DelegatedRunTimeEvaluationContext implements RunTimeEvaluationConte
 	public DelegatedRunTimeEvaluationContext(RunTimeEvaluationContext delegate) {
 		super();
 		this.delegate = delegate;
+	}
+
+	/** The policy of the delegate, passed on (CORE-F-11) */
+	@Override
+	public EvaluationPolicy getEvaluationPolicy() {
+		return delegate.getEvaluationPolicy();
 	}
 
 	@Override

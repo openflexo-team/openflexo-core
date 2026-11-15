@@ -38,12 +38,13 @@
 
 package org.openflexo.foundation.fml.binding;
 
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -105,6 +106,20 @@ public class FlexoPropertyBindingVariable extends AbstractFMLBindingVariable imp
 			}
 			typeMightHaveChanged();
 		}
+	}
+
+	/**
+	 * The value of this variable in supplied instance, throwing the failure of the getter of the property (CORE-F-11): used by a strict
+	 * evaluation
+	 */
+	public Object getValueOrFail(FlexoConceptInstance flexoConceptInstance) throws FMLExecutionException {
+
+		if (flexoProperty instanceof FlexoRole) {
+			if (flexoProperty.getCardinality().isMultipleCardinality())
+				return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) flexoProperty);
+			return flexoConceptInstance.getFlexoActor((FlexoRole<?>) flexoProperty);
+		}
+		return flexoConceptInstance.getFlexoPropertyValueOrFail(flexoProperty);
 	}
 
 	public Object getValue(FlexoConceptInstance flexoConceptInstance) {

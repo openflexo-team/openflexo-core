@@ -1,0 +1,10 @@
+// CORE-F-11: without the import, a path through a concept of another model is an invalid binding: an FMLResolutionError when it runs,
+// no longer null.
+people = load -r ["http://openflexo.org/test/TestResourceCenter/People.fml"];
+withoutImport = load -r ["http://openflexo.org/test/TestResourceCenter/ReceptionWithoutImport.fml"];
+service ResourceCenterService add_temp_rc;
+directory = new People() with (name="directory");
+ann = directory.newPerson("Ann");
+oldDesk = new ReceptionWithoutImport() with (name="oldDesk");
+oldDesk.guest = ann;
+mustFail = oldDesk.guestName();

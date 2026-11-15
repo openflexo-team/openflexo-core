@@ -1,0 +1,5 @@
+// CORE-D-75: a failing initializer of a for loop fails the loop (FMLNullReferenceError).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="loopinit");
+mustFail = vmi.failingLoopInitializer();

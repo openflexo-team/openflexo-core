@@ -38,8 +38,18 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.beans.PropertyChangeListener;
+import org.openflexo.foundation.fml.rt.error.FMLInternalError;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.connie.expr.ExpressionEvaluator;
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.NotSettableContextException;
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.BindingEvaluationContext;
+import java.util.logging.Level;
 import java.lang.reflect.InvocationTargetException;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,25 +60,18 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.EvaluationPolicy;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.BindingPathChangeListener;
 import org.openflexo.connie.exception.InvalidBindingException;
-import org.openflexo.connie.exception.NotSettableContextException;
-import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -89,7 +92,6 @@ import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
@@ -124,8 +126,11 @@ import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import org.openflexo.foundation.fml.rt.error.FMLExecution;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLFailureTunnel;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
 
 /**
  * A {@link FlexoConceptInstance} is an instance of a {@link FlexoConcept}, at run-time (FML@RT).
@@ -302,13 +307,24 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * When the property belongs to the concept of a container instance, or to the {@link VirtualModel} of the owning
 	 * {@link VirtualModelInstance}, its value is looked up there
 	 *
+	 * Lenient: a property whose getter (or expression) fails gives null, with a warning. FML execution reads properties with
+	 * {@link #getFlexoPropertyValueOrFail(FlexoProperty)} (CORE-F-11).
+	 *
 	 * @param flexoProperty
 	 *            the property to lookup
 	 */
 	public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty);
 
 	/**
-	 * Sets value associated with supplied property
+	 * Compute value associated with supplied property, as {@link #getFlexoPropertyValue(FlexoProperty)} does, throwing the failure of its
+	 * getter or of its expression (CORE-F-11)
+	 */
+	public <T> T getFlexoPropertyValueOrFail(FlexoProperty<T> flexoProperty) throws FMLExecutionException;
+
+	/**
+	 * Sets value associated with supplied property<br>
+	 * Lenient: a failing setter (or expression) is logged. FML execution sets properties with
+	 * {@link #setFlexoPropertyValueOrFail(FlexoProperty, Object)} (CORE-F-11).
 	 * 
 	 * @param flexoProperty
 	 *            the property to lookup
@@ -316,6 +332,31 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 *            the new value to set
 	 */
 	public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value);
+
+	/**
+	 * Sets value associated with supplied property, as {@link #setFlexoPropertyValue(FlexoProperty, Object)} does, throwing the failure of
+	 * its setter or of its expression (CORE-F-11)
+	 */
+	public <T> void setFlexoPropertyValueOrFail(FlexoProperty<T> flexoProperty, T value) throws FMLExecutionException;
+
+	/**
+	 * Return the value of supplied variable, as {@link #getValue(BindingVariable)} does, following supplied policy: in a
+	 * {@link EvaluationPolicy#STRICT} evaluation, the failure of the getter of a property read through its name is thrown, carried by an
+	 * {@link FMLFailureTunnel} (CORE-F-11)
+	 */
+	public Object getValue(BindingVariable variable, EvaluationPolicy policy);
+
+	/**
+	 * Set the value of supplied variable, as {@link #setValue(Object, BindingVariable)} does, following supplied policy (see
+	 * {@link #getValue(BindingVariable, EvaluationPolicy)})
+	 */
+	public void setValue(Object value, BindingVariable variable, EvaluationPolicy policy);
+
+	/**
+	 * A new execution context on this instance, isolated (its local variables are its own) and strict: the context in which FML
+	 * evaluates an expression on this instance outside a behaviour (CORE-F-11)
+	 */
+	public RunTimeEvaluationContext newLocalEvaluationContext();
 
 	/**
 	 * Return property value associated with supplied property name
@@ -794,6 +835,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			@Override
 			public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+				// A virtual model instance is the virtual model instance of its own context
+				if (FlexoConceptInstanceImpl.this instanceof VirtualModelInstance) {
+					return (VirtualModelInstance<?, ?>) FlexoConceptInstanceImpl.this;
+				}
 				return getFlexoConceptInstance().getOwningVirtualModelInstance();
 			}
 
@@ -826,7 +871,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				if (FlexoBehaviourAction.isLocalVariable(variable)) {
 					return localVariables.get(variable.getVariableName());
 				}
-				return FlexoConceptInstanceImpl.this.getValue(variable);
+				return FlexoConceptInstanceImpl.this.getValue(variable, getEvaluationPolicy());
+			}
+
+			/** An execution context: strict (CORE-F-11) */
+			@Override
+			public EvaluationPolicy getEvaluationPolicy() {
+				return EvaluationPolicy.STRICT;
 			}
 
 			@Override
@@ -835,7 +886,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					localVariables.put(variable.getVariableName(), value);
 				}
 				else {
-					FlexoConceptInstanceImpl.this.setValue(value, variable);
+					FlexoConceptInstanceImpl.this.setValue(value, variable, getEvaluationPolicy());
 				}
 			}
 
@@ -878,7 +929,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			// The default values and the initializers are evaluated in the context of the new instance itself ("this", "container"): the
 			// creation action is not attached to it yet. A virtual model instance is its own evaluation context
-			RunTimeEvaluationContext context = this instanceof VirtualModelInstance ? this : new LocalRunTimeEvaluationContext();
+			RunTimeEvaluationContext context = new LocalRunTimeEvaluationContext();
 			// We initialize the default values of the roles of the concept, inherited ones included (CORE-D-50): the accessible
 			// properties, keeping those declared by the concept or one of its parents (not those of a container concept), a property
 			// redefined by a child giving its own default value
@@ -891,9 +942,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				if (role.getInitializer() != null) {
 					// An edition action written as the initializer of the declaration (CORE-D-51); its failure fails the creation
 					try {
-						setFlexoPropertyValue(role, role.getInitializer().execute(context));
+						setFlexoPropertyValueOrFail(role, role.getInitializer().execute(context));
 					} catch (ReturnException e) {
-						setFlexoPropertyValue(role, e.getReturnedValue());
+						setFlexoPropertyValueOrFail(role, e.getReturnedValue());
 					}
 				}
 				else if (role.getDefaultValue() != null && role.getDefaultValue().isSet()) {
@@ -901,21 +952,29 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					// gives null
 					Object defaultValue;
 					try {
-						defaultValue = role.getDefaultValue().getBindingValue(context);
-					} catch (NullReferenceException e) {
+						defaultValue = FMLEvaluation.evaluate(role.getDefaultValue(), context, role);
+					} catch (FMLNullReferenceError e) {
 						defaultValue = null;
-					} catch (InvocationTargetException e) {
-						throw new FMLExecutionException(e.getCause() != null ? e.getCause() : e);
-					} catch (TypeMismatchException | ReflectiveOperationException e) {
-						throw new FMLExecutionException(e);
 					}
-					setFlexoPropertyValue(role, defaultValue);
+					setFlexoPropertyValueOrFail(role, defaultValue);
 				}
 			}
 		}
 
 		@Override
 		public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty) {
+			try {
+				return getFlexoPropertyValueOrFail(flexoProperty);
+			} catch (FMLExecutionException e) {
+				// Lenient reading (user interface): the failure gives null (CORE-F-11)
+				logger.warning("Cannot get value of " + (flexoProperty != null ? flexoProperty.getName() : null) + " in " + this + ": "
+						+ e.getMessage());
+				return null;
+			}
+		}
+
+		@Override
+		public <T> T getFlexoPropertyValueOrFail(FlexoProperty<T> flexoProperty) throws FMLExecutionException {
 
 			if (flexoProperty == null || flexoProperty.getFlexoConcept() == null) {
 				logger.warning("Unexpected null value: " + flexoProperty);
@@ -927,7 +986,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
 				while (container != null) {
 					if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
-						return container.getFlexoPropertyValue(flexoProperty);
+						return container.getFlexoPropertyValueOrFail(flexoProperty);
 					}
 					container = container.getContainerFlexoConceptInstance();
 				}
@@ -936,7 +995,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (getOwningVirtualModelInstance() != null && getOwningVirtualModelInstance() != this
 					&& flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
 				// In this case the property concerns the owning FMLRTVirtualModelInstance
-				return getOwningVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
+				return getOwningVirtualModelInstance().getFlexoPropertyValueOrFail(flexoProperty);
 			}
 			else {
 				if (flexoProperty instanceof FlexoRole) {
@@ -948,48 +1007,33 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					return getFlexoActor((FlexoRole<T>) flexoProperty);
 				}
 				else if (flexoProperty instanceof ExpressionProperty) {
+					// Evaluated in a strict context of this instance; a failure gets the frame of the property (CORE-F-11)
+					String conceptName = getFlexoConcept() != null ? getFlexoConcept().getName() : null;
 					try {
-						T returned = (T) ((ExpressionProperty<T>) flexoProperty).getExpression().getBindingValue(this);
-						return returned;
-					} catch (TypeMismatchException e) {
-						e.printStackTrace();
-						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
-						return null;
-					} catch (NullReferenceException e) {
-						e.printStackTrace();
-						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
-						return null;
-					} catch (InvocationTargetException e) {
-						e.getTargetException().printStackTrace();
-						logger.warning(
-								"Unexpected exception " + e.getTargetException() + " while executing expression property=" + flexoProperty);
-						return null;
-					} catch (ReflectiveOperationException e) {
-						e.printStackTrace();
-						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
-						return null;
+						return (T) FMLEvaluation.evaluate((DataBinding<?>) ((ExpressionProperty<T>) flexoProperty).getExpression(),
+								new LocalRunTimeEvaluationContext(), flexoProperty);
+					} catch (FMLExecutionException e) {
+						e.getFMLStack().pushFrame(flexoProperty.getName(), conceptName, this);
+						throw e;
+					} catch (FMLInternalError e) {
+						e.getFMLStack().pushFrame(flexoProperty.getName(), conceptName, this);
+						throw e;
 					}
 				}
 				else if (flexoProperty instanceof GetProperty) {
 					FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
 					if (getControlGraph != null) {
-						try {
-							RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-							// A failure gets the frame of the getter (CORE-F-11)
-							return (T) FMLExecution.executePropertyBody(getControlGraph, localEvaluationContext,
-									"get " + flexoProperty.getName(), this);
-						} catch (FlexoException e) {
-							e.printStackTrace();
-							logger.warning("Unexpected exception " + e + " while executing get property=" + flexoProperty);
-							return null;
-						}
+						RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+						// A failure gets the frame of the getter (CORE-F-11)
+						return (T) FMLExecution.executePropertyBody(getControlGraph, localEvaluationContext, "get " + flexoProperty.getName(),
+								this);
 					}
 				}
 				else if (flexoProperty instanceof AbstractProperty) {
 					FlexoProperty<T> specializedProperty = (FlexoProperty<T>) getFlexoConcept()
 							.getAccessibleProperty(flexoProperty.getName());
 					if (flexoProperty != specializedProperty) {
-						return getFlexoPropertyValue(specializedProperty);
+						return getFlexoPropertyValueOrFail(specializedProperty);
 					}
 					else {
 						logger.warning("Cannot execute abstract property: " + flexoProperty);
@@ -1032,6 +1076,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T aValue) {
+			try {
+				setFlexoPropertyValueOrFail(flexoProperty, aValue);
+			} catch (FMLExecutionException e) {
+				// Lenient writing (user interface): the failure is logged (CORE-F-11)
+				logger.warning("Cannot set value of " + (flexoProperty != null ? flexoProperty.getName() : null) + " in " + this + ": "
+						+ e.getMessage());
+			}
+		}
+
+		@Override
+		public <T> void setFlexoPropertyValueOrFail(FlexoProperty<T> flexoProperty, T aValue) throws FMLExecutionException {
 
 			if (flexoProperty == null || flexoProperty.getFlexoConcept() == null) {
 				logger.warning("Unexpected null value: " + flexoProperty);
@@ -1044,7 +1099,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
 				while (container != null) {
 					if (flexoProperty.getFlexoConcept().isAssignableFrom(container.getFlexoConcept())) {
-						container.setFlexoPropertyValue(flexoProperty, value);
+						container.setFlexoPropertyValueOrFail(flexoProperty, value);
 						return;
 					}
 					container = container.getContainerFlexoConceptInstance();
@@ -1052,7 +1107,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			else {
 
-				T oldValue = getFlexoPropertyValue(flexoProperty);
+				// The former value is only compared and notified: a getter that cannot give it yet (before the first set) does not fail
+				// the set
+				T oldValue;
+				try {
+					oldValue = getFlexoPropertyValueOrFail(flexoProperty);
+				} catch (FMLExecutionException e) {
+					oldValue = null;
+				}
 				if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
 					if (flexoProperty instanceof ModelSlot) {
 						setModelSlotValue((ModelSlot) flexoProperty, value);
@@ -1063,19 +1125,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						setFlexoActor(value, (FlexoRole) flexoProperty);
 					}
 					else if (flexoProperty instanceof ExpressionProperty) {
-						try {
-							((ExpressionProperty<T>) flexoProperty).getExpression().setBindingValue(value, this);
-						} catch (TypeMismatchException e) {
-							e.printStackTrace();
-						} catch (NullReferenceException e) {
-							e.printStackTrace();
-						} catch (InvocationTargetException e) {
-							e.printStackTrace();
-						} catch (NotSettableContextException e) {
-							e.printStackTrace();
-						} catch (ReflectiveOperationException e) {
-							e.printStackTrace();
-						}
+						FMLEvaluation.assign(((ExpressionProperty<T>) flexoProperty).getExpression(), value, new LocalRunTimeEvaluationContext(),
+								flexoProperty);
 					}
 					else if (flexoProperty instanceof GetSetProperty) {
 
@@ -1083,30 +1134,25 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						// value);
 
 						FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
-						try {
-							// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
-							RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext() {
-								@Override
-								public Object getValue(BindingVariable variable) {
-									if (variable instanceof SetValueBindingVariable
-											&& ((SetValueBindingVariable) variable).getProperty() == flexoProperty) {
-										return value;
-									}
-									return super.getValue(variable);
+						// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
+						RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext() {
+							@Override
+							public Object getValue(BindingVariable variable) {
+								if (variable instanceof SetValueBindingVariable
+										&& ((SetValueBindingVariable) variable).getProperty() == flexoProperty) {
+									return value;
 								}
-							};
-							// FD unused T returnedValue = null;
-							// A return ends the setter; a failure gets the frame of the setter (CORE-F-11)
-							FMLExecution.executePropertyBody(setControlGraph, localEvaluationContext, "set " + flexoProperty.getName(), this);
-						} catch (FlexoException e) {
-							e.printStackTrace();
-						}
+								return super.getValue(variable);
+							}
+						};
+						// A return ends the setter; a failure gets the frame of the setter (CORE-F-11)
+						FMLExecution.executePropertyBody(setControlGraph, localEvaluationContext, "set " + flexoProperty.getName(), this);
 					}
 					else if (flexoProperty instanceof AbstractProperty) {
 						FlexoProperty<T> specializedProperty = (FlexoProperty<T>) getFlexoConcept()
 								.getAccessibleProperty(flexoProperty.getName());
 						if (flexoProperty != specializedProperty) {
-							setFlexoPropertyValue(specializedProperty, value);
+							setFlexoPropertyValueOrFail(specializedProperty, value);
 						}
 						else {
 							logger.warning("Cannot execute abstract property: " + flexoProperty);
@@ -1921,7 +1967,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
+		public RunTimeEvaluationContext newLocalEvaluationContext() {
+			return new LocalRunTimeEvaluationContext();
+		}
+
+		@Override
 		public Object getValue(BindingVariable variable) {
+			// An instance used itself as a context is read leniently (user interface, renderer): execution reads it through a strict
+			// context (CORE-F-11)
+			return getValue(variable, EvaluationPolicy.LENIENT);
+		}
+
+		@Override
+		public Object getValue(BindingVariable variable, EvaluationPolicy policy) {
 
 			if (variable == null) {
 				return null;
@@ -1944,11 +2002,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					logger.warning("Cannot find concerned FlexoConceptInstance for " + variable);
 					return null;
 				}
+				if (policy == EvaluationPolicy.STRICT) {
+					try {
+						return ((FlexoPropertyBindingVariable) variable).getValueOrFail(concernedInstance);
+					} catch (FMLExecutionException e) {
+						// BindingEvaluationContext.getValue() declares no exception (CORE-F-11)
+						throw new FMLFailureTunnel(e);
+					}
+				}
 				return ((FlexoPropertyBindingVariable) variable).getValue(concernedInstance);
 			}
 
 			if (getOwningVirtualModelInstance() != null) {
-				return getOwningVirtualModelInstance().getValue(variable);
+				return getOwningVirtualModelInstance().getValue(variable, policy);
 			}
 
 			if (variables.containsKey(variable.getVariableName())) {
@@ -1960,13 +2026,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
+			setValue(value, variable, EvaluationPolicy.LENIENT);
+		}
+
+		@Override
+		public void setValue(Object value, BindingVariable variable, EvaluationPolicy policy) {
 			if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
 				FlexoConceptInstance concernedInstance = getConcernedInstance(((FlexoPropertyBindingVariable) variable).getFlexoProperty());
 				if (concernedInstance == null) {
 					logger.warning("Cannot find concerned FlexoConceptInstance for " + variable);
 					return;
 				}
-				((FlexoConceptInstanceImpl) concernedInstance).internallySetValue(value, (FlexoPropertyBindingVariable) variable);
+				try {
+					((FlexoConceptInstanceImpl) concernedInstance).internallySetValue(value, (FlexoPropertyBindingVariable) variable, policy);
+				} catch (FMLExecutionException e) {
+					// SettableBindingEvaluationContext.setValue() declares no exception (CORE-F-11)
+					throw new FMLFailureTunnel(e);
+				}
 				return;
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
@@ -1984,7 +2060,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					+ variable.getClass());
 		}
 
-		private void internallySetValue(Object value, FlexoPropertyBindingVariable bindingVariable) {
+		private void internallySetValue(Object value, FlexoPropertyBindingVariable bindingVariable, EvaluationPolicy policy)
+				throws FMLExecutionException {
 
 			if (getFlexoConcept() == null) {
 				logger.warning("null FlexoConcept for " + this + " of " + getClass());
@@ -2035,7 +2112,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					return;
 				}
 				FlexoProperty<Object> property = (FlexoProperty<Object>) bindingVariable.getFlexoProperty();
-				setFlexoPropertyValue(property, value);
+				if (policy == EvaluationPolicy.STRICT) {
+					setFlexoPropertyValueOrFail(property, value);
+				}
+				else {
+					setFlexoPropertyValue(property, value);
+				}
 				return;
 			}
 		}

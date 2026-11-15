@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
@@ -111,7 +113,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	// TODO: PAMELA
 	public void setParam(FlexoBehaviourArgument param);
 
-	public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action);
+	public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action) throws FMLExecutionException;
 
 	@Override
 	public DeleteFlexoConceptInstanceParameterBindingModel getBindingModel();
@@ -179,7 +181,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action) {
+		public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action) throws FMLExecutionException {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -194,24 +196,8 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 				}*/
 				return null;
 			}
-			else if (getValue().isValid()) {
-				try {
-					return getValue().getBindingValue(action);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-			else {
-				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
-			}
-			return null;
+			// Invalid, or failing, is an error (CORE-F-11)
+			return FMLEvaluation.evaluate(getValue(), action, this);
 		}
 
 		@Override

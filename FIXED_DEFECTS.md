@@ -1317,6 +1317,16 @@ directory on the classpath (the Eclipse case): 26/26 both ways, the directory le
 
 ## FML runtime errors (found by the audit of `CORE-F-11`, 2026-11-13)
 
+### CORE-D-75 — The initial value of a `for (init; cond; update)` loop is a Boolean when its initializer fails  ·  `DONE`
+
+**Symptom (read).** `ExpressionIterationAction.evaluateInitExpression` prints the stack and returns `Boolean.TRUE` on a
+`TypeMismatchException`, `InvocationTargetException` or `ReflectiveOperationException`, returns `false` on a `NullReferenceException`, and returns `true` when the
+initializer is unset or invalid. The loop then runs with a Boolean as the value of its variable, and the failure is not reported.
+
+**Fixed (2026-11-15, `CORE-F-11` phase 3).** `evaluateInitExpression` goes through `FMLEvaluation.evaluate`: a failing initializer fails the
+loop with the error of its kind, no initializer gives `null`, and the loop never runs with a Boolean. Test: `TestFMLErrorKinds.failingLoopInitializer`
+(fml-cli-test, script `ErrorKinds/FailingLoopInitializer.fmlscript`).
+
 ### CORE-D-76 — The iterator variable of `for (x : …)` stays declared when the loop body fails  ·  `DONE`
 
 **Symptom (read).** `IterationAction.execute` dereferences the iterator only on a `ReturnException`: an `FMLExecutionException`
@@ -1328,3 +1338,39 @@ ends the loop (a failure, a `return`, the end). Not changed: a `return` inside t
 (an iteration expression is an expression, it does not hold a `return` in practice). Tests: none fails without the fix (no script makes the body of a loop fail); correct by
 reading.
 
+### CORE-D-77 — Creating a virtual model instance without a name throws a `java.security.InvalidParameterException`  ·  `DONE`
+
+**Symptom (read).** `CreateFMLRTVirtualModelInstance` imports `java.security.InvalidParameterException` (a `RuntimeException` of the JDK security
+API) and throws it when the name is undefined. The project's `InvalidParametersException` was meant. Since `CORE-F-11` phase 1 the status of
+the action is set (`FAILED_EXECUTION`), but the failure is taken for a defect of the platform (an unchecked exception), not for an invalid
+parameter.
+
+**Fixed (2026-11-15, `CORE-F-11` phase 3).** The project's `InvalidParametersException` is thrown: the action ends `FAILED_EXECUTION` on a
+foreseen, checked failure. Test: `TestFlexoRoleCardinality` (flexo-foundation-test), which fails without the fix (the test editor rethrows an
+unchecked failure).
+
+### CORE-D-78 — `CreateFlexoConceptInstance` throws a `ClassCastException` while logging, and ignores a failing creation scheme  ·  `DONE`
+
+**Symptom (read).** In `doAction`, when the virtual model instance is not an `FMLRTVirtualModelInstance`, the warning "Not implemented feature
+for …" casts that instance to `FMLRTVirtualModelInstance` to build its message: the log itself throws a `ClassCastException`. In the other
+branch, `creationSchemeAction.doAction()` is called without checking its outcome, so a failing creation scheme still reads as a successful
+creation.
+
+**Fixed (2026-11-15, `CORE-F-11` phase 3).** The failure of the creation scheme is rethrown unchanged (`FMLExecution.rethrowFailure`), and an
+instance that is not an `FMLRTVirtualModelInstance` fails the action with an `InvalidParametersException` whose message no longer casts it.
+Not run: no test drives `CreateFlexoConceptInstance` with a failing creation scheme; correct by reading.
+
+### CORE-D-79 — A behaviour call gives a `NullPointerException` instead of an FML error  ·  `DONE`
+
+**Symptom (read).**
+- `ExecuteFlexoBehaviour.execute`: when the behaviour reference fails to evaluate, `getFlexoBehaviour` prints the stack and returns null, then
+  `actionScheme.getActionFactory(fci)` throws an NPE.
+- `FlexoBehaviourPathElement.getBindingValue`, called outside a behaviour: when the instance has no resource center, the action is never built
+  and `actionSchemeAction.setDeclaredConceptualLevel(…)` throws an NPE.
+- `ExecuteFlexoBehaviour.execute` has the same structure: no resource center outside a behaviour, then an NPE on `actionSchemeAction.doAction()`.
+
+**Fixed (2026-11-15, `CORE-F-11` phase 3).** `ExecuteFlexoBehaviour.execute` raises an `FMLNullReferenceError` for a null receiver or behaviour,
+and both sites build the action outside a behaviour with the editor of the instance (`FlexoConceptInstance.getEditor()`), which needs no
+resource center; the failure of the behaviour is rethrown unchanged. The path element raises an `FMLResolutionError` / `FMLTypeError` in a
+strict evaluation instead of returning null after a warning. Not run: the call outside a behaviour without a resource center has no test;
+correct by reading.

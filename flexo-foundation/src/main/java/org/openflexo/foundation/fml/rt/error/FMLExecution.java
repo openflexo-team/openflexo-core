@@ -38,6 +38,12 @@
 
 package org.openflexo.foundation.fml.rt.error;
 
+import org.openflexo.connie.binding.javareflect.AccessorInvocationException;
+import org.openflexo.connie.binding.javareflect.InvalidKeyValuePropertyException;
+import org.openflexo.connie.exception.BindingEvaluationException;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -53,8 +59,8 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
  * body of a behaviour runs, and {@link #executePropertyBody(FMLControlGraph, RunTimeEvaluationContext, String, FlexoConceptInstance)}
  * for a getter or a setter: take a {@code return} as the returned value and close the frame of the body.</li>
  * </ul>
- * An unchecked exception crossing a statement is converted once ({@link #convertUnchecked(RuntimeException)}) into an
- * {@link FMLInternalError}, which carries the FML stack. Nothing here logs: reporting is done once,
+ * An unchecked exception crossing a statement is converted once ({@link #convertUnchecked(RuntimeException)}): into the checked
+ * {@link FMLError} it stands for when it is foreseen, into an {@link FMLInternalError} otherwise; both carry the FML stack. Nothing here logs: reporting is done once,
  * by the editor that runs the outermost action.
  */
 public class FMLExecution {
@@ -86,19 +92,47 @@ public class FMLExecution {
 	}
 
 	/**
-	 * Convert supplied unchecked exception, crossing an FML execution, into an {@link FMLInternalError} (itself when it already is one), for
-	 * the caller to throw: {@code throw FMLExecution.convertUnchecked(e);}. It stays unchecked, so it propagates as it did before.
-	 * <p>
-	 * Declared to throw {@link FMLExecutionException}: phase 3 of CORE-F-11 will throw from here the checked {@link FMLError} that a foreseen
-	 * one stands for (an {@link FMLHostError} for a failure of a Java accessor called from FML, an {@link FMLResolutionError} for a property
-	 * that a Java object does not have). Not before: the many {@code catch (FlexoException)} that still turn a failure into null would
-	 * swallow it, where the unchecked exception used to reach the caller.
+	 * Convert supplied unchecked exception, crossing an FML execution, for the caller to throw: {@code throw FMLExecution.convertUnchecked(e);}.
+	 * <ul>
+	 * <li>a foreseen one is thrown from here as the checked {@link FMLError} it stands for (CORE-F-11 phase 3): an {@link FMLHostError} for
+	 * a failure of a Java accessor called from FML ({@code AccessorInvocationException}), an {@link FMLResolutionError} for a property that
+	 * a Java object does not have ({@code InvalidKeyValuePropertyException}), the error of its kind for a {@code BindingEvaluationException}
+	 * of Connie in a strict context, and the failure carried by an {@link FMLFailureTunnel};</li>
+	 * <li>any other is returned as an {@link FMLInternalError} (itself when it already is one), a defect of the platform, which stays
+	 * unchecked.</li>
+	 * </ul>
 	 */
 	public static FMLInternalError convertUnchecked(RuntimeException e) throws FMLExecutionException {
 		if (e instanceof FMLInternalError) {
 			return (FMLInternalError) e;
 		}
+		if (e instanceof FMLFailureTunnel || e instanceof AccessorInvocationException || e instanceof InvalidKeyValuePropertyException
+				|| e instanceof BindingEvaluationException) {
+			// Throws an FMLInternalError itself for the kinds of BindingEvaluationException that stand for a defect
+			throw FMLEvaluation.convert(e, null);
+		}
 		return new FMLInternalError(e);
+	}
+
+	/**
+	 * Rethrow the failure of supplied nested action, after its {@code doAction()}: a nested action leaves its failure to its caller
+	 * (CORE-F-11). An FML failure, or an unchecked one, is rethrown unchanged (it carries its FML stack); an invalid parameter becomes an
+	 * {@link FMLArgumentError}, another checked failure an {@link FMLTechnologyError}.
+	 * Returns normally when the action did not fail.
+	 */
+	public static void rethrowFailure(FlexoAction<?, ?, ?> action) throws FMLExecutionException {
+		action.rethrowUncheckedFailure();
+		FlexoException thrown = action.getThrownException();
+		if (thrown instanceof FMLExecutionException) {
+			throw (FMLExecutionException) thrown;
+		}
+		if (thrown instanceof InvalidParametersException) {
+			throw new FMLArgumentError(thrown.getMessage(), thrown);
+		}
+		if (thrown != null) {
+			// Another checked failure of an action: a failure of the operation it performs
+			throw new FMLTechnologyError(thrown.getMessage(), thrown);
+		}
 	}
 
 	/**

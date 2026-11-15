@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
@@ -136,7 +138,7 @@ public interface MatchingCriteria extends FlexoConceptObject {
 	 *            context of the executing behaviour
 	 * @return the value, null when it is not set or not valid
 	 */
-	public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext);
+	public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	@Override
 	public MatchingCriteriaBindingModel getBindingModel();
@@ -185,28 +187,12 @@ public interface MatchingCriteria extends FlexoConceptObject {
 		}
 
 		@Override
-		public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext) {
+		public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (getValue() == null || getValue().isUnset()) {
 				return null;
 			}
-			else if (getValue().isValid()) {
-				try {
-					return getValue().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-			else {
-				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
-			}
-			return null;
+			// Invalid, or failing, is an error (CORE-F-11)
+			return FMLEvaluation.evaluate(getValue(), evaluationContext, this);
 		}
 
 		@Override

@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLResolutionError;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -339,34 +343,12 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			this.container = aContainer;
 		}
 
-		public VMI getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getReceiver().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public VMI getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getReceiver(), evaluationContext, this);
 		}
 
-		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getContainer().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 		}
 
 		@Override
@@ -622,33 +604,29 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
 			if (vmInstance == null) {
-				logger.warning("null FMLRTVirtualModelInstance");
-				System.out.println("evaluationContext=" + evaluationContext);
-				Thread.dumpStack();
-				return null;
+				// A null receiver is an error (CORE-F-11)
+				throw new FMLNullReferenceError("No virtual model instance to create the new instance in");
 			}
 
 			FlexoConceptInstance container = null;
 
 			if (getDynamicInstantiation() && !getDynamicFlexoConceptType().isValid()) {
-				logger.warning("undefined or invalid dynamic concept type while creating new concept");
-				return null;
+				throw new FMLResolutionError("Undefined or invalid dynamic concept type: " + getDynamicFlexoConceptType());
 			}
 
 			if (!getDynamicInstantiation() && getFlexoConceptType() == null) {
-				logger.warning("null concept type while creating new concept");
-				return null;
+				throw new FMLResolutionError("No concept to instantiate");
 			}
 
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
-
-			logger.info("instantiatedFlexoConcept=" + instantiatedFlexoConcept);
+			if (instantiatedFlexoConcept == null) {
+				throw new FMLNullReferenceError("The concept to instantiate is null: " + getDynamicFlexoConceptType());
+			}
 
 			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
-					logger.warning("null container while creating new concept " + getFlexoConceptType());
-					return null;
+					throw new FMLNullReferenceError("Null container while creating a new instance of " + instantiatedFlexoConcept.getName());
 				}
 			}
 
@@ -679,7 +657,6 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			else {
 				logger.warning("I should find default creationScheme for dynamic instantiation");
 				CreationScheme applicableCreationScheme = findBestCreationSchemeForDynamicInstantiation(evaluationContext);
-				System.out.println("Found: " + applicableCreationScheme);
 				if (applicableCreationScheme != null) {
 					if (_performExecuteCreationScheme(applicableCreationScheme, newFCI, vmInstance, evaluationContext)) {
 						if (logger.isLoggable(Level.FINE)) {
@@ -710,12 +687,19 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		}
 
 		protected boolean executeCreationScheme(FCI newInstance, VirtualModelInstance<?, ?> vmInstance,
-				RunTimeEvaluationContext evaluationContext) {
+				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			return _performExecuteCreationScheme(getCreationScheme(), newInstance, vmInstance, evaluationContext);
 		}
 
+		/**
+		 * Execute supplied creation scheme on the new instance
+		 * 
+		 * @return true when it succeeded
+		 * @throws FMLExecutionException
+		 *             the failure of the creation scheme, rethrown unchanged (CORE-F-11)
+		 */
 		protected boolean _performExecuteCreationScheme(CreationScheme creationScheme, FCI newInstance,
-				VirtualModelInstance<?, ?> vmInstance, RunTimeEvaluationContext evaluationContext) {
+				VirtualModelInstance<?, ?> vmInstance, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
@@ -726,11 +710,11 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						logger.fine("For parameter " + param + " value is " + value);
 					}
 					if (value != null) {
-						creationSchemeAction.setParameterValue(p.getParam(),
-								p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
+						creationSchemeAction.setParameterValue(param, value);
 					}
 				}
 				creationSchemeAction.doAction();
+				FMLExecution.rethrowFailure(creationSchemeAction);
 
 				return creationSchemeAction.hasActionExecutionSucceeded();
 
@@ -744,12 +728,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		protected FlexoConcept retrieveFlexoConcept(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (getDynamicInstantiation() && getDynamicFlexoConceptType().isValid()) {
-				try {
-					return getDynamicFlexoConceptType().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
-					e.printStackTrace();
-					throw new FMLExecutionException(e);
-				}
+				return FMLEvaluation.evaluate(getDynamicFlexoConceptType(), evaluationContext, this);
 			}
 			return getFlexoConceptType();
 		}

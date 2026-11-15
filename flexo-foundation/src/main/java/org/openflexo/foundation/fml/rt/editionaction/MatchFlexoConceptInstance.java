@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -230,9 +231,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	public VirtualModel getAddressedVirtualModel();
 
-	public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext);
+	public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
-	public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext);
+	public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, FMLRTVirtualModelInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
@@ -315,50 +316,17 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 
 		@Override
-		public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getReceiver().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getReceiver(), evaluationContext, this);
 		}
 
-		public MatchingSet getMatchingSet(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getMatchingSet().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public MatchingSet getMatchingSet(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getMatchingSet(), evaluationContext, this);
 		}
 
 		@Override
-		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getContainer().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 		}
 
 		@Override
@@ -622,15 +590,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 								+ getCreationScheme().getName());
 					}
 
-					try {
-						matchingFlexoConceptInstance = getNewInstance().getBindingValue(evaluationContext);
-					} catch (TypeMismatchException e) {
-						throw new FMLExecutionException(e);
-					} catch (NullReferenceException e) {
-						throw new FMLExecutionException(e);
-					} catch (ReflectiveOperationException e) {
-						throw new FMLExecutionException(e);
-					}
+					matchingFlexoConceptInstance = FMLEvaluation.evaluate(getNewInstance(), evaluationContext, this);
 				}
 
 				return matchingFlexoConceptInstance;

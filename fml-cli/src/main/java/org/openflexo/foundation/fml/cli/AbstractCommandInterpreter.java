@@ -38,6 +38,7 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.EvaluationPolicy;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -687,6 +688,12 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	@Override
 	public BindingModel getBindingModel() {
 		return bindingModel;
+	}
+
+	/** Scripts and commands execute FML: they evaluate strictly, a failure is an error, never a null (CORE-F-11) */
+	@Override
+	public EvaluationPolicy getEvaluationPolicy() {
+		return EvaluationPolicy.STRICT;
 	}
 
 	@Override

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,16 +130,18 @@ public interface IterationAction extends AbstractIterationAction {
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			List<?> items = evaluateIteration(evaluationContext);
-			if (items != null) {
-				try {
-					for (Object item : new ArrayList<Object>(items)) {
-						evaluationContext.declareVariable(getIteratorName(), item);
-						FMLExecution.executeStatement(getControlGraph(), evaluationContext);
-					}
-				} finally {
-					// Also when the body fails or returns: the iterator does not outlive the loop (CORE-D-76)
-					evaluationContext.dereferenceVariable(getIteratorName());
+			if (items == null) {
+				// Iterating over null is an error, as in Java, no longer zero iterations (CORE-F-11, decided with the user)
+				throw new FMLNullReferenceError("Cannot iterate over null: " + getIterationAction().getStringRepresentation());
+			}
+			try {
+				for (Object item : new ArrayList<Object>(items)) {
+					evaluationContext.declareVariable(getIteratorName(), item);
+					FMLExecution.executeStatement(getControlGraph(), evaluationContext);
 				}
+			} finally {
+				// Also when the body fails or returns: the iterator does not outlive the loop (CORE-D-76)
+				evaluationContext.dereferenceVariable(getIteratorName());
 			}
 			return null;
 		}

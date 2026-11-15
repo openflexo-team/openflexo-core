@@ -1,6 +1,5 @@
-// CORE-D-8: an invalid condition fails the execution; a condition that is null is false.
+// CORE-D-8: an invalid condition fails the execution. A null condition is an error too since CORE-F-11 (ErrorKinds/NullCondition).
 virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
 service ResourceCenterService add_temp_rc;
 vmi = new ExecutionFailures() with (name="condition");
-assert vmi.nullCondition() == "else";
 mustFail = vmi.invalidCondition();

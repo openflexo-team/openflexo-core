@@ -5,14 +5,14 @@ chapters above, is meant to do. Each entry is a defect of the implementation: a 
 on it, and a future release may change it. The identifiers are those of
 [`KNOWN_DEFECTS.md`](../KNOWN_DEFECTS.md), which holds the symptom, the reproduction and the analysis of each.
 
-The common trait of these deviations is that **they fail silently**: the program parses, loads, runs, and gives a
-wrong value. They are the reason why chapter 13 insists on validation and on asserting values.
+Many of these deviations **fail silently**: the program parses, loads, runs, and gives a wrong value. Since 3.0 (`CORE-F-11`), those
+that leave a binding unresolved fail when they run instead of giving `null`. They are the reason why chapter 13 insists on validation and on asserting values.
 
 ## B.1 Statements and expressions
 
 | Id | Deviation | Specified in | Write instead |
 |---|---|---|---|
-| `CORE-D-19` | a method call on a string literal gives `null` | §9.5.2 | put the literal in a variable |
+| `CORE-D-19` | a method call on a string literal does not resolve: an error at run time | §9.5.2 | put the literal in a variable |
 
 ## B.2 Properties and behaviours
 
@@ -22,7 +22,7 @@ wrong value. They are the reason why chapter 13 insists on validation and on ass
 | `CORE-D-11` | an expression property that has been read can keep its earlier value | §6.4 | read the underlying value in a behaviour |
 | `CORE-D-4` | a default value of an argument does not let a call omit it | §7.2 | pass every argument; add a named creation scheme |
 | `CORE-D-13` | `new C::name()` with fewer arguments than the scheme declares does not resolve; a call must match in number | §7.4 | pass the arguments |
-| `CORE-D-17` | `super.name()` gives `null` when the concept has several parents | §5.3.2 | a helper behaviour called on `this` |
+| `CORE-D-17` | `super.name()` does not resolve when the concept has several parents: an error at run time | §5.3.2 | a helper behaviour called on `this` |
 | `CORE-D-10` | `delete x` does not remove `x` from the multi-valued properties that hold it | §10.4 | remove, then delete |
 | `CORE-D-74` | the initializer of a property that also has a `with` clause is lost on save | §6.2 | initialize it in the creation scheme |
 | `CORE-D-73` | a creation run by a technology action, or through a technology factory, hides a failing creation scheme | §13.6 | assert the effects of the creation |
@@ -61,14 +61,12 @@ for convenience.
 
 | Behaviour | Section |
 |---|---|
-| `&&` and `||` evaluate both operands | §9.3 |
 | `/` and `%` give decimals, even between integers | §9.5.1 |
 | a string is never converted to a number; `1 + "a"` is an error | §9.5.2 |
-| a parameter is read as `parameters.x`; a bare name gives `null` | §7.2.1, §9.6.3 |
+| a parameter is read as `parameters.x`; a bare name is an invalid binding, an error at run time | §7.2.1, §9.6.3 |
 | a behaviour of the same instance is called on `this` | §7.4 |
-| a bare `new` of a concept that is not nested in the current one is an invalid binding, `null` at run time | §9.7 |
-| a path that does not resolve evaluates to `null` | §9.8 |
-| a missing `import` gives `null` and no error | §3.5.2 |
+| a bare `new` of a concept that is not nested in the current one is an invalid binding, an error at run time | §9.7 |
+| a missing `import` is reported by validation only; a path through it is an error at run time | §3.5.2 |
 | an unassigned primitive property holds `null`, not `0` | §4.2 |
 | `[2,8]` and other bounds are read as `[0,*]` with a warning | §4.6 |
 | a type version `@(1.2)` is accepted and ignored | §4.5 |

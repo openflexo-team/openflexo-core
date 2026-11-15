@@ -169,7 +169,7 @@ A script is checked and executed under rules of its own.
   automated tests (`AutomatedTests`) checks before running that every command is well formed, and that the
   bindings of a plain expression resolve; it does not check the bindings of an `assert` or of an assignment.
 * **A failed `load` or `new` stops the script**, with a message that names the command; nothing after it runs.
-  Inside a behaviour the same mistake often gives a silent `null` (§9.8).
+  Inside a behaviour the same mistake is an execution error of the behaviour (§9.8).
 * **Visibility is ignored.** A script can read and write a `private` property.
 * **`select` is not available** (it is an identifier in the `script` state, §2.5.2). To check what a query finds,
   call a behaviour that returns it: `assert list.openTasks().size == 2;`.

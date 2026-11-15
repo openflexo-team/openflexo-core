@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.binding.javareflect.AccessorInvocationException;
 import org.openflexo.connie.binding.javareflect.InvalidKeyValuePropertyException;
+import org.openflexo.connie.exception.BindingEvaluationException;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
@@ -275,7 +276,10 @@ public class FMLErrorReporter {
 			if (c instanceof InvocationTargetException || c instanceof AccessorInvocationException || c instanceof FMLHostError) {
 				return true;
 			}
-			if (c instanceof RuntimeException && !(c instanceof InvalidKeyValuePropertyException)) {
+			// A tunnel only carries the failure it holds; an exception of Connie in a strict evaluation, or a missing Java property, is a
+			// fault of the FML
+			if (c instanceof RuntimeException && !(c instanceof InvalidKeyValuePropertyException) && !(c instanceof BindingEvaluationException)
+					&& !(c instanceof FMLFailureTunnel)) {
 				return false;
 			}
 		}
