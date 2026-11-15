@@ -210,8 +210,8 @@ public interface MoreDirective extends Directive<AMoreDirective> {
 			else {
 				String cmdOutput = "No textual renderer for such data.";
 
-				output.add(cmdOutput);
-				throw new FMLCommandExecutionException(cmdOutput);
+				// The directive cannot do what it is asked: an invalid command, not an FML error (CORE-F-11)
+				throw invalidCommand(cmdOutput);
 			}
 		}
 

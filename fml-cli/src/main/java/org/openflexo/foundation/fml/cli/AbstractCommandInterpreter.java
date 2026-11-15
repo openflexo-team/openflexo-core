@@ -18,6 +18,11 @@
 
 package org.openflexo.foundation.fml.cli;
 
+import java.util.logging.Level;
+
+import org.openflexo.foundation.fml.cli.command.FMLInvalidCommandException;
+import org.openflexo.foundation.fml.rt.error.FMLErrorReporter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -264,19 +269,55 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		return availableCommands;
 	}
 
+	/**
+	 * Parse and execute supplied command
+	 * 
+	 * @return the command executed
+	 * @throws ParseException
+	 *             when the command cannot be parsed
+	 * @throws FMLInvalidCommandException
+	 *             when the command is invalid (its reason is also the output)
+	 * @throws FMLCommandExecutionException
+	 *             when the command fails; the caller reports it, with {@link FMLCommandExecutionException#describe()} (CORE-F-11)
+	 */
 	public AbstractCommand executeCommand(String commandString) throws ParseException, FMLCommandExecutionException {
 		AbstractCommand command = makeCommand(commandString);
-		// System.out.println("Typed: " + commandString + " command=" + command);
-		if (command != null) {
-			if (command.isSyntaxicallyValid()) {
-				output = command.getOutput();
-				command.execute();
+		if (command == null) {
+			// Not a command (blank or comment)
+			output = Collections.emptyList();
+			return null;
+		}
+		if (command.isSyntaxicallyValid()) {
+			output = command.getOutput();
+			command.execute();
+		}
+		else {
+			output = Arrays.asList(command.invalidCommandReason());
+			throw new FMLInvalidCommandException(command.invalidCommandReason());
+		}
+		return command;
+	}
+
+	/**
+	 * Execute supplied command, and report its failure, if any, on the error stream: the interactive loop of the interpreter, which
+	 * survives any failure of a command (CORE-F-11)
+	 * 
+	 * @return the command executed, null when it could not be parsed or has failed
+	 */
+	public AbstractCommand executeAndReport(String commandString) {
+		try {
+			return executeCommand(commandString);
+		} catch (ParseException e) {
+			getErrStream().println(e.getMessage());
+		} catch (FMLCommandExecutionException e) {
+			getErrStream().println(e.describe());
+			if (!e.isForeseen()) {
+				logger.log(Level.SEVERE, "Unexpected failure of command " + commandString, e);
 			}
-			else {
-				output = Arrays.asList(command.invalidCommandReason());
-				getErrStream().println(command.invalidCommandReason());
-			}
-			return command;
+		} catch (RuntimeException | StackOverflowError e) {
+			// A defect of the platform, or a behaviour recursing endlessly: reported, and the interpreter goes on
+			getErrStream().println(FMLErrorReporter.describe("Unexpected failure", e));
+			logger.log(Level.SEVERE, "Unexpected failure of command " + commandString, e);
 		}
 		return null;
 	}

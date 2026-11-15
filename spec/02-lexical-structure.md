@@ -174,7 +174,7 @@ the following; **every other language keyword is an ordinary identifier in `bind
 |---|---|
 | `as` `begin` `extends` `from` `instanceof` `match` `required` `select` `unique` `where` | `new` `with` |
 
-Additionally `assert` is reserved in `normal`, `command` and `script` (not in `binding`); `log` in
+Additionally `assert` and `return` are reserved in `normal`, `command` and `script` (not in `binding`); `log` in
 `normal`, `command` and `script` (and it moves `normal` to `binding`, §2.3.1); `import`, `use` and
 `values` are reserved in `normal` only.
 

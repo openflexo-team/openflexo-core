@@ -15,6 +15,7 @@ command       = directive | fml_command
 
 fml_command   = "context"
               | "assert" expression
+              | "return" expression?
               | ( left_hand_side "=" )? fml_action_exp
               | expression
 ```
@@ -24,6 +25,7 @@ A script is a sequence of `;`-terminated commands, with `//` and `/* … */` com
 
 * `context` prints the bindings currently in scope;
 * `assert e` checks that `e` is true;
+* `return` and `return e` end the script, successfully: the commands after it do not run (§12.6);
 * `name = expression;` evaluates the expression and binds the result to `name`; the name then stands for that
   value in the commands that follow;
 * an edition action (§10), optionally assigned;
@@ -160,6 +162,31 @@ value, `markdownModel.new MarkdownModel(resource) with (name = "…")`.
 Assert **values**, not mere success: `assert list.taskCount == 2;`, `assert milk.status == "done";`. A script that
 only runs proves nothing about behaviour.
 
+A failed assertion names its line and its expression, with the value of each operand that is not a constant:
+`Line 3: assert failed: x[1] == 2`. An `assert` whose expression is neither a boolean nor `null` is a type error.
+
+### 12.6.1 Failures and the end of a script
+
+A script stops at its first failing command. The failure is described with the line of the command (and the name of
+the script when it was run by `execute`), the kind of the error, its message, and its FML stack: one frame per
+behaviour, innermost first, each with its line in the compilation unit.
+
+```
+Line 5: Null reference: Condition 'b' is null
+	at ExecutionFailures.nullCondition(), line 80:2: if (b) { ... [on ExecutionFailures#1]
+```
+
+The kinds are the ones of the runtime errors of FML (null reference, type error, resolution error, failure of Java
+code, …) and *Internal error* for a defect of the platform. A command that cannot run because it is invalid (an
+unresolved name, a script that does not parse) is not an FML error.
+
+`return` (with or without a value) ends the script successfully; the value, if any, is printed. In a script run by
+`execute` it ends that script only, and the script that ran it goes on. In the interactive shell it only prints the value.
+
+Run headless with a script (`fml-cli [--rc path] script.fmlscript`), fml-cli exits with `0` when the script ran to its
+end or to a `return`, `1` for an FML error or a failed assertion, `2` for a script that cannot be read or parsed, an
+invalid command or wrong options, and `3` for an internal error.
+
 ## 12.7 Differences with a behaviour body
 
 A script is checked and executed under rules of its own.
@@ -190,7 +217,7 @@ A behaviour or a creation scheme whose name is one of these words parses inside 
 (*expecting: lidentifier*): `open` is a legitimate behaviour name in a model and not a callable one in a script. Rename
 it if a script must call it.
 
-In the `script` state the only language keywords are `new`, `with`, `assert` and `log` (§2.5.2); every other word
+In the `script` state the only language keywords are `new`, `with`, `assert`, `return` and `log` (§2.5.2); every other word
 of the language (`select`, `where`, `from`, `match`, `instanceof`, …) is an identifier there, which is why those
 constructs are not available in a script. The primitive-type keywords and the literals `true`, `false` and `null`
 exist in all states.
@@ -199,4 +226,5 @@ exist in all states.
 
 The `command` entry point (§1.2) parses one command at a time, with the lexical state `command`. It admits the same
 directives and expressions as a script. The shell adds nothing to the language: its history, completion and
-output are features of the application.
+output are features of the application. A failing command is described as in a script (§12.6.1), without a line,
+and the shell goes on.

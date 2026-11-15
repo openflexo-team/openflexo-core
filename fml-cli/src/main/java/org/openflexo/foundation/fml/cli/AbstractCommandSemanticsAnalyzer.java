@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AActivateTaDirective;
 import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
+import org.openflexo.foundation.fml.parser.node.AReturnFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
@@ -244,6 +245,12 @@ public abstract class AbstractCommandSemanticsAnalyzer extends FMLSemanticsAnaly
 	public void outAContextFmlCommand(AContextFmlCommand node) {
 		super.outAContextFmlCommand(node);
 		registerCommand(node, scriptModelFactory.newFMLContextCommand(node, this));
+	}
+
+	@Override
+	public void outAReturnFmlCommand(AReturnFmlCommand node) {
+		super.outAReturnFmlCommand(node);
+		registerCommand(node, scriptModelFactory.newFMLReturnCommand(node, this));
 	}
 
 	@Override

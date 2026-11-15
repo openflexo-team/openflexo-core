@@ -39,16 +39,21 @@
 
 package org.openflexo.foundation.fml.cli;
 
+import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
+import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
+import org.openflexo.foundation.fml.parser.parser.ParserException;
 import org.openflexo.p2pp.RawSource;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class provides the parsing service for FML commands. This includes syntactic and semantics analyzer.<br>
@@ -93,9 +98,16 @@ public class CommandParser {
 				return null;
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (ParserException | LexerException | IOException e) {
+			// Not printed: the caller reports the parse exception (CORE-F-11)
 			throw new ParseException(e.getMessage() + " while parsing " + aCommand);
+		} catch (RuntimeException | ModelDefinitionException e) {
+			// A defect of the platform while analyzing the command: logged with its Java stack, reported as a parse failure
+			logger.log(Level.SEVERE, "Unexpected failure while parsing " + aCommand, e);
+			ParseException failure = new ParseException("Unexpected " + e.getClass().getSimpleName()
+					+ (e.getMessage() != null ? ": " + e.getMessage() : "") + " while parsing " + aCommand);
+			failure.initCause(e);
+			throw failure;
 		}
 	}
 

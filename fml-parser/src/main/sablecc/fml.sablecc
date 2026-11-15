@@ -283,7 +283,7 @@ Tokens
    {normal} kw_public = 'public';
    //{normal} kw_receive = 'receive';
    {normal,binding} kw_required = 'required';
-   {normal} kw_return = 'return';
+   {command,script,normal} kw_return = 'return';
    {normal,binding} kw_select = 'select';
    {normal} kw_set = 'set';
    {normal} kw_super = 'super';
@@ -469,6 +469,7 @@ Productions
    fml_command =
      {context}    context |
      {assert}     kw_assert expression |
+     {return}     kw_return expression? |
     // {validate} validate expression |
     // {log}      kw_log expression |
      {fml_action} command_assign? fml_action_exp |

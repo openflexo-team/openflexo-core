@@ -126,7 +126,8 @@ public interface ServiceDirective<S extends FlexoService> extends Directive<ASer
 							}
 							else {
 								isValid = false;
-								invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: null argument";
+								invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: "
+										+ (getArgumentFailure() != null ? getArgumentFailure() : "null argument");
 							}
 						}
 						else {

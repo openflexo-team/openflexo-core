@@ -1,0 +1,3 @@
+// CORE-F-11 phase 5: a bare top-level return ends the script, successfully
+return;
+assert false;

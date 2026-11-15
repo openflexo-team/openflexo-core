@@ -786,6 +786,64 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
   undone when it fails, and a failing nested one undoes the whole outer recording. The other initializers keeping a `NotImplementedException`
   case (`CreateBasicVirtualModelInstanceInitializer`, `CreateDiagramInitializer`...) are not behaviour actions and are left as they are.
 
+**Phase 5 done (2026-11-15), decided with the user.**
+- fml-cli: `FMLCommandExecutionException` knows the line of the failing command (set by `FMLScript.execute`, the innermost script
+  first) and the script that holds it (set by the `execute` directive); `getFailure()` gives the FML failure it stands for (its cause),
+  `describe()` the text for the user: location, English kind, message and FML stack (`FMLErrorReporter.describe`). A command that cannot
+  run because it is invalid throws `FMLInvalidCommandException`, `AbstractCommandInterpreter.executeCommand` too (it used to print the
+  reason and return). An unchecked failure of a command in a script is wrapped with its line. The expression commands (expression,
+  assignment, `assert`, `return`) go through `FMLEvaluation.convert`, so their cause is the typed `FMLError` (a strict
+  `BindingEvaluationException` no longer escapes). An `assert` on a value that is not a boolean is an `FMLTypeError`.
+- `FMLAssertException`: a message for every assertion (`assert failed: false`), the values of the operands of a binary one, no printed
+  stack.
+- Top-level `return` (decided: it ends the script successfully, the value printed): `return` did not parse in a script, the
+  `ReturnException` branch of `FMLActionCommand` could not be reached. `fml.sablecc` gains `{return} kw_return expression?` in
+  `fml_command`, `kw_return` is reserved in the `command` and `script` states too (decided with the user); new `FMLReturnCommand`. The
+  specification (§2.5.2, chapter 12) is updated, the website pages are not regenerated.
+- The interactive loop goes through `AbstractCommandInterpreter.executeAndReport`: any failure, a `RuntimeException` included, is
+  described on the error stream (a defect also logged at SEVERE with its Java stack), and the loop goes on. The terminal of the
+  application (`FMLTerminal`, openflexo-ui) does the same.
+- `ExecuteDirective` throws its failures (to the caller, which writes them to err), naming the script; it closes its stream. A missing
+  or unparsable script is an invalid command.
+- `LaunchHeadlessFMLCLI` (decided): a script mode `fml-cli [--rc path] script.fmlscript`; exit 0 success (end or `return`), 1 foreseen FML
+  error or failed assertion, 2 invalid script, invalid command or wrong options, 3 internal error; interactive: 0 on quit, 3 if the
+  interpreter dies. `runScript` and `parseOptions` are callable from tests.
+- No `printStackTrace` / `System.out` left on the paths of a failing command: `CommandParser`, `FMLScriptParser`, `Directive.evaluate`
+  (its failure becomes the reason why the `service` directive is invalid), `FMLAssignation`.
+- Server (decided): a failing FML action answers JSON {`kind` (English), `key` (`fml_*`, for a client to translate), `message`,
+  `location` (innermost frame: `uri`, `line`, `column`, `behaviour`, `concept`, `instance`, `statement`), `stack`}, 400 for a foreseen
+  error, 500 for a defect (`GenericController.fmlError`, `JsonSerializer.fmlErrorSerializer`). `GenericController.performAction` runs an
+  action and answers its failure; `ConceptInstancesController.add`, `VirtualModelInstancesController.add` and `executeBehaviour` then
+  stop and save nothing. `TerminalController`: an FML failure or a failed assertion answers the same JSON; a parse error or an invalid
+  command stays 422. `BehavioursController` (it edits the FML, runs none) is unchanged. The English kind is the one of phase 4: the
+  console, the logs, fml-cli and the server give the same stable text.
+- Tests: `TestScriptFailureReporting` (fml-cli-test, scripts of `ScriptFailures/`): line and kind of a failing command, FML stack of a
+  failing behaviour, assertion message, `return` and bare `return`, `execute` of a failing and of a missing script, exit codes, options.
+  `TestCLICommandsExceptionManagement`: assertion messages, `assert` on a non-boolean, invalid command, the loop surviving a
+  `RuntimeException`. `AutomatedTests` fails on any failure with its description. `TestFMLErrorResponses` (http-server): a failing
+  behaviour answers 400 with its frame and does not save its instance, the terminal answers 400 / 422, the JSON of a defect.
+- After review (decided with the user): an action not executed because it is not enabled answers 409 (kind `Not enabled`, key
+  `fml_not_enabled`); a `return` in a script run by `execute` ends that script only; the terminal of the application prints and logs a
+  defect of a typed command, without the bug report (as decision 9 of phase 4). Fixed after review: a missing script run by `execute` is
+  located at the `execute` command; a JVM `Error` of a script gives exit 3 and a `StackOverflowError` no longer ends the shell;
+  `CommandParser` keeps the cause of an unexpected failure and logs it; the failures of `load`, `ls`, `enter`, `more` are invalid
+  commands (exit 2, 422), no longer FML errors; a `ModelDefinitionException` under `execute` is a defect.
+- Known limits:
+  - The edits a failing action made before its failure stay in memory on the server (no undo manager there) and the next successful
+    request saves them: `SERVER-D-1` (openflexo-server), to fix later (decided with the user).
+  - A failure evaluating the argument of a `service` directive is found when the command is parsed: an invalid command (exit 2).
+  - The REST terminal answers the FML failure of a command run in a script by `execute` without the name and line of that script.
+  - The JSON keeps the `resource_type` field of the other answers of the server (`FMLError`).
+  - An action started by a command (a behaviour called from a script, from the terminal, or by the server) is still reported by the
+    editor (console and a WARNING log), and described again by fml-cli on err, or answered by the server: two texts for one failure.
+  - Exit code 3 of a script and the 500 of an endpoint are not covered by a test (no FML reaches a defect on purpose).
+  - The `AutomatedTests` of other repositories (formod, city-mapping, digital-twin-demo, multi-process-challenge) still catch only
+    `FMLAssertException`; another failure fails them as an error, whose message now carries the line.
+  - The directives that load resources (`cd`, `enter`, `more`, `open`, `load`) still print the stack of a loading failure: not an FML
+    runtime error, left.
+  - `ConceptInstancesController` still turns a failed save into a `RuntimeException`.
+  - Found on the way: `CORE-D-83` (the output of the commands is one static list).
+
 Deferred from phase 1:
 - `FMLEvaluation` moves to phase 3: its conversions depend on the strict mode of Connie.
 - Localized messages move to phase 4.

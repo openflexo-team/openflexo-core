@@ -144,8 +144,8 @@ public interface LoadResource extends AssignableDirective<ALoadDirective> {
 			if (getResultingResource() == null) {
 				cmdOutput =  "Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath;
 
-				output.add(cmdOutput);
-				throw new FMLCommandExecutionException(cmdOutput);
+				// The directive cannot do what it is asked: an invalid command, not an FML error (CORE-F-11)
+				throw invalidCommand(cmdOutput);
 			}
 
 			if (getResultingResource().isLoaded()) {

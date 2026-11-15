@@ -530,6 +530,18 @@ into one across several statements.
 
 ---
 
+### CORE-D-83 — The output of every fml-cli command is one list, shared by all commands and all interpreters  ·  `TODO`
+
+**Symptom (read, not run; found while doing CORE-F-11 phase 5, 2026-11-15).** `AbstractCommand` (fml-cli) declares
+`List<String> output = new ArrayList<>();` in the interface: a field of an interface is `static final`, so every command of every
+interpreter writes into the same list, and `AbstractCommandInterpreter.getOutput()` returns it. Each command clears it when it
+starts. Two interpreters running at the same time (two REST terminal sessions of the server, the terminal of the application and a
+script) read each other's output, or an empty one; a command run by `execute` clears the output of the directive that ran it.
+
+**Fix direction.** Keep the output per command (a field of `AbstractCommandImpl`, PAMELA-transient) or per interpreter.
+
+---
+
 ## Resources: unloading and deletion
 
 `CORE-D-21`, `CORE-D-22` and `CORE-D-23` were found and fixed together; `CORE-D-24` is what the same measurement left open. `CORE-D-27`

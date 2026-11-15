@@ -115,28 +115,16 @@ public interface FMLExpression extends FMLCommand<AExpressionFmlCommand> {
 					output.add(cmdOutput);
 					getOutStream().println(cmdOutput);
 					return value;
-				} catch (TypeMismatchException e) {
-					cmdOutput = "TypeMismatchException for " + expression;
-
-					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(cmdOutput, e);
-				} catch (NullReferenceException e) {
-					cmdOutput = "NullReference for " + expression;
-
-					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(cmdOutput, e);
-				} catch (ReflectiveOperationException e) {
+				} catch (Exception e) {
+					// Not printed: an FML failure is the failure of the command (CORE-F-11)
 					cmdOutput = "Cannot execute " + expression;
 
 					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(cmdOutput, e.getCause());
+					throw evaluationFailure(cmdOutput, expression, e);
 				}
 			}
 			else {
-				cmdOutput = "Cannot execute " + expression + " : " + expression.invalidBindingReason();
-
-				output.add(cmdOutput);
-				throw new FMLCommandExecutionException(cmdOutput);
+				throw invalidCommand("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 			}
 
 			/*

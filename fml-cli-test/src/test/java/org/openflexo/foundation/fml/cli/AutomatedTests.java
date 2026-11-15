@@ -51,7 +51,6 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
-import org.openflexo.foundation.fml.cli.command.fml.FMLAssertException;
 import org.openflexo.foundation.fml.cli.test.FMLScriptParserTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -95,8 +94,9 @@ public class AutomatedTests extends FMLScriptParserTestCase {
 		checkFMLScript(fmlResource.getRelativePath(), script);
 		try {
 			script.execute();
-		} catch (FMLAssertException e) {
-			fail(e.getMessage());
+		} catch (FMLCommandExecutionException e) {
+			// Any failure, not only an assertion: its line, its kind and its FML stack (CORE-F-11)
+			fail(fmlResource.getRelativePath() + ", " + e.describe());
 		}
 	}
 

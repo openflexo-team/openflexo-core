@@ -136,10 +136,14 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 			try {
 				return editionAction.execute(getCommandInterpreter());
 			} catch (ReturnException e) {
-				throw new FMLCommandExecutionException(e);
+				// Not an error: a top-level return is an FMLReturnCommand; an action ending on a return gives its value (CORE-F-11)
+				String cmdOutput = e.getReturnedValue() != null ? "Returned " + e.getReturnedValue() : "Returned";
+				output.add(cmdOutput);
+				getOutStream().println(cmdOutput);
+				return e.getReturnedValue();
 			} catch (FlexoException e) {
 				// Not printed: the failure is the one of the command (CORE-F-11)
-				throw new FMLCommandExecutionException(e);
+				throw new FMLCommandExecutionException("Cannot execute " + this + (e.getMessage() != null ? ": " + e.getMessage() : ""), e);
 			}
 
 		}

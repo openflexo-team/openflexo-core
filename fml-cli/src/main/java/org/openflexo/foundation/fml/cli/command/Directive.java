@@ -39,6 +39,10 @@
 
 package org.openflexo.foundation.fml.cli.command;
 
+import org.openflexo.foundation.fml.rt.error.FMLErrorReporter;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Executable;
@@ -47,8 +51,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
@@ -205,6 +207,7 @@ public interface Directive<N extends Node> extends AbstractCommand<N> {
 
 		@Deprecated
 		protected Object evaluateArgument(PDirectiveArgument value, CommandTokenType tokenType) {
+			argumentFailure = null;
 			if (value instanceof AExpressionDirectiveArgument) {
 				return evaluate(((AExpressionDirectiveArgument) value).getExpression(), tokenType);
 			}
@@ -232,8 +235,18 @@ public interface Directive<N extends Node> extends AbstractCommand<N> {
 					return res;
 				}
 			}
-			getErrStream().println("Unexpected " + value + " in evaluateArgument() for tokenType=" + tokenType);
+			argumentFailure = "unexpected argument " + value + " for " + tokenType;
 			return null;
+		}
+
+		private String argumentFailure;
+
+		/**
+		 * Why the last {@link #evaluateArgument(PDirectiveArgument, CommandTokenType)} gave null, or null if it did not fail: the command
+		 * using it reports it as the reason why it is invalid (CORE-F-11)
+		 */
+		protected String getArgumentFailure() {
+			return argumentFailure;
 		}
 
 		@Deprecated
@@ -241,16 +254,16 @@ public interface Directive<N extends Node> extends AbstractCommand<N> {
 
 			switch (tokenType) {
 				case Expression:
-					System.out.println("On doit evaluer " + value);
-					System.out.println("En tant que " + tokenType);
 					DataBinding<?> toEvaluate = new DataBinding<>(getText(value), this, Object.class, BindingDefinitionType.GET);
-					System.out.println("Donc " + toEvaluate);
-					System.out.println("Valide: " + toEvaluate.isValid());
+					if (!toEvaluate.isValid()) {
+						argumentFailure = "invalid expression " + toEvaluate + ": " + toEvaluate.invalidBindingReason();
+						return null;
+					}
 					try {
 						return toEvaluate.getBindingValue(getCommandInterpreter());
-					} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e1) {
-						getErrStream().println("Error evaluating " + toEvaluate);
-						e1.printStackTrace();
+					} catch (Exception e) {
+						FMLExecutionException failure = FMLEvaluation.convert(e, toEvaluate);
+						argumentFailure = FMLErrorReporter.kind(failure) + ": " + failure.getMessage();
 						return null;
 					}
 

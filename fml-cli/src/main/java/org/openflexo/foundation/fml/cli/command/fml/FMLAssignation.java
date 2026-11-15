@@ -44,9 +44,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NotSettableContextException;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
@@ -181,24 +178,15 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 				try {
 					assignedValue = expression.getBindingValue(getCommandInterpreter());
 				} catch (Exception e) {
-					// Not printed: an FML failure was reported by the editor that ran its action (CORE-F-11)
+					// Not printed: an FML failure is the failure of the command (CORE-F-11)
 					cmdOutput = "Cannot execute " + expression;
 
 					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(cmdOutput, e);
+					throw evaluationFailure(cmdOutput, expression, e);
 				}
 			}
 			else {
-				cmdOutput = "Cannot execute " + expression + " : " + expression.invalidBindingReason();
-
-				System.err.println("Bon, c'est valide : " + expression + " reason: " + expression.invalidBindingReason());
-				System.err.println("BM=" + expression.getOwner().getBindingModel());
-				expression.revalidate();
-				System.err.println("maintenant, c'est valide : " + expression.isValid());
-				System.err.println("reason: " + expression.invalidBindingReason());
-
-				output.add(cmdOutput);
-				throw new FMLCommandExecutionException(cmdOutput);
+				throw invalidCommand("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 			}
 
 			if (assignation.isValid()) {
@@ -208,11 +196,11 @@ public interface FMLAssignation extends FMLCommand<AAssignmentExpression> {
 
 					output.add(cmdOutput);
 					getOutStream().println(cmdOutput);
-				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException | NotSettableContextException e) {
+				} catch (Exception e) {
 					cmdOutput = "Cannot execute " + assignation;
 
 					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(cmdOutput, e);
+					throw evaluationFailure(cmdOutput, assignation, e);
 				}
 			}
 			else if (assignation.isNewVariableDeclaration() || getParentCommand() == null) {

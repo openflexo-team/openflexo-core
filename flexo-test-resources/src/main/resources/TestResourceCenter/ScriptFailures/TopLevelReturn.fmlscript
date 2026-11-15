@@ -1,0 +1,4 @@
+// CORE-F-11 phase 5: a top-level return ends the script, successfully; the assertion after it never runs
+x = 1;
+return x + 1;
+assert false;

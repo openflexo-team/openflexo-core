@@ -1,0 +1,4 @@
+// CORE-F-11 phase 5: the failing command is reported with its line (3): a failure of Java code
+s = "abc";
+t = s.substring(1,42);
+assert false;

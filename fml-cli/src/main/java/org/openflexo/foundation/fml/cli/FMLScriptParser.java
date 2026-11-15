@@ -119,7 +119,7 @@ public class FMLScriptParser {
 			}
 
 		} catch (ParserException e) {
-			e.printStackTrace();
+			// Not printed: the caller reports the parse exception (CORE-F-11)
 			logger.info("ParserException token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
 					+ e.getToken().getText().length());
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());

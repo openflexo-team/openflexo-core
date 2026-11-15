@@ -3,6 +3,7 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.OperatorNotSupportedException;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
@@ -11,7 +12,8 @@ import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 
 /**
- * This is an exception which is thrown when an assert has failed
+ * This is an exception which is thrown when an assert has failed: its expression evaluates to false or to null. Its message shows the
+ * expression, and for a binary expression the values of its operands (CORE-F-11)
  * 
  * @author sguerin
  * 
@@ -19,50 +21,49 @@ import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 @SuppressWarnings("serial")
 public class FMLAssertException extends FMLCommandExecutionException {
 
-	private DataBinding<?> expression;
-
-	private BinaryOperatorExpression binOp;
-	private Object leftV;
-	private Object rightV;
-	private int line;
-	private String message;
+	private final DataBinding<?> expression;
 
 	public FMLAssertException(int line, DataBinding<?> expression, AbstractCommandInterpreter commandInterpreter) {
-		super("Line " + line + ": assert failed: " + expression);
-		this.line = line;
-		if (expression.getExpression() instanceof BinaryOperatorExpression) {
-			// In this case, we try to get a more explicit message
-			try {
-				binOp = (BinaryOperatorExpression) expression.getExpression();
-				leftV = binOp.getLeftArgument().transform(new FMLExpressionEvaluator(commandInterpreter));
-				rightV = binOp.getRightArgument().transform(new FMLExpressionEvaluator(commandInterpreter));
-			} catch (TransformException e) {
-				e.printStackTrace();
-			}
-
-			String leftMessage = binOp.getLeftArgument().toString();
-			if (!(binOp.getLeftArgument() instanceof FMLConstant)) {
-				leftMessage += "[" + leftV + "]";
-			}
-			String rightMessage = binOp.getRightArgument().toString();
-			if (!(binOp.getRightArgument() instanceof FMLConstant)) {
-				rightMessage += "[" + rightV + "]";
-			}
-
-			try {
-				message = "Line " + line + ": assert failed: " + leftMessage + " "
-						+ FMLPrettyPrinter.getInstance().getGrammar().getSymbol(binOp.getOperator()) + " " + rightMessage;
-			} catch (OperatorNotSupportedException e) {
-				message = "Line " + line + ": assert failed: " + expression;
-				e.printStackTrace();
-			}
-
+		super(buildMessage(expression, commandInterpreter));
+		this.expression = expression;
+		if (line >= 0) {
+			setLine(line);
 		}
 	}
 
-	@Override
-	public String getMessage() {
-		return message;
+	public DataBinding<?> getExpression() {
+		return expression;
+	}
+
+	private static String buildMessage(DataBinding<?> expression, AbstractCommandInterpreter commandInterpreter) {
+		String plain = "assert failed: " + expression;
+		if (!(expression.getExpression() instanceof BinaryOperatorExpression)) {
+			return plain;
+		}
+		// For a binary expression, a more explicit message, with the values of the operands
+		BinaryOperatorExpression binOp = (BinaryOperatorExpression) expression.getExpression();
+		try {
+			return "assert failed: " + operand(binOp.getLeftArgument(), commandInterpreter) + " "
+					+ FMLPrettyPrinter.getInstance().getGrammar().getSymbol(binOp.getOperator()) + " "
+					+ operand(binOp.getRightArgument(), commandInterpreter);
+		} catch (OperatorNotSupportedException e) {
+			return plain;
+		}
+	}
+
+	/** Text of supplied operand, with its value unless it is a constant */
+	private static String operand(Expression operand, AbstractCommandInterpreter commandInterpreter) {
+		if (operand instanceof FMLConstant) {
+			return operand.toString();
+		}
+		String value;
+		try {
+			value = String.valueOf(operand.transform(new FMLExpressionEvaluator(commandInterpreter)));
+		} catch (TransformException | RuntimeException e) {
+			// Only the message of the assertion: its failure is the assertion itself
+			value = "?";
+		}
+		return operand + "[" + value + "]";
 	}
 
 }

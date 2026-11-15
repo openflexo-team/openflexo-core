@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.command.fml.FMLReturnCommand;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Getter;
@@ -123,9 +124,12 @@ public interface FMLScript extends HasPropertyChangeSupport {
 		}
 
 		/**
-		 * Execute this {@link FMLScript}
+		 * Execute this {@link FMLScript}, command after command, until the last one or a top-level {@code return}, which ends the script
+		 * successfully
 		 * 
 		 * @throws FMLCommandExecutionException
+		 *             the failure of a command, which knows the line of that command (CORE-F-11); an unchecked failure of a command (a
+		 *             defect of the platform) is wrapped into one, so that its line is known too
 		 * 
 		 */
 		@Override
@@ -133,7 +137,21 @@ public interface FMLScript extends HasPropertyChangeSupport {
 			for (AbstractCommand command : getCommands()) {
 				logger.info(">>> Line " + command.getLine() + " execute " + command);
 				getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);
-				command.execute();
+				try {
+					command.execute();
+				} catch (FMLCommandExecutionException e) {
+					e.setLine(command.getLine());
+					throw e;
+				} catch (RuntimeException e) {
+					FMLCommandExecutionException failure = new FMLCommandExecutionException(
+							"Unexpected failure of " + command + (e.getMessage() != null ? ": " + e.getMessage() : ""), e);
+					failure.setLine(command.getLine());
+					throw failure;
+				}
+				if (command instanceof FMLReturnCommand) {
+					// A top-level return ends the script, successfully
+					return;
+				}
 			}
 		}
 

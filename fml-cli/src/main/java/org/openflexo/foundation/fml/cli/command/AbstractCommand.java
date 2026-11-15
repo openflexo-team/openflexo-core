@@ -39,6 +39,10 @@
 
 package org.openflexo.foundation.fml.cli.command;
 
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLInternalError;
+
 import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -72,6 +76,7 @@ import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.cli.command.fml.FMLActionCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
+import org.openflexo.foundation.fml.cli.command.fml.FMLReturnCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
@@ -107,7 +112,7 @@ import org.openflexo.pamela.annotations.Setter;
 		@Import(ServiceDirective.class), @Import(ActivateTA.class), @Import(ResourcesDirective.class), @Import(OpenProject.class),
 		@Import(LoadResource.class), @Import(MoreDirective.class), @Import(EnterDirective.class), @Import(ExitDirective.class),
 		@Import(FMLContextCommand.class), @Import(FMLExpression.class), @Import(FMLAssignation.class), @Import(FMLAssertExpression.class),
-		@Import(FMLActionCommand.class), @Import(ExecuteDirective.class) })
+		@Import(FMLActionCommand.class), @Import(ExecuteDirective.class), @Import(FMLReturnCommand.class) })
 public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = Node.class)
@@ -223,10 +228,7 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 				init();
 			}
 			if (!isValidInThatContext()) {
-				String cmdOutput = invalidCommandReason();
-
-				output.add(cmdOutput);
-				throw new FMLCommandExecutionException(cmdOutput);
+				throw invalidCommand(invalidCommandReason());
 			}
 
 			getCommandInterpreter().willExecute(this);
@@ -239,6 +241,22 @@ public interface AbstractCommand<N extends Node> extends Bindable, FMLControlGra
 				return getCommandSemanticsAnalyzer().getText(getNode());
 			}
 			return getNode().toString();
+		}
+
+		/**
+		 * The failure of this command for supplied failure of the evaluation of supplied expression: its cause is the FML failure it stands
+		 * for (see {@link FMLEvaluation#convert(Throwable, Object)}); a defect of the platform is thrown, as an {@link FMLInternalError}
+		 */
+		protected FMLCommandExecutionException evaluationFailure(String message, DataBinding<?> expression, Exception failure) {
+			FMLExecutionException fmlFailure = FMLEvaluation.convert(failure, expression);
+			return new FMLCommandExecutionException(message + (fmlFailure.getMessage() != null ? ": " + fmlFailure.getMessage() : ""),
+					fmlFailure);
+		}
+
+		/** The failure of this command when it cannot execute, being invalid (output recorded) */
+		protected FMLInvalidCommandException invalidCommand(String message) {
+			output.add(message);
+			return new FMLInvalidCommandException(message);
 		}
 
 		protected DataBinding<?> retrieveAssignation(Node expression) {

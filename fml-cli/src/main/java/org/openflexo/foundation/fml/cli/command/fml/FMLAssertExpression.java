@@ -42,14 +42,13 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
+import org.openflexo.foundation.fml.rt.error.FMLTypeError;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
@@ -128,42 +127,34 @@ public interface FMLAssertExpression extends FMLCommand<AAssertFmlCommand> {
 			}
 
 			if (isSyntaxicallyValid()) {
-				Boolean value;
+				Object value;
 				try {
-					value = (Boolean) expression.getBindingValue(getCommandInterpreter());
-					cmdOutput = "Executed " + expression + " <- " + value;
+					value = expression.getBindingValue(getCommandInterpreter());
+				} catch (Exception e) {
+					// Not printed: an FML failure is the failure of the command (CORE-F-11)
+					cmdOutput = "Cannot execute " + this;
 
 					output.add(cmdOutput);
-					getOutStream().println(cmdOutput);
-					// An expression evaluating to null is a failed assertion, not an internal error
-					if (Boolean.TRUE.equals(value)) {
-						return true;
-					}
-					throw new FMLAssertException(getLine(), expression, getCommandInterpreter());
-				} catch (TypeMismatchException e) {
-					cmdOutput = "Type Mismatch Exception";
-
-					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(e);
-				} catch (NullReferenceException e) {
-					cmdOutput = "Null Reference Exception";
-
-					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(e);
-				} catch (ReflectiveOperationException e) {
-					cmdOutput = "Reflective Operation Exception";
-
-					output.add(cmdOutput);
-					throw new FMLCommandExecutionException(e);
+					throw evaluationFailure(cmdOutput, expression, e);
 				}
-			}
-			else {
-				cmdOutput = "Cannot execute " + expression + " : " + expression.invalidBindingReason();
+				cmdOutput = "Executed " + expression + " <- " + value;
 
 				output.add(cmdOutput);
-				throw new FMLCommandExecutionException(cmdOutput);
-			}
+				getOutStream().println(cmdOutput);
+				if (Boolean.TRUE.equals(value)) {
+					return true;
+				}
+				if (value != null && !(value instanceof Boolean)) {
+					cmdOutput = "Cannot execute " + this + ": " + expression + " is not a boolean but " + value;
 
+					output.add(cmdOutput);
+					throw new FMLCommandExecutionException(cmdOutput,
+							new FMLTypeError("Assertion " + expression + " evaluates to " + value + ", which is not a boolean"));
+				}
+				// An expression evaluating to null is a failed assertion, not an internal error
+				throw new FMLAssertException(getLine(), expression, getCommandInterpreter());
+			}
+			throw invalidCommand("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 		}
 	}
 }

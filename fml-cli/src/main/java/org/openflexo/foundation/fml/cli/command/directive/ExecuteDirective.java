@@ -40,14 +40,18 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;import org.openflexo.foundation.fml.FMLModelFactory;
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.FMLScriptParser;
 import org.openflexo.foundation.fml.cli.ParseException;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
+import org.openflexo.foundation.fml.cli.command.FMLInvalidCommandException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
+import org.openflexo.foundation.fml.rt.error.FMLInternalError;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AExecuteDirective;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -112,32 +116,48 @@ public interface ExecuteDirective extends Directive<AExecuteDirective> {
 				return "No directory";
 			}
 			// Check if it's a file			
-			else if (getScriptFile().exists() && getScriptFile().isFile()) {
+			else if (!getScriptFile().isFile()) {
 				return "Cannot find script file: " + getScriptFile().getName();
 			}			
 			return null;
 		}
 
+		/**
+		 * Execute the script. A failure is thrown, for the caller to report on its error stream: it names the script and the line of the
+		 * failing command (CORE-F-11)
+		 */
 		@Override
 		public Object execute() throws FMLCommandExecutionException {
 			super.execute();
 			output.clear();
-			try {
+			File scriptFile = getScriptFile();
+			FMLScript script;
+			try (FileInputStream scriptStream = new FileInputStream(scriptFile)) {
 				FMLScriptParser parser = new FMLScriptParser();
-				FileInputStream scriptStream = new FileInputStream(getScriptFile());
-				FMLScript script = parser.parse(scriptStream, getCommandInterpreter().getModelFactory(), getCommandInterpreter());
-				script.execute();
+				script = parser.parse(scriptStream, getCommandInterpreter().getModelFactory(), getCommandInterpreter());
 			} catch (ParseException e) {
-				getOutStream().println("Error during script parsing : " + e.getMessage());
+				throw invalidScript("Cannot parse script " + scriptFile.getName() + ": " + e.getMessage(), scriptFile);
 			} catch (FileNotFoundException e) {
-				getOutStream().println("Script file was not found : " + e.getMessage());
+				throw invalidScript("Script file not found: " + scriptFile.getPath(), scriptFile);
 			} catch (IOException e) {
-				getOutStream().println("Error during script execution : " + e.getMessage());
+				throw invalidScript("Cannot read script " + scriptFile.getName() + ": " + e.getMessage(), scriptFile);
 			} catch (ModelDefinitionException e) {
-				getOutStream().println("Model definitnio error during script execution : " + e.getMessage());
+				// A defect of the platform
+				throw new FMLCommandExecutionException("Cannot parse script " + scriptFile.getName() + ": " + e.getMessage(),
+						new FMLInternalError(e));
 			}
-
+			try {
+				script.execute();
+			} catch (FMLCommandExecutionException e) {
+				e.setSource(scriptFile.getName());
+				throw e;
+			}
 			return getCommandInterpreter().getWorkingDirectory();
+		}
+
+		/** The script cannot be run: the failure is the one of this command, located at it by the script holding it */
+		private FMLInvalidCommandException invalidScript(String message, File scriptFile) {
+			return invalidCommand(message);
 		}
 	}
 }

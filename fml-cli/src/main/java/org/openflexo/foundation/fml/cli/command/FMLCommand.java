@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
+import org.openflexo.foundation.fml.cli.command.fml.FMLReturnCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
@@ -59,7 +60,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLCommand.FMLCommandImpl.class)
 @DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class),
-		@DeclareCommand(FMLAssertExpression.class) })
+		@DeclareCommand(FMLAssertExpression.class), @DeclareCommand(FMLReturnCommand.class) })
 public interface FMLCommand<N extends Node> extends AbstractCommand<N> {
 
 	public FMLValidationModel getValidationModel();

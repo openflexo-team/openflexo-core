@@ -58,11 +58,13 @@ import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.cli.command.fml.FMLActionCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssertExpression;
+import org.openflexo.foundation.fml.cli.command.fml.FMLReturnCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
 import org.openflexo.foundation.fml.parser.node.AActivateTaDirective;
 import org.openflexo.foundation.fml.parser.node.AAssertFmlCommand;
+import org.openflexo.foundation.fml.parser.node.AReturnFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
@@ -171,6 +173,10 @@ public class FMLScriptModelFactory extends PamelaModelFactory {
 
 	public FMLAssertExpression newFMLAssertExpression(AAssertFmlCommand node, AbstractCommandSemanticsAnalyzer semanticsAnalyzer) {
 		return newInstance(FMLAssertExpression.class, node, semanticsAnalyzer);
+	}
+
+	public FMLReturnCommand newFMLReturnCommand(AReturnFmlCommand node, AbstractCommandSemanticsAnalyzer semanticsAnalyzer) {
+		return newInstance(FMLReturnCommand.class, node, semanticsAnalyzer);
 	}
 
 	public FMLContextCommand newFMLContextCommand(AContextFmlCommand node, AbstractCommandSemanticsAnalyzer semanticsAnalyzer) {

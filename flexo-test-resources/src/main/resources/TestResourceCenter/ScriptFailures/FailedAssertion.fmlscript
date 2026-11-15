@@ -1,0 +1,3 @@
+// CORE-F-11 phase 5: a failed assertion
+x = 1;
+assert x == 2;
