@@ -614,6 +614,32 @@ or reject arguments in `call=` where they cannot be honoured.
 
 ---
 
+### CORE-D-82 — Reloading a project can deadlock between the project resource and an instance loaded in parallel  ·  `TODO`
+
+**Symptom.** `TestBMethology.testReloadProject` (formod, `formod-module`, UI test) hung for 35 minutes; the test JVM had to be killed. Seen
+once (2026-11-15, CORE-F-11 phase 4 run through the openflexo-dev composite); the 27 other UI tests of the module passed.
+
+**Verified (thread dump, 2026-11-15).** The JVM reports a Java-level deadlock between two threads:
+- `Test worker`: `OpenflexoProjectAtRunTimeTestCase.reloadProject` → `ProjectLoader.loadProject` → `FlexoResourceImpl.performLoadResourceData`
+  (holds the lock of the `FlexoProjectResource`) → `PamelaResourceImpl.stopDeserializing` → `FlexoObject.clearIsModified`, waiting for the
+  lock of the `FlexoProject`;
+- a pool thread loading an instance in parallel: `VirtualModelInstance.addToVirtualModelInstances` → `getFlexoPropertyValue` →
+  `getFlexoActor` → `ResourceBasedModelSlotInstance.getAccessedResourceData` → `FMLRTVirtualModelInstanceResourceImpl.loadResourceData`
+  (line 145, `getFMLRunTimeEngine()`) → `FlexoConceptInstance.getEditor()` → `ProjectLoader.getEditorForProject` → a new editor →
+  `FlexoProject.addToEditors` → `FlexoObject.setModified` (holds the lock of the `FlexoProject`) → `FlexoResourceImpl.notifyResourceModified`
+  → `FlexoObservable.setChanged`, waiting for the lock of the `FlexoProjectResource`.
+
+The two locks are taken in opposite orders. None of the frames belongs to the code of CORE-F-11. Not reproduced since; whether it is new
+is not known (the editor created during loading goes through `FlexoConceptInstance.getEditor()`).
+
+**How to reproduce.** Run `./gradlew :formod:formod-module:uiTest` from openflexo-dev several times; on a hang, `jstack` the
+`Gradle Test Executor` JVM.
+
+**To decide.** Do not create an editor (nor mark the project modified) while a resource of the project is being loaded, or take the two
+locks in one order; adding an editor to a project probably should not mark it modified at all.
+
+---
+
 ## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)
 
 Mapped on `formod-app` (583 warnings at the start of the application, 4 of them from opening a project) and on the headless tests (the same families, hundreds of times). Fixed since: CORE-D-31 (technologies forgotten at load), CORE-D-32 (stale "not implemented yet"), and the OWL adapter ones (`openflexo-owl/KNOWN_DEFECTS.md`). What is left is below, with what was measured and what was not.
