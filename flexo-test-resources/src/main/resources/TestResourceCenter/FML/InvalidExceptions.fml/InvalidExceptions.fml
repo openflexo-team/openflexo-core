@@ -62,6 +62,74 @@ public model InvalidExceptions {
 		}
 	}
 
+	public unhandledThrow() {
+		throw new Failure();
+	}
+
+	public declaresFailure() throws Failure {
+		throw new Failure();
+	}
+
+	public unhandledCall() {
+		this.declaresFailure();
+	}
+
+	public catchesTheWrongType() {
+		try {
+			this.declaresFailure();
+		} catch (FMLTypeError e) {
+			trace = "c";
+		}
+	}
+
+	public makeRisky() {
+		Risky r = new Risky();
+	}
+
+	public fireUnhandled() {
+		fire new Ping();
+	}
+
+	public declaresOnlyFMLError() throws FMLError {
+		throw new Failure();
+	}
+
+	public throwsAnUnresolvedType() throws NoSuchException {
+		trace = "x";
+	}
+
+	public throwsNotAnException() throws String {
+		trace = "x";
+	}
+
+	String computed values this.declaresFailure();
+
+	listen Ping from this throws Failure {
+		throw new Failure();
+	}
+
+	event Ping {
+		create() {
+		}
+	}
+
+	concept Risky {
+		create() throws Failure {
+			throw new Failure();
+		}
+	}
+
+	concept Base {
+		public step() {
+		}
+	}
+
+	concept Derived extends Base {
+		public step() throws Failure {
+			throw new Failure();
+		}
+	}
+
 	exception Failure {
 	}
 

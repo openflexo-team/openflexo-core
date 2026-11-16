@@ -327,6 +327,12 @@ public enum FMLKeywords {
 			return "throw";
 		}
 	},
+	Throws {
+		@Override
+		public String getKeyword() {
+			return "throws";
+		}
+	},
 	Try {
 		@Override
 		public String getKeyword() {

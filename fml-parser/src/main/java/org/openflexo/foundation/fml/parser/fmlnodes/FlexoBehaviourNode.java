@@ -44,6 +44,17 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import org.openflexo.foundation.fml.parser.TypeFactory;
+import org.openflexo.foundation.fml.parser.node.AListenerBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AManyThrowsTypeList;
+import org.openflexo.foundation.fml.parser.node.AOneThrowsTypeList;
+import org.openflexo.foundation.fml.parser.node.AThrowsClause;
+import org.openflexo.foundation.fml.parser.node.PReferenceType;
+import org.openflexo.foundation.fml.parser.node.PThrowsClause;
+import org.openflexo.foundation.fml.parser.node.PThrowsTypeList;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -114,6 +125,87 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		}
 		// getModelObject().getLabel();
 		return this;
+	}
+
+	/**
+	 * The throws clause of supplied declaration, null when it has none (CORE-F-11 phase 7)
+	 */
+	protected static PThrowsClause getThrowsClause(Node astNode) {
+		if (astNode instanceof AAnonymousConstructorBehaviourDecl) {
+			return ((AAnonymousConstructorBehaviourDecl) astNode).getThrowsClause();
+		}
+		if (astNode instanceof ANamedConstructorBehaviourDecl) {
+			return ((ANamedConstructorBehaviourDecl) astNode).getThrowsClause();
+		}
+		if (astNode instanceof AAnonymousDestructorBehaviourDecl) {
+			return ((AAnonymousDestructorBehaviourDecl) astNode).getThrowsClause();
+		}
+		if (astNode instanceof ANamedDestructorBehaviourDecl) {
+			return ((ANamedDestructorBehaviourDecl) astNode).getThrowsClause();
+		}
+		if (astNode instanceof AMethodBehaviourDecl) {
+			return ((AMethodBehaviourDecl) astNode).getThrowsClause();
+		}
+		if (astNode instanceof AListenerBehaviourDecl) {
+			return ((AListenerBehaviourDecl) astNode).getThrowsClause();
+		}
+		if (astNode instanceof AFmlBehaviourDecl) {
+			return ((AFmlBehaviourDecl) astNode).getThrowsClause();
+		}
+		if (astNode instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return ((AFmlFullyQualifiedBehaviourDecl) astNode).getThrowsClause();
+		}
+		return null;
+	}
+
+	/** Add to supplied behaviour the exceptions declared by the throws clause of supplied declaration */
+	protected void buildThrownTypes(T behaviour, Node astNode) {
+		PThrowsClause clause = getThrowsClause(astNode);
+		if (clause instanceof AThrowsClause) {
+			List<PReferenceType> types = new ArrayList<>();
+			PThrowsTypeList list = ((AThrowsClause) clause).getThrowsTypeList();
+			while (list instanceof AManyThrowsTypeList) {
+				types.add(0, ((AManyThrowsTypeList) list).getReferenceType());
+				list = ((AManyThrowsTypeList) list).getThrowsTypeList();
+			}
+			if (list instanceof AOneThrowsTypeList) {
+				types.add(0, ((AOneThrowsTypeList) list).getReferenceType());
+			}
+			for (PReferenceType type : types) {
+				behaviour.addToThrownTypes(TypeFactory.makeType(type, getSemanticsAnalyzer().getTypingSpace()));
+			}
+		}
+	}
+
+	protected boolean hasThrownTypes() {
+		return getModelObject() != null && !getModelObject().getThrownTypes().isEmpty();
+	}
+
+	protected String serializeThrownTypes() {
+		StringBuilder sb = new StringBuilder();
+		for (Type type : getModelObject().getThrownTypes()) {
+			if (sb.length() > 0) {
+				sb.append(", ");
+			}
+			sb.append(serializeType(type));
+		}
+		return sb.toString();
+	}
+
+	protected RawSourceFragment getThrowsFragment() {
+		PThrowsClause clause = getASTNode() != null ? getThrowsClause(getASTNode()) : null;
+		return clause instanceof AThrowsClause ? getFragment(((AThrowsClause) clause).getKwThrows()) : null;
+	}
+
+	protected RawSourceFragment getThrowsTypeListFragment() {
+		PThrowsClause clause = getASTNode() != null ? getThrowsClause(getASTNode()) : null;
+		return clause instanceof AThrowsClause ? getFragment(((AThrowsClause) clause).getThrowsTypeList()) : null;
+	}
+
+	/** The throws clause, before the body: appended by every kind of behaviour that may declare exceptions */
+	protected void appendThrowsClause() {
+		when(() -> hasThrownTypes()).thenAppend(staticContents(SPACE, "throws", SPACE), getThrowsFragment())
+				.thenAppend(dynamicContents(() -> serializeThrownTypes()).keepingParsedTextWhileUnchanged(), getThrowsTypeListFragment());
 	}
 
 	public PFlexoBehaviourBody getFlexoBehaviourBody(N astNode) {

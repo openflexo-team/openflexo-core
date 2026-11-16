@@ -117,6 +117,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 			// AEmptyFlexoBehaviourBody : keep the ControlGraph null
 		}
 
+		buildThrownTypes(returned, astNode);
 		return returned;
 	}
 
@@ -135,6 +136,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 		append(childrenContents("", "", () -> getModelObject().getParameters(), "," + SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourArgument.class));
 		append(staticContents(")"), getRParFragment());
+		appendThrowsClause();
 		when(() -> hasNoImplementation()).thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE, "{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))

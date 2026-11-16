@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.validation.CheckedExceptions;
+import org.openflexo.foundation.fml.rt.error.FMLErrorTypes;
+import java.util.Set;
+import java.util.ArrayList;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Vector;
@@ -148,6 +152,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String IS_ABSTRACT_KEY = "isAbstract";
 	@PropertyIdentifier(type = Type.class)
 	public static final String DECLARED_TYPE_KEY = "declaredType";
+	@PropertyIdentifier(type = Type.class, cardinality = Cardinality.LIST)
+	public static final String THROWN_TYPES_KEY = "thrownTypes";
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
@@ -184,6 +190,23 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	 */
 	@Updater(DECLARED_TYPE_KEY)
 	public void updateDeclaredType(Type type);
+
+	/**
+	 * The exceptions this behaviour declares with {@code throws} (CORE-F-11 phase 7): FML exceptions (checked, as Java exceptions: a
+	 * caller catches or declares them) and built-in error types (unchecked, documentation only)
+	 */
+	@Getter(value = THROWN_TYPES_KEY, cardinality = Cardinality.LIST, isStringConvertable = true)
+	public List<Type> getThrownTypes();
+
+	@Setter(THROWN_TYPES_KEY)
+	public void setThrownTypes(List<Type> thrownTypes);
+
+	/** Add a declared exception, translated to the typing space of the unit (as {@link #updateDeclaredType(Type)}) */
+	@Adder(THROWN_TYPES_KEY)
+	public void addToThrownTypes(Type thrownType);
+
+	@Remover(THROWN_TYPES_KEY)
+	public void removeFromThrownTypes(Type thrownType);
 
 	@Override
 	public Type getReturnType();
@@ -348,6 +371,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			else {
 				setDeclaredType(type);
 			}
+		}
+
+		@Override
+		public void addToThrownTypes(Type thrownType) {
+			if (getDeclaringCompilationUnit() != null && thrownType instanceof ConnieType) {
+				thrownType = ((ConnieType) thrownType).translateTo(getDeclaringCompilationUnit().getTypingSpace());
+			}
+			performSuperAdder(THROWN_TYPES_KEY, thrownType);
 		}
 
 		@Override
@@ -932,4 +963,54 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	}
 
+
+	/**
+	 * A behaviour declares FML exceptions or built-in error types; an overriding behaviour declares no checked exception that the behaviour
+	 * it overrides does not (CORE-F-11 phase 7)
+	 */
+	@DefineValidationRule
+	public static class ThrowsClauseMustBeValid extends ValidationRule<ThrowsClauseMustBeValid, FlexoBehaviour> {
+
+		public ThrowsClauseMustBeValid() {
+			super(FlexoBehaviour.class, "throws_clause_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<ThrowsClauseMustBeValid, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+			for (Type type : behaviour.getThrownTypes()) {
+				if (type == null || (type instanceof org.openflexo.connie.type.CustomType && !((org.openflexo.connie.type.CustomType) type).isResolved())
+						|| type instanceof org.openflexo.connie.type.UnresolvedType) {
+					return new ValidationError<>(this, behaviour, "a_type_declared_in_throws_is_not_resolved");
+				}
+				if (!FMLErrorTypes.isCatchable(type)) {
+					return new ValidationError<>(this, behaviour, "only_fml_exceptions_and_fml_errors_can_be_declared_in_throws");
+				}
+			}
+			// The override rule, as in Java, does not concern creation and deletion schemes (constructors) nor listeners
+			if (behaviour.getFlexoConcept() == null || behaviour instanceof AbstractCreationScheme || behaviour instanceof DeletionScheme
+					|| behaviour instanceof EventListener) {
+				return null;
+			}
+			Set<FlexoExceptionConcept> declared = CheckedExceptions.declaredBy(behaviour);
+			if (declared.isEmpty()) {
+				return null;
+			}
+			Type[] parameterTypes = behaviour.getParameters().stream().map(FlexoBehaviourArgument::getType).toArray(Type[]::new);
+			for (FlexoConcept parent : behaviour.getFlexoConcept().getParentFlexoConcepts()) {
+				FlexoBehaviour overridden = parent.getFlexoBehaviour(behaviour.getName(), parameterTypes);
+				if (overridden != null && overridden != behaviour) {
+					List<FlexoExceptionConcept> more = new ArrayList<>();
+					for (FlexoExceptionConcept exception : declared) {
+						if (!CheckedExceptions.isCovered(exception, overridden.getThrownTypes())) {
+							more.add(exception);
+						}
+					}
+					if (!more.isEmpty()) {
+						return new ValidationError<>(this, behaviour, "an_overriding_behaviour_cannot_declare_more_checked_exceptions");
+					}
+				}
+			}
+			return null;
+		}
+	}
 }

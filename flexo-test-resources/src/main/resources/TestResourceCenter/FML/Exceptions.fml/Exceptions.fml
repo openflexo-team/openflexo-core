@@ -10,7 +10,7 @@ public model Exceptions {
 	boolean cleaned = false;
 	String trace;
 
-	public take(int n) {
+	public take(int n) throws OutOfStock {
 		if (parameters.n > quantity) {
 			throw new OutOfStock(parameters.n, quantity);
 		}
@@ -57,7 +57,7 @@ public model Exceptions {
 		return "none";
 	}
 
-	public String noMatchingClause() {
+	public String noMatchingClause() throws OutOfStock {
 		try {
 			this.take(1000);
 		} catch (FMLTypeError e) {
@@ -86,7 +86,7 @@ public model Exceptions {
 		}
 	}
 
-	public int finallyOnError() {
+	public int finallyOnError() throws OutOfStock {
 		try {
 			this.take(1000);
 		} finally {
@@ -110,7 +110,7 @@ public model Exceptions {
 		return -3;
 	}
 
-	public rethrow() {
+	public rethrow() throws OutOfStock {
 		try {
 			this.take(1000);
 		} catch (OutOfStock e) {
@@ -145,7 +145,7 @@ public model Exceptions {
 		return false;
 	}
 
-	public String uncaught() {
+	public String uncaught() throws Refused {
 		throw new Refused("never caught");
 	}
 
@@ -158,7 +158,7 @@ public model Exceptions {
 		return trace;
 	}
 
-	public throwTwice() {
+	public throwTwice() throws Refused {
 		Refused r = new Refused("twice");
 		try {
 			throw r;
@@ -188,12 +188,44 @@ public model Exceptions {
 			}
 		}
 
+		delete() throws Refused {
+			label = null;
+		}
+
+		public close() {
+			delete this;
+		}
+
 		exception Locked {
 			String reason;
 
 			create(String reason) {
 				reason = parameters.reason;
 			}
+		}
+	}
+
+	public String fireCaught() {
+		try {
+			fire new Alarm();
+		} catch (Refused e) {
+			return e.reason;
+		}
+		return "silent";
+	}
+
+	listen Alarm from this throws Refused {
+		throw new Refused("heard");
+	}
+
+	event Alarm {
+		create() {
+		}
+	}
+
+	concept Crate extends Box {
+		create() throws Refused {
+			label = "crate";
 		}
 	}
 

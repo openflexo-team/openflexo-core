@@ -7,14 +7,16 @@ body. Behaviours are declared in models, concepts and events.
 
 ```ebnf
 behaviour_decl =
-    annotation* visibility? "create" "(" formal_arguments? ")" body                     (* anonymous creation scheme *)
-  | annotation* visibility? "create" "::" lidentifier "(" formal_arguments? ")" body    (* named creation scheme *)
-  | annotation* visibility? "delete" "(" formal_arguments? ")" body                     (* anonymous deletion scheme *)
-  | annotation* visibility? "delete" "::" lidentifier "(" formal_arguments? ")" body    (* named deletion scheme *)
-  | annotation* visibility? "abstract"? type? lidentifier "(" formal_arguments? ")" body  (* method *)
-  | annotation* "listen" reference_type "from" expression body                          (* event listener *)
+    annotation* visibility? "create" "(" formal_arguments? ")" throws? body                     (* anonymous creation scheme *)
+  | annotation* visibility? "create" "::" lidentifier "(" formal_arguments? ")" throws? body    (* named creation scheme *)
+  | annotation* visibility? "delete" "(" formal_arguments? ")" throws? body                     (* anonymous deletion scheme *)
+  | annotation* visibility? "delete" "::" lidentifier "(" formal_arguments? ")" throws? body    (* named deletion scheme *)
+  | annotation* visibility? "abstract"? type? lidentifier "(" formal_arguments? ")" throws? body  (* method *)
+  | annotation* "listen" reference_type "from" expression throws? body                          (* event listener *)
   | annotation* visibility? type? lidentifier "(" formal_arguments? ")"
-        "with" behaviour_ref fml_parameters? body                                       (* technology-specific *)
+        "with" behaviour_ref fml_parameters? throws? body                                       (* technology-specific *)
+
+throws = "throws" reference_type ( "," reference_type )*                                (* §8.10 *)
 
 behaviour_ref = uidentifier | cidentifier "::" uidentifier
 

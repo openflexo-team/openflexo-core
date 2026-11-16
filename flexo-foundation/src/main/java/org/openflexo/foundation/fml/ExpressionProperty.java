@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.validation.CheckedExceptions;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import java.util.Set;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
@@ -296,4 +299,25 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
 	}
 
+
+	/**
+	 * An expression property declares no exception: its expression may not call a behaviour declaring a checked exception (CORE-F-11
+	 * phase 7)
+	 */
+	@DefineValidationRule
+	public static class ExpressionMayNotRaiseCheckedExceptions extends ValidationRule<ExpressionMayNotRaiseCheckedExceptions, ExpressionProperty<?>> {
+
+		public ExpressionMayNotRaiseCheckedExceptions() {
+			super(ExpressionProperty.class, "checked_exceptions_must_be_caught_or_declared");
+		}
+
+		@Override
+		public ValidationIssue<ExpressionMayNotRaiseCheckedExceptions, ExpressionProperty<?>> applyValidation(ExpressionProperty<?> property) {
+			Set<FlexoExceptionConcept> raised = CheckedExceptions.raisedBy(property.getExpression());
+			if (raised.isEmpty()) {
+				return null;
+			}
+			return new FMLControlGraph.UnhandledExceptionIssue<>(this, property, raised);
+		}
+	}
 }

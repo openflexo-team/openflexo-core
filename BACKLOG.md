@@ -963,6 +963,28 @@ technology-adapters (dsl, xx), kafka, oslc, gina, odt. pdf, java, rhapsody and f
   FME names); a failure of the B parser that is unchecked is a technology error (phase 6). Recorded: `CORE-D-85` (a try in a getter
   evaluated outside an action still reports the failure it catches). `ExceptionsDefect.fml` sits in the shared test resource center but
   imports a class of fml-cli-test: it only resolves there (flexo-foundation-test loads it without failing).
+- `throws` (asked by the user after the first commit of phase 7, decided with the user, 2026-11-16): Java semantics. A behaviour
+  declares exceptions after its arguments (`throws_clause` in every alternative of `behaviour_decl`, listeners included; keyword
+  `throws`, used nowhere as a name in the workspace); `FlexoBehaviour.thrownTypes` (a PAMELA list of `Type`, which needs
+  `isStringConvertable`: without it the meta-model fails to build; its adder translates to the typing space of the unit). The exceptions
+  defined in FML are checked, the built-in error types unchecked (allowed in `throws` as documentation). Validation errors
+  (`CheckedExceptions`): `CheckedExceptionsMustBeCaughtOrDeclared` on every statement (a `throw`, the calls of behaviours and `new` in its
+  bindings, `delete`, `fire` towards the listeners of the model of the statement) unless an enclosing try block catches it or its
+  behaviour declares it; a getter, a setter declare nothing; `ExpressionMayNotRaiseCheckedExceptions`; `ThrowsClauseMustBeValid` (types,
+  and an override declaring more checked exceptions than the overridden behaviour). Static analysis: a call is checked against the
+  behaviour it resolves to; the bindings of a statement are found through its PAMELA getters of type `DataBinding` (and those of the
+  objects it embeds); a property initializer or a default value is not checked. Nothing changes at run time; scripts are not checked.
+  Specification §7.1, §8.10, §2.5.1, Appendix A. Tests: `InvalidExceptions.fml` gains one case per rule, `Exceptions.fml` declares
+  what it lets go, `FireCaught.fmlscript` (a listener's exception caught by the caller of `fire`).
+  After review (2026-11-16): a built-in type in `throws` covers no FML exception (`throws FMLError` let an undeclared one pass);
+  `delete this` runs no deletion scheme and raises nothing; `end match … unmatched:` is checked against its behaviour; the listeners of a
+  `fire` include the inherited ones; the override rule leaves out creation and deletion schemes and listeners (as Java constructors); the
+  commands of an fml-cli script are not checked (their validation would reject a call of a behaviour declaring an exception); an unresolved
+  type in `throws` is reported as such. Limits kept: the listeners of a `fire` are those of the model of the statement, whatever their
+  `from` (listeners of other models are missed, a local one listening elsewhere is counted); no precise rethrow (`throw e` of a variable
+  caught as `FMLError` raises nothing checked); property initializers, argument default values, `@Enable` / `@Visible`, `@Renderer` and the
+  `from` of a listener are not checked; the analysis finds the bindings of a statement by reflection on its PAMELA getters (a binding
+  held otherwise is missed) and its cost in the editor is not measured.
 - Left to their own entries: `CORE-F-12` (the user interface of exceptions and try statements; the factories create try statements and
   catch clauses without empty blocks, unlike the other control structures). Not covered by a test: the normalized
   pretty-print of a try statement built without source (from the user interface), `ConfigureGINAFIBComponent` (gina-ta has no test module).

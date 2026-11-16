@@ -95,16 +95,18 @@ failure_clause = "onfailure" ":" statement
 
 ```ebnf
 behaviour_decl =
-    annotation* visibility? "create" "(" formal_arguments_list? ")" flexo_behaviour_body
-  | annotation* visibility? "create" "::" lidentifier "(" formal_arguments_list? ")" flexo_behaviour_body
-  | annotation* visibility? "delete" "(" formal_arguments_list? ")" flexo_behaviour_body
-  | annotation* visibility? "delete" "::" lidentifier "(" formal_arguments_list? ")" flexo_behaviour_body
-  | annotation* visibility? "abstract"? type? lidentifier "(" formal_arguments_list? ")" flexo_behaviour_body
-  | annotation* "listen" reference_type "from" expression flexo_behaviour_body
+    annotation* visibility? "create" "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* visibility? "create" "::" lidentifier "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* visibility? "delete" "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* visibility? "delete" "::" lidentifier "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* visibility? "abstract"? type? lidentifier "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* "listen" reference_type "from" expression throws_clause? flexo_behaviour_body
   | annotation* visibility? type? lidentifier "(" formal_arguments_list? ")"
-        "with" uidentifier fml_parameters? flexo_behaviour_body
+        "with" uidentifier fml_parameters? throws_clause? flexo_behaviour_body
   | annotation* visibility? type? lidentifier "(" formal_arguments_list? ")"
-        "with" cidentifier "::" uidentifier fml_parameters? flexo_behaviour_body
+        "with" cidentifier "::" uidentifier fml_parameters? throws_clause? flexo_behaviour_body
+
+throws_clause = "throws" reference_type ( "," reference_type )*
 
 formal_arguments_list = formal_argument ( "," formal_argument )*
 formal_argument = "required"? primitive_type lidentifier default_argument_value?

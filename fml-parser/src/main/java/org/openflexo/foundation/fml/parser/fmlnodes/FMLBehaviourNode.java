@@ -125,6 +125,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 			// AEmptyFlexoBehaviourBody : keep the ControlGraph null
 		}
 
+		buildThrownTypes(returned, astNode);
 		return returned;
 	}
 
@@ -160,6 +161,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 				FMLPropertyValue.class))
 		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 
+		appendThrowsClause();
 		when(() -> hasNoImplementation())
 			.thenAppend(staticContents(";"), getSemiFragment())
 			.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())

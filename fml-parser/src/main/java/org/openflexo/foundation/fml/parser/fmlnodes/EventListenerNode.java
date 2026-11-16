@@ -118,6 +118,7 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 			// AEmptyFlexoBehaviourBody : keep the ControlGraph null
 		}
 
+		buildThrownTypes(returned, astNode);
 		return returned;
 	}
 
@@ -146,6 +147,7 @@ public class EventListenerNode extends FlexoBehaviourNode<AListenerBehaviourDecl
 		append(staticContents(SPACE, "from", ""), getFromFragment());
 		append(bindingContents(SPACE, () -> getFromBinding()), getFromExpressionFragment());
 
+		appendThrowsClause();
 		when(() -> hasNoImplementation())
 			.thenAppend(staticContents(";"), getSemiFragment())
 			.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())

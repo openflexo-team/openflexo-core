@@ -239,6 +239,11 @@ public class TestFMLExceptions extends FMLScriptParserTestCase {
 	}
 
 	@Test
+	public void listenerExceptionCaughtByTheFire() throws Exception {
+		assertNull(runScript("FireCaught.fmlscript"));
+	}
+
+	@Test
 	public void internalErrorIsNeverCaught() throws Exception {
 		FMLExecutionFailure failure = assertFailure(runScript("InternalErrorNotCaught.fmlscript", false), FMLInternalError.class);
 		assertTrue(failure.getMessage(), failure.getMessage().contains(PlatformDefect.MESSAGE));

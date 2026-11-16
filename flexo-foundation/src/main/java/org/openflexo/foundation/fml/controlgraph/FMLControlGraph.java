@@ -38,6 +38,17 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.foundation.fml.validation.CheckedExceptions;
+import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.Collection;
+import java.util.ArrayList;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -433,5 +444,63 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 			return returned;
 		}
 
+	}
+
+	/**
+	 * A statement that may raise a checked exception (an exception defined in FML) is in the try block of a try statement catching it, or
+	 * in a behaviour declaring it ({@code throws}); a getter or a setter declares nothing (CORE-F-11 phase 7)
+	 */
+	@DefineValidationRule
+	public static class CheckedExceptionsMustBeCaughtOrDeclared
+			extends ValidationRule<CheckedExceptionsMustBeCaughtOrDeclared, FMLControlGraph> {
+
+		public CheckedExceptionsMustBeCaughtOrDeclared() {
+			super(FMLControlGraph.class, "checked_exceptions_must_be_caught_or_declared");
+		}
+
+		@Override
+		public ValidationIssue<CheckedExceptionsMustBeCaughtOrDeclared, FMLControlGraph> applyValidation(FMLControlGraph statement) {
+			if (!CheckedExceptions.isChecked(statement)) {
+				return null;
+			}
+			Set<FlexoExceptionConcept> raised = CheckedExceptions.raisedBy(statement);
+			if (raised.isEmpty()) {
+				return null;
+			}
+			List<Type> handlers = new ArrayList<>(CheckedExceptions.enclosingHandlers(statement));
+			FlexoBehaviour behaviour = CheckedExceptions.behaviourOf(statement);
+			if (behaviour != null) {
+				handlers.addAll(CheckedExceptions.declaredHandlers(behaviour));
+			}
+			List<FlexoExceptionConcept> unhandled = new ArrayList<>();
+			for (FlexoExceptionConcept exception : raised) {
+				if (!CheckedExceptions.isCovered(exception, handlers)) {
+					unhandled.add(exception);
+				}
+			}
+			if (unhandled.isEmpty()) {
+				return null;
+			}
+			return new UnhandledExceptionIssue<>(this, statement, unhandled);
+		}
+	}
+
+	/**
+	 * Raised for a statement that may raise checked exceptions (exceptions defined in FML) that no enclosing try catches and that its
+	 * behaviour does not declare (CORE-F-11 phase 7)
+	 */
+	public static class UnhandledExceptionIssue<R extends ValidationRule<R, V>, V extends org.openflexo.pamela.validation.Validable>
+			extends ValidationError<R, V> {
+
+		private final String exceptionNames;
+
+		public UnhandledExceptionIssue(R rule, V object, Collection<FlexoExceptionConcept> exceptions) {
+			super(rule, object, "unhandled_exceptions_($exceptionNames)_must_be_caught_or_declared");
+			exceptionNames = exceptions.stream().map(FlexoExceptionConcept::getName).collect(Collectors.joining(", "));
+		}
+
+		public String getExceptionNames() {
+			return exceptionNames;
+		}
 	}
 }

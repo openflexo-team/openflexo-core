@@ -288,7 +288,7 @@ like a concept, with properties and a creation scheme; it is created and raised 
 by a `catch` clause naming it or one of its super exceptions (§8.10).
 
 ```fml-member
-public take(int n) {
+public take(int n) throws OutOfStock {
 	if (parameters.n > quantity) {
 		throw new OutOfStock(parameters.n, quantity);
 	}

@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.controlgraph.CatchClause;
@@ -105,6 +106,12 @@ public class TestExceptionsValidation extends OpenflexoTestCase {
 		assertTrue(outOfStock instanceof FlexoExceptionConcept);
 		assertTrue(stockError.isAssignableFrom(outOfStock));
 
+		// throws clauses: parsed, written back
+		assertEquals(1, vm.getFlexoBehaviour("take", Integer.TYPE).getThrownTypes().size());
+		assertEquals(outOfStock, ((FlexoConceptInstanceType) vm.getFlexoBehaviour("take", Integer.TYPE).getThrownTypes().get(0)).getFlexoConcept());
+		assertTrue(vm.getCompilationUnit().getFMLPrettyPrint().contains("public take(int n) throws OutOfStock {"));
+		assertTrue(vm.getCompilationUnit().getNormalizedFML().contains("throws OutOfStock"));
+
 		// An exception declared in a concept is embedded in it
 		FlexoConcept box = vm.getFlexoConcept("Box");
 		assertNotNull(box);
@@ -155,6 +162,20 @@ public class TestExceptionsValidation extends OpenflexoTestCase {
 		assertTrue(found.toString(), found.contains("BadException:ExceptionHierarchyMustBeConsistent"));
 		assertTrue(found.toString(), found.contains("BadConcept:ExceptionHierarchyMustBeConsistent"));
 		assertFalse(found.toString(), found.contains("Failure:ExceptionHierarchyMustBeConsistent"));
+
+		// Checked exceptions (CORE-F-11 phase 7)
+		assertTrue(found.toString(), found.contains("unhandledThrow:CheckedExceptionsMustBeCaughtOrDeclared"));
+		assertTrue(found.toString(), found.contains("unhandledCall:CheckedExceptionsMustBeCaughtOrDeclared"));
+		assertTrue(found.toString(), found.contains("catchesTheWrongType:CheckedExceptionsMustBeCaughtOrDeclared"));
+		assertTrue(found.toString(), found.contains("makeRisky:CheckedExceptionsMustBeCaughtOrDeclared"));
+		assertTrue(found.toString(), found.contains("fireUnhandled:CheckedExceptionsMustBeCaughtOrDeclared"));
+		assertTrue(found.toString(), found.contains("computed:ExpressionMayNotRaiseCheckedExceptions"));
+		assertTrue(found.toString(), found.contains("throwsNotAnException:ThrowsClauseMustBeValid"));
+		assertTrue(found.toString(), found.contains("step:ThrowsClauseMustBeValid"));
+		assertFalse(found.toString(), found.contains("declaresFailure:CheckedExceptionsMustBeCaughtOrDeclared"));
+		// A built-in error type in throws covers no FML exception; an unresolved type in throws is reported as such
+		assertTrue(found.toString(), found.contains("declaresOnlyFMLError:CheckedExceptionsMustBeCaughtOrDeclared"));
+		assertTrue(found.toString(), found.contains("throwsAnUnresolvedType:ThrowsClauseMustBeValid"));
 	}
 
 	private static String ownerName(Object validable) {
@@ -166,6 +187,9 @@ public class TestExceptionsValidation extends OpenflexoTestCase {
 		}
 		if (validable instanceof FlexoConcept) {
 			return ((FlexoConcept) validable).getName();
+		}
+		if (validable instanceof FlexoProperty) {
+			return ((FlexoProperty<?>) validable).getName();
 		}
 		return String.valueOf(validable);
 	}

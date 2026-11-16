@@ -116,6 +116,7 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 			// AEmptyFlexoBehaviourBody : keep the ControlGraph null
 		}
 
+		buildThrownTypes(returned, astNode);
 		return returned;
 	}
 
@@ -135,6 +136,7 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourArgument.class));
 		append(staticContents(")"), getRParFragment());
+		appendThrowsClause();
 		when(() -> hasNoImplementation())
 				.thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())

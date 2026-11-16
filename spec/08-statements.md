@@ -270,6 +270,33 @@ nor an error type.
 
 A body that ends with `throw` gives no value, whatever the type declared by its behaviour.
 
+### Declaring exceptions: throws
+
+As in Java, the exceptions defined in FML are *checked*: a statement that may raise one — a `throw`, a call of a behaviour,
+a `new` whose creation scheme, a `delete` whose deletion scheme, a `fire` whose listeners declare it — must be in the
+`try` block of a `try` that catches it, or in a behaviour that declares it with `throws`, written after its arguments:
+
+```fml-member
+public take(int n) throws OutOfStock {
+	if (parameters.n > quantity) {
+		throw new OutOfStock(parameters.n, quantity);
+	}
+	quantity = quantity - parameters.n;
+}
+```
+
+The built-in error types are *unchecked*: a behaviour may list them in `throws`, as documentation, but nothing requires it,
+and they cover no exception defined in FML (`throws FMLError` does not declare `OutOfStock`).
+Methods, abstract behaviours, technology-specific behaviours, creation and deletion schemes and listeners may declare
+exceptions; a getter, a setter and an expression property declare nothing, and must catch what they may raise. A method
+that overrides another declares no checked exception that the overridden one does not (creation and deletion schemes and
+listeners are not concerned, as Java constructors). A call is checked against the behaviour it resolves to; `delete this`
+runs no deletion scheme; `end match … unmatched:` is checked against the behaviour it names; the listeners of a `fire` are
+those, inherited ones included, of the model of the statement and of its concepts. The validation reports an
+exception that is neither caught nor declared, a `throws` naming a type that is not an exception or an error type, and an
+overriding behaviour that declares more. A `throws` changes nothing at run time, and a script, which has no `try`, is not
+checked.
+
 ### try, catch, finally
 
 ```fml-member

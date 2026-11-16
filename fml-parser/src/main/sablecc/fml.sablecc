@@ -292,6 +292,7 @@ Tokens
    {normal} kw_super = 'super';
    {normal} kw_then = 'then';
    {normal} kw_throw = 'throw';
+   {normal} kw_throws = 'throws';
    {normal} kw_try = 'try';
    {normal} kw_typedef = 'typedef';
    {normal,binding} kw_unique = 'unique';
@@ -743,17 +744,24 @@ Productions
    // Behaviours
    // --------------------------------------------------------------------------------------
    behaviour_decl =
-       {anonymous_constructor} [annotations]:annotation* visibility? kw_create l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {named_constructor} [annotations]:annotation* visibility? kw_create colon_colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {method} [annotations]:annotation* visibility? kw_abstract? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {listener} [annotations]:annotation* kw_listen [event_type]:reference_type kw_from [listened]:expression flexo_behaviour_body
-     | {fml} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
-     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [ta_id]:cidentifier colon_colon [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
+       {anonymous_constructor} [annotations]:annotation* visibility? kw_create l_par formal_arguments_list? r_par throws_clause? flexo_behaviour_body
+     | {named_constructor} [annotations]:annotation* visibility? kw_create colon_colon [name]:lidentifier l_par formal_arguments_list? r_par throws_clause? flexo_behaviour_body
+     | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par throws_clause? flexo_behaviour_body
+     | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:lidentifier l_par formal_arguments_list? r_par throws_clause? flexo_behaviour_body
+     | {method} [annotations]:annotation* visibility? kw_abstract? type? [name]:lidentifier l_par formal_arguments_list? r_par throws_clause? flexo_behaviour_body
+     | {listener} [annotations]:annotation* kw_listen [event_type]:reference_type kw_from [listened]:expression throws_clause? flexo_behaviour_body
+     | {fml} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [behaviour]:uidentifier fml_parameters? throws_clause? flexo_behaviour_body
+     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [ta_id]:cidentifier colon_colon [behaviour]:uidentifier fml_parameters? throws_clause? flexo_behaviour_body
      //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:lidentifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
-     //| {name_only} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     //| {name_only} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par throws_clause? flexo_behaviour_body
      //| {name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:lidentifier fml_parameters? colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     ;
+
+   throws_clause = kw_throws throws_type_list;
+
+   throws_type_list =
+       {one}  reference_type
+     | {many} throws_type_list comma reference_type
      ;
 
    formal_arguments_list =
