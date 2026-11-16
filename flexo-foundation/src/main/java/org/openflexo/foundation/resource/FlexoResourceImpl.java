@@ -46,6 +46,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DataModification;
@@ -261,6 +262,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (wasLoaded != isLoaded()) {
 			getPropertyChangeSupport().firePropertyChange(IS_LOADED_KEY, wasLoaded, isLoaded());
 		}
+		// Data attached already modified notifies nothing else: FlexoObject.setIsModified returns early on modified data
+		notifyModifiedStateIfChanged();
 	}
 
 	/** The name the loaded state is notified under: what a binding such as <code>resource.isLoaded</code> listens to. */
@@ -389,7 +392,27 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		setChanged();
 		notifyObservers(notification);
 		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+		// ResourceModified carries no property name: a binding such as resource.isModified (a browser label) needs its own event
+		notifyModifiedStateIfChanged();
+	}
 
+	/** The name the modified state is notified under: what a binding such as <code>resource.isModified</code> listens to. */
+	private static final String IS_MODIFIED_KEY = "isModified";
+
+	/** The modified state last notified under {@link #IS_MODIFIED_KEY}. */
+	private final AtomicBoolean notifiedModified = new AtomicBoolean(false);
+
+	/**
+	 * Notify the modified state under <code>isModified</code> when it differs from the one last notified.<br>
+	 * To be called wherever {@link #isModified()} may change: the data becoming modified or saved (notifyResourceModified), the data
+	 * being attached (it may be modified already) or unloaded (an unloaded resource is never modified). Only a real transition is
+	 * notified: a load or a save of an unmodified resource re-evaluates no binding.
+	 */
+	protected void notifyModifiedStateIfChanged() {
+		boolean modified = isModified();
+		if (notifiedModified.compareAndSet(!modified, modified)) {
+			getPropertyChangeSupport().firePropertyChange(IS_MODIFIED_KEY, !modified, modified);
+		}
 	}
 
 	/**
@@ -580,6 +603,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			// the resources
 			notifyResourceUnloaded();
 			isUnloading = false;
+			notifyModifiedStateIfChanged();
 		}
 	}
 

@@ -268,6 +268,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			notifyResourceUnloaded();
 
 			isUnloading = false;
+			// An unloaded resource is never modified: a label bound to resource.isModified drops its mark
+			notifyModifiedStateIfChanged();
 		}
 	}
 
