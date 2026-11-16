@@ -1,0 +1,6 @@
+// CORE-F-11 phase 7: an exception thrown again outside the catch block that handled it is a new error, with its own FML stack (TestFMLExceptions).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="twice");
+mustFail = vmi.throwTwice();
+assert vmi.trace == "first";

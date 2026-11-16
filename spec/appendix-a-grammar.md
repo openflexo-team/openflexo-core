@@ -51,6 +51,8 @@ concept_decl = annotation* visibility? "abstract"? "concept" uidentifier super_c
                "{" member* "}"
 event_decl   = annotation* visibility? "abstract"? "event" uidentifier super_clause? inside_clause?
                "{" member* "}"
+exception_decl = annotation* visibility? "abstract"? "exception" uidentifier super_clause? inside_clause?
+               "{" member* "}"
 enum_decl    = annotation* visibility? "enum" uidentifier "{" enum_value ( "," enum_value )* "}"
 enum_value   = cidentifier
 
@@ -67,7 +69,7 @@ member =
   | annotation* visibility? type lidentifier "values" expression ";"
   | annotation* visibility? type lidentifier "{" get_decl set_decl? "}" ";"
   | behaviour_decl
-  | concept_decl | event_decl | enum_decl
+  | concept_decl | event_decl | exception_decl | enum_decl
   | assert_decl
 
 get_decl = type "get" "(" ")" flexo_behaviour_body
@@ -138,6 +140,15 @@ statement_without_trailing_substatement =
   | "return" ";"
   | "return" expression ";"
   | "return" fml_action_exp ";"
+  | "throw" expression ";"
+  | try_statement
+
+try_statement =
+    "try" block catch_clause+
+  | "try" block catch_clause* finally_clause
+
+catch_clause   = "catch" "(" reference_type lidentifier ")" block
+finally_clause = "finally" block
 
 statement_no_short_if =
     statement_without_trailing_substatement

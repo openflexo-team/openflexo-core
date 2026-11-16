@@ -13,6 +13,7 @@ that leave a binding unresolved fail when they run instead of giving `null`. The
 | Id | Deviation | Specified in | Write instead |
 |---|---|---|---|
 | `CORE-D-19` | a method call on a string literal does not resolve: an error at run time | §9.5.2 | put the literal in a variable |
+| `CORE-D-85` | a failure caught by a `try` in a getter read outside a behaviour is still reported | §8.10 | write the `try` in a behaviour |
 
 ## B.2 Properties and behaviours
 

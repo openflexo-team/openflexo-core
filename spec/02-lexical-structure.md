@@ -152,11 +152,11 @@ Reserved in `normal` unless stated otherwise.
 
 | Group | Keywords |
 |---|---|
-| Declarations | `model` `concept` `event` `enum` `typedef` `namespace` `use` `import` |
+| Declarations | `model` `concept` `event` `exception` `enum` `typedef` `namespace` `use` `import` |
 | Modifiers | `abstract` `public` `protected` `private` `required` |
 | Structure | `extends` `inside` `as` `with` `from` `values` |
 | Properties and behaviours | `create` `delete` `get` `set` `listen` `super` |
-| Statements | `if` `else` `for` `while` `do` `return` |
+| Statements | `if` `else` `for` `while` `do` `return` `throw` `try` `catch` `finally` |
 | Actions | `select` `unique` `where` `in` `match` `begin` `end` `unmatched` `new` `fire` `notify` `connect` `using` `log` |
 | Invariants | `assert` `onfailure` |
 | Reserved, unused | `action` `default` `then` |

@@ -103,6 +103,9 @@ public class FlexoEventNode extends AbstractFlexoConceptNode<AEventDecl, FlexoEv
 		if (getParent() instanceof FlexoEventNode) {
 			((FlexoEventNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
 		}
+		if (getParent() instanceof FlexoExceptionConceptNode) {
+			((FlexoExceptionConceptNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
+		}
 		return this;
 	}
 

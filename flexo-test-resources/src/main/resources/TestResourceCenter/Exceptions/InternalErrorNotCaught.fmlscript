@@ -1,0 +1,6 @@
+// CORE-F-11 phase 7: an FMLInternalError crosses catch (FMLError e); the finally block still runs (TestFMLExceptions).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExceptionsDefect.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExceptionsDefect() with (name="defect");
+mustFail = vmi.internalErrorThroughTry();
+assert vmi.cleaned == true;

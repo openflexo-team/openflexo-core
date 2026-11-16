@@ -87,8 +87,9 @@ its instances are not run (`CORE-D-21`, `CORE-D-22`).
 
 ## 13.6 Null and failure
 
-FML does not have exceptions in its syntax: there is no `try`, `catch` or `throw`. A problem during execution has one of
-these outcomes, which this section collects (they are justified where the construct is described).
+A problem during execution has one of these outcomes, which this section collects (they are justified where the
+construct is described). An execution error can be caught by a `try … catch` (§8.10); exceptions defined in FML (§5.6)
+are raised with `throw`.
 
 | Situation | Outcome | Reference |
 |---|---|---|
@@ -99,12 +100,14 @@ these outcomes, which this section collects (they are justified where the constr
 | an `if`, `while` or `for` whose condition is invalid | an execution error that stops the behaviour | §8.4 |
 | a `new` that does not resolve to a creation scheme | `null` | §7.2, §9.7 |
 | a technology-specific action that cannot be built | reported at load; the unit keeps its text | §10.10.2 |
-| `assert` false in a script | the run fails with a message naming the line | §12.6 |
+| `assert` false in a script | an execution error (assertion failed): the run fails with a message naming the line | §12.6 |
+| `throw` of an exception defined in FML | an execution error named by the exception | §8.10 |
 | a failed `load` or `new` in a script | the script stops | §12.7 |
 
 An execution error is signalled to the caller of the behaviour as an `FMLExecutionException` of its kind
 (`FMLNullReferenceError`, `FMLResolutionError`, `FMLTypeError`, `FMLHostError`, …), which tells the failing statement, its
-line and the behaviours it went through; a script that called it stops, and an application reports it. This holds whatever runs the failing code:
+line and the behaviours it went through; a script that called it stops, and an application reports it, unless a
+`catch` clause of a calling behaviour handles it (§8.10). This holds whatever runs the failing code:
 
 * a creation scheme run by `new`: the `new` fails, and the instance being built is taken out of its container, with
   what it contains; a virtual model instance being created is not removed;
@@ -141,7 +144,7 @@ A compilation unit and an instance can be **validated**. Validation checks the r
 
 * every binding in the unit is valid: its path resolves against the typing space (§4.8, §9.6);
 * the types of declarations resolve; the parents of a concept resolve; the container named by `inside` exists;
-* the invariants of an instance hold (§5.6.1).
+* the invariants of an instance hold (§5.7.1).
 
 Validation is the way to find, before execution, the errors that execution would raise: an unresolved path (§9.8), an
 invalid condition (§8.4), a missing `import` (§3.5.2). It can be run on a unit and on an instance, and the editors

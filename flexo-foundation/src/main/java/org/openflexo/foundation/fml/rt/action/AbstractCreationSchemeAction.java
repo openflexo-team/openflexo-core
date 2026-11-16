@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.FlexoExceptionConcept;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -194,6 +195,10 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 				if (getFlexoConceptBeingCreated() instanceof FlexoEvent) {
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
 							.makeNewEvent((FlexoEvent) getFlexoConceptBeingCreated(), getCreationScheme(), this);
+				}
+				else if (getFlexoConceptBeingCreated() instanceof FlexoExceptionConcept) {
+					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
+							.makeNewException((FlexoExceptionConcept) getFlexoConceptBeingCreated(), getCreationScheme(), this);
 				}
 				else {
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())

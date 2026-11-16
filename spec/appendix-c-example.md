@@ -225,7 +225,7 @@ public model Library {
 | `Book[0,*] books;` | multi-valued property | §4.6, §6.3 |
 | `int bookCount values books.size;` | expression property | §6.4 |
 | `String displayName { … };` | get/set property | §6.7 |
-| `private String notes;` | visibility | §5.8 |
+| `private String notes;` | visibility | §5.9 |
 | `create(required String label, int capacity=10)` | creation scheme, required argument, default | §7.2, §7.3.1 |
 | `create::withDefaultCapacity` | named creation scheme | §7.3.1 |
 | `delete() { }` | deletion scheme | §7.3.2 |
@@ -383,4 +383,4 @@ log "Test PASSED: Library instantiates, with nested and inherited concepts, prop
 | `fiction.displayName == "Shelf Fiction"` | get/set property | §6.7 |
 | `fiction.freeSlots() == 18` | a `while` loop in a behaviour | §8.5 |
 | `library.synchronizeIndex() == 2` run twice | a re-runnable matching | §10.9, §13.11 |
-| `shelf.getDeclaredProperty("notes").visibility.toString() == "Private"` | visibility is metadata | §5.8 |
+| `shelf.getDeclaredProperty("notes").visibility.toString() == "Private"` | visibility is metadata | §5.9 |

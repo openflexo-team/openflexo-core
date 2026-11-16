@@ -1,0 +1,6 @@
+// CORE-F-11 phase 7: a return crosses a try (it is not caught), and the finally block runs.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="return");
+assert vmi.returnThroughTry() == 5;
+assert vmi.finallyCount == 1;

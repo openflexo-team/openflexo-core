@@ -10,6 +10,7 @@ import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.expr.FMLConstant;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
+import org.openflexo.foundation.fml.rt.error.FMLAssertionError;
 
 /**
  * This is an exception which is thrown when an assert has failed: its expression evaluates to false or to null. Its message shows the
@@ -24,7 +25,13 @@ public class FMLAssertException extends FMLCommandExecutionException {
 	private final DataBinding<?> expression;
 
 	public FMLAssertException(int line, DataBinding<?> expression, AbstractCommandInterpreter commandInterpreter) {
-		super(buildMessage(expression, commandInterpreter));
+		this(line, expression, buildMessage(expression, commandInterpreter));
+	}
+
+	// The failure it stands for is an FMLAssertionError, a foreseen FML error (CORE-F-11 phase 7): this exception keeps the line of the
+	// assert command, as for any failing command
+	private FMLAssertException(int line, DataBinding<?> expression, String condition) {
+		super("assert failed: " + condition, new FMLAssertionError(condition));
 		this.expression = expression;
 		if (line >= 0) {
 			setLine(line);
@@ -36,14 +43,14 @@ public class FMLAssertException extends FMLCommandExecutionException {
 	}
 
 	private static String buildMessage(DataBinding<?> expression, AbstractCommandInterpreter commandInterpreter) {
-		String plain = "assert failed: " + expression;
+		String plain = String.valueOf(expression);
 		if (!(expression.getExpression() instanceof BinaryOperatorExpression)) {
 			return plain;
 		}
 		// For a binary expression, a more explicit message, with the values of the operands
 		BinaryOperatorExpression binOp = (BinaryOperatorExpression) expression.getExpression();
 		try {
-			return "assert failed: " + operand(binOp.getLeftArgument(), commandInterpreter) + " "
+			return operand(binOp.getLeftArgument(), commandInterpreter) + " "
 					+ FMLPrettyPrinter.getInstance().getGrammar().getSymbol(binOp.getOperator()) + " "
 					+ operand(binOp.getRightArgument(), commandInterpreter);
 		} catch (OperatorNotSupportedException e) {

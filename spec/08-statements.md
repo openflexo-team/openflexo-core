@@ -22,6 +22,11 @@ statement        = block
                  | "for" "(" type lidentifier ":" ( expression | fml_action_exp ) ")" statement
                  | "return" ";"
                  | "return" ( expression | fml_action_exp ) ";"
+                 | "throw" expression ";"
+                 | "try" block catch_clause+
+                 | "try" block catch_clause* "finally" block
+
+catch_clause        = "catch" "(" reference_type lidentifier ")" block
 
 for_init            = statement_expression | type variable_declarator
 statement_expression = assignment | pre_increment | pre_decrement | post_increment | post_decrement
@@ -39,8 +44,8 @@ is reported as a semantic issue when the unit is parsed.
 > **Implementation note.** A body written without braces is printed back with braces, and a broken indentation,
 > when the unit is saved from the FML editor (`CORE-D-56`); the meaning is kept.
 
-There is no `break`, no `continue`, no `switch`, no `try`/`catch`/`throw`, and no labelled statement. A
-loop ends when its condition does, or with `return`.
+There is no `break`, no `continue`, no `switch`, and no labelled statement. A loop ends when its condition does,
+with `return`, or with an error (§8.10).
 
 ## 8.2 Local variables
 
@@ -249,3 +254,77 @@ Statements of a block run in order; a block is a statement. The body of a behavi
 platform represents a body as a *control graph* of sequences, conditionals, iterations and actions, with
 the assignment of every value to a variable or property being an edition action; the textual form above is the
 only form this specification defines.
+
+## 8.10 Exceptions: throw, try, catch, finally
+
+A runtime error of FML (§13.6) and an exception defined in FML (§5.6) can be raised and handled by the behaviour that
+expects them.
+
+### throw
+
+`throw expression;` raises the value of the expression, which is either a new instance of an exception
+(`throw new OutOfStock(parameters.n, quantity);`) or an error caught by an enclosing `catch` clause (`throw e;`). Thrown
+again from the block of the clause that caught it, an error is the same error: it keeps its FML stack, which still names
+the statement where it was first raised. An exception kept and thrown again elsewhere is a new error, with its own stack. Throwing `null` is a null reference error; the validation reports a `throw` whose value is neither an exception
+nor an error type.
+
+A body that ends with `throw` gives no value, whatever the type declared by its behaviour.
+
+### try, catch, finally
+
+```fml-member
+public int tryToTake(int n) {
+	try {
+		this.take(parameters.n);
+		return parameters.n;
+	} catch (OutOfStock e) {
+		return 0 - e.requested;
+	} catch (FMLError e) {
+		log e.kind + ": " + e.message;
+		return -1;
+	} finally {
+		finallyCount = finallyCount + 1;
+	}
+}
+```
+
+The block of the `try` runs. An error raised by it, by the behaviours it calls included, is given to the **first**
+`catch` clause that catches it; the following clauses are not tried. A clause names:
+
+* an exception defined in FML: it catches that exception and its sub exceptions; its variable is the exception instance,
+  with its properties;
+* `FMLError` or one of its subtypes (table below), named without import: it catches the errors of that type, an
+  exception defined in FML included for `FMLError`; its variable is the error.
+
+| Type | Caught errors |
+|---|---|
+| `FMLError` | every foreseen error, and every exception defined in FML |
+| `FMLNullReferenceError` | a `null` in a path, a `null` condition, a `for` over `null` |
+| `FMLTypeError` | a type mismatch, an invalid cast, an argument of the wrong type |
+| `FMLResolutionError` | a name that does not resolve at run time |
+| `FMLAssignmentError` | a target that cannot be assigned |
+| `FMLArgumentError` | a missing or invalid argument of a behaviour |
+| `FMLCardinalityError` | a `select unique` with several results, a required role without value |
+| `FMLTechnologyError` | a foreseen failure of a technology (a missing sheet, a text that is not B, …) |
+| `FMLHostError` | a failure of Java code called from FML |
+| `FMLUserError` | every exception defined in FML |
+
+Every caught error gives `message`, `kind` (in English: `Null reference`, `Type error`, … or the name of the exception)
+and `fmlStackTrace`. The variable of a clause is visible in its block only, and must not have the name of a visible
+local variable.
+
+An error that no clause catches goes on to the caller. A defect of the platform (`FMLInternalError`) and a cancellation
+by the user (`FMLCancellation`) are never caught, not even by `catch (FMLError e)`: the validation reports a clause that
+names them. A `return` crosses a `try`: it is not an error. A clause placed after one that catches all it would catch
+is never run: the validation warns about it.
+
+The `finally` block runs on every exit of the `try`: at its normal end, after a clause, when an error goes on, and on a
+`return`. An error or a `return` of the `finally` block itself replaces the one going on.
+
+A caught error is *handled*: it is not reported (no record in the FML console, no dialog), even when it is the failure of
+a behaviour called by the block. What ran before the error is kept: there is no transaction (§13.6).
+
+> **Implementation note.** In a getter, a setter or an expression property read outside a behaviour (by the user interface,
+> by an fml-cli expression), the failure of a behaviour called by a `try` block is reported before the `catch` clause
+> handles it (`CORE-D-85`).
+

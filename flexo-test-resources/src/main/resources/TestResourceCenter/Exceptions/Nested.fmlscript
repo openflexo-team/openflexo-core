@@ -1,0 +1,6 @@
+// CORE-F-11 phase 7: nested try: the inner clause does not catch, its finally runs, the outer clause catches.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="nested");
+assert vmi.nested() == 1000;
+assert vmi.finallyCount == 1;

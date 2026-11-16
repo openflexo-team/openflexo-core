@@ -250,6 +250,7 @@ Tokens
    {normal,binding} kw_as = 'as';
    {command,script,normal} kw_assert = 'assert';
    {normal,binding} kw_begin = 'begin';
+   {normal} kw_catch = 'catch';
    {normal} kw_concept = 'concept';
    {normal} kw_connect = 'connect';
    {normal} kw_create = 'create';
@@ -260,7 +261,9 @@ Tokens
    {normal} kw_end = 'end';
    {normal} kw_enum = 'enum';
    {normal} kw_event = 'event';
+   {normal} kw_exception = 'exception';
    {normal,binding} kw_extends = 'extends';
+   {normal} kw_finally = 'finally';
    {normal} kw_fire = 'fire';
    {normal} kw_for = 'for';
    {normal,binding} kw_from = 'from';
@@ -288,6 +291,8 @@ Tokens
    {normal} kw_set = 'set';
    {normal} kw_super = 'super';
    {normal} kw_then = 'then';
+   {normal} kw_throw = 'throw';
+   {normal} kw_try = 'try';
    {normal} kw_typedef = 'typedef';
    {normal,binding} kw_unique = 'unique';
    {normal} kw_unmatched = 'unmatched';
@@ -682,6 +687,8 @@ Productions
 
    event_decl = [annotations]:annotation* visibility? kw_abstract? kw_event uidentifier super_clause? inside_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
 
+   exception_decl = [annotations]:annotation* visibility? kw_abstract? kw_exception uidentifier super_clause? inside_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
+
    enum_decl = [annotations]:annotation* visibility? kw_enum uidentifier l_brc enum_values_list r_brc;
 
    enum_values_list =
@@ -704,6 +711,7 @@ Productions
      | {behaviour_declaration} behaviour_decl
      | {concept_declaration} concept_decl
      | {event_declaration} event_decl
+     | {exception_declaration} exception_decl
      | {enum_declaration} enum_decl
      | {assert_declaration} assert_decl
      ;
@@ -802,7 +810,18 @@ Productions
      | {do_statement}                 kw_do statement kw_while l_par expression r_par semi
      | {return_empty}                 kw_return semi
      | {return_value}                 return_value_statement
+     | {throw}                        kw_throw expression semi
+     | {try}                          try_statement
      ;
+
+   try_statement =
+       {catch}   kw_try block [catch_clauses]:catch_clause+
+     | {finally} kw_try block [catch_clauses]:catch_clause* finally_clause
+     ;
+
+   catch_clause = kw_catch l_par reference_type lidentifier r_par block;
+
+   finally_clause = kw_finally block;
 
    return_value_statement = 
        {expression}   kw_return expression semi

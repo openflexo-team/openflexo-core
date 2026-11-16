@@ -1,0 +1,22 @@
+import org.openflexo.foundation.fml.cli.PlatformDefect;
+
+/**
+ * A defect of the platform (FMLInternalError) is never caught by FML, not even by catch (FMLError e) (CORE-F-11 phase 7).
+ * PlatformDefect is a class of the tests of fml-cli-test: this model is only loaded there (TestFMLExceptions).
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/ExceptionsDefect.fml")
+public model ExceptionsDefect {
+
+	boolean cleaned;
+
+	public String internalErrorThroughTry() {
+		try {
+			PlatformDefect.raise();
+		} catch (FMLError e) {
+			return "caught";
+		} finally {
+			cleaned = true;
+		}
+		return "none";
+	}
+}

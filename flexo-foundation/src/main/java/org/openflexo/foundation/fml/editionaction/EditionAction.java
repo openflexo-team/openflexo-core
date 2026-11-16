@@ -87,7 +87,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
 // Following imports are required for those actions be available in a VirtualModel even if no model slot is declared
-@Imports({ @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class),
+@Imports({ @Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ReturnStatement.class), @Import(ThrowStatement.class),
 		@Import(ExpressionAction.class), @Import(LogAction.class), @Import(ConnectAction.class), @Import(NotifyProgressAction.class),
 		@Import(SelectUniqueFlexoConceptInstance.class), @Import(SelectFlexoConceptInstance.class),
 		@Import(SelectUniqueVirtualModelInstance.class), @Import(SelectVirtualModelInstance.class), @Import(InitiateMatching.class),

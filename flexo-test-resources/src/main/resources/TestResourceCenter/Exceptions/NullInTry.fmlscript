@@ -1,0 +1,5 @@
+// CORE-F-11 phase 7: a built-in error caught by its type; kind is its English kind.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="null");
+assert vmi.nullInTry() == "Null reference";

@@ -162,8 +162,8 @@ value, `markdownModel.new MarkdownModel(resource) with (name = "…")`.
 Assert **values**, not mere success: `assert list.taskCount == 2;`, `assert milk.status == "done";`. A script that
 only runs proves nothing about behaviour.
 
-A failed assertion names its line and its expression, with the value of each operand that is not a constant:
-`Line 3: assert failed: x[1] == 2`. An `assert` whose expression is neither a boolean nor `null` is a type error.
+A failed assertion is an execution error of kind *Assertion failed* (`FMLAssertionError`). It names its line and its
+expression, with the value of each operand that is not a constant: `Line 3: Assertion failed: x[1] == 2`. An `assert` whose expression is neither a boolean nor `null` is a type error.
 
 ### 12.6.1 Failures and the end of a script
 
@@ -177,7 +177,8 @@ Line 5: Null reference: Condition 'b' is null
 ```
 
 The kinds are the ones of the runtime errors of FML (null reference, type error, resolution error, failure of Java
-code, …) and *Internal error* for a defect of the platform. A command that cannot run because it is invalid (an
+code, assertion failed, …), the name of an exception defined in FML, and *Internal error* for a defect of the
+platform. A script has no blocks: `try … catch` is written in the behaviours it calls (§8.10). A command that cannot run because it is invalid (an
 unresolved name, a script that does not parse) is not an FML error.
 
 `return` (with or without a value) ends the script successfully; the value, if any, is printed. In a script run by

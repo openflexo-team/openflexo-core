@@ -1,0 +1,5 @@
+// CORE-F-11 phase 7: an error that no clause catches goes on, with its FML stack (asserted by TestFMLExceptions).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="nomatch");
+mustFail = vmi.noMatchingClause();

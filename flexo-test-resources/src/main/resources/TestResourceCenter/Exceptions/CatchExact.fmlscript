@@ -1,0 +1,8 @@
+// CORE-F-11 phase 7: an FML exception caught by its exact type; the catch variable is the exception instance.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="exact");
+vmi.quantity = 3;
+assert vmi.catchExact(5) == -5;
+assert vmi.catchExact(2) == 2;
+assert vmi.quantity == 1;

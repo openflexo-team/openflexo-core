@@ -33,6 +33,11 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.NotifyActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ThrowStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.TryStatementNode;
+import org.openflexo.foundation.fml.parser.node.AThrowStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.ATryStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.PBlock;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.WhileActionNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
@@ -127,6 +132,11 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	public static ControlGraphNode<?, ?> makeControlGraphNode(PFmlActionExp cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
+	/** The block of a try, a catch clause or a finally (CORE-F-11 phase 7) */
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PBlock cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
@@ -747,6 +757,30 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		super.outAReturnStatementWithoutTrailingSubstatement(node);
 		pop();
 	}*/
+
+	@Override
+	public void inAThrowStatementWithoutTrailingSubstatement(AThrowStatementWithoutTrailingSubstatement node) {
+		super.inAThrowStatementWithoutTrailingSubstatement(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new ThrowStatementNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outAThrowStatementWithoutTrailingSubstatement(AThrowStatementWithoutTrailingSubstatement node) {
+		super.outAThrowStatementWithoutTrailingSubstatement(node);
+		pop();
+	}
+
+	@Override
+	public void inATryStatementWithoutTrailingSubstatement(ATryStatementWithoutTrailingSubstatement node) {
+		super.inATryStatementWithoutTrailingSubstatement(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node.getTryStatement(), n -> new TryStatementNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outATryStatementWithoutTrailingSubstatement(ATryStatementWithoutTrailingSubstatement node) {
+		super.outATryStatementWithoutTrailingSubstatement(node);
+		pop();
+	}
 
 	@Override
 	public void inAReturnEmptyStatementWithoutTrailingSubstatement(AReturnEmptyStatementWithoutTrailingSubstatement node) {

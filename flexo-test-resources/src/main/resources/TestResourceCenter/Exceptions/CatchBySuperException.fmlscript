@@ -1,0 +1,6 @@
+// CORE-F-11 phase 7: an FML exception caught by its super exception; kind is the name of the thrown exception.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="super");
+assert vmi.catchBySuperException(9) == "OutOfStock";
+assert vmi.catchBySuperException(0) == "taken";

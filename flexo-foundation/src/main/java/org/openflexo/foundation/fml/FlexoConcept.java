@@ -179,7 +179,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
-@Imports({ @Import(FlexoEvent.class), @Import(FlexoEnum.class) })
+@Imports({ @Import(FlexoEvent.class), @Import(FlexoExceptionConcept.class), @Import(FlexoEnum.class) })
 public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = VirtualModel.class)
@@ -3555,6 +3555,34 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 	}
 
+	/**
+	 * An exception extends only exceptions, and a concept which is not an exception never extends one (CORE-F-11 phase 7): an exception
+	 * is thrown and caught by its type, a concept is instantiated in a container
+	 */
+	@DefineValidationRule
+	public static class ExceptionHierarchyMustBeConsistent extends ValidationRule<ExceptionHierarchyMustBeConsistent, FlexoConcept> {
+
+		public ExceptionHierarchyMustBeConsistent() {
+			super(FlexoConcept.class, "exception_hierarchy_must_be_consistent");
+		}
+
+		@Override
+		public ValidationIssue<ExceptionHierarchyMustBeConsistent, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+			for (FlexoConcept parent : flexoConcept.getParentFlexoConcepts()) {
+				if (parent == null) {
+					continue;
+				}
+				if (flexoConcept instanceof FlexoExceptionConcept && !(parent instanceof FlexoExceptionConcept)) {
+					return new ValidationError<>(this, flexoConcept, "exception_($validable.name)_extends_a_concept_which_is_not_an_exception");
+				}
+				if (!(flexoConcept instanceof FlexoExceptionConcept) && parent instanceof FlexoExceptionConcept) {
+					return new ValidationError<>(this, flexoConcept, "concept_($validable.name)_extends_an_exception");
+				}
+			}
+			return null;
+		}
+	}
+
 	@DefineValidationRule
 	public static class NonAbstractFlexoConceptShouldHaveProperties
 			extends ValidationRule<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> {
@@ -3570,6 +3598,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public ValidationIssue<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!(flexoConcept.isAbstract()) && !(flexoConcept instanceof VirtualModel) && !(flexoConcept instanceof FlexoEvent)
+					&& !(flexoConcept instanceof FlexoExceptionConcept)
 					&& !(flexoConcept instanceof FlexoEnum) && !(flexoConcept instanceof FlexoEnumValue)
 					&& flexoConcept.getDeclaredProperties().size() == 0) {
 				return new ValidationWarning<>(this, flexoConcept,

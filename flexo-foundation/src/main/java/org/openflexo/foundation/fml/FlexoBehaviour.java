@@ -58,6 +58,8 @@ import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.editionaction.ThrowStatement;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
@@ -828,12 +830,22 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				Type analyzed = behaviour.getAnalyzedReturnType();
 				// System.out.println("expected " + expected + " of " + expected.getClass());
 				// System.out.println("analyzed " + analyzed + " of " + analyzed.getClass());
-				if (expected != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)) {
+				if (expected != null && !TypeUtils.isTypeAssignableFrom(expected, analyzed, true)
+						&& !(Void.class.equals(analyzed) && endsWithThrow(behaviour.getControlGraph()))) {
+					// A body ending with a throw never completes normally: it gives no value, whatever the declared type (CORE-F-11
+					// phase 7)
 					return new NotCompatibleTypesIssue(this, behaviour, expected, analyzed);
 				}
 			}
 
 			return null;
+		}
+
+		private static boolean endsWithThrow(FMLControlGraph controlGraph) {
+			if (controlGraph instanceof Sequence) {
+				return endsWithThrow(((Sequence) controlGraph).getControlGraph2());
+			}
+			return controlGraph instanceof ThrowStatement;
 		}
 
 		public static class NotCompatibleTypesIssue

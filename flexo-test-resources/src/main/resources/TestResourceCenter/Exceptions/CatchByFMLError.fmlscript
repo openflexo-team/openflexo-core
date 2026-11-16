@@ -1,0 +1,5 @@
+// CORE-F-11 phase 7: FMLError catches an FML exception too; its message is the renderer of the exception.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="fmlerror");
+assert vmi.catchByFMLError(9) == "cannot take 9, only 0";

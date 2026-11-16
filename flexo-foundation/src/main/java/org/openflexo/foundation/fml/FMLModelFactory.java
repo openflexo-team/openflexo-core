@@ -60,7 +60,10 @@ import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
+import org.openflexo.foundation.fml.controlgraph.CatchClause;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.TryStatement;
+import org.openflexo.foundation.fml.editionaction.ThrowStatement;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.ExpressionIterationAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -536,6 +539,10 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(FlexoEvent.class);
 	}
 
+	public FlexoExceptionConcept newFlexoExceptionConcept() {
+		return newInstance(FlexoExceptionConcept.class);
+	}
+
 	public FlexoEnum newFlexoEnum() {
 		return newInstance(FlexoEnum.class);
 	}
@@ -668,6 +675,18 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		ExpressionIterationAction returned = newInstance(ExpressionIterationAction.class);
 		returned.setControlGraph(newEmptyControlGraph());
 		return returned;
+	}
+
+	public TryStatement newTryStatement() {
+		return newInstance(TryStatement.class);
+	}
+
+	public CatchClause newCatchClause() {
+		return newInstance(CatchClause.class);
+	}
+
+	public <T> ThrowStatement<T> newThrowStatement() {
+		return newInstance(ThrowStatement.class);
 	}
 
 	public WhileAction newWhileAction() {

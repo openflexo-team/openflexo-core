@@ -1,0 +1,5 @@
+// CORE-F-11 phase 7: an exception declared inside a concept is thrown and caught there.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="nestedconcept");
+assert vmi.nestedInConcept() == "box";

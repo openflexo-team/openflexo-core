@@ -75,6 +75,12 @@ public enum FMLKeywords {
 			return "begin";
 		}
 	},
+	Catch {
+		@Override
+		public String getKeyword() {
+			return "catch";
+		}
+	},
 	Concept {
 		@Override
 		public String getKeyword() {
@@ -135,10 +141,22 @@ public enum FMLKeywords {
 			return "event";
 		}
 	},
+	Exception {
+		@Override
+		public String getKeyword() {
+			return "exception";
+		}
+	},
 	Extends {
 		@Override
 		public String getKeyword() {
 			return "extends";
+		}
+	},
+	Finally {
+		@Override
+		public String getKeyword() {
+			return "finally";
 		}
 	},
 	Fire {
@@ -301,6 +319,18 @@ public enum FMLKeywords {
 		@Override
 		public String getKeyword() {
 			return "then";
+		}
+	},
+	Throw {
+		@Override
+		public String getKeyword() {
+			return "throw";
+		}
+	},
+	Try {
+		@Override
+		public String getKeyword() {
+			return "try";
 		}
 	},
 	Typedef {

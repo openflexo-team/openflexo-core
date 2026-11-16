@@ -160,7 +160,7 @@ import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
 @XMLElement
-@Imports({ @Import(FlexoEventInstance.class) })
+@Imports({ @Import(FlexoEventInstance.class), @Import(FlexoExceptionInstance.class) })
 // TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 // This inheritance should disappear
 public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext, ReleasableObject {

@@ -288,7 +288,7 @@ public class TestCLICommandsExceptionManagement extends OpenflexoTestCase {
 		assertNotNull(interpreter.executeAndReport("x = 1"));
 		assertNotNull(interpreter.executeAndReport("assert x == 1"));
 		assertNull(interpreter.executeAndReport("assert x == 2"));
-		assertTrue(err.toString(), err.toString().contains("assert failed: x[1] == 2"));
+		assertTrue(err.toString(), err.toString().contains("Assertion failed: x[1] == 2"));
 		assertNotNull(interpreter.executeAndReport("y = \"abc\""));
 		assertNull(interpreter.executeAndReport("y.substring(1,42)"));
 		assertTrue(err.toString(), err.toString().contains("Failure of Java code"));

@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.FlexoExceptionConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction;
@@ -249,6 +250,22 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 
 		FlexoEventInstance returned = newInstance(FlexoEventInstance.class);
 		returned.setFlexoConcept(event);
+		returned.setSourceVirtualModelInstance(ownerVirtualModelInstance);
+
+		executeCreationScheme(returned, creationScheme, evaluationContext);
+
+		return returned;
+	}
+
+	/**
+	 * Instantiate a {@link FlexoExceptionInstance} conform to supplied {@link FlexoExceptionConcept}, not registered in any virtual model
+	 * instance, and run its creation scheme (CORE-F-11 phase 7)
+	 */
+	public FlexoExceptionInstance makeNewExceptionInstance(FlexoExceptionConcept exception, VirtualModelInstance<?, ?> ownerVirtualModelInstance,
+			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+
+		FlexoExceptionInstance returned = newInstance(FlexoExceptionInstance.class);
+		returned.setFlexoConcept(exception);
 		returned.setSourceVirtualModelInstance(ownerVirtualModelInstance);
 
 		executeCreationScheme(returned, creationScheme, evaluationContext);

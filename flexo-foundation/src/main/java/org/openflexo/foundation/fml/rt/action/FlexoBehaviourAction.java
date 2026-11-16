@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.IterationActionBindingVariable;
+import org.openflexo.foundation.fml.binding.CatchVariableBindingVariable;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
@@ -317,7 +318,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * those are held by the evaluation context; every other variable is resolved where the analysis bound it (CORE-D-48)
 	 */
 	public static boolean isLocalVariable(BindingVariable variable) {
-		return variable instanceof DeclarationBindingVariable || variable instanceof IterationActionBindingVariable;
+		return variable instanceof DeclarationBindingVariable || variable instanceof IterationActionBindingVariable
+				|| variable instanceof CatchVariableBindingVariable;
 	}
 
 	/**
@@ -602,7 +604,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 
-		if (variable instanceof DeclarationBindingVariable || variable instanceof IterationActionBindingVariable) {
+		if (isLocalVariable(variable)) {
 			if (value != null) {
 				variables.put(variable.getVariableName(), value);
 			}

@@ -1,0 +1,7 @@
+// CORE-F-11 phase 7: without renderer, the message of an exception is its name and the values of its properties.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="message");
+assert vmi.messageWithoutRenderer().startsWith("Refused(reason=");
+assert vmi.messageWithoutRenderer().contains("closed");
+assert vmi.messageWithoutRenderer().length() == 24;

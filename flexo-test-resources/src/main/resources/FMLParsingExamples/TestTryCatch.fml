@@ -1,0 +1,220 @@
+/**
+ * Testing exceptions, throw, try / catch / finally (CORE-F-11 phase 7): a copy of TestResourceCenter/FML/Exceptions.fml, with the
+ * layouts the pretty-print must keep (an empty block, comments, a catch on its own line)
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+public model Exceptions {
+
+	int quantity = 0;
+	int finallyCount = 0;
+	boolean cleaned = false;
+	String trace;
+
+	public take(int n) {
+		if (parameters.n > quantity) {
+			throw new OutOfStock(parameters.n, quantity);
+		}
+		quantity = quantity - parameters.n;
+	}
+
+	public int catchExact(int n) {
+		try {
+			this.take(parameters.n);
+			return parameters.n;
+		} catch (OutOfStock e) {
+			return 0 - e.requested;
+		}
+	}
+
+	public String catchBySuperException(int n) {
+		try {
+			this.take(parameters.n);
+		} catch (StockError e) {
+			return e.kind;
+		}
+		return "taken";
+	}
+
+	public String catchByFMLError(int n) {
+		try {
+			this.take(parameters.n);
+		} catch (FMLError e) {
+			return e.message;
+		}
+		return "taken";
+	}
+
+	public String firstMatchingClause() {
+		try {
+			this.take(1000);
+		} catch (FMLTypeError e) {
+			return "type";
+		} catch (OutOfStock e) {
+			return "outOfStock";
+		} catch (FMLError e) {
+			return "error";
+		}
+		return "none";
+	}
+
+	public String noMatchingClause() {
+		try {
+			this.take(1000);
+		} catch (FMLTypeError e) {
+			return "type";
+		}
+		return "none";
+	}
+
+	public String nullInTry() {
+		String s = null;
+		try {
+			String t = s.substring(1);
+			return t;
+		} catch (FMLNullReferenceError e) {
+			return e.kind;
+		}
+	}
+
+	public int returnThroughTry() {
+		try {
+			return 5;
+		} catch (FMLError e) {
+			return -1;
+		} finally {
+			finallyCount = finallyCount + 1;
+		}
+	}
+
+	public int finallyOnError() {
+		try {
+			this.take(1000);
+		} finally {
+			cleaned = true;
+		}
+		return 1;
+	}
+
+	public int nested() {
+		try {
+			try {
+				this.take(1000);
+			} catch (FMLTypeError e) {
+				return -2;
+			} finally {
+				finallyCount = finallyCount + 1;
+			}
+		} catch (OutOfStock e) {
+			return e.requested;
+		}
+		return -3;
+	}
+
+	public rethrow() {
+		try {
+			this.take(1000);
+		} catch (OutOfStock e) {
+			trace = "caught";
+			throw e;
+		}
+	}
+
+	public rethrowBuiltIn() {
+		String s = null;
+		try {
+			String t = s.substring(1);
+		} catch (FMLError e) {
+			throw e;
+		}
+	}
+
+	public String messageWithoutRenderer() {
+		try {
+			throw new Refused("closed");
+		} catch (Refused e) {
+			return e.message;
+		}
+	}
+
+	public boolean stackOfCaught() {
+		try {
+			this.take(1000);
+		} catch (OutOfStock e) {
+			return e.fmlStackTrace.contains("take(");
+		}
+		return false;
+	}
+
+	public String uncaught() {
+		throw new Refused("never caught");
+	}
+
+	public emptyBlocks() {
+		try {
+		} catch (FMLError e) {
+		} finally {
+		}
+	}
+
+	public commentsAndLayout() {
+		// before the try
+		try {
+			// in the try
+			this.take(1);
+		}
+		catch (OutOfStock e) { // a catch on its own line
+			trace = e.message;
+		}
+		finally {
+			cleaned = true;
+		}
+	}
+
+	// The example of §8.10 of the specification
+	public int tryToTake(int n) {
+		try {
+			this.take(parameters.n);
+			return parameters.n;
+		} catch (OutOfStock e) {
+			return 0 - e.requested;
+		} catch (FMLError e) {
+			log e.kind + ": " + e.message;
+			return -1;
+		} finally {
+			finallyCount = finallyCount + 1;
+		}
+	}
+
+	public String caughtThenGoOn() {
+		try {
+			this.take(1000);
+		} catch (OutOfStock e) {
+			trace = "recovered";
+		}
+		return trace;
+	}
+
+	abstract exception StockError {
+	}
+
+	@Renderer("cannot take " + requested + ", only " + available)
+	exception OutOfStock extends StockError {
+		int requested;
+		int available;
+
+		create(int requested, int available) {
+			requested = parameters.requested;
+			available = parameters.available;
+		}
+	}
+
+	exception Refused {
+		String reason;
+
+		create(String reason) {
+			reason = parameters.reason;
+		}
+	}
+}

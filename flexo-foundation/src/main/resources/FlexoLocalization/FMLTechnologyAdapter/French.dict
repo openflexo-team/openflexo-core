@@ -10,6 +10,7 @@ FlexoConcept=FlexoConcept
 FlexoEnum=FlexoEnum
 FlexoEnumValue=FlexoEnumValue
 FlexoEvent=FlexoEvent
+FlexoExceptionConcept=Exception
 Float=Float
 GenericInspectorEntry=GenericInspectorEntry
 InspectorEntry=InspectorEntry

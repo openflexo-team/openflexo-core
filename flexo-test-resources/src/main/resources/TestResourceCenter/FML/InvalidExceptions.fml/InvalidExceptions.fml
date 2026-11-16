@@ -1,0 +1,76 @@
+/**
+ * Invalid uses of exceptions, throw and catch (CORE-F-11 phase 7): one issue per behaviour, asserted by TestExceptionsValidation
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/InvalidExceptions.fml")
+public model InvalidExceptions {
+
+	String trace;
+
+	public catchInternalError() {
+		try {
+			trace = "a";
+		} catch (FMLInternalError e) {
+			trace = "b";
+		}
+	}
+
+	public catchCancellation() {
+		try {
+			trace = "a";
+		} catch (FMLCancellation e) {
+			trace = "b";
+		}
+	}
+
+	public catchString() {
+		try {
+			trace = "a";
+		} catch (String e) {
+			trace = "b";
+		}
+	}
+
+	public throwString() {
+		throw "not an exception";
+	}
+
+	public unreachableClause() {
+		try {
+			trace = "a";
+		} catch (FMLError e) {
+			trace = "b";
+		} catch (FMLTypeError e) {
+			trace = "c";
+		}
+	}
+
+	public variableOutsideItsBlock() {
+		try {
+			trace = "a";
+		} catch (FMLError e) {
+			trace = "b";
+		}
+		trace = e.message;
+	}
+
+	public redeclaredVariable() {
+		String e = "x";
+		try {
+			trace = "a";
+		} catch (FMLError e) {
+			trace = "b";
+		}
+	}
+
+	exception Failure {
+	}
+
+	concept Plain {
+	}
+
+	exception BadException extends Plain {
+	}
+
+	concept BadConcept extends Failure {
+	}
+}

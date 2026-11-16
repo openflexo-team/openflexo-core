@@ -51,6 +51,7 @@ import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.ProxyType;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.rt.error.FMLErrorTypes;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.foundation.fml.ta.FlexoConceptType;
 import org.openflexo.foundation.resource.ResourceData;
@@ -93,6 +94,10 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 	 */
 	@Override
 	public boolean isTypeImported(Type type) {
+		// The built-in error types are always visible, as java.lang (CORE-F-11 phase 7)
+		if (FMLErrorTypes.isImplicitType(type)) {
+			return true;
+		}
 		return super.isTypeImported(type);
 	}
 
@@ -130,6 +135,11 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 					// return new ProxyType(typeDeclaration.getAbbrev(), (CustomType) typeDeclaration.getReferencedType());
 				}
 			}
+		}
+		// The built-in error types, visible without import, after the aliases of the unit (CORE-F-11 phase 7)
+		Class<?> errorType = FMLErrorTypes.getImplicitType(typeAsString);
+		if (errorType != null) {
+			return errorType;
 		}
 		return super.resolveType(typeAsString);
 	}

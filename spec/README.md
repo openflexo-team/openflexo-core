@@ -22,10 +22,10 @@ the cases in which the implementation does not do what the language intends are 
 | 2 | [Lexical structure](02-lexical-structure.md) | Characters, comments, lexical states, tokens, keywords, literals |
 | 3 | [Compilation units](03-compilation-units.md) | Layout of a `.fml` file; namespaces, `use`, `import`, `typedef`; resources and addresses |
 | 4 | [Types](04-types.md) | Primitive, reference, generic and technology-specific types; versions; cardinalities; the typing space |
-| 5 | [Models, concepts, events and enums](05-models-and-concepts.md) | The declarations that structure a program; containment; inheritance; invariants |
+| 5 | [Models, concepts, events, exceptions and enums](05-models-and-concepts.md) | The declarations that structure a program; containment; inheritance; invariants |
 | 6 | [Properties](06-properties.md) | Stored, role, expression, abstract and get/set properties |
 | 7 | [Behaviours](07-behaviours.md) | Methods, creation and deletion schemes, listeners, technology-specific behaviours |
-| 8 | [Statements](08-statements.md) | Blocks, declarations, conditions, loops, returns |
+| 8 | [Statements](08-statements.md) | Blocks, declarations, conditions, loops, returns, throw, try / catch / finally |
 | 9 | [Expressions](09-expressions.md) | Operators, precedence, paths, calls, `new`, name resolution |
 | 10 | [Edition actions](10-edition-actions.md) | `select`, `match`, `delete`, `fire`, `notify`, `connect`, `log`, technology actions |
 | 11 | [Annotations](11-annotations.md) | Syntax and the annotations the platform interprets |

@@ -1,0 +1,5 @@
+// CORE-F-11 phase 7: an FML exception never caught fails the call as an FMLUserError (asserted by TestFMLExceptions).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="uncaught");
+mustFail = vmi.uncaught();

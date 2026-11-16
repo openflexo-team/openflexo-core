@@ -1,0 +1,5 @@
+// CORE-F-11 phase 7: the first clause that catches the error runs, the next ones are skipped.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="first");
+assert vmi.firstMatchingClause() == "outOfStock";

@@ -22,7 +22,7 @@ get_decl = type "get" "(" ")" body
 set_decl = "set" "(" type lidentifier ")" body
 ```
 
-Every property has a name (a `lidentifier`), a visibility (§5.8) and may carry annotations (chapter 11).
+Every property has a name (a `lidentifier`), a visibility (§5.9) and may carry annotations (chapter 11).
 
 A **typed property** is classified by its type, which selects the kind of property that is built:
 

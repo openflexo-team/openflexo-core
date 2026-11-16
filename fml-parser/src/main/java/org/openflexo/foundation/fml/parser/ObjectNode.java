@@ -77,6 +77,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.FlexoExceptionConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
@@ -107,6 +108,9 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyPropertyChangedAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
+import org.openflexo.foundation.fml.editionaction.ThrowStatement;
+import org.openflexo.foundation.fml.controlgraph.TryStatement;
+import org.openflexo.foundation.fml.controlgraph.CatchClause;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.md.BasicMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
@@ -131,6 +135,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEventNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoExceptionConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
@@ -165,6 +170,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.NotifyActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ThrowStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.TryStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.CatchClauseNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
@@ -443,6 +451,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 				return (P2PPNode<?, C>) new FlexoEventNode((FlexoEvent) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
+			if (object instanceof FlexoExceptionConcept) {
+				return (P2PPNode<?, C>) new FlexoExceptionConceptNode((FlexoExceptionConcept) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
 			if (object instanceof FlexoConcept) {
 				return (P2PPNode<?, C>) new FlexoConceptNode((FlexoConcept) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
@@ -516,6 +528,18 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			}
 			if (object instanceof ExpressionAction) {
 				return (P2PPNode<?, C>) new ExpressionActionNode((ExpressionAction) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof ThrowStatement) {
+				return (P2PPNode<?, C>) new ThrowStatementNode((ThrowStatement) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof TryStatement) {
+				return (P2PPNode<?, C>) new TryStatementNode((TryStatement) object,
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
+			}
+			if (object instanceof CatchClause) {
+				return (P2PPNode<?, C>) new CatchClauseNode((CatchClause) object,
 						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ReturnStatement) {

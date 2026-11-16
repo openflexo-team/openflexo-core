@@ -80,4 +80,19 @@ public class FMLExecutionException extends FlexoException implements FMLExecutio
 		return stack;
 	}
 
+	/**
+	 * The kind of this failure, in English (for instance "Null reference", or the name of an FML exception): read by FML as {@code e.kind}
+	 * on a caught error (CORE-F-11 phase 7)
+	 */
+	public String getKind() {
+		return FMLErrorReporter.kind(this);
+	}
+
+	/**
+	 * The FML stack of this failure, as text, one frame per line: read by FML as {@code e.fmlStackTrace} on a caught error
+	 */
+	public String getFmlStackTrace() {
+		return getFMLStack().toString();
+	}
+
 }

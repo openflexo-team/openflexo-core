@@ -446,7 +446,7 @@ with the model and shown in the running application.
 
 ## FML runtime errors
 
-### CORE-F-11 — Typed FML runtime errors, raised where detected, reported once with the FML location  ·  `IN PROGRESS`
+### CORE-F-11 — Typed FML runtime errors, raised where detected, reported once with the FML location  ·  `DONE`
 
 **Problem (audit of every execution primitive, 2026-11-13).** Errors raised while FML runs are handled ad hoc:
 - **Errors become values.** About 60 blocks catch `TypeMismatchException` / `NullReferenceException` / `InvocationTargetException` /
@@ -912,6 +912,61 @@ technology-adapters (dsl, xx), kafka, oslc, gina, odt. pdf, java, rhapsody and f
   the adapters' suites green; markdown `TestMarkdownEditionActions`, capella `TestLoadXXDocuments`, diagram `TestFMLDiagramPrettyPrint3`
   red as before phase 3 (not attributed yet). ECJ compiles flexo-foundation.
 
+**Phase 7 done (2026-11-16), decided with the user.**
+- Exceptions defined in FML (asked by the user before phase 7 started): a new specialization of `FlexoConcept`,
+  `FlexoExceptionConcept` (keyword `exception`, declared like an event; `FlexoException` is taken by the Java base exception), instances
+  `FlexoExceptionInstance`, created by `new` outside any container, as an event. An exception extends only exceptions and a concept never
+  extends one (validation `ExceptionHierarchyMustBeConsistent`). Its message is its `@Renderer`, otherwise its name and the values of its
+  own properties.
+- `throw <expr>;` (`ThrowStatement`, built as `ReturnStatement`): a new exception instance is raised as `FMLUserError` (an `FMLError`
+  carrying the instance); a caught error (an exception instance or a built-in error) is rethrown unchanged, its FML stack kept; no
+  `throw "text"`. Throwing null is an `FMLNullReferenceError`. A body ending with `throw` satisfies any declared type.
+- `try { } catch (T e) { } … finally { }` (`TryStatement`, `CatchClause`, itself a control graph whose binding model adds the variable,
+  visible in its block only): several clauses, the first that catches runs; optional `finally`, run on every exit; no multi-catch. A clause
+  names `FMLError` or one of its subtypes (visible without import, `AbstractFMLTypingSpace`, no import written back) or an FML exception:
+  a built-in type catches errors of that class (`FMLError` catches FML exceptions too, the variable being the error), an FML exception its
+  sub exceptions (the variable being the instance). `FMLInternalError`, `FMLCancellation` and `ReturnException` are never caught; naming
+  `FMLInternalError`, `FMLCancellation` or `FMLExecutionException` is a validation error, an unreachable clause a warning. Only the thrown
+  object is matched: an untyped `FMLExecutionException` wrapping an `FMLError` is not caught.
+- A caught error is handled: not reported (the failed nested actions it stands for are forgotten by the execution scope,
+  `FMLErrorReporter.failureHandled`), the edits made before it are kept. A caught error exposes `message`, `kind` (English kind, or the
+  name of the exception) and `fmlStackTrace` (`getKind` / `getFmlStackTrace` on `FMLExecutionException`, `ExceptionInfoPathElement` on an
+  exception instance, unless it declares a property of that name). The kind of an `FMLUserError` is the name of its exception
+  (`fml_user_error` for the server key).
+- `assert` in scripts: the failure is an `FMLAssertionError` (kind "Assertion failed", key `fml_assertion_error`), the cause of
+  `FMLAssertException`, which stays the command wrapper with the line (chosen while implementing, to report: the ~25 `AutomatedTests`
+  of the workspace that catch `FMLAssertException` are unchanged). `describe()` gives `Line 3: Assertion failed: x[1] == 2`; the REST
+  terminal answers the condition as message.
+- Leniencies of phase 6 (decided with the user): formod `CreateBPredicateFromString` / `CreateBExpressionFromString` raise
+  `FMLTechnologyError` for a text that is not B (`BMethodology.fml` catches it, six places, `FORMOD-F-5`); gina-ta
+  `ConfigureGINAFIBComponent` raises `FMLTechnologyError` for a missing or empty template (`GINATA-F-1`); the diagram `GraphicalAction`
+  value of a representation not built yet stays lenient.
+- Grammar: `kw_exception`, `kw_throw`, `kw_try`, `kw_catch`, `kw_finally` (reserved in `normal`; no FML of the workspace used them as
+  names); `exception_decl`, `throw` and `try_statement` in `statement_without_trailing_substatement`. Scripts have no blocks: `try` is
+  written in behaviours. Pretty-print, preserving and normalized: `} catch (T e) {`, `} finally {`.
+- Specification: §5.6 (exceptions, later sections renumbered), §8.1, §8.10, §2.5.1, §12.6, §13.6, Appendix A.
+- Tests: `TestFMLExceptions` (fml-cli-test, scripts `Exceptions/`, fixtures `Exceptions.fml` and `ExceptionsDefect.fml` with
+  `PlatformDefect`, a Java class of the tests raising an `FMLInternalError`): catch by exact type, by super exception, by `FMLError`, first
+  matching clause, no matching clause (type and frames), built-in error caught, return through a try, finally on an error, nested try,
+  rethrow of an exception and of a built-in error (frames of the first throw), message without renderer, stack of a caught exception,
+  uncaught exception, a caught failure of a nested call not reported (nothing on stderr), an internal error crossing `catch (FMLError e)`
+  with its finally run. `TestExceptionsValidation` (flexo-foundation-test, fixtures `Exceptions.fml`, `InvalidExceptions.fml`): structure,
+  binding scope of the variable, no import written back, each invalid use reported. `FMLParsingExamples/TestTryCatch.fml` in the
+  pretty-print invariants (layouts, comments, empty blocks, the example of §8.10). `TestScriptFailureReporting` and http-server
+  `TestFMLErrorResponses` adapted to `FMLAssertionError`.
+- After review (2026-11-16): a `throw` rethrows the same error only from the catch block handling it (`FMLErrorTypes.whileHandling` /
+  `isBeingHandled`); an exception kept and thrown again later is a new `FMLUserError`, with its own stack, reported again (a kept
+  built-in error is rethrown and unmarked as reported); the built-in error names resolve after the `typedef` aliases of the unit; an
+  exception declared in a concept is embedded in it (it was dropped, as an event still is: `CORE-D-86`); deleting a catch clause removes
+  it from its try statement; the French values of the new keys are escaped (`\uXXXX`). Kept: the failure is forgotten before the catch
+  block runs (a failure of the block replaces it, as in Java); the five keywords cannot be names of FML objects (`FMLObject.setName`,
+  FME names); a failure of the B parser that is unchecked is a technology error (phase 6). Recorded: `CORE-D-85` (a try in a getter
+  evaluated outside an action still reports the failure it catches). `ExceptionsDefect.fml` sits in the shared test resource center but
+  imports a class of fml-cli-test: it only resolves there (flexo-foundation-test loads it without failing).
+- Left to their own entries: `CORE-F-12` (the user interface of exceptions and try statements; the factories create try statements and
+  catch clauses without empty blocks, unlike the other control structures). Not covered by a test: the normalized
+  pretty-print of a try statement built without source (from the user interface), `ConfigureGINAFIBComponent` (gina-ta has no test module).
+
 Deferred from phase 1:
 - `FMLEvaluation` moves to phase 3: its conversions depend on the strict mode of Connie.
 - Localized messages move to phase 4.
@@ -935,3 +990,17 @@ Tests:
 - In the application, a failing action scheme shows one dialog, the console holds the record, and its edits are undone.
 - The full suites stay green once the FML that relied on a lenient null is fixed: core through the openflexo-dev composite,
   openflexo-integration-tests, formod. The `openflexo-reviewer` agent is run on every phase.
+
+### CORE-F-12 — User interface of FML exceptions and try statements  ·  `TODO`
+
+**Problem.** `CORE-F-11` phase 7 added exceptions (`FlexoExceptionConcept`, keyword `exception`), `throw` and `try … catch … finally`
+(`ThrowStatement`, `TryStatement`, `CatchClause`) to the language. openflexo-ui knows none of them: they show with the icon and the
+inspector of their parent class (`FlexoConcept`, `EditionAction`), and nothing creates them but the FML editor.
+
+**Options.** Icons in `FMLIconLibrary`; inspectors (`FlexoExceptionConcept` as `FlexoEvent.inspector`; `CatchClause` with its type and
+variable; `ThrowStatement` as `ReturnStatement.inspector`), added to `TestFMLInspectors`; a creation wizard of an exception as
+`CreateFlexoEvent`; the insertion of a try statement in the control graph editor.
+
+**Acceptance criteria.** The FML perspective shows an exception and the three statements with their own icon and inspector; an
+exception can be created from the browser; the inspector tests cover the new inspectors.
+

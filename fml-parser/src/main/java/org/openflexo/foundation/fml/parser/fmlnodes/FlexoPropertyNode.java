@@ -100,6 +100,9 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 		if (getParent() instanceof FlexoEventNode) {
 			((FlexoEventNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
 		}
+		if (getParent() instanceof FlexoExceptionConceptNode) {
+			((FlexoExceptionConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
+		}
 		return this;
 	}
 

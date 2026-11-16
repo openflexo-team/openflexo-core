@@ -779,6 +779,16 @@ in a `HashSet`, without `equals`/`hashCode`; `stopEventListening` removes the fi
 
 **Workaround.** None at FML level; declare the listener in the concrete concept rather than in a parent.
 
+### CORE-D-86 — An event declared inside a concept is dropped from the model  ·  `TODO`
+
+**Symptom (read, not run; found by the review of `CORE-F-11` phase 7, 2026-11-16).** The grammar lets a `concept` contain an `event`
+(`inner_concept_decl`), but `FlexoEventNode.deserialize()` attaches an event only to a `VirtualModelNode` or a `FlexoEventNode` parent,
+never to a `FlexoConceptNode`: the model never contains the event, while the typing space of the parse still resolves its name to the
+detached object. The same defect for an exception is fixed (`FlexoExceptionConceptNode`, `CORE-F-11` phase 7, test
+`NestedInConcept.fmlscript`). Every event of the workspace is declared at model level.
+
+**Workaround.** Declare events in the model.
+
 ---
 
 ## Found by the p2pp harness on the FML parsing examples (2026-11-12)
@@ -798,3 +808,20 @@ where the type is changed (parser, typing space, parameter), and whether other w
 **Symptom.** `Foo@(1) foo1;` (a type with a version, `typedef String as Foo`) was printed `Foo foo1;`: the version is not in the model.
 File: `TestTypeVersions` (`FMLParsingExamples`). As for CORE-D-69, the preserving pretty-print of an untouched source now keeps `Foo@(1)`, the
 model and the normalized pretty-print do not. Not checked: whether a version is meant to be kept by the model at all.
+
+## FML exceptions
+
+### CORE-D-85 — A failure caught by a try in a getter evaluated outside an action is still reported  ·  `TODO`
+
+**Symptom (read, not run; found by the review of `CORE-F-11` phase 7, 2026-11-16).** A getter (or setter, or expression property) read
+outside a behaviour — by a GINA binding, an fml-cli expression — runs its body with a `LocalRunTimeEvaluationContext`. A behaviour it
+calls in a `try` block (`this.b()`) runs as an outermost, non-embedded action (`FlexoBehaviourPathElement`: the context is not a
+`FlexoBehaviourAction`), so its failure is reported by the editor (console, and its edits compensated) before the `catch` clause handles
+it; `FMLErrorReporter.failureHandled` finds no execution scope. The specification (§8.10) says a caught failure is not reported. Inside a
+behaviour, the case of every test, the called behaviour is a nested action and nothing is reported.
+
+**Options.** Open an execution scope for the evaluation of a property body outside an action; or let `FlexoBehaviourPathElement` defer
+the report of an action started inside a `try` block.
+
+**Workaround.** Write the `try` in a behaviour.
+

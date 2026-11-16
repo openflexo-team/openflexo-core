@@ -92,6 +92,15 @@ public class FMLErrorReporter {
 		public List<FlexoAction<?, ?, ?>> getFailedNestedActions() {
 			return failedNestedActions;
 		}
+
+		/**
+		 * Record that supplied failure was caught by an FML {@code catch} (CORE-F-11 phase 7): the nested actions whose failure it is (or
+		 * a cause of) are forgotten, a handled failure is not reported. Rethrown later, it is reported as part of the failure of the
+		 * action it fails
+		 */
+		public void failureHandled(Throwable failure) {
+			failedNestedActions.removeIf(action -> action.getFailure() != null && isPartOf(action.getFailure(), failure));
+		}
 	}
 
 	private static final ThreadLocal<ExecutionScope> CURRENT_SCOPE = new ThreadLocal<>();
@@ -103,6 +112,13 @@ public class FMLErrorReporter {
 	public static void markReported(Throwable failure) {
 		if (failure != null) {
 			REPORTED.put(failure, Boolean.TRUE);
+		}
+	}
+
+	/** Forget that supplied failure was reported: an error kept by FML and thrown again later (CORE-F-11 phase 7) */
+	public static void unmarkReported(Throwable failure) {
+		if (failure != null) {
+			REPORTED.remove(failure);
 		}
 	}
 
@@ -134,6 +150,17 @@ public class FMLErrorReporter {
 	/** The scope of the outermost action running on the current thread, or null */
 	public static ExecutionScope currentScope() {
 		return CURRENT_SCOPE.get();
+	}
+
+	/**
+	 * Record that supplied failure was caught by an FML {@code catch}: it is not reported (CORE-F-11 phase 7). Does nothing outside an
+	 * action
+	 */
+	public static void failureHandled(Throwable failure) {
+		ExecutionScope scope = CURRENT_SCOPE.get();
+		if (scope != null && failure != null) {
+			scope.failureHandled(failure);
+		}
 	}
 
 	/** Leave the execution of the outermost action on the current thread */
@@ -348,7 +375,7 @@ public class FMLErrorReporter {
 	public static String describe(String title, Throwable failure) {
 		StringBuilder sb = new StringBuilder(title);
 		// The kind in English, as the rest of the record: the console, the logs, fml-cli and the server give a stable text
-		sb.append(": ").append(defaultKindText(kindKey(failure))).append(": ")
+		sb.append(": ").append(kind(failure)).append(": ")
 				.append(failure.getMessage() != null ? failure.getMessage() : failure.getClass().getSimpleName());
 		FMLStack stack = FMLExecutionFailure.findFMLStack(failure);
 		if (stack != null && !stack.isEmpty()) {
@@ -401,12 +428,31 @@ public class FMLErrorReporter {
 		if (typed instanceof FMLHostError) {
 			return "fml_host_error";
 		}
+		if (typed instanceof FMLUserError) {
+			return "fml_user_error";
+		}
+		if (typed instanceof FMLAssertionError) {
+			return "fml_assertion_error";
+		}
 		return "fml_execution_error";
 	}
 
 	/** The English title of the kind of supplied failure, as written in the console and the logs */
 	public static String kind(Throwable failure) {
+		String userException = userExceptionName(failure);
+		if (userException != null) {
+			return userException;
+		}
 		return defaultKindText(kindKey(failure));
+	}
+
+	/** The name of the FML exception supplied failure stands for, or null when it is not an exception defined in FML */
+	private static String userExceptionName(Throwable failure) {
+		if (!isForeseen(failure)) {
+			return null;
+		}
+		FMLExecutionFailure typed = FMLExecutionFailure.findFailure(failure);
+		return typed instanceof FMLUserError ? ((FMLUserError) typed).getExceptionName() : null;
 	}
 
 	/** English texts of the kinds, written in the records, and used when no dictionary is available */
@@ -432,6 +478,10 @@ public class FMLErrorReporter {
 				return "Technology error";
 			case "fml_host_error":
 				return "Failure of Java code";
+			case "fml_user_error":
+				return "FML exception";
+			case "fml_assertion_error":
+				return "Assertion failed";
 			default:
 				return "FML execution error";
 		}
@@ -439,6 +489,11 @@ public class FMLErrorReporter {
 
 	/** The localized title of the kind of supplied failure (for instance "Null reference"), in the current language */
 	public static String localizedKind(Throwable failure) {
+		// An exception defined in FML is named by itself, in every language
+		String userException = userExceptionName(failure);
+		if (userException != null) {
+			return userException;
+		}
 		String key = kindKey(failure);
 		try {
 			LocalizedDelegate locales = FlexoLocalization.getMainLocalizer();

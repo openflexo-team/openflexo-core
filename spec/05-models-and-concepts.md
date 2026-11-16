@@ -1,7 +1,7 @@
-# 5. Models, concepts, events and enums
+# 5. Models, concepts, events, exceptions and enums
 
 The body of a compilation unit is one `model`. A model contains *members*: properties (chapter 6),
-behaviours (chapter 7), and nested declarations of concepts, events and enums, with invariants. This
+behaviours (chapter 7), and nested declarations of concepts, events, exceptions and enums, with invariants. This
 chapter describes the declarations that give a program its structure.
 
 ## 5.1 Models
@@ -37,7 +37,7 @@ The annotations that precede `model` carry the unit's metadata: `@URI`, `@Versio
 
 ### 5.1.2 Visibility and abstractness
 
-A visibility keyword may precede `abstract` and `model` (§5.8). `abstract`
+A visibility keyword may precede `abstract` and `model` (§5.9). `abstract`
 declares that the model is not meant to be instantiated directly but completed by models that extend it.
 
 ### 5.1.3 Extending a model
@@ -275,7 +275,52 @@ listen ShelfCreated from this {
 An event may extend other events, be abstract, and contain concepts and events. An event type can be used as the
 type of a `listen`.
 
-## 5.6 Invariants
+## 5.6 Exceptions
+
+```ebnf
+exception_decl = annotation* visibility? "abstract"? "exception" uidentifier
+                 super_clause? inside_clause?
+                 "{" member* "}"
+```
+
+An *exception* is a concept whose instances are raised to signal a condition that the caller may handle. It is declared
+like a concept, with properties and a creation scheme; it is created and raised with `throw new …` (§8.10) and handled
+by a `catch` clause naming it or one of its super exceptions (§8.10).
+
+```fml-member
+public take(int n) {
+	if (parameters.n > quantity) {
+		throw new OutOfStock(parameters.n, quantity);
+	}
+	quantity = quantity - parameters.n;
+}
+
+abstract exception StockError {
+}
+
+@Renderer("cannot take " + requested + ", only " + available)
+exception OutOfStock extends StockError {
+	int requested;
+	int available;
+
+	create(int requested, int available) {
+		requested = parameters.requested;
+		available = parameters.available;
+	}
+}
+```
+
+An exception extends only exceptions, and a concept that is not an exception never extends one: the validation reports
+both (*exception hierarchy must be consistent*). An exception may be abstract. Its instances are not contained by the
+instance that creates them: they live as long as their propagation and their handling.
+
+The *message* of an exception is its string representation: the value of its `@Renderer` (§11) when it has one,
+otherwise its name followed by the values of its own properties (`Refused(reason="closed")`). It is the message shown
+when the exception is not caught. Besides its properties, an exception gives `message`, `kind` (the name of the
+exception that was thrown) and `fmlStackTrace` (its FML stack, one frame per line), unless it declares a property of
+that name.
+
+## 5.7 Invariants
 
 ```ebnf
 invariant_decl = simple_invariant | iteration_invariant
@@ -333,7 +378,7 @@ the condition.
 An **iteration invariant** `assert (T x : collection) { … }` evaluates its simple invariants once for each element
 of the collection, with `x` bound to the element.
 
-### 5.6.1 When invariants are checked
+### 5.7.1 When invariants are checked
 
 Invariants are evaluated by the **validation** of an instance, not on each change. Validation of an instance
 evaluates the invariants of its concept and, recursively, those of all its ancestors. Each false invariant is
@@ -343,7 +388,7 @@ an error is skipped: it is neither a violation nor satisfied.
 The `onfailure` clause is part of the model and is written back, as the repair that the author attaches to the
 invariant. The validation rule of the platform reports the violation; it does not execute the clause.
 
-## 5.7 Members
+## 5.8 Members
 
 The member alternatives, in the order of the grammar, are:
 
@@ -355,14 +400,14 @@ The member alternatives, in the order of the grammar, are:
 | expression property: `type name values expression;` | §6.3 |
 | get/set property: `type name { type get() {…} set(type v) {…} };` | §6.6 |
 | behaviour: method, `create`, `delete`, `listen`, technology-specific | chapter 7 |
-| nested `concept`, `event`, `enum` | §5.2, §5.4, §5.5 |
-| invariant: `assert …` | §5.6 |
+| nested `concept`, `event`, `exception`, `enum` | §5.2, §5.4, §5.5, §5.6 |
+| invariant: `assert …` | §5.7 |
 
 A member may be preceded by annotations (chapter 11) and, for properties and behaviours, by a visibility.
 
-## 5.8 Visibility
+## 5.9 Visibility
 
-`public`, `protected` and `private` precede models, concepts, events, enums, properties and behaviours. A declaration
+`public`, `protected` and `private` precede models, concepts, events, exceptions, enums, properties and behaviours. A declaration
 without keyword has the fourth visibility, *default*, which is distinct from `public` and is written back as no
 keyword.
 

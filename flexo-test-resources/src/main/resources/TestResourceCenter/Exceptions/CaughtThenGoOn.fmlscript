@@ -1,0 +1,5 @@
+// CORE-F-11 phase 7: a caught failure of a nested call is handled: the call goes on, nothing is reported (no stderr).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Exceptions.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new Exceptions() with (name="goon");
+assert vmi.caughtThenGoOn() == "recovered";

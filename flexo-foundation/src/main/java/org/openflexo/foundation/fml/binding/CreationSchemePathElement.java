@@ -75,6 +75,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.FlexoExceptionConcept;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -580,6 +581,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			}
 
 			else if (getFlexoConcept() != null && !(getFlexoConcept() instanceof VirtualModel) && !(getFlexoConcept() instanceof FlexoEvent)
+					&& !(getFlexoConcept() instanceof FlexoExceptionConcept)
 					&& getBindable() instanceof FlexoConceptObject && !(getBindable() instanceof MatchFlexoConceptInstance)) {
 				// A bare new, written in a behaviour of a concept: the instance is created inside the current instance, so the
 				// instantiated concept must be nested in the concept of the behaviour (or in one of its parents); a concept declared

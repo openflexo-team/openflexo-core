@@ -26,6 +26,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 
 import org.junit.Test;
+import org.openflexo.foundation.fml.rt.error.FMLAssertionError;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLInvalidCommandException;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
@@ -125,7 +126,9 @@ public class TestScriptFailureReporting extends FMLScriptParserTestCase {
 		FMLCommandExecutionException failure = execute("ScriptFailures", "FailedAssertion.fmlscript");
 		assertTrue(String.valueOf(failure), failure instanceof FMLAssertException);
 		assertEquals("Line 3: assert failed: x[1] == 2", failure.getMessage());
-		assertEquals(failure.getMessage(), failure.describe());
+		// The failure is an FMLAssertionError, a foreseen FML error (CORE-F-11 phase 7)
+		assertTrue(String.valueOf(failure.getFailure()), failure.getFailure() instanceof FMLAssertionError);
+		assertEquals("Line 3: Assertion failed: x[1] == 2", failure.describe());
 	}
 
 	@Test
