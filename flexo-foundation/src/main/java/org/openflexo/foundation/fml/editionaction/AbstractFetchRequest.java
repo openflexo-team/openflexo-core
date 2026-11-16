@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -49,6 +48,9 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.fml.rt.error.FMLInternalError;
+import org.openflexo.foundation.fml.rt.error.FMLCardinalityError;
+import org.openflexo.foundation.fml.rt.error.FMLResolutionError;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.ReturnException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -264,19 +266,16 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 		public final AT execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FMLExecutionException {
 			List<? extends T> computedValues = performExecute(evaluationContext);
 			if (computedValues == null) {
-				// A fetch request that cannot be applied returns null rather than an empty list: see
-				// AbstractSelectFlexoConceptInstance.performExecute(), which warns "Cannot find virtual model instance on which to
-				// apply SelectFlexoConceptInstance" and returns null - typically when the model slot being selected from is not
-				// resolved (an unresolved reflected model slot after deserialization, for instance).
-				// Dereferencing it turned that diagnosable situation into a raw NullPointerException thrown from the engine, with a
-				// stack trace pointing here instead of at the unresolved slot. Report no result instead.
-				logger.warning(getStringRepresentation() + " : could not be executed, returning no result");
-				computedValues = Collections.emptyList();
+				// A fetch request that cannot be applied (its source is not resolved) is an error, no longer an empty result (CORE-F-11,
+				// decided with the user): a fetch request that has no source to select from raises its own error first
+				throw new FMLResolutionError(getStringRepresentation() + ": could not be executed, its source is not resolved");
 			}
 			if (this instanceof UniqueFetchRequest) {
 				if (computedValues.size() > 1) {
-					logger.warning("More than one value found for a UNIQUE request, return first one: " + computedValues);
-					return (AT) computedValues.get(0);
+					// The typology of CORE-F-11: a UNIQUE request with several results breaks its cardinality
+					// Names the first results only: a select of a technology adapter may find thousands of rows
+					throw new FMLCardinalityError(getStringRepresentation() + ": " + computedValues.size()
+							+ " results for a unique request, the first ones: " + computedValues.subList(0, Math.min(3, computedValues.size())));
 				}
 				if (computedValues.size() == 1) {
 					// Normal case
@@ -287,8 +286,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD, ?>, RD e
 			if (this instanceof FetchRequest) {
 				return (AT) computedValues;
 			}
-			logger.warning("Unexpected AbstractFetchRequest " + this);
-			throw new FMLExecutionException("Unexpected AbstractFetchRequest " + this);
+			throw new FMLInternalError(new IllegalStateException("Unexpected AbstractFetchRequest " + this));
 
 		}
 

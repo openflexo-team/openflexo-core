@@ -327,7 +327,7 @@ the nested and `do` forms were not built at all, so they were kept word for word
 
 ## Instantiation
 
-### CORE-D-73 — A creation run by a technology action, or through a technology factory, still hides a failing creation scheme  ·  `TODO`
+### CORE-D-73 — A creation run by a technology action, or through a technology factory, still hides a failing creation scheme  ·  `IN PROGRESS`
 
 **Symptom.** Since `CORE-D-47`, a failing creation scheme fails the `new` that runs it and leaves no partly built instance. Two
 creation paths do not follow that rule yet: a creation through a technology action built on `AbstractAddFlexoConceptInstance`
@@ -347,6 +347,26 @@ from a parent creates an instance of the parent there, unlike `new` since `CORE-
 disabled action is not a failure), and discard the partly built instance in the adapters' factories, as the core factory does.
 
 **Workaround.** None.
+
+**Progress (CORE-F-11 phase 6, 2026-11-15).**
+- Fixed in the core: `AbstractAddFlexoConceptInstance` (base of the technology creation actions) discards the partly built instance
+  (`FMLRTVirtualModelInstanceModelFactory.discardPartlyBuiltInstance`, now public) and rethrows the failure of its creation scheme, or its
+  cancellation; a creation scheme that is not enabled gives null, as `new`, and leaves no instance (decided with the user). Run outside a
+  behaviour, it is an `FMLTechnologyError`; a dynamic instantiation without a matching creation scheme an `FMLResolutionError`.
+- `_performExecuteCreationScheme` did not give the new instance to its `CreationSchemeAction` (found by the review): outside an
+  `FMLRTVirtualModelInstance` the action did nothing, so the creation scheme of jdbc `CreateHbnObject` never ran and could not fail; in an
+  `FMLRTVirtualModelInstance` it ran on a second instance (`CORE-D-84`). The new instance is now given (decided with the user): the scheme of
+  `CreateHbnObject` runs for the first time. Proven in openflexo-jdbc (`JDBC-F-1`, 2026-11-16): `TestHbnAnnotatedMapping` runs a
+  `CreateHbnObject` whose scheme fails (the behaviour fails with the typed error, no instance is left) and one whose scheme sets a column.
+- Found while reading, to check per repository before changing anything: the factories of the reflected adapters (Excel, XML, Hibernate,
+  REST) never run a creation scheme (`makeNewFlexoConceptInstance` builds and registers the instance only), and
+  `AbstractCreationSchemeAction.doAction` creates an instance only in an `FMLRTVirtualModelInstance` (it warns "Not implemented feature"
+  otherwise). The "partly built instance left in its container" of the factory part may not exist as described.
+- Checked in openflexo-xlsx (`XLSX-F-2`, 2026-11-16): the factory of reflected Excel instances runs no creation scheme, so there is no
+  partly built instance to discard there. `new` of a reflected concept in FML gives null after the warning "Not implemented feature"
+  (`AbstractCreationSchemeAction.doAction` creates only in an `FMLRTVirtualModelInstance`): left, recorded here (decided with the user).
+- Left: the concept instantiated by `AbstractAddFlexoConceptInstance` is still derived from its creation scheme (an inherited creation
+  scheme creates an instance of the parent).
 
 ---
 

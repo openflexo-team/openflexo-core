@@ -844,6 +844,74 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
   - `ConceptInstancesController` still turns a failed save into a `RuntimeException`.
   - Found on the way: `CORE-D-83` (the output of the commands is one static list).
 
+**Phase 6 done (2026-11-16), decided with the user.** Inventory of the adapters (edition actions, fetch requests, factories,
+silent catches) made first; one entry per repository, done one at a time, in this order: the core (`fml/ta` and the shared bases), then
+the adapters of `CORE-D-73` (xlsx, xml, jdbc, rest), formod (b-ta), docx, owl, csv, diagram, emf, json, markdown, pptx, opc-ua, capella,
+technology-adapters (dsl, xx), kafka, oslc, gina, odt. pdf, java, rhapsody and free-modelling-editor have no edition action.
+- Scope per repository: the paths that FML execution goes through (edition actions, fetch requests, factories and builders of instances,
+  instances overriding the strict accessors). The `printStackTrace` of loading and I/O code are left, and counted in the entry.
+- A failure raised where the signature cannot declare it (a lambda, an accessor called by `select`) travels in `FMLFailureTunnel`, unwrapped
+  where a method can declare it.
+- A technology action that needs a behaviour, run elsewhere (an fml-cli command), is an `FMLTechnologyError` ("can only be executed inside
+  a behaviour").
+- `select` (`AbstractFetchRequest.execute`): a request that cannot be applied (its `performExecute` gives null) is an `FMLResolutionError`; a
+  select with no virtual model instance to select from (`AbstractSelectFlexoConceptInstance`, `AbstractSelectVirtualModelInstance`) an
+  `FMLNullReferenceError`; a `select unique` that finds several instances an `FMLCardinalityError`. The specification said one of them was
+  returned without error: §10.2.1 and the user guide page "Queries with select" are rewritten (decided with the user); the website
+  specification is regenerated (only `edition-actions.md` changed).
+- Core done: the FML technology adapter (`CreateFlexoConcept`, `CreateFlexoBehaviour`, `CreatePrimitiveRole`,
+  `CreateFlexoConceptInstanceRole`, `CreateContainedVirtualModel`, `CreateTopLevelVirtualModel`) evaluates through `FMLEvaluation`, rethrows the
+  failure of its nested action (`FMLExecution.rethrowFailure`), raises `FMLCancellation`, a null container as `FMLNullReferenceError`, a
+  hierarchy or resource failure as `FMLTechnologyError` (a `ModelDefinitionException` as `FMLInternalError`); `AbstractCreateResource` raises on
+  a missing adapter, a null name or a null resource center; the core part of `CORE-D-73` (`AbstractAddFlexoConceptInstance`, see the entry).
+- FML that relied on the former `select`: fml-cli-test `TestStock` (the guide, now one match), `PropertyInitializers` (one person),
+  `TestFetchFromNullContainer` (the null case moves to `TestFMLErrorKinds`).
+- Tests: `TestFMLErrorKinds` gains `uniqueSelectWithSeveralResults`, `selectFromNullModel`, `fmlAdapterActionWithNullContainer` (fixture
+  `FMLAdapterFailures.fml`, the first test of the FML technology adapter).
+- After review (decided with the user): `_performExecuteCreationScheme` gives the new instance to its action (`CORE-D-73`), which revealed
+  `CORE-D-84` (fixed); a select from a null source raises `FMLNullReferenceError` in every adapter (each repository's entry); an inconsistent
+  hierarchy stays an `FMLTechnologyError`. The cardinality message names the first three results only. To do in the repositories: five
+  `Create*Resource` actions (xlsx, xml, owl, kafka, jdbc) wrap the typed errors of `AbstractCreateResource` again into an untyped
+  `FMLExecutionException` (they catch `FlexoException`); the `performExecute` of emf, jdbc (`AbstractPerformSQLQuery`) and rest return null,
+  those of json, markdown and pptx an empty list, for a null source (rest: its select of the virtual model instance returned null; done in
+  `REST-F-1`).
+- openflexo-xlsx: `XLSX-F-2` (its `BACKLOG.md`), done. For it, the core gains the strict entry point `FlexoConceptInstance.getFlexoActorOrFail`
+  (by default `getFlexoActor`), called by the strict readings of a role (`getFlexoPropertyValueOrFail`, `FlexoPropertyBindingVariable`,
+  `FlexoPropertyPathElement`): the path element read a role through `getFlexoActor`, so an override of `getFlexoPropertyValueOrFail` was
+  never reached for a role. An instance reading its actors from a technology overrides it (kept after review, decided with the user:
+  roles through `getFlexoActorOrFail`, other properties through `getFlexoPropertyValueOrFail`; jdbc and rest move their reading of roles
+  there in their own entries).
+- openflexo-xml: `XML-F-1` (its `BACKLOG.md`), done; `XML-D-2` recorded (`AddXMLIndividual` never succeeds with a model slot). For it, the ontology assertions of `flexo-ontology` (shared with emf and owl) are strict
+  (decided with the user): a failing, invalid or null assertion condition is an error, no longer taken as true; their values evaluate
+  through `FMLEvaluation`. emf and owl only adapted at signature level until their own entries; there, `AddEMFObjectIndividual` and
+  `AddOWLIndividual` put the new object in the model before evaluating the assertions, which can now fail: a half-built object stays (to
+  fix in their entries).
+- openflexo-jdbc: `JDBC-F-1` (its `BACKLOG.md`). `HbnException` is an `FMLTechnologyError`; the creation scheme of `CreateHbnObject` runs, and
+  its failure is proven (`CORE-D-73`).
+- openflexo-rest: `REST-F-1` (its `BACKLOG.md`). `BadCredentialsException` is an `FMLTechnologyError`; the factory of REST instances is a
+  stub (`CORE-D-73` not applicable). With xlsx, xml, jdbc and rest, the adapters of `CORE-D-73` are done.
+- formod (b-ta): `FORMOD-F-5` (its `BACKLOG.md`). A text that is not B still gives null from the parsing actions, tested by `BMethodology.fml`
+  (decided with the user; to revisit with phase 7).
+- openflexo-docx: `DOCX-F-1` (its `BACKLOG.md`).
+- The other adapters in one batch (asked by the user, 2026-11-16), with the rules above, then reviewed once: `OWL-F-1`, `CSV-F-1`,
+  `DIAGRAM-F-1`, `EMF-F-1`, `JSON-F-1`, `MARKDOWN-F-1`, `PPTX-F-8`, `OPCUA-F-1`, `CAPELLA-F-1`, `TA-F-1` (dsl, xx; in `TA-BACKLOG.md`),
+  `KAFKA-F-1`, `OSLC-F-1`, `GINATA-F-1` (openflexo-gina), `ODT-F-1`. Each entry lists what was chosen beyond the rules, to validate.
+  Exceptions kept to avoid breaking existing behaviour: a `GraphicalAction` value computed from a representation that does not exist yet
+  (headless diagrams) leaves the feature unchanged; a missing template of an FML-controlled FIB gives null; a text that is not B gives
+  null (formod).
+- Not covered by new tests: the batch adapters (the existing suites run green); kafka, oslc, gina, odt have no test module.
+- Left for later: `CORE-D-73` stays open for `new` of a reflected concept (null after a warning) and the concept derived from an inherited
+  creation scheme; `XML-D-2` (`AddXMLIndividual` never succeeds with a model slot); the `printStackTrace` of loading and conversion code
+  of every adapter (out of the scope decided with the user).
+- The three failures seen before phase 3 are unchanged (same messages): markdown `TestMarkdownEditionActions` (an
+  `UnresolvedTechnologySpecificAction` at the creation of the model), capella `TestLoadXXDocuments` (`CAPELLA-D-1`), diagram
+  `TestFMLDiagramPrettyPrint3` (a parser position): none goes through the code changed by phase 6.
+- Not checked: the running application (a browser label or a renderer that selects from a slot not resolved yet during loading now meets
+  an error, no longer an empty result); the 117 `select unique` of the workspace, beyond what the suites run.
+- Suites (2026-11-15): flexo-foundation-test 735, fml-cli-test 153, fml-parser 361, openflexo-integration-tests (4 projects), formod, and
+  the adapters' suites green; markdown `TestMarkdownEditionActions`, capella `TestLoadXXDocuments`, diagram `TestFMLDiagramPrettyPrint3`
+  red as before phase 3 (not attributed yet). ECJ compiles flexo-foundation.
+
 Deferred from phase 1:
 - `FMLEvaluation` moves to phase 3: its conversions depend on the strict mode of Connie.
 - Localized messages move to phase 4.

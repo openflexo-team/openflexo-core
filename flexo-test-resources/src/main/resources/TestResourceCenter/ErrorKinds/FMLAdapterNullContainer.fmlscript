@@ -1,0 +1,5 @@
+// CORE-F-11 phase 6: a technology action of the FML adapter with a null container is an error (FMLNullReferenceError), no longer null.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/FMLAdapterFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new FMLAdapterFailures() with (name="fmlAdapter");
+mustFail = vmi.createInNullContainer();

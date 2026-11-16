@@ -38,15 +38,14 @@
 
 package org.openflexo.foundation.ontology.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
@@ -100,9 +99,9 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 	public void setOntologyProperty(IFlexoOntologyStructuralProperty<?> p);
 
-	public Object getValue(RunTimeEvaluationContext evaluationContext);
+	public Object getValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
-	public IFlexoOntologyConcept getAssertionObject(RunTimeEvaluationContext evaluationContext);
+	public IFlexoOntologyConcept getAssertionObject(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class ObjectPropertyAssertionImpl extends AbstractAssertionImpl implements ObjectPropertyAssertion {
 
@@ -169,19 +168,9 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public IFlexoOntologyConcept getAssertionObject(RunTimeEvaluationContext evaluationContext) {
-			Object value = null;
-			try {
-				value = getObject().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
+		public IFlexoOntologyConcept getAssertionObject(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			// A value that is not an ontology concept (a literal of a data-range property, read through getValue) gives null, as before
+			Object value = FMLEvaluation.evaluate(getObject(), evaluationContext, this);
 			if (value instanceof IFlexoOntologyConcept) {
 				return (IFlexoOntologyConcept) value;
 			}
@@ -189,19 +178,8 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public Object getValue(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getObject().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		public Object getValue(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getObject(), evaluationContext, this);
 		}
 
 	}

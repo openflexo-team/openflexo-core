@@ -38,6 +38,11 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
+import org.openflexo.foundation.fml.rt.error.FMLResolutionError;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
 import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -45,8 +50,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
@@ -171,7 +174,9 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-			return super.execute(evaluationContext);
+			// The creation scheme runs once, with the arguments, in makeNewFlexoConceptInstance: the generic execution would run it
+			// again, without them (CORE-D-84)
+			return makeNewFlexoConceptInstance(evaluationContext);
 		}
 
 		@Override
@@ -223,12 +228,20 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 				throws FMLExecutionException {
 			FlexoConceptInstance container = null;
 			FMLRTVirtualModelInstance vmi = getVirtualModelInstance(evaluationContext);
+			if (vmi == null) {
+				throw new FMLNullReferenceError("No virtual model instance to create the new instance in");
+			}
+			if (!getDynamicFlexoConceptType().isValid()) {
+				throw new FMLResolutionError("Undefined or invalid dynamic concept type: " + getDynamicFlexoConceptType());
+			}
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+			if (instantiatedFlexoConcept == null) {
+				throw new FMLNullReferenceError("The concept to instantiate is null: " + getDynamicFlexoConceptType());
+			}
 			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
-					logger.warning("null container while creating new concept " + instantiatedFlexoConcept);
-					return null;
+					throw new FMLNullReferenceError("Null container while creating a new instance of " + instantiatedFlexoConcept.getName());
 				}
 			}
 
@@ -237,8 +250,8 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 			List<?> arguments = retrieveArguments(evaluationContext);
 
 			if (creationScheme == null) {
-				throw new FMLExecutionException(
-						"Cannot find a suitable CreationScheme for " + instantiatedFlexoConcept + " with arguments " + arguments);
+				throw new FMLResolutionError(
+						"No creation scheme of " + instantiatedFlexoConcept.getName() + " takes the arguments " + arguments);
 			}
 
 			CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmi, null, evaluationContext.getEditor());
@@ -251,17 +264,29 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 				}
 			}
 
-			FlexoConceptInstance newInstance = vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container, creationScheme,
-					evaluationContext);
+			// The factory builds the instance and its default values; the scheme runs once, below, with its arguments (CORE-D-84):
+			// given to the factory too, it ran first without them. The context given to the factory is the action of the new instance,
+			// never the caller: a caller that is itself a creation scheme would get the new instance as its own (the factory assigns
+			// it to a creation scheme action)
+			FlexoConceptInstance newInstance = vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container, null,
+					creationSchemeAction);
 
 			creationSchemeAction.assignNewFlexoConceptInstance(newInstance);
-			creationSchemeAction.doAction();
-			creationSchemeAction.rethrowUncheckedFailure();
-			if (creationSchemeAction.getThrownException() instanceof FMLExecutionException) {
-				throw (FMLExecutionException) creationSchemeAction.getThrownException();
+			try {
+				creationSchemeAction.doAction();
+				// A failing or cancelled creation scheme leaves no partly built instance (CORE-D-73)
+				FMLExecution.rethrowFailure(creationSchemeAction);
+				if (creationSchemeAction.hasBeenCancelled()) {
+					throw new FMLCancellation("Creation scheme " + creationScheme.getName() + " was cancelled");
+				}
+			} catch (FMLExecutionException | RuntimeException e) {
+				FMLRTVirtualModelInstanceModelFactory.discardPartlyBuiltInstance(newInstance);
+				throw e;
 			}
-			if (creationSchemeAction.getThrownException() != null) {
-				throw new FMLExecutionException(creationSchemeAction.getThrownException());
+			if (!creationSchemeAction.hasActionExecutionSucceeded()) {
+				// Not enabled: no instance, as `new`
+				FMLRTVirtualModelInstanceModelFactory.discardPartlyBuiltInstance(newInstance);
+				return null;
 			}
 
 			return newInstance;

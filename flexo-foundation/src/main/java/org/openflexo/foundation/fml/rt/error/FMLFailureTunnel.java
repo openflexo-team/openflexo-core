@@ -43,7 +43,9 @@ package org.openflexo.foundation.fml.rt.error;
  * The unchecked carrier of a checked FML failure across an interface whose signature cannot declare it and is not a Connie path element:
  * {@link org.openflexo.connie.BindingEvaluationContext#getValue(org.openflexo.connie.BindingVariable)} and
  * {@link org.openflexo.connie.SettableBindingEvaluationContext#setValue(Object, org.openflexo.connie.BindingVariable)}, when a property read
- * through its bare name has a getter or a setter that fails (CORE-F-11).
+ * through its bare name has a getter or a setter that fails (CORE-F-11). The technology adapters use it the same way where FML reaches
+ * them through a method that cannot declare a failure (phase 6): the instances of a concept queried by a {@code select}
+ * ({@code HbnVirtualModelInstance.getFlexoConceptInstances}), a value computed in a lambda.
  * <p>
  * It is never reported nor logged: {@link FMLEvaluation} (or {@link FMLExecution#convertUnchecked(RuntimeException)} at the first statement
  * it crosses) unwraps it and rethrows the same failure.

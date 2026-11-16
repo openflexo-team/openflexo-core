@@ -24,8 +24,8 @@ assert stock.fruitOrVegetable().size == 3;
 // select unique: the instance, or null when nothing matches
 assert stock.named("leek") == leek;
 assert stock.named("zzz") == null;
-// several matches: one of them is returned, the first created here
-assert stock.firstOfKind("fruit") == apple;
+// one match only: several matches are a cardinality error (CORE-F-11 phase 6, TestFMLErrorKinds)
+assert stock.firstOfKind("vegetable") == leek;
 
 // The from clause: the model finds the parts of every crate, a crate only its own
 crate1 = stock.newCrate("c1");

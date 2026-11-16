@@ -38,15 +38,12 @@
 
 package org.openflexo.foundation.fml.ta;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
@@ -54,8 +51,12 @@ import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -125,64 +126,20 @@ public interface CreateFlexoConceptInstanceRole
 		private DataBinding<FlexoConcept> flexoConceptType;
 		private DataBinding<String> virtualModelInstanceAsString;
 
-		private String getRoleName(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getRoleName().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private String getRoleName(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getRoleName(), evaluationContext, this);
 		}
 
-		private FlexoConcept getFlexoConceptType(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getFlexoConceptType().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private FlexoConcept getFlexoConceptType(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getFlexoConceptType(), evaluationContext, this);
 		}
 
-		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getContainer().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 		}
 
-		private String getVirtualModelInstanceAsString(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getVirtualModelInstanceAsString().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private String getVirtualModelInstanceAsString(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getVirtualModelInstanceAsString(), evaluationContext, this);
 		}
 
 		@Override
@@ -277,13 +234,16 @@ public interface CreateFlexoConceptInstanceRole
 
 				String roleName = getRoleName(evaluationContext);
 				FlexoConcept container = getContainer(evaluationContext);
+				if (container == null) {
+					throw new FMLNullReferenceError("No container to create the role in");
+				}
 				FlexoConcept flexoConceptType = getFlexoConceptType(evaluationContext);
 				String virtualModelInstanceAsString = getVirtualModelInstanceAsString(evaluationContext);
 
-				logger.info("on cree une property " + roleName + " dans " + container);
-				logger.info("container=" + container);
-				logger.info("flexoConceptType=" + flexoConceptType);
-				logger.info("virtualModelInstanceAsString=" + virtualModelInstanceAsString);
+				logger.fine("on cree une property " + roleName + " dans " + container);
+				logger.fine("container=" + container);
+				logger.fine("flexoConceptType=" + flexoConceptType);
+				logger.fine("virtualModelInstanceAsString=" + virtualModelInstanceAsString);
 
 				org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole action = org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole.actionType
 						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
@@ -295,18 +255,18 @@ public interface CreateFlexoConceptInstanceRole
 				action.setCardinality(PropertyCardinality.ZeroOne);
 				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();
-
+				// A nested action leaves its failure to its caller (CORE-F-11)
+				FMLExecution.rethrowFailure(action);
 				if (action.hasBeenCancelled()) {
-					throw new FMLExecutionException(new ActionExecutionCancelledException());
+					throw new FMLCancellation("CreateFlexoConceptInstanceRole was cancelled");
 				}
 
-				logger.info("return" + action.getNewFlexoRole());
+				logger.fine("return" + action.getNewFlexoRole());
 
 				return action.getNewFlexoRole();
 			}
 
-			logger.warning("Unexpected context: " + evaluationContext);
-			return null;
+			throw new FMLTechnologyError("CreateFlexoConceptInstanceRole can only be executed inside a behaviour");
 		}
 
 		@Override

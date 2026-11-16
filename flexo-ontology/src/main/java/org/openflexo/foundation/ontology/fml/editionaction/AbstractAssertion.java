@@ -38,14 +38,12 @@
 
 package org.openflexo.foundation.ontology.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.ontology.fml.binding.AbstractAssertionBindingModel;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -73,7 +71,7 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
-	public boolean evaluateCondition(RunTimeEvaluationContext evaluationContext);
+	public boolean evaluateCondition(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	@Override
 	public AbstractAssertionBindingModel getBindingModel();
@@ -97,21 +95,13 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 		}
 
 		@Override
-		public boolean evaluateCondition(RunTimeEvaluationContext evaluationContext) {
-			if (getConditional().isValid()) {
-				try {
-					return getConditional().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					e.printStackTrace();
-				}
+		public boolean evaluateCondition(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			// No condition: the assertion applies. A condition that is invalid, fails or is null is an error, never taken as true
+			// (CORE-F-11 phase 6)
+			if (getConditional() == null || !getConditional().isSet()) {
+				return true;
 			}
-			return true;
+			return FMLEvaluation.evaluateCondition(getConditional(), evaluationContext, this);
 		}
 
 		/*@Override

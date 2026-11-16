@@ -500,6 +500,31 @@ Found by the external audit of the FML language of 2026-10-23 (its §3.3).
 
 ---
 
+### CORE-D-84 — `FMLRT::NewInstance` runs its creation scheme three times, and leaves a second instance in the model  ·  `DONE`
+
+**Symptom.** `FMLRT::NewInstance(conceptType=..., container=..., args=...)` (`NewFlexoConceptInstance`) ran the creation scheme it chose
+first in the factory, without its arguments and in the context of the caller; then in its own `CreationSchemeAction`, with them; then
+once more in the generic execution of `AbstractAddFlexoConceptInstance`, on another instance that the action built in the virtual model
+instance and that stayed there. The side effects of a creation scheme happened up to three times and the model held an extra instance.
+
+**Cause.** `NewFlexoConceptInstance.makeNewFlexoConceptInstance` passed the creation scheme to the factory and ran it again, and
+`AbstractAddFlexoConceptInstance._performExecuteCreationScheme` built its `CreationSchemeAction` without the new instance
+(`assignNewFlexoConceptInstance`), so the action made one of its own. Found by the review of `CORE-F-11` phase 6 (2026-11-15): making
+the third run use the new instance (`CORE-D-73`) set the name of the fixture `TestFMLReflection` back to null.
+
+**Fix (2026-11-16).** The factory builds the instance and its default values only; the creation scheme runs once, with its arguments, in
+the action of `NewFlexoConceptInstance`, which no longer goes through the generic execution. A failing or cancelled scheme (an unchecked failure
+too) discards the instance and fails or cancels the creation; a scheme not enabled gives null. The failures are typed
+(`FMLNullReferenceError`, `FMLResolutionError`). `_performExecuteCreationScheme` gives the new instance to its action. Found by the second
+review: the factory received the context of the caller, and assigned the new instance to it when the caller was itself a creation scheme,
+so that scheme went on with `this` being the new instance; the factory now receives the action of the new instance.
+
+**Test.** `TestFMLReflection.fmlscript` (fml-cli-test) asserts three instances after three creations, the argument reaching the
+instance, and a `NewInstance` inside a creation scheme leaving that scheme on its own instance. Not proven against the former code by a
+run (the review counts five instances at the former code, by reading).
+
+---
+
 ## Resources: unloading and deletion
 
 ### CORE-D-21 — Closing a project runs the deletion schemes of every loaded instance  ·  `DONE`

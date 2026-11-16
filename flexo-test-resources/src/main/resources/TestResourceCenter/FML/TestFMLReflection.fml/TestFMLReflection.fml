@@ -25,6 +25,29 @@ model TestFMLReflection {
 		return FMLRT::NewInstance(conceptType=fooConcept, container=this, args=arguments);
 	}
 
+	// FMLRT::NewInstance inside a creation scheme leaves that scheme on its own instance (CORE-D-84)
+	Holder test3() {
+		return new Holder(this);
+	}
+
+	concept Holder {
+		Foo inner;
+		String tag;
+		create(TestFMLReflection vm) {
+			inner = FMLRT::NewInstance(conceptType=parameters.vm.fooConcept, container=parameters.vm);
+			tag = "set";
+		}
+	}
+
+	// Each creation makes one instance, its creation scheme run once (CORE-D-84)
+	int fooCount() {
+		int n = 0;
+		for (Foo f : select Foo from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+
 	concept Foo {
 		String name;
 		

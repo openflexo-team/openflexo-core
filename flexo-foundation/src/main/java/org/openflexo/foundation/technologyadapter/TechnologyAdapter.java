@@ -765,20 +765,12 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 			Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName, String resourceURI,
 			String relativePath, String extension, boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
-		System.out.println("Creating resource from " + resourceFactoryClass);
-
 		RF resourceFactory = getResourceFactory(resourceFactoryClass);
-
-		System.out.println("ResourceFactory=" + resourceFactory);
 
 		I serializationArtefact = retrieveResourceSerializationArtefact(resourceCenter, resourceName, relativePath, extension);
 
-		System.out.println("serialization artefact=" + serializationArtefact);
-
 		R returned = resourceFactory.makeResource(serializationArtefact, resourceCenter, resourceCenter.retrieveName(serializationArtefact),
 				resourceURI, createEmptyContents);
-
-		System.out.println("Return " + returned);
 
 		return returned;
 

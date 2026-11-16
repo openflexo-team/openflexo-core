@@ -117,7 +117,7 @@ public class FlexoPropertyBindingVariable extends AbstractFMLBindingVariable imp
 		if (flexoProperty instanceof FlexoRole) {
 			if (flexoProperty.getCardinality().isMultipleCardinality())
 				return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) flexoProperty);
-			return flexoConceptInstance.getFlexoActor((FlexoRole<?>) flexoProperty);
+			return flexoConceptInstance.getFlexoActorOrFail((FlexoRole<?>) flexoProperty);
 		}
 		return flexoConceptInstance.getFlexoPropertyValueOrFail(flexoProperty);
 	}

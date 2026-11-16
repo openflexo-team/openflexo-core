@@ -226,7 +226,7 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 						return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) effectiveProperty);
 					}
 					else if (effectiveProperty instanceof FlexoRole) {
-						return flexoConceptInstance.getFlexoActor((FlexoRole<?>) effectiveProperty);
+						return getActor(flexoConceptInstance, (FlexoRole<?>) effectiveProperty, context);
 					}
 				}
 				else {
@@ -235,6 +235,22 @@ public interface FlexoPropertyPathElement<P extends FlexoProperty<?>> extends FM
 			}
 			logger.warning("Please implement me, target=" + target + " context=" + context);
 			return null;
+		}
+
+		/**
+		 * The actor of supplied role in supplied instance: in a strict evaluation, the failure of reading it from its technology is thrown,
+		 * through the normalized tunnel of Connie (CORE-F-11 phase 6)
+		 */
+		private static Object getActor(FlexoConceptInstance instance, FlexoRole<?> role, BindingEvaluationContext context)
+				throws InvocationTargetTransformException {
+			if (EvaluationPolicy.isStrict(context)) {
+				try {
+					return instance.getFlexoActorOrFail(role);
+				} catch (FMLExecutionException e) {
+					throw new InvocationTargetTransformException(new InvocationTargetException(e));
+				}
+			}
+			return instance.getFlexoActor(role);
 		}
 
 		/**

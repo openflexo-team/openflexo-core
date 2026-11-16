@@ -38,22 +38,23 @@
 
 package org.openflexo.foundation.fml.ta;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.CreateActionScheme;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
@@ -116,34 +117,12 @@ public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
 		private DataBinding<FlexoConcept> container;
 		private BehaviourType behaviourType = BehaviourType.ActionScheme;
 
-		private String getBehaviourName(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getBehaviourName().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private String getBehaviourName(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getBehaviourName(), evaluationContext, this);
 		}
 
-		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getContainer().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 		}
 
 		@Override
@@ -213,8 +192,11 @@ public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
 
 				String behaviourName = getBehaviourName(evaluationContext);
 				FlexoConcept container = getContainer(evaluationContext);
+				if (container == null) {
+					throw new FMLNullReferenceError("No container to create the behaviour in");
+				}
 
-				logger.info("on cree une FlexoBehaviour " + behaviourName + " de type " + getBehaviourType() + " dans " + container);
+				logger.fine("on cree une FlexoBehaviour " + behaviourName + " de type " + getBehaviourType() + " dans " + container);
 
 				org.openflexo.foundation.fml.action.CreateFlexoBehaviour action = null;
 				switch (getBehaviourType()) {
@@ -251,16 +233,16 @@ public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
 				action.setFlexoBehaviourName(behaviourName);
 				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();
-
+				// A nested action leaves its failure to its caller (CORE-F-11)
+				FMLExecution.rethrowFailure(action);
 				if (action.hasBeenCancelled()) {
-					throw new FMLExecutionException(new ActionExecutionCancelledException());
+					throw new FMLCancellation("CreateFlexoBehaviour was cancelled");
 				}
 
 				return (B) action.getNewFlexoBehaviour();
 			}
 
-			logger.warning("Unexpected context: " + evaluationContext);
-			return null;
+			throw new FMLTechnologyError("CreateFlexoBehaviour can only be executed inside a behaviour");
 		}
 
 		@Override

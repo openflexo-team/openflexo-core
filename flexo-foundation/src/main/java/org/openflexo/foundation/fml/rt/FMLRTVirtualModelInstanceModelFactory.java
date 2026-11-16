@@ -212,7 +212,7 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 			// The creation failed: the partly built instance, and what it contains, is taken out of its container and of the
 			// owner VirtualModelInstance before the failure reaches the caller (CORE-D-47). What the creation scheme did elsewhere
 			// before failing is kept: partial effects are not rolled back.
-			discardPartlyBuiltInstance(returned, container, ownerVirtualModelInstance);
+			discardPartlyBuiltInstance(returned);
 			throw e;
 		}
 
@@ -222,12 +222,12 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 
 	/**
 	 * Delete, without running any deletion scheme, an instance whose creation failed, and the instances it contains: they are taken
-	 * out of their container and of their VirtualModelInstance, released, and notified as deleted
+	 * out of their container and of their VirtualModelInstance, released, and notified as deleted. Also used by the creations that build
+	 * their instance themselves, a technology action or the factory of a technology adapter (CORE-D-73)
 	 */
-	private static void discardPartlyBuiltInstance(FlexoConceptInstance instance, FlexoConceptInstance container,
-			VirtualModelInstance<?, ?> ownerVirtualModelInstance) {
+	public static void discardPartlyBuiltInstance(FlexoConceptInstance instance) {
 		for (FlexoConceptInstance embedded : new ArrayList<>(instance.getEmbeddedFlexoConceptInstances())) {
-			discardPartlyBuiltInstance(embedded, instance, ownerVirtualModelInstance);
+			discardPartlyBuiltInstance(embedded);
 		}
 		instance.performCoreDeletion();
 	}

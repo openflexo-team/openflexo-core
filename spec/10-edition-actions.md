@@ -73,9 +73,9 @@ public Article named(String name) {
 
 * Without `unique`, the result is a **list**, possibly empty, of the instances of the type and of the types that
   extend it, **in the order of their creation**. A deleted instance is not found.
-* With `unique`, the result is **one instance or `null`**. When several instances match, one of them is returned
-  without an error; the language does not say which, and a program that needs exactly one must select the list
-  and check its size.
+* With `unique`, the result is **one instance or `null`**. When several instances match, the query fails with a
+  cardinality error; a program for which several matches are acceptable selects the list and takes the element it
+  needs.
 
 ### 10.2.2 The source
 

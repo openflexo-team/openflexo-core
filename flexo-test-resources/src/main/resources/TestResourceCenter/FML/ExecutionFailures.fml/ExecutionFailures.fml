@@ -254,4 +254,25 @@ public model ExecutionFailures {
 		create() {
 		}
 	}
+
+	// A unique select with several results breaks its cardinality (CORE-F-11 phase 6)
+	public Fragile uniqueOfSeveral() {
+		Fragile f1 = new Fragile();
+		Fragile f2 = new Fragile();
+		Fragile u = select unique Fragile from this;
+		return u;
+	}
+
+	public ExecutionFailures noModel() {
+		return null;
+	}
+
+	// A select from a null virtual model instance is a null receiver, no longer an empty result (CORE-F-11 phase 6)
+	public int selectFromNull() {
+		int n = 0;
+		for (Fragile g : select Fragile from (this.noModel())) {
+			n = n + 1;
+		}
+		return n;
+	}
 }

@@ -38,13 +38,15 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
 import org.openflexo.foundation.fml.rt.error.FMLResolutionError;
 import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
 import org.openflexo.foundation.fml.rt.error.FMLExecution;
 import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +55,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLNamedReference;
@@ -643,34 +643,36 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				container.addToEmbeddedFlexoConceptInstances(newFCI);
 			}
 
-			if (!getDynamicInstantiation()) {
-				if (executeCreationScheme(newFCI, vmInstance, evaluationContext)) {
-					if (logger.isLoggable(Level.FINE)) {
-						logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
-					}
-					return newFCI;
+			// A creation whose scheme fails, or is cancelled, fails or is cancelled itself and leaves no partly built instance, as a
+			// creation through the factory does (CORE-D-73). A creation scheme that is not enabled gives no instance (null), as `new`.
+			boolean executed;
+			try {
+				if (!getDynamicInstantiation()) {
+					executed = executeCreationScheme(newFCI, vmInstance, evaluationContext);
 				}
 				else {
-					logger.warning("Failing execution of creationScheme: " + getCreationScheme());
-				}
-			}
-			else {
-				logger.warning("I should find default creationScheme for dynamic instantiation");
-				CreationScheme applicableCreationScheme = findBestCreationSchemeForDynamicInstantiation(evaluationContext);
-				if (applicableCreationScheme != null) {
-					if (_performExecuteCreationScheme(applicableCreationScheme, newFCI, vmInstance, evaluationContext)) {
-						if (logger.isLoggable(Level.FINE)) {
-							logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
-						}
-						return newFCI;
+					CreationScheme applicableCreationScheme = findBestCreationSchemeForDynamicInstantiation(evaluationContext);
+					if (applicableCreationScheme == null) {
+						throw new FMLResolutionError("No creation scheme of " + instantiatedFlexoConcept.getName() + " takes "
+								+ getParameters().size() + " argument(s)");
 					}
-					else {
-						logger.warning("Failing execution of creationScheme: " + applicableCreationScheme);
-					}
+					executed = _performExecuteCreationScheme(applicableCreationScheme, newFCI, vmInstance, evaluationContext);
 				}
+			} catch (FMLExecutionException e) {
+				FMLRTVirtualModelInstanceModelFactory.discardPartlyBuiltInstance(newFCI);
+				throw e;
 			}
-
-			return null;
+			if (!executed) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("Creation scheme of " + instantiatedFlexoConcept.getName() + " not executed (not enabled): no instance");
+				}
+				FMLRTVirtualModelInstanceModelFactory.discardPartlyBuiltInstance(newFCI);
+				return null;
+			}
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+			}
+			return newFCI;
 		}
 
 		protected CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
@@ -694,15 +696,18 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		/**
 		 * Execute supplied creation scheme on the new instance
 		 * 
-		 * @return true when it succeeded
+		 * @return true when it succeeded, false when it was not executed (not enabled)
 		 * @throws FMLExecutionException
-		 *             the failure of the creation scheme, rethrown unchanged (CORE-F-11)
+		 *             the failure of the creation scheme, rethrown unchanged (CORE-F-11), or its cancellation
 		 */
 		protected boolean _performExecuteCreationScheme(CreationScheme creationScheme, FCI newInstance,
 				VirtualModelInstance<?, ?> vmInstance, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				// The scheme runs on the instance built here: without it the action built another one, or none outside an
+				// FMLRTVirtualModelInstance, and the scheme of a technology creation never ran (CORE-D-73)
+				creationSchemeAction.assignNewFlexoConceptInstance(newInstance);
 				for (AddFlexoConceptInstanceParameter p : getParameters()) {
 					FlexoBehaviourArgument param = p.getParam();
 					Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
@@ -714,14 +719,16 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					}
 				}
 				creationSchemeAction.doAction();
+				// A failing or cancelled creation scheme fails or cancels the creation (CORE-D-73)
 				FMLExecution.rethrowFailure(creationSchemeAction);
+				if (creationSchemeAction.hasBeenCancelled()) {
+					throw new FMLCancellation("Creation scheme " + creationScheme.getName() + " was cancelled");
+				}
 
 				return creationSchemeAction.hasActionExecutionSucceeded();
 
 			}
-			logger.warning("Unexpected: " + evaluationContext);
-			Thread.dumpStack();
-			return false;
+			throw new FMLTechnologyError(getImplementedInterface().getSimpleName() + " can only be executed inside a behaviour");
 		}
 
 		protected abstract FCI makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;

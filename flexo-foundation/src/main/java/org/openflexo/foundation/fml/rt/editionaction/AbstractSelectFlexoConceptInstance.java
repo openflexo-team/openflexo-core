@@ -38,8 +38,8 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
 import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,8 +47,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.ConnieType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -320,9 +318,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				return vmi.selectFlexoConceptInstances(getFlexoConceptType(), container, getConditions(), evaluationContext);
 
 			}
-			logger.warning(
-					getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
-			return null;
+			// No virtual model instance to select from is a null receiver (CORE-F-11)
+			throw new FMLNullReferenceError(getStringRepresentation() + ": no virtual model instance to select from");
 		}
 
 		@Override

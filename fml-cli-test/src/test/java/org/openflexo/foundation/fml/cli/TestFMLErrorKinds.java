@@ -53,6 +53,7 @@ import org.junit.Test;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.fml.cli.test.FMLScriptParserTestCase;
+import org.openflexo.foundation.fml.rt.error.FMLCardinalityError;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionFailure;
 import org.openflexo.foundation.fml.rt.error.FMLHostError;
 import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
@@ -213,5 +214,23 @@ public class TestFMLErrorKinds extends FMLScriptParserTestCase {
 	@Test
 	public void invalidBinding() throws Exception {
 		assertError(runScript("InvalidBinding.fmlscript"), FMLResolutionError.class, "invalidCondition()", 69);
+	}
+
+	@Test
+	public void uniqueSelectWithSeveralResults() throws Exception {
+		// CORE-F-11 phase 6: the cardinality of a unique select
+		assertError(runScript("UniqueOfSeveral.fmlscript"), FMLCardinalityError.class, "uniqueOfSeveral()", 262);
+	}
+
+	@Test
+	public void selectFromNullModel() throws Exception {
+		// CORE-F-11 phase 6: a null virtual model instance to select from
+		assertError(runScript("SelectFromNull.fmlscript"), FMLNullReferenceError.class, "selectFromNull()", 273);
+	}
+
+	@Test
+	public void fmlAdapterActionWithNullContainer() throws Exception {
+		// CORE-F-11 phase 6: a technology action of the FML adapter
+		assertError(runScript("FMLAdapterNullContainer.fmlscript"), FMLNullReferenceError.class, "createInNullContainer()", 12);
 	}
 }

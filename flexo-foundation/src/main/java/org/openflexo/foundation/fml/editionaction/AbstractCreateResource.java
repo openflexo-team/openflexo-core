@@ -40,6 +40,8 @@ package org.openflexo.foundation.fml.editionaction;
 
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -267,13 +269,18 @@ public interface AbstractCreateResource<MS extends ModelSlot<?, ?>, RD extends R
 				boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException, FMLExecutionException {
 
 			if (technologyAdapter == null) {
-				logger.warning("Could not access TechnologyAdapter while creating resource from " + resourceFactoryClass);
-				return null;
+				throw new FMLTechnologyError("The technology adapter of " + resourceFactoryClass.getSimpleName() + " is not available");
 			}
 
 			String resourceName = getResourceName(evaluationContext);
+			if (resourceName == null) {
+				throw new FMLNullReferenceError("The name of the new resource is null");
+			}
 			String resourceURI = getResourceURI(evaluationContext);
 			FlexoResourceCenter<?> rc = getResourceCenter(evaluationContext);
+			if (rc == null) {
+				throw new FMLNullReferenceError("No resource center to create the resource " + resourceName + " in");
+			}
 			String relativePath = getRelativePath(evaluationContext);
 
 			return technologyAdapter.createResource(resourceFactoryClass, rc, resourceName, resourceURI, relativePath, extension,

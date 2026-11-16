@@ -38,14 +38,11 @@
 
 package org.openflexo.foundation.fml.ta;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
@@ -53,8 +50,12 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
@@ -134,34 +135,12 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 
 		private FlexoConceptInstanceType parentType;
 
-		private String getConceptName(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getConceptName().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private String getConceptName(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getConceptName(), evaluationContext, this);
 		}
 
-		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getContainer().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 		}
 
 		@Override
@@ -260,32 +239,36 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 
 				String conceptName = getConceptName(evaluationContext);
 				FlexoConcept container = getContainer(evaluationContext);
+				if (container == null) {
+					throw new FMLNullReferenceError("No container to create the concept in");
+				}
 
-				logger.info("on cree un FlexoConcept " + conceptName + " dans " + container);
+				logger.fine("on cree un FlexoConcept " + conceptName + " dans " + container);
 
 				org.openflexo.foundation.fml.action.CreateFlexoConcept action = org.openflexo.foundation.fml.action.CreateFlexoConcept.actionType
 						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				action.setNewFlexoConceptName(conceptName);
 				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();
-
+				// A nested action leaves its failure to its caller (CORE-F-11)
+				FMLExecution.rethrowFailure(action);
 				if (action.hasBeenCancelled()) {
-					throw new FMLExecutionException(new ActionExecutionCancelledException());
+					throw new FMLCancellation("CreateFlexoConcept was cancelled");
 				}
 
 				if (getParentFlexoConceptType() != null) {
 					try {
 						action.getNewFlexoConcept().addToParentFlexoConcepts(getParentFlexoConceptType());
 					} catch (InconsistentFlexoConceptHierarchyException e) {
-						throw new FMLExecutionException(e);
+						throw new FMLTechnologyError("Cannot make " + getParentFlexoConceptType().getName() + " a parent of "
+								+ action.getNewFlexoConcept().getName() + ": " + e.getMessage(), e);
 					}
 				}
 
 				return action.getNewFlexoConcept();
 			}
 
-			logger.warning("Unexpected context: " + evaluationContext);
-			return null;
+			throw new FMLTechnologyError("CreateFlexoConcept can only be executed inside a behaviour");
 		}
 
 		@Override

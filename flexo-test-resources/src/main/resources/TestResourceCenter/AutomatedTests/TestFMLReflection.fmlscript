@@ -18,4 +18,11 @@ assert myVMI.aFoo != null;
 foo2 = myVMI.test2("MyFoo");
 assert foo2 != null;
 assert foo2.name == "MyFoo";
+// existingFoo, aFoo and foo2: one instance per creation (CORE-D-84)
+assert myVMI.fooCount() == 3;
+// NewInstance inside a creation scheme: the scheme goes on with its own instance (CORE-D-84)
+holder = myVMI.test3();
+assert holder.tag == "set";
+assert holder.inner != null;
+assert myVMI.fooCount() == 4;
 

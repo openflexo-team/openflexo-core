@@ -386,6 +386,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public <T> T getFlexoActor(FlexoRole<T> flexoRole);
 
 	/**
+	 * Strict reading of the actor of supplied role, used when FML runs (strict evaluation): an instance whose actors are read from a
+	 * technology (a reflected cell, a column...) throws the failure of that reading, typed, where {@link #getFlexoActor(FlexoRole)}
+	 * gives null for the user interface. The entry point to override, with {@link #getFlexoPropertyValueOrFail(FlexoProperty)}
+	 * (CORE-F-11 phase 6). By default, {@link #getFlexoActor(FlexoRole)}.
+	 */
+	public <T> T getFlexoActorOrFail(FlexoRole<T> flexoRole) throws FMLExecutionException;
+
+	/**
 	 * Return actor associated with supplied role name, asserting cardinality of supplied property is SINGLE.<br>
 	 * If cardinality of supplied property is MULTIPLE, return first found value
 	 * 
@@ -1004,7 +1012,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					if (((FlexoRole<?>) flexoProperty).getCardinality().isMultipleCardinality()) {
 						return (T) getFlexoActorList((FlexoRole) flexoProperty);
 					}
-					return getFlexoActor((FlexoRole<T>) flexoProperty);
+					return getFlexoActorOrFail((FlexoRole<T>) flexoProperty);
 				}
 				else if (flexoProperty instanceof ExpressionProperty) {
 					// Evaluated in a strict context of this instance; a failure gets the frame of the property (CORE-F-11)
@@ -1207,6 +1215,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @param flexoProperty
 		 *            the property to lookup
 		 */
+		@Override
+		public <T> T getFlexoActorOrFail(FlexoRole<T> flexoRole) throws FMLExecutionException {
+			return getFlexoActor(flexoRole);
+		}
+
 		@Override
 		public <T> T getFlexoActor(final FlexoRole<T> flexoRole) {
 			if (flexoRole == null) {

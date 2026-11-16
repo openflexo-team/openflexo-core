@@ -52,6 +52,9 @@ import org.openflexo.foundation.fml.editionaction.AbstractCreateResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLInternalError;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.Getter;
@@ -152,12 +155,18 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 
 				// System.out.println("Return " + compilationUnit);
 				return compilationUnit;
-			} catch (ModelDefinitionException | FileNotFoundException | ResourceLoadingCancelledException e) {
-				throw new FMLExecutionException(e);
+			} catch (ModelDefinitionException e) {
+				// The PAMELA model of the virtual model is wrong: a defect of the platform (CORE-F-11)
+				throw new FMLInternalError(e);
+			} catch (ResourceLoadingCancelledException e) {
+				throw new FMLCancellation("Loading of the new virtual model was cancelled", e);
+			} catch (FileNotFoundException e) {
+				throw new FMLTechnologyError("Cannot create the virtual model resource: " + e.getMessage(), e);
 			} catch (InconsistentFlexoConceptHierarchyException e) {
-				throw new FMLExecutionException(e);
+				throw new FMLTechnologyError("Cannot make " + getParentVirtualModelType().getName()
+						+ " the parent of the new virtual model: " + e.getMessage(), e);
 			} catch (FlexoException e) {
-				throw new FMLExecutionException(e);
+				throw new FMLTechnologyError("Cannot create the virtual model resource: " + e.getMessage(), e);
 			}
 		}
 	}

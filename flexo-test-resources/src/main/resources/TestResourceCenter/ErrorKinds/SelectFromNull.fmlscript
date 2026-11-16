@@ -1,0 +1,5 @@
+// CORE-F-11 phase 6: a select from a null virtual model instance is an error (FMLNullReferenceError), no longer an empty result.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ExecutionFailures.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ExecutionFailures() with (name="selectFromNull");
+mustFail = vmi.selectFromNull();

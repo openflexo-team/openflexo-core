@@ -1,0 +1,14 @@
+use org.openflexo.foundation.fml.ta.FMLModelSlot as FMLTA;
+
+/**
+ * Failures of the FML technology adapter (CORE-F-11 phase 6): see ErrorKinds/FMLAdapterNullContainer.fmlscript and TestFMLErrorKinds.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/FMLAdapterFailures.fml")
+public model FMLAdapterFailures {
+
+	public FMLCompilationUnit unit with FMLTA::FMLModelSlot();
+
+	public createInNullContainer() {
+		FlexoConcept c = FMLTA::CreateFlexoConcept(conceptName="Created", container=null) in unit;
+	}
+}

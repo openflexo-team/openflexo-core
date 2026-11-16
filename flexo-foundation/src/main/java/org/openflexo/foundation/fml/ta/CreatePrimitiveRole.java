@@ -38,14 +38,11 @@
 
 package org.openflexo.foundation.fml.ta;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.PrimitiveRole;
@@ -53,8 +50,12 @@ import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
+import org.openflexo.foundation.fml.rt.error.FMLEvaluation;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
+import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLNullReferenceError;
+import org.openflexo.foundation.fml.rt.error.FMLExecution;
+import org.openflexo.foundation.fml.rt.error.FMLCancellation;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
@@ -112,49 +113,16 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 		private DataBinding<FlexoConcept> container;
 		private DataBinding<PrimitiveType> primitiveType;
 
-		private String getRoleName(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getRoleName().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private String getRoleName(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getRoleName(), evaluationContext, this);
 		}
 
-		private PrimitiveType getPrimitiveType(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getPrimitiveType().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private PrimitiveType getPrimitiveType(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getPrimitiveType(), evaluationContext, this);
 		}
 
-		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getContainer().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ReflectiveOperationException e) {
-				e.printStackTrace();
-			}
-			return null;
+		private FlexoConcept getContainer(RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return FMLEvaluation.evaluate(getContainer(), evaluationContext, this);
 		}
 
 		@Override
@@ -230,8 +198,11 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 				String roleName = getRoleName(evaluationContext);
 				PrimitiveType primitiveType = getPrimitiveType(evaluationContext);
 				FlexoConcept container = getContainer(evaluationContext);
+				if (container == null) {
+					throw new FMLNullReferenceError("No container to create the role in");
+				}
 
-				logger.info("on cree une property " + roleName + " dans " + container);
+				logger.fine("on cree une property " + roleName + " dans " + container);
 
 				org.openflexo.foundation.fml.action.CreatePrimitiveRole action = org.openflexo.foundation.fml.action.CreatePrimitiveRole.actionType
 						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
@@ -240,16 +211,16 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 				action.setCardinality(PropertyCardinality.ZeroOne);
 				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();
-
+				// A nested action leaves its failure to its caller (CORE-F-11)
+				FMLExecution.rethrowFailure(action);
 				if (action.hasBeenCancelled()) {
-					throw new FMLExecutionException(new ActionExecutionCancelledException());
+					throw new FMLCancellation("CreatePrimitiveRole was cancelled");
 				}
 
 				return action.getNewFlexoRole();
 			}
 
-			logger.warning("Unexpected context: " + evaluationContext);
-			return null;
+			throw new FMLTechnologyError("CreatePrimitiveRole can only be executed inside a behaviour");
 		}
 
 		@Override
