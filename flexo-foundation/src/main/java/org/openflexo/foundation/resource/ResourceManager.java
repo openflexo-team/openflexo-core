@@ -41,6 +41,7 @@ package org.openflexo.foundation.resource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -143,7 +144,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		}
 	}
 
-	public void registerPendingDependencyResource(FlexoResource<?> resource, String dependencyURI) {
+	public synchronized void registerPendingDependencyResource(FlexoResource<?> resource, String dependencyURI) {
 		// System.out.println("registerPendingDependencyResource " + dependencyURI + " for " + resource);
 		List<PendingResourceDependency> l = pendingResourceDependencies.get(dependencyURI);
 		if (l == null) {
@@ -151,6 +152,20 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			pendingResourceDependencies.put(dependencyURI, l);
 		}
 		l.add(new PendingResourceDependency(resource, dependencyURI));
+	}
+
+	/**
+	 * A resource that is unregistered waits for nothing any more: its pending dependencies are dropped, so that the manager does not keep
+	 * (and later resolve on) a resource that is gone
+	 */
+	private synchronized void forgetPendingDependencies(FlexoResource<?> resource) {
+		for (Iterator<List<PendingResourceDependency>> it = pendingResourceDependencies.values().iterator(); it.hasNext();) {
+			List<PendingResourceDependency> l = it.next();
+			l.removeIf(prd -> prd.resource == resource);
+			if (l.isEmpty()) {
+				it.remove();
+			}
+		}
 	}
 
 	// It should be synchronized has the same resource could be registered several times in different threads
@@ -203,7 +218,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			if (prdList != null && prdList.size() > 0) {
 				for (PendingResourceDependency prd : prdList) {
 					// System.out.println("Resolved pending dependency " + prd.dependencyURI);
-					prd.resource.addToDependencies(resource);
+					prd.resource.pendingDependencyResolved(resource);
 				}
 				pendingResourceDependencies.remove(resource.getURI());
 			}
@@ -211,6 +226,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	public void unregisterResource(FlexoResource<?> resource) {
+		forgetPendingDependencies(resource);
 		resources.remove(resource);
 		getServiceManager().notify(this, new ResourceUnregistered(resource, null));
 	}

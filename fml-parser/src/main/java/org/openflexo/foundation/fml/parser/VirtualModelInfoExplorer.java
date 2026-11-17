@@ -271,12 +271,13 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAUseDecl(AUseDecl node) {
 		super.inAUseDecl(node);
-		Class<? extends ModelSlot<?, ?>> modelSlotClass = null;
+		String modelSlotClassName = analyzer.makeFullQualifiedIdentifier(node.getIdentifier());
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?, ?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
+			Class<? extends ModelSlot<?, ?>> modelSlotClass = (Class<? extends ModelSlot<?, ?>>) Class.forName(modelSlotClassName);
 			info.addToRequiredModelSlot(modelSlotClass.getName());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			// The model slot (hence its technology adapter) is not there: kept in the required ones, so that the resource layer reports it
+			info.addToRequiredModelSlot(modelSlotClassName);
 		}
 	}
 

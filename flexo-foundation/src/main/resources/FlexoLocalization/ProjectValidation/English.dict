@@ -1,0 +1,7 @@
+all_resources_must_be_free_of_issues=All resources must be free of issues
+all_resources_must_be_free_of_issues_description=A resource whose virtual model, required resource or technology adapter cannot be found is reported
+displaying_validation_report=Displaying validation report
+resource_($resource.name)_required_resource_($subject)_not_found=Resource ($resource.name): required resource ($subject) not found
+resource_($resource.name)_technology_adapter_for_($subject)_not_found=Resource ($resource.name): technology adapter for ($subject) not found
+resource_($resource.name)_virtual_model_($subject)_not_found=Resource ($resource.name): virtual model ($subject) not found
+validating=Validating

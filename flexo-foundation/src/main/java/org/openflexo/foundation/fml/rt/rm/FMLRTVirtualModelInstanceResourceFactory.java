@@ -31,6 +31,7 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceIssue;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -333,8 +334,17 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 				if (vmResource == null) {
 					// In this case, serialize URI of virtual model, to give a chance to find it later
 					returned.setVirtualModelURI(vmiInfo.virtualModelURI);
+					// Waits for it: the resource is marked in error, and gets its VirtualModel if it is registered later
+					resourceCenter.getServiceManager().getResourceManager().registerPendingDependencyResource(returned,
+							vmiInfo.virtualModelURI);
+					returned.addIssue(new ResourceIssue(ResourceIssue.Severity.ERROR, ResourceIssue.Kind.MISSING_VIRTUAL_MODEL,
+							vmiInfo.virtualModelURI));
 					logger.warning("Could not retrieve virtual model: " + vmiInfo.virtualModelURI);
 				}
+			}
+			else {
+				// No VirtualModel declared at all: nothing to wait for, the resource cannot be given its VirtualModel
+				returned.addIssue(new ResourceIssue(ResourceIssue.Severity.ERROR, ResourceIssue.Kind.MISSING_VIRTUAL_MODEL, "?"));
 			}
 		}
 		else {

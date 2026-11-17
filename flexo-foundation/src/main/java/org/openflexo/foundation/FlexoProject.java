@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,15 +51,19 @@ import org.openflexo.foundation.project.FlexoProjectImpl;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.CannotRenameException;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceIssue;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.validation.ResourceIssueError;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
@@ -70,7 +75,10 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.validation.CompoundIssue;
+import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationModel;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -345,5 +353,29 @@ public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObj
 	 */
 	@NotificationUnsafe
 	public <N extends ProjectNature<N>> N getNature(String projectNatureClassName);
+
+
+	/**
+	 * The resources of a project must carry no issue: a missing VirtualModel, required resource or technology adapter is detected at the
+	 * resource layer, without loading the resource, and reported here.
+	 */
+	@DefineValidationRule
+	public static class AllResourcesMustBeFreeOfIssues extends ValidationRule<AllResourcesMustBeFreeOfIssues, FlexoProject> {
+		public AllResourcesMustBeFreeOfIssues() {
+			super(FlexoProject.class, "all_resources_must_be_free_of_issues");
+		}
+
+		@Override
+		public ValidationIssue<AllResourcesMustBeFreeOfIssues, FlexoProject> applyValidation(FlexoProject project) {
+			List<ValidationIssue<AllResourcesMustBeFreeOfIssues, FlexoProject>> issues = new ArrayList<>();
+			for (Object o : new ArrayList<>(project.getAllResources())) {
+				FlexoResource<?> resource = (FlexoResource<?>) o;
+				for (ResourceIssue issue : resource.getIssues()) {
+					issues.add(new ResourceIssueError(this, project, resource, issue));
+				}
+			}
+			return issues.isEmpty() ? null : new CompoundIssue<>(project, issues);
+		}
+	}
 
 }

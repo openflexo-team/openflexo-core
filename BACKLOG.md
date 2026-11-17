@@ -444,6 +444,34 @@ or the wizard step moves to fml-gina-extension.
 with the model and shown in the running application.
 
 
+## Resources
+
+### CORE-F-13 — Errors of a resource, detected at the resource layer without loading it  ·  `IN PROGRESS`
+
+**Problem.** A `.fml.rt` whose VirtualModel cannot be found was announced by a modal dialog. More generally the resource layer
+already computes, from the metadata of the resource (`VirtualModelInfo`, cached on disk), the dependencies and the technology
+adapters a resource needs, but a missing VirtualModel, required `.fml` or technology adapter was never carried by the resource.
+
+**Done.** `FlexoResource` carries `ResourceIssue`s (`getIssues`, `hasErrors`, `getIssuesMessage`, notified as `issues` /
+`issuesMessage`), set when the resource is discovered: missing VirtualModel of a VMI, missing required resource, missing model slot
+class or technology adapter. A pending dependency is resolved when the resource is registered (the issue goes, a VMI gets its
+VirtualModel) and dropped when the waiting resource is unregistered. The browsers show the error icon and the issues as tooltip; the
+status bar of the main window shows them for the selected resource; `Validate project` lists them
+(`FlexoProject.AllResourcesMustBeFreeOfIssues`, own dictionary `ProjectValidation`).
+
+**To decide / left.**
+- Issues are computed once, at discovery: not recomputed on reload, re-parse, edited `import`/`use`, or a dependency that disappears.
+- An `import` whose URI is not registered is an `ERROR` (`Severity.WARNING` exists, unused).
+- A VMI declaring no VirtualModel gets the subject `?`; a VMI whose XML cannot be read gets no issue.
+- `Validate project` covers the resources of the project only, not those of a global resource center.
+- A `use` of a missing class is reported from the metadata computed at the first parse; a later save of the unit rewrites the cached
+  list without it.
+
+**Acceptance criteria.** Opening a project whose VMI names an absent VirtualModel shows the red cross, the tooltip and the status bar
+with no dialog, and nothing is loaded; adding the resource center that holds the VirtualModel clears them; `TestResourceIssues`
+passes, including the late resolution of a pending dependency, a missing dependency and a missing technology adapter (not covered yet).
+
+
 ## FML runtime errors
 
 ### CORE-F-11 — Typed FML runtime errors, raised where detected, reported once with the FML location  ·  `DONE`

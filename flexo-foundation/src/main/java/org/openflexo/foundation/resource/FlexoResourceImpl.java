@@ -45,7 +45,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -80,6 +82,79 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	private boolean isLoading = false;
 	protected boolean isUnloading = false;
 	protected RD resourceData = null;
+
+	private final List<ResourceIssue> issues = new CopyOnWriteArrayList<>();
+
+	@Override
+	public List<ResourceIssue> getIssues() {
+		return Collections.unmodifiableList(issues);
+	}
+
+	@Override
+	public void addIssue(ResourceIssue issue) {
+		if (!issues.contains(issue)) {
+			boolean hadErrors = hasErrors();
+			List<ResourceIssue> before = new ArrayList<>(issues);
+			issues.add(issue);
+			getPropertyChangeSupport().firePropertyChange(ISSUES, null, issue);
+			// What a browser binding (tooltip, icon of the cell) listens to: it does not know the list of issues
+			getPropertyChangeSupport().firePropertyChange("issuesMessage", before, new ArrayList<>(issues));
+			if (hadErrors != hasErrors()) {
+				getPropertyChangeSupport().firePropertyChange("hasErrors", hadErrors, hasErrors());
+			}
+		}
+	}
+
+	@Override
+	public void removeIssues(ResourceIssue.Kind kind, String subject) {
+		boolean hadErrors = hasErrors();
+		List<ResourceIssue> before = new ArrayList<>(issues);
+		List<ResourceIssue> removed = new ArrayList<>();
+		for (ResourceIssue issue : issues) {
+			if (issue.getKind() == kind && (subject == null || subject.equals(issue.getSubject()))) {
+				removed.add(issue);
+			}
+		}
+		if (!removed.isEmpty()) {
+			issues.removeAll(removed);
+			getPropertyChangeSupport().firePropertyChange(ISSUES, removed.get(0), null);
+			getPropertyChangeSupport().firePropertyChange("issuesMessage", before, new ArrayList<>(issues));
+			if (hadErrors != hasErrors()) {
+				getPropertyChangeSupport().firePropertyChange("hasErrors", hadErrors, hasErrors());
+			}
+		}
+	}
+
+	@Override
+	public boolean hasErrors() {
+		for (ResourceIssue issue : issues) {
+			if (issue.isError()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public String getIssuesMessage() {
+		if (issues.isEmpty()) {
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (ResourceIssue issue : issues) {
+			if (sb.length() > 0) {
+				sb.append("\n");
+			}
+			sb.append(issue.getMessage(this));
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public void pendingDependencyResolved(FlexoResource<?> dependency) {
+		addToDependencies(dependency);
+		removeIssues(ResourceIssue.Kind.MISSING_DEPENDENCY, dependency.getURI());
+	}
 
 	/**
 	 * Return flag indicating if this resource is loaded

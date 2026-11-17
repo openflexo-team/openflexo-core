@@ -40,6 +40,10 @@
 package org.openflexo.foundation.validation;
 
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.pamela.PamelaMetaModelLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.Validable;
@@ -50,13 +54,18 @@ import org.openflexo.pamela.validation.Validable;
  */
 public class FlexoProjectValidationModel extends FlexoValidationModel {
 
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("FlexoLocalization/ProjectValidation");
+	// Context of the project validation: its texts live in their own dictionary, not in the one of the platform
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = new LocalizedDelegateImpl(fibValidationLocalizedDelegate, null, true, true)
+			.withContext("project:validation");
+
 	// private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ProjectValidation");
 	// private static LocalizedDelegate VALIDATION_LOCALIZATION = FlexoLocalization.getLocalizedDelegate(fibValidationLocalizedDelegate,
 	// null,
 	// true, true);
 
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
-		super(PamelaMetaModelLibrary.retrieveMetaModel(FlexoProject.class), null/*VALIDATION_LOCALIZATION*/);
+		super(PamelaMetaModelLibrary.retrieveMetaModel(FlexoProject.class), VALIDATION_LOCALIZATION);
 		// registerRule(new FlexoProject.AllResourcesMustBeDefinedInProject());
 		// registerRule(new FlexoProject.FlexoIDMustBeUnique());
 		// registerRule(new FlexoProject.NameOfResourceMustBeKeyOfHashtableEntry());

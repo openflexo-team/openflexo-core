@@ -57,7 +57,9 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaXMLSerializableResourceImpl;
+import org.openflexo.foundation.resource.ResourceIssue;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.rm.Resource;
 
@@ -81,6 +83,31 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 			return getVirtualModelResource().getCompilationUnit().getVirtualModel();
 		}
 		return null;
+	}
+
+	/**
+	 * The VirtualModel this instance was waiting for is registered: no dependency is added, but the VirtualModel is set and the error
+	 * removed
+	 */
+	@Override
+	public void pendingDependencyResolved(FlexoResource<?> dependency) {
+		if (dependency instanceof CompilationUnitResource && dependency.getURI() != null
+				&& dependency.getURI().equals(getVirtualModelURI())) {
+			setVirtualModelResource((CompilationUnitResource) dependency);
+			// An instance already loaded without its VirtualModel gets it now, otherwise it would be reported healthy here while its
+			// own validation still fails
+			FMLRTVirtualModelInstance loaded = getLoadedResourceData();
+			if (loaded != null && loaded.getVirtualModel() == null) {
+				VirtualModel virtualModel = getVirtualModel();
+				if (virtualModel != null) {
+					loaded.setVirtualModel(virtualModel);
+				}
+			}
+			removeIssues(ResourceIssue.Kind.MISSING_VIRTUAL_MODEL, null);
+		}
+		else {
+			super.pendingDependencyResolved(dependency);
+		}
 	}
 
 	@Override
@@ -115,6 +142,9 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 			CompilationUnitResource vmResource = getServiceManager().getVirtualModelLibrary()
 					.getCompilationUnitResource(getVirtualModelURI());
 			setVirtualModelResource(vmResource);
+			if (vmResource != null) {
+				removeIssues(ResourceIssue.Kind.MISSING_VIRTUAL_MODEL, null);
+			}
 		}
 
 		VirtualModel virtualModel = null;

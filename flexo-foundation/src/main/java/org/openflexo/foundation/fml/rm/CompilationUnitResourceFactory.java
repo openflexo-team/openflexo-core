@@ -32,6 +32,9 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.resource.ResourceIssue;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -293,11 +296,13 @@ public class CompilationUnitResourceFactory
 					else {
 						// Dependency not yet found, register as pending
 						resourceCenter.getServiceManager().getResourceManager().registerPendingDependencyResource(returned, dependencyURI);
+						returned.addIssue(new ResourceIssue(ResourceIssue.Severity.ERROR, ResourceIssue.Kind.MISSING_DEPENDENCY, dependencyURI));
 					}
 				}
 			}
+			checkRequiredTechnologies(returned, vpi.getRequiredModelSlotListAsString(), resourceCenter);
 			try {
-				returned.setUsedModelSlots(vpi.getRequiredModelSlotListAsString());
+				returned.setUsedModelSlots(loadableModelSlots(vpi.getRequiredModelSlotListAsString()));
 			} catch (ClassNotFoundException e) {
 				logger.warning("Could not find " + e.getMessage());
 			}
@@ -321,6 +326,53 @@ public class CompilationUnitResourceFactory
 		}
 
 		return returned;
+	}
+
+	/** Keeps, in a list of model slot class names, the ones whose class can be loaded (the others are reported as missing technologies) */
+	private static String loadableModelSlots(String requiredModelSlotList) {
+		if (StringUtils.isEmpty(requiredModelSlotList)) {
+			return requiredModelSlotList;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (String className : requiredModelSlotList.split(",")) {
+			className = className.trim();
+			try {
+				Class.forName(className);
+				sb.append(sb.length() > 0 ? "," : "").append(className);
+			} catch (ClassNotFoundException e) {
+				// Not loadable: reported by checkRequiredTechnologies
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Marks the resource as in error for each model slot it requires whose class, or whose technology adapter, cannot be found. Done on
+	 * the metadata of the resource, without loading it.
+	 */
+	private <I> void checkRequiredTechnologies(CompilationUnitResource resource, String requiredModelSlotList,
+			FlexoResourceCenter<I> resourceCenter) {
+		if (StringUtils.isEmpty(requiredModelSlotList)) {
+			return;
+		}
+		TechnologyAdapterService taService = resourceCenter.getServiceManager().getTechnologyAdapterService();
+		for (String className : requiredModelSlotList.split(",")) {
+			className = className.trim();
+			if (className.isEmpty()) {
+				continue;
+			}
+			try {
+				Class<?> msClass = Class.forName(className);
+				if (taService != null && ModelSlot.class.isAssignableFrom(msClass)
+						&& taService.getTechnologyAdapterForModelSlot((Class<? extends ModelSlot<?, ?>>) msClass) == null) {
+					resource.addIssue(new ResourceIssue(ResourceIssue.Severity.ERROR, ResourceIssue.Kind.MISSING_TECHNOLOGY_ADAPTER,
+							className));
+				}
+			} catch (ClassNotFoundException e) {
+				resource.addIssue(
+						new ResourceIssue(ResourceIssue.Severity.ERROR, ResourceIssue.Kind.MISSING_TECHNOLOGY_ADAPTER, className));
+			}
+		}
 	}
 
 	@Override

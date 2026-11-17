@@ -1,0 +1,7 @@
+all_resources_must_be_free_of_issues=Toutes les ressources doivent \u00eatre sans erreur
+all_resources_must_be_free_of_issues_description=Une ressource dont le mod\u00e8le virtuel, une ressource requise ou l\u2019adaptateur technologique est introuvable est signal\u00e9e
+displaying_validation_report=Affichage du rapport de validation
+resource_($resource.name)_required_resource_($subject)_not_found=Ressource ($resource.name) \: ressource requise ($subject) introuvable
+resource_($resource.name)_technology_adapter_for_($subject)_not_found=Ressource ($resource.name) \: adaptateur technologique pour ($subject) introuvable
+resource_($resource.name)_virtual_model_($subject)_not_found=Ressource ($resource.name) \: mod\u00e8le virtuel ($subject) introuvable
+validating=Validation en cours

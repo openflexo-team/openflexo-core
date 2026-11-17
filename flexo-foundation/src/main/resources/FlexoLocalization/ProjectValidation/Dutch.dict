@@ -1,0 +1,7 @@
+all_resources_must_be_free_of_issues=Alle resources moeten vrij van fouten zijn
+all_resources_must_be_free_of_issues_description=Een resource waarvan het virtuele model, een vereiste resource of de technologie-adapter niet gevonden wordt, wordt gemeld
+displaying_validation_report=Validatierapport weergeven
+resource_($resource.name)_required_resource_($subject)_not_found=Resource ($resource.name)\: vereiste resource ($subject) niet gevonden
+resource_($resource.name)_technology_adapter_for_($subject)_not_found=Resource ($resource.name)\: technologie-adapter voor ($subject) niet gevonden
+resource_($resource.name)_virtual_model_($subject)_not_found=Resource ($resource.name)\: virtueel model ($subject) niet gevonden
+validating=Valideren

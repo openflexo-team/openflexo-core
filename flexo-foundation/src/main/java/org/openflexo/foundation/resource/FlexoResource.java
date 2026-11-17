@@ -77,6 +77,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String CONTAINER = "container";
 	public static final String CONTENTS = "contents";
 	public static final String DEPENDENCIES = "dependencies";
+	public static final String ISSUES = "issues";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String SERVICE_MANAGER = "serviceManager";
 	public static final String RESOURCE_CENTER = "resourceCenter";
@@ -321,6 +322,30 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	@Remover(DEPENDENCIES)
 	public void removeFromDependencies(FlexoResource<?> resource);
+
+	/**
+	 * Returns the problems detected for this resource at the resource layer, without loading it (missing VirtualModel, dependency or
+	 * technology adapter). Notified through {@link #ISSUES}.
+	 */
+	public List<ResourceIssue> getIssues();
+
+	/** Adds an issue (ignored when an equal one is already present) */
+	public void addIssue(ResourceIssue issue);
+
+	/** Removes all the issues of supplied kind and subject (all subjects when subject is null) */
+	public void removeIssues(ResourceIssue.Kind kind, String subject);
+
+	/** Returns true if this resource carries at least one issue of severity error */
+	public boolean hasErrors();
+
+	/** Localized messages of all the issues of this resource, one per line (null when there is none) */
+	public String getIssuesMessage();
+
+	/**
+	 * Called by the {@link ResourceManager} when a resource this one was waiting for (see
+	 * {@link ResourceManager#registerPendingDependencyResource(FlexoResource, String)}) is registered
+	 */
+	public void pendingDependencyResolved(FlexoResource<?> dependency);
 
 	@Getter(value = FLEXO_IO_DELEGATE, inverse = FlexoIODelegate.FLEXO_RESOURCE)
 	public FlexoIODelegate<?> getIODelegate();
