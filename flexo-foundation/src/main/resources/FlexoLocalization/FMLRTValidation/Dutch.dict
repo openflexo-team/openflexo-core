@@ -4,3 +4,5 @@ missing_required_role_($role.name)_for_($flexoConceptInstance)=De verplichte rol
 missing_required_roles_($role.name)_for_($flexoConceptInstance)=De verplichte rollen ($role.name) ontbreken voor ($flexoConceptInstance)
 revalidating=Revalidating
 validating=Validating
+virtual_model_($validable.virtualModelInstanceResource.virtualModelURI)_not_found=Virtueel model ($validable.virtualModelInstanceResource.virtualModelURI) niet gevonden
+virtual_model_instance_must_have_a_virtual_model=Een instantie van een virtueel model moet een virtueel model hebben

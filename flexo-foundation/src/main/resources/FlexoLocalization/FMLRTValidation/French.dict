@@ -4,3 +4,5 @@ missing_required_role_($role.name)_for_($flexoConceptInstance)=Le r\u00f4le obli
 missing_required_roles_($role.name)_for_($flexoConceptInstance)=Les r\u00f4les obligatoires ($role.name) sont manquants pour ($flexoConceptInstance)
 revalidating=Nouvelle validation en cours
 validating=Validation en cours
+virtual_model_($validable.virtualModelInstanceResource.virtualModelURI)_not_found=Mod\u00e8le virtuel ($validable.virtualModelInstanceResource.virtualModelURI) introuvable
+virtual_model_instance_must_have_a_virtual_model=Une instance de mod\u00e8le virtuel doit avoir un mod\u00e8le virtuel

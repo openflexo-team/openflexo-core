@@ -88,6 +88,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
@@ -101,6 +102,9 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 
@@ -1725,6 +1729,25 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return returned;
 		}
 
+	}
+
+	/**
+	 * A {@link VirtualModelInstance} whose {@link VirtualModel} cannot be found (not in any resource center) is reported as an error, shown
+	 * like any other validation error, instead of being announced in a modal dialog.
+	 */
+	@DefineValidationRule
+	public static class VirtualModelMustBeFound extends ValidationRule<VirtualModelMustBeFound, VirtualModelInstance> {
+		public VirtualModelMustBeFound() {
+			super(VirtualModelInstance.class, "virtual_model_instance_must_have_a_virtual_model");
+		}
+
+		@Override
+		public ValidationIssue<VirtualModelMustBeFound, VirtualModelInstance> applyValidation(VirtualModelInstance vmi) {
+			if (vmi.getVirtualModel() == null) {
+				return new ValidationError<>(this, vmi, "virtual_model_($validable.virtualModelInstanceResource.virtualModelURI)_not_found");
+			}
+			return null;
+		}
 	}
 
 	public class ObjectLookupResult {

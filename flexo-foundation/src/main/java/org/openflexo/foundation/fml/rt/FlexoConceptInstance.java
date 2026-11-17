@@ -2958,7 +2958,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public ValidationIssue<FlexoConceptInstanceMustHaveType, FlexoConceptInstance> applyValidation(
 				FlexoConceptInstance flexoConceptInstance) {
 
-			if (flexoConceptInstance.getFlexoConcept() == null) {
+			// A VirtualModelInstance without VirtualModel has its own, more precise rule (VirtualModelMustBeFound)
+			if (flexoConceptInstance.getFlexoConcept() == null && !(flexoConceptInstance instanceof VirtualModelInstance)) {
 				DeleteThisInstance fixProposal = new DeleteThisInstance(flexoConceptInstance);
 				return new ValidationError<>(this, flexoConceptInstance, "instance_has_no_type", fixProposal);
 				// return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_behaviours");
