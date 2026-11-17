@@ -49,6 +49,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
@@ -61,6 +62,8 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
+import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.foundation.fml.rt.error.FMLExecution;
 
 /**
@@ -158,6 +161,11 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 				if (bindingPath.isValid() && bindingPath.getBindingPath().size() == 0) {
 					return (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(bindingPath.getVariableName());
 				}
+				// this.role: the way to designate a property hidden by an argument of the behaviour of the same name (CORE-F-14)
+				if (bindingPath.isValid() && bindingPath.getBindingPath().size() == 1
+						&& FlexoConceptBindingModel.THIS_PROPERTY_NAME.equals(bindingPath.getVariableName())) {
+					return (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(bindingPath.getBindingPath().get(0).getLabel());
+				}
 			}
 			return null;
 		}
@@ -212,6 +220,54 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			return object.getAssignation();
 		}
 
+	}
+
+	/**
+	 * <code>label = label;</code> assigns a variable to itself. With an argument <code>label</code> hiding a property of the same name (CORE-F-14),
+	 * it is what <code>label = parameters.label;</code> becomes when only the right side is rewritten: the property is not assigned. The fix,
+	 * offered when a property of that name exists, assigns the property (<code>this.label = label;</code>).
+	 */
+	@DefineValidationRule
+	public static class AssignationOfAVariableToItself extends ValidationRule<AssignationOfAVariableToItself, AssignationAction<?>> {
+
+		public AssignationOfAVariableToItself() {
+			super(AssignationAction.class, "assignation_of_a_variable_to_itself");
+		}
+
+		@Override
+		public ValidationIssue<AssignationOfAVariableToItself, AssignationAction<?>> applyValidation(AssignationAction<?> action) {
+			if (action.getAssignation() == null || !action.getAssignation().isSet()
+					|| !(action.getAssignableAction() instanceof ExpressionAction)) {
+				return null;
+			}
+			DataBinding<?> expression = ((ExpressionAction<?>) action.getAssignableAction()).getExpression();
+			if (expression == null || !expression.isSet()) {
+				return null;
+			}
+			String name = action.getAssignation().toString();
+			if (!name.matches("[A-Za-z_]\\w*") || !name.equals(expression.toString())) {
+				return null;
+			}
+			if (action.getFlexoConcept() != null && action.getFlexoConcept().getAccessibleProperty(name) != null) {
+				return new ValidationWarning<>(this, action, "a_variable_is_assigned_to_itself", new AssignTheProperty(this, name));
+			}
+			return new ValidationWarning<>(this, action, "a_variable_is_assigned_to_itself");
+		}
+
+		protected static class AssignTheProperty extends FixProposal<AssignationOfAVariableToItself, AssignationAction<?>> {
+
+			private final String name;
+
+			public AssignTheProperty(AssignationOfAVariableToItself rule, String name) {
+				super("assign_the_property_of_the_concept");
+				this.name = name;
+			}
+
+			@Override
+			protected void fixAction() {
+				getValidable().getAssignation().setUnparsedBinding("this." + name);
+			}
+		}
 	}
 
 	@DefineValidationRule

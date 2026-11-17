@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourArgumentBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.IterationActionBindingVariable;
 import org.openflexo.foundation.fml.binding.CatchVariableBindingVariable;
@@ -573,6 +574,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return variables.get(variable.getVariableName());
 		}
 
+		if (variable instanceof FlexoBehaviourArgumentBindingVariable) {
+			return parameterValues.get(variable.getVariableName());
+		}
+
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
 		}
@@ -610,6 +615,16 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			}
 			else {
 				variables.remove(variable.getVariableName());
+			}
+			return;
+		}
+
+		if (variable instanceof FlexoBehaviourArgumentBindingVariable) {
+			if (value != null) {
+				parameterValues.put(variable.getVariableName(), value);
+			}
+			else {
+				parameterValues.remove(variable.getVariableName());
 			}
 			return;
 		}

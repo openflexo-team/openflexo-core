@@ -21,7 +21,7 @@ model TestFMLReflection {
 
 	Foo test2(String aString) {
 		List<?> arguments = new ArrayList();
-		arguments.add(parameters.aString);
+		arguments.add(aString);
 		return FMLRT::NewInstance(conceptType=fooConcept, container=this, args=arguments);
 	}
 
@@ -34,7 +34,7 @@ model TestFMLReflection {
 		Foo inner;
 		String tag;
 		create(TestFMLReflection vm) {
-			inner = FMLRT::NewInstance(conceptType=parameters.vm.fooConcept, container=parameters.vm);
+			inner = FMLRT::NewInstance(conceptType=vm.fooConcept, container=vm);
 			tag = "set";
 		}
 	}
@@ -54,8 +54,8 @@ model TestFMLReflection {
 		create() {
 		}
 		create(String name) {
-			log "Creating Foo with "+parameters.name;
-			name = parameters.name;
+			log "Creating Foo with "+name;
+			this.name = name;
 		}
 	}
 

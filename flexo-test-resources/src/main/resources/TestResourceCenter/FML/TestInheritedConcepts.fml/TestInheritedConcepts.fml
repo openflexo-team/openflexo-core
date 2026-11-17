@@ -24,7 +24,7 @@ import ["http://openflexo.org/test/TestResourceCenter/TestBaseModelForInheritanc
 public model TestInheritedConcepts extends TestBaseModelForInheritance {
 
 	public SpecializedItem newSpecializedItem(Box box, String name) {
-		return parameters.box.new SpecializedItem(parameters.name);
+		return box.new SpecializedItem(name);
 	}
 
 	/** Declared at model level HERE, but inherits its container (Box) from the base model's Item. */
@@ -33,7 +33,7 @@ public model TestInheritedConcepts extends TestBaseModelForInheritance {
 		String extra;
 
 		create(String name) {
-			super(parameters.name);
+			super(name);
 		}
 
 		delete() {

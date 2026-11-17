@@ -11,19 +11,19 @@ public model Team {
 	}
 
 	public Member newMember(String name) {
-		return new Member(parameters.name);
+		return new Member(name);
 	}
 
 	public Squad newSquad(String label) {
-		return new Squad(parameters.label);
+		return new Squad(label);
 	}
 
 	public removeMember(Member member) {
-		delete parameters.member;
+		delete member;
 	}
 
 	public Badge badgeOf(Member member) {
-		return select unique Badge from (this) where (selected.member == parameters.member);
+		return select unique Badge from (this) where (selected.member == member);
 	}
 
 	public int syncBadges() {
@@ -58,7 +58,7 @@ public model Team {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 
 		delete() {
@@ -70,7 +70,7 @@ public model Team {
 		String label;
 
 		create(String label) {
-			label = parameters.label;
+			this.label = label;
 		}
 
 		delete() {
@@ -83,7 +83,7 @@ public model Team {
 		String text;
 
 		create(Member member) {
-			member = parameters.member;
+			this.member = member;
 		}
 
 		delete() {
@@ -95,7 +95,7 @@ public model Team {
 		Squad squad;
 
 		create(Squad squad) {
-			squad = parameters.squad;
+			this.squad = squad;
 		}
 
 		delete() {

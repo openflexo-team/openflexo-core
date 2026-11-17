@@ -36,7 +36,7 @@ public model Widgets {
 		}
 
 		public addTag(String tag) {
-			tags.add(parameters.tag);
+			tags.add(tag);
 		}
 
 		public String secretValue() {

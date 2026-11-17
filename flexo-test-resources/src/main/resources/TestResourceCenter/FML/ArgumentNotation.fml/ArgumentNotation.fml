@@ -1,0 +1,53 @@
+/**
+ * The arguments of a behaviour are designated by their name, like a local variable (CORE-F-14); parameters.name is the deprecated
+ * notation, still evaluated. See TestBehaviourArguments. The property aValue is hidden by the argument of the same name.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/ArgumentNotation.fml")
+public model ArgumentNotation {
+
+	String aValue;
+
+	public String shortName(String aValue) {
+		return aValue;
+	}
+
+	public String legacyName(String aValue) {
+		return parameters.aValue;
+	}
+
+	public String concatenation(String first, String second) {
+		return first + "-" + second;
+	}
+
+	public String assigned(String aValue) {
+		aValue = "changed";
+		return aValue;
+	}
+
+	public String assignedLegacy(String aValue) {
+		parameters.aValue = "changed";
+		return aValue;
+	}
+
+	public String propertyOfThis(String aValue) {
+		return this.aValue;
+	}
+
+	public String redeclaresAnArgument(String aValue) {
+		String aValue = "x";
+		return aValue;
+	}
+
+	public String legacyPlain(String plain) {
+		return parameters.plain;
+	}
+
+	public String legacyOther(String other) {
+		return parameters.other + "!";
+	}
+
+	public String selfAssigned(String aValue) {
+		aValue = aValue;
+		return aValue;
+	}
+}

@@ -25,8 +25,8 @@ public model KDMatching {
 		String key;
 		boolean managed;
 		create(String key, boolean managed) {
-			key = parameters.key;
-			managed = parameters.managed;
+			this.key = key;
+			this.managed = managed;
 		}
 	}
 
@@ -34,8 +34,8 @@ public model KDMatching {
 		String key;
 		boolean managed;
 		create(String key, boolean managed) {
-			key = parameters.key;
-			managed = parameters.managed;
+			this.key = key;
+			this.managed = managed;
 		}
 		delete() {
 		}

@@ -50,11 +50,11 @@ public List<Article> allArticles() {
 }
 
 public List<Article> ofKind(String kind) {
-	return select Article from (this) where (selected.kind == parameters.kind);
+	return select Article from (this) where (selected.kind == kind);
 }
 
 public Article named(String name) {
-	return select unique Article from (this) where (selected.name == parameters.name);
+	return select unique Article from (this) where (selected.name == name);
 }
 ```
 
@@ -96,7 +96,7 @@ combined with `&&` and `||`:
 
 ```fml-member
 public List<Article> a(String kind, int quantity) {
-	return select Article from (this) where (selected.kind == parameters.kind, selected.quantity >= parameters.quantity);
+	return select Article from (this) where (selected.kind == kind, selected.quantity >= quantity);
 }
 
 public List<Article> b() {
@@ -120,7 +120,7 @@ See §9.7. A creation uses `new Concept(args)` for a concept, `new Concept::name
 ## 10.4 delete
 
 ```fml-stmt
-delete parameters.note;
+delete note;
 delete shape from diagram;
 ```
 
@@ -132,8 +132,8 @@ Deleting an instance does not remove it from the multi-valued properties that ho
 
 ```fml-member
 public removeBook(Book book) {
-	books.remove(parameters.book);
-	delete parameters.book;
+	books.remove(book);
+	delete book;
 }
 ```
 
@@ -142,7 +142,7 @@ public removeBook(Book book) {
 `log expression` writes the value of the expression, as a string, to the log of the virtual machine:
 
 ```fml-stmt
-log "text is " + parameters.text;
+log "text is " + text;
 log("Hello" + "world!");
 ```
 
@@ -152,7 +152,7 @@ is lexed there. The parenthesised form is the same action with a parenthesised e
 ## 10.6 fire
 
 ```fml-stmt
-fire new ShelfCreated(parameters.label);
+fire new ShelfCreated(label);
 ```
 
 `fire e` raises the event that the expression `e` designates; `e` must be an instance of an event (§5.5). The event

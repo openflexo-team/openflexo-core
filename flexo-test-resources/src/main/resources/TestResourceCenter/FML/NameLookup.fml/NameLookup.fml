@@ -14,7 +14,7 @@ public model NameLookup {
 	}
 
 	public Item addItem(String name) {
-		return new Item(parameters.name);
+		return new Item(name);
 	}
 
 	public concept Item {
@@ -23,7 +23,7 @@ public model NameLookup {
 		String label;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 			label = "of the item";
 		}
 
@@ -58,7 +58,7 @@ public model NameLookup {
 		}
 
 		public String parameter(String name) {
-			return parameters.name + "/" + this.name;
+			return name + "/" + this.name;
 		}
 
 		public String bareParameter(String other) {

@@ -10,7 +10,7 @@ model MatchingVM2 {
 	MyVM2 _model with ModelInstance(isRequired = true);
 
 	create(required MyVM2 _model) {
-		_model = parameters._model;
+		this._model = _model;
 	}
 
 	/*synchronize () {
@@ -37,8 +37,8 @@ model MatchingVM2 {
 		String name;
 
 		create(required String aName, required ConceptA aConceptA) {
-			conceptA = parameters.aConceptA;
-			name = parameters.aName;
+			conceptA = aConceptA;
+			name = aName;
 		}
 		
 		delete() {
@@ -57,8 +57,8 @@ model MatchingVM2 {
 			String name;
 
 			create(required String aName, required ConceptB aConceptB) {
-				conceptB = parameters.aConceptB;
-				name = parameters.aName;
+				conceptB = aConceptB;
+				name = aName;
 			}
 			delete() {
 			}

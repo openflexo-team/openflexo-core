@@ -39,7 +39,7 @@ public model Core {
 		}
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 	}
 }

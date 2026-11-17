@@ -46,7 +46,7 @@ public model ExecutionFailures {
 	}
 
 	public deleteIt(Fragile f) {
-		delete parameters.f;
+		delete f;
 		progress = 1;
 	}
 
@@ -98,7 +98,7 @@ public model ExecutionFailures {
 	}
 
 	public deleteReturner(Returner r) {
-		delete parameters.r;
+		delete r;
 		progress = 5;
 	}
 

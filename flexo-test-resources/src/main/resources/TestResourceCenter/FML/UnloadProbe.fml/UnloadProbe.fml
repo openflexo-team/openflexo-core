@@ -13,7 +13,7 @@ public model UnloadProbe {
 	UnloadLedger ledger;
 
 	create(UnloadLedger ledger) {
-		ledger = parameters.ledger;
+		this.ledger = ledger;
 	}
 
 	@Renderer(name + "@" + container.ledger.label)
@@ -22,7 +22,7 @@ public model UnloadProbe {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 
 		delete() {

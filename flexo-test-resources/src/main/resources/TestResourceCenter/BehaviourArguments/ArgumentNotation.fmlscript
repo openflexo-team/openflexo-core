@@ -1,0 +1,11 @@
+// CORE-F-14: an argument is designated by its name; parameters.name is deprecated but still evaluated.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/ArgumentNotation.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new ArgumentNotation() with (name="args");
+vmi.aValue = "property";
+assert vmi.shortName("hello") == "hello";
+assert vmi.legacyName("hello") == "hello";
+assert vmi.concatenation("a", "b") == "a-b";
+assert vmi.assigned("hello") == "changed";
+assert vmi.assignedLegacy("hello") == "changed";
+assert vmi.propertyOfThis("hello") == "property";

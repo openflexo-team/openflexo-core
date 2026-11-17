@@ -6,7 +6,7 @@
 public model People {
 
 	public Person newPerson(String name) {
-		return new Person(parameters.name);
+		return new Person(name);
 	}
 
 	public concept Person {
@@ -14,7 +14,7 @@ public model People {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 	}
 }

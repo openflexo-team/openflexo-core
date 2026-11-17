@@ -13,7 +13,7 @@ model MyVM2 {
 			@TextField(value="aNameA")
 		)
 		create::_create (required String aNameA) {
-			nameA = parameters.aNameA;
+			nameA = aNameA;
 		}
 		delete::_delete () {
 		}
@@ -23,7 +23,7 @@ model MyVM2 {
 				@TextField(value="aNameB")
 			)
 			create::_create (required String aNameB) {
-				nameB = parameters.aNameB;
+				nameB = aNameB;
 			}
 			delete::_delete () {
 			}

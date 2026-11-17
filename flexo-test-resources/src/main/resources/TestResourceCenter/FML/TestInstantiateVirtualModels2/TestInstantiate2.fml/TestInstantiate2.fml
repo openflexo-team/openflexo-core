@@ -9,7 +9,7 @@ public model TestInstantiate2 {
 	concept Foo {
 		public VirtualModelToInstantiate newProcess(required String vmiName) {
 			VirtualModelToInstantiate newVMI = 
-				new VirtualModelToInstantiate::init(container) with (name=parameters.vmiName);
+				new VirtualModelToInstantiate::init(container) with (name=vmiName);
 			return newVMI;
 		}
 	}

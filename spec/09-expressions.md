@@ -102,8 +102,8 @@ public int andOperands() {
 ```
 
 Here `touch()` is not called: the left operand is `false`, and `andOperands()` returns `0`. So a guard can be written in
-one expression: `parameters.p != null && parameters.p.name == "Ann"` does not evaluate `parameters.p.name` when
-`parameters.p` is `null`.
+one expression: `p != null && p.name == "Ann"` does not evaluate `p.name` when
+`p` is `null`.
 
 > **Implementation note.** Before 3.0 (`CORE-F-11`), both operands were evaluated, and a guard had to be written with
 > nested `if`s.
@@ -212,8 +212,9 @@ below).
 A name that begins a path is looked up outward, from the innermost scope:
 
 1. the **local variables** of the enclosing blocks;
-2. the **properties of the concept**, including inherited ones;
-3. the **properties of the enclosing concept or model**, outward to the model.
+2. the **arguments** of the behaviour;
+3. the **properties of the concept**, including inherited ones;
+4. the **properties of the enclosing concept or model**, outward to the model.
 
 The built-in names are always available:
 
@@ -221,7 +222,7 @@ The built-in names are always available:
 |---|---|---|
 | `this` | the current instance | every behaviour, expression property, invariant |
 | `container` | the instance that contains `this` | every behaviour |
-| `parameters` | the arguments of the running behaviour: `parameters.x` | every behaviour |
+| `parameters` | the arguments of the running behaviour: `parameters.x` (deprecated, use `x`) | every behaviour |
 | `super` | the parent concept (§5.3.2) | behaviours of a concept with a parent |
 | `evt` | the event being handled | a `listen` body |
 | `selected` | the candidate under examination | a `where` clause of a `select` (§10.2) |
@@ -230,11 +231,11 @@ The built-in names are always available:
 
 The two forms to remember are
 
-* **a parameter is read through `parameters`.** A bare parameter name resolves to nothing: it is an invalid binding,
-  reported by validation, and an execution error when it runs (§9.8);
+* **an argument is designated by its name**, and hides a property of the same name (`this.name` reaches the property).
+  `parameters.name` is the deprecated notation of the same argument (§7.2.1);
 * **a behaviour of the same instance is called on `this`**: a bare call is an invalid binding too.
 
-A local variable hides a property of the same name; `this.name` still reaches the property. The property of a
+A local variable, or an argument, hides a property of the same name; `this.name` still reaches the property. The property of a
 nested concept hides that of its container; `container.name` reaches the container's.
 
 For the model `NameLookup`, whose `Item` has `name` and `label` and whose model has `owner` and `label`, in a
@@ -269,7 +270,7 @@ type resolves to:
 
 ```fml-member
 public Task addTask(String label) {
-	Task task = new Task(parameters.label);
+	Task task = new Task(label);
 	tasks.add(task);
 	return task;
 }
@@ -308,7 +309,7 @@ with no argument.
 `null` belongs to every non-primitive type and is also the value of an unassigned primitive-typed property
 (§4.2). Two different things are called "null" when an expression is evaluated, and they must not be confused:
 
-* a path whose elements **do not resolve** (a misspelled name, a missing import, a bare parameter name, a bare call)
+* a path whose elements **do not resolve** (a misspelled name, a missing import, a bare call)
   is an *invalid* binding: it is reported when the unit is loaded and validated, and evaluating it is an
   **execution error** (a *resolution error*) that stops the behaviour;
 * a path that resolves but **goes through a `null` value** (`p.name` where `p` is `null`) raises a *null

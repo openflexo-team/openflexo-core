@@ -16,18 +16,18 @@ public model Talker {
 	}
 
 	public String greet(String who) {
-		return "hello " + parameters.who;
+		return "hello " + who;
 	}
 
 	public int fact(int n) {
-		if (parameters.n <= 1) {
+		if (n <= 1) {
 			return 1;
 		}
-		return parameters.n * this.fact(parameters.n - 1);
+		return n * this.fact(n - 1);
 	}
 
 	public String pick(int n) {
-		if (parameters.n > 0) {
+		if (n > 0) {
 			return "positive";
 		}
 		else {
@@ -36,19 +36,19 @@ public model Talker {
 	}
 
 	public int add(int a, int b) {
-		return parameters.a + parameters.b;
+		return a + b;
 	}
 
 	public remember(String text) {
-		last = parameters.text;
+		last = text;
 	}
 
 	public Note addNote(String text) {
-		return new Note(parameters.text);
+		return new Note(text);
 	}
 
 	public removeNote(Note note) {
-		delete parameters.note;
+		delete note;
 	}
 
 	public concept Note {
@@ -56,7 +56,7 @@ public model Talker {
 		String text;
 
 		create(String text) {
-			text = parameters.text;
+			this.text = text;
 		}
 
 		delete() {

@@ -64,7 +64,6 @@ for convenience.
 |---|---|
 | `/` and `%` give decimals, even between integers | §9.5.1 |
 | a string is never converted to a number; `1 + "a"` is an error | §9.5.2 |
-| a parameter is read as `parameters.x`; a bare name is an invalid binding, an error at run time | §7.2.1, §9.6.3 |
 | a behaviour of the same instance is called on `this` | §7.4 |
 | a bare `new` of a concept that is not nested in the current one is an invalid binding, an error at run time | §9.7 |
 | a missing `import` is reported by validation only; a path through it is an error at run time | §3.5.2 |

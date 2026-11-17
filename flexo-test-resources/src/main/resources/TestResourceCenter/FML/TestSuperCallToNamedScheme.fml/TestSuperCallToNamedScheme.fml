@@ -14,18 +14,18 @@
 public model TestSuperCallToNamedScheme {
 
 	public NamedDerived newNamedDerived(String label) {
-		return new NamedDerived(parameters.label);
+		return new NamedDerived(label);
 	}
 
 	public AnonDerived newAnonDerived(String label) {
-		return new AnonDerived(parameters.label);
+		return new AnonDerived(label);
 	}
 
 	/** Only a NAMED creation scheme - nothing anonymous to fall back on. */
 	public concept NamedBase {
 		String label;
 		create::init(String label) {
-			label = parameters.label;
+			this.label = label;
 		}
 		delete() {
 		}
@@ -34,7 +34,7 @@ public model TestSuperCallToNamedScheme {
 	/** Reaches its parent's named scheme through super.init(...). */
 	public concept NamedDerived extends NamedBase {
 		create(String label) {
-			super.init(parameters.label);
+			super.init(label);
 		}
 		delete() {
 		}
@@ -44,7 +44,7 @@ public model TestSuperCallToNamedScheme {
 	public concept AnonBase {
 		String label;
 		create(String label) {
-			label = parameters.label;
+			this.label = label;
 		}
 		delete() {
 		}
@@ -52,7 +52,7 @@ public model TestSuperCallToNamedScheme {
 
 	public concept AnonDerived extends AnonBase {
 		create(String label) {
-			super(parameters.label);
+			super(label);
 		}
 		delete() {
 		}

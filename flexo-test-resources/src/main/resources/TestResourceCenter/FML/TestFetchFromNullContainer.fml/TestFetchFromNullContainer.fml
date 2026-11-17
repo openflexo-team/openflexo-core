@@ -14,17 +14,17 @@ import java.util.List;
 public model TestFetchFromNullContainer {
 
 	public Item newItem(String tag) {
-		return new Item(parameters.tag);
+		return new Item(tag);
 	}
 
 	public List<Item> selectItemsFrom(TestFetchFromNullContainer container) {
-		return select Item from parameters.container;
+		return select Item from container;
 	}
 
 	public concept Item {
 		String tag;
 		create(String tag) {
-			tag = parameters.tag;
+			this.tag = tag;
 		}
 		delete() {
 		}

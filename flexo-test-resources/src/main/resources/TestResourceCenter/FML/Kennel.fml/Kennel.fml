@@ -9,19 +9,19 @@
 public model Kennel {
 
 	public Dog newDog(String name) {
-		return new Dog(parameters.name);
+		return new Dog(name);
 	}
 
 	public Cat newCat(String name) {
-		return new Cat(parameters.name);
+		return new Cat(name);
 	}
 
 	public Guard newGuard(String name) {
-		return new Guard(parameters.name);
+		return new Guard(name);
 	}
 
 	public ServiceDog newServiceDog(String name, String trick) {
-		return new ServiceDog(parameters.name, parameters.trick);
+		return new ServiceDog(name, trick);
 	}
 
 	public String chorus() {
@@ -37,7 +37,7 @@ public model Kennel {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 
 		abstract String sound();
@@ -50,7 +50,7 @@ public model Kennel {
 	public concept Dog extends Creature {
 
 		create(String name) {
-			super(parameters.name);
+			super(name);
 		}
 
 		public String sound() {
@@ -61,7 +61,7 @@ public model Kennel {
 	public concept Cat extends Creature {
 
 		create(String name) {
-			super(parameters.name);
+			super(name);
 		}
 
 		public String sound() {
@@ -77,7 +77,7 @@ public model Kennel {
 	public concept Guard extends Dog {
 
 		create(String name) {
-			super(parameters.name);
+			super(name);
 		}
 
 		public String sound() {
@@ -88,8 +88,8 @@ public model Kennel {
 	public concept ServiceDog extends Dog, Trained {
 
 		create(String name, String trick) {
-			super(parameters.name);
-			trick = parameters.trick;
+			super(name);
+			this.trick = trick;
 		}
 	}
 }

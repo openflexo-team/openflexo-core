@@ -42,7 +42,7 @@ public model TestContainerUI {
 		public String description;
 		String name;
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 		delete() {
 		}
@@ -100,7 +100,7 @@ public model TestContainerUI {
 	public concept Presented {
 		String name;
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 		delete() {
 		}

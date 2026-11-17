@@ -20,7 +20,7 @@
 public model TestChainedCalls {
 
 	public Outer newOuter(String tag) {
-		return new Outer(parameters.tag);
+		return new Outer(tag);
 	}
 
 	public concept Outer {
@@ -30,14 +30,14 @@ public model TestChainedCalls {
 		Kid theKid with ConceptInstance(virtualModelInstance=container);
 
 		create(String tag) {
-			tag = parameters.tag;
+			this.tag = tag;
 		}
 
 		delete() {
 		}
 
 		public Kid makeKid(String tag) {
-			Kid k = this.new Kid(parameters.tag);
+			Kid k = this.new Kid(tag);
 			kids.add(k);
 			theKid = k;
 			return k;
@@ -70,7 +70,7 @@ public model TestChainedCalls {
 			String tag;
 			String derived values "d:" + tag;
 			create(String tag) {
-				tag = parameters.tag;
+				this.tag = tag;
 			}
 			delete() {
 			}

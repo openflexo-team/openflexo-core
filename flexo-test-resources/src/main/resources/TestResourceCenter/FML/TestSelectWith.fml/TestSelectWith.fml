@@ -30,9 +30,9 @@ public model TestSelectWith {
 		int age;
 
 		create(String firstName,String lastName,int age) {
-			firstName = parameters.firstName;
-			lastName = parameters.lastName;
-			age = parameters.age;
+			this.firstName = firstName;
+			this.lastName = lastName;
+			this.age = age;
 		}
 	}
 }

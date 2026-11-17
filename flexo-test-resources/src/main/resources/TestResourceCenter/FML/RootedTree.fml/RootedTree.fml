@@ -18,7 +18,7 @@ public model RootedTree {
 	      String name;
 
 	      create(String aName) {
-	         name = parameters.aName;
+	         name = aName;
 	      }
 
 	      List<Vertex> neighbours() {
@@ -37,26 +37,26 @@ public model RootedTree {
 	      Vertex endVertex;
 
 	      create(Vertex beginVertex,Vertex endVertex) {
-	         beginVertex = parameters.beginVertex;
-	         endVertex = parameters.endVertex;   
-	         beginVertex.outgoingEdges.add(this);
-	         endVertex.incomingEdges.add(this);
+	         this.beginVertex = beginVertex;
+	         this.endVertex = endVertex;   
+	         this.beginVertex.outgoingEdges.add(this);
+	         this.endVertex.incomingEdges.add(this);
 	      }
 	   }
 
 	   // API to create Vertex
 	   public Vertex addVertex(required String name) {
-	      return new Vertex(parameters.name);
+	      return new Vertex(name);
 	   }
 
 	   // API to create Edge
 	   public Edge addEdge(required Vertex beginVertex, required Vertex endVertex) {
-	      return new Edge(parameters.beginVertex,parameters.endVertex);
+	      return new Edge(beginVertex,endVertex);
 	   }
 
 	   // API to declare Vertex as root
 	   public addToRoots(required Vertex vertex) {
-	      roots.add(parameters.vertex);
+	      roots.add(vertex);
 	   }
 
 	   // This is the algorithm

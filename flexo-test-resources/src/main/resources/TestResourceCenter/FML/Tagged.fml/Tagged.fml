@@ -18,11 +18,11 @@ public model Tagged {
 	}
 
 	public Card newCard(String name) {
-		return new Card(parameters.name);
+		return new Card(name);
 	}
 
 	public Gold newGold(String name) {
-		return new Gold(parameters.name);
+		return new Gold(name);
 	}
 
 	@Renderer(name + "!")
@@ -32,7 +32,7 @@ public model Tagged {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 
 		@Hint("on a behaviour")
@@ -44,7 +44,7 @@ public model Tagged {
 	public concept Gold extends Card {
 
 		create(String name) {
-			super(parameters.name);
+			super(name);
 		}
 	}
 }

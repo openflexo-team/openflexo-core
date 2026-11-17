@@ -9,7 +9,7 @@ public model Journal {
 	String title;
 
 	create::start(String title) {
-		title = parameters.title;
+		this.title = title;
 	}
 
 	public String label() {

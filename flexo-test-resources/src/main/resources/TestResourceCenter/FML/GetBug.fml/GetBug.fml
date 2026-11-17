@@ -50,7 +50,7 @@ public model GetBug {
 
 	String localParam(int idx) {
 		List<String> l = this.mk();
-		return l.get(parameters.idx);
+		return l.get(idx);
 	}
 
 	// 'set' is also a FML keyword: same code path, returns the previous element

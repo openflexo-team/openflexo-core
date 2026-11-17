@@ -10,7 +10,7 @@ public model UnloadLedger {
 	int deletions;
 
 	create(String label) {
-		label = parameters.label;
+		this.label = label;
 		deletions = 0;
 	}
 }

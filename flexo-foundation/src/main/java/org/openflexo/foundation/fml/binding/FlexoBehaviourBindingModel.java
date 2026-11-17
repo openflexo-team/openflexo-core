@@ -39,9 +39,14 @@
 package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
@@ -63,6 +68,10 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 
 	private final FlexoBehaviourParametersBindingVariable parametersBindingVariable;
 
+	/** One variable per argument of the behaviour, designating it by its name */
+	private final Map<FlexoBehaviourArgument, FlexoBehaviourArgumentBindingVariable> argumentVariables = new HashMap<>();
+
+	/** Legacy notation (deprecated): <code>parameters.aValue</code>, see {@link FlexoBehaviourParametersBindingVariable} */
 	public static final String PARAMETERS_PROPERTY = "parameters";
 
 	public FlexoBehaviourBindingModel(FlexoBehaviour flexoBehaviour) {
@@ -72,6 +81,8 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 
 		parametersBindingVariable = new FlexoBehaviourParametersBindingVariable(flexoBehaviour);
 		addToBindingVariables(parametersBindingVariable);
+
+		updateArgumentVariables();
 
 		if (flexoBehaviour.getPropertyChangeSupport() != null) {
 			flexoBehaviour.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -89,7 +100,35 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 			flexoBehaviour.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 
+		for (FlexoBehaviourArgumentBindingVariable v : new ArrayList<>(argumentVariables.values())) {
+			v.delete();
+		}
+		argumentVariables.clear();
+
 		super.delete();
+	}
+
+	/**
+	 * Synchronize the variables designating the arguments of the behaviour (<code>aValue</code>) with the arguments themselves
+	 */
+	private void updateArgumentVariables() {
+		List<FlexoBehaviourArgument> arguments = flexoBehaviour.getParameters();
+		for (FlexoBehaviourArgument argument : new ArrayList<>(argumentVariables.keySet())) {
+			if (arguments == null || !arguments.contains(argument)) {
+				FlexoBehaviourArgumentBindingVariable v = argumentVariables.remove(argument);
+				removeFromBindingVariables(v);
+				v.delete();
+			}
+		}
+		if (arguments != null) {
+			for (FlexoBehaviourArgument argument : arguments) {
+				if (!argumentVariables.containsKey(argument)) {
+					FlexoBehaviourArgumentBindingVariable v = new FlexoBehaviourArgumentBindingVariable(argument);
+					argumentVariables.put(argument, v);
+					addToBindingVariables(v);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -99,6 +138,10 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 			if (evt.getPropertyName().equals(FlexoBehaviour.FLEXO_CONCEPT_KEY)) {
 				// The FlexoBehaviour changes it's FlexoConcept
 				setBaseBindingModel(flexoBehaviour.getFlexoConcept() != null ? flexoBehaviour.getFlexoConcept().getBindingModel() : null);
+			}
+			else if (evt.getPropertyName().equals(FlexoBehaviour.PARAMETERS_KEY)) {
+				// An argument has been added, removed or replaced
+				updateArgumentVariables();
 			}
 		}
 	}

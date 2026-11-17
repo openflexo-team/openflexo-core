@@ -25,7 +25,7 @@ public model TestUpdateWithReferences {
 		String x;
 		String y;
 		create(String x) {
-			x = parameters.x;
+			this.x = x;
 		}
 		markAlpha() {
 		}
@@ -39,7 +39,7 @@ public model TestUpdateWithReferences {
 		String y;
 		int z;
 		create(String x) {
-			x = parameters.x;
+			this.x = x;
 		}
 		markAlpha() {
 		}

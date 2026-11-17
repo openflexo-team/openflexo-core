@@ -15,7 +15,7 @@ public model TestConceptualModel {
 			@TextField(value="conceptName")
 		)
 		create::_create(String conceptName) {
-			name = parameters.conceptName;
+			name = conceptName;
 			nbToken = 0;
 		}
 		delete::_delete() {
@@ -31,7 +31,7 @@ public model TestConceptualModel {
 			@TextField(value="conceptName")
 		)
 		create::_create(String conceptName) {
-			name = parameters.conceptName;
+			name = conceptName;
 		}
 		delete::_delete() {
 		}
@@ -59,9 +59,9 @@ public model TestConceptualModel {
 		Place sourceConcept with ConceptInstance(virtualModelInstance=container);
 		Transition destinationConcept with ConceptInstance(virtualModelInstance=container);
 		create::_create(Place sourceConcept, Transition destinationConcept) {
-			sourceConcept = parameters.sourceConcept;
-			destinationConcept = parameters.destinationConcept;
-			destinationConcept.incomings.add(this);
+			this.sourceConcept = sourceConcept;
+			this.destinationConcept = destinationConcept;
+			this.destinationConcept.incomings.add(this);
 		}
 		delete::_delete() {
 		}
@@ -77,9 +77,9 @@ public model TestConceptualModel {
 		Transition sourceConcept with ConceptInstance(virtualModelInstance=container);
 		Place destinationConcept with ConceptInstance(virtualModelInstance=container);
 		create::_create(Transition sourceConcept, Place destinationConcept) {
-			sourceConcept = parameters.sourceConcept;
-			destinationConcept = parameters.destinationConcept;
-			sourceConcept.outgoings.add(this);
+			this.sourceConcept = sourceConcept;
+			this.destinationConcept = destinationConcept;
+			this.sourceConcept.outgoings.add(this);
 		}
 		delete::_delete() {
 		}

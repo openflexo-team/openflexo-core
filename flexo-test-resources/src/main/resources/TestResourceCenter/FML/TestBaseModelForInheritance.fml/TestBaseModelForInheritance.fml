@@ -7,11 +7,11 @@
 public model TestBaseModelForInheritance {
 
 	public Plain newPlain(String name) {
-		return new Plain(parameters.name);
+		return new Plain(name);
 	}
 
 	public Box newBox(String name) {
-		return new Box(parameters.name);
+		return new Box(name);
 	}
 
 	public List<Plain> allPlains() {
@@ -22,7 +22,7 @@ public model TestBaseModelForInheritance {
 	public concept Plain {
 		String name;
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 		delete() {
 		}
@@ -35,14 +35,14 @@ public model TestBaseModelForInheritance {
 		Item[0,*] items with ConceptInstance(virtualModelInstance=container);
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 
 		delete() {
 		}
 
 		public Item newItem(String name) {
-			Item returned = this.new Item(parameters.name);
+			Item returned = this.new Item(name);
 			items.add(returned);
 			return returned;
 		}
@@ -50,7 +50,7 @@ public model TestBaseModelForInheritance {
 		public concept Item {
 			String name;
 			create(String name) {
-				name = parameters.name;
+				this.name = name;
 			}
 			delete() {
 			}

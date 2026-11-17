@@ -20,9 +20,10 @@ assert pen.sameNameInBoth() == "of the item";
 assert pen.local() == "local";
 assert pen.localAndProperty() == "local/Pen";
 
-// A parameter is read through parameters; a bare parameter name is an invalid binding, an error when it runs since CORE-F-11
-// (ErrorKinds/BareParameterName)
+// An argument is designated by its name, like a local variable, and hides a property of the same name: this.name still reaches
+// the property (CORE-F-14). parameters.name is the deprecated notation of the same argument.
 assert pen.parameter("Arg") == "Arg/Pen";
+assert pen.bareParameter("Arg") == "Arg";
 
 // A behaviour of the same concept is called on this; a bare call is an invalid binding, an error when it runs since CORE-F-11
 // (ErrorKinds/BareCall)

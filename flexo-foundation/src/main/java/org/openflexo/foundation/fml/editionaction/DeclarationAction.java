@@ -48,6 +48,7 @@ import org.openflexo.connie.type.ConnieType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourArgumentBindingVariable;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.TypeMustBeResolved;
@@ -366,6 +367,9 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				BindingVariable visible = bindingModel.bindingVariableNamed(action.getVariableName());
 				if (FlexoBehaviourAction.isLocalVariable(visible)) {
 					return new ValidationError<>(this, action, "local_variable_is_already_declared_in_an_enclosing_block");
+				}
+				if (visible instanceof FlexoBehaviourArgumentBindingVariable) {
+					return new ValidationError<>(this, action, "local_variable_redeclares_an_argument");
 				}
 			}
 			return null;

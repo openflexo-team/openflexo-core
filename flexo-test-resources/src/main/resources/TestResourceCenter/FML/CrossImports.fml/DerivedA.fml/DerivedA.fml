@@ -7,6 +7,6 @@ import ["http://openflexo.org/test/TestResourceCenter/CrossImports.fml/Base.fml"
 public model DerivedA extends Base {
 
 	create(Element declaringElement) {
-		declaringElement = parameters.declaringElement;
+		this.declaringElement = declaringElement;
 	}
 }

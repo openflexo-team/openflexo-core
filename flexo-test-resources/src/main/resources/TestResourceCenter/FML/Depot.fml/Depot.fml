@@ -10,7 +10,7 @@ public model Depot {
 	}
 
 	public Bin newBin(String label) {
-		return new Bin(parameters.label);
+		return new Bin(label);
 	}
 
 	public concept Tool {
@@ -18,7 +18,7 @@ public model Depot {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 	}
 
@@ -27,19 +27,19 @@ public model Depot {
 		String label;
 
 		create(String label) {
-			label = parameters.label;
+			this.label = label;
 		}
 
 		public Tool bareTool(String name) {
-			return new Tool(parameters.name);
+			return new Tool(name);
 		}
 
 		public Tool containerTool(String name) {
-			return container.new Tool(parameters.name);
+			return container.new Tool(name);
 		}
 
 		public Slot newSlot(String code) {
-			return new Slot(parameters.code);
+			return new Slot(code);
 		}
 
 		public concept Slot {
@@ -47,7 +47,7 @@ public model Depot {
 			String code;
 
 			create(String code) {
-				code = parameters.code;
+				this.code = code;
 			}
 		}
 	}

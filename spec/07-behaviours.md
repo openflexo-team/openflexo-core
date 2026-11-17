@@ -45,11 +45,11 @@ public String greet() {
 }
 
 public String greet(String who) {
-	return "hello " + parameters.who;
+	return "hello " + who;
 }
 
 public remember(String text) {
-	last = parameters.text;
+	last = text;
 }
 ```
 
@@ -86,8 +86,8 @@ An argument has a type, a name, optionally `required` and optionally a default v
 
 ```fml-member
 create(required String label, int capacity = 10) {
-	label = parameters.label;
-	capacity = parameters.capacity;
+	this.label = label;
+	this.capacity = capacity;
 }
 ```
 
@@ -98,16 +98,23 @@ create(required String label, int capacity = 10) {
 
 ### 7.2.1 Reading the arguments
 
-The arguments of a behaviour are read in its body through the variable `parameters`:
+An argument is designated by its name in the body of its behaviour, as a local variable is, and can be assigned:
 
 ```fml-member
 public int add(int a, int b) {
-	return parameters.a + parameters.b;
+	return a + b;
 }
 ```
 
-> A bare parameter name, `a` instead of `parameters.a`, **is not an error**: it resolves to nothing and gives
-> `null`. This is the most frequent cause of a `null` that should not be (§9.6.3, §13.6).
+An argument hides a property of the concept of the same name, as a local variable does (§9.6.3): `this.label`
+reaches the property, `label` the argument. That is the usual form of a creation scheme (`this.label = label;`).
+A local variable cannot have the name of an argument: validation reports it.
+
+> **Deprecated.** Before 3.0 (`CORE-F-14`) an argument could only be read as `parameters.a`, and a bare name resolved to
+> nothing. `parameters.a` is still evaluated, for the FML written before, but validation reports it as deprecated and
+> proposes to rewrite it as `a`. FML written with the old notation that assigns a property of the name of an argument
+> (`label = parameters.label;`) must be migrated: `label` now designates the argument, so the assignment must read
+> `this.label = label;`.
 
 ## 7.3 Creation and deletion schemes
 
@@ -118,12 +125,12 @@ others are named with `create::name`, and a `new` chooses among them by name (`n
 
 ```fml-member
 create(required String label, int capacity = 10) {
-	label = parameters.label;
-	capacity = parameters.capacity;
+	this.label = label;
+	this.capacity = capacity;
 }
 
 create::withDefaultCapacity(String label) {
-	label = parameters.label;
+	this.label = label;
 	capacity = 10;
 }
 ```
@@ -148,7 +155,7 @@ closing clause of a matching set runs the **first** one that the concept declare
 concept that is closed by a matching set should declare exactly one.
 
 > **Implementation note.** Deleting an instance does not remove it from the multi-valued properties that
-> reference it: take it out first (`books.remove(parameters.book); delete parameters.book;`) (`CORE-D-10`).
+> reference it: take it out first (`books.remove(book); delete book;`) (`CORE-D-10`).
 
 ## 7.4 Calling a behaviour
 

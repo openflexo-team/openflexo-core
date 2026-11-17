@@ -10,7 +10,7 @@ public model DerivedB extends Base {
 	DerivedA derivedA with ModelInstance();
 
 	create(DerivedA derivedA) {
-		derivedA = parameters.derivedA;
-		declaringElement = derivedA.declaringElement;
+		this.derivedA = derivedA;
+		declaringElement = this.derivedA.declaringElement;
 	}
 }

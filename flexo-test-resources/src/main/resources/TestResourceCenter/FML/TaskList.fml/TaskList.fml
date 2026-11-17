@@ -12,7 +12,7 @@ public model TaskList {
 	int taskCount values tasks.size;
 
 	public Task addTask(String label) {
-		Task task = new Task(parameters.label);
+		Task task = new Task(label);
 		tasks.add(task);
 		return task;
 	}
@@ -28,7 +28,7 @@ public model TaskList {
 		String status values done ? "done" : "open";
 
 		create(String label) {
-			label = parameters.label;
+			this.label = label;
 			done = false;
 		}
 

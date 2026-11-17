@@ -128,11 +128,11 @@ public class GenerateCreationScheme extends FlexoAction<GenerateCreationScheme, 
 			CreateEditionAction assignAction = CreateEditionAction.actionType.makeNewEmbeddedAction(creationScheme.getControlGraph(), null,
 					this);
 			assignAction.setEditionActionClass(ExpressionAction.class);
-			assignAction.setAssignation(new DataBinding<>(property.getName()));
+			assignAction.setAssignation(new DataBinding<>("this." + property.getName()));
 			assignAction.doAction();
 			AssignationAction<?> createRightMember = (AssignationAction<?>) assignAction.getNewEditionAction();
 			((ExpressionAction<?>) createRightMember.getAssignableAction())
-					.setExpression(new DataBinding<>("parameters." + property.getName()));
+					.setExpression(new DataBinding<>(property.getName()));
 		}
 
 	}

@@ -27,8 +27,8 @@ public model Library {
 	}
 
 	public Shelf newShelf(String label) {
-		Shelf shelf = new Shelf(parameters.label, 20);
-		fire new ShelfCreated(parameters.label);
+		Shelf shelf = new Shelf(label, 20);
+		fire new ShelfCreated(label);
 		return shelf;
 	}
 
@@ -39,12 +39,12 @@ public model Library {
 	event ShelfCreated {
 		String label;
 		create(String label) {
-			label = parameters.label;
+			this.label = label;
 		}
 	}
 
 	public Shelf newSmallShelf(String label) {
-		return new Shelf::withDefaultCapacity(parameters.label);
+		return new Shelf::withDefaultCapacity(label);
 	}
 
 	public List<Shelf> allShelves() {
@@ -77,7 +77,7 @@ public model Library {
 		Book book;
 
 		create(Book book) {
-			book = parameters.book;
+			this.book = book;
 		}
 
 		delete() {
@@ -107,12 +107,12 @@ public model Library {
 		};
 
 		create(required String label, int capacity=10) {
-			label = parameters.label;
-			capacity = parameters.capacity;
+			this.label = label;
+			this.capacity = capacity;
 		}
 
 		create::withDefaultCapacity(String label) {
-			label = parameters.label;
+			this.label = label;
 			capacity = 10;
 		}
 
@@ -123,19 +123,19 @@ public model Library {
 			@TextField(value="title", label="book_title")
 		)
 		public Book newBook(required String title) {
-			Book book = new Book(parameters.title);
+			Book book = new Book(title);
 			books.add(book);
 			return book;
 		}
 
 		public Novel newNovel(String title, String author) {
-			Novel novel = new Novel(parameters.title, parameters.author);
+			Novel novel = new Novel(title, author);
 			books.add(novel);
 			return novel;
 		}
 
 		public rename(String newName) {
-			displayName = parameters.newName;
+			displayName = newName;
 		}
 
 		public int countNovels() {
@@ -150,7 +150,7 @@ public model Library {
 
 		public Book findBook(String title) {
 			for (Book book : books) {
-				if (book.title == parameters.title) {
+				if (book.title == title) {
 					return book;
 				}
 			}
@@ -158,7 +158,7 @@ public model Library {
 		}
 
 		public Book findBookByTitle(String title) {
-			return select unique Book from (this) where (selected.title == parameters.title);
+			return select unique Book from (this) where (selected.title == title);
 		}
 
 		public int freeSlots() {
@@ -172,8 +172,8 @@ public model Library {
 		}
 
 		public removeBook(Book book) {
-			books.remove(parameters.book);
-			delete parameters.book;
+			books.remove(book);
+			delete book;
 		}
 
 		public concept Book extends Publication {
@@ -182,7 +182,7 @@ public model Library {
 			String code values "B-" + title;
 
 			create(String title) {
-				title = parameters.title;
+				this.title = title;
 			}
 
 			delete() {
@@ -194,8 +194,8 @@ public model Library {
 			String author;
 
 			create(String title, String author) {
-				super(parameters.title);
-				author = parameters.author;
+				super(title);
+				this.author = author;
 			}
 
 			delete() {
@@ -234,10 +234,10 @@ public model Library {
 | `select unique Book from (this) where (selected.title == …)` | single-result query | §10.2 |
 | `while (filled < capacity)` | loop | §8.5 |
 | `book instanceof Novel` | type test | §9.9 |
-| `delete parameters.book;` | deletion | §10.4 |
+| `delete book;` | deletion | §10.4 |
 | `public concept Book extends Publication` | nesting and inheritance | §5.2.1, §5.3 |
-| `super(parameters.title)` | parent creation scheme | §5.3.2 |
-| `parameters.title` | argument access | §7.2.1 |
+| `super(title)` | parent creation scheme | §5.3.2 |
+| `title` | argument access | §7.2.1 |
 
 ## C.3 The script
 

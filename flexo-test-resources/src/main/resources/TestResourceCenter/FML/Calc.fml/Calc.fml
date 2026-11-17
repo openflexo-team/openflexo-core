@@ -85,7 +85,7 @@ public model Calc {
 	}
 
 	public int lengthOf(String s) {
-		return parameters.s.length();
+		return s.length();
 	}
 
 	public double parsed() {
@@ -98,7 +98,7 @@ public model Calc {
 	}
 
 	public String ternary(int n) {
-		return parameters.n > 0 ? "pos" : (parameters.n < 0 ? "neg" : "zero");
+		return n > 0 ? "pos" : (n < 0 ? "neg" : "zero");
 	}
 
 	public int listSize() {

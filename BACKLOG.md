@@ -1054,3 +1054,24 @@ variable; `ThrowStatement` as `ReturnStatement.inspector`), added to `TestFMLIns
 **Acceptance criteria.** The FML perspective shows an exception and the three statements with their own icon and inspector; an
 exception can be created from the browser; the inspector tests cover the new inspectors.
 
+
+### CORE-F-14 — Arguments of a behaviour designated by their name  ·  `IN PROGRESS`
+
+**Problem.** The argument `aValue` of a behaviour `foo(String aValue)` could only be read as `parameters.aValue`, unlike the local
+variables of the same behaviour, which are designated by their name.
+
+**Decision.** An argument is a variable of the binding model of its behaviour (`FlexoBehaviourArgumentBindingVariable`), readable and
+assignable by its name, as in Java. It hides a property of the concept of the same name (`this.aValue` still reaches the property); a
+local variable must not have the name of an argument (validation error). `parameters.aValue` stays supported, deprecated: the
+validation reports it (`LegacyParametersNotationIsDeprecated`, in `FMLObject`) and its fix rewrites the binding.
+
+**Migration.** `MigrateLegacyParametersNotation` (fml-cli, run by the `migrateLegacyParameters` task of `openflexo-headless`, dry run by
+default) rewrites the `.fml` of resource centers. The model decides, the text is edited where it must be (no re-serialization):
+`parameters.a` becomes `a`; when an argument has the name of a property (`label = parameters.label`, the usual constructor pattern),
+the unqualified uses of that name in the body become `this.label`, because they meant the property. FML that is not migrated keeps
+working, except in that collision case, where an unqualified name now designates the argument. The generators of FML (Java code)
+write the new notation, with `this.` on the property they assign.
+
+**Left.** `.fml` that are not resources of a resource center (parsing and pretty-print inputs: `FMLParsingExamples`,
+`TestFMLPrettyPrint*`) keep the legacy notation on purpose, they exercise it; the `.inspector` and `.fmlscript` that use `parameters.`
+are not rewritten.

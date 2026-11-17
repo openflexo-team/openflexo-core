@@ -15,7 +15,7 @@ public model Catalog {
 		String reference;
 
 		create(String reference) {
-			reference = parameters.reference;
+			this.reference = reference;
 		}
 
 		delete() {

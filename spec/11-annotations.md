@@ -55,7 +55,7 @@ public model Cards {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 
 		@Hint("on a behaviour")
@@ -137,7 +137,7 @@ names the argument, `label` gives the key of its label.
 )
 @Visible(capacity > 0)
 public Book newBook(required String title) {
-	return new Book(parameters.title);
+	return new Book(title);
 }
 ```
 

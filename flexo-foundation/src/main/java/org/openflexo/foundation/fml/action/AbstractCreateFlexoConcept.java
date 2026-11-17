@@ -242,11 +242,11 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 					CreateEditionAction assignAction = CreateEditionAction.actionType
 							.makeNewEmbeddedAction(creationScheme.getControlGraph(), null, this);
 					assignAction.setEditionActionClass(ExpressionAction.class);
-					assignAction.setAssignation(new DataBinding<>(entry.getName()));
+					assignAction.setAssignation(new DataBinding<>("this." + entry.getName()));
 					assignAction.doAction();
 					AssignationAction<?> createRightMember = (AssignationAction<?>) assignAction.getNewEditionAction();
 					((ExpressionAction<?>) createRightMember.getAssignableAction())
-							.setExpression(new DataBinding<>("parameters." + paramNameForEntry(entry)));
+							.setExpression(new DataBinding<>(paramNameForEntry(entry)));
 				}
 
 			}

@@ -81,7 +81,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * A parameter of a {@link FlexoBehaviour}, declared in FML as {@code [required] Type name [= defaultValue]}, and read in the body of the
- * behaviour as {@code parameters.name}.
+ * behaviour by its name (the notation {@code parameters.name} is deprecated).
  * <p>
  * The widget used to enter its value ({@link #getWidget()}) is not stored on the parameter: it is read from the {@code @UI(...)} annotation
  * of its behaviour, whose entries reference parameters by name. When no entry is declared, a default widget depending on the type of the
@@ -94,8 +94,8 @@ import org.openflexo.toolbox.StringUtils;
  *
  * <pre>
  * create(required String label, int capacity=10) {
- *     label = parameters.label;
- *     capacity = parameters.capacity;
+ *     this.label = label;
+ *     this.capacity = capacity;
  * }
  *
  * &#64;UI(

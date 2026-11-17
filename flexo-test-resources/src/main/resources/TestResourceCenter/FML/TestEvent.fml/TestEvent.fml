@@ -18,7 +18,7 @@ public model TestEvent {
 	event MyEvent {
 		int value;
 		create (int aValue) {
-			value = parameters.aValue;
+			value = aValue;
 		}
 	}
 	

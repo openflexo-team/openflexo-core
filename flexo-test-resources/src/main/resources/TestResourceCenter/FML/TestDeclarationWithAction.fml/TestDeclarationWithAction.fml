@@ -16,12 +16,12 @@ public model TestDeclarationWithAction {
 	}
 
 	String nameOfTheOneWithValue(int wanted) {
-		Item found = select unique Item from this where(selected.value == parameters.wanted);
+		Item found = select unique Item from this where(selected.value == wanted);
 		return found.name;
 	}
 
 	int countWithValue(int wanted) {
-		List<Item> all = select Item from this where(selected.value == parameters.wanted);
+		List<Item> all = select Item from this where(selected.value == wanted);
 		return all.size;
 	}
 
@@ -30,8 +30,8 @@ public model TestDeclarationWithAction {
 		int value;
 
 		create(String name,int value) {
-			name = parameters.name;
-			value = parameters.value;
+			this.name = name;
+			this.value = value;
 		}
 	}
 }

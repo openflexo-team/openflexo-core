@@ -12,11 +12,11 @@ public model Stock {
 	}
 
 	public Article newArticle(String name, String kind, int quantity) {
-		return new Article(parameters.name, parameters.kind, parameters.quantity);
+		return new Article(name, kind, quantity);
 	}
 
 	public Crate newCrate(String label) {
-		return new Crate(parameters.label);
+		return new Crate(label);
 	}
 
 	public List<Article> allArticles() {
@@ -24,15 +24,15 @@ public model Stock {
 	}
 
 	public List<Article> ofKind(String kind) {
-		return select Article from (this) where (selected.kind == parameters.kind);
+		return select Article from (this) where (selected.kind == kind);
 	}
 
 	public List<Article> ofKindAndAtLeast(String kind, int quantity) {
-		return select Article from (this) where (selected.kind == parameters.kind, selected.quantity >= parameters.quantity);
+		return select Article from (this) where (selected.kind == kind, selected.quantity >= quantity);
 	}
 
 	public List<Article> ofKindAndAtLeastOperator(String kind, int quantity) {
-		return select Article from (this) where (selected.kind == parameters.kind && selected.quantity >= parameters.quantity);
+		return select Article from (this) where (selected.kind == kind && selected.quantity >= quantity);
 	}
 
 	public List<Article> fruitOrVegetable() {
@@ -40,11 +40,11 @@ public model Stock {
 	}
 
 	public Article named(String name) {
-		return select unique Article from (this) where (selected.name == parameters.name);
+		return select unique Article from (this) where (selected.name == name);
 	}
 
 	public Article firstOfKind(String kind) {
-		return select unique Article from (this) where (selected.kind == parameters.kind);
+		return select unique Article from (this) where (selected.kind == kind);
 	}
 
 	public List<Part> allParts() {
@@ -52,7 +52,7 @@ public model Stock {
 	}
 
 	public removeArticle(Article article) {
-		delete parameters.article;
+		delete article;
 	}
 
 	public concept Article {
@@ -62,9 +62,9 @@ public model Stock {
 		int quantity;
 
 		create(String name, String kind, int quantity) {
-			name = parameters.name;
-			kind = parameters.kind;
-			quantity = parameters.quantity;
+			this.name = name;
+			this.kind = kind;
+			this.quantity = quantity;
 		}
 
 		delete() {
@@ -76,11 +76,11 @@ public model Stock {
 		String label;
 
 		create(String label) {
-			label = parameters.label;
+			this.label = label;
 		}
 
 		public Part newPart(String code) {
-			return new Part(parameters.code);
+			return new Part(code);
 		}
 
 		public List<Part> parts() {
@@ -92,7 +92,7 @@ public model Stock {
 			String code;
 
 			create(String code) {
-				code = parameters.code;
+				this.code = code;
 			}
 		}
 	}

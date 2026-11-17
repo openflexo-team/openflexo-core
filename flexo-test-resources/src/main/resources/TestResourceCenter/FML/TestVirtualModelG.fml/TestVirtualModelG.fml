@@ -10,17 +10,17 @@ model TestVirtualModelG {
   Foo aFoo;
 
   void test(Foo2 aFoo2) {
-    aFoo.testWithFoo2(parameters.aFoo2);
+    aFoo.testWithFoo2(aFoo2);
   }
   
   concept Foo {
     void testWithFoo2(Foo2 aFoo2) {
-      log "Hello "+parameters.aFoo2;
-      this.anOtherTestWithFoo2(parameters.aFoo2);
+      log "Hello "+aFoo2;
+      this.anOtherTestWithFoo2(aFoo2);
     }
     
     void anOtherTestWithFoo2(Foo2 anOtherFoo2) {
-      log "Hello "+parameters.anOtherFoo2;
+      log "Hello "+anOtherFoo2;
     }
 
   }

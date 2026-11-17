@@ -39,6 +39,8 @@
 package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -46,6 +48,14 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.model.ModelProperty;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.foundation.fml.binding.LegacyParametersNotation;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
@@ -981,5 +991,87 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 	
 	}*/
+
+	/**
+	 * The argument of a behaviour is designated by its name (<code>aValue</code>); <code>parameters.aValue</code> is the deprecated notation,
+	 * still evaluated. Reported on any binding of any FML object that uses it for an argument it can be replaced for; the fix rewrites the
+	 * binding, and is what migrates existing FML.
+	 * 
+	 * @author sylvain
+	 */
+	@DefineValidationRule
+	public static class LegacyParametersNotationIsDeprecated extends ValidationRule<LegacyParametersNotationIsDeprecated, FMLObject> {
+
+		private static final Logger ruleLogger = Logger.getLogger(LegacyParametersNotationIsDeprecated.class.getPackage().getName());
+
+		public LegacyParametersNotationIsDeprecated() {
+			super(FMLObject.class, "legacy_parameters_notation_is_deprecated");
+		}
+
+		/**
+		 * Return the bindings of supplied object that use the legacy notation
+		 */
+		public static List<DataBinding<?>> getLegacyBindings(FMLObject object) {
+			List<DataBinding<?>> returned = new ArrayList<>();
+			if (object.getFMLModelFactory() == null) {
+				return returned;
+			}
+			org.openflexo.pamela.model.ModelEntity<?> entity = object.getFMLModelFactory().getModelEntityForInstance(object);
+			if (entity == null) {
+				return returned;
+			}
+			Iterator<? extends ModelProperty<?>> properties;
+			try {
+				properties = entity.getProperties();
+			} catch (ModelDefinitionException e) {
+				ruleLogger.fine("Cannot read the properties of " + entity + ": " + e);
+				return returned;
+			}
+			while (properties.hasNext()) {
+				ModelProperty<?> property = properties.next();
+				if (DataBinding.class.equals(property.getType()) && property.getGetterMethod() != null) {
+					try {
+						Object value = property.getGetterMethod().invoke(object);
+						if (value instanceof DataBinding && LegacyParametersNotation.usesLegacyNotation((DataBinding<?>) value)) {
+							returned.add((DataBinding<?>) value);
+						}
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						ruleLogger.fine("Cannot read " + property + " of " + object + ": " + e);
+					}
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public ValidationIssue<LegacyParametersNotationIsDeprecated, FMLObject> applyValidation(FMLObject object) {
+			List<DataBinding<?>> bindings = getLegacyBindings(object);
+			if (bindings.isEmpty()) {
+				return null;
+			}
+			return new ValidationWarning<>(this, object, "parameters_notation_is_deprecated", new UseShortName(this, bindings));
+		}
+
+		protected static class UseShortName extends FixProposal<LegacyParametersNotationIsDeprecated, FMLObject> {
+
+			private final List<DataBinding<?>> bindings;
+
+			public UseShortName(LegacyParametersNotationIsDeprecated rule, List<DataBinding<?>> bindings) {
+				super("use_the_name_of_the_argument_instead_of_parameters_dot_name");
+				this.bindings = bindings;
+			}
+
+			@Override
+			protected void fixAction() {
+				for (DataBinding<?> binding : bindings) {
+					String migrated = LegacyParametersNotation.migratedText(binding);
+					if (migrated != null) {
+						binding.setUnparsedBinding(migrated);
+					}
+				}
+			}
+		}
+
+	}
 
 }

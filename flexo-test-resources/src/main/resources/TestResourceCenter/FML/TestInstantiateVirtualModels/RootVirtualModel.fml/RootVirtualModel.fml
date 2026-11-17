@@ -12,7 +12,7 @@ public model RootVirtualModel {
 	}
 
 	create::init(String name) {
-		log "Named constructor of RootVirtualModel with " + parameters.name;
-		name = parameters.name;
+		log "Named constructor of RootVirtualModel with " + name;
+		this.name = name;
 	}
 }

@@ -202,11 +202,6 @@ public class TestFMLErrorKinds extends FMLScriptParserTestCase {
 	}
 
 	@Test
-	public void bareParameterName() throws Exception {
-		assertError(runScript("BareParameterName.fmlscript"), FMLResolutionError.class, "bareParameter(other)", 65);
-	}
-
-	@Test
 	public void bareCall() throws Exception {
 		assertError(runScript("BareCall.fmlscript"), FMLResolutionError.class, "bareCall()", 73);
 	}

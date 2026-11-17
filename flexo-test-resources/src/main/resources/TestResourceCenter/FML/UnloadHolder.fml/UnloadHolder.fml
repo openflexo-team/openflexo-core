@@ -12,6 +12,6 @@ public model UnloadHolder {
 	Item item;
 
 	create(Item item) {
-		item = parameters.item;
+		this.item = item;
 	}
 }

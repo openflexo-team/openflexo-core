@@ -832,7 +832,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 
-		assertEquals(7, actionScheme.getBindingModel().getBindingVariablesCount());
+		assertEquals(8, actionScheme.getBindingModel().getBindingVariablesCount());
 
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
@@ -864,7 +864,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
 		conditional1.setCondition(new DataBinding<>("parameters.aFlag == true"));
 
-		assertEquals(7, conditional1.getBindingModel().getBindingVariablesCount());
+		assertEquals(8, conditional1.getBindingModel().getBindingVariablesCount());
 
 		assertNotNull(conditional1);
 		assertTrue(conditional1.getCondition().isValid());
@@ -892,7 +892,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(conditional2);
 		assertTrue(conditional2.getCondition().isValid());
 
-		assertEquals(7, conditional2.getBindingModel().getBindingVariablesCount());
+		assertEquals(8, conditional2.getBindingModel().getBindingVariablesCount());
 
 		CreateEditionAction createDeclareFlexoRoleInCondition2 = CreateEditionAction.actionType
 				.makeNewAction(conditional2.getThenControlGraph(), null, editor);
@@ -904,7 +904,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		AssignationAction<?> declareFlexoRoleInCondition2 = (AssignationAction<?>) createDeclareFlexoRoleInCondition2.getNewEditionAction();
 		((ExpressionAction<?>) declareFlexoRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
 
-		assertEquals(7, declareFlexoRoleInCondition2.getBindingModel().getBindingVariablesCount());
+		assertEquals(8, declareFlexoRoleInCondition2.getBindingModel().getBindingVariablesCount());
 
 		CreateEditionAction createIterationInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2.getThenControlGraph(),
 				null, editor);
@@ -922,10 +922,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertTrue(newExpressionAction.getExpression().isValid());
 
-		assertEquals(7, iteration.getBindingModel().getBindingVariablesCount());
+		assertEquals(8, iteration.getBindingModel().getBindingVariablesCount());
 		// assertEquals(13,
 		// iteration.getControlGraphBindingModel().getBindingVariablesCount());
-		assertEquals(8, iteration.getInferedBindingModel().getBindingVariablesCount());
+		assertEquals(9, iteration.getInferedBindingModel().getBindingVariablesCount());
 		assertNotNull(iteration.getInferedBindingModel().bindingVariableNamed("fci"));
 
 		CreateEditionAction createDeclareFlexoRoleInIteration1 = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(),
@@ -946,7 +946,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		System.out.println("declareFlexoRoleInIteration1=" + declareFlexoRoleInIteration1);
 		System.out.println("declareFlexoRoleInIteration1.getOwner()=" + declareFlexoRoleInIteration1.getOwner());
 
-		assertEquals(8, declareFlexoRoleInIteration1.getInferedBindingModel().getBindingVariablesCount());
+		assertEquals(9, declareFlexoRoleInIteration1.getInferedBindingModel().getBindingVariablesCount());
 		assertNotNull(declareFlexoRoleInIteration1.getInferedBindingModel().bindingVariableNamed("fci"));
 
 		assertTrue(declareFlexoRoleInIteration1.getAssignation().isValid());
@@ -966,7 +966,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		System.out.println("FML=\n" + actionScheme.getFMLPrettyPrint());
 
-		assertEquals(8, declareFlexoRoleInIteration2.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, declareFlexoRoleInIteration2.getBindingModel().getBindingVariablesCount());
 		assertNotNull(declareFlexoRoleInIteration2.getBindingModel().bindingVariableNamed("fci"));
 
 		assertTrue(declareFlexoRoleInIteration2.getAssignation().isValid());
@@ -1025,7 +1025,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		owner.setControlGraph(declareFlexoRoleInIteration2, ownerContext);
 
 		// Check the BindingModel has been set again
-		assertEquals(7, conditional2.getBindingModel().getBindingVariablesCount());
+		assertEquals(8, conditional2.getBindingModel().getBindingVariablesCount());
 		assertNotNull(conditional2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				conditional2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME).getType());
@@ -1082,7 +1082,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(param2);
 		assertTrue(actionScheme.getParameters().contains(param2));
 
-		assertEquals(7, actionScheme.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, actionScheme.getBindingModel().getBindingVariablesCount());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME).getType());
@@ -1118,8 +1118,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		System.out.println("BM: " + selectFlexoConceptInstance.getBindingModel());
 		System.out.println("BM2: " + condition1.getBindingModel());
 
-		assertEquals(7, selectFlexoConceptInstance.getBindingModel().getBindingVariablesCount());
-		assertEquals(8, condition1.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, selectFlexoConceptInstance.getBindingModel().getBindingVariablesCount());
+		assertEquals(10, condition1.getBindingModel().getBindingVariablesCount());
 		assertNotNull(condition1.getBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				condition1.getBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED).getType());
@@ -1167,7 +1167,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(param2);
 		assertTrue(actionScheme.getParameters().contains(param2));
 
-		assertEquals(7, actionScheme.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, actionScheme.getBindingModel().getBindingVariablesCount());
 
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
@@ -1204,8 +1204,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		FetchRequestCondition condition2 = selectFlexoConceptInstance.createCondition();
 		condition2.setCondition(new DataBinding<>("selected.aStringInA = parameters.aString"));
 
-		assertEquals(7, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
-		assertEquals(8, condition1.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
+		assertEquals(10, condition1.getBindingModel().getBindingVariablesCount());
 		assertNotNull(condition1.getBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				condition1.getBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED).getType());
@@ -1235,14 +1235,14 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertTrue(((ExpressionAction<?>) assignation2.getAssignableAction()).getExpression().isValid());
 
-		assertEquals(7, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
 
-		assertEquals(8, condition1.getBindingModel().getBindingVariablesCount());
+		assertEquals(10, condition1.getBindingModel().getBindingVariablesCount());
 		assertNotNull(condition1.getBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				condition1.getBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED).getType());
 
-		assertEquals(9, assignation1.getInferedBindingModel().getBindingVariablesCount());
+		assertEquals(11, assignation1.getInferedBindingModel().getBindingVariablesCount());
 		assertNull(assignation1.getInferedBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED));
 		assertNotNull(assignation1.getBindingModel().bindingVariableNamed(fetchRequestIteration.getIteratorName()));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
@@ -1309,7 +1309,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(param2);
 		assertTrue(actionScheme.getParameters().contains(param2));
 
-		assertEquals(7, actionScheme.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, actionScheme.getBindingModel().getBindingVariablesCount());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
 				actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME).getType());
@@ -1492,9 +1492,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		creationScheme.removeFromParameters(creationSchemeParam3);
 		assertEquals(2, matchFlexoConceptInstance.getNewInstanceArguments().size());
 
-		assertEquals(7, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
+		assertEquals(9, fetchRequestIteration.getBindingModel().getBindingVariablesCount());
 
-		assertEquals(8, condition1.getBindingModel().getBindingVariablesCount());
+		assertEquals(10, condition1.getBindingModel().getBindingVariablesCount());
 
 		// assertEquals(8, createFCIParam1.getBindingModel().getBindingVariablesCount());
 
@@ -1772,7 +1772,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals("foo", fci.getFlexoActor("aStringInA"));
 		assertEquals(12, (int) fci.getFlexoActor("anIntegerInA"));
 
-		assertEquals(7, actionScheme.getBindingModel().getBindingVariablesCount());
+		assertEquals(8, actionScheme.getBindingModel().getBindingVariablesCount());
 
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),

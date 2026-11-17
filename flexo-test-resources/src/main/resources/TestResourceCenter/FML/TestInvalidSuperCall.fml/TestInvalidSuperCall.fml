@@ -20,14 +20,14 @@
 public model TestInvalidSuperCall {
 
 	public NamedDerived newNamedDerived(String label) {
-		return new NamedDerived(parameters.label);
+		return new NamedDerived(label);
 	}
 
 	/** Only a NAMED creation scheme - nothing anonymous for super(...) to reach. */
 	public concept NamedBase {
 		String label;
 		create::init(String label) {
-			label = parameters.label;
+			this.label = label;
 		}
 		delete() {
 		}
@@ -35,7 +35,7 @@ public model TestInvalidSuperCall {
 
 	public concept NamedDerived extends NamedBase {
 		create(String label) {
-			super(parameters.label);
+			super(label);
 		}
 		delete() {
 		}

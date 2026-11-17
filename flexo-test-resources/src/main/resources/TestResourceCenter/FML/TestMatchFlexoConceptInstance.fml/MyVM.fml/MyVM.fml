@@ -13,7 +13,7 @@ model MyVM {
 			@TextField(value="aP")
 		)
 		create::_create (required String aP) {
-			p = parameters.aP;
+			p = aP;
 		}
 		delete::_delete () {
 		}

@@ -139,7 +139,7 @@ public model Kennel {
 		String name;
 
 		create(String name) {
-			name = parameters.name;
+			this.name = name;
 		}
 
 		abstract String sound();
@@ -152,7 +152,7 @@ public model Kennel {
 	public concept Dog extends Creature {
 
 		create(String name) {
-			super(parameters.name);
+			super(name);
 		}
 
 		public String sound() {
@@ -166,8 +166,8 @@ public model Kennel {
 
 	public concept ServiceDog extends Dog, Trained {
 		create(String name, String trick) {
-			super(parameters.name);
-			trick = parameters.trick;
+			super(name);
+			this.trick = trick;
 		}
 	}
 }
@@ -257,13 +257,13 @@ event ShelfCreated {
 	String label;
 
 	create(String label) {
-		label = parameters.label;
+		this.label = label;
 	}
 }
 
 public Shelf newShelf(String label) {
-	Shelf shelf = new Shelf(parameters.label, 20);
-	fire new ShelfCreated(parameters.label);
+	Shelf shelf = new Shelf(label, 20);
+	fire new ShelfCreated(label);
 	return shelf;
 }
 
@@ -289,10 +289,10 @@ by a `catch` clause naming it or one of its super exceptions (§8.10).
 
 ```fml-member
 public take(int n) throws OutOfStock {
-	if (parameters.n > quantity) {
-		throw new OutOfStock(parameters.n, quantity);
+	if (n > quantity) {
+		throw new OutOfStock(n, quantity);
 	}
-	quantity = quantity - parameters.n;
+	quantity = quantity - n;
 }
 
 abstract exception StockError {
@@ -304,8 +304,8 @@ exception OutOfStock extends StockError {
 	int available;
 
 	create(int requested, int available) {
-		requested = parameters.requested;
-		available = parameters.available;
+		this.requested = requested;
+		this.available = available;
 	}
 }
 ```

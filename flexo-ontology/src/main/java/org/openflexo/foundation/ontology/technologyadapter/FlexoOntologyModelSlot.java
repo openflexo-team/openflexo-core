@@ -137,7 +137,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 			// returned.setModelSlot(this);
 
 			if (creationScheme.getParameter("uri") != null) {
-				returned.setIndividualName(new DataBinding<>("parameters.uri"));
+				returned.setIndividualName(new DataBinding<>("uri"));
 			}
 			return returned;
 		}
