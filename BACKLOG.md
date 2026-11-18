@@ -1111,7 +1111,7 @@ variable; `ThrowStatement` as `ReturnStatement.inspector`), added to `TestFMLIns
 **Acceptance criteria.** The FML perspective shows an exception and the three statements with their own icon and inspector; an
 exception can be created from the browser; the inspector tests cover the new inspectors.
 
-### CORE-F-14 — Arguments of a behaviour designated by their name  ·  `IN PROGRESS`
+### CORE-F-14 — Arguments of a behaviour designated by their name  ·  `DONE`
 
 **GitHub:** [openflexo-team/openflexo-core#129](https://github.com/openflexo-team/openflexo-core/issues/129)
 
@@ -1129,6 +1129,16 @@ default) rewrites the `.fml` of resource centers. The model decides, the text is
 the unqualified uses of that name in the body become `this.label`, because they meant the property. FML that is not migrated keeps
 working, except in that collision case, where an unqualified name now designates the argument. The generators of FML (Java code)
 write the new notation, with `this.` on the property they assign.
+
+**Resolution (2026-11-18).** Done across the repositories (commit `368ad682a` in openflexo-core, and one commit per repository whose FML
+or generator changed). Tests: openflexo-core, formod, modelers, the technology adapters, openflexo-integration-tests, fme and http-server
+green; `TestFMLDiagramPrettyPrint3` (diagram-ta) and `TestMarkdownEditionActions` (markdown-ta-test) were red identically before this change
+(stale fixtures, fixed separately).
+Accepted consequence: FML of a third party that is not migrated, or generated before this change, and that assigns a property of the name of an
+argument (`label = parameters.label;`) changes meaning without any diagnostic; a variable assigned to itself (`label = label;`) is reported.
+Also decided: `this.role` is accepted as the target of a role in `role = TA::Action(...)`; the deprecation fix is not offered for a name that
+hides a property. Known, not fixed: the deprecation warning is shown twice per object (a rule declared on `FMLObject` is reached twice through
+diamond inheritance in PAMELA).
 
 **Left.** `.fml` that are not resources of a resource center (parsing and pretty-print inputs: `FMLParsingExamples`,
 `TestFMLPrettyPrint*`) keep the legacy notation on purpose, they exercise it; the `.inspector` and `.fmlscript` that use `parameters.`
