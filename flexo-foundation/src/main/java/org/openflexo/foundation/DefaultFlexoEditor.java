@@ -156,7 +156,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 			boolean enabled;
 			try {
 				enabled = action.getActionFactory().isEnabledForExecution(action.getFocusedObject(), action.getGlobalSelection());
-			} catch (FlexoException | RuntimeException failure) {
+			} catch (OpenflexoRuntimeException | RuntimeException failure) {
 				enabled = true;
 			}
 			if (!enabled) {
@@ -168,7 +168,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		boolean outermost = (scope != null);
 		try {
 			return action.doActionInContext();
-		} catch (FlexoException e1) {
+		} catch (OpenflexoRuntimeException e1) {
 			// Foreseen failure (an FMLError among others) or cancellation, checked: kept in the status of the action, which its caller
 			// reads; reported here for an outermost action (a cancellation is not)
 			if (outermost) {

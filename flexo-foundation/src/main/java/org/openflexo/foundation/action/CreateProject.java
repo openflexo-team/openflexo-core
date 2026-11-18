@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProject;
@@ -118,7 +118,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 
 		logger.info("!!!!!!!!!!!!! Create new FlexoProject uri=" + getNewProjectURI());
 
@@ -161,7 +161,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 		} catch (SaveResourceException e) {
 			throw new SaveResourceException(null);
 		} catch (ModelDefinitionException e) {
-			throw new FlexoException(e);
+			throw new OpenflexoRuntimeException(e);
 		}
 
 	}

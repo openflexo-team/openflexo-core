@@ -57,7 +57,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
@@ -645,7 +645,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 	@Test
 	@TestOrder(12)
-	public void testReloadProject() throws ResourceLoadingCancelledException, FlexoException, TypeMismatchException, NullReferenceException,
+	public void testReloadProject() throws ResourceLoadingCancelledException, OpenflexoRuntimeException, TypeMismatchException, NullReferenceException,
 			IOException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testReloadProject()");

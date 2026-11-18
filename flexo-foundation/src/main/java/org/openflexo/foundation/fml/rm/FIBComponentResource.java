@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.rm;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -116,5 +116,5 @@ public interface FIBComponentResource extends TechnologyAdapterResource<FMLFIBCo
 	 * <code>FIBInspector</code> - are known to it alone, and a component serialized by any other factory would be written as its upper
 	 * entity, with a <code>p:modelEntity</code> attribute standing in for what that factory could not name.
 	 */
-	public FIBModelFactory makeModelFactory() throws FlexoException;
+	public FIBModelFactory makeModelFactory() throws OpenflexoRuntimeException;
 }

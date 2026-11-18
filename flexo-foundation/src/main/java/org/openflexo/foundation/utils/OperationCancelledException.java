@@ -39,8 +39,8 @@
 
 package org.openflexo.foundation.utils;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
-public class OperationCancelledException extends FlexoException {
+public class OperationCancelledException extends OpenflexoRuntimeException {
 
 }

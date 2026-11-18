@@ -662,7 +662,7 @@ in the factory and again in `doAction`.
 
 ```
 ReturnException (checked, without stack trace)   control flow, never an error; does not leave execute()
-FMLExecutionException (checked, a FlexoException) carries the FML stack (frames); the plain type is the untyped form, for the throw
+FMLExecutionException (checked, an OpenflexoRuntimeException) carries the FML stack (frames); the plain type is the untyped form, for the throw
 │                                                sites not migrated yet
 ├── FMLCancellation                              the user cancelled (parameters dialog, OperationCancelledException,
 │                                                ActionExecutionCancelledException): compensated (undo), never reported as an error
@@ -722,7 +722,7 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
    - The hierarchy, the frames, the helpers `FMLExecution` and `FMLEvaluation`.
    - L2 to L4, `FMLErrorReporter`, the SEVERE records, the test editor that rethrows.
    - `ReturnException` without stack trace, and handled in every scheme.
-   - The `catch (FlexoException)` sites fixed before `FMLExecutionException` moves.
+   - The `catch (OpenflexoRuntimeException)` sites fixed before `FMLExecutionException` moves.
    - The coding conventions: no `printStackTrace` / `System.out` / `return null` on error in `fml/**`, evaluation through
      `FMLEvaluation` only, reporting at L4 only.
 2. **Connie and PAMELA** (independent repositories): `CONNIE-F-4`, `PAMELA-D-6`. The version bumps are decided at that time.
@@ -749,7 +749,7 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
 **Phase 1 done (2026-11-14), decided with the user.**
 - The typed errors are in `org.openflexo.foundation.fml.rt.error`: `FMLError` and its subclasses, and `FMLCancellation`, all under the
   checked `FMLExecutionException`; `FMLInternalError`, unchecked. All carry an `FMLStack` (interface `FMLExecutionFailure`). A failure that
-  wraps one that has a stack starts with its frames. None of the ~200 `catch (FlexoException)` of the workspace catches a failure that used to pass
+  wraps one that has a stack starts with its frames. None of the ~200 `catch (OpenflexoRuntimeException)` of the workspace catches a failure that used to pass
   through it unchecked.
 - `FlexoAction.getFailure()` gives any failure, checked or not; `getThrownException()` gives the checked one, foreseen errors included. The
   status is now `FAILED_EXECUTION` for any failure (`HAS_BEEN_CANCELLED` for an `FMLCancellation`).
@@ -772,7 +772,7 @@ and the FML stack; its interactive loop survives a `RuntimeException`; `ExecuteD
   - `AbstractAssignationAction`, `AssignationAction` and `DeleteAction` no longer wrap an unchecked exception into an untyped
     `FMLExecutionException`, and `DeleteAction` no longer swallows one. `FMLExecution.convertUnchecked` converts it once, into an
     `FMLInternalError`: it stays unchecked and propagates as before. Turning the foreseen ones (a failing Java accessor, a missing Java
-    property) into the checked `FMLHostError` / `FMLResolutionError` waits for phase 3: until the `catch (FlexoException) → null` of the
+    property) into the checked `FMLHostError` / `FMLResolutionError` waits for phase 3: until the `catch (OpenflexoRuntimeException) → null` of the
     getters, setters and adapters are strict, they would swallow a failure that used to reach the caller.
   - The fml-cli commands no longer print the stack of a failure that the editor reported.
   - A valued `return` in a creation scheme is an error (`FMLTypeError`); a bare `return` ends the scheme.
@@ -1035,7 +1035,7 @@ technology-adapters (dsl, xx), kafka, oslc, gina, odt. pdf, java, rhapsody and f
   `CORE-D-84` (fixed); a select from a null source raises `FMLNullReferenceError` in every adapter (each repository's entry); an inconsistent
   hierarchy stays an `FMLTechnologyError`. The cardinality message names the first three results only. To do in the repositories: five
   `Create*Resource` actions (xlsx, xml, owl, kafka, jdbc) wrap the typed errors of `AbstractCreateResource` again into an untyped
-  `FMLExecutionException` (they catch `FlexoException`); the `performExecute` of emf, jdbc (`AbstractPerformSQLQuery`) and rest return null,
+  `FMLExecutionException` (they catch `OpenflexoRuntimeException`); the `performExecute` of emf, jdbc (`AbstractPerformSQLQuery`) and rest return null,
   those of json, markdown and pptx an empty list, for a null source (rest: its select of the virtual model instance returned null; done in
   `REST-F-1`).
 - openflexo-xlsx: `XLSX-F-2` (its `BACKLOG.md`), done. For it, the core gains the strict entry point `FlexoConceptInstance.getFlexoActorOrFail`
@@ -1077,7 +1077,7 @@ technology-adapters (dsl, xx), kafka, oslc, gina, odt. pdf, java, rhapsody and f
 
 **Phase 7 done (2026-11-16), decided with the user.**
 - Exceptions defined in FML (asked by the user before phase 7 started): a new specialization of `FlexoConcept`,
-  `FlexoExceptionConcept` (keyword `exception`, declared like an event; `FlexoException` is taken by the Java base exception), instances
+  `FlexoException` (keyword `exception`, declared like an event; the former Java base exception `FlexoException` is now `OpenflexoRuntimeException`), instances
   `FlexoExceptionInstance`, created by `new` outside any container, as an event. An exception extends only exceptions and a concept never
   extends one (validation `ExceptionHierarchyMustBeConsistent`). Its message is its `@Renderer`, otherwise its name and the values of its
   own properties.
@@ -1180,11 +1180,11 @@ Tests:
 
 **GitHub:** [openflexo-team/openflexo-core#128](https://github.com/openflexo-team/openflexo-core/issues/128)
 
-**Problem.** `CORE-F-11` phase 7 added exceptions (`FlexoExceptionConcept`, keyword `exception`), `throw` and `try … catch … finally`
+**Problem.** `CORE-F-11` phase 7 added exceptions (`FlexoException`, keyword `exception`), `throw` and `try … catch … finally`
 (`ThrowStatement`, `TryStatement`, `CatchClause`) to the language. openflexo-ui knows none of them: they show with the icon and the
 inspector of their parent class (`FlexoConcept`, `EditionAction`), and nothing creates them but the FML editor.
 
-**Options.** Icons in `FMLIconLibrary`; inspectors (`FlexoExceptionConcept` as `FlexoEvent.inspector`; `CatchClause` with its type and
+**Options.** Icons in `FMLIconLibrary`; inspectors (`FlexoException` as `FlexoEvent.inspector`; `CatchClause` with its type and
 variable; `ThrowStatement` as `ReturnStatement.inspector`), added to `TestFMLInspectors`; a creation wizard of an exception as
 `CreateFlexoEvent`; the insertion of a try statement in the control graph editor.
 

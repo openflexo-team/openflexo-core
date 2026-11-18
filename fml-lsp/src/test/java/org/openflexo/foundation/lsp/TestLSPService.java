@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -30,7 +30,7 @@ public class TestLSPService extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void loadFMLResource() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void loadFMLResource() throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 
 		VirtualModelLibrary vmLibrary = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vmLibrary);

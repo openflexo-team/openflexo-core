@@ -39,7 +39,7 @@
 
 package org.openflexo.foundation.fml.rt.error;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * A failure of an FML execution that the semantics of the language foresee, or a cancellation: the checked exception that every execution
@@ -56,7 +56,7 @@ import org.openflexo.foundation.FlexoException;
  * 
  */
 @SuppressWarnings("serial")
-public class FMLExecutionException extends FlexoException implements FMLExecutionFailure {
+public class FMLExecutionException extends OpenflexoRuntimeException implements FMLExecutionFailure {
 
 	private final FMLStack stack;
 

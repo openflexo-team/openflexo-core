@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.FlexoAction;
@@ -157,7 +157,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 	}
 
 	@SuppressWarnings("serial")
-	public static class InvalidSelectionException extends FlexoException {
+	public static class InvalidSelectionException extends OpenflexoRuntimeException {
 
 		public InvalidSelectionException(String message) {
 			super(message);

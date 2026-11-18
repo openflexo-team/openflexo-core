@@ -48,7 +48,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
  * 
  */
 @SuppressWarnings("serial")
-public class InvalidModelDefinitionException extends FlexoException {
+public class InvalidModelDefinitionException extends OpenflexoRuntimeException {
 	private final ModelDefinitionException targetException;
 
 	public InvalidModelDefinitionException(ModelDefinitionException targetException) {

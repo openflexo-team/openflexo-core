@@ -52,7 +52,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -218,7 +218,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public final RD getResourceData()
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
 
 		if (isDeleted()) {
 			return null;
@@ -261,10 +261,10 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 */
 	protected synchronized RD performLoadResourceData()
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
 
 		if (resourceData != null || isLoading()) {
 			return resourceData;

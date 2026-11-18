@@ -41,10 +41,10 @@ package org.openflexo.foundation.action;
 
 import java.util.Vector;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 
-public class InactiveFlexoActionException extends FlexoException {
+public class InactiveFlexoActionException extends OpenflexoRuntimeException {
 
 	private final FlexoActionFactory<?, ?, ?> actionType;
 	private final FlexoObject focusedObject;

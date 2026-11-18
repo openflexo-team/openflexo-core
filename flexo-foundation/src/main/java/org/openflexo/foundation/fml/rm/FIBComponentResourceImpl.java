@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rm;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -117,24 +117,24 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 		try {
 			FMLFIBComponent resourceData = getResourceData();
 			return resourceData != null ? resourceData.getComponent() : null;
-		} catch (FlexoException | ResourceLoadingCancelledException | java.io.FileNotFoundException e) {
+		} catch (OpenflexoRuntimeException | ResourceLoadingCancelledException | java.io.FileNotFoundException e) {
 			logger.log(Level.WARNING, "Could not load component " + getURI(), e);
 			return null;
 		}
 	}
 
 	@Override
-	public FMLFIBComponent loadResourceData() throws FlexoException {
+	public FMLFIBComponent loadResourceData() throws OpenflexoRuntimeException {
 
 		Resource artefact = getIODelegate() != null ? getIODelegate().getSerializationArtefactAsResource() : null;
 		if (artefact == null) {
-			throw new FlexoException("No serialization artefact for " + getURI());
+			throw new OpenflexoRuntimeException("No serialization artefact for " + getURI());
 		}
 
 		FIBComponent component = getFIBLibrary().retrieveFIBComponent(artefact, false, makeModelFactory());
 		if (component == null) {
 			// retrieveFIBComponent only prints the stack trace of what went wrong, and answers null
-			throw new FlexoException("Could not load GINA component " + getURI());
+			throw new OpenflexoRuntimeException("Could not load GINA component " + getURI());
 		}
 
 		FMLFIBComponent returned = FMLFIBComponent.newInstance(component);
@@ -208,7 +208,7 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 			// p:modelEntity attribute standing in for the name that factory could not resolve. Reading and writing a component are
 			// symmetric operations and take the same factory.
 			getFIBLibrary().save(getComponent(), getIODelegate().getSerializationArtefactAsResource(), makeModelFactory());
-		} catch (FlexoException e) {
+		} catch (OpenflexoRuntimeException e) {
 			throw new SaveResourceException(getIODelegate(), e);
 		} finally {
 			if (lock != null) {
@@ -251,17 +251,17 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 	 * directory.
 	 */
 	@Override
-	public FIBModelFactory makeModelFactory() throws FlexoException {
+	public FIBModelFactory makeModelFactory() throws OpenflexoRuntimeException {
 
 		Resource artefact = getIODelegate() != null ? getIODelegate().getSerializationArtefactAsResource() : null;
 		if (artefact == null) {
-			throw new FlexoException("No serialization artefact for " + getURI());
+			throw new OpenflexoRuntimeException("No serialization artefact for " + getURI());
 		}
 
 		try {
 			return new FIBModelFactory(artefact.getContainer(), getServiceManager().getTechnologyAdapterService(), FIBInspector.class);
 		} catch (ModelDefinitionException e) {
-			throw new FlexoException("Could not build a model factory for " + getURI(), e);
+			throw new OpenflexoRuntimeException("Could not build a model factory for " + getURI(), e);
 		}
 	}
 }

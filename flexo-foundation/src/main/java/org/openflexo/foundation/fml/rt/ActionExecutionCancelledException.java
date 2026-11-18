@@ -39,7 +39,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * This exception is thrown when a Cancel has been raised during execution of a FML control graph<br>
@@ -50,6 +50,6 @@ import org.openflexo.foundation.FlexoException;
  *
  */
 @SuppressWarnings("serial")
-public class ActionExecutionCancelledException extends FlexoException {
+public class ActionExecutionCancelledException extends OpenflexoRuntimeException {
 
 }

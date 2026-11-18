@@ -42,7 +42,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
@@ -114,7 +114,7 @@ public class CreationSchemeAction extends AbstractCreationSchemeAction<CreationS
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, OpenflexoRuntimeException {
 		super.doAction(context);
 	}
 

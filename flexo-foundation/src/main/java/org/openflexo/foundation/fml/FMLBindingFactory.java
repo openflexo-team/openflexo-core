@@ -271,7 +271,7 @@ public class FMLBindingFactory extends AbstractFMLBindingFactory {
 					// FlexoConceptInstance.getStringRepresentation() falls back on a default representation when there is no valid renderer.
 					returned.add(new EPIRendererPathElement(parent, bindable));
 					returned.add(new FlexoConceptTypePathElement(parent, concept, bindable));
-					if (concept instanceof FlexoExceptionConcept) {
+					if (concept instanceof FlexoException) {
 						// What a caught built-in error exposes, unless the exception declares a property of that name (CORE-F-11 phase 7)
 						for (ExceptionInfoPathElement.Info info : ExceptionInfoPathElement.Info.values()) {
 							if (concept.getAccessibleProperty(info.getName()) == null) {

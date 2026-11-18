@@ -42,7 +42,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.ActionGroup;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.AbstractActionScheme;
@@ -92,7 +92,7 @@ public abstract class AbstractActionSchemeActionFactory<A extends AbstractAction
 	 * When the behaviour is about to run, its {@code @Enable} expression is evaluated strictly: its failure fails the action (CORE-F-11)
 	 */
 	@Override
-	public boolean isEnabledForExecution(O object, Vector<VirtualModelInstanceObject> globalSelection) throws FlexoException {
+	public boolean isEnabledForExecution(O object, Vector<VirtualModelInstanceObject> globalSelection) throws OpenflexoRuntimeException {
 		// As isEnabled() for a behaviour, no registration on the object type is required
 		return getActionScheme().evaluateCondition(target(object));
 	}

@@ -38,9 +38,9 @@
 
 package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
-public class ProjectImportLoopException extends FlexoException {
+public class ProjectImportLoopException extends OpenflexoRuntimeException {
 
 	public ProjectImportLoopException(String message) {
 		super(message);

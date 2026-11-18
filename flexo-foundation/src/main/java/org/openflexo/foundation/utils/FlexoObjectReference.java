@@ -44,7 +44,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
@@ -327,7 +327,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 			// Ensure the resource is loaded
 			resource.getResourceData();
 			return (O) resource.findObject(objectIdentifier, userIdentifier, className);
-		} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
+		} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | OpenflexoRuntimeException e) {
 			logger.log(Level.SEVERE, "Error while finding object in resource '" + resource.getURI() + "'", e);
 		}
 		logger.warning("Cannot find object " + userIdentifier + "_" + objectIdentifier + " in resource " + resource);

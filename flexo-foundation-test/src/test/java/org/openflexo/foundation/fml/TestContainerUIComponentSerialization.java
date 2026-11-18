@@ -19,7 +19,7 @@ import java.nio.file.Files;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.FIBComponentResource;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -141,7 +141,7 @@ public class TestContainerUIComponentSerialization extends OpenflexoTestCase {
 	 * The comparison is on the bytes, which is the point: a difference of shape - an attribute the serializer adds, an entity it cannot
 	 * name - is exactly what has to be seen here rather than in a diff, months later, on the day someone saves a component from the editor.
 	 */
-	private void assertSerializesToItsOwnBytes(FIBComponentResource resource) throws FlexoException, IOException {
+	private void assertSerializesToItsOwnBytes(FIBComponentResource resource) throws OpenflexoRuntimeException, IOException {
 
 		assertNotNull(resource);
 

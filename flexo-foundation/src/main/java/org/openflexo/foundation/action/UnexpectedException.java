@@ -39,9 +39,9 @@
 
 package org.openflexo.foundation.action;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
-public class UnexpectedException extends FlexoException {
+public class UnexpectedException extends OpenflexoRuntimeException {
 
 	public UnexpectedException(Exception cause) {
 		super(cause.getMessage(), cause);

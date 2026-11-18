@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command.fml;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommandExecutionException;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
@@ -141,7 +141,7 @@ public interface FMLActionCommand extends FMLCommand<AFmlActionFmlCommand> {
 				output.add(cmdOutput);
 				getOutStream().println(cmdOutput);
 				return e.getReturnedValue();
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				// Not printed: the failure is the one of the command (CORE-F-11)
 				throw new FMLCommandExecutionException("Cannot execute " + this + (e.getMessage() != null ? ": " + e.getMessage() : ""), e);
 			}

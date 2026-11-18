@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.CLIUtils;
@@ -137,7 +137,7 @@ public interface EnterDirective extends Directive<AEnterDirective> {
 						getErrStream().println("Cannot enter into " + path + " : file not found");
 					} catch (ResourceLoadingCancelledException e) {
 						getErrStream().println("Cannot enter into " + path + " : cancelled loading");
-					} catch (FlexoException e) {
+					} catch (OpenflexoRuntimeException e) {
 						getErrStream().println("Cannot enter into " + path + " : unexpected exception");
 						e.printStackTrace();
 					}
@@ -152,7 +152,7 @@ public interface EnterDirective extends Directive<AEnterDirective> {
 					getErrStream().println("Cannot enter into " + path + " : file not found");
 				} catch (ResourceLoadingCancelledException e) {
 					getErrStream().println("Cannot enter into " + path + " : cancelled loading");
-				} catch (FlexoException e) {
+				} catch (OpenflexoRuntimeException e) {
 					getErrStream().println("Cannot enter into " + path + " : unexpected exception");
 					e.printStackTrace();
 				}

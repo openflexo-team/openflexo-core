@@ -42,7 +42,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -313,7 +313,7 @@ public interface TypeAwareModelSlot<
 			} catch (ResourceLoadingCancelledException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

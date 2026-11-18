@@ -60,7 +60,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -94,12 +94,12 @@ public class CheckedExceptions {
 	}
 
 	/** The FML exception that supplied type stands for when it is checked, or null */
-	public static FlexoExceptionConcept checkedException(Type type) {
-		return FMLErrorTypes.getFlexoExceptionConcept(type);
+	public static FlexoException checkedException(Type type) {
+		return FMLErrorTypes.getFlexoException(type);
 	}
 
 	/** Tell if supplied checked exception is covered by one of supplied types (catch clauses or throws declarations) */
-	public static boolean isCovered(FlexoExceptionConcept exception, Collection<? extends Type> handlers) {
+	public static boolean isCovered(FlexoException exception, Collection<? extends Type> handlers) {
 		for (Type handler : handlers) {
 			if (handler != null && FMLErrorTypes.covers(handler, exception.getInstanceType())) {
 				return true;
@@ -109,11 +109,11 @@ public class CheckedExceptions {
 	}
 
 	/** The checked exceptions declared by supplied behaviour */
-	public static Set<FlexoExceptionConcept> declaredBy(FlexoBehaviour behaviour) {
-		Set<FlexoExceptionConcept> returned = new LinkedHashSet<>();
+	public static Set<FlexoException> declaredBy(FlexoBehaviour behaviour) {
+		Set<FlexoException> returned = new LinkedHashSet<>();
 		if (behaviour != null) {
 			for (Type type : behaviour.getThrownTypes()) {
-				FlexoExceptionConcept exception = checkedException(type);
+				FlexoException exception = checkedException(type);
 				if (exception != null) {
 					returned.add(exception);
 				}
@@ -126,10 +126,10 @@ public class CheckedExceptions {
 	 * The checked exceptions that supplied statement raises itself: its own expressions and the actions it runs, not the statements it
 	 * contains (they are checked on their own)
 	 */
-	public static Set<FlexoExceptionConcept> raisedBy(FMLControlGraph statement) {
-		Set<FlexoExceptionConcept> returned = new LinkedHashSet<>();
+	public static Set<FlexoException> raisedBy(FMLControlGraph statement) {
+		Set<FlexoException> returned = new LinkedHashSet<>();
 		if (statement instanceof ThrowStatement && ((ThrowStatement<?>) statement).getAssignableAction() != null) {
-			FlexoExceptionConcept exception = checkedException(((ThrowStatement<?>) statement).getAssignableAction().getAssignableType());
+			FlexoException exception = checkedException(((ThrowStatement<?>) statement).getAssignableAction().getAssignableType());
 			if (exception != null) {
 				returned.add(exception);
 			}
@@ -172,8 +172,8 @@ public class CheckedExceptions {
 	}
 
 	/** The checked exceptions raised by the evaluation of supplied binding: the behaviours and the creation schemes it calls */
-	public static Set<FlexoExceptionConcept> raisedBy(DataBinding<?> binding) {
-		Set<FlexoExceptionConcept> returned = new LinkedHashSet<>();
+	public static Set<FlexoException> raisedBy(DataBinding<?> binding) {
+		Set<FlexoException> returned = new LinkedHashSet<>();
 		if (binding != null && binding.isSet() && binding.getExpression() != null) {
 			collect(binding.getExpression(), returned, new ArrayList<>());
 		}
@@ -218,13 +218,13 @@ public class CheckedExceptions {
 	public static List<Type> declaredHandlers(FlexoBehaviour behaviour) {
 		// A built-in error type in throws is documentation: it covers no exception defined in FML
 		List<Type> returned = new ArrayList<>();
-		for (FlexoExceptionConcept exception : declaredBy(behaviour)) {
+		for (FlexoException exception : declaredBy(behaviour)) {
 			returned.add(exception.getInstanceType());
 		}
 		return returned;
 	}
 
-	private static void collect(Expression expression, Set<FlexoExceptionConcept> into, List<Expression> visited) {
+	private static void collect(Expression expression, Set<FlexoException> into, List<Expression> visited) {
 		try {
 			expression.visit(new ExpressionVisitor() {
 				@Override

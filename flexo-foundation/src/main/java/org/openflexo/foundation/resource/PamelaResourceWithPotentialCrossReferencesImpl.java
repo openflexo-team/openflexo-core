@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.pamela.AccessibleProxyObject;
 import org.openflexo.pamela.factory.PamelaModelFactory;
@@ -74,7 +74,7 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 	 */
 	/*	@Override
 		public RD getResourceData()
-				throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+				throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
 	
 			if (isDeleted()) {
 				return null;
@@ -144,12 +144,12 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 	 * @throws ResourceLoadingCancelledException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 */
 
 	@Override
 	protected synchronized RD performLoadResourceData()
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
 
 		if (resourceData != null || isLoading()) {
 			return resourceData;

@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.binding.FiredEventBindingVariable;
@@ -107,7 +107,7 @@ public class EventListenerAction extends AbstractActionSchemeAction<EventListene
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 		if (getFlexoBehaviour() != null && getFlexoBehaviour().evaluateCondition(getFlexoConceptInstance())) {
 			executeControlGraph();
 		}

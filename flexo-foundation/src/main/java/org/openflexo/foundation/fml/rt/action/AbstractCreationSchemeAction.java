@@ -42,7 +42,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -179,7 +179,7 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, OpenflexoRuntimeException {
 		// logger.info("Create FlexoConceptInstance using CreationScheme");
 
 		// If referenced FlexoConcept is a plain FlexoConcept, we create it here and then we apply
@@ -196,9 +196,9 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
 							.makeNewEvent((FlexoEvent) getFlexoConceptBeingCreated(), getCreationScheme(), this);
 				}
-				else if (getFlexoConceptBeingCreated() instanceof FlexoExceptionConcept) {
+				else if (getFlexoConceptBeingCreated() instanceof FlexoException) {
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
-							.makeNewException((FlexoExceptionConcept) getFlexoConceptBeingCreated(), getCreationScheme(), this);
+							.makeNewException((FlexoException) getFlexoConceptBeingCreated(), getCreationScheme(), this);
 				}
 				else {
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())

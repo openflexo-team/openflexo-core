@@ -991,7 +991,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 					|| behaviour instanceof EventListener) {
 				return null;
 			}
-			Set<FlexoExceptionConcept> declared = CheckedExceptions.declaredBy(behaviour);
+			Set<FlexoException> declared = CheckedExceptions.declaredBy(behaviour);
 			if (declared.isEmpty()) {
 				return null;
 			}
@@ -999,8 +999,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			for (FlexoConcept parent : behaviour.getFlexoConcept().getParentFlexoConcepts()) {
 				FlexoBehaviour overridden = parent.getFlexoBehaviour(behaviour.getName(), parameterTypes);
 				if (overridden != null && overridden != behaviour) {
-					List<FlexoExceptionConcept> more = new ArrayList<>();
-					for (FlexoExceptionConcept exception : declared) {
+					List<FlexoException> more = new ArrayList<>();
+					for (FlexoException exception : declared) {
 						if (!CheckedExceptions.isCovered(exception, overridden.getThrownTypes())) {
 							more.add(exception);
 						}

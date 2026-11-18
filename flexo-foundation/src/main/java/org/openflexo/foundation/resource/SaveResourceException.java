@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * Thrown when an exception was raised during resource saving
@@ -46,7 +46,7 @@ import org.openflexo.foundation.FlexoException;
  * @author sguerin
  * 
  */
-public class SaveResourceException extends FlexoException {
+public class SaveResourceException extends OpenflexoRuntimeException {
 
 	protected FlexoIODelegate<?> delegate;
 	protected Exception cause;

@@ -68,7 +68,7 @@ import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEnumNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoEventNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.FlexoExceptionConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoExceptionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AEnumDecl;
@@ -135,7 +135,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 						}
 					}
 					else if (exception != null) {
-						FlexoExceptionConceptNode exceptionNode = (FlexoExceptionConceptNode) analyzer.getFMLNode(exception);
+						FlexoExceptionNode exceptionNode = (FlexoExceptionNode) analyzer.getFMLNode(exception);
 						if (exceptionNode != null) {
 							return exceptionNode.getModelObject();
 						}
@@ -257,7 +257,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 			unresolvedTypes.add(fciType);
 			return fciType;
 		}
-		// Then look for a FlexoExceptionConcept in this ExecutionUnit
+		// Then look for a FlexoException in this ExecutionUnit
 		else if (foundExceptions.get(typeAsString) != null) {
 			FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 			unresolvedTypes.add(fciType);
@@ -443,7 +443,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		@Override
 		public void inAExceptionDecl(AExceptionDecl node) {
 			super.inAExceptionDecl(node);
-			// Found FlexoExceptionConcept
+			// Found FlexoException
 			foundExceptions.put(node.getUidentifier().getText(), node);
 		}
 

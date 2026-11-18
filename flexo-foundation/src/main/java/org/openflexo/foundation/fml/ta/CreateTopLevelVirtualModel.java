@@ -42,7 +42,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
@@ -165,7 +165,7 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 			} catch (InconsistentFlexoConceptHierarchyException e) {
 				throw new FMLTechnologyError("Cannot make " + getParentVirtualModelType().getName()
 						+ " the parent of the new virtual model: " + e.getMessage(), e);
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				throw new FMLTechnologyError("Cannot create the virtual model resource: " + e.getMessage(), e);
 			}
 		}

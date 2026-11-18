@@ -46,7 +46,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.validation.ValidationReport;
@@ -81,7 +81,7 @@ public class TestPingPong extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(2)
-	public void testPingPong() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void testPingPong() throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		pingPong = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/PingPong.fml");
@@ -97,7 +97,7 @@ public class TestPingPong extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void testPing() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void testPing() throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 
 		ping = pingPong.getVirtualModelNamed("Ping");
 		assertEquals("Ping", ping.getName());
@@ -112,7 +112,7 @@ public class TestPingPong extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testPong() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void testPong() throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 
 		pong = pingPong.getVirtualModelNamed("Pong");
 		assertEquals("Pong", pong.getName());

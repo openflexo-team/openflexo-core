@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -103,7 +103,7 @@ public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeA
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 
 		if (getFlexoConceptInstance() == null) {
 			throw new InvalidParametersException("Cannot execute a null FlexoConceptInstance");

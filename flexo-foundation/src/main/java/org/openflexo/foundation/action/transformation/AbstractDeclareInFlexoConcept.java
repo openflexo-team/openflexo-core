@@ -45,7 +45,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -232,7 +232,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 			} catch (ResourceLoadingCancelledException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

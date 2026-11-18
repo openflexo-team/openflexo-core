@@ -213,7 +213,7 @@ public interface ReflectedFMLRTModelSlotInstance<
 						e.printStackTrace();
 					} catch (ResourceLoadingCancelledException e) {
 						e.printStackTrace();
-					} catch (FlexoException e) {
+					} catch (OpenflexoRuntimeException e) {
 						e.printStackTrace();
 					}
 				}

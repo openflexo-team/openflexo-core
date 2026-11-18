@@ -51,7 +51,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
@@ -285,7 +285,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
 					e.printStackTrace();
-				} catch (FlexoException e) {
+				} catch (OpenflexoRuntimeException e) {
 					e.printStackTrace();
 				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
@@ -302,7 +302,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		private boolean isBuildingReferencedObject = false;
 
 		private FlexoObject buildReferencedObject() throws TypeMismatchException, NullReferenceException, FileNotFoundException,
-				ResourceLoadingCancelledException, FlexoException, ReflectiveOperationException {
+				ResourceLoadingCancelledException, OpenflexoRuntimeException, ReflectiveOperationException {
 
 			if (isBuildingReferencedObject) {
 				return null;
@@ -433,7 +433,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				resource.getResourceData();
 				// System.out.println("On retourne " + resource.findObject(objectIdentifier, userIdentifier));
 				return (FlexoObject) resource.findObject(objectIdentifier, userIdentifier);
-			} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
+			} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | OpenflexoRuntimeException e) {
 				logger.log(Level.SEVERE, "Error while finding object in resource '" + resource.getURI() + "'", e);
 			}
 			logger.warning("Cannot find object " + userIdentifier + "_" + objectIdentifier + " in resource " + resource);

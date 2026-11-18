@@ -43,7 +43,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -265,7 +265,7 @@ public interface AbstractFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA
 						e.printStackTrace();
 					} catch (ResourceLoadingCancelledException e) {
 						e.printStackTrace();
-					} catch (FlexoException e) {
+					} catch (OpenflexoRuntimeException e) {
 						e.printStackTrace();
 					}
 				}

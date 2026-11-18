@@ -43,7 +43,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 
@@ -120,7 +120,7 @@ public class SetPropertyAction extends FlexoAction<SetPropertyAction, FlexoObjec
 	 * @see org.openflexo.foundation.action.FlexoAction#doAction(java.lang.Object)
 	 */
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 		previousValue = getFocusedObject().objectForKey(getKey());
 		/*if (getFocusedObject() instanceof PortRegistery && getKey().equals("isVisible")) {
 			if (previousValue != null && !previousValue.equals(getValue())) {
@@ -132,8 +132,8 @@ public class SetPropertyAction extends FlexoAction<SetPropertyAction, FlexoObjec
 		try {
 			getFocusedObject().setObjectForKey(getValue(), getKey());
 		} catch (Exception exception) {
-			if (exception.getCause() instanceof FlexoException) {
-				throw (FlexoException) exception.getCause();
+			if (exception.getCause() instanceof OpenflexoRuntimeException) {
+				throw (OpenflexoRuntimeException) exception.getCause();
 			}
 			logger.warning("Unexpected exception: see log for details");
 			exception.printStackTrace();

@@ -120,8 +120,8 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		if (getParent() instanceof FlexoEventNode) {
 			((FlexoEventNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
 		}
-		if (getParent() instanceof FlexoExceptionConceptNode) {
-			((FlexoExceptionConceptNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
+		if (getParent() instanceof FlexoExceptionNode) {
+			((FlexoExceptionNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
 		}
 		// getModelObject().getLabel();
 		return this;

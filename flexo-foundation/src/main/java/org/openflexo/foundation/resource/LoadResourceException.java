@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * Thrown when an exception was raised during resource loading
@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoException;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class LoadResourceException extends FlexoException {
+public abstract class LoadResourceException extends OpenflexoRuntimeException {
 
 	protected FlexoResource<?> resource;
 

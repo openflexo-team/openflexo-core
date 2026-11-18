@@ -53,7 +53,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.annotations.NotificationUnsafe;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.md.FMLMetaData;
@@ -987,7 +987,7 @@ public interface VirtualModel extends FlexoConcept {
 				} catch (ResourceLoadingCancelledException e) {
 					e.printStackTrace();
 					return null;
-				} catch (FlexoException e) {
+				} catch (OpenflexoRuntimeException e) {
 					e.printStackTrace();
 					return null;
 				}

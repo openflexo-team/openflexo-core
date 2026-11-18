@@ -59,7 +59,7 @@ import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
@@ -560,13 +560,13 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 	/**
 	 * Reload the project
 	 * 
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
 	 */
 	@Test
 	@TestOrder(31)
-	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 
 		log("testReloadProject()");
 

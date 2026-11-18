@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.foundation.fml.rt.error.FMLInternalError;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -2146,7 +2146,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				// The generic deletion (user interface, release) deletes the instance even when its deletion scheme fails
 				try {
 					return deleteWithScheme(getApplicableDefaultDeletionScheme(), new LocalRunTimeEvaluationContext(), false);
-				} catch (FlexoException e) {
+				} catch (OpenflexoRuntimeException e) {
 					// Not thrown when failOnSchemeFailure is false
 					logger.warning("Unexpected " + e);
 					return false;
@@ -2210,7 +2210,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return deleteWithScheme(deletionScheme, evaluationContext, true);
 			} catch (FMLExecutionException e) {
 				throw e;
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				throw new FMLExecutionException(e);
 			}
 		}
@@ -2223,7 +2223,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            failure is logged and the instance is deleted anyway
 		 */
 		private boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext,
-				boolean failOnSchemeFailure) throws FlexoException {
+				boolean failOnSchemeFailure) throws OpenflexoRuntimeException {
 			if (isDeleted()) {
 				return false;
 			}
@@ -2237,7 +2237,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				try {
 					// A return ends the deletion scheme; a failure gets the frame of the scheme (CORE-F-11)
 					FMLExecution.executeBehaviourBody(deletionScheme.getControlGraph(), evaluationContext, deletionScheme, this);
-				} catch (FlexoException e) {
+				} catch (OpenflexoRuntimeException e) {
 					if (failOnSchemeFailure) {
 						throw e;
 					}

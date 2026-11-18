@@ -53,7 +53,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
@@ -357,7 +357,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 			throw new ProjectInitializerException(e, projectDirectory);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (FlexoException e) {
+		} catch (OpenflexoRuntimeException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -420,10 +420,10 @@ public class ProjectLoader extends FlexoServiceImpl {
 	 * @throws ProjectInitializerException
 	 * @throws FileNotFoundException
 	 * @throws ResourceLoadingCancelledException
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 */
 	private <I> FlexoProject<I> internalLoadProject(FlexoProjectResource<I> projectResource, boolean asImportedProject)
-			throws ProjectInitializerException, FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+			throws ProjectInitializerException, FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		LocalizedDelegate locales = getServiceManager().getLocalizationService().getFlexoLocalizer();
 
 		/*try {

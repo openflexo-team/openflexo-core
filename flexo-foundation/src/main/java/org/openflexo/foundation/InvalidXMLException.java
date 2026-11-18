@@ -47,7 +47,7 @@ import org.jdom2.JDOMException;
  * 
  */
 @SuppressWarnings("serial")
-public class InvalidXMLException extends FlexoException {
+public class InvalidXMLException extends OpenflexoRuntimeException {
 	private final JDOMException targetException;
 
 	public InvalidXMLException(JDOMException targetException) {

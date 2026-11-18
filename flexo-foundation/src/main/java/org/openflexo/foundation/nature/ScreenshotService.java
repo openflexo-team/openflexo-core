@@ -40,7 +40,7 @@ package org.openflexo.foundation.nature;
 
 import java.awt.image.BufferedImage;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -108,7 +108,7 @@ public interface ScreenshotService extends FlexoService {
 	}
 
 	@SuppressWarnings("serial")
-	public static class CouldNotGenerateScreenshotException extends FlexoException {
+	public static class CouldNotGenerateScreenshotException extends OpenflexoRuntimeException {
 
 	}
 }

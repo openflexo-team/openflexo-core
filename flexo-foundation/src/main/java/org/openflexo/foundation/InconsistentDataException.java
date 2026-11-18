@@ -47,7 +47,7 @@ import org.openflexo.pamela.exceptions.InvalidDataException;
  * 
  */
 @SuppressWarnings("serial")
-public class InconsistentDataException extends FlexoException {
+public class InconsistentDataException extends OpenflexoRuntimeException {
 	private final InvalidDataException targetException;
 
 	public InconsistentDataException(InvalidDataException targetException) {

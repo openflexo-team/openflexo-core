@@ -46,7 +46,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -91,7 +91,7 @@ public class TestCrossReferences extends FMLParserTestCase {
 	@Test
 	@TestOrder(2)
 	public void checkCrossReferences()
-			throws ParseException, ModelDefinitionException, IOException, ResourceLoadingCancelledException, FlexoException {
+			throws ParseException, ModelDefinitionException, IOException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		log("checkCrossReferences");
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
@@ -115,7 +115,7 @@ public class TestCrossReferences extends FMLParserTestCase {
 	@Test
 	@TestOrder(3)
 	public void loadCompilationUnit()
-			throws ParseException, ModelDefinitionException, IOException, ResourceLoadingCancelledException, FlexoException {
+			throws ParseException, ModelDefinitionException, IOException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		log("Initial version");
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();

@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * Thrown when {@link FlexoConcept} hierarchy is inconsistent (for example when a cycle has been detected)
@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoException;
  *
  */
 @SuppressWarnings("serial")
-public class InconsistentFlexoConceptHierarchyException extends FlexoException {
+public class InconsistentFlexoConceptHierarchyException extends OpenflexoRuntimeException {
 
 	public InconsistentFlexoConceptHierarchyException(String message) {
 		super(message);

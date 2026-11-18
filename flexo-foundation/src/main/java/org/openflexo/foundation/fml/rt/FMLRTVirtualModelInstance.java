@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -100,7 +100,7 @@ public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVir
 	/**
 	 * Instantiate a new {@link FlexoExceptionInstance}, not registered in this instance, to be thrown (CORE-F-11 phase 7)
 	 */
-	public FlexoExceptionInstance makeNewException(FlexoExceptionConcept exception, AbstractCreationScheme creationScheme,
+	public FlexoExceptionInstance makeNewException(FlexoException exception, AbstractCreationScheme creationScheme,
 			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class FMLRTVirtualModelInstanceImpl
@@ -153,7 +153,7 @@ public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVir
 		}
 
 		@Override
-		public FlexoExceptionInstance makeNewException(FlexoExceptionConcept exception, AbstractCreationScheme creationScheme,
+		public FlexoExceptionInstance makeNewException(FlexoException exception, AbstractCreationScheme creationScheme,
 				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 			return getFactory().makeNewExceptionInstance(exception, this, creationScheme, evaluationContext);
 		}

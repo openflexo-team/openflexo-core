@@ -46,7 +46,7 @@ import java.io.FileNotFoundException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -65,7 +65,7 @@ public class TestMetaData extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(1)
-	public void testLoadVirtualModel() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void testLoadVirtualModel() throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		instanciateTestServiceManager();
 
 		CompilationUnitResource vmRes = (CompilationUnitResource) serviceManager.getResourceManager()

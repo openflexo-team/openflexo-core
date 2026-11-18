@@ -223,7 +223,7 @@ public class FlexoConceptInstanceType implements FMLRTType, TechnologySpecificTy
 		if (getFlexoConcept() instanceof FlexoEvent) {
 			return FlexoEventInstance.class;
 		}
-		if (getFlexoConcept() instanceof FlexoExceptionConcept) {
+		if (getFlexoConcept() instanceof FlexoException) {
 			return FlexoExceptionInstance.class;
 		}
 		return FlexoConceptInstance.class;

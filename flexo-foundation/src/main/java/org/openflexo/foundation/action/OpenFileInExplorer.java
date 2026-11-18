@@ -45,7 +45,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.logging.FlexoLogger;
@@ -88,7 +88,7 @@ public class OpenFileInExplorer extends FlexoAction<OpenFileInExplorer, FlexoPro
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 
 		if (fileToOpen != null && fileToOpen.exists()) {
 			try {

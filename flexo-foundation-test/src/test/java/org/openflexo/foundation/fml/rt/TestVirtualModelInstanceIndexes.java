@@ -613,13 +613,13 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	/**
 	 * Instantiate in project a FMLRTVirtualModelInstance conform to the VirtualModel
 	 * 
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
 	 */
 	/*@Test
 	@TestOrder(20)
-	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 	
 		log("testReloadProject()");
 	

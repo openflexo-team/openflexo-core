@@ -43,7 +43,7 @@ import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.foundation.fml.validation.CheckedExceptions;
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import java.util.stream.Collectors;
 import java.util.Set;
@@ -463,7 +463,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 			if (!CheckedExceptions.isChecked(statement)) {
 				return null;
 			}
-			Set<FlexoExceptionConcept> raised = CheckedExceptions.raisedBy(statement);
+			Set<FlexoException> raised = CheckedExceptions.raisedBy(statement);
 			if (raised.isEmpty()) {
 				return null;
 			}
@@ -472,8 +472,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 			if (behaviour != null) {
 				handlers.addAll(CheckedExceptions.declaredHandlers(behaviour));
 			}
-			List<FlexoExceptionConcept> unhandled = new ArrayList<>();
-			for (FlexoExceptionConcept exception : raised) {
+			List<FlexoException> unhandled = new ArrayList<>();
+			for (FlexoException exception : raised) {
 				if (!CheckedExceptions.isCovered(exception, handlers)) {
 					unhandled.add(exception);
 				}
@@ -494,9 +494,9 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 
 		private final String exceptionNames;
 
-		public UnhandledExceptionIssue(R rule, V object, Collection<FlexoExceptionConcept> exceptions) {
+		public UnhandledExceptionIssue(R rule, V object, Collection<FlexoException> exceptions) {
 			super(rule, object, "unhandled_exceptions_($exceptionNames)_must_be_caught_or_declared");
-			exceptionNames = exceptions.stream().map(FlexoExceptionConcept::getName).collect(Collectors.joining(", "));
+			exceptionNames = exceptions.stream().map(FlexoException::getName).collect(Collectors.joining(", "));
 		}
 
 		public String getExceptionNames() {

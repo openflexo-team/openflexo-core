@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -130,7 +130,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	// private boolean actionExecutionSucceeded = false;
 
 	protected ExecutionStatus executionStatus = ExecutionStatus.NEVER_EXECUTED;
-	private FlexoException thrownException = null;
+	private OpenflexoRuntimeException thrownException = null;
 	private Throwable failure = null;
 
 	/**
@@ -240,7 +240,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			ExecutionScope scope = FMLErrorReporter.enterAction();
 			try {
 				doActionInContext();
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				if (scope != null) {
 					FMLErrorReporter.logFailure(this, e);
 				}
@@ -283,10 +283,10 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	/**
 	 * The checked failure of this action: a foreseen FML failure ({@link org.openflexo.foundation.fml.rt.error.FMLExecutionException} and its
-	 * subclasses) or any other {@link FlexoException}. Null for an unchecked failure (a defect of the platform), which
+	 * subclasses) or any other {@link OpenflexoRuntimeException}. Null for an unchecked failure (a defect of the platform), which
 	 * {@link #getFailure()} gives, and {@link #rethrowUncheckedFailure()} rethrows (CORE-F-11)
 	 */
-	public FlexoException getThrownException() {
+	public OpenflexoRuntimeException getThrownException() {
 		return thrownException;
 	}
 
@@ -347,7 +347,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return getExecutionStatus() == ExecutionStatus.HAS_BEEN_CANCELLED;
 	}
 
-	public A doActionInContext() throws FlexoException {
+	public A doActionInContext() throws OpenflexoRuntimeException {
 		thrownException = null;
 		failure = null;
 		// If the factory is not null, check that factory allows execution in its context; a condition that fails fails the action
@@ -356,7 +356,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			boolean enabled;
 			try {
 				enabled = getActionFactory().isEnabledForExecution(getFocusedObject(), getGlobalSelection());
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				executionStatus = ExecutionStatus.FAILED_EXECUTION;
 				thrownException = e;
 				failure = e;
@@ -374,7 +374,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			executionStatus = ExecutionStatus.EXECUTING_CORE;
 			doAction(getContext());
 			executionStatus = ExecutionStatus.HAS_SUCCESSFULLY_EXECUTED;
-		} catch (FlexoException e) {
+		} catch (OpenflexoRuntimeException e) {
 			// A cancellation cancels the callers of the cancelled action too, even when they wrapped it (CORE-F-11)
 			executionStatus = FMLErrorReporter.isCancellation(e) ? ExecutionStatus.HAS_BEEN_CANCELLED : ExecutionStatus.FAILED_EXECUTION;
 			thrownException = e;
@@ -389,7 +389,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return (A) this;
 	}
 
-	protected abstract void doAction(Object context) throws FlexoException;
+	protected abstract void doAction(Object context) throws OpenflexoRuntimeException;
 
 	public Object getContext() {
 		return context;

@@ -46,7 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
@@ -218,7 +218,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				getCompilationUnit().runWithoutMarkingModified(() -> {
 					try {
 						importDeclaration[0] = getCompilationUnit().ensureResourceImport(((ResourceData) value).getResource(), false);
-					} catch (FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
+					} catch (FileNotFoundException | ResourceLoadingCancelledException | OpenflexoRuntimeException e) {
 						e.printStackTrace();
 					}
 				});
@@ -268,7 +268,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			} catch (ResourceLoadingCancelledException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

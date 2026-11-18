@@ -60,7 +60,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
@@ -179,7 +179,7 @@ public abstract class CompilationUnitResourceImpl
 
 	/*@Override
 	public FMLCompilationUnit getResourceData()
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
 		System.out.println("OK on veut charger la resource " + this);
 		System.out.println("Infos: " + getVirtualModelInfo(getResourceCenter()));
 		System.exit(-1);
@@ -198,7 +198,7 @@ public abstract class CompilationUnitResourceImpl
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
 			e.printStackTrace();
-		} catch (FlexoException e) {
+		} catch (OpenflexoRuntimeException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -336,7 +336,7 @@ public abstract class CompilationUnitResourceImpl
 	private final List<CompilationUnitResourceImpl> resourcesToRevalidateOnceFinalized = new ArrayList<>();
 
 	@Override
-	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
 		// The second pass analyzes the bindings the first one deferred, and analyzing a binding sets its expression, which notifies its
 		// owner and marks this unit modified. That is still loading, not an edition: what was loaded from disk and not edited must not
 		// be proposed for saving (CORE-D-26)

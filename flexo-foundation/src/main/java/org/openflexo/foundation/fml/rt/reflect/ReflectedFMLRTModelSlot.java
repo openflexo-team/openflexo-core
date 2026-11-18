@@ -136,7 +136,7 @@ public interface ReflectedFMLRTModelSlot<VMI extends ReflectedVirtualModelInstan
 			} catch (ResourceLoadingCancelledException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

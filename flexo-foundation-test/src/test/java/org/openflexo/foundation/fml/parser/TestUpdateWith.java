@@ -44,7 +44,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
@@ -72,7 +72,7 @@ public class TestUpdateWith extends OpenflexoTestCase {
 	@Test
 	@TestOrder(1)
 	public void initServiceManager()
-			throws ParseException, ModelDefinitionException, IOException, ResourceLoadingCancelledException, FlexoException {
+			throws ParseException, ModelDefinitionException, IOException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		instanciateTestServiceManager();
 
 		// editor = new DefaultFlexoEditor(null, serviceManager);

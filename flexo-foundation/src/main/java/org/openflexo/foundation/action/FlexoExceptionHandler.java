@@ -39,13 +39,13 @@
 
 package org.openflexo.foundation.action;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 
 @FunctionalInterface
 public interface FlexoExceptionHandler<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
 	/**
-	 * Handles any {@link FlexoException} that may have occurred during the execution of the action.
+	 * Handles any {@link OpenflexoRuntimeException} that may have occurred during the execution of the action.
 	 * 
 	 * @param exception
 	 *            the thrown exception
@@ -53,5 +53,5 @@ public interface FlexoExceptionHandler<A extends FlexoAction<A, T1, T2>, T1 exte
 	 *            the action for which the exception occurred
 	 * @return true, if the {@link FlexoActionFinalizer} should be executed, false otherwise
 	 */
-	boolean handleException(FlexoException exception, A action);
+	boolean handleException(OpenflexoRuntimeException exception, A action);
 }

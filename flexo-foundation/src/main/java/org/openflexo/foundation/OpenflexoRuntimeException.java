@@ -40,33 +40,35 @@
 package org.openflexo.foundation;
 
 /**
- * Thrown when invoking modification on FLEXO model
+ * Base checked exception of the Openflexo platform (Java side). Not to be confused with
+ * {@link org.openflexo.foundation.fml.FlexoException}, the FML concept of an exception declared in FML.
+ * Formerly named <code>FlexoException</code>.
  * 
  * @author sguerin
  * 
  */
-public class FlexoException extends Exception {
+public class OpenflexoRuntimeException extends Exception {
 
 	// key used for localized messages, in FlexoLocalization
 	protected String _localizationKey;
 
-	public FlexoException() {
+	public OpenflexoRuntimeException() {
 		super();
 	}
 
-	public FlexoException(Throwable exception) {
+	public OpenflexoRuntimeException(Throwable exception) {
 		super(exception);
 	}
 
-	public FlexoException(String message) {
+	public OpenflexoRuntimeException(String message) {
 		super(message);
 	}
 
-	public FlexoException(String message, Throwable e) {
+	public OpenflexoRuntimeException(String message, Throwable e) {
 		super(message, e);
 	}
 
-	public FlexoException(String message, String localizationKey) {
+	public OpenflexoRuntimeException(String message, String localizationKey) {
 		super(message);
 		_localizationKey = localizationKey;
 	}

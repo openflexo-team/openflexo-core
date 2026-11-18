@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.FMLKeywords;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
@@ -64,19 +64,19 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * 
  */
 // TODO: is there a way to factorize code with FlexoConceptNode ???
-public class FlexoExceptionConceptNode extends AbstractFlexoConceptNode<AExceptionDecl, FlexoExceptionConcept> {
+public class FlexoExceptionNode extends AbstractFlexoConceptNode<AExceptionDecl, FlexoException> {
 
-	public FlexoExceptionConceptNode(AExceptionDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public FlexoExceptionNode(AExceptionDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 	}
 
-	public FlexoExceptionConceptNode(FlexoExceptionConcept exception, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public FlexoExceptionNode(FlexoException exception, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(exception, analyzer);
 	}
 
 	@Override
-	public FlexoExceptionConcept buildModelObjectFromAST(AExceptionDecl astNode) {
-		FlexoExceptionConcept returned = getFactory().newFlexoExceptionConcept();
+	public FlexoException buildModelObjectFromAST(AExceptionDecl astNode) {
+		FlexoException returned = getFactory().newFlexoException();
 		try {
 			returned.setName(astNode.getUidentifier().getText());
 		} catch (InvalidNameException e) {
@@ -98,7 +98,7 @@ public class FlexoExceptionConceptNode extends AbstractFlexoConceptNode<AExcepti
 	}
 
 	@Override
-	public FlexoExceptionConceptNode deserialize() {
+	public FlexoExceptionNode deserialize() {
 		if (getParent() instanceof VirtualModelNode) {
 			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
 		}
@@ -106,8 +106,8 @@ public class FlexoExceptionConceptNode extends AbstractFlexoConceptNode<AExcepti
 			// An exception declared in a concept (CORE-F-11 phase 7)
 			((FlexoConceptNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
 		}
-		if (getParent() instanceof FlexoExceptionConceptNode) {
-			((FlexoExceptionConceptNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
+		if (getParent() instanceof FlexoExceptionNode) {
+			((FlexoExceptionNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
 		}
 		return this;
 	}

@@ -43,7 +43,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
@@ -171,12 +171,12 @@ public class LocalizeCompilationUnit extends FlexoAction<LocalizeCompilationUnit
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 
 		FMLCompilationUnit compilationUnit = getCompilationUnit();
 		CompilationUnitResource compilationUnitResource = compilationUnitResourceOf(getFocusedObject());
 		if (compilationUnitResource == null) {
-			throw new FlexoException("No resource for " + compilationUnit);
+			throw new OpenflexoRuntimeException("No resource for " + compilationUnit);
 		}
 
 		dictionaryResource = compilationUnitResource.getLocalizedDictionaryResource();
@@ -191,7 +191,7 @@ public class LocalizeCompilationUnit extends FlexoAction<LocalizeCompilationUnit
 
 		dictionaryResource = makeDictionaryResource(compilationUnitResource);
 		if (dictionaryResource.getCompilationUnitResource() != compilationUnitResource) {
-			throw new FlexoException("Created " + dictionaryResource.getURI() + " but could not link it to " + compilationUnitResource.getURI());
+			throw new OpenflexoRuntimeException("Created " + dictionaryResource.getURI() + " but could not link it to " + compilationUnitResource.getURI());
 		}
 
 		LocalizedDelegate dictionary = dictionaryResource.getDictionary();
@@ -216,7 +216,7 @@ public class LocalizeCompilationUnit extends FlexoAction<LocalizeCompilationUnit
 	}
 
 	@SuppressWarnings("unchecked")
-	private <I> LocalizedDictionaryResource makeDictionaryResource(CompilationUnitResource compilationUnitResource) throws FlexoException {
+	private <I> LocalizedDictionaryResource makeDictionaryResource(CompilationUnitResource compilationUnitResource) throws OpenflexoRuntimeException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) compilationUnitResource.getResourceCenter();
 		I container = resourceCenter.getContainer((I) compilationUnitResource.getIODelegate().getSerializationArtefact());
@@ -228,7 +228,7 @@ public class LocalizeCompilationUnit extends FlexoAction<LocalizeCompilationUnit
 		try {
 			return factory.makeResource(directory, resourceCenter, true);
 		} catch (Exception e) {
-			throw new FlexoException("Could not create the localized dictionary of " + compilationUnitResource.getURI(), e);
+			throw new OpenflexoRuntimeException("Could not create the localized dictionary of " + compilationUnitResource.getURI(), e);
 		}
 	}
 }

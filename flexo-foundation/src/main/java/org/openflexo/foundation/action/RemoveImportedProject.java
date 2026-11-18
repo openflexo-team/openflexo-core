@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.project.FlexoProjectReference;
@@ -81,7 +81,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 		if (getProject() != null) {
 			String projectToRemoveURI = getProjectToRemoveURI();
 			FlexoProjectReference<?> projectReferenceWithURI = getProject().getProjectReferenceWithURI(projectToRemoveURI);

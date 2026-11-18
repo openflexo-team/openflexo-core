@@ -179,7 +179,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
-@Imports({ @Import(FlexoEvent.class), @Import(FlexoExceptionConcept.class), @Import(FlexoEnum.class) })
+@Imports({ @Import(FlexoEvent.class), @Import(FlexoException.class), @Import(FlexoEnum.class) })
 public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = VirtualModel.class)
@@ -3572,10 +3572,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				if (parent == null) {
 					continue;
 				}
-				if (flexoConcept instanceof FlexoExceptionConcept && !(parent instanceof FlexoExceptionConcept)) {
+				if (flexoConcept instanceof FlexoException && !(parent instanceof FlexoException)) {
 					return new ValidationError<>(this, flexoConcept, "exception_($validable.name)_extends_a_concept_which_is_not_an_exception");
 				}
-				if (!(flexoConcept instanceof FlexoExceptionConcept) && parent instanceof FlexoExceptionConcept) {
+				if (!(flexoConcept instanceof FlexoException) && parent instanceof FlexoException) {
 					return new ValidationError<>(this, flexoConcept, "concept_($validable.name)_extends_an_exception");
 				}
 			}
@@ -3598,7 +3598,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public ValidationIssue<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!(flexoConcept.isAbstract()) && !(flexoConcept instanceof VirtualModel) && !(flexoConcept instanceof FlexoEvent)
-					&& !(flexoConcept instanceof FlexoExceptionConcept)
+					&& !(flexoConcept instanceof FlexoException)
 					&& !(flexoConcept instanceof FlexoEnum) && !(flexoConcept instanceof FlexoEnumValue)
 					&& flexoConcept.getDeclaredProperties().size() == 0) {
 				return new ValidationWarning<>(this, flexoConcept,

@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoObservable;
@@ -127,7 +127,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 		logger.info("Add flexo concept instance in container " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
 		if (creationSchemeAction != null) {

@@ -39,9 +39,9 @@
 
 package org.openflexo.foundation.action;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
-public class InvalidParametersException extends FlexoException {
+public class InvalidParametersException extends OpenflexoRuntimeException {
 
 	/**
 	 * @param string

@@ -49,7 +49,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -111,12 +111,12 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * @param virtualModelURI
 	 *            URI of the VirtualModel, with or without the {@code .fml} suffix
 	 * @return the VirtualModel, null when no resource matches the URI
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
 	 */
 	public VirtualModel getVirtualModel(String virtualModelURI)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+			throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		return getVirtualModel(virtualModelURI, true);
 	}
 
@@ -128,12 +128,12 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * @param loadWhenRequired
 	 *            when true, load the resource if it is not loaded yet
 	 * @return the VirtualModel, null when no resource matches the URI
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
 	 */
 	public VirtualModel getVirtualModel(String virtualModelURI, boolean loadWhenRequired)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+			throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		CompilationUnitResource returned = getCompilationUnitResource(virtualModelURI);
 		if (returned == null && !virtualModelURI.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
 			returned = getCompilationUnitResource(virtualModelURI + CompilationUnitResourceFactory.FML_SUFFIX);
@@ -406,12 +406,12 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * 
 	 * @param flexoConceptName
 	 * @return
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
 	 */
 	public List<FlexoConcept> getAllFlexoConceptWithSimpleName(String flexoConceptName, boolean loadWhenRequired)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+			throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 
 		List<FlexoConcept> returned = new ArrayList<>();
 		for (CompilationUnitResource compilationUnitResource : getCompilationUnitResources()) {
@@ -445,12 +445,12 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 * 
 	 * @param flexoConceptName
 	 * @return
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
 	 */
 	public FlexoConcept getFirstConceptWithSimpleName(String flexoConceptName)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+			throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 
 		List<FlexoConcept> returned = getAllFlexoConceptWithSimpleName(flexoConceptName, false);
 		if (returned.size() > 0) {

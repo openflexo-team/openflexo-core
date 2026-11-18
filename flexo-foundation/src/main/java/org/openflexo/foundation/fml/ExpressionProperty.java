@@ -313,7 +313,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
 		@Override
 		public ValidationIssue<ExpressionMayNotRaiseCheckedExceptions, ExpressionProperty<?>> applyValidation(ExpressionProperty<?> property) {
-			Set<FlexoExceptionConcept> raised = CheckedExceptions.raisedBy(property.getExpression());
+			Set<FlexoException> raised = CheckedExceptions.raisedBy(property.getExpression());
 			if (raised.isEmpty()) {
 				return null;
 			}

@@ -130,7 +130,7 @@ public interface FreeModelSlotInstance<MS extends FreeModelSlot<RD, R>, R extend
 						e.printStackTrace();
 					} catch (ResourceLoadingCancelledException e) {
 						e.printStackTrace();
-					} catch (FlexoException e) {
+					} catch (OpenflexoRuntimeException e) {
 						e.printStackTrace();
 					}
 				}

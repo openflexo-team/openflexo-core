@@ -46,7 +46,7 @@ package org.openflexo.foundation;
  * 
  */
 @SuppressWarnings("serial")
-public class IOFlexoException extends FlexoException {
+public class IOFlexoException extends OpenflexoRuntimeException {
 	private final Exception _targetException;
 
 	public IOFlexoException(String message) {

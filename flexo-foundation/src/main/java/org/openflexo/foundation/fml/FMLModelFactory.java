@@ -539,8 +539,8 @@ public class FMLModelFactory extends PamelaModelFactory implements PamelaResourc
 		return newInstance(FlexoEvent.class);
 	}
 
-	public FlexoExceptionConcept newFlexoExceptionConcept() {
-		return newInstance(FlexoExceptionConcept.class);
+	public FlexoException newFlexoException() {
+		return newInstance(FlexoException.class);
 	}
 
 	public FlexoEnum newFlexoEnum() {

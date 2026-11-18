@@ -56,7 +56,7 @@ import org.junit.Test;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoAction.ExecutionStatus;
@@ -72,7 +72,7 @@ public class TestFMLErrorReporting {
 	private static class TestAction extends FlexoAction<TestAction, FlexoObject, FlexoObject> {
 
 		interface Body {
-			void run() throws FlexoException;
+			void run() throws OpenflexoRuntimeException;
 		}
 
 		private final Body body;
@@ -83,7 +83,7 @@ public class TestFMLErrorReporting {
 		}
 
 		@Override
-		protected void doAction(Object context) throws FlexoException {
+		protected void doAction(Object context) throws OpenflexoRuntimeException {
 			body.run();
 		}
 	}
@@ -119,7 +119,7 @@ public class TestFMLErrorReporting {
 
 	@Test
 	public void outermostCheckedFailureIsReportedAndKeptInStatus() {
-		FlexoException failure = new FMLExecutionException("checked");
+		OpenflexoRuntimeException failure = new FMLExecutionException("checked");
 		TestAction action = new TestAction(editor, () -> {
 			throw failure;
 		});

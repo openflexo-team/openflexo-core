@@ -42,7 +42,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -93,7 +93,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 		if (getFocusedObject() instanceof FlexoResource) {
 			if (getFocusedObject() instanceof FlexoProjectResource) {
 				logger.info("Loading project " + getFocusedObject());
@@ -103,7 +103,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 				try {
 					getServiceManager().getProjectLoaderService().loadProject(projectDirectory);
 				} catch (ProjectInitializerException e) {
-					throw new FlexoException(e);
+					throw new OpenflexoRuntimeException(e);
 				}
 			}
 			else if (!((FlexoResource<?>) getFocusedObject()).isLoaded()) {
@@ -114,7 +114,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 					((FlexoResource<?>) getFocusedObject()).getResourceData();
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new FlexoException(e);
+					throw new OpenflexoRuntimeException(e);
 				}
 				// progress.hideWindow();
 			}

@@ -46,7 +46,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -77,7 +77,7 @@ public class TestLoadProject extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(1)
-	public void testLoadProject() throws ModelDefinitionException, IOException, ResourceLoadingCancelledException, FlexoException {
+	public void testLoadProject() throws ModelDefinitionException, IOException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		instanciateTestServiceManager();
 		System.out.println("SM=" + serviceManager);
 		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();

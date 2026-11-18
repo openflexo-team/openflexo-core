@@ -92,10 +92,10 @@ import org.openflexo.pamela.annotations.ModelEntity;
  *
  */
 @ModelEntity
-@ImplementationClass(FlexoExceptionConcept.FlexoExceptionConceptImpl.class)
-public interface FlexoExceptionConcept extends FlexoConcept {
+@ImplementationClass(FlexoException.FlexoExceptionImpl.class)
+public interface FlexoException extends FlexoConcept {
 
-	public static abstract class FlexoExceptionConceptImpl extends FlexoConceptImpl implements FlexoExceptionConcept {
+	public static abstract class FlexoExceptionImpl extends FlexoConceptImpl implements FlexoException {
 
 	}
 

@@ -43,7 +43,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.pamela.undo.AtomicEdit;
 
@@ -60,7 +60,7 @@ public class TestFlexoUndoManager {
 		}
 
 		@Override
-		protected void doAction(Object context) throws FlexoException {
+		protected void doAction(Object context) throws OpenflexoRuntimeException {
 		}
 	}
 

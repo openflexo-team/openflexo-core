@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml;
 import java.io.FileNotFoundException;
 
 import org.openflexo.connie.type.CustomTypeFactory;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -224,7 +224,7 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			} catch (ResourceLoadingCancelledException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (FlexoException e) {
+			} catch (OpenflexoRuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

@@ -47,7 +47,7 @@ import java.util.Map;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 
 /**
  * The error types as FML sees them (CORE-F-11 phase 7).
@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.FlexoExceptionConcept;
  * <li>The built-in error types are named in FML by their simple name, without import, like {@code String}: {@link FMLError} and its
  * subclasses, and also the types that cannot be caught ({@link FMLInternalError}, {@link FMLCancellation}, the untyped
  * {@link FMLExecutionException}), so that naming one in a {@code catch} is reported as such rather than as an unknown type.</li>
- * <li>A {@code catch} clause names either one of the {@link FMLError} types (a Java class) or an FML exception ({@link FlexoExceptionConcept}). A built-in
+ * <li>A {@code catch} clause names either one of the {@link FMLError} types (a Java class) or an FML exception ({@link FlexoException}). A built-in
  * type catches an error of that class, an FML exception included ({@code catch (FMLError e)} catches every foreseen error); an FML
  * exception catches the {@link FMLUserError}s carrying an instance of it or of one of its sub exceptions.</li>
  * </ul>
@@ -124,9 +124,9 @@ public class FMLErrorTypes {
 	}
 
 	/** The FML exception that supplied type stands for, or null when it is not the instance type of an FML exception */
-	public static FlexoExceptionConcept getFlexoExceptionConcept(Type type) {
-		if (type instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) type).getFlexoConcept() instanceof FlexoExceptionConcept) {
-			return (FlexoExceptionConcept) ((FlexoConceptInstanceType) type).getFlexoConcept();
+	public static FlexoException getFlexoException(Type type) {
+		if (type instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) type).getFlexoConcept() instanceof FlexoException) {
+			return (FlexoException) ((FlexoConceptInstanceType) type).getFlexoConcept();
 		}
 		return null;
 	}
@@ -136,7 +136,7 @@ public class FMLErrorTypes {
 	 * defect of the platform), {@link FMLCancellation} (the user cancelled) and the untyped {@link FMLExecutionException} cannot be caught
 	 */
 	public static boolean isCatchable(Type type) {
-		if (getFlexoExceptionConcept(type) != null) {
+		if (getFlexoException(type) != null) {
 			return true;
 		}
 		Class<?> raw = type instanceof Class ? (Class<?>) type : null;
@@ -145,7 +145,7 @@ public class FMLErrorTypes {
 
 	/** Tell if supplied type may be thrown by FML: an FML exception, or a caught error (rethrown) */
 	public static boolean isThrowable(Type type) {
-		if (getFlexoExceptionConcept(type) != null) {
+		if (getFlexoException(type) != null) {
 			return true;
 		}
 		Class<?> raw = TypeUtils.getRawType(type);
@@ -154,7 +154,7 @@ public class FMLErrorTypes {
 
 	/** Tell if a {@code catch} clause naming supplied type catches supplied error */
 	public static boolean catches(Type catchType, FMLError error) {
-		FlexoExceptionConcept exception = getFlexoExceptionConcept(catchType);
+		FlexoException exception = getFlexoException(catchType);
 		if (exception != null) {
 			return error instanceof FMLUserError && ((FMLUserError) error).getExceptionInstance() != null
 					&& exception.isAssignableFrom(((FMLUserError) error).getExceptionInstance().getFlexoConcept());
@@ -165,8 +165,8 @@ public class FMLErrorTypes {
 
 	/** Tell if every error caught by a clause naming {@code wider} would be caught by a clause naming {@code narrower} before it */
 	public static boolean covers(Type wider, Type narrower) {
-		FlexoExceptionConcept wideException = getFlexoExceptionConcept(wider);
-		FlexoExceptionConcept narrowException = getFlexoExceptionConcept(narrower);
+		FlexoException wideException = getFlexoException(wider);
+		FlexoException narrowException = getFlexoException(narrower);
 		if (wideException != null) {
 			return narrowException != null && wideException.isAssignableFrom(narrowException);
 		}
@@ -184,7 +184,7 @@ public class FMLErrorTypes {
 	 * FML exception, the error itself otherwise
 	 */
 	public static Object caughtValue(Type catchType, FMLError error) {
-		if (getFlexoExceptionConcept(catchType) != null && error instanceof FMLUserError) {
+		if (getFlexoException(catchType) != null && error instanceof FMLUserError) {
 			return ((FMLUserError) error).getExceptionInstance();
 		}
 		return error;

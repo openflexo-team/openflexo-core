@@ -39,9 +39,9 @@
 
 package org.openflexo.foundation.action;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
-public class NotImplementedException extends FlexoException {
+public class NotImplementedException extends OpenflexoRuntimeException {
 
 	/**
 	 * @param string

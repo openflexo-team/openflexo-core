@@ -39,7 +39,7 @@
 
 package org.openflexo.foundation.ontology;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * Thrown when trying to use an existing URI
@@ -48,7 +48,7 @@ import org.openflexo.foundation.FlexoException;
  * 
  */
 @SuppressWarnings("serial")
-public class DuplicateURIException extends FlexoException {
+public class DuplicateURIException extends OpenflexoRuntimeException {
 
 	private final String uri;
 

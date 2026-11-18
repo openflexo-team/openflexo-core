@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.error.FMLUserError;
 import org.openflexo.pamela.annotations.Getter;
@@ -48,7 +48,7 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
- * An instance of a {@link FlexoExceptionConcept}, created by {@code new ExceptionType(...)} and raised by {@code throw} (CORE-F-11 phase 7).
+ * An instance of a {@link FlexoException}, created by {@code new ExceptionType(...)} and raised by {@code throw} (CORE-F-11 phase 7).
  * <p>
  * It is not registered in any virtual model instance. Once thrown, it knows the {@link FMLUserError} that carries it (with its FML stack):
  * throwing it again rethrows that very error.
@@ -70,7 +70,7 @@ public interface FlexoExceptionInstance extends FlexoConceptInstance {
 	public void setSourceVirtualModelInstance(VirtualModelInstance<?, ?> virtualModelInstance);
 
 	@Override
-	public FlexoExceptionConcept getFlexoConcept();
+	public FlexoException getFlexoConcept();
 
 	/**
 	 * The message of this exception: its string representation when its exception has a valid renderer, otherwise the name of the
@@ -94,8 +94,8 @@ public interface FlexoExceptionInstance extends FlexoConceptInstance {
 		private FMLUserError thrownError;
 
 		@Override
-		public FlexoExceptionConcept getFlexoConcept() {
-			return (FlexoExceptionConcept) super.getFlexoConcept();
+		public FlexoException getFlexoConcept() {
+			return (FlexoException) super.getFlexoConcept();
 		}
 
 		// Not registered in its virtual model instance: its owner is the instance it was created in, as for an event
@@ -125,7 +125,7 @@ public interface FlexoExceptionInstance extends FlexoConceptInstance {
 			StringBuilder sb = new StringBuilder(getFlexoConcept().getName());
 			boolean first = true;
 			for (FlexoProperty<?> property : getFlexoConcept().getAccessibleProperties()) {
-				if (!(property.getFlexoConcept() instanceof FlexoExceptionConcept)) {
+				if (!(property.getFlexoConcept() instanceof FlexoException)) {
 					// A property of the model enclosing the exception: not part of the exception
 					continue;
 				}

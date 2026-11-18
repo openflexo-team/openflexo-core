@@ -43,7 +43,7 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
@@ -398,7 +398,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @return the resource data.
 	 * @throws ResourceLoadingCancelledException
 	 */
-	public RD getResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public RD getResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException;
 
 	/**
 	 * Sets {@link ResourceData} for this resource
@@ -417,9 +417,9 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @throws ResourceLoadingCancelledException
 	 * @throws ResourceDependencyLoopException
 	 * @throws FileNotFoundException
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 */
-	public RD loadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public RD loadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException;
 
 	/**
 	 * Delete (dereference) resource data if resource data is loaded<br>

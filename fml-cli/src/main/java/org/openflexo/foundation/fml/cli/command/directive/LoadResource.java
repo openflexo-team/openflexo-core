@@ -43,7 +43,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
@@ -181,7 +181,7 @@ public interface LoadResource extends AssignableDirective<ALoadDirective> {
 
 					output.add(cmdOutput);
 					throw new FMLCommandExecutionException(e);
-				} catch (FlexoException e) {
+				} catch (OpenflexoRuntimeException e) {
 					cmdOutput = "Cannot load resource";
 
 					output.add(cmdOutput);

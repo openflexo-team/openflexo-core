@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -89,7 +89,7 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 
 	public void checkConsistency() throws FragmentConsistencyException;
 
-	public class FragmentConsistencyException extends FlexoException {
+	public class FragmentConsistencyException extends OpenflexoRuntimeException {
 		public FragmentConsistencyException(String message) {
 			super(message);
 		}

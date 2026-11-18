@@ -55,7 +55,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
@@ -524,7 +524,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData, boolean anonymous);
 
 	public <RD extends ResourceData<RD> & FlexoObject, R extends FlexoResource<RD>> ElementImportDeclaration ensureResourceImport(
-			R resource, boolean anonymous) throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException;
+			R resource, boolean anonymous) throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException;
 
 	public <RD extends ResourceData<RD> & FlexoObject, E extends InnerResourceData<RD> & FlexoObject> ElementImportDeclaration ensureElementImport(
 			E element, boolean anonymous);
@@ -1027,7 +1027,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
 					e.printStackTrace();
-				} catch (FlexoException e) {
+				} catch (OpenflexoRuntimeException e) {
 					e.printStackTrace();
 				}
 			}
@@ -1585,7 +1585,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject, R extends FlexoResource<RD>> ElementImportDeclaration ensureResourceImport(
-				R resource, boolean anonymous) throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+				R resource, boolean anonymous) throws FileNotFoundException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 			return ensureResourceImport(resource.getResourceData(), anonymous);
 		}
 

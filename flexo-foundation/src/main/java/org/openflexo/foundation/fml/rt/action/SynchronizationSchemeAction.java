@@ -42,7 +42,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -106,7 +106,7 @@ public class SynchronizationSchemeAction
 	}
 
 	@Override
-	protected void doAction(Object context) throws FlexoException {
+	protected void doAction(Object context) throws OpenflexoRuntimeException {
 
 		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(getFlexoConceptInstance())) {
 

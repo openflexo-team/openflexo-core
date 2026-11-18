@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * Thrown when attempting to create or rename an ProjectExternalRepository whose name is duplicated
@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoException;
  * 
  */
 @SuppressWarnings("serial")
-public class DuplicateExternalRepositoryNameException extends FlexoException {
+public class DuplicateExternalRepositoryNameException extends OpenflexoRuntimeException {
 
 	private final ProjectExternalRepository<?> repository;
 	private final String name;
@@ -72,7 +72,7 @@ public class DuplicateExternalRepositoryNameException extends FlexoException {
 	/**
 	 * Overrides getLocalizedMessage
 	 * 
-	 * @see org.openflexo.foundation.FlexoException#getLocalizedMessage()
+	 * @see org.openflexo.foundation.OpenflexoRuntimeException#getLocalizedMessage()
 	 */
 	@Override
 	public String getLocalizedMessage() {

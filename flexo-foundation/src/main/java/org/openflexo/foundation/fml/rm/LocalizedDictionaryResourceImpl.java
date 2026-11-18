@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rm;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLLocalizedDelegate;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -99,7 +99,7 @@ public abstract class LocalizedDictionaryResourceImpl extends FlexoResourceImpl<
 	public FMLLocalizedDictionary getLocalizedDictionary() {
 		try {
 			return getResourceData();
-		} catch (FlexoException | ResourceLoadingCancelledException | java.io.FileNotFoundException e) {
+		} catch (OpenflexoRuntimeException | ResourceLoadingCancelledException | java.io.FileNotFoundException e) {
 			logger.log(Level.WARNING, "Could not load localized dictionary " + getURI(), e);
 			return null;
 		}
@@ -123,10 +123,10 @@ public abstract class LocalizedDictionaryResourceImpl extends FlexoResourceImpl<
 	}
 
 	@Override
-	public FMLLocalizedDictionary loadResourceData() throws FlexoException {
+	public FMLLocalizedDictionary loadResourceData() throws OpenflexoRuntimeException {
 
 		if (getIODelegate() == null || getIODelegate().getSerializationArtefactAsResource() == null) {
-			throw new FlexoException("No serialization artefact for " + getURI());
+			throw new OpenflexoRuntimeException("No serialization artefact for " + getURI());
 		}
 
 		FMLLocalizedDictionary returned = FMLLocalizedDictionary.newInstance(new FMLLocalizedDelegate(this));

@@ -51,7 +51,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoExceptionConcept;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
@@ -101,9 +101,9 @@ public class TestExceptionsValidation extends OpenflexoTestCase {
 		// The exceptions and their hierarchy
 		FlexoConcept stockError = vm.getFlexoConcept("StockError");
 		FlexoConcept outOfStock = vm.getFlexoConcept("OutOfStock");
-		assertTrue(stockError instanceof FlexoExceptionConcept);
+		assertTrue(stockError instanceof FlexoException);
 		assertTrue(stockError.isAbstract());
-		assertTrue(outOfStock instanceof FlexoExceptionConcept);
+		assertTrue(outOfStock instanceof FlexoException);
 		assertTrue(stockError.isAssignableFrom(outOfStock));
 
 		// throws clauses: parsed, written back
@@ -115,7 +115,7 @@ public class TestExceptionsValidation extends OpenflexoTestCase {
 		// An exception declared in a concept is embedded in it
 		FlexoConcept box = vm.getFlexoConcept("Box");
 		assertNotNull(box);
-		assertTrue(box.getEmbeddedFlexoConcepts().stream().anyMatch(c -> c instanceof FlexoExceptionConcept && c.getName().equals("Locked")));
+		assertTrue(box.getEmbeddedFlexoConcepts().stream().anyMatch(c -> c instanceof FlexoException && c.getName().equals("Locked")));
 
 		// The try statement of firstMatchingClause(): three clauses, in order, the second naming an FML exception
 		TryStatement tryStatement = findTry(vm.getFlexoBehaviour("firstMatchingClause"));

@@ -41,7 +41,7 @@ package org.openflexo.foundation;
 
 import java.util.logging.Logger;
 
-public class InvalidArgumentException extends FlexoException {
+public class InvalidArgumentException extends OpenflexoRuntimeException {
 
 	private static final Logger logger = Logger.getLogger(InvalidArgumentException.class.getPackage().getName());
 

@@ -52,7 +52,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
@@ -129,12 +129,12 @@ public class TestURIManagement extends OpenflexoTestCase {
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws IOException
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Test
 	@TestOrder(1)
-	public void testTopLevelVirtualModel() throws ModelDefinitionException, IOException, ResourceLoadingCancelledException, FlexoException {
+	public void testTopLevelVirtualModel() throws ModelDefinitionException, IOException, ResourceLoadingCancelledException, OpenflexoRuntimeException {
 		instanciateTestServiceManager();
 		resourceCenter = makeNewDirectoryResourceCenter();
 		editor = new DefaultFlexoEditor(null, serviceManager);

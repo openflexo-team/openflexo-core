@@ -43,7 +43,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
@@ -108,7 +108,7 @@ public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSch
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, OpenflexoRuntimeException {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Delete FlexoConceptInstance using DeletionScheme");
 			logger.fine("getDeletionScheme()=" + getDeletionScheme());

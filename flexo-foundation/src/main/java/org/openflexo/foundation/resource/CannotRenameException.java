@@ -38,14 +38,14 @@
 
 package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * @author sylvain
  * 
  */
 @SuppressWarnings("serial")
-public class CannotRenameException extends FlexoException {
+public class CannotRenameException extends OpenflexoRuntimeException {
 
 	private final FlexoResource<?> resource;
 
@@ -68,7 +68,7 @@ public class CannotRenameException extends FlexoException {
 	/**
 	 * Overrides getLocalizedMessage
 	 * 
-	 * @see org.openflexo.foundation.FlexoException#getLocalizedMessage()
+	 * @see org.openflexo.foundation.OpenflexoRuntimeException#getLocalizedMessage()
 	 */
 	@Override
 	public String getLocalizedMessage() {

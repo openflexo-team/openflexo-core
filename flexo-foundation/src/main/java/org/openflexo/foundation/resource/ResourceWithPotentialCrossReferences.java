@@ -41,7 +41,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.FileNotFoundException;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
@@ -65,17 +65,17 @@ public interface ResourceWithPotentialCrossReferences<RD extends ResourceData<RD
 	 * @throws ResourceLoadingCancelledException
 	 * @throws ResourceDependencyLoopException
 	 * @throws FileNotFoundException
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 */
-	public RD initializeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public RD initializeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException;
 
 	/**
 	 * Finalize load resource data of this resource as a second pass
 	 * 
 	 * @throws ResourceLoadingCancelledException
 	 * @throws FileNotFoundException
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 */
-	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException;
 
 }

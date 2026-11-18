@@ -50,7 +50,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -221,13 +221,13 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	/**
 	 * Reload the project
 	 * 
-	 * @throws FlexoException
+	 * @throws OpenflexoRuntimeException
 	 * @throws ResourceLoadingCancelledException
 	 * @throws IOException
 	 */
 	@Test
 	@TestOrder(5)
-	public void testReloadProject() throws ResourceLoadingCancelledException, FlexoException, IOException {
+	public void testReloadProject() throws ResourceLoadingCancelledException, OpenflexoRuntimeException, IOException {
 
 		log("testReloadProject()");
 

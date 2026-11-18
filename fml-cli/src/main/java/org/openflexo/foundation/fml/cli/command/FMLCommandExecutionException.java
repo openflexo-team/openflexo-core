@@ -1,6 +1,6 @@
 package org.openflexo.foundation.fml.cli.command;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.fml.rt.error.FMLErrorReporter;
 import org.openflexo.foundation.fml.rt.error.FMLExecutionFailure;
 
@@ -16,7 +16,7 @@ import org.openflexo.foundation.fml.rt.error.FMLExecutionFailure;
  * 
  */
 @SuppressWarnings("serial")
-public class FMLCommandExecutionException extends FlexoException {
+public class FMLCommandExecutionException extends OpenflexoRuntimeException {
 
 	private int line = -1;
 	private String source;

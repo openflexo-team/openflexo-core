@@ -39,7 +39,7 @@
 
 package org.openflexo.foundation.utils;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 
 /**
  * Must be thrown whenever the user or flexo choose to cancel <i>open project procedure</i>. It can append whenever user choose it, or flexo
@@ -52,7 +52,7 @@ import org.openflexo.foundation.FlexoException;
  * <li>prj version is higher than current flexo version (i.e. the prj has been modified by a newer version of Flexo)</li>
  * </ul>
  */
-public class ProjectLoadingCancelledException extends FlexoException {
+public class ProjectLoadingCancelledException extends OpenflexoRuntimeException {
 
 	public ProjectLoadingCancelledException(String message) {
 		super();

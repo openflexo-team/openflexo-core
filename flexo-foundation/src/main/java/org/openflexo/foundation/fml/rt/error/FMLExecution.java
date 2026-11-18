@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rt.error;
 import org.openflexo.connie.binding.javareflect.AccessorInvocationException;
 import org.openflexo.connie.binding.javareflect.InvalidKeyValuePropertyException;
 import org.openflexo.connie.exception.BindingEvaluationException;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.OpenflexoRuntimeException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -122,7 +122,7 @@ public class FMLExecution {
 	 */
 	public static void rethrowFailure(FlexoAction<?, ?, ?> action) throws FMLExecutionException {
 		action.rethrowUncheckedFailure();
-		FlexoException thrown = action.getThrownException();
+		OpenflexoRuntimeException thrown = action.getThrownException();
 		if (thrown instanceof FMLExecutionException) {
 			throw (FMLExecutionException) thrown;
 		}

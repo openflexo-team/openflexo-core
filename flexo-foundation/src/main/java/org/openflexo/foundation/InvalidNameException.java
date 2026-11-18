@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLObject;
 
-public class InvalidNameException extends FlexoException {
+public class InvalidNameException extends OpenflexoRuntimeException {
 
 	private static final Logger logger = Logger.getLogger(InvalidNameException.class.getPackage().getName());
 
