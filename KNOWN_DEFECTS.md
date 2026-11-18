@@ -493,42 +493,6 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 **Workaround.** Put the logic to reuse in a separate behaviour of the parent and call it on `this`: with
 `public String baseHello() { return "hello"; }` in `Base`, `return "left " + this.baseHello();` gives `left hello` (verified).
 
----
-
-### CORE-D-89 — A concept of a child VirtualModel cannot instantiate a concept inherited from the parent VirtualModel  ·  `TODO`
-
-**GitHub:** [openflexo-team/openflexo-core#27](https://github.com/openflexo-team/openflexo-core/issues/27)
-
-**Symptom (2025, version 2.99).** `FMLExecutionException: Cannot instanciate a FlexoConceptInstance : null FlexoConcept container`
-(`FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance`) when the creation scheme of `TestConceptB`, a concept of
-`TestModelB extends TestModelA`, runs `TestConceptA a = new TestConceptA();` where `TestConceptA` belongs to `TestModelA`.
-
-**Verified (2026-11-17, branch 3.0, fml-cli script).** The original error is no longer reachable: the VirtualModel is now rejected at validation with
-`cannot instantiate TestConceptA in TestConceptB: TestConceptA is not nested in TestConceptB, use container.new TestConceptA(...)`.
-But the suggested form does not work either: with `container.new TestConceptA()` the creation fails with
-`cannot instantiate TestConceptA in KDGh27C`. So a concept inherited from the parent VirtualModel cannot be instantiated from a concept of the child.
-
-**To decide.** Is it intended (a concept can only be instantiated through its own container, and the child VirtualModel is not that container) or a gap?
-If intended, the message should not suggest `container.new` in that case.
-
-**Reproduction.** Temporary fixtures `KDGh27A`, `KDGh27B`, `KDGh27C`, to become `KnownDefects/CORE-D-89.fmlscript`.
-
-**Original report** by `hibahnaini`, 2025-09-24 (issue openflexo-core#27):
-
-> Erorr: org.openflexo.foundation.fml.rt.FMLExecutionException: Cannot instanciate a FlexoConceptInstance : null FlexoConcept container
-> 	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance(FMLRTVirtualModelInstanceModelFactory.java:132)
-> 	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance$FMLRTVirtualModelInstanceImpl.makeNewFlexoConceptInstance(FMLRTVirtualModelInstance.java:141)
-> 	at org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction.doAction(AbstractCreationSchemeAction.java:175)
-> 	at org.openflexo.foundation.fml.rt.action.CreationSchemeAction.doAction(CreationSchemeAction.java:118)
-> 	at org.openflexo.foundation.action.FlexoAction.doActionInContext(FlexoAction.java:271)
-> 	at org.openflexo.view.controller.InteractiveFlexoEditor.runAction(InteractiveFlexoEditor.java:224)
-> 	at org.openflexo.view.controller.InteractiveFlexoEditor.doExecuteAction(InteractiveFlexoEditor.java:191)
-> 	at org.openflexo.view.controller.InteractiveFlexoEditor.executeAction(InteractiveFlexoEditor.java:181)
-> 	at org.openflexo.view.controller.InteractiveFlexoEditor.performAction(InteractiveFlexoEditor.java:141)
-> 	at org.openflexo.foundation.action.FlexoAction.doAction(FlexoAction.java:231)
-> 
-> [BugTest.zip](https://github.com/user-attachments/files/22511020/BugTest.zip)
-
 ## FML expressions
 
 ### CORE-D-19 — A method call on a string literal gives null  ·  `TODO`

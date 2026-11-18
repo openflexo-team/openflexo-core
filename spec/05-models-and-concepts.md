@@ -115,8 +115,8 @@ Containment is a structural fact with consequences.
 * **At run time**, an instance of a nested concept lives inside an instance of its container: a book created by
   a shelf is contained in that shelf and its `container` is that shelf (§13.2).
 * **In the address** of the concept: `…/Library.fml#Shelf#Book` (§4.3).
-* **For creation**: a bare `new Book(…)` in a behaviour of `Shelf` creates a `Book` in the current shelf
-  (§9.7); a concept that is not nested in the current one is created through its container, `container.new X(…)`.
+* **For creation**: a bare `new Book(…)` in a behaviour of `Shelf` creates a `Book` in the current shelf; a `new`
+  climbs the containment tree to the nearest object that can hold the instance (§9.7, chapter 14).
 * **For queries**: `select X from this` searches what `this` contains, nested instances included (§10.2).
 
 A nested concept is named by its simple name from anywhere in the unit (§4.8).

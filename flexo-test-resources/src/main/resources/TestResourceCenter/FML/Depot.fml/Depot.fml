@@ -1,6 +1,7 @@
 /**
  * Creating an instance from a behaviour of a concept: a nested concept is created inside the current
- * instance, a concept declared elsewhere needs container.new. See TestDepot.fmlscript.
+ * instance, a concept declared at the model level is created in the model (the new climbs the containment tree,
+ * CORE-F-18). See TestDepot.fmlscript and Containment.fml.
  */
 
 @URI("http://openflexo.org/test/TestResourceCenter/Depot.fml")

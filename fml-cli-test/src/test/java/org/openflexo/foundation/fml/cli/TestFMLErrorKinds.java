@@ -198,7 +198,7 @@ public class TestFMLErrorKinds extends FMLScriptParserTestCase {
 
 	@Test
 	public void bareNewOfAModelConcept() throws Exception {
-		assertError(runScript("BareNewOfModelConcept.fmlscript"), FMLResolutionError.class, "bareTool(name)", 34);
+		assertError(runScript("BareNewOfModelConcept.fmlscript"), FMLResolutionError.class, "orphanBeta(name)", 27);
 	}
 
 	@Test

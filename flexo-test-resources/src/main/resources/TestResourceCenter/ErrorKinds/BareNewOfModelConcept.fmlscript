@@ -1,6 +1,6 @@
-// CORE-F-11: a bare new of a concept declared at the model level is an invalid binding: an FMLResolutionError when it runs, no longer null.
-virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Depot.fml"];
+// CORE-F-11, CORE-F-18: a new of a nested concept that no container can hold (a Beta is nested in an Alpha, and the model is not one)
+// is an invalid binding: an FMLResolutionError when it runs, no longer null.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Containment.fml"];
 service ResourceCenterService add_temp_rc;
-depot = new Depot() with (name="depot");
-bin = depot.newBin("b1");
-mustFail = bin.bareTool("saw");
+c = new Containment() with (name="c");
+mustFail = c.orphanBeta("beta");

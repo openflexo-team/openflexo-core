@@ -219,7 +219,7 @@ match Holder in ms from this where (w = wr) unmatched: new Holder(wr)
 **Acceptance criteria.** The same `where (…)` reads and behaves the same in `select` and in `match`; the existing `.fml` of the
 repositories still load and are migrated (no `=` left in a `where`); the use of `=` is reported as deprecated; round trip of the pretty-print; tests on the matching engine unchanged in behaviour.
 
-### CORE-F-18 — `new` resolves its container by climbing the containment tree  ·  `TODO`
+### CORE-F-18 — `new` resolves its container by climbing the containment tree  ·  `DONE`
 
 **GitHub:** [openflexo-team/openflexo-core#131](https://github.com/openflexo-team/openflexo-core/issues/131)
 
@@ -241,17 +241,25 @@ tree. `p.new X()` is as strict: the type of `p` must be compatible as it is.
 - Starting point: the object designated by the container path (`p` in `p.new X()`), or `this` when there is none. It is itself a candidate.
 - The containment chain is climbed (instance, its container, …, the VirtualModelInstance, a containing VirtualModelInstance); the **nearest**
   compatible ancestor hosts the new instance, with no ambiguity error. `new ConceptB()` in a `ConceptB` creates a sibling.
-- The same rule applies to an explicit container and to the implicit one, and to the instantiation of a VirtualModel (`new MyVM()`): the nearest
+- The same rule applies to an explicit container and to the implicit one, and to the instantiation of a VirtualModel (`new MyVM()`); an event or an exception does not climb: the nearest
   VirtualModelInstance compatible with the container VirtualModel; with none, the current behaviour (`rc` / `path` / `folder`) is kept.
 - No change of syntax, grammar or pretty-print: a bare `new` stays bare, `this` is never added.
 - A program valid today keeps its meaning (the starting point is tried first).
 - Specified in a dedicated page of the FML specification, `spec/14-instantiation-and-containment.md`; §9.7, §7.6, §13.2 and the chapter 5
   point to it.
 
-**To settle.**
-- Static check on the declared type against run-time climb on the dynamic type (a sub-concept can match nearer): accepted, frozen by a test.
-- `new MyVM()` with no hosting VirtualModelInstance: fallback to `rc` / `path` / `folder`, to confirm.
-- How far `CORE-D-89` is fixed here (roots inherited from a parent VirtualModel).
+**Settled while implementing (2026-11-18).**
+- Static check on the declared type, run-time climb on the dynamic type: a sub-concept may match nearer, which is accepted; the static check is
+  lenient for a behaviour of an ancestor (the model climbed is a parent of the declaring model, the concept of the starting object a parent of the
+  container concept), and the run time decides.
+- A virtual model that declares a container model needs a hosting model instance (`FMLResolutionError` otherwise): `rc` / `path` / `folder` apply
+  only to a model with no container model, which does not climb.
+- An event or an exception does not climb: it belongs to the model instance of the starting object (its source, where the listeners are looked up).
+- An `unmatched: new X()` is evaluated from `this`, not from the `from` container of the `match` (unchanged by this change).
+- A nested concept created by a bare `new` from a behaviour of the model is now an invalid binding (it used to run, with no container).
+- `CORE-D-89` is fixed by the same climb (`AutomatedTests/CORE-D-89.fmlscript`).
+- Left out: `FMLRT::NewFlexoConceptInstance` / `AddFlexoConceptInstance` keep an exact container; a test with a declared type that differs from the
+  run-time type; a test of a saved and reloaded instance.
 
 **Acceptance criteria.** In the context of a `ConceptB`: `new ConceptA()` hosts under the VirtualModelInstance, `new ConceptB()` creates a
 sibling, `p.new ConceptA()` with `p` typed `ConceptB` is valid; the nearest ancestor wins when a concept can contain itself; a concept with no

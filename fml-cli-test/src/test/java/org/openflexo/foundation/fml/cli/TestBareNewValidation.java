@@ -40,33 +40,27 @@ package org.openflexo.foundation.fml.cli;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.test.FMLScriptParserTestCase;
-import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationReport;
 
 /**
- * A bare {@code new} of a concept that is not nested in the concept of the behaviour is an invalid binding, reported by validation
- * ({@code bareTool} in {@code Depot.fml}); a bare {@code new} of a nested concept and a {@code container.new} are valid. Their
- * execution is checked by {@code TestDepot.fmlscript}.
+ * A bare {@code new} of a concept declared at the model level, written in a behaviour of a concept, climbs to the model to find its
+ * container (CORE-F-18): {@code Depot.fml} is valid. Its execution is checked by {@code TestDepot.fmlscript}; the cases that cannot be
+ * hosted are those of {@link TestContainmentValidation}.
  */
 public class TestBareNewValidation extends FMLScriptParserTestCase {
 
 	@Test
-	public void bareNewOfAConceptNotNestedIsReported() throws Exception {
+	public void bareNewClimbsToTheContainer() throws Exception {
 		instanciateTestServiceManager();
 		VirtualModel vm = serviceManager.getVirtualModelLibrary().getVirtualModel("http://openflexo.org/test/TestResourceCenter/Depot.fml");
 		assertNotNull(vm);
 		ValidationReport report = validate(vm);
-		// Exactly one error: the bare new Tool(...) of Bin.bareTool; Bin.newSlot (bare new of a nested concept) and
-		// Bin.containerTool (container.new) are valid
-		assertEquals("Errors: " + report.getAllErrors(), 1, report.getAllErrors().size());
-		ValidationError<?, ?> error = report.getAllErrors().iterator().next();
-		assertTrue("Unexpected error on " + error.getValidable(), error.getValidable() instanceof FMLObject
-				&& ((FMLObject) error.getValidable()).getStringRepresentation().contains("new Tool("));
+		// Bin.bareTool (bare new of a model concept, hosted by the model), Bin.newSlot (bare new of a nested concept) and
+		// Bin.containerTool (container.new) are all valid
+		assertEquals("Errors: " + report.getAllErrors(), 0, report.getAllErrors().size());
 	}
 }

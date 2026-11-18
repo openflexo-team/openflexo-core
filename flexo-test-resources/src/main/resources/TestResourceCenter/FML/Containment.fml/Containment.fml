@@ -1,0 +1,219 @@
+/**
+ * Where a new puts the instance it creates (CORE-F-18): in the nearest container found by climbing the containment tree from the object
+ * designated by the container path of the new, or from this when there is none. See TestContainment.fmlscript and
+ * TestContainmentValidation (fml-cli-test).
+ *
+ * Containment tree: Containment holds Root and Alpha, Alpha holds Beta and SubAlpha (a specialization of Alpha, nested in Alpha),
+ * Beta holds Leaf; Special extends Beta, nested in Alpha.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/Containment.fml")
+public model Containment {
+
+	create() {
+	}
+
+	// From the model: a concept at the root, a nested concept through its container
+	public Root makeRoot(String name) {
+		return new Root(name);
+	}
+
+	public Alpha makeAlpha(String name) {
+		return new Alpha(name);
+	}
+
+	// A nested concept cannot be created in the model: there is no Alpha to hold it
+	public Beta orphanBeta(String name) {
+		return new Beta(name);
+	}
+
+	exception Refusal {
+		String reason;
+
+		create(String reason) {
+			this.reason = reason;
+		}
+	}
+
+	public concept Root {
+
+		String name;
+
+		create(String name) {
+			this.name = name;
+		}
+	}
+
+	public concept Alpha {
+
+		String name;
+
+		create(String name) {
+			this.name = name;
+		}
+
+		// A nested concept: created in the current instance
+		public Beta makeBeta(String name) {
+			return new Beta(name);
+		}
+
+		// The current instance is an Alpha, nested in the model: a new Alpha is its sibling
+		public Alpha makeAlphaSibling(String name) {
+			return new Alpha(name);
+		}
+
+		public Root makeRoot(String name) {
+			return new Root(name);
+		}
+
+		public String refuse() throws Refusal {
+			throw new Refusal("refused");
+		}
+
+		public concept Beta {
+
+			String name;
+
+			create(String name) {
+				this.name = name;
+			}
+
+			// Climbs to the Alpha that holds this Beta
+			public Beta makeBetaSibling(String name) {
+				return new Beta(name);
+			}
+
+			// Climbs to the model that holds the Alpha
+			public Alpha makeAlphaAbove(String name) {
+				return new Alpha(name);
+			}
+
+			public Root makeRootAbove(String name) {
+				return new Root(name);
+			}
+
+			public Leaf makeLeaf(String name) {
+				return new Leaf(name);
+			}
+
+			// An explicit container that is not the container of the concept: the climb starts from it
+			public Alpha makeAlphaFrom(Beta other, String name) {
+				return other.new Alpha(name);
+			}
+
+			public Beta makeBetaFrom(Alpha holder, String name) {
+				return holder.new Beta(name);
+			}
+
+			public Beta makeBetaFromBeta(Beta other, String name) {
+				return other.new Beta(name);
+			}
+
+			public concept Leaf {
+
+				String name;
+
+				create(String name) {
+					this.name = name;
+				}
+
+				// Two levels up: the Alpha that holds the Beta that holds this Leaf
+				public Beta makeBetaTwoLevelsUp(String name) {
+					return new Beta(name);
+				}
+
+				public Alpha makeAlphaThreeLevelsUp(String name) {
+					return new Alpha(name);
+				}
+
+				public Leaf makeLeafSibling(String name) {
+					return new Leaf(name);
+				}
+			}
+		}
+
+		// A specialization of Beta, nested in Alpha like Beta
+		public concept Special extends Beta {
+
+			create(String name) {
+				this.name = name;
+			}
+
+			public Alpha makeAlphaFromSpecial(String name) {
+				return new Alpha(name);
+			}
+
+			public Beta makeBetaFromSpecial(String name) {
+				return new Beta(name);
+			}
+		}
+
+		// A specialization of Alpha, nested in Alpha: an Alpha itself, so the nearest host of a Beta is the SubAlpha, not the Alpha around it
+		public concept SubAlpha extends Alpha {
+
+			create(String name) {
+				this.name = name;
+			}
+
+			public Beta makeBetaNearest(String name) {
+				return new Beta(name);
+			}
+		}
+	}
+
+	// A Root has no container: a new Root from a Root is another Root of the model
+	public concept Other {
+
+		String name;
+
+		create(String name) {
+			this.name = name;
+		}
+
+		public Root makeRootFromOther(String name) {
+			return new Root(name);
+		}
+
+		public Alpha makeAlphaFromOther(String name) {
+			return new Alpha(name);
+		}
+	}
+
+	event Ping {
+		int value;
+
+		create(int value) {
+			this.value = value;
+		}
+	}
+
+	public concept Sender {
+
+		create() {
+		}
+
+		// An event and an exception are not nested in a concept: fired from a concept, they belong to the model
+		public fireFromConcept() {
+			fire new Ping(7);
+		}
+
+		public makeRefusal() throws Refusal {
+			throw new Refusal("from a concept");
+		}
+
+		public String catchRefusal() {
+			try {
+				this.makeRefusal();
+			} catch (Refusal e) {
+				return e.reason;
+			}
+			return "none";
+		}
+	}
+
+	int received = 0;
+
+	listen Ping from this {
+		received = evt.value;
+	}
+}

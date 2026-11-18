@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.binding;
 
 import org.openflexo.foundation.fml.rt.error.FMLTechnologyError;
+import org.openflexo.foundation.fml.rt.error.FMLResolutionError;
 import org.openflexo.foundation.fml.rt.error.FMLTypeError;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -72,6 +73,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
+import org.openflexo.foundation.fml.FMLContainerResolver;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoEvent;
@@ -509,6 +511,37 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			return getFMLPropertyValues() != null && getFMLPropertyValues().size() > 0;
 		}
 
+		/**
+		 * Check that a container for the instantiated concept can be reached by climbing the containment tree from the supplied starting
+		 * concept (CORE-F-18). Return true, leaving the check unchanged, when it can; otherwise return false and the check is invalid, with
+		 * the reason
+		 */
+		private boolean checkContainerIsReachable(BindingPathCheck check, FlexoConcept start) {
+			FlexoConcept instantiated = getFlexoConcept();
+			if (instantiated == null || start == null) {
+				return true;
+			}
+			FMLContainerResolver.Resolution resolution = FMLContainerResolver.resolve(start, instantiated);
+			if (resolution.isResolved()) {
+				return true;
+			}
+			String expected;
+			if (instantiated instanceof VirtualModel) {
+				expected = "a virtual model instance of " + ((VirtualModel) instantiated).getContainerVirtualModel().getName();
+			}
+			else if (instantiated instanceof FlexoEvent || instantiated instanceof FlexoException
+					|| instantiated.getApplicableContainerFlexoConcept() == null) {
+				expected = "a virtual model instance declaring " + instantiated.getName();
+			}
+			else {
+				expected = "an instance of " + instantiated.getApplicableContainerFlexoConcept().getName();
+			}
+			check.invalidBindingReason = "cannot instantiate " + instantiated.getName() + " in " + start.getName() + ": no container ("
+					+ expected + ") can be reached from " + start.getName() + " (looked at: " + resolution.describeClimbed() + ")";
+			check.valid = false;
+			return false;
+		}
+
 		@Override
 		public BindingPathCheck checkBindingPathIsValid(IBindingPathElement parentElement, Type parentType) {
 
@@ -534,70 +567,22 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				}
 
 				if (parentType instanceof FlexoConceptInstanceType) {
-
-					FlexoConcept parentContext = ((FlexoConceptInstanceType) parentType).getFlexoConcept();
-					if (parentContext instanceof VirtualModel) {
-						VirtualModel vm = (VirtualModel) parentContext;
-						if (getFlexoConcept() instanceof VirtualModel) {
-							// A VirtualModel inside another VirtualModel
-							// A root VirtualModel declares no container, and may be instantiated in any VirtualModelInstance
-							VirtualModel containerVirtualModel = ((VirtualModel) getFlexoConcept()).getContainerVirtualModel();
-							if (containerVirtualModel != null && !containerVirtualModel.isAssignableFrom(vm)) {
-								check.invalidBindingReason = "cannot instantiate " + getFlexoConcept().getName() + " in "
-										+ parentContext.getName();
-								check.valid = false;
-								return check;
-							}
-						}
-						else {
-							// A simple FlexoConcept in a VirtualModel
-							if (!vm.getAllRootFlexoConcepts().contains(getFlexoConcept())) {
-								check.invalidBindingReason = "cannot instantiate " + getFlexoConcept().getName() + " in "
-										+ parentContext.getName();
-								check.valid = false;
-								return check;
-							}
-						}
-					}
-					else if (parentContext instanceof FlexoConcept) {
-
-						FlexoConcept applicableContainer = getCreationScheme().getFlexoConcept().getApplicableContainerFlexoConcept();
-
-						if (applicableContainer == null) {
-							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
-									+ parentContext.getName() + " because no applicable container declared for this constructor";
-							check.valid = false;
-							return check;
-						}
-						else if (!applicableContainer.isAssignableFrom(parentContext)) {
-							check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
-									+ parentContext.getName() + " because no applicable container is not assignable from "
-									+ parentContext.getName();
-							check.valid = false;
-							return check;
-						}
+					// The instance is created in the nearest container found by climbing the containment tree from the instance
+					// designated by the parent path (CORE-F-18)
+					if (!checkContainerIsReachable(check, ((FlexoConceptInstanceType) parentType).getFlexoConcept())) {
+						return check;
 					}
 				}
 			}
 
-			else if (getFlexoConcept() != null && !(getFlexoConcept() instanceof VirtualModel) && !(getFlexoConcept() instanceof FlexoEvent)
-					&& !(getFlexoConcept() instanceof FlexoException)
-					&& getBindable() instanceof FlexoConceptObject && !(getBindable() instanceof MatchFlexoConceptInstance)) {
-				// A bare new, written in a behaviour of a concept: the instance is created inside the current instance, so the
-				// instantiated concept must be nested in the concept of the behaviour (or in one of its parents); a concept declared
-				// elsewhere needs container.new (the same rule as for an explicit receiver, above). The unmatched: new of a match
-				// is not concerned: it creates the instance in the container of the match (CORE-D-41)
+			else if (getFlexoConcept() != null && getBindable() instanceof FlexoConceptObject
+					&& !(getBindable() instanceof MatchFlexoConceptInstance)) {
+				// A bare new: the instance is created in the nearest container found by climbing the containment tree from the current
+				// instance, so the concept of the behaviour is the starting point. The unmatched: new of a match is not checked: it is evaluated
+				// like any new, from this, and not from the container of the match (CORE-D-41)
 				FlexoConcept context = ((FlexoConceptObject) getBindable()).getFlexoConcept();
-				if (context != null && !(context instanceof VirtualModel)) {
-					FlexoConcept applicableContainer = getFlexoConcept().getApplicableContainerFlexoConcept();
-					// A behaviour of a parent concept may create a concept nested in one of its children: it succeeds when run on an
-					// instance of that child
-					if (applicableContainer == null
-							|| !(applicableContainer.isAssignableFrom(context) || context.isAssignableFrom(applicableContainer))) {
-						check.invalidBindingReason = "cannot instantiate " + getFlexoConcept().getName() + " in " + context.getName()
-								+ ": " + getFlexoConcept().getName() + " is not nested in " + context.getName() + ", use container.new "
-								+ getFlexoConcept().getName() + "(...)";
-						check.valid = false;
+				if (context != null) {
+					if (!checkContainerIsReachable(check, context)) {
 						return check;
 					}
 				}
@@ -779,6 +764,21 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 					throw new NullReferenceException("Unable to find executable context for " + this);
 				}
 
+				// The instance is created in the nearest container found by climbing the containment tree from the object designated by
+				// the container path, or from this (CORE-F-18)
+				if (container instanceof FlexoConceptInstance) {
+					FlexoConceptInstance host = FMLContainerResolver.findHost((FlexoConceptInstance) container, getFlexoConcept());
+					if (host != null) {
+						container = host;
+					}
+					else if (!(getFlexoConcept() instanceof VirtualModel)
+							|| ((VirtualModel) getFlexoConcept()).getContainerVirtualModel() != null) {
+						// Only a VirtualModel with no container VirtualModel is not hosted by an instance
+						throw new FMLResolutionError("Cannot instantiate " + getFlexoConcept().getName() + " in " + container
+								+ ": no container can be reached by climbing the containment tree");
+					}
+				}
+
 				/*if (getCreationScheme() == null && getFlexoConcept() instanceof VirtualModel) {
 					System.out.println("Ah, prout pour " + getFlexoConcept());
 					System.exit(-1);
@@ -953,8 +953,6 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				FMLExecutionException, InvocationTargetTransformException {
 
 			if (getCreationScheme() == null) {
-				System.out.println("Zut, pas de CS, mais le concept c'est " + getFlexoConcept());
-
 				return ((FMLRTVirtualModelInstance) vmInstance).makeNewFlexoConceptInstance(getFlexoConcept(), containerFCI, null,
 						vmInstance);
 

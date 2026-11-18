@@ -1,0 +1,10 @@
+// CORE-D-89, fixed by CORE-F-18: a concept of a child VirtualModel instantiates a concept inherited from the parent VirtualModel, from a
+// bare new as from container.new: the new climbs the containment tree to the virtual model instance.
+// Fixtures: KDGh27A (parent), KDGh27C (child, `container.new TestConceptA()`), KDGh27B (child, `new TestConceptA()`, whose validation is
+// checked by TestContainmentValidation: both children declare a TestConceptB, so a script cannot instantiate them by name together).
+service ResourceCenterService add_temp_rc;
+v = load -r ["http://openflexo.org/test/TestResourceCenter/KDGh27C.fml"];
+vmi = new KDGh27C() with (name="gh27c");
+c = vmi.new TestConceptB();
+assert c != null;
+assert c.container == vmi;

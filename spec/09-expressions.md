@@ -282,16 +282,15 @@ public List<Task> fresh() {
 ```
 
 * **A concept** — the arguments are those of a creation scheme (§7.3.1). The second form, `new Shelf::named(args)`,
-  names the creation scheme. Where the concept is nested in the one whose behaviour runs, the new instance is
-  contained in the current instance. Otherwise the instance must be created through its container, written
-  `container.new X(args)`, where the prefix `composite_ident.` designates the instance in which to create it.
+  names the creation scheme. The new instance is created in the nearest object that can hold it, found by climbing
+  the containment tree from `this`, or from the object that the prefix `composite_ident.` designates in
+  `c.new X(args)` (chapter 14).
 * **A virtual model** — a new virtual model instance, which needs a `with (name = "…")`.
 * **A Java class** — the Java constructor is called; the `with` clause is not used.
 
-> **A bare `new` of a concept that is not nested in the current one is an invalid binding**: it is reported
-> when the unit is loaded and validated ("cannot instantiate X in C … use container.new X(...)"), and, as any
-> invalid binding (§9.8), it is an execution error at run time. From a behaviour declared on the **model**, the enclosing
-> context is the instance of the model, so a bare `new` of any concept of the model is correct.
+> **Where the instance goes** is the subject of chapter 14: `new X()` and `c.new X()` climb the containment tree to the
+> nearest object that can hold an `X`. A `new` that no object can hold is an invalid binding: it is reported when the
+> unit is validated and, as any invalid binding (§9.8), it is an execution error at run time.
 
 The `with` clause supplies the parameters of the instantiation of a virtual model: `name` (mandatory; the name of
 the instance), and, where relevant, `virtualModelInstanceTitle`, `uri`, `rc` (the resource center),

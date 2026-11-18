@@ -31,6 +31,7 @@ the cases in which the implementation does not do what the language intends are 
 | 11 | [Annotations](11-annotations.md) | Syntax and the annotations the platform interprets |
 | 12 | [FML-script](12-fml-script.md) | The command and script surface |
 | 13 | [Execution model](13-execution-model.md) | Instances, containment, evaluation, events, matching sets, failure |
+| 14 | [Instantiation and containment](14-instantiation-and-containment.md) | Where `new` puts the instance: the climb of the containment tree |
 | A | [Grammar summary](appendix-a-grammar.md) | The complete syntax, in EBNF |
 | B | [Known deviations](appendix-b-known-deviations.md) | Where the implementation departs from the language |
 | C | [A complete example](appendix-c-example.md) | One model and one script, annotated |

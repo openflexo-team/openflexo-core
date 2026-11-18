@@ -34,9 +34,8 @@ model; *call* behaviours on the instances; *observe* the values.
 An instance of a concept always lives inside an instance of its container: the instance of the virtual model or of
 the concept in which the concept is declared (§5.2.1).
 
-* `new X(…)` in a behaviour creates the instance in the **current** instance, when `X` is declared in the concept
-  of that instance (or, from a model, in the model). Otherwise it is created through its container,
-  `c.new X(…)`, where `c` designates the instance in which to create it (§9.7).
+* `new X(…)` in a behaviour creates the instance in the nearest instance that can hold it, found by climbing from
+  the **current** instance. `c.new X(…)` climbs from the instance that `c` designates (§9.7, chapter 14).
 * `container` designates the instance that contains `this`. For an instance of a contained model (§5.1.4), it is
   the instance of its container model.
 * A query searches what an instance **contains**, nested instances included (§10.2.2).

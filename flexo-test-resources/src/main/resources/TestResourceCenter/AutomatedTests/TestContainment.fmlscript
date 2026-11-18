@@ -1,0 +1,75 @@
+// CORE-F-18: a new puts the instance in the nearest container found by climbing the containment tree from the object designated by the
+// container path of the new, or from this. The container of each instance is asserted. See FML/Containment.fml.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/Containment.fml"];
+service ResourceCenterService add_temp_rc;
+c = new Containment() with (name="c");
+
+// From the model
+root = c.makeRoot("r1");
+assert root.container == c;
+alpha = c.makeAlpha("a1");
+assert alpha.container == c;
+
+// A nested concept, created by a bare new in the current instance
+beta = alpha.makeBeta("b1");
+assert beta.container == alpha;
+
+// Climbing, bare new: a sibling, an instance of the model, a root concept
+sibling = beta.makeBetaSibling("b2");
+assert sibling.container == alpha;
+assert sibling != beta;
+up = beta.makeAlphaAbove("a2");
+assert up.container == c;
+assert up != alpha;
+rootUp = beta.makeRootAbove("r2");
+assert rootUp.container == c;
+leaf = beta.makeLeaf("l1");
+assert leaf.container == beta;
+leafSibling = leaf.makeLeafSibling("l2");
+assert leafSibling.container == beta;
+beta2 = leaf.makeBetaTwoLevelsUp("b3");
+assert beta2.container == alpha;
+alpha3 = leaf.makeAlphaThreeLevelsUp("a3");
+assert alpha3.container == c;
+alpha4 = alpha.makeAlphaSibling("a4");
+assert alpha4.container == c;
+rootFromAlpha = alpha.makeRoot("r3");
+assert rootFromAlpha.container == c;
+
+// Climbing from an explicit container
+fromBeta = beta.makeAlphaFrom(sibling, "a5");
+assert fromBeta.container == c;
+fromAlpha = beta.makeBetaFrom(alpha, "b4");
+assert fromAlpha.container == alpha;
+fromOtherBeta = beta.makeBetaFromBeta(sibling, "b5");
+assert fromOtherBeta.container == alpha;
+
+// The nearest host wins: a SubAlpha is an Alpha, so a Beta created from it is held by the SubAlpha, not by the Alpha around it
+sub = alpha.new SubAlpha("s1");
+assert sub.container == alpha;
+nearest = sub.makeBetaNearest("b6");
+assert nearest.container == sub;
+assert nearest.container != alpha;
+// ... while a Beta created from a Beta of that Alpha stays in the Alpha
+assert beta.makeBetaSibling("b7").container == alpha;
+
+// A specialization of a nested concept climbs as the concept does
+special = alpha.new Special("sp1");
+assert special.container == alpha;
+assert special.makeAlphaFromSpecial("a6").container == c;
+assert special.makeBetaFromSpecial("b8").container == alpha;
+
+// A concept of the model, with no container concept
+other = c.new Other("o1");
+assert other.container == c;
+assert other.makeRootFromOther("r4").container == c;
+assert other.makeAlphaFromOther("a7").container == c;
+
+// An event is fired from a concept in the model, an exception is thrown from a concept and caught by its type
+sender = c.new Sender();
+sender.fireFromConcept();
+assert c.received == 7;
+assert sender.catchRefusal() == "from a concept";
+
+log "Test PASSED: new climbs the containment tree";

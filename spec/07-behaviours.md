@@ -204,11 +204,10 @@ behaviour, which is how a search stops early.
 
 ## 7.6 Instantiation from a behaviour
 
-Inside a behaviour of a **model**, `new Shelf(…)` creates an instance of the concept `Shelf` in the model
-instance. Inside a behaviour of a **concept**, `new` creates a concept **nested in that concept**, inside the
-current instance. A concept declared elsewhere (at the model level for instance) is created through its
-container, `container.new Tool(…)`; a bare `new` of such a concept is an invalid binding, an execution error when it
-runs (§9.7).
+Inside a behaviour, `new Shelf(…)` creates an instance of the concept `Shelf` in the nearest object that can hold
+it, found by climbing the containment tree from the current instance: in a behaviour of a concept, a concept nested in it
+is created in the current instance, a concept of the model in the model instance, and a concept of the same kind as the
+current one beside it. `container.new Tool(…)` starts the climb from the container instead (chapter 14).
 
 ## 7.7 Event listeners
 

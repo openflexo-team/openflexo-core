@@ -1630,3 +1630,46 @@ VirtualModel is instantiated and `vmi.map != null`.
 > 
 > ```
 >
+
+---
+
+## Inheritance
+
+### CORE-D-89 — A concept of a child VirtualModel cannot instantiate a concept inherited from the parent VirtualModel  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#27](https://github.com/openflexo-team/openflexo-core/issues/27)
+
+**Symptom (2025, version 2.99).** `FMLExecutionException: Cannot instanciate a FlexoConceptInstance : null FlexoConcept container`
+(`FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance`) when the creation scheme of `TestConceptB`, a concept of
+`TestModelB extends TestModelA`, runs `TestConceptA a = new TestConceptA();` where `TestConceptA` belongs to `TestModelA`.
+
+**Verified (2026-11-17, branch 3.0, fml-cli script).** The original error is no longer reachable: the VirtualModel is now rejected at validation with
+`cannot instantiate TestConceptA in TestConceptB: TestConceptA is not nested in TestConceptB, use container.new TestConceptA(...)`.
+But the suggested form does not work either: with `container.new TestConceptA()` the creation fails with
+`cannot instantiate TestConceptA in KDGh27C`. So a concept inherited from the parent VirtualModel cannot be instantiated from a concept of the child.
+
+**Cause.** A gap: the validation looked for the instantiated concept among the root concepts declared by the VirtualModel of the behaviour only
+(`getAllRootFlexoConcepts()` does not include those of the parent VirtualModel), and a bare `new` was accepted only when the concept was nested in the
+concept of the behaviour.
+
+**Fix (CORE-F-18).** A `new` resolves its container by climbing the containment tree (`FMLContainerResolver`): a root concept is hosted by the
+nearest virtual model instance whose VirtualModel declares it **or inherits it**. Both `new TestConceptA()` and `container.new TestConceptA()` are valid
+in `TestConceptB` of the child VirtualModel. Script `AutomatedTests/CORE-D-89.fmlscript`.
+
+**Reproduction.** Fixtures `KDGh27A`, `KDGh27B`, `KDGh27C`; the script is now `AutomatedTests/CORE-D-89.fmlscript`.
+
+**Original report** by `hibahnaini`, 2025-09-24 (issue openflexo-core#27):
+
+> Erorr: org.openflexo.foundation.fml.rt.FMLExecutionException: Cannot instanciate a FlexoConceptInstance : null FlexoConcept container
+> 	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance(FMLRTVirtualModelInstanceModelFactory.java:132)
+> 	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance$FMLRTVirtualModelInstanceImpl.makeNewFlexoConceptInstance(FMLRTVirtualModelInstance.java:141)
+> 	at org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction.doAction(AbstractCreationSchemeAction.java:175)
+> 	at org.openflexo.foundation.fml.rt.action.CreationSchemeAction.doAction(CreationSchemeAction.java:118)
+> 	at org.openflexo.foundation.action.FlexoAction.doActionInContext(FlexoAction.java:271)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.runAction(InteractiveFlexoEditor.java:224)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.doExecuteAction(InteractiveFlexoEditor.java:191)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.executeAction(InteractiveFlexoEditor.java:181)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.performAction(InteractiveFlexoEditor.java:141)
+> 	at org.openflexo.foundation.action.FlexoAction.doAction(FlexoAction.java:231)
+> 
+> [BugTest.zip](https://github.com/user-attachments/files/22511020/BugTest.zip)
