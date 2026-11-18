@@ -76,8 +76,6 @@ import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FMLContainerResolver;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.FlexoEvent;
-import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -529,8 +527,7 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			if (instantiated instanceof VirtualModel) {
 				expected = "a virtual model instance of " + ((VirtualModel) instantiated).getContainerVirtualModel().getName();
 			}
-			else if (instantiated instanceof FlexoEvent || instantiated instanceof FlexoException
-					|| instantiated.getApplicableContainerFlexoConcept() == null) {
+			else if (instantiated.getApplicableContainerFlexoConcept() == null) {
 				expected = "a virtual model instance declaring " + instantiated.getName();
 			}
 			else {

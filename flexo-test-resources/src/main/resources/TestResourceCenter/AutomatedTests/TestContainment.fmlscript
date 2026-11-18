@@ -66,6 +66,9 @@ assert other.container == c;
 assert other.makeRootFromOther("r4").container == c;
 assert other.makeAlphaFromOther("a7").container == c;
 
+// An exception nested in a concept is thrown from a Beta and caught by its type
+assert alpha.catchVeto() == "from beta";
+
 // An event is fired from a concept in the model, an exception is thrown from a concept and caught by its type
 sender = c.new Sender();
 sender.fireFromConcept();

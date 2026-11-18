@@ -241,7 +241,7 @@ tree. `p.new X()` is as strict: the type of `p` must be compatible as it is.
 - Starting point: the object designated by the container path (`p` in `p.new X()`), or `this` when there is none. It is itself a candidate.
 - The containment chain is climbed (instance, its container, …, the VirtualModelInstance, a containing VirtualModelInstance); the **nearest**
   compatible ancestor hosts the new instance, with no ambiguity error. `new ConceptB()` in a `ConceptB` creates a sibling.
-- The same rule applies to an explicit container and to the implicit one, and to the instantiation of a VirtualModel (`new MyVM()`); an event or an exception does not climb: the nearest
+- The same rule applies to an explicit container and to the implicit one, and to the instantiation of a VirtualModel (`new MyVM()`): the nearest
   VirtualModelInstance compatible with the container VirtualModel; with none, the current behaviour (`rc` / `path` / `folder`) is kept.
 - No change of syntax, grammar or pretty-print: a bare `new` stays bare, `this` is never added.
 - A program valid today keeps its meaning (the starting point is tried first).
@@ -254,7 +254,7 @@ tree. `p.new X()` is as strict: the type of `p` must be compatible as it is.
   container concept), and the run time decides.
 - A virtual model that declares a container model needs a hosting model instance (`FMLResolutionError` otherwise): `rc` / `path` / `folder` apply
   only to a model with no container model, which does not climb.
-- An event or an exception does not climb: it belongs to the model instance of the starting object (its source, where the listeners are looked up).
+- An event and an exception follow the rules of the other concepts: nested ones climb to an instance of their container concept, root ones to the nearest model instance that declares them, which is their source. Their instances are signals: they are not stored in their host.
 - An `unmatched: new X()` is evaluated from `this`, not from the `from` container of the `match` (unchanged by this change).
 - A nested concept created by a bare `new` from a behaviour of the model is now an invalid binding (it used to run, with no container).
 - `CORE-D-89` is fixed by the same climb (`AutomatedTests/CORE-D-89.fmlscript`).

@@ -9,11 +9,13 @@ instances and their `container` are in §13.2.
 * A concept is either **nested** in a container concept (declared inside it, §5.2.1) or **at the root** of its model. A
   concept inherits the container of its parents when it declares none: its *applicable container* is the declared one,
   else the most specialized of those of its parents.
-* An **event** and an **exception** are never nested: they belong to a model instance.
+* An **event** and an **exception** are concepts like the others: they may be nested in a concept, and everything in
+  this chapter holds for them. An instance of an event or of an exception is not stored in its container: it is a
+  signal, whose *source* is the model instance of its host.
 * A virtual model is either a **root** model, or declares a **container model** (it is declared in the directory of
   another model, §5.1.4).
 * At run time, an instance of a nested concept is contained in an instance of its applicable container concept (or of a
-  specialization of it); an instance of a root concept, an event and an exception belong to a model instance; a model
+  specialization of it); an instance of a root concept, event or exception belongs to a model instance; a model
   instance may be contained in another model instance. `container` designates that container (§13.2).
 
 ## 14.2 The container of a `new`
@@ -32,9 +34,8 @@ the **nearest** object that can hold an `X`:
 
 | `X` is | A host is |
 |---|---|
-| a concept nested in a container concept `K` | an instance of `K` or of a specialization of `K` |
-| a root concept | a model instance of the model that declares `X`, or of a model that extends it |
-| an event or an exception | none: it does not climb; it belongs to the model instance of the starting object, which is its source (the listeners are looked up from it) |
+| a concept, event or exception nested in a container concept `K` | an instance of `K` or of a specialization of `K` |
+| a root concept, event or exception | a model instance of the model that declares `X`, or of a model that extends it |
 | a virtual model that declares a container model `M` | a model instance of `M` or of a specialization of `M` |
 | a virtual model with no container model | none: it is not hosted by an instance, and does not climb (§9.7, §12.5) |
 
@@ -115,6 +116,6 @@ The same rule is applied twice.
 
 > **Implementation note.** `FMLContainerResolver` implements both sides; `CreationSchemePathElement` calls it.
 > The checks of the instance factory, which require a container compatible with the concept, are kept: for a concept, they
-> see a host chosen by the climb. An event and an exception are created in a model instance, and a virtual model with no
-> container model has no host. `TestContainment.fmlscript` and `TestContainmentValidation` (fml-cli-test) run the
+> see a host chosen by the climb; a virtual model with no container model has no host. The instance of an event or of an exception
+> is not stored in its host, which only gives its source model instance. `TestContainment.fmlscript` and `TestContainmentValidation` (fml-cli-test) run the
 > examples of this chapter on `FML/Containment.fml`.

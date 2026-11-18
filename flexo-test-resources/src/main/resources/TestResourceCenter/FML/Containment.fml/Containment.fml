@@ -70,6 +70,25 @@ public model Containment {
 			throw new Refusal("refused");
 		}
 
+		// An exception nested in a concept follows the rules of the concepts: a host is an Alpha
+		public String catchVeto() {
+			Beta b = new Beta("veto");
+			try {
+				b.vetoFromBeta();
+			} catch (Veto v) {
+				return v.why;
+			}
+			return "none";
+		}
+
+		exception Veto {
+			String why;
+
+			create(String why) {
+				this.why = why;
+			}
+		}
+
 		public concept Beta {
 
 			String name;
@@ -90,6 +109,11 @@ public model Containment {
 
 			public Root makeRootAbove(String name) {
 				return new Root(name);
+			}
+
+			// Thrown from a Beta, held by an Alpha: the climb is the one of the concepts
+			public vetoFromBeta() throws Veto {
+				throw new Veto("from beta");
 			}
 
 			public Leaf makeLeaf(String name) {

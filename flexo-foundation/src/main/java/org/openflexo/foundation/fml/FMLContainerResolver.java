@@ -55,8 +55,8 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * instance, starting with the starting instance itself, whose concept is that container concept or a specialization of it.</li>
  * <li>A root concept has no container concept: it is hosted by the nearest {@link VirtualModelInstance} whose {@link VirtualModel}
  * declares it, or inherits it.</li>
- * <li>A {@link FlexoEvent} and a {@link FlexoException} do not climb: they belong to the {@link VirtualModelInstance} of the starting
- * object, which is their source (the listeners are looked up from it).</li>
+ * <li>A {@link FlexoEvent} and a {@link FlexoException} are concepts like the others: the same rules apply to them. The host is also
+ * the {@link VirtualModelInstance} that is the source of the event or of the exception.</li>
  * <li>A {@link VirtualModel} that declares a container VirtualModel is hosted by the nearest {@link VirtualModelInstance} of that
  * VirtualModel. One that declares none is not hosted by an instance: its instantiation does not climb.</li>
  * </ul>
@@ -145,7 +145,7 @@ public final class FMLContainerResolver {
 	 * Return true when the concept is not nested in a container concept: it is hosted by a {@link VirtualModelInstance}
 	 */
 	private static boolean isHostedByVirtualModelInstance(FlexoConcept concept) {
-		return concept instanceof FlexoEvent || concept instanceof FlexoException || concept.getApplicableContainerFlexoConcept() == null;
+		return concept.getApplicableContainerFlexoConcept() == null;
 	}
 
 	/**
@@ -176,11 +176,6 @@ public final class FMLContainerResolver {
 				}
 			}
 			return new Resolution(false, climbed);
-		}
-
-		if (concept instanceof FlexoEvent || concept instanceof FlexoException) {
-			// An event or an exception does not climb: it belongs to the model instance it is fired or thrown from (see findHost)
-			return new Resolution(true, climbed);
 		}
 
 		if (isHostedByVirtualModelInstance(concept)) {
@@ -240,12 +235,6 @@ public final class FMLContainerResolver {
 				}
 			}
 			return null;
-		}
-
-		if (concept instanceof FlexoEvent || concept instanceof FlexoException) {
-			// An event or an exception does not climb: it is created in the model instance it is fired or thrown from, which is its
-			// source, and the listeners are looked up from that source
-			return start.getVirtualModelInstance();
 		}
 
 		if (isHostedByVirtualModelInstance(concept)) {
