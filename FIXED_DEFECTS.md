@@ -1518,3 +1518,75 @@ Swing's `UndoManager.undo()` skips it and undoes the last significant edit inste
 **Fixed (2026-11-15).** `compensateFailedAction` undoes the edit of the failed action only, when it is significant and the next to be undone;
 otherwise it drops it. Test: `TestFlexoUndoManager` (flexo-foundation-test), whose `aFailedActionThatEditedNothingUndoesNothing` fails
 without the fix. Not checked in the application yet (needs a restart).
+
+## FML types
+
+### CORE-D-87 — A property initialised with `new HashMap<>()` fails with an `ArrayIndexOutOfBoundsException`  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#28](https://github.com/openflexo-team/openflexo-core/issues/28)
+
+**Symptom.** A property such as `Map<Object,Object> map = new HashMap<>();` makes the FML editor log `Unexpected exception : 1`
+(`FMLEditorParser.updateEditorGutter`), and the instantiation of the VirtualModel fails.
+
+**Verified (2026-11-17, branch 3.0, fml-cli script run with `OPENFLEXO_KNOWN_DEFECTS`).** With this VirtualModel:
+
+```
+import java.util.HashMap;
+import java.util.Map;
+
+@URI("http://openflexo.org/test/TestResourceCenter/KDGh28.fml")
+public model KDGh28 {
+	Map<Object,Object> map = new HashMap<>();
+}
+```
+
+`vmi = new KDGh28() with (name="gh28");` fails with `FMLInternalError: Unexpected ArrayIndexOutOfBoundsException: Index 1 out of bounds for length 1`.
+Top of the stack: `org.apache.commons.lang3.reflect.TypeUtils.getTypeArguments` (836) <- `org.openflexo.connie.type.TypeUtils.getTypeArguments` (1423)
+<- `getTypeArgument` (1434) <- `isTypeAssignableFrom` (597) <- `DataBinding.performComputeValididy` (740) <- `DataBinding.isValid`
+(also reached from `DataBindingNode.finalizeDeserialization`, which is the editor path). The message `1` of the editor is the index of the exception.
+
+**Cause.** The diamond `new HashMap<>()` gives a parameterized type whose arguments are not resolved, and the
+assignability check indexes the type arguments of `Map` (two) in an array that has one. `new HashMap<Object,Object>()` is the first thing to try.
+
+**Fix (2026-11-18, connie 2.1.0).** The diamond is typed as a `ParameterizedType` carrying a single `DiamondType` argument, whatever
+the number of type parameters of the raw type. `TypeUtils.isTypeAssignableFrom` then asked commons-lang3 for the arguments of
+`HashMap<Diamond>` seen as a `Map` and indexed past them. A type with a `DiamondType` argument is now compared on its raw type only
+(its arguments are inferred from the target). Regression test: `TestTypeUtils.testDiamondAssignability` (default-expression-language),
+red without the fix. Verified end to end (2026-11-18, openflexo-dev composite): `KnownDefects/CORE-D-87.fmlscript` (fixture `KDGh28`) now passes: the
+VirtualModel is instantiated and `vmi.map != null`.
+
+**Reproduction.** Temporary fixture `KDGh28` (`openflexo-core/flexo-test-resources`), to become `KnownDefects/CORE-D-87.fmlscript`.
+
+**Original report** by `enmanokatana`, 2025-11-25 (issue openflexo-core#28):
+
+> **Summary**
+> When importing and using **HashMap** in FML within the OpenFlexo editor, an error is thrown.
+> 
+> **Steps to Reproduce**
+> 
+> Open an FML file in the OpenFlexo editor
+> Add an import statement for HashMap (`import java.util.HashMap;`)
+> Attempt to use HashMap in the code
+> Error is thrown
+> 
+> **Environment**
+> 
+> Version: 2.99
+> Operating System:Windows 10
+> Java version: 8
+> 
+> **Error in logs**
+> `Thread[AWT-EventQueue-0,6,main]     WARNING 25/11/25 14:01:29,867  Unexpected notice at line:-1 Line -1: Unexpected exception : 1                                      [org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser.updateEditorGutter]`
+> 
+> **Code Sample**
+> ```
+> import java.util.HashMap;
+> 
+> @URI("http://www.openflexo.org/projects/2025/11/Modelcheckingcomp_1763632671263.prj/TestGraphModel.fml")
+> @Author("hayaoumo")
+> public model TestGraphModel {
+>    Map<Object,Object> map = new HashMap<>();
+> }
+> 
+> ```
+>
