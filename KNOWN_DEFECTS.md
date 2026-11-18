@@ -18,6 +18,8 @@ meant to be fixed together, with a broad test run through the openflexo-dev comp
 
 ### CORE-D-1 — A behaviour's default matching set is typed by its first standalone `match`  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#31](https://github.com/openflexo-team/openflexo-core/issues/31)
+
 **Symptom.** In a behaviour executing standalone `match` actions (no `in <matchingSet>`) on several concepts, only the first matched
 concept is ever found again: every later concept is never matched, and a new instance is created on every execution.
 
@@ -51,6 +53,8 @@ matches are used.
 
 ### CORE-D-12 — The `where` clause of `begin match` is ignored  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#32](https://github.com/openflexo-team/openflexo-core/issues/32)
+
 **Symptom.** `begin match X from this where (condition)` parses without any warning, but the matching set holds every instance of `X`,
 whatever the condition. An `end match … unmatched: delete()` then deletes instances the condition was meant to exclude.
 
@@ -82,9 +86,38 @@ container; for a narrower domain, omit the `end match` and delete the leftovers 
 
 ---
 
+### CORE-D-88 — The criteria of a `match … where (…)` accept only `property = value`: `selected.x = …` is a cryptic syntax error and `selected = …` throws a NullPointerException  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#20](https://github.com/openflexo-team/openflexo-core/issues/20)
+
+**Symptom.** In `match Individual in matchingSet from this where (selected.individual = indiv) create::_create(indiv);` the editor reports
+`Syntax error: [86,59] expecting: '='`; with `where (selected = indiv)` it reports `unexpected_exception_null`.
+
+**Verified (2026-11-17, branch 3.0, fml-cli script).** Three variants of the same `match`, on a VirtualModel with `Holder` (property `w`) and `Wrapper`:
+- `where (w = wr)`: works (control).
+- `where (selected.w = wr)`: syntax error at the `.` (`ParserException token:.`): the grammar rule `qualified_argument` takes
+  `property = value`, the left-hand side is the NAME of a property of the matched concept. The message `expecting '='` does not say so.
+- `where (selected = wr)`: parses, then `Unexpected NullPointerException: Cannot invoke "Object.hashCode()" because "key" is null` at execution
+  (`vmi.synchronize()`), `selected` being taken for a property name.
+
+**Expected.** A clear message when the left-hand side is not a property of the concept (`selected.x`, `selected`): "a match criterion is
+`property = expression`", at parsing or at validation, and no NullPointerException at execution. Whether `selected.x = value` should be supported
+is a language question (see `CORE-D-1`, `CORE-D-12` for the other `where` problems of the matching engine).
+
+**Reproduction.** Temporary fixtures `KDGh20`, `KDGh20b`, `KDGh20c`, to become `KnownDefects/CORE-D-88.fmlscript`.
+
+**Original report** by `hibahnaini`, 2024-09-13 (issue openflexo-core#20):
+
+> ![image](https://github.com/user-attachments/assets/c1c90477-0eb4-4b45-ab37-f6608c005268)
+> Problem with the "=" when specifying the matching criteria and accessing the attribues of selected (selected.individual in this case).
+> ![image](https://github.com/user-attachments/assets/d608d99d-2681-487b-b800-31e808373dcc)
+> Without the attribute access (using only selected), a null exception is generated.
+
 ## FML properties
 
 ### CORE-D-3 — The parameter name declared in a `set(...)` block is ignored  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#33](https://github.com/openflexo-team/openflexo-core/issues/33)
 
 **Symptom.** In a get/set property, the value assigned through the `set` block is only reachable as `value`, whatever name is
 declared in `set(Type name)`. Using the declared name gives an invalid binding (`BindingVariable <name> does not exist`, logged at
@@ -122,6 +155,8 @@ public concept Holder {
 
 ### CORE-D-11 — An expression property read once keeps its old value  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#34](https://github.com/openflexo-team/openflexo-core/issues/34)
+
 **Symptom.** Once an expression property (`values …`) has been read, a later read returns the same value although what it depends on
 has changed.
 
@@ -146,6 +181,8 @@ the value is cached (the expression property, its binding path element, or the c
 
 ### CORE-D-74 — The initializer of a property is lost on save once the property has a `with` clause  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#35](https://github.com/openflexo-team/openflexo-core/issues/35)
+
 **Symptom.** A property declared with an initializer in the Java style (`Part first = new Part();`, or
 `Person selected = select unique Person from container;`) loses it on save as soon as its role is given a property value (in the
 inspector, for instance its `container`): the text is written `Part first with ConceptInstance(container=this);`, without the
@@ -166,6 +203,8 @@ property value on a role that has an initializer.
 ## FML behaviours
 
 ### CORE-D-4 — A parameter default value does not allow omitting the argument in `new`  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#36](https://github.com/openflexo-team/openflexo-core/issues/36)
 
 **Symptom.** A creation scheme parameter declaring a default value (`int capacity=10`) must still be passed explicitly: a `new`
 expression omitting it does not resolve, and evaluates silently to null at run-time. **Decided 2026-11-11:** a call may omit trailing
@@ -202,6 +241,8 @@ without considering parameters with a default value; to be confirmed in the code
 
 ### CORE-D-49 — Behaviour signatures, overload selection and overriding follow inconsistent rules  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#37](https://github.com/openflexo-team/openflexo-core/issues/37)
+
 **Symptom.** Five related observations, each verified 2026-11-11 by execution (fixtures `KDOverloads`, `KDSignatures`; tests
 `KnownDefects/CORE-D-49.fmlscript` and `KnownDefectsJavaTests.coreD49_*`):
 1. `f(int x)` and `f(String x)` are reported as duplicates ("Duplicate behaviour f(x)"), while `g(int x)` and `g(int y)` are not.
@@ -224,6 +265,8 @@ relies on `abstractRequired()`, which only looks at properties. Found by the ext
 ## FML types
 
 ### CORE-D-5 — A `FlexoConceptInstanceType` built with an empty URI is reported as resolved  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#38](https://github.com/openflexo-team/openflexo-core/issues/38)
 
 **Symptom.** A `FlexoConceptInstanceType` created with a null or empty concept URI and no concept (typically when the URI of the
 concept could not be determined while parsing) is considered resolved, so it is never resolved later and stays an
@@ -249,9 +292,74 @@ built with a null concept).
 
 ---
 
+### CORE-D-87 — A property initialised with `new HashMap<>()` fails with an `ArrayIndexOutOfBoundsException`  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#28](https://github.com/openflexo-team/openflexo-core/issues/28)
+
+**Symptom.** A property such as `Map<Object,Object> map = new HashMap<>();` makes the FML editor log `Unexpected exception : 1`
+(`FMLEditorParser.updateEditorGutter`), and the instantiation of the VirtualModel fails.
+
+**Verified (2026-11-17, branch 3.0, fml-cli script run with `OPENFLEXO_KNOWN_DEFECTS`).** With this VirtualModel:
+
+```
+import java.util.HashMap;
+import java.util.Map;
+
+@URI("http://openflexo.org/test/TestResourceCenter/KDGh28.fml")
+public model KDGh28 {
+	Map<Object,Object> map = new HashMap<>();
+}
+```
+
+`vmi = new KDGh28() with (name="gh28");` fails with `FMLInternalError: Unexpected ArrayIndexOutOfBoundsException: Index 1 out of bounds for length 1`.
+Top of the stack: `org.apache.commons.lang3.reflect.TypeUtils.getTypeArguments` (836) <- `org.openflexo.connie.type.TypeUtils.getTypeArguments` (1423)
+<- `getTypeArgument` (1434) <- `isTypeAssignableFrom` (597) <- `DataBinding.performComputeValididy` (740) <- `DataBinding.isValid`
+(also reached from `DataBindingNode.finalizeDeserialization`, which is the editor path). The message `1` of the editor is the index of the exception.
+
+**Hypothesis (not verified).** The diamond `new HashMap<>()` gives a parameterized type whose arguments are not resolved, and the
+assignability check indexes the type arguments of `Map` (two) in an array that has one. `new HashMap<Object,Object>()` is the first thing to try.
+
+**Reproduction.** Temporary fixture `KDGh28` (`openflexo-core/flexo-test-resources`), to become `KnownDefects/CORE-D-87.fmlscript`.
+
+**Original report** by `enmanokatana`, 2025-11-25 (issue openflexo-core#28):
+
+> **Summary**
+> When importing and using **HashMap** in FML within the OpenFlexo editor, an error is thrown.
+> 
+> **Steps to Reproduce**
+> 
+> Open an FML file in the OpenFlexo editor
+> Add an import statement for HashMap (`import java.util.HashMap;`)
+> Attempt to use HashMap in the code
+> Error is thrown
+> 
+> **Environment**
+> 
+> Version: 2.99
+> Operating System:Windows 10
+> Java version: 8
+> 
+> **Error in logs**
+> `Thread[AWT-EventQueue-0,6,main]     WARNING 25/11/25 14:01:29,867  Unexpected notice at line:-1 Line -1: Unexpected exception : 1                                      [org.openflexo.fml.controller.widget.fmleditor.FMLEditorParser.updateEditorGutter]`
+> 
+> **Code Sample**
+> ```
+> import java.util.HashMap;
+> 
+> @URI("http://www.openflexo.org/projects/2025/11/Modelcheckingcomp_1763632671263.prj/TestGraphModel.fml")
+> @Author("hayaoumo")
+> public model TestGraphModel {
+>    Map<Object,Object> map = new HashMap<>();
+> }
+> 
+> ```
+>
+
 ## FML control structures and edition actions
 
 ### CORE-D-10 — Deleting a concept instance leaves it in the multiple roles referencing it  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#39](https://github.com/openflexo-team/openflexo-core/issues/39)
 
 **Symptom.** After `delete x;`, the deleted instance is still an element of a multiple-cardinality role (`Book[0,*] books`) holding
 it: the role keeps its size, and the element is a deleted instance whose concept is null.
@@ -268,6 +376,8 @@ removes it from the roles of other instances; where such a clean-up should happe
 as done in `flexo-test-resources` `FML/Library.fml` (`Shelf.removeBook`).
 
 ### CORE-D-13 — `new Concept::behaviour()` resolves only when the concept declares no creation scheme  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#40](https://github.com/openflexo-team/openflexo-core/issues/40)
 
 **Symptom.** A call naming a behaviour whose parameters are supplied elsewhere — typically a diagram palette binding, where the drop
 dialog asks the user for them — is reported as an invalid binding: `Invalid binding value: new FunctionalGoalGR::createFunctionalGoal()
@@ -290,6 +400,8 @@ the arity match. They then act as the values the drop dialog starts from.
 
 ### CORE-D-44 — Looking up an unknown concept loops forever between compilation units that import each other  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#41](https://github.com/openflexo-team/openflexo-core/issues/41)
+
 **Symptom.** `StackOverflowError`, the stack made of `FMLCompilationUnit$FMLCompilationUnitImpl.getFlexoConcept(FMLCompilationUnit.java:814)`
 only.
 
@@ -305,6 +417,8 @@ the calls never end.
 (phase 5 of CORE-F-8).
 
 ### CORE-D-56 — A statement written without braces is printed back with braces and a broken indentation  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#42](https://github.com/openflexo-team/openflexo-core/issues/42)
 
 **Symptom.** When a compilation unit is printed back from its parsed text (what the FML editor saves), an `if`, `else`, `while`,
 `for` or `do` whose body is a single statement written without braces gets braces, and the closing brace goes on a line of its own
@@ -328,6 +442,8 @@ the nested and `do` forms were not built at all, so they were kept word for word
 ## Instantiation
 
 ### CORE-D-73 — A creation run by a technology action, or through a technology factory, still hides a failing creation scheme  ·  `IN PROGRESS`
+
+**GitHub:** [openflexo-team/openflexo-core#43](https://github.com/openflexo-team/openflexo-core/issues/43)
 
 **Symptom.** Since `CORE-D-47`, a failing creation scheme fails the `new` that runs it and leaves no partly built instance. Two
 creation paths do not follow that rule yet: a creation through a technology action built on `AbstractAddFlexoConceptInstance`
@@ -374,6 +490,8 @@ disabled action is not a failure), and discard the partly built instance in the 
 
 ### CORE-D-16 — A namespace alias is not resolved in an annotation: `@URI(NS+"…")` silently registers the model under another address  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#44](https://github.com/openflexo-team/openflexo-core/issues/44)
+
 **Symptom.** A compilation unit that declares `namespace "…" as NS;` and uses the alias in its `@URI` annotation is loaded without any
 error, but under a different address than the one it declares: `load -r ["<declared address>"]` then gives nothing, and any script
 line using the result fails with `Invalid binding value: virtualModel reason: currentType is null`. The alias does resolve in an
@@ -413,6 +531,8 @@ only parsed by `TestFMLParser`, never loaded, so it does not exercise this.
 ## Inheritance
 
 ### CORE-D-17 — `super.<behaviour>()` gives null when the concept extends several concepts  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#45](https://github.com/openflexo-team/openflexo-core/issues/45)
 
 **Symptom.** In a concept with several parents, `super.<behaviour>()` evaluates to null, so a `return "x" + super.hello();` returns null
 (a `+` with a null operand gives null). No error is reported at validation or at execution. With a single parent, the same call works,
@@ -469,9 +589,45 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 
 ---
 
+### CORE-D-89 — A concept of a child VirtualModel cannot instantiate a concept inherited from the parent VirtualModel  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#27](https://github.com/openflexo-team/openflexo-core/issues/27)
+
+**Symptom (2025, version 2.99).** `FMLExecutionException: Cannot instanciate a FlexoConceptInstance : null FlexoConcept container`
+(`FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance`) when the creation scheme of `TestConceptB`, a concept of
+`TestModelB extends TestModelA`, runs `TestConceptA a = new TestConceptA();` where `TestConceptA` belongs to `TestModelA`.
+
+**Verified (2026-11-17, branch 3.0, fml-cli script).** The original error is no longer reachable: the VirtualModel is now rejected at validation with
+`cannot instantiate TestConceptA in TestConceptB: TestConceptA is not nested in TestConceptB, use container.new TestConceptA(...)`.
+But the suggested form does not work either: with `container.new TestConceptA()` the creation fails with
+`cannot instantiate TestConceptA in KDGh27C`. So a concept inherited from the parent VirtualModel cannot be instantiated from a concept of the child.
+
+**To decide.** Is it intended (a concept can only be instantiated through its own container, and the child VirtualModel is not that container) or a gap?
+If intended, the message should not suggest `container.new` in that case.
+
+**Reproduction.** Temporary fixtures `KDGh27A`, `KDGh27B`, `KDGh27C`, to become `KnownDefects/CORE-D-89.fmlscript`.
+
+**Original report** by `hibahnaini`, 2025-09-24 (issue openflexo-core#27):
+
+> Erorr: org.openflexo.foundation.fml.rt.FMLExecutionException: Cannot instanciate a FlexoConceptInstance : null FlexoConcept container
+> 	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory.makeNewFlexoConceptInstance(FMLRTVirtualModelInstanceModelFactory.java:132)
+> 	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance$FMLRTVirtualModelInstanceImpl.makeNewFlexoConceptInstance(FMLRTVirtualModelInstance.java:141)
+> 	at org.openflexo.foundation.fml.rt.action.AbstractCreationSchemeAction.doAction(AbstractCreationSchemeAction.java:175)
+> 	at org.openflexo.foundation.fml.rt.action.CreationSchemeAction.doAction(CreationSchemeAction.java:118)
+> 	at org.openflexo.foundation.action.FlexoAction.doActionInContext(FlexoAction.java:271)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.runAction(InteractiveFlexoEditor.java:224)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.doExecuteAction(InteractiveFlexoEditor.java:191)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.executeAction(InteractiveFlexoEditor.java:181)
+> 	at org.openflexo.view.controller.InteractiveFlexoEditor.performAction(InteractiveFlexoEditor.java:141)
+> 	at org.openflexo.foundation.action.FlexoAction.doAction(FlexoAction.java:231)
+> 
+> [BugTest.zip](https://github.com/user-attachments/files/22511020/BugTest.zip)
+
 ## FML expressions
 
 ### CORE-D-19 — A method call on a string literal gives null  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#46](https://github.com/openflexo-team/openflexo-core/issues/46)
 
 **Symptom.** A Java method called directly on a string literal evaluates to null, without any message: `"hello".length()` is null
 instead of 5. The same methods work on a variable or a parameter holding the same string.
@@ -499,6 +655,8 @@ Measured in the same model: with the string in a local variable, `String s = "ab
 
 ### CORE-D-80 — A bare call to a behaviour of the virtual model, from a behaviour of the same virtual model, is not resolved  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#47](https://github.com/openflexo-team/openflexo-core/issues/47)
+
 **Symptom (verified 2026-11-14 by execution, fixture `ExecutionFailures`, script `ExecutionStack/NestedFailure.fmlscript`).** In
 `public int nested() { return middle(); }`, with `middle()` a behaviour of the same model, the binding `middle()` stays invalid ("unresolved
 path element middle()", `cannot find parent for JavaInstanceMethodPathElement:middle()` at load). At runtime the call gives null without
@@ -514,6 +672,8 @@ what is written above.
 ## FML-script
 
 ### CORE-D-20 — Reassigning a script variable makes every later read of it give null  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#48](https://github.com/openflexo-team/openflexo-core/issues/48)
 
 **Symptom.** In a `.fmlscript`, assigning a name that already holds a value (`x = "a"; x = "b";`) does not report
 anything, but every read of that name after the second assignment gives `null` — not `"b"`, and not `"a"` either.
@@ -552,6 +712,8 @@ into one across several statements.
 
 ### CORE-D-83 — The output of every fml-cli command is one list, shared by all commands and all interpreters  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#49](https://github.com/openflexo-team/openflexo-core/issues/49)
+
 **Symptom (read, not run; found while doing CORE-F-11 phase 5, 2026-11-15).** `AbstractCommand` (fml-cli) declares
 `List<String> output = new ArrayList<>();` in the interface: a field of an interface is `static final`, so every command of every
 interpreter writes into the same list, and `AbstractCommandInterpreter.getOutput()` returns it. Each command clears it when it
@@ -571,6 +733,8 @@ regression test of the first four is `flexo-foundation-test`, `TestUnloadDoesNot
 resource, and whose renderer reads that ledger.
 
 ### CORE-D-24 — Bindings of the metamodel keep every context they were evaluated in  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#50](https://github.com/openflexo-team/openflexo-core/issues/50)
 
 **Symptom.** A `DataBinding` owned by a VirtualModel — an expression of a behaviour, of a property — caches, per evaluation context,
 the value and a listener registered on every object of the evaluated path. Nothing releases them: the VirtualModel keeps every
@@ -598,6 +762,8 @@ Each changes the notification behaviour GINA relies on: to be decided and tested
 ## Resources: loading
 
 ### CORE-D-29 — A string addition on a binding path fails in a GINA component: `data.owner.name + ".prj"`  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#51](https://github.com/openflexo-team/openflexo-core/issues/51)
 
 **Symptom.** In a GINA component whose bindings are FML bindings, a label bound to `data.owner.name + ".prj"` stays empty and the
 log reports, at every evaluation: `TypeMismatchException on operator addition : supplied types are STRING and STRING`. Both operands are
@@ -629,6 +795,8 @@ constant, which the FML operator would not recognise — to be confirmed by prin
 
 ### CORE-D-30 — The arguments of a palette binding are ignored when a shape is dropped  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#52](https://github.com/openflexo-team/openflexo-core/issues/52)
+
 **Symptom.** A palette binding written `PaletteElementBinding:(call=new FunctionalGoalGR::createFunctionalGoal("Goal", "", ""), paletteElementId=…)`
 does not give the drop scheme the values "Goal", "" and "": the drop scheme runs with its parameters unset (log: `Found not initialized
 parameter … name, type, description`).
@@ -647,6 +815,8 @@ or reject arguments in `call=` where they cannot be honoured.
 ---
 
 ### CORE-D-82 — Reloading a project can deadlock between the project resource and an instance loaded in parallel  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#53](https://github.com/openflexo-team/openflexo-core/issues/53)
 
 **Symptom.** `TestBMethology.testReloadProject` (formod, `formod-module`, UI test) hung for 35 minutes; the test JVM had to be killed. Seen
 once (2026-11-15, CORE-F-11 phase 4 run through the openflexo-dev composite); the 27 other UI tests of the module passed.
@@ -678,6 +848,8 @@ Mapped on `formod-app` (583 warnings at the start of the application, 4 of them 
 
 ### CORE-D-34 — Loading units that import each other logs transient "Unresolved type" and "still invalid" warnings  ·  `IN PROGRESS`
 
+**GitHub:** [openflexo-team/openflexo-core#54](https://github.com/openflexo-team/openflexo-core/issues/54)
+
 **Symptom.** At the start of formod-app, about 135 warnings: `Unresolved type: DefaultDataType | DomainModel | DocumentAnnotationMethodology` (32), `Preventing StackOverflow while loading resource CompilationUnitResource…/BMethodology | DomainModelMethodology | DomainModel | DocumentAnnotationMethodology` (32), `DataBinding … still invalid at the end of process, reason: BindingVariable X does not exist` (70, X being a constant imported from a diagram specification: `C_CONTAINER`, `GOAL_DIAGRAM`…, or `unresolved path element new DefaultDataType(…)`).
 
 **What is verified.** The units import each other in a cycle — `FormoseCore` imports `SysMLKaosMethodology`, `DomainModelMethodology` and `BMethodology`, which import `FormoseCore` — which `FlexoResourceImpl.getResourceData` stops with a guard (the "StackOverflow" warning). All 19 model validations of `formod-test` pass and every scenario executes, so the bindings are valid in the end: these are transient states, logged as warnings. The three sources: `FMLCompilationUnitSemanticsAnalyzer.finalizeDeserialization`, `FlexoResourceImpl.getResourceData`, `FMLSemanticsAnalyzer.attemptToFixInvalidBindings` (it logs at the end of the FIRST pass, a second one resolves them: see CORE-D-26).
@@ -708,9 +880,13 @@ After the fix: `xml-ta-test` 8 -> 0, `formod-test` 574 -> 1 (then 0, see below),
 
 ### CORE-D-35 — `PasteAction.isEnabledForSelection` logs a warning for an ordinary state  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#55](https://github.com/openflexo-team/openflexo-core/issues/55)
+
 **Symptom.** `Unexpected null focused object in PASTE`, once at the start of formod-app. Read in `PasteAction.isEnabledForSelection`: it warns when the focused object is null, which is the normal state of a menu computed with nothing selected. The call that triggers it was not identified. Severity: noise.
 
 ### CORE-D-36 — `DirectoryWatcher.waitNextWatching()` can return before a file written just before the call is seen, and gives up silently  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#56](https://github.com/openflexo-team/openflexo-core/issues/56)
 
 **Symptom.** A test that writes files into a directory resource center, calls `getDirectoryWatcher().waitNextWatching()` once and then asks the center for the new resource gets null, intermittently: `Atelier B project SourceAtelierBProject was not registered` in `formod-test` (`T6`, `T7`, `T10`), which provisions two blank Atelier B projects before each script. Measured on 2026-10-10 on the same machine, formod-test: 3 green runs out of 4 on the state without the dependency changes of UI-D-1, 1 green out of 4 right after them; 6 out of 6 after the test-side fix below. `b-ta-test`: 131 of 132, the only red being FORMOD-D-1 (`testExpression7`), as before. Same family as `directory-watcher-flaky-tests` of the workspace memory.
 
@@ -729,6 +905,8 @@ After the fix: `xml-ta-test` 8 -> 0, `formod-test` 574 -> 1 (then 0, see below),
 
 ### CORE-D-53 — `select` from a concept instance does not search the instances nested deeper than one level  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#57](https://github.com/openflexo-team/openflexo-core/issues/57)
+
 **Symptom.** `select X from c`, where `c` is a concept instance, finds only the instances directly embedded in `c`, whereas §10
 of the spec states that the search covers what the source contains, nested instances included. From a virtual model instance the
 search does cover every depth.
@@ -743,6 +921,8 @@ concept instance source, which loops over the direct children only. Found by the
 **Workaround.** Query from the virtual model instance and filter on the container, or walk the levels explicitly.
 
 ### CORE-D-54 — An unfiltered `select` returns the internal index of the instances  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#58](https://github.com/openflexo-team/openflexo-core/issues/58)
 
 **Symptom.** The list returned by `select X from vmi` without `where` is the type index of the virtual model instance itself:
 modifying it (`clear()`) makes every later query miss instances that still exist. A filtered `select` returns a new list.
@@ -764,6 +944,8 @@ computed values without copying. Found by the external audit of the FML language
 
 ### CORE-D-55 — An inherited event listener is registered twice when instances are attached to the engine in bulk  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#59](https://github.com/openflexo-team/openflexo-core/issues/59)
+
 **Symptom.** When a virtual model instance is attached to the run-time engine with its existing instances — which is what loading
 it does — an instance of a child concept that inherits a listener receives each event twice. Removing the instance afterwards
 removes one registration only.
@@ -780,6 +962,8 @@ in a `HashSet`, without `equals`/`hashCode`; `stopEventListening` removes the fi
 **Workaround.** None at FML level; declare the listener in the concrete concept rather than in a parent.
 
 ### CORE-D-86 — An event declared inside a concept is dropped from the model  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#60](https://github.com/openflexo-team/openflexo-core/issues/60)
 
 **Symptom (read, not run; found by the review of `CORE-F-11` phase 7, 2026-11-16).** The grammar lets a `concept` contain an `event`
 (`inner_concept_decl`), but `FlexoEventNode.deserialize()` attaches an event only to a `VirtualModelNode` or a `FlexoEventNode` parent,
@@ -798,12 +982,16 @@ each is NOT investigated. The harness reports only the first difference of a fil
 
 ### CORE-D-69 — A wrapper type of a behaviour parameter becomes the primitive type  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#61](https://github.com/openflexo-team/openflexo-core/issues/61)
+
 **Symptom.** `required Boolean aC2, Boolean aC3=true` (parameters of a behaviour) were printed `boolean`: the model holds the primitive type.
 File: `UIAnnotations` (`FMLParsingExamples`). Seen in the pretty-print written from the model (2026-11-13); since CORE-D-33 the preserving
 pretty-print of an untouched source keeps `Boolean`, but the model still says `boolean` (the normalized pretty-print shows it). Not checked:
 where the type is changed (parser, typing space, parameter), and whether other wrappers are concerned.
 
 ### CORE-D-70 — The version of a type reference is lost  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#62](https://github.com/openflexo-team/openflexo-core/issues/62)
 
 **Symptom.** `Foo@(1) foo1;` (a type with a version, `typedef String as Foo`) was printed `Foo foo1;`: the version is not in the model.
 File: `TestTypeVersions` (`FMLParsingExamples`). As for CORE-D-69, the preserving pretty-print of an untouched source now keeps `Foo@(1)`, the
@@ -812,6 +1000,8 @@ model and the normalized pretty-print do not. Not checked: whether a version is 
 ## FML exceptions
 
 ### CORE-D-85 — A failure caught by a try in a getter evaluated outside an action is still reported  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#63](https://github.com/openflexo-team/openflexo-core/issues/63)
 
 **Symptom (read, not run; found by the review of `CORE-F-11` phase 7, 2026-11-16).** A getter (or setter, or expression property) read
 outside a behaviour — by a GINA binding, an fml-cli expression — runs its body with a `LocalRunTimeEvaluationContext`. A behaviour it
@@ -824,4 +1014,3 @@ behaviour, the case of every test, the called behaviour is a nested action and n
 the report of an action started inside a `try` block.
 
 **Workaround.** Write the `try` in a behaviour.
-

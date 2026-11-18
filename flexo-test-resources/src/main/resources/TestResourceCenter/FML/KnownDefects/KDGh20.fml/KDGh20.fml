@@ -1,0 +1,21 @@
+@URI("http://openflexo.org/test/TestResourceCenter/KDGh20.fml")
+public model KDGh20 {
+	public concept Wrapper {
+		String key;
+		create(String key) {
+			this.key = key;
+		}
+	}
+	public concept Holder {
+		Wrapper w;
+		create(Wrapper w) {
+			this.w = w;
+		}
+	}
+	public synchronize() {
+		MatchingSet<Holder> ms = begin match Holder from this;
+		for (Wrapper wr : select Wrapper from this) {
+			match Holder in ms from this where (selected.w = wr) new Holder(wr);
+		}
+	}
+}

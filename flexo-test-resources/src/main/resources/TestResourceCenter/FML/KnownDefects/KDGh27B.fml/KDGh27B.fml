@@ -1,0 +1,9 @@
+import ["http://openflexo.org/test/TestResourceCenter/KDGh27A.fml"];
+@URI("http://openflexo.org/test/TestResourceCenter/KDGh27B.fml")
+public model KDGh27B extends KDGh27A {
+	public concept TestConceptB {
+		create() {
+			TestConceptA a = new TestConceptA();
+		}
+	}
+}

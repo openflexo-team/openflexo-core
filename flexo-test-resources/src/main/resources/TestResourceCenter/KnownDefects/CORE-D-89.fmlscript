@@ -1,0 +1,7 @@
+// CORE-D-89: a concept inherited from the parent VirtualModel cannot be instantiated from a concept of the child VirtualModel.
+// Fixtures: KDGh27A (parent), KDGh27C (child, `container.new TestConceptA()`), KDGh27B (child, `new TestConceptA()`: rejected at validation).
+service ResourceCenterService add_temp_rc;
+v = load -r ["http://openflexo.org/test/TestResourceCenter/KDGh27C.fml"];
+vmi = new KDGh27C() with (name="gh27c");
+c = vmi.new TestConceptB();
+assert c != null;

@@ -1,0 +1,9 @@
+@URI("http://openflexo.org/test/TestResourceCenter/KDGh27A.fml")
+public model KDGh27A {
+	public concept TestConceptA {
+		create() {
+		}
+		delete() {
+		}
+	}
+}

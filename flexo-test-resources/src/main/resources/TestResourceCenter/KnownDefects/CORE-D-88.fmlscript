@@ -1,0 +1,13 @@
+// CORE-D-88: a match criterion `selected = value` throws a NullPointerException at execution (`selected.x = value` is a syntax error: fixture KDGh20).
+// Fixtures: KDGh20b (control, works), KDGh20c (fails). Expected once fixed: a clear error at validation, or a working match.
+service ResourceCenterService add_temp_rc;
+vb = load -r ["http://openflexo.org/test/TestResourceCenter/KDGh20b.fml"];
+vmib = new KDGh20b() with (name="gh20b");
+vmib.new Wrapper("k1");
+vmib.synchronize();
+log "control (w = wr) OK";
+vc = load -r ["http://openflexo.org/test/TestResourceCenter/KDGh20c.fml"];
+vmic = new KDGh20c() with (name="gh20c");
+vmic.new Wrapper("k1");
+vmic.synchronize();
+log "selected = wr OK";

@@ -1,0 +1,6 @@
+// CORE-D-87: `Map<Object,Object> map = new HashMap<>();` fails with an ArrayIndexOutOfBoundsException (TypeUtils.getTypeArguments).
+// Fixture: KDGh28. Expected once fixed: the VirtualModel is instantiated and the property is initialised.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDGh28.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDGh28() with (name="kd87");
+assert vmi.map != null;

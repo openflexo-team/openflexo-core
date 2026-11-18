@@ -13,6 +13,8 @@ Status legend: `TODO` · `IN PROGRESS` · `BLOCKED` · `DONE` · `DEFERRED`.
 
 ### CORE-F-1 — Arbitrary min/max bounds on FlexoRole cardinality  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#116](https://github.com/openflexo-team/openflexo-core/issues/116)
+
 **Problem.** The FML grammar (`fml-parser/src/main/sablecc/fml.sablecc`, production `cardinality`) accepts any
 bounds after a property type: `[2,8]`, `[2,*]`, `[*,5]`, `[1,5]`. `PropertyCardinality` (flexo-foundation) only
 has four values — `ZeroOne`, `One`, `ZeroMany`, `OneMany` — so other bounds are read as `ZeroMany` (`OneMany`
@@ -45,6 +47,8 @@ degraded form.
 
 ### CORE-F-3 — Reference an enumeration value in FML expressions  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#117](https://github.com/openflexo-team/openflexo-core/issues/117)
+
 **Problem.** FML can declare an enumeration (`enum Genre { NOVEL, POETRY }`) and a property typed with it (`Genre genre;`), but an
 FML expression cannot designate one of its values, so such a property can neither be assigned nor compared from FML.
 
@@ -74,6 +78,8 @@ whole application (`FlexoEnum.getInstances()`), `FlexoEnumType`, `FlexoEnumValue
 
 ### CORE-F-2 — Remove or redefine the "default" deletion scheme of a concept  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#118](https://github.com/openflexo-team/openflexo-core/issues/118)
+
 **Problem.** `FlexoConcept.getDefaultDeletionScheme()` returns the first accessible deletion scheme, so which scheme is "the default"
 depends on declaration order (and inheritance), and its intended semantics are unclear. The notion is not meant to be kept as is.
 
@@ -94,6 +100,8 @@ no longer falls back on the first action scheme.)
 **Related.** Fix together with `CORE-D-1` and `CORE-D-2` (see [`KNOWN_DEFECTS.md`](./KNOWN_DEFECTS.md)).
 
 ### CORE-F-5 — Single identifier token in the FML grammar  ·  `DEFERRED`
+
+**GitHub:** [openflexo-team/openflexo-core#119](https://github.com/openflexo-team/openflexo-core/issues/119)
 
 **Problem.** `fml.sablecc` lexes three identifier kinds (`lidentifier`, `uidentifier`, `cidentifier`) and relies on the case of the
 first letter to stay LALR(1). The distinction is uncomfortable (a one-letter type lexes as a constant, `cidentifier` matches the empty
@@ -116,6 +124,8 @@ expression instead of a type, escaped identifiers as a single token.
 
 ### CORE-F-7 — Clabjects: a multi-level extension of FML  ·  `DEFERRED`
 
+**GitHub:** [openflexo-team/openflexo-core#120](https://github.com/openflexo-team/openflexo-core/issues/120)
+
 **Problem.** FML separates `FlexoConcept` from `FlexoConceptInstance`, so stacked type/instance levels (product model →
 series → item, the two-level emulation of the FME, the MULTI process challenge) duplicate every notion. Wanted: a language,
 an extension of FML sharing its grammar (FML itself unchanged), whose elements are clabjects (concept and instance at once).
@@ -131,6 +141,8 @@ first milestone. Analysis, examples, hard points and proposed path: [`design/cla
 **Acceptance criteria.** To be written per milestone (textual FML@RT, then clabjects in the FME).
 
 ### CORE-F-10 — Decide the status of the specification against the implementation  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#121](https://github.com/openflexo-team/openflexo-core/issues/121)
 
 **Problem.** The specification (`spec/`) is ambiguous about what defines the meaning of a program. §1.4 makes the semantic analyzers
 of fml-parser and the meta-model of flexo-foundation authoritative "for the meaning of an accepted program", while Appendix B lists
@@ -149,9 +161,30 @@ defects were recorded (CORE-D-46 to CORE-D-55).
 **Acceptance criteria.** §1.4, §1.6 and the introduction of Appendix B state one consistent rule; every Appendix B entry reads
 as a departure from a stated rule, not as the rule.
 
+### CORE-F-15 — Parameters of a behaviour with a cardinality (`String[0,*] platform`)  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#21](https://github.com/openflexo-team/openflexo-core/issues/21)
+
+**Problem.** `create(String id, String[0,*] platform, boolean deprecated, …)` is a syntax error at the `[` (`Syntax error: [38,27] expecting: identifier`).
+
+**Verified (2026-11-17, branch 3.0).** The grammar gives a cardinality to properties only (`type cardinality? variable_declarator`);
+`formal_argument` has none (`fml.sablecc`). A parameter cannot be a list or an array in that notation.
+
+**Options.** (1) Accept `cardinality` on `formal_argument` as on properties. (2) Document `List<String> platform` as the way to pass several values
+(probable workaround, not verified). (3) Keep as is and make the message say what is allowed.
+
+**Acceptance.** A behaviour receiving several values can be declared and called, in textual FML, with a documented notation, and the pretty-print round-trips it.
+
+**Original report** by `hibahnaini`, 2024-10-24 (issue openflexo-core#21):
+
+> ![image](https://github.com/user-attachments/assets/7ea23ee0-e813-4610-bff6-24395557c592)
+>
+
 ## Container-based user interfaces
 
 ### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#122](https://github.com/openflexo-team/openflexo-core/issues/122)
 
 **Problem.** A concept finds its user interface and its inspector in the `Xxx.fml/` container of its VirtualModel by
 naming convention: `<ConceptName>.fib`, `<ConceptName>.inspector` (`FlexoConcept.getUIComponentResource()` /
@@ -194,6 +227,8 @@ created before this change; going forward, resolution is meant to rely on the an
 ## User interface
 
 ### CORE-F-6 — Additive inspector inheritance along the FlexoConcept hierarchy  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#123](https://github.com/openflexo-team/openflexo-core/issues/123)
 
 **Problem.** The inspector of a concept is a `Xxx.inspector` component of its container. Resolution
 (`FlexoConceptImpl.getContainedComponentResource`) kept ONE component — the concept's own, else its most specialized
@@ -238,6 +273,8 @@ own; the `index` of the widgets orders them, and the tabs of the same `name` are
 ## Technical debt
 
 ### CORE-F-8 — Remove the XML serialization of VirtualModels and the deprecated FML API  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#124](https://github.com/openflexo-team/openflexo-core/issues/124)
 
 **Problem.** 3.0 no longer supports the `.fml.xml` serialization of VirtualModels, but flexo-foundation still carries it:
 the XML load/save path of `CompilationUnitResourceImpl` (`PersistencyStrategy`, default `XML2FML`), `XMLToFMLConverter`,
@@ -432,6 +469,8 @@ modules give the results they gave before (CAPELLA-D-1 apart). Still open beside
 
 ### CORE-F-9 — Create the inspector of a concept when creating the concept  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#125](https://github.com/openflexo-team/openflexo-core/issues/125)
+
 **Problem.** The concept-creation wizards had a "Define inspector" step that built a `FlexoConceptInspector` with an entry per chosen
 property. That model had no FML syntax, so the inspector was lost at the first save, and it was removed with it (CORE-F-8 phase 5). The
 inspector of a concept is now a `Xxx.inspector` GINA component in the `Xxx.fml/` container, written by fml-gina-extension's
@@ -443,10 +482,25 @@ or the wizard step moves to fml-gina-extension.
 **Acceptance criteria.** Creating a concept (core, diagram-ta, jdbc-ta, gina-ta wizards) can produce its container `.inspector`, saved
 with the model and shown in the running application.
 
+### CORE-F-16 — `FlexoBehaviourAction` should not implement `RunTimeEvaluationContext`  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#4](https://github.com/openflexo-team/openflexo-core/issues/4)
+
+**Problem.** Analysed as a design issue (for example for the management of the DropScheme in the Diagram technology adapter).
+`FlexoBehaviourAction` still declares `implements RunTimeEvaluationContext` (checked 2026-11-17, branch 3.0).
+
+**Notes.** Since `CORE-F-11` the execution contexts are `STRICT` (`FlexoBehaviourAction`, `LocalRunTimeEvaluationContext`, the interpreter of fml-cli), which
+is a dependency to take into account.
+
+**Original report** by `sylvain-openflexo`, 2022-12-09 (issue openflexo-core#4):
+
+> This has been analyzed as a design issue (for example for DropScheme management in Diagram TA) and should be refactored.
 
 ## Resources
 
 ### CORE-F-13 — Errors of a resource, detected at the resource layer without loading it  ·  `IN PROGRESS`
+
+**GitHub:** [openflexo-team/openflexo-core#126](https://github.com/openflexo-team/openflexo-core/issues/126)
 
 **Problem.** A `.fml.rt` whose VirtualModel cannot be found was announced by a modal dialog. More generally the resource layer
 already computes, from the metadata of the resource (`VirtualModelInfo`, cached on disk), the dependencies and the technology
@@ -471,10 +525,11 @@ status bar of the main window shows them for the selected resource; `Validate pr
 with no dialog, and nothing is loaded; adding the resource center that holds the VirtualModel clears them; `TestResourceIssues`
 passes, including the late resolution of a pending dependency, a missing dependency and a missing technology adapter (not covered yet).
 
-
 ## FML runtime errors
 
 ### CORE-F-11 — Typed FML runtime errors, raised where detected, reported once with the FML location  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#127](https://github.com/openflexo-team/openflexo-core/issues/127)
 
 **Problem (audit of every execution primitive, 2026-11-13).** Errors raised while FML runs are handled ad hoc:
 - **Errors become values.** About 60 blocks catch `TypeMismatchException` / `NullReferenceException` / `InvocationTargetException` /
@@ -1043,6 +1098,8 @@ Tests:
 
 ### CORE-F-12 — User interface of FML exceptions and try statements  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#128](https://github.com/openflexo-team/openflexo-core/issues/128)
+
 **Problem.** `CORE-F-11` phase 7 added exceptions (`FlexoExceptionConcept`, keyword `exception`), `throw` and `try … catch … finally`
 (`ThrowStatement`, `TryStatement`, `CatchClause`) to the language. openflexo-ui knows none of them: they show with the icon and the
 inspector of their parent class (`FlexoConcept`, `EditionAction`), and nothing creates them but the FML editor.
@@ -1054,8 +1111,9 @@ variable; `ThrowStatement` as `ReturnStatement.inspector`), added to `TestFMLIns
 **Acceptance criteria.** The FML perspective shows an exception and the three statements with their own icon and inspector; an
 exception can be created from the browser; the inspector tests cover the new inspectors.
 
-
 ### CORE-F-14 — Arguments of a behaviour designated by their name  ·  `IN PROGRESS`
+
+**GitHub:** [openflexo-team/openflexo-core#129](https://github.com/openflexo-team/openflexo-core/issues/129)
 
 **Problem.** The argument `aValue` of a behaviour `foo(String aValue)` could only be read as `parameters.aValue`, unlike the local
 variables of the same behaviour, which are designated by their name.

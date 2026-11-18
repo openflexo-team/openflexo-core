@@ -1,0 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+@URI("http://openflexo.org/test/TestResourceCenter/KDGh28.fml")
+public model KDGh28 {
+	Map<Object,Object> map = new HashMap<>();
+}

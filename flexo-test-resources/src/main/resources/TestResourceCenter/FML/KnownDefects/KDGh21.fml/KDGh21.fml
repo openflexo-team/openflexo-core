@@ -1,0 +1,9 @@
+@URI("http://openflexo.org/test/TestResourceCenter/KDGh21.fml")
+public model KDGh21 {
+	public concept Item {
+		String id;
+		create(String id, String[0,*] platform, boolean deprecated) {
+			this.id = id;
+		}
+	}
+}
