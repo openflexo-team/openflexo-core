@@ -63,6 +63,8 @@ control_graph_declared_for_abstract_behaviour=Un graphe de contr\u00F4le est d\u
 controlling_property_shadowing=La propri\u00E9t\u00E9 de contr\u00F4le masque une autre propri\u00E9t\u00E9
 controlling_property_shadowing_description=Une propri\u00E9t\u00E9 de contr\u00F4le ne doit pas avoir le m\u00EAme nom qu'une autre propri\u00E9t\u00E9
 create_default_deletion_scheme=Cr\u00E9er le DeletionScheme par d\u00E9faut
+criteria_must_address_a_property_of_the_matched_concept=Un crit\u00E8re doit d\u00E9signer une propri\u00E9t\u00E9 du concept recherch\u00E9
+criteria_must_address_a_property_of_the_matched_concept_description=Un crit\u00E8re de match s'\u00E9crit 'propri\u00E9t\u00E9 = expression' : le nom \u00E0 gauche doit \u00EAtre une propri\u00E9t\u00E9 du concept recherch\u00E9
 data_property_assertion_does_not_define_an_ontology_property=L'assertion de propri\u00E9t\u00E9 de donn\u00E9e ne d\u00E9finit aucune propri\u00E9t\u00E9 d'ontologie
 data_property_assertion_must_define_an_ontology_property_description=Une assertion de propri\u00E9t\u00E9 de donn\u00E9e doit d\u00E9finir une propri\u00E9t\u00E9 d'ontologie
 declared_type_must_be_resolved=Le type d\u00E9clar\u00E9 doit pouvoir \u00EAtre r\u00E9solu

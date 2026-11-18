@@ -50,6 +50,7 @@ import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
+import org.openflexo.foundation.fml.parser.ParserMessages;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
@@ -122,7 +123,7 @@ public class FMLScriptParser {
 			// Not printed: the caller reports the parse exception (CORE-F-11)
 			logger.info("ParserException token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
 					+ e.getToken().getText().length());
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+			throw new ParseException(ParserMessages.message(e), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		} catch (LexerException e) {
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		}

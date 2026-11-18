@@ -54,6 +54,9 @@ import org.openflexo.foundation.fml.binding.MatchingCriteriaBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.validation.BindingMustBeValid;
 import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -262,6 +265,26 @@ public interface MatchingCriteria extends FlexoConceptObject {
 			return object.getValue();
 		}
 
+	}
+
+	/**
+	 * A criterion is <code>property = expression</code>: the name on the left must be a property of the matched concept (CORE-D-88).
+	 */
+	@DefineValidationRule
+	public static class CriteriaMustAddressAPropertyOfTheMatchedConcept extends ValidationRule<CriteriaMustAddressAPropertyOfTheMatchedConcept, MatchingCriteria> {
+		public CriteriaMustAddressAPropertyOfTheMatchedConcept() {
+			super(MatchingCriteria.class, "criteria_must_address_a_property_of_the_matched_concept");
+		}
+
+		@Override
+		public ValidationIssue<CriteriaMustAddressAPropertyOfTheMatchedConcept, MatchingCriteria> applyValidation(MatchingCriteria object) {
+			FlexoConcept matchedConcept = object.getAction() != null ? object.getAction().getFlexoConceptType() : null;
+			// An unresolved matched concept is reported by its own rule: do not add noise
+			if (matchedConcept != null && object.getFlexoProperty() == null) {
+				return new ValidationError<>(this, object, "criteria_must_address_a_property_of_the_matched_concept");
+			}
+			return null;
+		}
 	}
 
 }

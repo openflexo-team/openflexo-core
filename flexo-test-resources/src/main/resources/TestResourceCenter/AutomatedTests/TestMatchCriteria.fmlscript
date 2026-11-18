@@ -1,0 +1,7 @@
+// CORE-D-88 (control): a match criterion `property = expression` works. The failing criteria are tested in ErrorKinds/MatchCriterionNotAProperty.
+service ResourceCenterService add_temp_rc;
+vb = load -r ["http://openflexo.org/test/TestResourceCenter/KDGh20b.fml"];
+vmib = new KDGh20b() with (name="gh20b");
+vmib.new Wrapper("k1");
+vmib.synchronize();
+log "control (w = wr) OK";

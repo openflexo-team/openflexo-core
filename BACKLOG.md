@@ -180,6 +180,47 @@ as a departure from a stated rule, not as the rule.
 > ![image](https://github.com/user-attachments/assets/7ea23ee0-e813-4610-bff6-24395557c592)
 >
 
+### CORE-F-17 — Align the syntax of `match` and `select`  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#130](https://github.com/openflexo-team/openflexo-core/issues/130)
+
+**Problem.** The two statements that look for instances of a concept do not read alike:
+
+```
+select Wrapper from (this) where (selected.name = "x", selected.age > 3)
+match Holder in ms from this where (w = wr) unmatched: new Holder(wr)
+```
+
+- `select … where (…)` takes boolean expressions evaluated on `selected` (`where_clause`, an `argument_list`); `match … where (…)` takes
+  `property = value` pairs (`qualified_where_clause`, a `qualified_argument_list`), where the name on the left is a property of the matched
+  concept, not an expression. `selected.w = wr` is a syntax error in a `match` ([`CORE-D-88`](./FIXED_DEFECTS.md), only the messages fixed).
+- `in` and `from` do not follow the same shape (`select X from (e)` / `match X in ms from e`).
+- The keywords differ in style: `begin match … ; match … unmatched: … ; end match …` against `select [unique] … from … where …`.
+
+**Decisions (2026-11-18).**
+- The `where` of `match` takes the forms of the `where` of `select`: expressions on `selected`, **any boolean expression**, not only
+  equalities. The target notation is `where (selected.w == wr)`.
+- The comparison is written with `==`, as in `select`: `=` is the assignment and reads wrongly as a test. The old `where (w = wr)` (and
+  `selected.w = wr`) stays accepted, with a **deprecation warning** on the use of `=` in a `where`, in `match` and in `select`
+  (a `SemanticAnalysisWarning`, with a fix that rewrites it to `==`). It is printed back as it was written until it is edited.
+- Backward compatibility is kept, and **the existing `.fml` are migrated in parallel** (a script on the resource centers, run in dry mode
+  by default, as `MigrateLegacyParametersNotation` for `CORE-F-14`: the model decides, the text is edited, no re-serialization).
+- The `in` / `from` clauses and the keywords of the two statements are aligned too.
+
+**To settle.**
+- The matching engine compares the values of properties (a key per instance, `MatchingSet.matchFlexoConceptInstance(criterias)`). Evaluating
+  any expression on each candidate replaces that comparison: what it costs on a large set, and whether `==` equalities are still recognised
+  to keep an index.
+- Ambiguity of the legacy `where (w = wr)`: the left-hand side is a property name, not a path; `select … where (selected.name = "x")` with
+  `=` is already accepted today and must keep its meaning, with the warning.
+- Impact: grammar (`fml.sablecc`), `MatchActionNode` and the pretty-print, `MatchingCriteria` (the property name and the validation rule
+  added by `CORE-D-88`), `MatchFlexoConceptInstance`, the FML specification (`openflexo-core/spec`) and the website guide.
+
+**Acceptance criteria.** The same `where (…)` reads and behaves the same in `select` and in `match`; the existing `.fml` of the
+repositories still load and are migrated (no `=` left in a `where`); the use of `=` is reported as deprecated; round trip of the pretty-print; tests on the matching engine unchanged in behaviour.
+
+---
+
 ## Container-based user interfaces
 
 ### CORE-F-4 — Renaming a concept orphans the components named after it  ·  `DONE`

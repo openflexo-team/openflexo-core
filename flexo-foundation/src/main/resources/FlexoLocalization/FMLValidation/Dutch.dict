@@ -63,6 +63,8 @@ control_graph_declared_for_abstract_behaviour=Er is een controlegrafiek gedeclar
 controlling_property_shadowing=De besturende eigenschap overschaduwt een andere eigenschap
 controlling_property_shadowing_description=Een besturende eigenschap mag niet dezelfde naam hebben als een andere eigenschap
 create_default_deletion_scheme=Standaard-DeletionScheme maken
+criteria_must_address_a_property_of_the_matched_concept=Een criterium moet een eigenschap van het gezochte concept aanwijzen
+criteria_must_address_a_property_of_the_matched_concept_description=Een criterium van een match is 'eigenschap = expressie': de naam links moet een eigenschap van het gezochte concept zijn
 data_property_assertion_does_not_define_an_ontology_property=De bewering over een gegevenseigenschap definieert geen ontologie-eigenschap
 data_property_assertion_must_define_an_ontology_property_description=Een bewering over een gegevenseigenschap moet een ontologie-eigenschap defini\u00EBren
 declared_type_must_be_resolved=Het gedeclareerde type moet kunnen worden opgelost

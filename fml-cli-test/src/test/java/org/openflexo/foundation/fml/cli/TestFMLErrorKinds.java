@@ -130,6 +130,11 @@ public class TestFMLErrorKinds extends FMLScriptParserTestCase {
 	}
 
 	@Test
+	public void matchCriterionIsNotAProperty() throws Exception {
+		assertError(runScript("MatchCriterionNotAProperty.fmlscript"), FMLResolutionError.class);
+	}
+
+	@Test
 	public void nullInConditionPath() throws Exception {
 		assertError(runScript("NullInConditionPath.fmlscript"), FMLNullReferenceError.class, "nullInConditionPath()", 173);
 	}

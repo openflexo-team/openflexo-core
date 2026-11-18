@@ -12,6 +12,9 @@ public model KDGh20c {
 			this.w = w;
 		}
 	}
+	public addWrapper(String key) {
+		new Wrapper(key);
+	}
 	public synchronize() {
 		MatchingSet<Holder> ms = begin match Holder from this;
 		for (Wrapper wr : select Wrapper from this) {

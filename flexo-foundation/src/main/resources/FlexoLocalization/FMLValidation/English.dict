@@ -63,6 +63,8 @@ control_graph_declared_for_abstract_behaviour=Control graph declared for abstrac
 controlling_property_shadowing=Controlling property shadowing
 controlling_property_shadowing_description=Controlling property shadowing description
 create_default_deletion_scheme=Create default deletion scheme
+criteria_must_address_a_property_of_the_matched_concept=Criterion must address a property of the matched concept
+criteria_must_address_a_property_of_the_matched_concept_description=A criterion of a match is 'property = expression': the name on the left must be a property of the matched concept
 data_property_assertion_does_not_define_an_ontology_property=Data property assertion does not define an ontology property
 data_property_assertion_must_define_an_ontology_property_description=Data property assertion must define an ontology property description
 declared_type_must_be_resolved=Declared type must be resolved

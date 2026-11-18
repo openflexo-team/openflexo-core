@@ -234,7 +234,7 @@ public class FMLCompilationUnitParser {
 			// e.printStackTrace();
 			logger.info("ParserException token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
 					+ e.getToken().getText().length());
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),
+			throw new ParseException(ParserMessages.message(e), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),
 					rawSource);
 		} catch (LexerException e) {
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length(),

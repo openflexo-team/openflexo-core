@@ -84,35 +84,6 @@ says nothing (the same test passes without the `delete() { }` of `Target`). Rela
 **Workaround.** Close with `end match … unmatched: delete()` only a set whose domain is every instance of the concept in that
 container; for a narrower domain, omit the `end match` and delete the leftovers explicitly.
 
----
-
-### CORE-D-88 — The criteria of a `match … where (…)` accept only `property = value`: `selected.x = …` is a cryptic syntax error and `selected = …` throws a NullPointerException  ·  `TODO`
-
-**GitHub:** [openflexo-team/openflexo-core#20](https://github.com/openflexo-team/openflexo-core/issues/20)
-
-**Symptom.** In `match Individual in matchingSet from this where (selected.individual = indiv) create::_create(indiv);` the editor reports
-`Syntax error: [86,59] expecting: '='`; with `where (selected = indiv)` it reports `unexpected_exception_null`.
-
-**Verified (2026-11-17, branch 3.0, fml-cli script).** Three variants of the same `match`, on a VirtualModel with `Holder` (property `w`) and `Wrapper`:
-- `where (w = wr)`: works (control).
-- `where (selected.w = wr)`: syntax error at the `.` (`ParserException token:.`): the grammar rule `qualified_argument` takes
-  `property = value`, the left-hand side is the NAME of a property of the matched concept. The message `expecting '='` does not say so.
-- `where (selected = wr)`: parses, then `Unexpected NullPointerException: Cannot invoke "Object.hashCode()" because "key" is null` at execution
-  (`vmi.synchronize()`), `selected` being taken for a property name.
-
-**Expected.** A clear message when the left-hand side is not a property of the concept (`selected.x`, `selected`): "a match criterion is
-`property = expression`", at parsing or at validation, and no NullPointerException at execution. Whether `selected.x = value` should be supported
-is a language question (see `CORE-D-1`, `CORE-D-12` for the other `where` problems of the matching engine).
-
-**Reproduction.** Temporary fixtures `KDGh20`, `KDGh20b`, `KDGh20c`, to become `KnownDefects/CORE-D-88.fmlscript`.
-
-**Original report** by `hibahnaini`, 2024-09-13 (issue openflexo-core#20):
-
-> ![image](https://github.com/user-attachments/assets/c1c90477-0eb4-4b45-ab37-f6608c005268)
-> Problem with the "=" when specifying the matching criteria and accessing the attribues of selected (selected.individual in this case).
-> ![image](https://github.com/user-attachments/assets/d608d99d-2681-487b-b800-31e808373dcc)
-> Without the attribute access (using only selected), a null exception is generated.
-
 ## FML properties
 
 ### CORE-D-3 — The parameter name declared in a `set(...)` block is ignored  ·  `TODO`

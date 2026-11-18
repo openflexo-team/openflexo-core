@@ -1,0 +1,7 @@
+// CORE-D-88: a criterion of a match that is not a property of the matched concept is an FMLResolutionError, not a NullPointerException.
+// Fixture: KDGh20c (`where (selected = wr)`).
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDGh20c.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDGh20c() with (name="kd88");
+vmi.addWrapper("a");
+mustFail = vmi.synchronize();

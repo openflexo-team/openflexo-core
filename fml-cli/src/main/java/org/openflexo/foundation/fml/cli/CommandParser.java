@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
+import org.openflexo.foundation.fml.parser.ParserMessages;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -100,7 +101,8 @@ public class CommandParser {
 
 		} catch (ParserException | LexerException | IOException e) {
 			// Not printed: the caller reports the parse exception (CORE-F-11)
-			throw new ParseException(e.getMessage() + " while parsing " + aCommand);
+			throw new ParseException((e instanceof ParserException ? ParserMessages.message((ParserException) e) : e.getMessage())
+					+ " while parsing " + aCommand);
 		} catch (RuntimeException | ModelDefinitionException e) {
 			// A defect of the platform while analyzing the command: logged with its Java stack, reported as a parse failure
 			logger.log(Level.SEVERE, "Unexpected failure while parsing " + aCommand, e);

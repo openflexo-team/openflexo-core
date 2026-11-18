@@ -74,6 +74,7 @@ import org.openflexo.foundation.fml.validation.BindingIsRequiredAndMustBeValid;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.foundation.fml.rt.error.FMLResolutionError;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
@@ -556,9 +557,15 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 				Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<>();
 				for (MatchingCriteria mc : getMatchingCriterias()) {
+					FlexoProperty<?> criteriaProperty = mc.getFlexoProperty();
+					if (criteriaProperty == null) {
+						throw new FMLResolutionError("Matching criterion '" + (mc.getPropertyReference() != null ? mc.getPropertyReference().getName() : null)
+								+ "' is not a property of " + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "the matched concept")
+								+ ": a criterion is 'property = expression'");
+					}
 					Object value = mc.evaluateCriteriaValue(evaluationContext);
 					if (value != null) {
-						criterias.put(mc.getFlexoProperty(), value);
+						criterias.put(criteriaProperty, value);
 					}
 				}
 
