@@ -45,46 +45,48 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.resource.RepositoryFolder;
 
 /**
- * Validates a {@link FlexoProject}: a GUI action, available on the project (contextual menu) as well as from the Tools menu, whose
+ * Validates a {@link FlexoProject}: a GUI action, available on the project and on its root folder (contextual menu) as well as from the Tools menu, whose
  * initializer in the user interface runs the validation of the project and shows its report in the validation window.<br>
  * Among others, the resources of the project that carry an error are reported (see {@link FlexoProject.AllResourcesMustBeFreeOfIssues}).
  * 
  * @author sylvain
  */
-public class ValidateProject extends FlexoGUIAction<ValidateProject, FlexoProject<?>, FlexoObject> {
+public class ValidateProject extends FlexoGUIAction<ValidateProject, FlexoObject, FlexoObject> {
 
-	public static final FlexoActionFactory<ValidateProject, FlexoProject<?>, FlexoObject> actionType = new FlexoActionFactory<ValidateProject, FlexoProject<?>, FlexoObject>(
+	public static final FlexoActionFactory<ValidateProject, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<ValidateProject, FlexoObject, FlexoObject>(
 			"validate_project", FlexoActionFactory.inspectGroup) {
 
 		@Override
-		public ValidateProject makeNewAction(FlexoProject<?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+		public ValidateProject makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new ValidateProject(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoProject<?> project, Vector<FlexoObject> globalSelection) {
-			return true;
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
+			return ProjectActionSupport.projectOf(object) != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoProject<?> project, Vector<FlexoObject> globalSelection) {
-			return true;
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
+			return ProjectActionSupport.projectOf(object) != null;
 		}
 
 	};
 
 	static {
 		FlexoObjectImpl.addActionForClass(actionType, FlexoProject.class);
+		FlexoObjectImpl.addActionForClass(actionType, RepositoryFolder.class);
 	}
 
-	private ValidateProject(FlexoProject<?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	private ValidateProject(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	public FlexoProject<?> getProject() {
-		return getFocusedObject();
+		return ProjectActionSupport.projectOf(getFocusedObject());
 	}
 
 }

@@ -748,32 +748,6 @@ locks in one order; adding an editor to a project probably should not mark it mo
 
 ---
 
-### CORE-D-93 — Opening again a project whose close failed shows its resources twice  ·  `TODO`
-
-**GitHub:** [openflexo-team/openflexo-core#135](https://github.com/openflexo-team/openflexo-core/issues/135)
-
-**Symptom (seen 2026-11-19 in the Maintainer, right after `CORE-D-92`).** After a failed close, opening the same project again shows
-its resources twice in the browsers. The log shows the same null root folder:
-
-```
-SEVERE Unexpected exception: java.lang.NullPointerException: Cannot invoke
-"org.openflexo.foundation.resource.RepositoryFolder.setRepositoryContext(String)" because the return value of
-"org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.getRootFolder()" is null
-	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.instanciateNewRepository(FMLRTVirtualModelInstanceRepository.java:79)
-	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.getVirtualModelInstanceRepository(FMLRTTechnologyAdapter.java:143)
-	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.getVirtualModelInstanceRepositories(FMLRTTechnologyAdapter.java:190)
-	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.notifyRepositoryStructureChanged(FMLRTTechnologyAdapter.java:198)
-	at org.openflexo.foundation.technologyadapter.TechnologyAdapter.lambda$updateRepository$0(TechnologyAdapter.java:335)
-```
-
-**Hypothesis (not checked).** This is a consequence of `CORE-D-92`: the failed close left the project and its resource center
-registered, so opening it again registers a second copy of every resource. Whether a duplicate also appears after a clean close is
-not known.
-
-**How to reproduce.** Reproduce `CORE-D-92`, then open the same project again.
-
-**Workaround.** Quit and restart the application before opening the project again.
-
 ### CORE-D-94 — A VirtualModel edited in the FML editor is not saved, and comes back empty after reload  ·  `TODO`
 
 **GitHub:** [openflexo-team/openflexo-core#136](https://github.com/openflexo-team/openflexo-core/issues/136)

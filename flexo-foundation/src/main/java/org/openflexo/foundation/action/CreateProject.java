@@ -89,18 +89,49 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 		@Override
 		public boolean isVisibleForSelection(RepositoryFolder<FlexoProjectResource<?>, ?> object, Vector<FlexoObject> globalSelection) {
-			return true;
+			// A project is never created inside another one
+			return !isInsideProject(object);
 		}
 
 		@Override
 		public boolean isEnabledForSelection(RepositoryFolder<FlexoProjectResource<?>, ?> object, Vector<FlexoObject> globalSelection) {
-			return true;
+			return !isInsideProject(object);
 		}
 
 	};
 
 	static {
 		FlexoObjectImpl.addActionForClass(CreateProject.actionType, RepositoryFolder.class);
+	}
+
+	/**
+	 * Returns true when the supplied folder is, or is inside, a project: the folder of a resource center that is the delegate of a project,
+	 * or a directory under one holding the data of a project. A project is never created inside another one (a nested project registers its
+	 * own resource center inside the one of its parent, and its resources are then seen by both).
+	 */
+	public static boolean isInsideProject(RepositoryFolder<?, ?> folder) {
+		if (folder == null) {
+			return false;
+		}
+		if (folder.getResourceRepository() != null && folder.getResourceRepository().getResourceCenter() != null
+				&& folder.getResourceRepository().getResourceCenter().getDelegatingProjectResource() != null) {
+			return true;
+		}
+		return folder.getSerializationArtefact() instanceof File && isInsideProject((File) folder.getSerializationArtefact(), true);
+	}
+
+	/**
+	 * Returns true when the supplied directory is, or (when includeItself is false) is under, a directory holding the data of a project
+	 */
+	public static boolean isInsideProject(File directory, boolean includeItself) {
+		File current = includeItself ? directory : (directory != null ? directory.getParentFile() : null);
+		while (current != null) {
+			if (new File(current, FlexoProjectResourceFactory.PROJECT_DATA_FILENAME).exists()) {
+				return true;
+			}
+			current = current.getParentFile();
+		}
+		return false;
 	}
 
 	private String newProjectName;
@@ -119,6 +150,10 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 	@Override
 	protected void doAction(Object context) throws OpenflexoRuntimeException {
+
+		if (isInsideExistingProject()) {
+			throw new OpenflexoRuntimeException("A project cannot be created inside another project");
+		}
 
 		logger.info("!!!!!!!!!!!!! Create new FlexoProject uri=" + getNewProjectURI());
 
@@ -256,8 +291,21 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 		return true;
 	}
 
+	/**
+	 * Returns true when the project would be created inside an existing project, which is not allowed
+	 */
+	public boolean isInsideExistingProject() {
+		if (getFocusedObject() != null) {
+			return isInsideProject(getFocusedObject());
+		}
+		return getSerializationArtefact() instanceof File && isInsideProject((File) getSerializationArtefact(), false);
+	}
+
 	@Override
 	public boolean isValid() {
+		if (isInsideExistingProject()) {
+			return false;
+		}
 		if (!isNewProjectNameValid()) {
 			return false;
 		}

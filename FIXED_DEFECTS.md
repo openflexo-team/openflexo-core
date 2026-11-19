@@ -935,6 +935,38 @@ builds and registers no repository for a resource center without base artefact (
 skips it. Which resource center reached this code during the close (the project or the nested `Containment.prj`) was not established.
 No automated test guards it.
 
+### CORE-D-93 — Opening again a closed project shows its resources twice in the browser  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#135](https://github.com/openflexo-team/openflexo-core/issues/135)
+
+**Symptom (seen 2026-11-19 in the Maintainer, right after `CORE-D-92`).** After a failed close, opening the same project again shows
+its resources twice in the browsers. The log shows the same null root folder:
+
+```
+SEVERE Unexpected exception: java.lang.NullPointerException: Cannot invoke
+"org.openflexo.foundation.resource.RepositoryFolder.setRepositoryContext(String)" because the return value of
+"org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.getRootFolder()" is null
+	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.instanciateNewRepository(FMLRTVirtualModelInstanceRepository.java:79)
+	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.getVirtualModelInstanceRepository(FMLRTTechnologyAdapter.java:143)
+	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.getVirtualModelInstanceRepositories(FMLRTTechnologyAdapter.java:190)
+	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.notifyRepositoryStructureChanged(FMLRTTechnologyAdapter.java:198)
+	at org.openflexo.foundation.technologyadapter.TechnologyAdapter.lambda$updateRepository$0(TechnologyAdapter.java:335)
+```
+
+**Cause and fix (2026-11-19, seen in the running Maintainer with a read-only probe, then reproduced headless).** Not a consequence of
+`CORE-D-92`: it happens after a clean close too. A closed project keeps its delegate resource center and its project resource (cached by
+the project loader). Opening it again scans the directory again, and the resource factories build NEW resources: the resource center
+registers them in its URI map by artefact (which silently replaces the old entry, so `getAllResources()` stays the same size), but the
+root folder still holds the old ones, so the browser listed every resource of the project twice (12 distinct objects for 6 files, one more
+copy at each reopening). `ResourceRepositoryImpl.registerResource` now replaces, in the folder, an older resource of the same URI.
+Releasing every resource at close was tried and rejected: the reopened project does not find its instances again.
+Guarded by `TestReopenProjectNoDuplicates` (flexo-foundation-test): project opened from its directory in a new service manager, closed
+by the project loader, reopened twice; the resources and the content of the root folder must not change.
+
+**How to reproduce.** Reproduce `CORE-D-92`, then open the same project again.
+
+**Workaround.** Quit and restart the application before opening the project again.
+
 ## Resources: loading
 
 ### CORE-D-26 — Loading a compilation unit leaves it modified  ·  `DONE`

@@ -266,6 +266,18 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 			logger.warning("Trying to register a null resource");
 			return;
 		}
+		// An older resource built from the same artefact in this folder is replaced: a project that is closed keeps its delegate resource
+		// center, which scans its directory again when the project is opened again and builds new resources. Both would stay in the folder,
+		// and a browser would show every resource twice (CORE-D-93). The artefact decides, not the URI: several files may legitimately
+		// declare the same URI (XSD files sharing a target namespace) and must all stay in the folder.
+		Object artefact = resource.getIODelegate() != null ? resource.getIODelegate().getSerializationArtefact() : null;
+		if (artefact != null) {
+			for (R older : new ArrayList<>(parentFolder.getResources())) {
+				if (older != resource && older.getIODelegate() != null && artefact.equals(older.getIODelegate().getSerializationArtefact())) {
+					unregisterResource(older);
+				}
+			}
+		}
 		resource.setResourceCenter(getResourceCenter());
 		parentFolder.addToResources(resource);
 		resources.put(resource.getURI(), resource);
