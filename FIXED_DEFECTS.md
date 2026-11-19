@@ -894,6 +894,47 @@ modules of openflexo-core green.
 
 ---
 
+### CORE-D-92 — Closing a project fails on a null root folder of the VirtualModel instance repository, leaving its resources open  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#134](https://github.com/openflexo-team/openflexo-core/issues/134)
+
+**Symptom (seen 2026-11-19 in the Maintainer, branch 3.0, with the uncommitted phase 2 of `CORE-F-19` in the working tree).** File >
+Close project leaves the resources of the project and their views open. The log shows:
+
+```
+SEVERE Unexpected exception: ModelExecutionException … NullPointerException message: Cannot invoke
+"org.openflexo.foundation.resource.RepositoryFolder.setRepositoryContext(String)" because the return value of
+"org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.getRootFolder()" is null
+	at org.openflexo.foundation.resource.FlexoResourceCenterService$$Pamela$2.removeFromResourceCenters(Unknown Source)
+	at org.openflexo.foundation.project.FlexoProjectImpl.close(FlexoProjectImpl.java:565)
+	at org.openflexo.foundation.project.ProjectLoader.closeProject(ProjectLoader.java:497)
+	at org.openflexo.project.InteractiveProjectLoader.closeProject(InteractiveProjectLoader.java:195)
+	at org.openflexo.view.menu.FileMenu$CloseProjectAction.actionPerformed(FileMenu.java:350)
+```
+
+Removing the project's resource center from the service updates the VirtualModel instance repository of the FML@runtime technology
+adapter, whose root folder is null. The exception stops `close()` halfway: the project stays registered and its resources stay loaded.
+
+**Context.** The project (`TestExceptions.prj`) holds a nested project (`Containment.prj`) and VirtualModel instances. Before closing,
+it had been edited (a VirtualModel created, concepts edited, a deletion undone). The `RESOURCE UNLOADED not fully implemented` warnings
+of `FMLTechnologyAdapterController.resourceUnloaded` precede the exception.
+
+**Not known.** Whether a fresh project, closed right after opening, fails the same way. Whether this happens without `CORE-F-19`
+(the failing code is resource-center and repository code, which `CORE-F-19` does not touch).
+
+**How to reproduce.** Not scripted yet: open a project containing VirtualModel instances in the Maintainer, then File > Close project,
+and read the log.
+
+**Workaround.** Quit the application instead of closing the project.
+
+**Cause and fix (2026-11-19, checked in the Maintainer).** The root folder of a repository is built by `setBaseArtefact`, from the
+base artefact of the resource center. A project that is closing releases its resource data, so its base artefact
+(`getProjectDirectory()`) is null and a repository built for it has no root folder: `instanciateNewRepository` failed on
+`getRootFolder().setRepositoryContext(...)`, stopping `close()` halfway. `FMLRTTechnologyAdapter.getVirtualModelInstanceRepository` now
+builds and registers no repository for a resource center without base artefact (it returns null), and `getVirtualModelInstanceRepositories`
+skips it. Which resource center reached this code during the close (the project or the nested `Containment.prj`) was not established.
+No automated test guards it.
+
 ## Resources: loading
 
 ### CORE-D-26 — Loading a compilation unit leaves it modified  ·  `DONE`
