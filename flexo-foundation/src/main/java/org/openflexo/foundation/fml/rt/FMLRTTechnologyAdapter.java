@@ -140,6 +140,11 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAda
 		FMLRTVirtualModelInstanceRepository<I> returned = resourceCenter.retrieveRepository(FMLRTVirtualModelInstanceRepository.class,
 				this);
 		if (returned == null) {
+			// A resource center without base artefact (a project being closed, whose resource data is released) has no root folder: no
+			// repository can be built for it, and none must be registered (CORE-D-92)
+			if (resourceCenter.getBaseArtefact() == null) {
+				return null;
+			}
 			returned = FMLRTVirtualModelInstanceRepository.instanciateNewRepository(this, resourceCenter);
 			// Another thread may have registered one meanwhile: use the registered one (CORE-D-25)
 			returned = resourceCenter.registerRepository(returned, FMLRTVirtualModelInstanceRepository.class, this);
@@ -187,7 +192,10 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAda
 	public List<FMLRTVirtualModelInstanceRepository<?>> getVirtualModelInstanceRepositories() {
 		List<FMLRTVirtualModelInstanceRepository<?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
-			returned.add(getVirtualModelInstanceRepository(rc));
+			FMLRTVirtualModelInstanceRepository<?> repository = getVirtualModelInstanceRepository(rc);
+			if (repository != null) {
+				returned.add(repository);
+			}
 		}
 		return returned;
 	}
