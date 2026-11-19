@@ -22,15 +22,17 @@ assert plain.name == "p1";
 // Selection across the inheritance always worked; it must keep working.
 assert myVMI.allPlains().size == 1;
 
-// Guard 2 - a concept declared in THIS model, inheriting its container (Box) from the base model's
-// nested Item, instantiated into a Box instance.
+// Guard 2 - a concept declared in THIS model, nested in a subtype of the container (Box) of the base
+// model's Item that it extends, instantiated into an instance of that subtype.
 box = myVMI.newBox("b1");
 assert box != null;
 item = box.newItem("i1");
 assert item != null;
 assert item.name == "i1";
 
-special = myVMI.newSpecializedItem(box, "i2");
+specialBox = myVMI.newSpecializedBox("sb1");
+assert specialBox != null;
+special = myVMI.newSpecializedItem(specialBox, "i2");
 assert special != null;
 assert special.name == "i2";
 

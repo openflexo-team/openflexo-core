@@ -1130,6 +1130,45 @@ anything about the race, which the local runs never triggered.
 
 ---
 
+### CORE-D-94 — A VirtualModel edited in the FML editor is not saved, and comes back empty after reload  ·  `DONE` (closed 2026-11-19, not reproduced)
+
+**GitHub:** [openflexo-team/openflexo-core#136](https://github.com/openflexo-team/openflexo-core/issues/136)
+
+**Symptom (seen once, 2026-11-19, in the Maintainer, with the uncommitted phase 2 of `CORE-F-19` in the working tree).** A
+VirtualModel edited in the FML editor, then saved, comes back empty when the project is reloaded.
+- The log of the save shows only the project resource (`Saving resource FlexoProject … ProjectData`), not the edited
+  `CompilationUnitResource` (`TestContainment`).
+- On disk, `TestContainment.fml` is still the file written at its creation (an empty `model TestContainment { }`).
+
+So the edited unit was not marked modified, or not offered by the save.
+
+**Context.** This happened after `CORE-D-92` and `CORE-D-93`, while the resources of the project were registered twice: the
+editor may have edited one copy and the save may have looked at the other. Before that, in the same session, the unit had been edited
+in the text (concepts added, moved into one another, a deletion undone, see `PAMELA-D-8`).
+
+**Not known.**
+- Whether it happens in a clean session, without the duplicate resources.
+- Whether `CORE-F-19` plays a part. It changed the stored property that holds the concepts (`contents` instead of `flexoConcepts` and
+  `embeddedFlexoConcepts`), which the editor's `updateWith` and the modified flag go through.
+
+**Not reproduced (2026-11-19).** A headless test follows the path of the FML editor on the same working tree (with `CORE-F-19`
+phase 2): create a VirtualModel in a project, edit its text as `FMLEditorParser` does (parse, `updateWith`, `setResource`,
+`manageImports`) adding two root concepts, one of them containing a third, save the project, reload it (`TestCoreD94` in
+`flexo-foundation-test`). It passes: the unit, its VirtualModel and its resource are marked modified, `TestContainment.fml` is written with
+the concepts, and they are back after reload. Not covered: several successive edits (move into another concept, a deletion undone), the
+resources registered twice of `CORE-D-92` / `CORE-D-93`, and the real editor of the Maintainer.
+
+**Closed (2026-11-19, `not planned`).** Not reproduced, and the initial diagnosis (the edited unit not marked modified, or not
+offered by the save) is probably wrong: the likely cause is a crash during the save of the unit, in a session that also had `CORE-F-19`
+phase 2 uncommitted and the resources registered twice. A hypothesis, not established. `TestCoreD94` stays as a guard.
+
+**How to reproduce.** Not reproduced. If it happens again, open a new issue (linked to this one): keep the log of the save and the file on disk, and check whether the unit
+was registered twice (`CORE-D-92` / `CORE-D-93`) and whether the unit was marked modified before the save.
+
+**Workaround.** None known; check the file on disk after saving.
+
+---
+
 ## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)
 
 ### CORE-D-33 — The text rebuilt from the model is not the text that was parsed  ·  `DONE`
@@ -1746,3 +1785,70 @@ in `TestConceptB` of the child VirtualModel. Script `AutomatedTests/CORE-D-89.fm
 > 	at org.openflexo.foundation.action.FlexoAction.doAction(FlexoAction.java:231)
 > 
 > [BugTest.zip](https://github.com/user-attachments/files/22511020/BugTest.zip)
+
+### CORE-D-91 — A root concept extending a nested concept is printed inside the container of its parent  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#133](https://github.com/openflexo-team/openflexo-core/issues/133)
+
+**Symptom (reproduced 2026-11-18, branch 3.0).** A concept declared at the root of a VirtualModel that extends a nested concept is
+printed inside the container of its parent. Saving the unit moves it there, and its URI changes from `…#Gamma` to `…#Root1#Gamma`.
+
+```
+public model Containment {
+	public concept Root1 {
+		public concept Alpha { }
+	}
+	public concept Gamma extends Alpha { }
+}
+```
+
+After parsing, `Gamma.getContainerFlexoConcept()` is null, its URI is `…#Gamma`, and its applicable container (inherited from
+`Alpha`) is `Root1`. That part is right. `getNormalizedFML()` prints `Gamma` inside `Root1`, and re-parsing gives a concept nested in `Root1`.
+
+**Cause.**
+- `VirtualModelNode` prints `getAllRootFlexoConcepts()`, which leaves out every concept that has an applicable container.
+- `FlexoConceptNode` prints `getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer()`, which selects on the applicable container,
+  not on the declared one.
+
+Printing therefore follows the inherited container instead of the place of declaration.
+
+**Impact (at the time).** `BPMNModel.fml` used this pattern (`Event` outside `Process`, extending the nested `FlowNode`). It no longer does: its
+concepts have since been flattened, all at the root.
+
+**How to reproduce.** `KnownDefectsConceptContainmentTest.rootConceptExtendingANestedOneStaysAtTheRoot` (fml-parser), with
+`OPENFLEXO_KNOWN_DEFECTS=1`.
+
+**Fix (2026-11-19).** With the lexical container of `CORE-F-19`, the pretty-print follows `getContents()`: `VirtualModelNode`, `FlexoConceptNode`,
+`FlexoEventNode` and `FlexoExceptionNode` print the concepts declared in them, not those whose inherited container they are.
+`getAllRootFlexoConcepts()` keeps its meaning (no applicable container), which the instance creation and the matching rely on.
+The test, moved to the VirtualModel contents for its first assertion, now passes.
+
+**Note (2026-11-19).** The model of the symptom is not valid: a concept nested in `Root1` has its instances in an instance of `Root1`, so a
+concept extending it must be declared in `Root1` or in a subtype of `Root1`. That constraint was not checked: see `CORE-D-95`. The printing
+fix stays right, a unit is written where each concept is declared.
+
+### CORE-D-95 — A concept extending a nested concept is accepted when declared outside the container of its parent  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#137](https://github.com/openflexo-team/openflexo-core/issues/137)
+
+**Symptom (found 2026-11-19, while fixing `CORE-D-91`).** With `Alpha` nested in `Root1`, a root `concept Gamma extends Alpha { }` was
+loaded and validated without any issue, although the instances of `Gamma` would have no `Root1` instance to live in.
+
+**Semantics.** A concept B nested in A has its instances in an instance of A. A concept C extending B is therefore declared in A, or in
+a subtype of A. With several parents, the container of C is a subtype of the container of each of them.
+
+**Cause.** `ContainerFlexoConceptMustBeConsistentWithParents` only ran when C had a declared container: a root concept (container null)
+was never checked, and its inherited container (the applicable one) hid the inconsistency instead of reporting it. The effect also showed
+in the browsers, which list roots by the inherited container and children by the declared one, so such a concept was shown nowhere.
+
+**Fix (2026-11-19).** The rule checks every parent and no longer skips a root concept: a validation error
+`concept_($validable.name)_must_be_contained_in_a_subtype_of_the_container_of_its_parents`. Tests: `TestConceptContainment` (fml-parser):
+root, in the container, in a subtype of it, in an unrelated one, two parents.
+
+**Semantics decided.** The direct container of C is a subtype of the direct container of each parent, as written. A container inherited
+from the parents is not a substitute for a declaration: a root concept extending a nested one is an error, also across VirtualModels
+(`inside` is refused between compilation units, so the container is specialised in the extending model instead). The fixture
+`TestInheritedConcepts` was migrated accordingly: `SpecializedItem` is declared in a `SpecializedBox extends Box`.
+
+**Not done.** The loading is not refused (it is a validation error, as for the other consistency rules). The containment of a concept
+whose parent is a root concept is not checked: see `CORE-D-96`.

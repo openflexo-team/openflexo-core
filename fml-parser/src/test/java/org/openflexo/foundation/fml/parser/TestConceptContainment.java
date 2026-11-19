@@ -339,4 +339,86 @@ public class TestConceptContainment {
 		// the original is untouched
 		assertNestedStructure(vm);
 	}
+
+	/**
+	 * CORE-D-91: the text is printed where each concept is declared, not where its container is inherited from. Gamma, declared at the
+	 * root and extending a nested concept, is an invalid model (see the rule tests below), but saving it must not move it, nor change
+	 * its URI.
+	 */
+	@Test
+	public void rootConceptExtendingANestedOneStaysAtTheRoot() throws Exception {
+		FMLCompilationUnit unit = TestFMLReindent.parse(WITH_INHERITED_CONTAINER);
+		VirtualModel vm = unit.getVirtualModel();
+		assertTrue(names(vm.getContents()).contains("Gamma"));
+		String normalized = unit.getNormalizedFML();
+		VirtualModel reparsed = TestFMLReindent.parse(normalized).getVirtualModel();
+		FlexoConcept gamma = reparsed.getFlexoConcept("Gamma");
+		assertNull(normalized, gamma.getContainerFlexoConcept());
+		assertEquals(URI + "#Gamma", gamma.getURI());
+		assertEquals(normalized, reparsed.getNormalizedFML());
+	}
+
+	/** Containment: B nested in A has its instances in an instance of A, so a concept extending B lives in A (or a subtype of A) too */
+	private static final String ROOTS = String.join("\n", //
+			"@URI(\"" + URI + "\")", //
+			"public model Containment {", //
+			"	public concept Root1 {", //
+			"		public concept Alpha {", //
+			"		}", //
+			"%s", //
+			"	}", //
+			"	public concept Root1Sub extends Root1 {", //
+			"%s", //
+			"	}", //
+			"	public concept Root2 {", //
+			"		public concept Beta {", //
+			"		}", //
+			"	}", //
+			"%s", //
+			"}", "");
+
+	private static VirtualModel withGamma(String inRoot1, String inRoot1Sub, String atRoot) throws Exception {
+		return TestFMLReindent.parse(String.format(ROOTS, inRoot1, inRoot1Sub, atRoot)).getVirtualModel();
+	}
+
+	private static boolean isReported(VirtualModel vm, String conceptName) {
+		return new FlexoConcept.ContainerFlexoConceptMustBeConsistentWithParents().applyValidation(concept(vm, conceptName)) != null;
+	}
+
+	@Test
+	public void conceptExtendingANestedOneDeclaredAtTheRootIsReported() throws Exception {
+		VirtualModel vm = withGamma("", "", "	public concept Gamma extends Alpha {\n	}");
+		assertTrue(isReported(vm, "Gamma"));
+		assertFalse(isReported(vm, "Alpha"));
+		assertFalse(isReported(vm, "Root1Sub"));
+	}
+
+	@Test
+	public void conceptExtendingANestedOneIsValidInTheContainerOfItsParent() throws Exception {
+		VirtualModel vm = withGamma("		public concept Gamma extends Alpha {\n		}", "", "");
+		assertSame(concept(vm, "Root1"), concept(vm, "Gamma").getContainerFlexoConcept());
+		assertFalse(isReported(vm, "Gamma"));
+	}
+
+	@Test
+	public void conceptExtendingANestedOneIsValidInASubtypeOfTheContainerOfItsParent() throws Exception {
+		VirtualModel vm = withGamma("", "		public concept Gamma extends Alpha {\n		}", "");
+		assertSame(concept(vm, "Root1Sub"), concept(vm, "Gamma").getContainerFlexoConcept());
+		assertFalse(isReported(vm, "Gamma"));
+	}
+
+	@Test
+	public void conceptExtendingANestedOneIsReportedInAnUnrelatedContainer() throws Exception {
+		VirtualModel vm = withGamma("", "", "	public concept Other {\n		public concept Gamma extends Alpha {\n		}\n	}");
+		assertTrue(isReported(vm, "Gamma"));
+	}
+
+	@Test
+	public void everyParentContainerIsRequired() throws Exception {
+		// Delta extends Alpha (in Root1) and Beta (in Root2): no container is a subtype of both
+		VirtualModel root = withGamma("", "", "	public concept Delta extends Alpha, Beta {\n	}");
+		assertTrue(isReported(root, "Delta"));
+		VirtualModel inRoot1 = withGamma("		public concept Delta extends Alpha, Beta {\n		}", "", "");
+		assertTrue(isReported(inRoot1, "Delta"));
+	}
 }

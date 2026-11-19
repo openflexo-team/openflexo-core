@@ -493,41 +493,21 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 **Workaround.** Put the logic to reuse in a separate behaviour of the parent and call it on `this`: with
 `public String baseHello() { return "hello"; }` in `Base`, `return "left " + this.baseHello();` gives `left hello` (verified).
 
-### CORE-D-91 — A root concept extending a nested concept is printed inside the container of its parent  ·  `TODO`
+### CORE-D-96 — The containment of a concept extending a root concept is not checked  ·  `TODO`
 
-**GitHub:** [openflexo-team/openflexo-core#133](https://github.com/openflexo-team/openflexo-core/issues/133)
+**GitHub:** [openflexo-team/openflexo-core#138](https://github.com/openflexo-team/openflexo-core/issues/138)
 
-**Symptom (reproduced 2026-11-18, branch 3.0).** A concept declared at the root of a VirtualModel that extends a nested concept is
-printed inside the container of its parent. Saving the unit moves it there, and its URI changes from `…#Gamma` to `…#Root1#Gamma`.
+**Symptom (found 2026-11-19, review of `CORE-D-95`).** `ContainerFlexoConceptMustBeConsistentWithParents` only compares the declared
+container of a concept with the container of its parents when that container is a concept. A root concept has the VirtualModel as
+container, and `getContainerFlexoConcept()` returns null for it, so two cases are accepted:
+- a concept nested in `X` that extends a root concept `B` (its instances live in an `X`, those of `B` directly in the VirtualModel instance);
+- a root concept of a VirtualModel `M2` that extends a root concept of a VirtualModel `M1` which `M2` does not extend.
 
-```
-public model Containment {
-	public concept Root1 {
-		public concept Alpha { }
-	}
-	public concept Gamma extends Alpha { }
-}
-```
+**Semantics.** The direct container of C is a subtype of the direct container of each parent; for a VirtualModel container, a subtype is
+a VirtualModel extending it.
 
-After parsing, `Gamma.getContainerFlexoConcept()` is null, its URI is `…#Gamma`, and its applicable container (inherited from
-`Alpha`) is `Root1`. That part is right. `getNormalizedFML()` prints `Gamma` inside `Root1`, and re-parsing gives a concept nested in `Root1`.
-
-**Cause.**
-- `VirtualModelNode` prints `getAllRootFlexoConcepts()`, which leaves out every concept that has an applicable container.
-- `FlexoConceptNode` prints `getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer()`, which selects on the applicable container,
-  not on the declared one.
-
-Printing therefore follows the inherited container instead of the place of declaration.
-
-**Impact.** modelers/bpmn-modeler `BPMNModel.fml` uses this pattern: `Event` is declared outside `Process` and extends the nested
-`FlowNode`. A normalized save of that model would move `Event`.
-
-**How to reproduce.** `KnownDefectsConceptContainmentTest.rootConceptExtendingANestedOneStaysAtTheRoot` (fml-parser), with
-`OPENFLEXO_KNOWN_DEFECTS=1`.
-
-**Fix.** It is expected from `CORE-F-19`: the container becomes lexical, and printing follows `contents`.
-
-**Workaround.** Declare such a concept inside the container of its parent.
+**Not measured.** How many `.fml` of the workspace would be reported once the rule covers VirtualModels: to be counted before the rule
+is made to report them.
 
 ## FML expressions
 
@@ -745,34 +725,6 @@ is not known (the editor created during loading goes through `FlexoConceptInstan
 
 **To decide.** Do not create an editor (nor mark the project modified) while a resource of the project is being loaded, or take the two
 locks in one order; adding an editor to a project probably should not mark it modified at all.
-
----
-
-### CORE-D-94 — A VirtualModel edited in the FML editor is not saved, and comes back empty after reload  ·  `TODO`
-
-**GitHub:** [openflexo-team/openflexo-core#136](https://github.com/openflexo-team/openflexo-core/issues/136)
-
-**Symptom (seen once, 2026-11-19, in the Maintainer, with the uncommitted phase 2 of `CORE-F-19` in the working tree).** A
-VirtualModel edited in the FML editor, then saved, comes back empty when the project is reloaded.
-- The log of the save shows only the project resource (`Saving resource FlexoProject … ProjectData`), not the edited
-  `CompilationUnitResource` (`TestContainment`).
-- On disk, `TestContainment.fml` is still the file written at its creation (an empty `model TestContainment { }`).
-
-So the edited unit was not marked modified, or not offered by the save.
-
-**Context.** This happened after `CORE-D-92` and `CORE-D-93`, while the resources of the project were registered twice: the
-editor may have edited one copy and the save may have looked at the other. Before that, in the same session, the unit had been edited
-in the text (concepts added, moved into one another, a deletion undone, see `PAMELA-D-8`).
-
-**Not known.**
-- Whether it happens in a clean session, without the duplicate resources.
-- Whether `CORE-F-19` plays a part. It changed the stored property that holds the concepts (`contents` instead of `flexoConcepts` and
-  `embeddedFlexoConcepts`), which the editor's `updateWith` and the modified flag go through.
-
-**How to reproduce.** Not reproduced yet. In a fresh session: create a VirtualModel, add concepts in the FML editor, save, close the
-project, open it again, and check the file on disk and the save log.
-
-**Workaround.** None known; check the file on disk after saving.
 
 ## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)
 

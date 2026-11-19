@@ -133,7 +133,7 @@ public class FlexoEventNode extends AbstractFlexoConceptNode<AEventDecl, FlexoEv
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class),"Properties");
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class),"Behaviours");
-		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer(), LINE_SEPARATOR, Indentation.Indent,
+		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getContents(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class),"EmbeddedConcepts");
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getInvariants(), LINE_SEPARATOR, Indentation.Indent,
 				AbstractInvariant.class),"Invariants");

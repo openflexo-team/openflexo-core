@@ -1,8 +1,6 @@
 package org.openflexo.foundation.fml.parser;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -66,22 +64,5 @@ public class KnownDefectsConceptContainmentTest {
 		String normalized = unit.getNormalizedFML();
 		assertTrue(normalized, normalized.contains("event Changed"));
 		assertTrue(normalized, normalized.contains("enum Kind"));
-	}
-
-	/**
-	 * CORE-D-91: a root concept whose container is inherited (it extends a nested concept) is printed inside the container of its parent.
-	 * The VirtualModel prints getAllRootFlexoConcepts(), which leaves out every concept with an applicable container, and the container
-	 * prints getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer(), which takes the applicable container. Saving the unit then
-	 * moves the concept, and changes its URI from #Gamma to #Root1#Gamma.
-	 */
-	@Test
-	public void rootConceptExtendingANestedOneStaysAtTheRoot() throws Exception {
-		FMLCompilationUnit unit = TestFMLReindent.parse(TestConceptContainment.WITH_INHERITED_CONTAINER);
-		VirtualModel vm = unit.getVirtualModel();
-		assertTrue(TestConceptContainment.names(vm.getAllRootFlexoConcepts()).contains("Gamma"));
-		VirtualModel reparsed = TestFMLReindent.parse(unit.getNormalizedFML()).getVirtualModel();
-		FlexoConcept gamma = reparsed.getFlexoConcept("Gamma");
-		assertNull(unit.getNormalizedFML(), gamma.getContainerFlexoConcept());
-		assertEquals(URI + "#Gamma", gamma.getURI());
 	}
 }

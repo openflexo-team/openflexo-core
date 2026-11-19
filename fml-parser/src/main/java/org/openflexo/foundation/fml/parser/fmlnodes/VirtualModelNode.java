@@ -129,7 +129,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class));
-		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getAllRootFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
+		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getContents(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class));
 		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
 		// @formatter:on

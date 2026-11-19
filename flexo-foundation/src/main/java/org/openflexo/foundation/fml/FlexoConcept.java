@@ -314,7 +314,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	/**
 	 * Moves this concept into the supplied concept, or, for null, to the root of its {@link VirtualModel}.
 	 *
-	 * Note that this is an explicit declaration. When unspecified (let to null), this containment is inherited from its parent concepts
+	 * A concept extending a nested concept is declared in the container of its parent, or in a subtype of it (see
+	 * {@link ContainerFlexoConceptMustBeConsistentWithParents}): declaring it at the root is a validation error.
 	 *
 	 * @deprecated CORE-F-19: use {@link #setContainer(FlexoConcept)}
 	 */
@@ -322,8 +323,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setContainerFlexoConcept(FlexoConcept container);
 
 	/**
-	 * Return applicable container {@link FlexoConcept} (relative to containment). When no explicit declaration was defined for this
-	 * concept, this containment is inherited from its parent concepts
+	 * Return applicable container {@link FlexoConcept} (relative to containment): the declared container or, for a concept declared at the
+	 * root, the one of its parent concepts. Only a concept which is invalid for {@link ContainerFlexoConceptMustBeConsistentWithParents}
+	 * (CORE-D-95) has a declared container different from the one it inherits.
 	 */
 	public FlexoConcept getApplicableContainerFlexoConcept();
 
@@ -3602,12 +3604,18 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			super(FlexoConcept.class, "container_flexo_concept_must_be_consistent_with_parents");
 		}
 
+		/**
+		 * A concept B nested in A has its instances in an instance of A. A concept C extending B is therefore declared in A, or in a
+		 * subtype of A, whatever the parent considered: declared at the root, it would have instances with no container to live in.
+		 */
 		@Override
 		public ValidationIssue<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (flexoConcept.getContainerFlexoConcept() != null && flexoConcept.getParentFlexoConcepts().size() > 0) {
-				FlexoConcept applicableParent = ((FlexoConceptImpl) flexoConcept).getApplicableContainerFlexoConceptInheritedFromParents();
-				if (applicableParent != null && !applicableParent.isSuperConceptOf(flexoConcept.getContainerFlexoConcept())) {
-					return new ValidationError<>(this, flexoConcept, "container_declaration_is_not_compatible_with_parents_definition");
+			FlexoConcept declaredContainer = flexoConcept.getContainerFlexoConcept();
+			for (FlexoConcept parent : flexoConcept.getParentFlexoConcepts()) {
+				FlexoConcept parentContainer = parent != null ? parent.getApplicableContainerFlexoConcept() : null;
+				if (parentContainer != null && (declaredContainer == null || !parentContainer.isSuperConceptOf(declaredContainer))) {
+					return new ValidationError<>(this, flexoConcept,
+							"concept_($validable.name)_must_be_contained_in_a_subtype_of_the_container_of_its_parents");
 				}
 			}
 			return null;
