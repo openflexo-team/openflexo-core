@@ -182,15 +182,25 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoEvent.class), @Import(FlexoException.class), @Import(FlexoEnum.class) })
 public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
-	@PropertyIdentifier(type = VirtualModel.class)
+	@PropertyIdentifier(type = FlexoConcept.class)
+	public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = FlexoConcept.class, cardinality = Cardinality.LIST)
+	public static final String CONTENTS_KEY = "contents";
+	/**
+	 * Not a stored property any more (CORE-F-19): still notified, when the owning {@link VirtualModel} of this concept changes
+	 */
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = Visibility.class)
 	public static final String VISIBILITY_KEY = "visibility";
-	@PropertyIdentifier(type = FlexoConcept.class)
+	/**
+	 * Not a stored property any more (CORE-F-19): still notified, when the container concept of this concept changes
+	 */
 	public static final String CONTAINER_FLEXO_CONCEPT_KEY = "containerFlexoConcept";
-	@PropertyIdentifier(type = List.class)
+	/**
+	 * Not a stored property any more (CORE-F-19): still notified, when the contents of a concept (not of a {@link VirtualModel}) change
+	 */
 	public static final String EMBEDDED_FLEXO_CONCEPT_KEY = "embeddedFlexoConcepts";
 	@PropertyIdentifier(type = FlexoBehaviour.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
@@ -213,12 +223,57 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String ACCESSIBLE_BEHAVIOURS_KEY = "accessibleBehaviours";
 	public static final String APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY = "applicableContainerFlexoConcept";
 
-	// TODO: (SGU) i think we have to remove inverse property here
-	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
+	/**
+	 * Return the container of this concept, where it is declared: its enclosing concept for a nested concept, its {@link VirtualModel}
+	 * for a root concept. This is the only containment of concepts (CORE-F-19). The container of a {@link VirtualModel} is null: a
+	 * contained {@link VirtualModel} lives in its own compilation unit (see {@link VirtualModel#getContainerVirtualModel()}).
+	 * <p>
+	 * This is the lexical containment. The containment of the instances may be inherited from parent concepts: see
+	 * {@link #getApplicableContainerFlexoConcept()}.
+	 */
+	@Getter(value = CONTAINER_KEY, inverse = CONTENTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
+	public FlexoConcept getContainer();
+
+	@Setter(CONTAINER_KEY)
+	public void setContainer(FlexoConcept container);
+
+	/**
+	 * Return the concepts declared directly in this concept (for a {@link VirtualModel}: its root concepts)
+	 */
+	@Getter(value = CONTENTS_KEY, cardinality = Cardinality.LIST, inverse = CONTAINER_KEY)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
+	public List<FlexoConcept> getContents();
+
+	@Setter(CONTENTS_KEY)
+	public void setContents(List<FlexoConcept> contents);
+
+	@Adder(CONTENTS_KEY)
+	@PastingPoint
+	public void addToContents(FlexoConcept aFlexoConcept);
+
+	@Remover(CONTENTS_KEY)
+	public void removeFromContents(FlexoConcept aFlexoConcept);
+
+	@Reindexer(CONTENTS_KEY)
+	public void moveContentToIndex(FlexoConcept aFlexoConcept, int index);
+
+	@Finder(collection = CONTENTS_KEY, attribute = FlexoConcept.NAME_KEY)
+	public FlexoConcept getContentNamed(String conceptName);
+
+	/**
+	 * Return the {@link VirtualModel} declaring this concept, reached by climbing the containers. For a {@link VirtualModel}, the
+	 * container {@link VirtualModel} (see {@link VirtualModel#getContainerVirtualModel()}).
+	 */
 	public VirtualModel getOwner();
 
-	@Setter(OWNER_KEY)
+	/**
+	 * @deprecated CORE-F-19: the owner is derived from the container, use {@link #setContainer(FlexoConcept)}. Makes this concept a root
+	 *             concept of the supplied {@link VirtualModel}, or detaches it for null; does nothing when it is already declared in
+	 *             that {@link VirtualModel}, at any depth.
+	 */
+	@Deprecated
 	public void setOwner(VirtualModel virtualModel);
 
 	@Override
@@ -249,22 +304,21 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setVisibility(Visibility visibility);
 
 	/**
-	 * Return container {@link FlexoConcept} relative to containment. This is the {@link FlexoConcept} in which lives this concept
-	 * 
-	 * @return
+	 * Return the enclosing concept of this concept: its container, unless it is a {@link VirtualModel} (null for a root concept)
+	 *
+	 * @deprecated CORE-F-19: use {@link #getContainer()}
 	 */
-	@Getter(value = CONTAINER_FLEXO_CONCEPT_KEY, inverse = EMBEDDED_FLEXO_CONCEPT_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@Deprecated
 	public FlexoConcept getContainerFlexoConcept();
 
 	/**
-	 * Sets container {@link FlexoConcept} (relative to containment).
-	 * 
+	 * Moves this concept into the supplied concept, or, for null, to the root of its {@link VirtualModel}.
+	 *
 	 * Note that this is an explicit declaration. When unspecified (let to null), this containment is inherited from its parent concepts
 	 *
-	 * @param container
+	 * @deprecated CORE-F-19: use {@link #setContainer(FlexoConcept)}
 	 */
-	@Setter(CONTAINER_FLEXO_CONCEPT_KEY)
+	@Deprecated
 	public void setContainerFlexoConcept(FlexoConcept container);
 
 	/**
@@ -295,29 +349,31 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public boolean requiresExternalContainerDeclaration();
 
 	/**
-	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
-	 * 
-	 * @return
+	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept} (always empty for a {@link VirtualModel})
+	 *
+	 * @deprecated CORE-F-19: use {@link #getContents()}
 	 */
-	@Getter(value = EMBEDDED_FLEXO_CONCEPT_KEY, cardinality = Cardinality.LIST, inverse = CONTAINER_FLEXO_CONCEPT_KEY)
-	@Embedded
-	@CloningStrategy(StrategyType.CLONE)
+	@Deprecated
 	public List<FlexoConcept> getEmbeddedFlexoConcepts();
 
-	@Setter(EMBEDDED_FLEXO_CONCEPT_KEY)
+	/** @deprecated CORE-F-19: use {@link #setContents(List)} */
+	@Deprecated
 	public void setEmbeddedFlexoConcepts(List<FlexoConcept> flexoConcepts);
 
-	@Adder(EMBEDDED_FLEXO_CONCEPT_KEY)
-	@PastingPoint
+	/** @deprecated CORE-F-19: use {@link #addToContents(FlexoConcept)} */
+	@Deprecated
 	public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
-	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
+	/** @deprecated CORE-F-19: use {@link #removeFromContents(FlexoConcept)} */
+	@Deprecated
 	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
-	@Reindexer(EMBEDDED_FLEXO_CONCEPT_KEY)
+	/** @deprecated CORE-F-19: use {@link #moveContentToIndex(FlexoConcept, int)} */
+	@Deprecated
 	public void moveEmbeddedFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
-	@Finder(collection = EMBEDDED_FLEXO_CONCEPT_KEY, attribute = FlexoConcept.NAME_KEY)
+	/** @deprecated CORE-F-19: use {@link #getContentNamed(String)} */
+	@Deprecated
 	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
 
 	/**
@@ -2428,12 +2484,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		public void setOwner(VirtualModel virtualModel) {
-			performSuperSetter(OWNER_KEY, virtualModel);
-			clearAccessiblePropertiesCache();
-		}
-
-		@Override
 		public void setChildFlexoConcepts(List<FlexoConcept> childFlexoConcepts) {
 			performSuperSetter(CHILD_FLEXO_CONCEPTS_KEY, childFlexoConcepts);
 			clearAccessiblePropertiesCache();
@@ -2451,43 +2501,175 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			clearAccessiblePropertiesCache();
 		}
 
+		// CORE-F-19: the single containment of concepts. The former owner / containerFlexoConcept / embeddedFlexoConcepts properties
+		// are derived from it below, and still notified under their names, for the listeners and the bindings that use them.
+
 		@Override
-		public void setContainerFlexoConcept(FlexoConcept aConcept) {
+		public VirtualModel getOwner() {
+			FlexoConcept container = getContainer();
+			if (container == null) {
+				return null;
+			}
+			if (container instanceof VirtualModel) {
+				return (VirtualModel) container;
+			}
+			return container.getOwner();
+		}
+
+		@Override
+		@Deprecated
+		public void setOwner(VirtualModel virtualModel) {
+			if (virtualModel == getOwner()) {
+				return;
+			}
+			setContainer(virtualModel);
+		}
+
+		// Not persisted: true while setContainer() runs, see below
+		private boolean isSettingContainer = false;
+
+		@Override
+		public void setContainer(FlexoConcept container) {
+			if (container == getContainer()) {
+				return;
+			}
+			if (isSettingContainer) {
+				// Re-entrant call: when the container changes, PAMELA removes this concept from the contents of the old container, and
+				// that removal sets the container to null through the inverse property, before the new value is stored. Notifying in
+				// this transient state would announce a null owner, that nothing repairs when the concept moves inside its
+				// VirtualModel: the outermost call notifies, once, from the state before to the state after.
+				performSuperSetter(CONTAINER_KEY, container);
+				return;
+			}
+			VirtualModel oldOwner = getOwner();
+			FlexoConcept oldContainerFlexoConcept = getContainerFlexoConcept();
 			FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
-			performSuperSetter(CONTAINER_FLEXO_CONCEPT_KEY, aConcept);
+			isSettingContainer = true;
+			try {
+				performSuperSetter(CONTAINER_KEY, container);
+			} finally {
+				isSettingContainer = false;
+			}
 			clearAccessiblePropertiesCache();
-			VirtualModel owningVirtualModel = getOwningVirtualModel();
-			if (owningVirtualModel != null) {
-				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
-				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						owningVirtualModel.getAllRootFlexoConcepts());
+			FlexoConcept newContainerFlexoConcept = getContainerFlexoConcept();
+			if (oldContainerFlexoConcept != newContainerFlexoConcept) {
+				getPropertyChangeSupport().firePropertyChange(CONTAINER_FLEXO_CONCEPT_KEY, oldContainerFlexoConcept, newContainerFlexoConcept);
+			}
+			VirtualModel newOwner = getOwner();
+			if (oldOwner != newOwner) {
+				notifyOwnerChanged(this, oldOwner, newOwner);
 			}
 			getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
 					getApplicableContainerFlexoConcept());
+			notifyContainerChanges();
+		}
+
+		/**
+		 * The owner of a concept is derived from its containers: when it changes, it changes for the whole subtree
+		 */
+		private static void notifyOwnerChanged(FlexoConcept concept, VirtualModel oldOwner, VirtualModel newOwner) {
+			((FlexoConceptImpl) concept).clearAccessiblePropertiesCache();
+			concept.getPropertyChangeSupport().firePropertyChange(OWNER_KEY, oldOwner, newOwner);
+			for (FlexoConcept content : new ArrayList<>(concept.getContents())) {
+				notifyOwnerChanged(content, oldOwner, newOwner);
+			}
 		}
 
 		@Override
+		public void addToContents(FlexoConcept aFlexoConcept) {
+			performSuperAdder(CONTENTS_KEY, aFlexoConcept);
+			contentsChanged(null, aFlexoConcept);
+		}
+
+		@Override
+		public void removeFromContents(FlexoConcept aFlexoConcept) {
+			performSuperRemover(CONTENTS_KEY, aFlexoConcept);
+			contentsChanged(aFlexoConcept, null);
+		}
+
+		@Override
+		public void setContents(List<FlexoConcept> contents) {
+			performSuperSetter(CONTENTS_KEY, contents);
+			contentsChanged(null, null);
+		}
+
+		private void contentsChanged(FlexoConcept removed, FlexoConcept added) {
+			if (!(this instanceof VirtualModel)) {
+				getPropertyChangeSupport().firePropertyChange(EMBEDDED_FLEXO_CONCEPT_KEY, removed, added);
+			}
+			InnerConceptsFacet innerConceptsFacet = getInnerConceptsFacet();
+			if (innerConceptsFacet != null) {
+				innerConceptsFacet.notifiedConceptsChanged();
+			}
+			VirtualModel virtualModel = this instanceof VirtualModel ? (VirtualModel) this : getOwner();
+			if (virtualModel != null) {
+				((FlexoConceptImpl) virtualModel).notifiedConceptsOfVirtualModelChanged(removed, added);
+			}
+		}
+
+		/**
+		 * Called on a {@link VirtualModel} when a concept is added to, or removed from, the tree of its concepts
+		 */
+		protected void notifiedConceptsOfVirtualModelChanged(FlexoConcept removed, FlexoConcept added) {
+		}
+
+		@Override
+		@Deprecated
+		public FlexoConcept getContainerFlexoConcept() {
+			FlexoConcept container = getContainer();
+			return container instanceof VirtualModel ? null : container;
+		}
+
+		@Override
+		@Deprecated
+		public void setContainerFlexoConcept(FlexoConcept aConcept) {
+			if (aConcept != null) {
+				setContainer(aConcept);
+			}
+			else if (getContainerFlexoConcept() != null) {
+				// Back to the root of its VirtualModel
+				setContainer(getOwner());
+			}
+		}
+
+		@Override
+		@Deprecated
+		public List<FlexoConcept> getEmbeddedFlexoConcepts() {
+			return getContents();
+		}
+
+		@Override
+		@Deprecated
+		public void setEmbeddedFlexoConcepts(List<FlexoConcept> flexoConcepts) {
+			setContents(flexoConcepts);
+		}
+
+		@Override
+		@Deprecated
 		public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
-			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
-			getInnerConceptsFacet().notifiedConceptsChanged();
-			VirtualModel owningVirtualModel = getOwningVirtualModel();
-			if (owningVirtualModel != null) {
-				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
-				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						owningVirtualModel.getAllRootFlexoConcepts());
+			if (!getContents().contains(aFlexoConcept)) {
+				addToContents(aFlexoConcept);
 			}
 		}
 
 		@Override
+		@Deprecated
 		public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
-			performSuperRemover(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
-			getInnerConceptsFacet().notifiedConceptsChanged();
-			VirtualModel owningVirtualModel = getOwningVirtualModel();
-			if (owningVirtualModel != null) {
-				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
-				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						owningVirtualModel.getAllRootFlexoConcepts());
+			if (getContents().contains(aFlexoConcept)) {
+				removeFromContents(aFlexoConcept);
 			}
+		}
+
+		@Override
+		@Deprecated
+		public void moveEmbeddedFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index) {
+			moveContentToIndex(aFlexoConcept, index);
+		}
+
+		@Override
+		@Deprecated
+		public FlexoConcept getEmbeddedFlexoConcept(String conceptName) {
+			return getContentNamed(conceptName);
 		}
 
 		/**

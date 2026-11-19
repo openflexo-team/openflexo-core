@@ -493,6 +493,42 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 **Workaround.** Put the logic to reuse in a separate behaviour of the parent and call it on `this`: with
 `public String baseHello() { return "hello"; }` in `Base`, `return "left " + this.baseHello();` gives `left hello` (verified).
 
+### CORE-D-91 — A root concept extending a nested concept is printed inside the container of its parent  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#133](https://github.com/openflexo-team/openflexo-core/issues/133)
+
+**Symptom (reproduced 2026-11-18, branch 3.0).** A concept declared at the root of a VirtualModel that extends a nested concept is
+printed inside the container of its parent. Saving the unit moves it there, and its URI changes from `…#Gamma` to `…#Root1#Gamma`.
+
+```
+public model Containment {
+	public concept Root1 {
+		public concept Alpha { }
+	}
+	public concept Gamma extends Alpha { }
+}
+```
+
+After parsing, `Gamma.getContainerFlexoConcept()` is null, its URI is `…#Gamma`, and its applicable container (inherited from
+`Alpha`) is `Root1`. That part is right. `getNormalizedFML()` prints `Gamma` inside `Root1`, and re-parsing gives a concept nested in `Root1`.
+
+**Cause.**
+- `VirtualModelNode` prints `getAllRootFlexoConcepts()`, which leaves out every concept that has an applicable container.
+- `FlexoConceptNode` prints `getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer()`, which selects on the applicable container,
+  not on the declared one.
+
+Printing therefore follows the inherited container instead of the place of declaration.
+
+**Impact.** modelers/bpmn-modeler `BPMNModel.fml` uses this pattern: `Event` is declared outside `Process` and extends the nested
+`FlowNode`. A normalized save of that model would move `Event`.
+
+**How to reproduce.** `KnownDefectsConceptContainmentTest.rootConceptExtendingANestedOneStaysAtTheRoot` (fml-parser), with
+`OPENFLEXO_KNOWN_DEFECTS=1`.
+
+**Fix.** It is expected from `CORE-F-19`: the container becomes lexical, and printing follows `contents`.
+
+**Workaround.** Declare such a concept inside the container of its parent.
+
 ## FML expressions
 
 ### CORE-D-19 — A method call on a string literal gives null  ·  `TODO`
@@ -629,6 +665,39 @@ Each changes the notification behaviour GINA relies on: to be decided and tested
 
 ---
 
+### CORE-D-92 — Closing a project fails on a null root folder of the VirtualModel instance repository, leaving its resources open  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#134](https://github.com/openflexo-team/openflexo-core/issues/134)
+
+**Symptom (seen 2026-11-19 in the Maintainer, branch 3.0, with the uncommitted phase 2 of `CORE-F-19` in the working tree).** File >
+Close project leaves the resources of the project and their views open. The log shows:
+
+```
+SEVERE Unexpected exception: ModelExecutionException … NullPointerException message: Cannot invoke
+"org.openflexo.foundation.resource.RepositoryFolder.setRepositoryContext(String)" because the return value of
+"org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.getRootFolder()" is null
+	at org.openflexo.foundation.resource.FlexoResourceCenterService$$Pamela$2.removeFromResourceCenters(Unknown Source)
+	at org.openflexo.foundation.project.FlexoProjectImpl.close(FlexoProjectImpl.java:565)
+	at org.openflexo.foundation.project.ProjectLoader.closeProject(ProjectLoader.java:497)
+	at org.openflexo.project.InteractiveProjectLoader.closeProject(InteractiveProjectLoader.java:195)
+	at org.openflexo.view.menu.FileMenu$CloseProjectAction.actionPerformed(FileMenu.java:350)
+```
+
+Removing the project's resource center from the service updates the VirtualModel instance repository of the FML@runtime technology
+adapter, whose root folder is null. The exception stops `close()` halfway: the project stays registered and its resources stay loaded.
+
+**Context.** The project (`TestExceptions.prj`) holds a nested project (`Containment.prj`) and VirtualModel instances. Before closing,
+it had been edited (a VirtualModel created, concepts edited, a deletion undone). The `RESOURCE UNLOADED not fully implemented` warnings
+of `FMLTechnologyAdapterController.resourceUnloaded` precede the exception.
+
+**Not known.** Whether a fresh project, closed right after opening, fails the same way. Whether this happens without `CORE-F-19`
+(the failing code is resource-center and repository code, which `CORE-F-19` does not touch).
+
+**How to reproduce.** Not scripted yet: open a project containing VirtualModel instances in the Maintainer, then File > Close project,
+and read the log.
+
+**Workaround.** Quit the application instead of closing the project.
+
 ## Resources: loading
 
 ### CORE-D-29 — A string addition on a binding path fails in a GINA component: `data.owner.name + ".prj"`  ·  `TODO`
@@ -711,6 +780,58 @@ is not known (the editor created during loading goes through `FlexoConceptInstan
 locks in one order; adding an editor to a project probably should not mark it modified at all.
 
 ---
+
+### CORE-D-93 — Opening again a project whose close failed shows its resources twice  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#135](https://github.com/openflexo-team/openflexo-core/issues/135)
+
+**Symptom (seen 2026-11-19 in the Maintainer, right after `CORE-D-92`).** After a failed close, opening the same project again shows
+its resources twice in the browsers. The log shows the same null root folder:
+
+```
+SEVERE Unexpected exception: java.lang.NullPointerException: Cannot invoke
+"org.openflexo.foundation.resource.RepositoryFolder.setRepositoryContext(String)" because the return value of
+"org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.getRootFolder()" is null
+	at org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository.instanciateNewRepository(FMLRTVirtualModelInstanceRepository.java:79)
+	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.getVirtualModelInstanceRepository(FMLRTTechnologyAdapter.java:143)
+	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.getVirtualModelInstanceRepositories(FMLRTTechnologyAdapter.java:190)
+	at org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter.notifyRepositoryStructureChanged(FMLRTTechnologyAdapter.java:198)
+	at org.openflexo.foundation.technologyadapter.TechnologyAdapter.lambda$updateRepository$0(TechnologyAdapter.java:335)
+```
+
+**Hypothesis (not checked).** This is a consequence of `CORE-D-92`: the failed close left the project and its resource center
+registered, so opening it again registers a second copy of every resource. Whether a duplicate also appears after a clean close is
+not known.
+
+**How to reproduce.** Reproduce `CORE-D-92`, then open the same project again.
+
+**Workaround.** Quit and restart the application before opening the project again.
+
+### CORE-D-94 — A VirtualModel edited in the FML editor is not saved, and comes back empty after reload  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#136](https://github.com/openflexo-team/openflexo-core/issues/136)
+
+**Symptom (seen once, 2026-11-19, in the Maintainer, with the uncommitted phase 2 of `CORE-F-19` in the working tree).** A
+VirtualModel edited in the FML editor, then saved, comes back empty when the project is reloaded.
+- The log of the save shows only the project resource (`Saving resource FlexoProject … ProjectData`), not the edited
+  `CompilationUnitResource` (`TestContainment`).
+- On disk, `TestContainment.fml` is still the file written at its creation (an empty `model TestContainment { }`).
+
+So the edited unit was not marked modified, or not offered by the save.
+
+**Context.** This happened after `CORE-D-92` and `CORE-D-93`, while the resources of the project were registered twice: the
+editor may have edited one copy and the save may have looked at the other. Before that, in the same session, the unit had been edited
+in the text (concepts added, moved into one another, a deletion undone, see `PAMELA-D-8`).
+
+**Not known.**
+- Whether it happens in a clean session, without the duplicate resources.
+- Whether `CORE-F-19` plays a part. It changed the stored property that holds the concepts (`contents` instead of `flexoConcepts` and
+  `embeddedFlexoConcepts`), which the editor's `updateWith` and the modified flag go through.
+
+**How to reproduce.** Not reproduced yet. In a fresh session: create a VirtualModel, add concepts in the FML editor, save, close the
+project, open it again, and check the file on disk and the save log.
+
+**Workaround.** None known; check the file on disk after saving.
 
 ## Noise and fidelity found by mapping the warnings of loading a Formose project (2026-10-09)
 
@@ -831,7 +952,7 @@ in a `HashSet`, without `equals`/`hashCode`; `stopEventListening` removes the fi
 
 **Workaround.** None at FML level; declare the listener in the concrete concept rather than in a parent.
 
-### CORE-D-86 — An event declared inside a concept is dropped from the model  ·  `TODO`
+### CORE-D-86 — An event or an enum declared inside a concept is dropped from the model  ·  `TODO`
 
 **GitHub:** [openflexo-team/openflexo-core#60](https://github.com/openflexo-team/openflexo-core/issues/60)
 
@@ -841,7 +962,13 @@ never to a `FlexoConceptNode`: the model never contains the event, while the typ
 detached object. The same defect for an exception is fixed (`FlexoExceptionNode`, `CORE-F-11` phase 7, test
 `NestedInConcept.fmlscript`). Every event of the workspace is declared at model level.
 
-**Workaround.** Declare events in the model.
+**Reproduced (2026-11-18, characterisation of `CORE-F-19`).** The enum has the same flaw: `FlexoEnumNode.deserialize()` attaches an
+enum only to a `VirtualModelNode` or a `FlexoEnumNode` parent. An `event` or an `enum` declared inside a concept is in no list, is not
+found by `VirtualModel.getFlexoConcept(name)`, and disappears from `getNormalizedFML()`. Test:
+`KnownDefectsConceptContainmentTest.eventAndEnumNestedInAConceptAreKept` (fml-parser, `OPENFLEXO_KNOWN_DEFECTS=1`). The fix is expected
+from `CORE-F-19`, whose parser phase attaches every nested declaration through one `addToContents`.
+
+**Workaround.** Declare events and enums in the model.
 
 ---
 

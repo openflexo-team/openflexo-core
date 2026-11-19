@@ -584,6 +584,84 @@ is a dependency to take into account.
 
 > This has been analyzed as a design issue (for example for DropScheme management in Diagram TA) and should be refactored.
 
+### CORE-F-19 — A single container/contents association for FlexoConcepts  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#132](https://github.com/openflexo-team/openflexo-core/issues/132)
+
+**Problem.** A nested FlexoConcept is held by two PAMELA compositions, both `@Embedded` and `@CloningStrategy(CLONE)`:
+
+- `VirtualModel.flexoConcepts` ↔ `FlexoConcept.owner`: a flat list of all the concepts of a compilation unit, nested ones included.
+  The parser fills it after the fact (`VirtualModelNode.bindEmbeddedFlexoConcepts`, itself marked deprecated), and
+  `CreateFlexoConcept` adds every new concept to it.
+- `FlexoConcept.embeddedFlexoConcepts` ↔ `FlexoConcept.containerFlexoConcept`: the nesting.
+
+As a result:
+- The PAMELA closure, cloning, deletion and notifications are doubled.
+- Every adder and remover fires hand-written notifications for both sides (`allRootFlexoConcepts`, `InnerConceptsFacet`).
+- `getAllRootFlexoConcepts()` and the pretty-print (`getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer`) have to filter
+  the flat list.
+- The `inside X` clause (`AbstractFlexoConceptNode.finalizeDeserialization`) can set a container in another compilation unit
+  (`hasExternalContainer`, `requiresExternalContainerDeclaration`), which makes the composition cross resources. No `.fml` of the
+  workspace uses `inside`.
+
+**Target (decided 2026-11-18).**
+- One association, `FlexoConcept.container` ↔ `contents`. It is the only composition, and it is lexical: the container of a nested
+  concept is its enclosing concept, and the container of a root concept is its VirtualModel.
+- `getOwningVirtualModel()` / `getOwner()` climb the containers.
+- `VirtualModel.getAllFlexoConcepts()` is derived (the whole tree) and notified. Each `getFlexoConcepts()` call site (~142, ~25
+  repositories) is reviewed and moved to the direct contents or to all concepts.
+- `getApplicableContainerFlexoConcept()` (the container inherited from parents) stays a derived computation, not a stored link.
+- The `inside` clause leaves the grammar.
+
+**Not covered.** VirtualModel-in-VirtualModel containment stays resource-based (`getContainerVirtualModel`): a VirtualModel's
+`container` is null. The same dual structure in the runtime model (`owningVirtualModelInstance` / `containerFlexoConceptInstance`)
+is a possible follow-up.
+
+**Plan.** The steps are phased, and each is reviewed before the next.
+1. Characterisation tests first. They pin URIs and local URIs of nested concepts, root concepts, the owning VirtualModel, the
+   pretty-print round trip, cloning, deletion of a container concept, the notifications on add and remove, and the FML editor
+   browser.
+2. Single storage. The old accessors (`getOwner`, `getContainerFlexoConcept`, `getEmbeddedFlexoConcepts`,
+   `VirtualModel.getFlexoConcepts`...) become `@Deprecated` aliases that delegate. Remove `bindEmbeddedFlexoConcepts` and the
+   doubled notifications.
+3. Migrate callers repository by repository (openflexo-dev composite): Java first, then the `.fib` / `.inspector` bindings
+   (`flexoConcepts`, `embeddedFlexoConcepts`, `containerFlexoConcept`, `owner`).
+4. Remove `inside` from `fml.sablecc` and from the concept nodes.
+5. Remove the aliases.
+
+**Acceptance.**
+- A nested concept has exactly one composite parent.
+- The tests of openflexo-core, openflexo-ui, the technology adapters, formod, FME, the modelers and the integration tests are as
+  green as before.
+- The pretty-print round trip of the FML corpus is unchanged.
+- In the application, opening, editing (create, delete a nested concept), saving and reloading a VirtualModel with nested concepts
+  behaves as before.
+
+**Progress (2026-11-19).**
+- Phase 1 done: `TestConceptContainment` (fml-parser) pins containers, inherited containers, URIs, lookup, round trip, add, move,
+  delete, clone and notifications; `KnownDefectsConceptContainmentTest` reproduces `CORE-D-86` and `CORE-D-91`, both expected to be
+  fixed by phase 3.
+- Phase 2 done: `container` ↔ `contents` is the only stored containment; `owner`, `containerFlexoConcept`, `embeddedFlexoConcepts` and
+  `VirtualModel.flexoConcepts` are deprecated derived methods, still notified under their names; `VirtualModel.getAllFlexoConcepts()`
+  is derived (a new list at each call); `bindEmbeddedFlexoConcepts` is gone; `inside X` with `X` in another unit is a parse issue; the
+  paste handlers paste into `contents`. Only the outermost `setContainer` notifies: the re-entrant call PAMELA makes through the inverse
+  property announced a null owner, which emptied the binding model of a concept moved inside its VirtualModel (found by the review).
+- Semantics of the deprecated aliases, to keep in mind while migrating the callers: `removeFromFlexoConcepts` takes the concept out of
+  its container at any depth; `addToFlexoConcepts` does nothing for a concept already declared in the VirtualModel; `moveFlexoConceptToIndex`
+  only reorders root concepts; `getFlexoConcepts()` lists the root concepts first, then the nested ones depth first (for concepts created
+  by actions, the order is no longer the order of creation); `owner` is notified for the whole subtree of a concept moved to another
+  VirtualModel.
+- For phase 3 (found in the application, 2026-11-19): the "container" field of `FlexoConcept.inspector` is bound to the deprecated
+  `containerFlexoConcept`, so it shows nothing for a root concept. Bind it to `container`; the selector (`FlexoConceptSelector.fib`)
+  must offer the VirtualModel itself (back to the root) and list nested concepts (its tree follows `childFlexoConcepts`, the
+  inheritance, not `contents`).
+- Checked in the Maintainer (2026-11-19): moving a root concept into another one with the inspector moves it with its nested concepts.
+- Found in the Maintainer, not caused by CORE-F-19 (same result without it): copying a concept with a `void` behaviour fails
+  (`PAMELA-D-7`); undoing the deletion of a concept leaves it deleted and its lists reversed (`PAMELA-D-8`). Not checked: dragging a
+  concept in the bottom-left browser (embedding mode) does not even start; whether it worked before is not known.
+- Not checked yet: the FML editor in the application (move, create inside a container, delete, save and reload, undo), and the cost of
+  the derived list on a large unit.
+
 ## Resources
 
 ### CORE-F-13 — Errors of a resource, detected at the resource layer without loading it  ·  `IN PROGRESS`

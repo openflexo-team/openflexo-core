@@ -70,21 +70,15 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
-import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.PastingPoint;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
-import org.openflexo.pamela.annotations.Reindexer;
-import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationError;
@@ -138,7 +132,9 @@ public interface VirtualModel extends FlexoConcept {
 	public static final String URI_KEY = "uri";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String VERSION_KEY = "version";
-	@PropertyIdentifier(type = FlexoConcept.class, cardinality = Cardinality.LIST)
+	/**
+	 * Not a stored property any more (CORE-F-19): still notified, when a concept is added to or removed from the tree of the concepts
+	 */
 	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
 
 	@PropertyIdentifier(type = Class.class)
@@ -183,26 +179,39 @@ public interface VirtualModel extends FlexoConcept {
 	public FMLModelFactory getFMLModelFactory();
 
 	/**
-	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel}
-	 * 
-	 * @return
+	 * Return all the {@link FlexoConcept}s declared in this {@link VirtualModel}, nested ones included: its root concepts (its
+	 * {@link #getContents()}) first, then the concepts nested in each of them, depth first. Derived: a new list at each call.
 	 */
-	@Getter(value = FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConcept.OWNER_KEY)
-	@Embedded
-	@CloningStrategy(StrategyType.CLONE)
+	public List<FlexoConcept> getAllFlexoConcepts();
+
+	/**
+	 * @deprecated CORE-F-19: use {@link #getAllFlexoConcepts()} for every concept, or {@link #getContents()} for the root ones
+	 */
+	@Deprecated
 	public List<FlexoConcept> getFlexoConcepts();
 
-	@Setter(FLEXO_CONCEPTS_KEY)
+	/** @deprecated CORE-F-19: use {@link #setContents(List)} */
+	@Deprecated
 	public void setFlexoConcepts(List<FlexoConcept> flexoConcepts);
 
-	@Adder(FLEXO_CONCEPTS_KEY)
-	@PastingPoint
+	/**
+	 * Adds the concept as a root concept of this {@link VirtualModel}, unless it is already declared in it (at any depth)
+	 * 
+	 * @deprecated CORE-F-19: use {@link #addToContents(FlexoConcept)}
+	 */
+	@Deprecated
 	public void addToFlexoConcepts(FlexoConcept aFlexoConcept);
 
-	@Remover(FLEXO_CONCEPTS_KEY)
+	/**
+	 * Removes the concept from its container, when it is declared in this {@link VirtualModel} (at any depth)
+	 * 
+	 * @deprecated CORE-F-19: use {@link #removeFromContents(FlexoConcept)} on its container
+	 */
+	@Deprecated
 	public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept);
 
-	@Reindexer(FLEXO_CONCEPTS_KEY)
+	/** @deprecated CORE-F-19: use {@link #moveContentToIndex(FlexoConcept, int)} */
+	@Deprecated
 	public void moveFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
 	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
@@ -742,44 +751,90 @@ public interface VirtualModel extends FlexoConcept {
 			}
 		}
 
-		// Override PAMELA internal call by providing custom notification support
+		// CORE-F-19: the concepts are the tree of the contents; the flat list is derived
+
 		@Override
-		public void addToFlexoConcepts(FlexoConcept aFlexoConcept) {
-			performSuperAdder(FLEXO_CONCEPTS_KEY, aFlexoConcept);
-
-			/*System.out.println("Creating new FlexoConcept " + aFlexoConcept + " in FMLCompilationUnitImpl ");
-			System.out.println("hash=" + Integer.toHexString(getCompilationUnit().hashCode()));
-			System.out.println("allRootFlexoConcepts=" + getAllRootFlexoConcepts());
-			Thread.dumpStack();*/
-
-			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null, aFlexoConcept);
-			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null, aFlexoConcept);
-			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", null, aFlexoConcept);
-			getPropertyChangeSupport().firePropertyChange("getAllRootFlexoConcepts(boolean,boolean)", null, aFlexoConcept);
-			if (aFlexoConcept.getParentFlexoConcepts() != null) {
-				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
-					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, null, aFlexoConcept);
-				}
+		public List<FlexoConcept> getAllFlexoConcepts() {
+			List<FlexoConcept> returned = new ArrayList<>(getContents());
+			for (FlexoConcept root : getContents()) {
+				appendNestedConcepts(root, returned);
 			}
-			getInnerConceptsFacet().notifiedConceptsChanged();
+			return returned;
 		}
 
-		// Override PAMELA internal call by providing custom notification support
+		private static void appendNestedConcepts(FlexoConcept concept, List<FlexoConcept> returned) {
+			for (FlexoConcept nested : concept.getContents()) {
+				returned.add(nested);
+				appendNestedConcepts(nested, returned);
+			}
+		}
+
 		@Override
+		@Deprecated
+		public List<FlexoConcept> getFlexoConcepts() {
+			return getAllFlexoConcepts();
+		}
+
+		@Override
+		@Deprecated
+		public void setFlexoConcepts(List<FlexoConcept> flexoConcepts) {
+			setContents(flexoConcepts);
+		}
+
+		@Override
+		@Deprecated
+		public void addToFlexoConcepts(FlexoConcept aFlexoConcept) {
+			if (aFlexoConcept.getOwner() == this && aFlexoConcept.getContainer() != null) {
+				// Already declared in this VirtualModel
+				return;
+			}
+			addToContents(aFlexoConcept);
+		}
+
+		@Override
+		@Deprecated
 		public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept) {
-			performSuperRemover(FLEXO_CONCEPTS_KEY, aFlexoConcept);
-			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", aFlexoConcept, null);
-			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", aFlexoConcept, null);
-			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", aFlexoConcept, null);
-			getPropertyChangeSupport().firePropertyChange("getAllRootFlexoConcepts(boolean,boolean)", aFlexoConcept, null);
-			if (aFlexoConcept.getParentFlexoConcepts() != null) {
-				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
-					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, aFlexoConcept, null);
+			FlexoConcept container = aFlexoConcept.getContainer();
+			if (container != null && aFlexoConcept.getOwner() == this) {
+				container.removeFromContents(aFlexoConcept);
+			}
+		}
+
+		@Override
+		@Deprecated
+		public void moveFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index) {
+			if (aFlexoConcept.getContainer() == this) {
+				moveContentToIndex(aFlexoConcept, index);
+			}
+		}
+
+		/**
+		 * The concepts of a {@link VirtualModel} are its contents: no concept is embedded in a {@link VirtualModel} in the sense of
+		 * {@link FlexoConcept#getContainerFlexoConcept()}
+		 */
+		@Override
+		@Deprecated
+		public List<FlexoConcept> getEmbeddedFlexoConcepts() {
+			return Collections.emptyList();
+		}
+
+		@Override
+		protected void notifiedConceptsOfVirtualModelChanged(FlexoConcept removed, FlexoConcept added) {
+			getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPTS_KEY, removed, added);
+			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", removed, added);
+			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", removed, added);
+			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", removed, added);
+			getPropertyChangeSupport().firePropertyChange("getAllRootFlexoConcepts(boolean,boolean)", removed, added);
+			FlexoConcept changed = added != null ? added : removed;
+			if (changed != null && changed.getParentFlexoConcepts() != null) {
+				for (FlexoConcept parent : changed.getParentFlexoConcepts()) {
+					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, removed, added);
 				}
 			}
 			InnerConceptsFacet innerConceptsFacet = getInnerConceptsFacet();
-			if (innerConceptsFacet != null)
+			if (innerConceptsFacet != null) {
 				innerConceptsFacet.notifiedConceptsChanged();
+			}
 		}
 
 		@Override
