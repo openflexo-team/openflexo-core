@@ -831,10 +831,7 @@ public interface VirtualModel extends FlexoConcept {
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, removed, added);
 				}
 			}
-			InnerConceptsFacet innerConceptsFacet = getInnerConceptsFacet();
-			if (innerConceptsFacet != null) {
-				innerConceptsFacet.notifiedConceptsChanged();
-			}
+			notifyInnerConceptsFacetIfCreated();
 		}
 
 		@Override

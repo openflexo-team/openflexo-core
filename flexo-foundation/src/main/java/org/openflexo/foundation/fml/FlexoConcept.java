@@ -2599,13 +2599,20 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			if (!(this instanceof VirtualModel)) {
 				getPropertyChangeSupport().firePropertyChange(EMBEDDED_FLEXO_CONCEPT_KEY, removed, added);
 			}
-			InnerConceptsFacet innerConceptsFacet = getInnerConceptsFacet();
-			if (innerConceptsFacet != null) {
-				innerConceptsFacet.notifiedConceptsChanged();
-			}
+			notifyInnerConceptsFacetIfCreated();
 			VirtualModel virtualModel = this instanceof VirtualModel ? (VirtualModel) this : getOwner();
 			if (virtualModel != null) {
 				((FlexoConceptImpl) virtualModel).notifiedConceptsOfVirtualModelChanged(removed, added);
+			}
+		}
+
+		/**
+		 * Notifies the facet of the inner concepts of a change, only when it exists: a facet created later computes its contents then.
+		 * Creating it here would open an undo recording in the middle of any edit, an undo included.
+		 */
+		protected void notifyInnerConceptsFacetIfCreated() {
+			if (innerConceptsFacet != null) {
+				innerConceptsFacet.notifiedConceptsChanged();
 			}
 		}
 
