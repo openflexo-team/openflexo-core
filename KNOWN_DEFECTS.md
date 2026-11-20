@@ -906,3 +906,44 @@ behaviour, the case of every test, the called behaviour is a nested action and n
 the report of an action started inside a `try` block.
 
 **Workaround.** Write the `try` in a behaviour.
+
+## FML pretty-print
+
+### CORE-D-97 — Removing the last root concept of a VirtualModel damages the printed text: '}}', moved concept not reindented  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#139](https://github.com/openflexo-team/openflexo-core/issues/139)
+
+**Symptom (seen 2026-11-20 in the Maintainer, reproduced by a test, branch 3.0).** When the last root concept of a VirtualModel
+leaves it, the FML text printed back (the print that keeps the parsed text) is damaged:
+- the line break before the closing brace of the model is lost: the text ends with `}}` (the closing brace of the previous concept
+  and that of the model on one line);
+- when the concept is moved into another concept rather than deleted, it keeps the indentation and the blank lines of its former
+  place instead of being indented at its new depth.
+
+```
+public model LastRoot {
+	public concept Root1 {
+		String r;
+	}
+	public concept Root2 {
+		public concept Inner {
+		}
+	}
+}
+```
+
+Deleting `Root2` prints `\tpublic concept Root1 {\n\t\tString r;\n\t}}`. Moving it into `Root1` (inspector field "container",
+`setContainer`) prints `Root2` at column 0, inside `Root1`, followed by `\t}}`.
+
+**Verified.** Deleting reproduces it, and deleting a concept existed before `CORE-F-19`, so the defect is probably older than that
+refactoring. This is not demonstrated: the commits of `CORE-F-19` and those made since on the same files prevent a direct comparison.
+The normalized print (`getNormalizedFML()`) is right; only the print that keeps the parsed text is affected.
+
+**How to reproduce.** `KnownDefectsPrintAfterLastRootRemovalTest` (fml-parser), run with `OPENFLEXO_KNOWN_DEFECTS=1`: one test for the
+deletion, one for the move.
+
+**Hypothesis (not checked).** The pretty-print node of the VirtualModel prints its concepts with a separator before and after each
+one. The separator after the last concept is attached to that concept's fragment, and goes with it. A moved concept keeps the text of
+its fragment as parsed (`keepingParsedTextWhileUnchanged`), with the indentation of its former place.
+
+**Workaround.** Reformat the unit (normalized print), or fix the text by hand in the FML editor before saving.

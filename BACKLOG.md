@@ -663,8 +663,11 @@ is a possible follow-up.
 - Found in the Maintainer, not caused by CORE-F-19 (same result without it): copying a concept with a `void` behaviour fails
   (`PAMELA-D-7`); undoing the deletion of a concept leaves it deleted and its lists reversed (`PAMELA-D-8`). Not checked: dragging a
   concept in the bottom-left browser (embedding mode) does not even start; whether it worked before is not known.
-- Not checked yet: the FML editor in the application (move, create inside a container, delete, save and reload, undo), and the cost of
-  the derived list on a large unit.
+- Checked in the Maintainer (2026-11-20), once `CORE-D-92`, `CORE-D-93`, `PAMELA-D-7` and `PAMELA-D-8` were fixed: re-parse, creation
+  in a container, move with the inspector, copy and paste, deletion then undo, close and reopen, save and reload (`CORE-D-94` not seen
+  again), and the containment rule of `CORE-D-95` (validation error). Found: the inner-concepts facet was created inside an undo by
+  the notification of a contents change (fixed: only an existing facet is notified); `CORE-D-97` (printed text after the last root
+  concept leaves the VirtualModel). Not checked: drag and drop in the browser, which does not start.
 
 ## Resources
 
