@@ -96,7 +96,7 @@ public class TestDerivedInspector extends OpenflexoTestCase {
 
 		virtualModel = resource.getCompilationUnit().getVirtualModel();
 		assertNotNull(virtualModel);
-		assertEquals("The fixture did not parse", 4, virtualModel.getFlexoConcepts().size());
+		assertEquals("The fixture did not parse", 4, virtualModel.getAllFlexoConcepts().size());
 	}
 
 	/** Storage: a single key-value pair under the SAME <code>Inspector</code> metadata key as a filename would use. */

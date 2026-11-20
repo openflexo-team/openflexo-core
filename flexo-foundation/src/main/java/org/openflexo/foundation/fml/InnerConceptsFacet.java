@@ -136,7 +136,7 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 		public List<FlexoConcept> getFlexoConcepts() {
 			if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getAllRootFlexoConcepts();
-				// return ((VirtualModel) getFlexoConcept()).getFlexoConcepts();
+				// return ((VirtualModel) getFlexoConcept()).getAllFlexoConcepts();
 			}
 			return getFlexoConcept().getChildFlexoConcepts();
 		}
@@ -167,7 +167,7 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 		@Override
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			if (getFlexoConcept() instanceof VirtualModel) {
-				return ((VirtualModel) getFlexoConcept()).getFlexoConcepts();
+				return ((VirtualModel) getFlexoConcept()).getAllFlexoConcepts();
 			}
 			return getFlexoConcept().getEmbeddedFlexoConcepts();
 		}

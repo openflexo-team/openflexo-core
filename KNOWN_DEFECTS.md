@@ -847,24 +847,6 @@ in a `HashSet`, without `equals`/`hashCode`; `stopEventListening` removes the fi
 
 **Workaround.** None at FML level; declare the listener in the concrete concept rather than in a parent.
 
-### CORE-D-86 — An event or an enum declared inside a concept is dropped from the model  ·  `TODO`
-
-**GitHub:** [openflexo-team/openflexo-core#60](https://github.com/openflexo-team/openflexo-core/issues/60)
-
-**Symptom (read, not run; found by the review of `CORE-F-11` phase 7, 2026-11-16).** The grammar lets a `concept` contain an `event`
-(`inner_concept_decl`), but `FlexoEventNode.deserialize()` attaches an event only to a `VirtualModelNode` or a `FlexoEventNode` parent,
-never to a `FlexoConceptNode`: the model never contains the event, while the typing space of the parse still resolves its name to the
-detached object. The same defect for an exception is fixed (`FlexoExceptionNode`, `CORE-F-11` phase 7, test
-`NestedInConcept.fmlscript`). Every event of the workspace is declared at model level.
-
-**Reproduced (2026-11-18, characterisation of `CORE-F-19`).** The enum has the same flaw: `FlexoEnumNode.deserialize()` attaches an
-enum only to a `VirtualModelNode` or a `FlexoEnumNode` parent. An `event` or an `enum` declared inside a concept is in no list, is not
-found by `VirtualModel.getFlexoConcept(name)`, and disappears from `getNormalizedFML()`. Test:
-`KnownDefectsConceptContainmentTest.eventAndEnumNestedInAConceptAreKept` (fml-parser, `OPENFLEXO_KNOWN_DEFECTS=1`). The fix is expected
-from `CORE-F-19`, whose parser phase attaches every nested declaration through one `addToContents`.
-
-**Workaround.** Declare events and enums in the model.
-
 ---
 
 ## Found by the p2pp harness on the FML parsing examples (2026-11-12)

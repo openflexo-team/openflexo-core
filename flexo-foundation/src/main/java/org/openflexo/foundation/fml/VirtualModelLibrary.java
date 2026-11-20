@@ -419,7 +419,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 				returned.add(compilationUnitResource.getCompilationUnit().getVirtualModel());
 			}
 			if (compilationUnitResource.isLoaded()) {
-				for (FlexoConcept flexoConcept : compilationUnitResource.getLoadedResourceData().getVirtualModel().getFlexoConcepts()) {
+				for (FlexoConcept flexoConcept : compilationUnitResource.getLoadedResourceData().getVirtualModel().getAllFlexoConcepts()) {
 					if (flexoConcept.getName().equals(flexoConceptName)) {
 						returned.add(flexoConcept);
 					}
@@ -428,7 +428,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		}
 		if (loadWhenRequired) {
 			for (CompilationUnitResource compilationUnitResource : getCompilationUnitResources()) {
-				for (FlexoConcept flexoConcept : compilationUnitResource.getResourceData().getVirtualModel().getFlexoConcepts()) {
+				for (FlexoConcept flexoConcept : compilationUnitResource.getResourceData().getVirtualModel().getAllFlexoConcepts()) {
 					if (flexoConcept.getName().equals(flexoConceptName)) {
 						returned.add(flexoConcept);
 					}

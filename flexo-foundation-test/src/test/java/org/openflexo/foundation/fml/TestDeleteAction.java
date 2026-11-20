@@ -156,7 +156,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertTrue(action1.isValid());
 		action1.doAction();
 		assertTrue(action1.hasActionExecutionSucceeded());
-		assertTrue(virtualModel.getFlexoConcepts().isEmpty());
+		assertTrue(virtualModel.getAllFlexoConcepts().isEmpty());
 	}
 
 	@Test

@@ -217,7 +217,7 @@ public class TestUpdateWithReferences extends OpenflexoTestCase {
 	private static void mergeAndCheck() throws Exception {
 		FMLCompilationUnit parsed = fmlParser.parse(text(), fmlResource.getFactory(),
 				(modelSlotClasses) -> fmlResource.updateFMLModelFactory(modelSlotClasses), true);
-		assertEquals(5, parsed.getVirtualModel().getFlexoConcepts().size());
+		assertEquals(5, parsed.getVirtualModel().getAllFlexoConcepts().size());
 		compilationUnit.updateWith(parsed);
 		compilationUnit.getTypingSpace().resolveUnresolvedTypes();
 		checkReferences();
@@ -234,8 +234,8 @@ public class TestUpdateWithReferences extends OpenflexoTestCase {
 	private static List<String> checkAllReferences() {
 		System.out.println("Checking:\n" + compilationUnit.getFMLPrettyPrint());
 		List<String> failures = new ArrayList<>();
-		assertEquals(5, vm.getFlexoConcepts().size());
-		for (FlexoConcept concept : vm.getFlexoConcepts()) {
+		assertEquals(5, vm.getAllFlexoConcepts().size());
+		for (FlexoConcept concept : vm.getAllFlexoConcepts()) {
 			assertSame(compilationUnit, concept.getDeclaringCompilationUnit());
 		}
 		FlexoConcept beta = vm.getFlexoConcept("Beta");

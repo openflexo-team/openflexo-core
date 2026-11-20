@@ -1207,7 +1207,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 			searchNewEntriesForConcept(getVirtualModel());
 
-			for (FlexoConcept concept : getVirtualModel().getFlexoConcepts()) {
+			for (FlexoConcept concept : getVirtualModel().getAllFlexoConcepts()) {
 				searchNewEntriesForConcept(concept);
 			}
 

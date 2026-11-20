@@ -53,8 +53,8 @@ final class FMLEditGenerator {
 		add("rename-model", "-", "rename model to Qx", "rename model to " + vmName);
 
 		List<FlexoConcept> concepts = new ArrayList<>();
-		for (FlexoConcept c : vm.getFlexoConcepts()) {
-			if (c.getName() != null && count(vm.getFlexoConcepts(), c.getName()) == 1) {
+		for (FlexoConcept c : vm.getAllFlexoConcepts()) {
+			if (c.getName() != null && count(vm.getAllFlexoConcepts(), c.getName()) == 1) {
 				concepts.add(c);
 			}
 		}

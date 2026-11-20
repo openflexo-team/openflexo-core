@@ -137,16 +137,13 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		// getFocusedObject().getFlexoConcept();
 		VirtualModel virtualModel = getFocusedVirtualModel();
 
-		virtualModel.addToFlexoConcepts(newFlexoConcept);
-
-		if (getContainerFlexoConcept() != null) {
-			if (getContainerFlexoConcept() instanceof VirtualModel) {
-				// nothing to do
-			}
-			else {
-				newFlexoConcept.setContainerFlexoConcept(getContainerFlexoConcept());
-			}
+		// The container is the concept chosen, or the focused VirtualModel for a root concept (CORE-F-19). A VirtualModel chosen as
+		// container means the root of the focused one, never another VirtualModel.
+		FlexoConcept container = getContainerFlexoConcept();
+		if (container == null || container instanceof VirtualModel) {
+			container = virtualModel;
 		}
+		container.addToContents(newFlexoConcept);
 
 		performSetParentConcepts();
 		performCreateProperties();

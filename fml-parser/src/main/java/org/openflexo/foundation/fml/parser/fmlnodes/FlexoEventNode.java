@@ -97,15 +97,7 @@ public class FlexoEventNode extends AbstractFlexoConceptNode<AEventDecl, FlexoEv
 
 	@Override
 	public FlexoEventNode deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoEventNode) {
-			((FlexoEventNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoExceptionNode) {
-			((FlexoExceptionNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
+		attachToEnclosingConcept();
 		return this;
 	}
 

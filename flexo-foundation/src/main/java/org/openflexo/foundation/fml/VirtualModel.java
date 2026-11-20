@@ -136,6 +136,11 @@ public interface VirtualModel extends FlexoConcept {
 	 * Not a stored property any more (CORE-F-19): still notified, when a concept is added to or removed from the tree of the concepts
 	 */
 	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
+	/**
+	 * Name of the derived property {@link #getAllFlexoConcepts()}: notified when a concept is added to or removed from the tree of the
+	 * concepts (the property "contents" of each container is notified by PAMELA)
+	 */
+	public static final String ALL_FLEXO_CONCEPTS_KEY = "allFlexoConcepts";
 
 	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_NATURE_CLASS_KEY = "modelSlotNatureClass";
@@ -500,7 +505,7 @@ public interface VirtualModel extends FlexoConcept {
 		public void finalizeDeserialization() {
 			// getVersion();
 			// getURI();
-			for (FlexoConcept concept : getFlexoConcepts()) {
+			for (FlexoConcept concept : getAllFlexoConcepts()) {
 				concept.finalizeDeserialization();
 			}
 			super.finalizeDeserialization();
@@ -675,7 +680,7 @@ public interface VirtualModel extends FlexoConcept {
 		public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts) {
 
 			Vector<FlexoConcept> returned = new Vector<>();
-			for (FlexoConcept concept : getFlexoConcepts()) {
+			for (FlexoConcept concept : getAllFlexoConcepts()) {
 				if (concept.isRoot() && concept.getApplicableContainerFlexoConcept() == null
 						&& (includeAbstractConcepts || (!concept.isAbstract()))) {
 					returned.add(concept);
@@ -712,7 +717,7 @@ public interface VirtualModel extends FlexoConcept {
 			}
 			isComputingSuperFlexoConcepts = true;
 			ArrayList<FlexoConcept> returned = new ArrayList<>();
-			for (FlexoConcept fc : getFlexoConcepts()) {
+			for (FlexoConcept fc : getAllFlexoConcepts()) {
 				if (fc.isSuperConceptOfContainerVirtualModel()) {
 					returned.add(fc);
 				}
@@ -738,7 +743,7 @@ public interface VirtualModel extends FlexoConcept {
 			}
 			else {
 				List<FlexoConcept> returned = new ArrayList<>();
-				for (FlexoConcept concept : getFlexoConcepts()) {
+				for (FlexoConcept concept : getAllFlexoConcepts()) {
 					List<FlexoConcept> l = concept.getTopLevelSuperConcepts();
 					for (FlexoConcept c : l) {
 						if (!returned.contains(c)) {
@@ -813,7 +818,6 @@ public interface VirtualModel extends FlexoConcept {
 		 * {@link FlexoConcept#getContainerFlexoConcept()}
 		 */
 		@Override
-		@Deprecated
 		public List<FlexoConcept> getEmbeddedFlexoConcepts() {
 			return Collections.emptyList();
 		}
@@ -821,6 +825,7 @@ public interface VirtualModel extends FlexoConcept {
 		@Override
 		protected void notifiedConceptsOfVirtualModelChanged(FlexoConcept removed, FlexoConcept added) {
 			getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPTS_KEY, removed, added);
+			getPropertyChangeSupport().firePropertyChange(ALL_FLEXO_CONCEPTS_KEY, removed, added);
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", removed, added);
 			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", removed, added);
 			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", removed, added);
@@ -857,8 +862,8 @@ public interface VirtualModel extends FlexoConcept {
 					}
 				}
 			}
-			if (getFlexoConcepts() != null) {
-				for (FlexoConcept concept : getFlexoConcepts()) {
+			if (getAllFlexoConcepts() != null) {
+				for (FlexoConcept concept : getAllFlexoConcepts()) {
 					returned = ((FlexoConceptImpl) concept).lookupFlexoConceptWithName(conceptName, visited);
 					if (returned != null) {
 						return returned;
@@ -881,7 +886,7 @@ public interface VirtualModel extends FlexoConcept {
 				return null;
 			}
 
-			for (FlexoConcept flexoConcept : getFlexoConcepts()) {
+			for (FlexoConcept flexoConcept : getAllFlexoConcepts()) {
 				if (flexoConcept.getName() != null && flexoConcept.getName().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
@@ -1017,7 +1022,7 @@ public interface VirtualModel extends FlexoConcept {
 		@Override
 		protected void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
 			super.notifiedPropertiesChanged(oldValue, newValue);
-			for (FlexoConcept embedded : getFlexoConcepts()) {
+			for (FlexoConcept embedded : getAllFlexoConcepts()) {
 				((FlexoConceptImpl) embedded).notifiedPropertiesChanged(oldValue, newValue);
 			}
 		}
@@ -1098,7 +1103,7 @@ public interface VirtualModel extends FlexoConcept {
 		@Override
 		public void notifiedScopeChanged() {
 			super.notifiedScopeChanged();
-			for (FlexoConcept concept : getFlexoConcepts()) {
+			for (FlexoConcept concept : getAllFlexoConcepts()) {
 				concept.notifiedScopeChanged();
 			}
 		}

@@ -207,7 +207,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 			// Trying to find the most adapted model slot
 			for (AbstractFMLRTModelSlot<?, ?, ?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(AbstractFMLRTModelSlot.class)) {
 				if (ms.getAccessedVirtualModel() != null) {
-					if (ms.getAccessedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
+					if (ms.getAccessedVirtualModel().getAllFlexoConcepts().contains(getFlexoConceptInstanceType())) {
 						return ms;
 					}
 				}

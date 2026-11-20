@@ -276,13 +276,13 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
 		// Disconnect FlexoConcept
-		virtualModel1.removeFromFlexoConcepts(flexoConceptA);
+		virtualModel1.removeFromContents(flexoConceptA);
 
 		assertEquals(1, flexoConceptA.getBindingModel().getBindingVariablesCount());
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
 
 		// Reconnect FlexoConcept
-		virtualModel1.addToFlexoConcepts(flexoConceptA);
+		virtualModel1.addToContents(flexoConceptA);
 
 		assertEquals(2, flexoConceptA.getBindingModel().getBindingVariablesCount());
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));

@@ -92,7 +92,7 @@ public class TestInvalidSuperCallIsReported extends OpenflexoTestCase {
 
 		// A ParseException leaves an EMPTY compilation unit behind, and an empty unit validates with zero errors - so
 		// the assertion below would pass for the wrong reason. Demand that the concepts actually got parsed.
-		assertFalse("TestInvalidSuperCall declares no concept: it most likely failed to PARSE", vm.getFlexoConcepts().isEmpty());
+		assertFalse("TestInvalidSuperCall declares no concept: it most likely failed to PARSE", vm.getAllFlexoConcepts().isEmpty());
 
 		ValidationModel validationModel = vmLibrary.getFMLValidationModel();
 		ValidationReport report = validationModel.validate(vm.getCompilationUnit());

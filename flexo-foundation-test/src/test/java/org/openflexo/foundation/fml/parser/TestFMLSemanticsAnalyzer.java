@@ -74,8 +74,8 @@ public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 		FlexoConcept conceptA;
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());
-		assertEquals(2, virtualModel.getFlexoConcepts().size());
-		conceptA = virtualModel.getFlexoConcepts().get(0);
+		assertEquals(2, virtualModel.getAllFlexoConcepts().size());
+		conceptA = virtualModel.getAllFlexoConcepts().get(0);
 		assertEquals("ConceptA", conceptA.getName());
 
 		System.out.println("Normalized:");
@@ -95,16 +95,16 @@ public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 		FlexoConcept conceptA, conceptB, conceptC, conceptD, conceptE;
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());
-		assertEquals(5, virtualModel.getFlexoConcepts().size());
-		conceptA = virtualModel.getFlexoConcepts().get(0);
+		assertEquals(5, virtualModel.getAllFlexoConcepts().size());
+		conceptA = virtualModel.getAllFlexoConcepts().get(0);
 		assertEquals("ConceptA", conceptA.getName());
-		conceptB = virtualModel.getFlexoConcepts().get(1);
+		conceptB = virtualModel.getAllFlexoConcepts().get(1);
 		assertEquals("ConceptB", conceptB.getName());
-		conceptC = virtualModel.getFlexoConcepts().get(2);
+		conceptC = virtualModel.getAllFlexoConcepts().get(2);
 		assertEquals("ConceptC", conceptC.getName());
-		conceptD = virtualModel.getFlexoConcepts().get(3);
+		conceptD = virtualModel.getAllFlexoConcepts().get(3);
 		assertEquals("ConceptD", conceptD.getName());
-		conceptE = virtualModel.getFlexoConcepts().get(4);
+		conceptE = virtualModel.getAllFlexoConcepts().get(4);
 		assertEquals("ConceptE", conceptE.getName());
 	}*/
 
@@ -117,10 +117,10 @@ public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 		FlexoConcept linkGR;
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());
-		assertEquals(2, virtualModel.getFlexoConcepts().size());
-		myConceptGR = virtualModel.getFlexoConcepts().get(0);
+		assertEquals(2, virtualModel.getAllFlexoConcepts().size());
+		myConceptGR = virtualModel.getAllFlexoConcepts().get(0);
 		assertEquals("MyConceptGR", myConceptGR.getName());
-		linkGR = virtualModel.getFlexoConcepts().get(1);
+		linkGR = virtualModel.getAllFlexoConcepts().get(1);
 		assertEquals("LinkGR", linkGR.getName());
 	}*/
 

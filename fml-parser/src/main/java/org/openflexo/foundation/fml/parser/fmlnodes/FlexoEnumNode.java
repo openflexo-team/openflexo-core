@@ -76,12 +76,7 @@ public class FlexoEnumNode extends AbstractFlexoConceptNode<AEnumDecl, FlexoEnum
 
 	@Override
 	public FlexoEnumNode deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoEnumNode) {
-			((FlexoEnumNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
+		attachToEnclosingConcept();
 		return this;
 	}
 

@@ -108,7 +108,7 @@ public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFl
 		newFlexoConcept.setName(getFlexoConceptName());
 
 		// And add the newly created flexo concept
-		getTransformationAction().getVirtualModel().addToFlexoConcepts(newFlexoConcept);
+		getTransformationAction().getVirtualModel().addToContents(newFlexoConcept);
 
 		return newFlexoConcept;
 

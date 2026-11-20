@@ -276,7 +276,7 @@ public class CheckedExceptions {
 	private static List<EventListener> listenersOf(VirtualModel vm) {
 		List<EventListener> returned = new ArrayList<>();
 		addListeners(vm, returned);
-		for (FlexoConcept concept : vm.getFlexoConcepts()) {
+		for (FlexoConcept concept : vm.getAllFlexoConcepts()) {
 			addListeners(concept, returned);
 		}
 		return returned;

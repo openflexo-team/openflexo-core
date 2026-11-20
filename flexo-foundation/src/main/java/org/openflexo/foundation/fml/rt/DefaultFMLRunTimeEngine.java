@@ -94,7 +94,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 			for (EventListener el : vmi.getVirtualModel().getAccessibleFlexoBehaviours(EventListener.class, false)) {
 				startEventListening(vmi, el, evaluationContext);
 			}
-			for (FlexoConcept concept : vmi.getVirtualModel().getFlexoConcepts()) {
+			for (FlexoConcept concept : vmi.getVirtualModel().getAllFlexoConcepts()) {
 				if (requireEventListening(concept)) {
 					for (FlexoConceptInstance fci : vmi.getFlexoConceptInstances(concept)) {
 						for (EventListener el : concept.getAccessibleFlexoBehaviours(EventListener.class, false)) {
@@ -115,7 +115,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 			for (EventListener el : vmi.getVirtualModel().getAccessibleFlexoBehaviours(EventListener.class, false)) {
 				stopEventListening(vmi, el, evaluationContext);
 			}
-			for (FlexoConcept concept : vmi.getVirtualModel().getFlexoConcepts()) {
+			for (FlexoConcept concept : vmi.getVirtualModel().getAllFlexoConcepts()) {
 				if (requireEventListening(concept)) {
 					for (FlexoConceptInstance fci : vmi.getFlexoConceptInstances(concept)) {
 						for (EventListener el : concept.getAccessibleFlexoBehaviours(EventListener.class, false)) {

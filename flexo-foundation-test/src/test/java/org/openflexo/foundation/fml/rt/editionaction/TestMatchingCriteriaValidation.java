@@ -33,7 +33,7 @@ public class TestMatchingCriteriaValidation extends OpenflexoTestCase {
 	private ValidationReport validate(String uri) throws Exception {
 		VirtualModel vm = serviceManager.getVirtualModelLibrary().getVirtualModel(uri);
 		assertNotNull(vm);
-		assertFalse(vm.getFlexoConcepts().isEmpty());
+		assertFalse(vm.getAllFlexoConcepts().isEmpty());
 		ValidationModel vmodel = serviceManager.getVirtualModelLibrary().getFMLValidationModel();
 		return vmodel.validate(vm.getCompilationUnit());
 	}

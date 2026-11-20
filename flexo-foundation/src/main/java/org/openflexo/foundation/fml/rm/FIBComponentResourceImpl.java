@@ -160,7 +160,7 @@ public abstract class FIBComponentResourceImpl extends FlexoResourceImpl<FMLFIBC
 		if (isDrivenBy(virtualModel)) {
 			return virtualModel;
 		}
-		for (FlexoConcept concept : virtualModel.getFlexoConcepts()) {
+		for (FlexoConcept concept : virtualModel.getAllFlexoConcepts()) {
 			if (isDrivenBy(concept)) {
 				return concept;
 			}

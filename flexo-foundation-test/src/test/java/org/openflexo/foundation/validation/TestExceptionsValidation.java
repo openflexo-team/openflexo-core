@@ -93,7 +93,7 @@ public class TestExceptionsValidation extends OpenflexoTestCase {
 	public void validFixture() throws Exception {
 		VirtualModel vm = vmLibrary.getVirtualModel(VALID_URI);
 		assertNotNull(vm);
-		assertFalse("Exceptions.fml most likely failed to parse", vm.getFlexoConcepts().isEmpty());
+		assertFalse("Exceptions.fml most likely failed to parse", vm.getAllFlexoConcepts().isEmpty());
 
 		ValidationReport report = vmLibrary.getFMLValidationModel().validate(vm.getCompilationUnit());
 		assertEquals(describe(vmLibrary.getFMLValidationModel(), report), 0, report.getErrorsCount());
@@ -142,7 +142,7 @@ public class TestExceptionsValidation extends OpenflexoTestCase {
 	public void invalidUsesAreReported() throws Exception {
 		VirtualModel vm = vmLibrary.getVirtualModel(INVALID_URI);
 		assertNotNull(vm);
-		assertFalse("InvalidExceptions.fml most likely failed to parse", vm.getFlexoConcepts().isEmpty());
+		assertFalse("InvalidExceptions.fml most likely failed to parse", vm.getAllFlexoConcepts().isEmpty());
 
 		ValidationModel validationModel = vmLibrary.getFMLValidationModel();
 		ValidationReport report = validationModel.validate(vm.getCompilationUnit());

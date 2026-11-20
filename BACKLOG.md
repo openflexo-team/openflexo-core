@@ -584,7 +584,7 @@ is a dependency to take into account.
 
 > This has been analyzed as a design issue (for example for DropScheme management in Diagram TA) and should be refactored.
 
-### CORE-F-19 — A single container/contents association for FlexoConcepts  ·  `TODO`
+### CORE-F-19 — A single container/contents association for FlexoConcepts  ·  `IN PROGRESS`
 
 **GitHub:** [openflexo-team/openflexo-core#132](https://github.com/openflexo-team/openflexo-core/issues/132)
 
@@ -668,6 +668,24 @@ is a possible follow-up.
   again), and the containment rule of `CORE-D-95` (validation error). Found: the inner-concepts facet was created inside an undo by
   the notification of a contents change (fixed: only an existing facet is notified); `CORE-D-97` (printed text after the last root
   concept leaves the VirtualModel). Not checked: drag and drop in the browser, which does not start.
+- Phase 3a done (2026-11-20), openflexo-core. Decided with the user: `getContainerFlexoConcept()` (the enclosing concept, null for a
+  root concept and for a VirtualModel) and its inverse `getEmbeddedFlexoConcepts()` / `getEmbeddedFlexoConcept(String)` (empty for a
+  VirtualModel) stay, as non-deprecated derived reads. Still deprecated, for phase 5: the writes (`setContainerFlexoConcept`,
+  `add/removeFromEmbeddedFlexoConcepts`, `setEmbeddedFlexoConcepts`, `moveEmbeddedFlexoConceptToIndex`) and the whole
+  `VirtualModel.flexoConcepts` family. Convention for the callers: `getFlexoConcepts()` becomes `getAllFlexoConcepts()`, or
+  `getContents()` where the code wants the direct children; a creation adds to its container (`addToContents`), a move sets the
+  container (`setContainer`). The parser attaches every nested declaration through one `attachToEnclosingConcept()`, which fixed
+  `CORE-D-86`. `TestConceptContainment` keeps the deprecated sequences on purpose until phase 5.
+- Phase 3b done (2026-11-20), openflexo-ui: no deprecated containment call or binding left; drag and drop moves through `setContainer`
+  under one rule (`FMLFIBController.isAcceptableContainer`: its own VirtualModel or one of its concepts, never the concept itself nor
+  one nested in it); the FlexoConcept inspector edits `container`; `FIBFlexoConceptSelector` has a container mode (tree on `contents`,
+  reset = root concept); the creation wizard chooses the container in the focused VirtualModel. `VirtualModel` fires
+  `allFlexoConcepts` for the bindings moved to it. Not checked in the application. Not decided: the selector does not apply the
+  containment rule of `CORE-D-95`, so it may offer a move the validation then reports.
+- Found by the review of phase 3b: after a move, `removeFromContents` no longer resets the container (a stale `scheduledSets` entry of
+  PAMELA's `DefaultSinglePropertyImplementation.set` makes the inverse `set(null)` look like a loop); `delete()` of a moved concept is
+  affected too.
+- Phase 3c (technology adapters, modules, modelers, integration tests) in progress.
 
 ## Resources
 

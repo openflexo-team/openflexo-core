@@ -426,14 +426,14 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		DeleteFlexoConceptObjects deleteAction = DeleteFlexoConceptObjects.actionType.makeNewAction(null, sel, editor);
 		assertSameList(deleteAction.getObjectsToDelete(), flexoConcept1, flexoConcept2);
 
-		assertEquals(2, virtualModel.getFlexoConcepts().size());
+		assertEquals(2, virtualModel.getAllFlexoConcepts().size());
 
 		deleteAction.doAction();
 		assertTrue(deleteAction.hasActionExecutionSucceeded());
 		assertTrue(flexoConcept1.isDeleted());
 		assertTrue(flexoConcept2.isDeleted());
 
-		assertEquals(0, virtualModel.getFlexoConcepts().size());
+		assertEquals(0, virtualModel.getAllFlexoConcepts().size());
 
 		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 

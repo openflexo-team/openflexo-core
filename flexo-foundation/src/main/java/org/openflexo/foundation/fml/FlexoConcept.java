@@ -195,11 +195,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@PropertyIdentifier(type = Visibility.class)
 	public static final String VISIBILITY_KEY = "visibility";
 	/**
-	 * Not a stored property any more (CORE-F-19): still notified, when the container concept of this concept changes
+	 * Not a stored property (CORE-F-19): notified when the enclosing concept of this concept changes (see
+	 * {@link #getContainerFlexoConcept()})
 	 */
 	public static final String CONTAINER_FLEXO_CONCEPT_KEY = "containerFlexoConcept";
 	/**
-	 * Not a stored property any more (CORE-F-19): still notified, when the contents of a concept (not of a {@link VirtualModel}) change
+	 * Not a stored property (CORE-F-19): notified when the contents of a concept (not of a {@link VirtualModel}) change (see
+	 * {@link #getEmbeddedFlexoConcepts()})
 	 */
 	public static final String EMBEDDED_FLEXO_CONCEPT_KEY = "embeddedFlexoConcepts";
 	@PropertyIdentifier(type = FlexoBehaviour.class, cardinality = Cardinality.LIST)
@@ -304,11 +306,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setVisibility(Visibility visibility);
 
 	/**
-	 * Return the enclosing concept of this concept: its container, unless it is a {@link VirtualModel} (null for a root concept)
-	 *
-	 * @deprecated CORE-F-19: use {@link #getContainer()}
+	 * Return the enclosing concept of this concept: its {@link #getContainer()}, unless that is a {@link VirtualModel}. Null for a root
+	 * concept and for a {@link VirtualModel}. Derived from {@link #getContainer()}.
 	 */
-	@Deprecated
 	public FlexoConcept getContainerFlexoConcept();
 
 	/**
@@ -351,11 +351,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public boolean requiresExternalContainerDeclaration();
 
 	/**
-	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept} (always empty for a {@link VirtualModel})
-	 *
-	 * @deprecated CORE-F-19: use {@link #getContents()}
+	 * Return the concepts declared in this concept, whose {@link #getContainerFlexoConcept()} is this concept: its {@link #getContents()},
+	 * except for a {@link VirtualModel}, for which it is always empty (its root concepts have no enclosing concept). Derived from
+	 * {@link #getContents()}.
 	 */
-	@Deprecated
 	public List<FlexoConcept> getEmbeddedFlexoConcepts();
 
 	/** @deprecated CORE-F-19: use {@link #setContents(List)} */
@@ -374,8 +373,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Deprecated
 	public void moveEmbeddedFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
-	/** @deprecated CORE-F-19: use {@link #getContentNamed(String)} */
-	@Deprecated
+	/**
+	 * Return the concept of {@link #getEmbeddedFlexoConcepts()} with the supplied name, or null
+	 */
 	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
 
 	/**
@@ -1326,8 +1326,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			if (bindingModel != null) {
 				bindingModel.delete();
 			}
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().removeFromFlexoConcepts(this);
+			if (getContainer() != null) {
+				getContainer().removeFromContents(this);
 			}
 
 			performSuperDelete(context);
@@ -1761,7 +1761,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer() {
 
 			List<FlexoConcept> returned = new ArrayList<>();
-			for (FlexoConcept flexoConcept : getDeclaringCompilationUnit().getVirtualModel().getFlexoConcepts()) {
+			for (FlexoConcept flexoConcept : getDeclaringCompilationUnit().getVirtualModel().getAllFlexoConcepts()) {
 				if (flexoConcept.getApplicableContainerFlexoConcept() == this) {
 					returned.add(flexoConcept);
 				}
@@ -2623,7 +2623,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		@Deprecated
 		public FlexoConcept getContainerFlexoConcept() {
 			FlexoConcept container = getContainer();
 			return container instanceof VirtualModel ? null : container;
@@ -2642,7 +2641,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		@Deprecated
 		public List<FlexoConcept> getEmbeddedFlexoConcepts() {
 			return getContents();
 		}
@@ -2676,9 +2674,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		@Deprecated
 		public FlexoConcept getEmbeddedFlexoConcept(String conceptName) {
-			return getContentNamed(conceptName);
+			for (FlexoConcept embedded : getEmbeddedFlexoConcepts()) {
+				if (conceptName != null && conceptName.equals(embedded.getName())) {
+					return embedded;
+				}
+			}
+			return null;
 		}
 
 		/**
@@ -3507,14 +3509,23 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public void setApplicableContainerFlexoConcept(FlexoConcept concept) {
 			if (getApplicableContainerFlexoConcept() != concept) {
 				if (concept == getApplicableContainerFlexoConceptInheritedFromParents()) {
-					// No need to redefine
-					setContainerFlexoConcept(null);
+					// No need to redefine: back to the root of its VirtualModel
+					setContainer(rootContainer());
 				}
 				else {
-					setContainerFlexoConcept(concept);
+					// null: back to the root of its VirtualModel
+					setContainer(concept != null ? concept : rootContainer());
 				}
 				notifyContainerChanges();
 			}
+		}
+
+		/**
+		 * The container of this concept when it is a root concept: its {@link VirtualModel}. Null for a {@link VirtualModel}, whose
+		 * {@link #getOwner()} is the container VirtualModel of another compilation unit, never its container.
+		 */
+		private FlexoConcept rootContainer() {
+			return this instanceof VirtualModel ? null : getOwner();
 		}
 
 		/**

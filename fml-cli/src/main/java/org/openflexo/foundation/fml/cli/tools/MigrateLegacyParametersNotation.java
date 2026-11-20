@@ -132,7 +132,7 @@ public class MigrateLegacyParametersNotation {
 				}
 				List<FlexoConcept> concepts = new ArrayList<>();
 				concepts.add(virtualModel);
-				concepts.addAll(virtualModel.getFlexoConcepts());
+				concepts.addAll(virtualModel.getAllFlexoConcepts());
 				File file = sourceFile(resource);
 				if (file == null) {
 					System.err.println("NO FILE     " + resource.getURI());

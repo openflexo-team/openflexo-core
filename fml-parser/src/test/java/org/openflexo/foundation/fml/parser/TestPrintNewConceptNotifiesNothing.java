@@ -40,7 +40,7 @@ public class TestPrintNewConceptNotifiesNothing {
 		behaviour.setName("doIt");
 		behaviour.setControlGraph(factory.newEmptyControlGraph());
 		concept.addToFlexoBehaviours(behaviour);
-		unit.getVirtualModel().addToFlexoConcepts(concept);
+		unit.getVirtualModel().addToContents(concept);
 
 		List<String> fired = new ArrayList<>();
 		PropertyChangeListener listener = evt -> {

@@ -575,7 +575,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>, R 
 					}
 				}
 				// Also iterate on all behaviours of all inner FlexoConcept, and find EditionAction that are declared with this model slot
-				for (FlexoConcept concept : virtualModel.getFlexoConcepts()) {
+				for (FlexoConcept concept : virtualModel.getAllFlexoConcepts()) {
 					for (FlexoBehaviour behaviour : concept.getFlexoBehaviours()) {
 						if (behaviour.getControlGraph() != null) {
 							behaviour.getControlGraph().accept(cgVisitor);

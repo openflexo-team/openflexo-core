@@ -26,12 +26,12 @@ import org.openflexo.foundation.fml.VirtualModel;
  * Characterisation of the containment of FlexoConcepts in a VirtualModel, written before CORE-F-19 (a single container/contents
  * association). It pins what must stay true through that refactoring: containers, inherited containers, URIs, lookup, the pretty-print
  * round trip, adding, deleting and cloning, and the notifications the user interface listens to.
+ * It also covers what CORE-F-19 fixed on the way: a root concept extending a nested one stays at the root and is reported by the
+ * validation (CORE-D-91, CORE-D-95), and an event or an enum declared inside a concept is kept (CORE-D-86).
  * <p>
- * Two current behaviours are wrong and are NOT pinned here: a root concept extending a nested one is printed inside the container of its
- * parent, and an event or enum declared inside a concept is dropped. See {@link KnownDefectsConceptContainmentTest}.
- * <p>
- * The accessors used are the pre-CORE-F-19 ones: they stay as deprecated aliases until the last phase of CORE-F-19, which migrates this
- * test. {@link #allConcepts(VirtualModel)} is the one place that reads the flat list of all concepts.
+ * Some tests replay, on purpose, the call sequences of callers not migrated yet (the deprecated writes {@code addToFlexoConcepts},
+ * {@code setContainerFlexoConcept}, {@code addToEmbeddedFlexoConcepts}...): they are rewritten when those aliases are removed, in the
+ * last phase of CORE-F-19. {@link #allConcepts(VirtualModel)} is the one place that reads the list of all concepts.
  */
 public class TestConceptContainment {
 
@@ -228,6 +228,7 @@ public class TestConceptContainment {
 		assertEquals(URI + "#Root1#Alpha#Added", added.getURI());
 		// what the browsers of the FML editor listen to
 		assertTrue(fired.toString(), fired.contains("vm:allRootFlexoConcepts"));
+		assertTrue(fired.toString(), fired.contains("vm:" + VirtualModel.ALL_FLEXO_CONCEPTS_KEY));
 		assertTrue(fired.toString(), fired.contains("alpha:embeddedFlexoConcepts"));
 
 		String normalized = unit.getNormalizedFML();
@@ -429,5 +430,39 @@ public class TestConceptContainment {
 		VirtualModel vm = withGamma("", "", "	public concept Gamma extends Alpha {\n	}\n	public concept Delta extends Gamma {\n	}");
 		assertTrue(isReported(vm, "Gamma"));
 		assertFalse(isReported(vm, "Delta"));
+	}
+
+	/**
+	 * An event or an enum declared inside a concept is in its contents, can be found, and is printed back (CORE-D-86: FlexoEventNode and
+	 * FlexoEnumNode used to attach it to nothing)
+	 */
+	@Test
+	public void eventAndEnumNestedInAConceptAreKept() throws Exception {
+		FMLCompilationUnit unit = TestFMLReindent.parse(String.join("\n", //
+				"@URI(\"" + URI + "\")", //
+				"public model Containment {", //
+				"	public concept Root1 {", //
+				"		event Changed {", //
+				"			String what;", //
+				"		}", //
+				"		enum Kind {", //
+				"			SMALL,", //
+				"			LARGE", //
+				"		}", //
+				"	}", //
+				"}", ""));
+		VirtualModel vm = unit.getVirtualModel();
+		FlexoConcept root1 = vm.getFlexoConcept("Root1");
+		FlexoConcept changed = vm.getFlexoConcept("Changed");
+		FlexoConcept kind = vm.getFlexoConcept("Kind");
+		assertNotNull("event Changed lost", changed);
+		assertNotNull("enum Kind lost", kind);
+		assertTrue(changed instanceof FlexoEvent);
+		assertTrue(kind instanceof FlexoEnum);
+		assertSame(root1, changed.getContainerFlexoConcept());
+		assertSame(root1, kind.getContainerFlexoConcept());
+		String normalized = unit.getNormalizedFML();
+		assertTrue(normalized, normalized.contains("event Changed"));
+		assertTrue(normalized, normalized.contains("enum Kind"));
 	}
 }

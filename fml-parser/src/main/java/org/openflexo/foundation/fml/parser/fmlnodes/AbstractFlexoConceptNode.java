@@ -83,6 +83,19 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	// every parent declared, in order (parentTypes loses those attached)
 	private List<FlexoConceptInstanceType> declaredParentTypes;
 
+	/**
+	 * Attach the concept built by this node to the concept (or VirtualModel) built by the enclosing node, whatever their kinds: a concept,
+	 * an event, an exception or an enum declared in another one is in its contents (CORE-F-19, CORE-D-86)
+	 */
+	protected void attachToEnclosingConcept() {
+		if (getParent() instanceof AbstractFlexoConceptNode) {
+			FlexoConcept enclosing = ((AbstractFlexoConceptNode<?, ?>) getParent()).getModelObject();
+			if (enclosing != null && getModelObject() != null && !enclosing.getContents().contains(getModelObject())) {
+				enclosing.addToContents(getModelObject());
+			}
+		}
+	}
+
 	@Override
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
@@ -102,7 +115,7 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 							getInsideTypeFragment());
 				}
 				else {
-					getModelObject().setContainerFlexoConcept(container);
+					getModelObject().setContainer(container);
 				}
 			}
 			else {

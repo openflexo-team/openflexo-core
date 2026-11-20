@@ -217,7 +217,7 @@ public abstract class CompilationUnitResourceImpl
 		else {
 			if (data.getVirtualModel() != null) {
 				data.getVirtualModel().finalizeDeserialization();
-				for (FlexoConcept fc : data.getVirtualModel().getFlexoConcepts()) {
+				for (FlexoConcept fc : data.getVirtualModel().getAllFlexoConcepts()) {
 					fc.finalizeDeserialization();
 				}
 			}

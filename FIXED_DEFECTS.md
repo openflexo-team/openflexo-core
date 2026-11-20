@@ -1671,6 +1671,34 @@ Swing's `UndoManager.undo()` skips it and undoes the last significant edit inste
 otherwise it drops it. Test: `TestFlexoUndoManager` (flexo-foundation-test), whose `aFailedActionThatEditedNothingUndoesNothing` fails
 without the fix. Not checked in the application yet (needs a restart).
 
+## FML events
+
+### CORE-D-86 — An event or an enum declared inside a concept is dropped from the model  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#60](https://github.com/openflexo-team/openflexo-core/issues/60)
+
+**Symptom (read, not run; found by the review of `CORE-F-11` phase 7, 2026-11-16).** The grammar lets a `concept` contain an `event`
+(`inner_concept_decl`), but `FlexoEventNode.deserialize()` attaches an event only to a `VirtualModelNode` or a `FlexoEventNode` parent,
+never to a `FlexoConceptNode`: the model never contains the event, while the typing space of the parse still resolves its name to the
+detached object. The same defect for an exception is fixed (`FlexoExceptionNode`, `CORE-F-11` phase 7, test
+`NestedInConcept.fmlscript`). Every event of the workspace is declared at model level.
+
+**Reproduced (2026-11-18, characterisation of `CORE-F-19`).** The enum has the same flaw: `FlexoEnumNode.deserialize()` attaches an
+enum only to a `VirtualModelNode` or a `FlexoEnumNode` parent. An `event` or an `enum` declared inside a concept is in no list, is not
+found by `VirtualModel.getFlexoConcept(name)`, and disappears from `getNormalizedFML()`. Test:
+`KnownDefectsConceptContainmentTest.eventAndEnumNestedInAConceptAreKept` (fml-parser, `OPENFLEXO_KNOWN_DEFECTS=1`). The fix is expected
+from `CORE-F-19`, whose parser phase attaches every nested declaration through one `addToContents`.
+
+**Cause.** Each concept node of the parser attached what it built with its own list of `instanceof` tests on the enclosing node, and
+the lists had holes: `FlexoEventNode` and `FlexoEnumNode` ignored a `FlexoConceptNode` parent. With the two containment associations of
+the model, the attachment had to choose between `VirtualModel.addToFlexoConcepts` and `addToEmbeddedFlexoConcepts` for each pair.
+
+**Fix (2026-11-20, `CORE-F-19` phase 3a).** With a single containment (`container` / `contents`), the four concept nodes
+(`FlexoConceptNode`, `FlexoEventNode`, `FlexoExceptionNode`, `FlexoEnumNode`) attach through one
+`AbstractFlexoConceptNode.attachToEnclosingConcept()`: the object goes into the contents of the enclosing node's model object, whatever
+its kind. Every nesting the grammar allows is now attached, including an exception inside an event and an enum inside an event or an
+exception. Test: `TestConceptContainment.eventAndEnumNestedInAConceptAreKept` (fml-parser).
+
 ## FML types
 
 ### CORE-D-87 — A property initialised with `new HashMap<>()` fails with an `ArrayIndexOutOfBoundsException`  ·  `DONE`

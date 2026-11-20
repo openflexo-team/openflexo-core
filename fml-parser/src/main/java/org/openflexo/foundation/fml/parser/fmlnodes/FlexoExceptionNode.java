@@ -99,16 +99,7 @@ public class FlexoExceptionNode extends AbstractFlexoConceptNode<AExceptionDecl,
 
 	@Override
 	public FlexoExceptionNode deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoConceptNode) {
-			// An exception declared in a concept (CORE-F-11 phase 7)
-			((FlexoConceptNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoExceptionNode) {
-			((FlexoExceptionNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
+		attachToEnclosingConcept();
 		return this;
 	}
 

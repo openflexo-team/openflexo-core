@@ -85,8 +85,8 @@ public class TestFMLPrettyPrint2 extends FMLParserTestCase {
 		compilationUnit = parseFile(fmlFile);
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());
-		// assertEquals(2, virtualModel.getFlexoConcepts().size());
-		// conceptA = virtualModel.getFlexoConcepts().get(0);
+		// assertEquals(2, virtualModel.getAllFlexoConcepts().size());
+		// conceptA = virtualModel.getAllFlexoConcepts().get(0);
 		// assertEquals("ConceptA", conceptA.getName());
 
 		System.out.println("Normalized:");

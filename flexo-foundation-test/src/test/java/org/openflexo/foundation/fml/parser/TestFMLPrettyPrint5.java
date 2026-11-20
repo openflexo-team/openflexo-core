@@ -122,7 +122,7 @@ public class TestFMLPrettyPrint5 extends FMLParserTestCase {
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("TestViewPointA", virtualModel.getName());
 
-		assertEquals(5, virtualModel.getFlexoConcepts().size());
+		assertEquals(5, virtualModel.getAllFlexoConcepts().size());
 		assertNotNull(conceptA = virtualModel.getFlexoConcept("ConceptA"));
 		assertNotNull(conceptB = virtualModel.getFlexoConcept("ConceptB"));
 		assertNotNull(conceptC = virtualModel.getFlexoConcept("ConceptC"));

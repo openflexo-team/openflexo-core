@@ -127,7 +127,7 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 
 		VirtualModel virtualModel = getFocusedObject().getOwningVirtualModel();
 
-		virtualModel.addToFlexoConcepts(newFlexoEvent);
+		virtualModel.addToContents(newFlexoEvent);
 
 		performSetParentConcepts();
 		performCreateProperties();

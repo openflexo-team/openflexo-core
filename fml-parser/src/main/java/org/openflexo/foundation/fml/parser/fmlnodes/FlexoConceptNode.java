@@ -95,18 +95,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 
 	@Override
 	public FlexoConceptNode deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoEventNode) {
-			((FlexoEventNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
-		if (getParent() instanceof FlexoExceptionNode) {
-			((FlexoExceptionNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
-		}
+		attachToEnclosingConcept();
 		return this;
 	}
 
