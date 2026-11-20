@@ -56,7 +56,8 @@ import org.openflexo.test.TestOrder;
 
 /**
  * Containment of concepts (CORE-D-95): a concept extending a nested one is declared in the container of its parent, or in a subtype of
- * it. The fixtures of the test resource center which extend a nested concept stay valid for this rule.
+ * it. The fixtures of the test resource center which extend a nested concept stay valid for this rule. This only checks that nothing is
+ * reported: the cases which must be reported are in TestConceptContainment (fml-parser), which parses them.
  */
 @RunWith(OrderedRunner.class)
 public class TestContainmentValidation extends OpenflexoTestCase {
@@ -92,6 +93,7 @@ public class TestContainmentValidation extends OpenflexoTestCase {
 		assertEquals(List.of(), containmentIssues(BASE + "TestInheritedConcepts.fml"));
 	}
 
+	/** ChildVM1 declares two concepts named ChildConceptB (one nested, one at the root): pins that none is reported. */
 	@Test
 	@TestOrder(3)
 	public void childVM1IsValid() throws Exception {

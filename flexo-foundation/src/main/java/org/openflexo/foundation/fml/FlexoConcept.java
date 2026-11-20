@@ -3612,7 +3612,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public ValidationIssue<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			FlexoConcept declaredContainer = flexoConcept.getContainerFlexoConcept();
 			for (FlexoConcept parent : flexoConcept.getParentFlexoConcepts()) {
-				FlexoConcept parentContainer = parent != null ? parent.getApplicableContainerFlexoConcept() : null;
+				// The direct container of the parent: a parent declared at the root has none, which is not checked here (CORE-D-96)
+				FlexoConcept parentContainer = parent != null ? parent.getContainerFlexoConcept() : null;
 				if (parentContainer != null && (declaredContainer == null || !parentContainer.isSuperConceptOf(declaredContainer))) {
 					return new ValidationError<>(this, flexoConcept,
 							"concept_($validable.name)_must_be_contained_in_a_subtype_of_the_container_of_its_parents");

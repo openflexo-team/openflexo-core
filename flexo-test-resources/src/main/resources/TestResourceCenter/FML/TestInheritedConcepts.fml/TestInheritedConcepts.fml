@@ -11,9 +11,11 @@
  *      getContainerFlexoConcept() - the DECLARED container, null for a concept declared at model
  *      level - instead of getApplicableContainerFlexoConcept(), which walks parents.
  *
- * SpecializedItem below is that second case: it extends the base model's nested Item, and is declared
- * in SpecializedBox, a subtype of the Box that contains Item. A concept extending a nested one is declared
- * in the container of its parent, or in a subtype of it (a root declaration would be a validation error).
+ * A concept extending a nested one is declared in the container of its parent, or in a subtype of it (a root
+ * declaration is a validation error, CORE-D-95), so the inherited-container case no longer occurs through a
+ * declaration. The container check is still exercised: Item requires a Box and is given a SpecializedBox, a
+ * subtype (the inverted check rejected exactly that), and SpecializedItem, declared in SpecializedBox, requires a
+ * SpecializedBox.
  *
  * Both failures were SILENT: the FMLExecutionException is swallowed upstream and the factory simply
  * returned null. See TestInheritedConcepts.fmlscript.

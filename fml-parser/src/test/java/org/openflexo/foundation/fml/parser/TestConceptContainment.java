@@ -421,4 +421,13 @@ public class TestConceptContainment {
 		VirtualModel inRoot1 = withGamma("		public concept Delta extends Alpha, Beta {\n		}", "", "");
 		assertTrue(isReported(inRoot1, "Delta"));
 	}
+
+	@Test
+	public void theRuleComparesWithTheDirectContainerOfTheParent() throws Exception {
+		// Gamma is reported (root, extends the nested Alpha). Delta extends Gamma, itself declared at the root: its parent has no direct
+		// container, so Delta is not reported by this rule (CORE-D-96 covers the parents declared at the root)
+		VirtualModel vm = withGamma("", "", "	public concept Gamma extends Alpha {\n	}\n	public concept Delta extends Gamma {\n	}");
+		assertTrue(isReported(vm, "Gamma"));
+		assertFalse(isReported(vm, "Delta"));
+	}
 }

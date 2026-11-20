@@ -626,7 +626,11 @@ is a possible follow-up.
    doubled notifications.
 3. Migrate callers repository by repository (openflexo-dev composite): Java first, then the `.fib` / `.inspector` bindings
    (`flexoConcepts`, `embeddedFlexoConcepts`, `containerFlexoConcept`, `owner`).
-4. Remove `inside` from `fml.sablecc` and from the concept nodes.
+4. Remove `inside` from `fml.sablecc` and from the concept nodes, and the inherited container: a concept extending a nested one is
+   declared in the container of its parent (`CORE-D-95`), so `getApplicableContainerFlexoConcept()`,
+   `setApplicableContainerFlexoConcept()`, `hasExternalContainer()`, `requiresExternalContainerDeclaration()` and the `hasExternalContainer`
+   branch of `getAllRootFlexoConcepts()` only serve invalid models. The runtime that resolves the container of an instance
+   (`FMLContainerResolver`, `AbstractAddFlexoConceptInstance`, `ContainerPathElement`) then reads the direct container.
 5. Remove the aliases.
 
 **Acceptance.**
@@ -639,8 +643,8 @@ is a possible follow-up.
 
 **Progress (2026-11-19).**
 - Phase 1 done: `TestConceptContainment` (fml-parser) pins containers, inherited containers, URIs, lookup, round trip, add, move,
-  delete, clone and notifications; `KnownDefectsConceptContainmentTest` reproduces `CORE-D-86` and `CORE-D-91`, both expected to be
-  fixed by phase 3.
+  delete, clone and notifications; `KnownDefectsConceptContainmentTest` reproduces `CORE-D-86`, expected to be fixed by phase 3. `CORE-D-91`
+  (printing by the inherited container) was fixed on top of phase 2, with the containment rule of `CORE-D-95`.
 - Phase 2 done: `container` ↔ `contents` is the only stored containment; `owner`, `containerFlexoConcept`, `embeddedFlexoConcepts` and
   `VirtualModel.flexoConcepts` are deprecated derived methods, still notified under their names; `VirtualModel.getAllFlexoConcepts()`
   is derived (a new list at each call); `bindEmbeddedFlexoConcepts` is gone; `inside X` with `X` in another unit is a parse issue; the

@@ -502,6 +502,8 @@ container of a concept with the container of its parents when that container is 
 container, and `getContainerFlexoConcept()` returns null for it, so two cases are accepted:
 - a concept nested in `X` that extends a root concept `B` (its instances live in an `X`, those of `B` directly in the VirtualModel instance);
 - a root concept of a VirtualModel `M2` that extends a root concept of a VirtualModel `M1` which `M2` does not extend.
+- a concept extending a root concept that itself extends a nested one (`CORE-D-95` reports the parent, not the child, although at run time
+  the child still requires the inherited container: `getApplicableContainerFlexoConcept()` is read by the instance creation).
 
 **Semantics.** The direct container of C is a subtype of the direct container of each parent; for a VirtualModel container, a subtype is
 a VirtualModel extending it.

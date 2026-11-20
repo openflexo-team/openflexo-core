@@ -1815,8 +1815,8 @@ Printing therefore follows the inherited container instead of the place of decla
 **Impact (at the time).** `BPMNModel.fml` used this pattern (`Event` outside `Process`, extending the nested `FlowNode`). It no longer does: its
 concepts have since been flattened, all at the root.
 
-**How to reproduce.** `KnownDefectsConceptContainmentTest.rootConceptExtendingANestedOneStaysAtTheRoot` (fml-parser), with
-`OPENFLEXO_KNOWN_DEFECTS=1`.
+**How to reproduce (when open).** `OPENFLEXO_KNOWN_DEFECTS=1` on the former `KnownDefectsConceptContainmentTest`; the test is now
+`TestConceptContainment.rootConceptExtendingANestedOneStaysAtTheRoot` (fml-parser), run in a normal build.
 
 **Fix (2026-11-19).** With the lexical container of `CORE-F-19`, the pretty-print follows `getContents()`: `VirtualModelNode`, `FlexoConceptNode`,
 `FlexoEventNode` and `FlexoExceptionNode` print the concepts declared in them, not those whose inherited container they are.
@@ -1843,12 +1843,16 @@ in the browsers, which list roots by the inherited container and children by the
 
 **Fix (2026-11-19).** The rule checks every parent and no longer skips a root concept: a validation error
 `concept_($validable.name)_must_be_contained_in_a_subtype_of_the_container_of_its_parents`. Tests: `TestConceptContainment` (fml-parser):
-root, in the container, in a subtype of it, in an unrelated one, two parents.
+root, in the container, in a subtype of it, in an unrelated one, two parents, a parent declared at the root. `TestContainmentValidation`
+(flexo-foundation-test) pins that the fixtures stay valid.
 
 **Semantics decided.** The direct container of C is a subtype of the direct container of each parent, as written. A container inherited
 from the parents is not a substitute for a declaration: a root concept extending a nested one is an error, also across VirtualModels
 (`inside` is refused between compilation units, so the container is specialised in the extending model instead). The fixture
-`TestInheritedConcepts` was migrated accordingly: `SpecializedItem` is declared in a `SpecializedBox extends Box`.
+`TestInheritedConcepts` was migrated accordingly: `SpecializedItem` is declared in a `SpecializedBox extends Box`. So was `AcmeMetaModel`
+(multi-process-challenge): its task types are nested in a new `AcmeProcessType extends ProcessType` and `Coding` in a new `AcmeProcess extends
+Process` (a process type is created by `newAcmeProcessType`, and its `newProcess` creates an `AcmeProcess`; the stored `AcmeModel.fml.rt` follows). The rule compares with the direct container of each
+parent: a parent declared at the root has none, so the concepts extending it are not reported (`CORE-D-96`).
 
 **Not done.** The loading is not refused (it is a validation error, as for the other consistency rules). The containment of a concept
 whose parent is a root concept is not checked: see `CORE-D-96`.
