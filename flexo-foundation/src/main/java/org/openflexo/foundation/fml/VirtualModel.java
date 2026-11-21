@@ -680,12 +680,10 @@ public interface VirtualModel extends FlexoConcept {
 		public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts) {
 
 			Vector<FlexoConcept> returned = new Vector<>();
-			for (FlexoConcept concept : getAllFlexoConcepts()) {
-				if (concept.isRoot() && concept.getApplicableContainerFlexoConcept() == null
-						&& (includeAbstractConcepts || (!concept.isAbstract()))) {
-					returned.add(concept);
-				}
-				if (concept.hasExternalContainer()) {
+			// The root concepts whose instances live in the VirtualModel instance: not those whose container is inherited from a parent,
+			// which cannot be instantiated at the root (invalid models: CORE-D-95 reports them, except in the cases of CORE-D-96)
+			for (FlexoConcept concept : getContents()) {
+				if (concept.getApplicableContainerFlexoConcept() == null && (includeAbstractConcepts || (!concept.isAbstract()))) {
 					returned.add(concept);
 				}
 			}

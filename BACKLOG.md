@@ -626,11 +626,13 @@ is a possible follow-up.
    doubled notifications.
 3. Migrate callers repository by repository (openflexo-dev composite): Java first, then the `.fib` / `.inspector` bindings
    (`flexoConcepts`, `embeddedFlexoConcepts`, `containerFlexoConcept`, `owner`).
-4. Remove `inside` from `fml.sablecc` and from the concept nodes, and the inherited container: a concept extending a nested one is
-   declared in the container of its parent (`CORE-D-95`), so `getApplicableContainerFlexoConcept()`,
-   `setApplicableContainerFlexoConcept()`, `hasExternalContainer()`, `requiresExternalContainerDeclaration()` and the `hasExternalContainer`
-   branch of `getAllRootFlexoConcepts()` only serve invalid models. The runtime that resolves the container of an instance
-   (`FMLContainerResolver`, `AbstractAddFlexoConceptInstance`, `ContainerPathElement`) then reads the direct container.
+4. Remove `inside` from `fml.sablecc` and from the concept nodes, with `hasExternalContainer()`,
+   `requiresExternalContainerDeclaration()` and the `hasExternalContainer` branch of `getAllRootFlexoConcepts()`.
+   4b. Then the inherited container: a concept extending a nested one is declared in the container of its parent (`CORE-D-95`), so
+   `getApplicableContainerFlexoConcept()` and `setApplicableContainerFlexoConcept()` only serve invalid models; the runtime that
+   resolves the container of an instance (`FMLContainerResolver`, `AbstractAddFlexoConceptInstance`, `ContainerPathElement`) then
+   reads the direct container. Only once `CORE-D-96` is fixed: until the validation reports every such model, a model it misses
+   (a concept extending a root concept that extends a nested one) would change behaviour at run time without any message.
 5. Remove the aliases.
 
 **Acceptance.**
@@ -685,7 +687,21 @@ is a possible follow-up.
 - Found by the review of phase 3b: after a move, `removeFromContents` no longer resets the container (a stale `scheduledSets` entry of
   PAMELA's `DefaultSinglePropertyImplementation.set` makes the inverse `set(null)` look like a loop); `delete()` of a moved concept is
   affected too.
-- Phase 3c (technology adapters, modules, modelers, integration tests) in progress.
+- Phase 3c done (2026-11-20): openflexo-diagram, free-modelling-editor, openflexo-docx, openflexo-jdbc, openflexo-owl,
+  openflexo-server, formod, modelers and openflexo-integration-tests no longer call the deprecated containment API; `.fib` bindings
+  on `flexoConcepts` moved to `allFlexoConcepts` or `contents`. Found on the way: `DIAGRAM-D-5` (fixed). Outside openflexo-core, only
+  the deprecated aliases themselves are left, for phase 5.
+- Phase 4 done (2026-11-21). Decided with the user: the `inside` clause is removed completely (`kw_inside`, `inside_clause`,
+  `FMLKeywords.Inside`, the fragments and pretty-print of the concept nodes, the keyword of the FML editor's token maker): `inside` is
+  an ordinary identifier again, and containment is declared by nesting only. `hasExternalContainer`,
+  `requiresExternalContainerDeclaration` and `getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer` are gone;
+  `getAllRootFlexoConcepts` lists the contents of the VirtualModel whose container is not inherited: a root concept whose container
+  is inherited, from its unit or another one, is shown nowhere and cannot be instantiated at the root (decided: kept hidden; `CORE-D-95`
+  reports it, except in the cases of `CORE-D-96`). Specification updated (chapters 2, 5, 13, appendix A) and website pages regenerated.
+  Step 4b (the inherited container) is deferred until `CORE-D-96` is fixed (decided with the user).
+- Next: phase 5, removing the deprecated aliases (4b waits for `CORE-D-96`) (`VirtualModel.getFlexoConcepts` and its family, `setContainerFlexoConcept`,
+  `add/removeFromEmbeddedFlexoConcepts`, `setEmbeddedFlexoConcepts`, `moveEmbeddedFlexoConceptToIndex`, `setOwner`), and rewriting
+  the deprecated sequences of `TestConceptContainment`.
 
 ## Resources
 

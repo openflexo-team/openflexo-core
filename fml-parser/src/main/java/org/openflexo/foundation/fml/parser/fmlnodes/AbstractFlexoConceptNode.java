@@ -105,23 +105,6 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 				getSemanticsAnalyzer().addToNodesWaitingForReferencedUnits(this);
 			}
 		}
-		if (containerType != null) {
-			if (containerType.isResolved()) {
-				FlexoConcept container = containerType.getFlexoConcept();
-				if (container.getDeclaringCompilationUnit() != getModelObject().getDeclaringCompilationUnit()) {
-					// CORE-F-19: a concept is contained where it is declared, in its own compilation unit
-					throwIssue("Container concept " + containerType.getSerializationRepresentation()
-							+ " is declared in another compilation unit: a concept can only be inside a concept of its own unit",
-							getInsideTypeFragment());
-				}
-				else {
-					getModelObject().setContainer(container);
-				}
-			}
-			else {
-				throwIssue("Container concept " + containerType.getSerializationRepresentation() + " not found", getInsideTypeFragment());
-			}
-		}
 	}
 
 	/**
@@ -165,7 +148,6 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 		return returned;
 	}
 
-	protected FlexoConceptInstanceType containerType;
 
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
@@ -217,11 +199,8 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 
 	protected abstract RawSourceFragment getSuperTypeListFragment();
 
-	protected abstract RawSourceFragment getInsideClauseFragment();
 
-	protected abstract RawSourceFragment getInsideFragment();
 
-	protected abstract RawSourceFragment getInsideTypeFragment();
 
 	@Override
 	public RawSourceFragment getFragment(FragmentContext context) {

@@ -125,7 +125,6 @@ public class TestConceptContainment {
 		for (FlexoConcept nested : List.of(alpha, leaf, beta, inner)) {
 			assertFalse(nested.getName(), nested.isRoot());
 			assertSame(nested.getName(), nested.getContainerFlexoConcept(), nested.getApplicableContainerFlexoConcept());
-			assertFalse(nested.getName(), nested.hasExternalContainer());
 		}
 
 		// direct contents only
@@ -178,7 +177,6 @@ public class TestConceptContainment {
 		assertEquals(List.of(), gamma.getEmbeddedFlexoConcepts());
 		// ...but its instances live in a Root1, as those of Alpha which it extends
 		assertSame(concept(vm, "Root1"), gamma.getApplicableContainerFlexoConcept());
-		assertFalse(gamma.hasExternalContainer());
 		assertEquals(List.of(concept(vm, "Leaf")), gamma.getAccessibleEmbeddedFlexoConcepts());
 	}
 
@@ -464,5 +462,42 @@ public class TestConceptContainment {
 		String normalized = unit.getNormalizedFML();
 		assertTrue(normalized, normalized.contains("event Changed"));
 		assertTrue(normalized, normalized.contains("enum Kind"));
+	}
+
+	/**
+	 * Containment is declared by nesting only: the {@code inside X} clause is removed from FML, and {@code inside} is an ordinary
+	 * identifier again (CORE-F-19)
+	 */
+	@Test
+	public void insideIsAnOrdinaryIdentifier() throws Exception {
+		FMLCompilationUnit unit = TestFMLReindent.parse(String.join("\n", //
+				"@URI(\"" + URI + "\")", //
+				"public model Containment {", //
+				"	public concept Root1 {", //
+				"		String inside;", //
+				"	}", //
+				"}", ""));
+		FlexoConcept root1 = concept(unit.getVirtualModel(), "Root1");
+		assertNotNull(root1.getDeclaredProperty("inside"));
+		String normalized = unit.getNormalizedFML();
+		assertTrue(normalized, normalized.contains("String inside;"));
+		assertNotNull(concept(TestFMLReindent.parse(normalized).getVirtualModel(), "Root1").getDeclaredProperty("inside"));
+	}
+
+	@Test
+	public void theInsideClauseIsNoLongerAccepted() throws Exception {
+		try {
+			TestFMLReindent.parse(String.join("\n", //
+					"@URI(\"" + URI + "\")", //
+					"public model Containment {", //
+					"	public concept Root1 {", //
+					"	}", //
+					"	public concept Alpha inside Root1 {", //
+					"	}", //
+					"}", ""));
+			org.junit.Assert.fail("the inside clause was parsed");
+		} catch (ParseException e) {
+			// expected: a syntax error
+		}
 	}
 }

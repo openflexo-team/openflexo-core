@@ -45,20 +45,19 @@ uri_primary      = lidentifier | uidentifier | cidentifier | lit_string
 ## A.3 Declarations
 
 ```ebnf
-model_decl   = annotation* visibility? "abstract"? "model" uidentifier super_clause? inside_clause?
+model_decl   = annotation* visibility? "abstract"? "model" uidentifier super_clause?
                "{" member* "}"
-concept_decl = annotation* visibility? "abstract"? "concept" uidentifier super_clause? inside_clause?
+concept_decl = annotation* visibility? "abstract"? "concept" uidentifier super_clause?
                "{" member* "}"
-event_decl   = annotation* visibility? "abstract"? "event" uidentifier super_clause? inside_clause?
+event_decl   = annotation* visibility? "abstract"? "event" uidentifier super_clause?
                "{" member* "}"
-exception_decl = annotation* visibility? "abstract"? "exception" uidentifier super_clause? inside_clause?
+exception_decl = annotation* visibility? "abstract"? "exception" uidentifier super_clause?
                "{" member* "}"
 enum_decl    = annotation* visibility? "enum" uidentifier "{" enum_value ( "," enum_value )* "}"
 enum_value   = cidentifier
 
 super_clause  = "extends" super_type_list
 super_type_list = composite_tident ( "," composite_tident )*
-inside_clause = "inside" composite_tident
 visibility    = "private" | "protected" | "public"
 
 member =

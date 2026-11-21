@@ -51,7 +51,6 @@ import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
-import org.openflexo.foundation.fml.parser.node.AInsideClause;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -82,13 +81,6 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		buildParentConcepts(returned, astNode.getSuperClause());
 
-		if (astNode.getInsideClause() != null) {
-			AInsideClause insideClause = (AInsideClause) astNode.getInsideClause();
-			Type insideType = TypeFactory.makeType(insideClause.getCompositeTident(), getSemanticsAnalyzer().getTypingSpace());
-			if (insideType instanceof FlexoConceptInstanceType) {
-				containerType = (FlexoConceptInstanceType) insideType;
-			}
-		}
 
 		return returned;
 	}
@@ -115,9 +107,6 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 				.thenAppend(staticContents(SPACE, FMLKeywords.Extends.getKeyword(), SPACE), getExtendsFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment());
 
-		when(() -> getModelObject().requiresExternalContainerDeclaration(),"ExternalContainer")
-			.thenAppend(staticContents(SPACE, FMLKeywords.Inside.getKeyword(), SPACE), getInsideFragment())
-			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getContainerFlexoConcept())).keepingParsedTextWhileUnchanged(), getInsideTypeFragment());	
 		
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment(),"LBrc");
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class),"Properties");
@@ -229,30 +218,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		return null;
 	}
 
-	@Override
-	protected RawSourceFragment getInsideClauseFragment() {
-		if (getASTNode() != null && getASTNode().getInsideClause() != null) {
-			return getFragment(getASTNode().getInsideClause());
-		}
-		return null;
-	}
 
-	@Override
-	protected RawSourceFragment getInsideFragment() {
-		if (getASTNode() != null && getASTNode().getInsideClause() != null) {
-			AInsideClause insideClause = (AInsideClause) getASTNode().getInsideClause();
-			return getFragment(insideClause.getKwInside());
-		}
-		return null;
-	}
 
-	@Override
-	protected RawSourceFragment getInsideTypeFragment() {
-		if (getASTNode() != null && getASTNode().getInsideClause() != null) {
-			AInsideClause insideClause = (AInsideClause) getASTNode().getInsideClause();
-			return getFragment(insideClause.getCompositeTident());
-		}
-		return null;
-	}
 
 }

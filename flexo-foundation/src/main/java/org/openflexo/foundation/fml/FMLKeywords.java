@@ -201,12 +201,6 @@ public enum FMLKeywords {
 			return "in";
 		}
 	},
-	Inside {
-		@Override
-		public String getKeyword() {
-			return "inside";
-		}
-	},
 	InstanceOf {
 		@Override
 		public String getKeyword() {

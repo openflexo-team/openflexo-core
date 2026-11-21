@@ -336,19 +336,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public void setApplicableContainerFlexoConcept(FlexoConcept concept);
 
-	/**
-	 * Return boolean indicating if container FlexoConcept is located out of the scope of declaring compilation unit
-	 * 
-	 * @return
-	 */
-	public boolean hasExternalContainer();
 
-	/**
-	 * Return boolean indicating if FlexoConcept requires external container declaration
-	 * 
-	 * @return
-	 */
-	public boolean requiresExternalContainerDeclaration();
 
 	/**
 	 * Return the concepts declared in this concept, whose {@link #getContainerFlexoConcept()} is this concept: its {@link #getContents()},
@@ -378,12 +366,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
 
-	/**
-	 * Return FlexoConcept in the same {@link VirtualModel} declaring this concept as its container {@link FlexoConcept}
-	 * 
-	 * @return
-	 */
-	public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer();
 
 	/**
 	 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
@@ -1752,22 +1734,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return returned;
 		}
 
-		/**
-		 * Return FlexoConcept in the same {@link VirtualModel} declaring this concept as its container {@link FlexoConcept}
-		 * 
-		 * @return
-		 */
-		@Override
-		public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer() {
-
-			List<FlexoConcept> returned = new ArrayList<>();
-			for (FlexoConcept flexoConcept : getDeclaringCompilationUnit().getVirtualModel().getAllFlexoConcepts()) {
-				if (flexoConcept.getApplicableContainerFlexoConcept() == this) {
-					returned.add(flexoConcept);
-				}
-			}
-			return returned;
-		}
 
 		@Override
 		public String getAvailableFlexoBehaviourName(String baseName) {
@@ -3528,33 +3494,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return this instanceof VirtualModel ? null : getOwner();
 		}
 
-		/**
-		 * Return boolean indicating if container FlexoConcept is located out of the scope of declaring compilation unit
-		 * 
-		 * @return
-		 */
-		@Override
-		public boolean hasExternalContainer() {
-			if (getApplicableContainerFlexoConcept() != null) {
-				return getApplicableContainerFlexoConcept().getDeclaringCompilationUnit() != getDeclaringCompilationUnit();
-			}
-			return false;
-		}
 
-		/**
-		 * Return boolean indicating if FlexoConcept requires external container declaration
-		 * 
-		 * @return
-		 */
-		@Override
-		public boolean requiresExternalContainerDeclaration() {
-			return hasExternalContainer() && getContainerFlexoConcept() != null
-					&& getContainerFlexoConcept().getDeclaringCompilationUnit() != getDeclaringCompilationUnit();
-		}
 
 		private void notifyContainerChanges() {
 			getPropertyChangeSupport().firePropertyChange("applicableContainerFlexoConcept", false, true);
-			getPropertyChangeSupport().firePropertyChange("allEmbeddedFlexoConceptsDeclaringThisConceptAsContainer", false, true);
 		}
 
 		@Override
