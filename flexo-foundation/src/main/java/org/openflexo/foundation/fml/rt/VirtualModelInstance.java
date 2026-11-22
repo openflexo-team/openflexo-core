@@ -922,7 +922,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		public List<FlexoConcept> getUsedTopLevelFlexoConcepts() {
 			List<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
-				if (concept.getApplicableContainerFlexoConcept() == null) {
+				if (concept.getContainerFlexoConcept() == null) {
 					returned.add(concept);
 				}
 			}

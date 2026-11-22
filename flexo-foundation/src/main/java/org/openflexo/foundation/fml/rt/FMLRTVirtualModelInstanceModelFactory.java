@@ -175,14 +175,11 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 		}
 		if (container != null && container != ownerVirtualModelInstance) {
 			// Check that the container is valid: the concept of the ACTUAL container must be the container concept
-			// required by the instantiated concept, or a specialization of it.
-			// Two things used to be wrong here. getContainerFlexoConcept() returns only the DECLARED container, which
-			// is null for a concept declared at model level even when it inherits a container from a parent concept
-			// (AcmeMetaModel's CodingTaskType extends MetaModel's TaskType, itself nested in ProcessType) -
-			// getApplicableContainerFlexoConcept() is the accessor that walks parents. And the assignability test was
-			// written the wrong way round, which additionally rejected any container that was a SPECIALIZATION of the
-			// required one.
-			FlexoConcept requiredContainerConcept = concept.getApplicableContainerFlexoConcept();
+			// required by the instantiated concept, or a specialization of it (the assignability test was once written
+			// the wrong way round, which rejected any container that was a SPECIALIZATION of the required one).
+			// The required container is the declared one: a concept extending a nested concept is declared in the
+			// container of its parent (CORE-D-95, CORE-F-19).
+			FlexoConcept requiredContainerConcept = concept.getContainerFlexoConcept();
 			if (requiredContainerConcept == null || !requiredContainerConcept.isAssignableFrom(container.getFlexoConcept())) {
 				throw new FMLExecutionException("Cannot instanciate a FlexoConceptInstance : invalid FlexoConcept container");
 			}

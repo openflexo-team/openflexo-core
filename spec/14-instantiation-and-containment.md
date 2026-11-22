@@ -7,14 +7,14 @@ instances and their `container` are in §13.2.
 ## 14.1 Containment, in two words
 
 * A concept is either **nested** in a container concept (declared inside it, §5.2.1) or **at the root** of its model. A
-  concept inherits the container of its parents when it declares none: its *applicable container* is the declared one,
-  else the most specialized of those of its parents.
+  concept extending a nested concept is declared in the container of its parent, or in a specialization of it (a model
+  where it is not is invalid, §5.2.1): the container is never inherited.
 * An **event** and an **exception** are concepts like the others: they may be nested in a concept, and everything in
   this chapter holds for them. Their instances too have their host as `container`, already in their creation scheme;
   being signals, they are not stored in it, nor saved with the model instance.
 * A virtual model is either a **root** model, or declares a **container model** (it is declared in the directory of
   another model, §5.1.4).
-* At run time, an instance of a nested concept is contained in an instance of its applicable container concept (or of a
+* At run time, an instance of a nested concept is contained in an instance of its container concept (or of a
   specialization of it); an instance of a root concept, event or exception belongs to a model instance; a model
   instance may be contained in another model instance. `container` designates that container (§13.2).
 
@@ -101,7 +101,7 @@ public concept Alpha {
 The same rule is applied twice.
 
 * **When the unit is validated**, on the concepts: starting from the concept of the behaviour (or, for `c.new X`, the
-  concept of the type of `c`), the applicable containers are climbed, then the models. When no host can be reached,
+  concept of the type of `c`), the containers are climbed, then the models. When no host can be reached,
   the `new` is an invalid binding, reported with the concepts that were looked at:
 
   ```

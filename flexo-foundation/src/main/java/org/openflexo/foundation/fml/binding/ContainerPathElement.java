@@ -88,8 +88,8 @@ public class ContainerPathElement extends SimplePathElementImpl<FMLNativePropert
 		if (applicableFlexoConcept instanceof VirtualModel) {
 			containerType = ((VirtualModel) applicableFlexoConcept).getContainerVirtualModel();
 		}
-		else if (applicableFlexoConcept.getApplicableContainerFlexoConcept() != null) {
-			containerType = applicableFlexoConcept.getApplicableContainerFlexoConcept();
+		else if (applicableFlexoConcept.getContainerFlexoConcept() != null) {
+			containerType = applicableFlexoConcept.getContainerFlexoConcept();
 		}
 		else {
 			containerType = applicableFlexoConcept.getOwningVirtualModel();
@@ -150,7 +150,7 @@ public class ContainerPathElement extends SimplePathElementImpl<FMLNativePropert
 			return ((FlexoConceptInstance) target).getContainer();
 		}
 		else if (target instanceof FlexoConceptInstance) {
-			if (applicableFlexoConcept.getApplicableContainerFlexoConcept() != null) {
+			if (applicableFlexoConcept.getContainerFlexoConcept() != null) {
 				return ((FlexoConceptInstance) target).getContainerFlexoConceptInstance();
 			}
 			return ((FlexoConceptInstance) target).getVirtualModelInstance();

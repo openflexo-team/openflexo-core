@@ -238,7 +238,7 @@ public interface NewFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 			if (instantiatedFlexoConcept == null) {
 				throw new FMLNullReferenceError("The concept to instantiate is null: " + getDynamicFlexoConceptType());
 			}
-			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
+			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
 					throw new FMLNullReferenceError("Null container while creating a new instance of " + instantiatedFlexoConcept.getName());

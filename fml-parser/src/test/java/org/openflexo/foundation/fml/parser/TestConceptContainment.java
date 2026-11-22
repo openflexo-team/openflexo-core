@@ -24,7 +24,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 
 /**
  * Characterisation of the containment of FlexoConcepts in a VirtualModel, written before CORE-F-19 (a single container/contents
- * association). It pins what must stay true through that refactoring: containers, inherited containers, URIs, lookup, the pretty-print
+ * association). It pins what must stay true through that refactoring: containers, URIs, lookup, the pretty-print
  * round trip, adding, deleting and cloning, and the notifications the user interface listens to.
  * It also covers what CORE-F-19 fixed on the way: a root concept extending a nested one stays at the root and is reported by the
  * validation (CORE-D-91, CORE-D-95), so is a concept extending a root one outside the root of its VirtualModel or of a
@@ -65,7 +65,7 @@ public class TestConceptContainment {
 			"	}", //
 			"}", "");
 
-	/** Same, plus Gamma: a root concept extending a nested one, whose container is inherited */
+	/** Same, plus Gamma: a root concept extending a nested one (an invalid model) */
 	static final String WITH_INHERITED_CONTAINER = NESTED.replace("	public concept Root2 {",
 			"	public concept Gamma extends Alpha {\n	}\n	public concept Root2 {");
 
@@ -116,7 +116,7 @@ public class TestConceptContainment {
 		for (String root : List.of("Root1", "Root2", "Top", "Color")) {
 			FlexoConcept concept = concept(vm, root);
 			assertNull(root, concept.getContainerFlexoConcept());
-			assertNull(root, concept.getApplicableContainerFlexoConcept());
+			assertSame(root, vm, concept.getContainer());
 			assertTrue(root, concept.isRoot());
 		}
 		assertSame(root1, alpha.getContainerFlexoConcept());
@@ -125,7 +125,7 @@ public class TestConceptContainment {
 		assertSame(root2, inner.getContainerFlexoConcept());
 		for (FlexoConcept nested : List.of(alpha, leaf, beta, inner)) {
 			assertFalse(nested.getName(), nested.isRoot());
-			assertSame(nested.getName(), nested.getContainerFlexoConcept(), nested.getApplicableContainerFlexoConcept());
+			assertSame(nested.getName(), nested.getContainerFlexoConcept(), nested.getContainer());
 		}
 
 		// direct contents only
@@ -167,17 +167,22 @@ public class TestConceptContainment {
 		assertSame(concept(vm, "Leaf"), concept(vm, "Alpha").getEmbeddedFlexoConcept("Leaf"));
 	}
 
+	/**
+	 * Step 4b of CORE-F-19: the container is never inherited. Gamma, declared at the root and extending a concept nested in Root1, is an
+	 * invalid model: it is a root concept as declared, and the validation reports it (CORE-D-95).
+	 */
 	@Test
-	public void containerInheritedFromParent() throws Exception {
+	public void rootConceptExtendingANestedOneIsARootConcept() throws Exception {
 		VirtualModel vm = TestFMLReindent.parse(WITH_INHERITED_CONTAINER).getVirtualModel();
 		FlexoConcept gamma = concept(vm, "Gamma");
-		// declared at the root of the VirtualModel...
+		assertSame(vm, gamma.getContainer());
 		assertNull(gamma.getContainerFlexoConcept());
 		assertTrue(gamma.isRoot());
 		assertEquals(URI + "#Gamma", gamma.getURI());
 		assertEquals(List.of(), gamma.getEmbeddedFlexoConcepts());
-		// ...but its instances live in a Root1, as those of Alpha which it extends
-		assertSame(concept(vm, "Root1"), gamma.getApplicableContainerFlexoConcept());
+		assertTrue(names(vm.getAllRootFlexoConcepts()).contains("Gamma"));
+		assertTrue(isReported(vm, "Gamma"));
+		// the concepts nested in its parent stay accessible through inheritance
 		assertEquals(List.of(concept(vm, "Leaf")), gamma.getAccessibleEmbeddedFlexoConcepts());
 	}
 
@@ -341,7 +346,7 @@ public class TestConceptContainment {
 	}
 
 	/**
-	 * CORE-D-91: the text is printed where each concept is declared, not where its container is inherited from. Gamma, declared at the
+	 * CORE-D-91: the text is printed where each concept is declared, not where the container of its parent is. Gamma, declared at the
 	 * root and extending a nested concept, is an invalid model (see the rule tests below), but saving it must not move it, nor change
 	 * its URI.
 	 */

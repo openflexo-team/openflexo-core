@@ -226,15 +226,15 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public static final String ACCESSIBLE_PROPERTIES_KEY = "accessibleProperties";
 	public static final String ACCESSIBLE_BEHAVIOURS_KEY = "accessibleBehaviours";
-	public static final String APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY = "applicableContainerFlexoConcept";
 
 	/**
 	 * Return the container of this concept, where it is declared: its enclosing concept for a nested concept, its {@link VirtualModel}
 	 * for a root concept. This is the only containment of concepts (CORE-F-19). The container of a {@link VirtualModel} is null: a
 	 * contained {@link VirtualModel} lives in its own compilation unit (see {@link VirtualModel#getContainerVirtualModel()}).
 	 * <p>
-	 * This is the lexical containment. The containment of the instances may be inherited from parent concepts: see
-	 * {@link #getApplicableContainerFlexoConcept()}.
+	 * This is the lexical containment, and also the containment of the instances: an instance of a nested concept lives in an instance
+	 * of its container concept (or of a specialization of it). A concept extending a nested concept must be declared in the container of
+	 * its parent (see {@link ContainerFlexoConceptMustBeConsistentWithParents}).
 	 */
 	@Getter(value = CONTAINER_KEY, inverse = CONTENTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -325,19 +325,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Deprecated
 	public void setContainerFlexoConcept(FlexoConcept container);
 
-	/**
-	 * Return applicable container {@link FlexoConcept} (relative to containment): the declared container or, for a concept declared at the
-	 * root, the one of its parent concepts. Only a concept which is invalid for {@link ContainerFlexoConceptMustBeConsistentWithParents}
-	 * (CORE-D-95) has a declared container different from the one it inherits.
-	 */
-	public FlexoConcept getApplicableContainerFlexoConcept();
-
-	/**
-	 * Sets applicable container {@link FlexoConcept} (relative to containment).
-	 *
-	 * @param concept
-	 */
-	public void setApplicableContainerFlexoConcept(FlexoConcept concept);
 
 
 
@@ -2514,7 +2501,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 			VirtualModel oldOwner = getOwner();
 			FlexoConcept oldContainerFlexoConcept = getContainerFlexoConcept();
-			FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 			isSettingContainer = true;
 			try {
 				performSuperSetter(CONTAINER_KEY, container);
@@ -2530,9 +2516,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			if (oldOwner != newOwner) {
 				notifyOwnerChanged(this, oldOwner, newOwner);
 			}
-			getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
-					getApplicableContainerFlexoConcept());
-			notifyContainerChanges();
 		}
 
 		/**
@@ -2751,7 +2734,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					pendingParentTypes = null;
 				}
 				for (FlexoConcept parent : new ArrayList<>(parentFlexoConcepts)) {
-					if (!resolved.contains(parent) && !pendingNames.contains(parent.getName())) {
+					if (parent != null && !resolved.contains(parent) && !pendingNames.contains(parent.getName())) {
 						removeFromParentFlexoConcepts(parent);
 					}
 				}
@@ -2782,15 +2765,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException {
 
 			if (!isSuperConceptOf(parentFlexoConcept)) {
-				FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 				parentFlexoConcepts.add(parentFlexoConcept);
 				parentFlexoConcept.addToChildFlexoConcepts(this);
 				// Listen to the new parent FlexoConcept
 				parentFlexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
 				notifyParentConceptsHaveChanged();
-				getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
-						getApplicableContainerFlexoConcept());
 			}
 			else {
 				throw new InconsistentFlexoConceptHierarchyException(
@@ -2801,14 +2781,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
 			// Stop listen to new parent FlexoConcept
-			FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 			parentFlexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
 			parentFlexoConcepts.remove(parentFlexoConcept);
 			parentFlexoConcept.removeFromChildFlexoConcepts(this);
 			getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", parentFlexoConcept, null);
 			notifyParentConceptsHaveChanged();
-			getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
-					getApplicableContainerFlexoConcept());
 		}
 
 		// Called when the parent concept hierarchy has changed
@@ -3441,66 +3418,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private static boolean serializes(FIBComponentResource componentResource, Resource artefact) {
 			return componentResource.getIODelegate() != null
 					&& artefact.equals(componentResource.getIODelegate().getSerializationArtefactAsResource());
-		}
-
-		/**
-		 * Return applicable container {@link FlexoConcept} (relative to containment). When no explicit declaration was defined for this
-		 * concept, this containment is inherited from its parent concepts
-		 */
-		@Override
-		public FlexoConcept getApplicableContainerFlexoConcept() {
-			if (getContainerFlexoConcept() != null) {
-				return getContainerFlexoConcept();
-			}
-			return getApplicableContainerFlexoConceptInheritedFromParents();
-		}
-
-		private FlexoConcept getApplicableContainerFlexoConceptInheritedFromParents() {
-			List<FlexoConcept> parentContainers = new ArrayList<>();
-			for (FlexoConcept parent : getParentFlexoConcepts()) {
-				if (parent.getApplicableContainerFlexoConcept() != null) {
-					parentContainers.add(parent.getApplicableContainerFlexoConcept());
-				}
-			}
-			if (parentContainers.size() > 0) {
-				return FMLUtils.getMostSpecializedConcept(parentContainers);
-			}
-			return null;
-		}
-
-		/**
-		 * Sets applicable container {@link FlexoConcept} (relative to containment).
-		 * 
-		 * 
-		 * @param name
-		 */
-		@Override
-		public void setApplicableContainerFlexoConcept(FlexoConcept concept) {
-			if (getApplicableContainerFlexoConcept() != concept) {
-				if (concept == getApplicableContainerFlexoConceptInheritedFromParents()) {
-					// No need to redefine: back to the root of its VirtualModel
-					setContainer(rootContainer());
-				}
-				else {
-					// null: back to the root of its VirtualModel
-					setContainer(concept != null ? concept : rootContainer());
-				}
-				notifyContainerChanges();
-			}
-		}
-
-		/**
-		 * The container of this concept when it is a root concept: its {@link VirtualModel}. Null for a {@link VirtualModel}, whose
-		 * {@link #getOwner()} is the container VirtualModel of another compilation unit, never its container.
-		 */
-		private FlexoConcept rootContainer() {
-			return this instanceof VirtualModel ? null : getOwner();
-		}
-
-
-
-		private void notifyContainerChanges() {
-			getPropertyChangeSupport().firePropertyChange("applicableContainerFlexoConcept", false, true);
 		}
 
 		@Override

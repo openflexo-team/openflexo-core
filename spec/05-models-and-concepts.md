@@ -156,6 +156,10 @@ Containment is a structural fact with consequences.
 * **For creation**: a bare `new Book(…)` in a behaviour of `Shelf` creates a `Book` in the current shelf; a `new`
   climbs the containment tree to the nearest object that can hold the instance (§9.7, chapter 14).
 * **For queries**: `select X from this` searches what `this` contains, nested instances included (§10.2).
+* **For inheritance**: the container is never inherited. A concept extending a nested concept is declared in the
+  container of its parent, or in a specialization of it, as `Novel` above; a concept extending a root concept is
+  declared at the root of the model of its parent, or of a model extending it. A model breaking this rule is reported
+  by the validation.
 
 A nested concept is named by its simple name from anywhere in the unit (§4.8).
 

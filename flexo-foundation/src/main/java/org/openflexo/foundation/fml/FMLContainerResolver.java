@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * host it.
  * 
  * <ul>
- * <li>A concept nested in a container concept ({@link FlexoConcept#getApplicableContainerFlexoConcept()}) is hosted by the nearest
+ * <li>A concept nested in a container concept ({@link FlexoConcept#getContainerFlexoConcept()}) is hosted by the nearest
  * instance, starting with the starting instance itself, whose concept is that container concept or a specialization of it.</li>
  * <li>A root concept has no container concept: it is hosted by the nearest {@link VirtualModelInstance} whose {@link VirtualModel}
  * declares it, or inherits it.</li>
@@ -145,7 +145,7 @@ public final class FMLContainerResolver {
 	 * Return true when the concept is not nested in a container concept: it is hosted by a {@link VirtualModelInstance}
 	 */
 	private static boolean isHostedByVirtualModelInstance(FlexoConcept concept) {
-		return concept.getApplicableContainerFlexoConcept() == null;
+		return concept.getContainerFlexoConcept() == null;
 	}
 
 	/**
@@ -189,16 +189,12 @@ public final class FMLContainerResolver {
 			return new Resolution(false, climbed);
 		}
 
-		FlexoConcept required = concept.getApplicableContainerFlexoConcept();
+		FlexoConcept required = concept.getContainerFlexoConcept();
 		if (start instanceof VirtualModel) {
 			// A model holds no nested concept: nothing to climb, but the message names where it was looked at
 			climbed.add(start);
 		}
-		for (FlexoConcept c = start; c != null && !(c instanceof VirtualModel); c = c.getApplicableContainerFlexoConcept()) {
-			if (climbed.contains(c)) {
-				// A concept that is its own applicable container (a root concept extending a concept nested in itself): stop climbing
-				break;
-			}
+		for (FlexoConcept c = start; c != null && !(c instanceof VirtualModel); c = c.getContainerFlexoConcept()) {
 			climbed.add(c);
 			if (required.isAssignableFrom(c)) {
 				return new Resolution(true, climbed);
@@ -258,7 +254,7 @@ public final class FMLContainerResolver {
 			return null;
 		}
 
-		FlexoConcept required = concept.getApplicableContainerFlexoConcept();
+		FlexoConcept required = concept.getContainerFlexoConcept();
 		for (FlexoConceptInstance o = start; o != null && !(o instanceof VirtualModelInstance); o = o.getContainerFlexoConceptInstance()) {
 			if (o.getFlexoConcept() != null && required.isAssignableFrom(o.getFlexoConcept())) {
 				return o;

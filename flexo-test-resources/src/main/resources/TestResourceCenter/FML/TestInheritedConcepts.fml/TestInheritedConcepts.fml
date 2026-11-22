@@ -7,9 +7,7 @@
  *
  *   1. the DECLARING compilation unit check rejected every concept inherited from an extended
  *      VirtualModel (the declaring model is the ancestor, not the descendant);
- *   2. the CONTAINER check rejected a container that specializes the required one, and consulted
- *      getContainerFlexoConcept() - the DECLARED container, null for a concept declared at model
- *      level - instead of getApplicableContainerFlexoConcept(), which walks parents.
+ *   2. the CONTAINER check rejected a container that specializes the required one.
  *
  * A concept extending a nested one is declared in the container of its parent, or in a subtype of it (a root
  * declaration is a validation error, CORE-D-95), so the inherited-container case no longer occurs through a

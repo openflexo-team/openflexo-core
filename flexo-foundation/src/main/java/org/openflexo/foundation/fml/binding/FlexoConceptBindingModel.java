@@ -170,8 +170,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 				updateContainerBindingVariable();
 				updatePropertyVariables();
 			}
-			else if ((evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)
-					|| (evt.getPropertyName().equals(FlexoConcept.APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY)))) {
+			else if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
 				updateContainerFlexoConceptListener();
 				updateContainerBindingVariable();
 				updatePropertyVariables();
@@ -195,18 +194,13 @@ public class FlexoConceptBindingModel extends BindingModel {
 
 	protected void updateContainerBindingVariable() {
 
-		/*if (flexoConcept.getName().equals("CodingTaskType")) {
-			System.out.println("Tiens, je l'ai, applicableContainerFlexoConcept=" + flexoConcept.getApplicableContainerFlexoConcept());
-			System.out.println("containerFlexoConcept=" + flexoConcept.getContainerFlexoConcept());
-		}*/
-
-		if (flexoConcept.getApplicableContainerFlexoConcept() != null) {
+		if (flexoConcept.getContainerFlexoConcept() != null) {
 			if (containerBindingVariable == null) {
 				containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY_NAME,
-						flexoConcept.getApplicableContainerFlexoConcept().getInstanceType());
+						flexoConcept.getContainerFlexoConcept().getInstanceType());
 				addToBindingVariables(containerBindingVariable);
 			}
-			containerBindingVariable.setType(flexoConcept.getApplicableContainerFlexoConcept().getInstanceType());
+			containerBindingVariable.setType(flexoConcept.getContainerFlexoConcept().getInstanceType());
 		}
 		else {
 			if (flexoConcept.getOwner() != null) {
@@ -353,18 +347,18 @@ public class FlexoConceptBindingModel extends BindingModel {
 
 	private void updateContainerFlexoConceptListener() {
 
-		if (lastKnownContainer != flexoConcept.getApplicableContainerFlexoConcept()) {
+		if (lastKnownContainer != flexoConcept.getContainerFlexoConcept()) {
 			if (lastKnownContainer != null) {
 				if (lastKnownContainer.getPropertyChangeSupport() != null) {
 					lastKnownContainer.getPropertyChangeSupport().removePropertyChangeListener(this);
 				}
 			}
-			if (flexoConcept.getApplicableContainerFlexoConcept() != null) {
-				if (flexoConcept.getApplicableContainerFlexoConcept().getPropertyChangeSupport() != null) {
-					flexoConcept.getApplicableContainerFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+			if (flexoConcept.getContainerFlexoConcept() != null) {
+				if (flexoConcept.getContainerFlexoConcept().getPropertyChangeSupport() != null) {
+					flexoConcept.getContainerFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
 			}
-			lastKnownContainer = flexoConcept.getApplicableContainerFlexoConcept();
+			lastKnownContainer = flexoConcept.getContainerFlexoConcept();
 		}
 
 	}

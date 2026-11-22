@@ -529,11 +529,11 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 			if (instantiated instanceof VirtualModel) {
 				expected = "a virtual model instance of " + ((VirtualModel) instantiated).getContainerVirtualModel().getName();
 			}
-			else if (instantiated.getApplicableContainerFlexoConcept() == null) {
+			else if (instantiated.getContainerFlexoConcept() == null) {
 				expected = "a virtual model instance declaring " + instantiated.getName();
 			}
 			else {
-				expected = "an instance of " + instantiated.getApplicableContainerFlexoConcept().getName();
+				expected = "an instance of " + instantiated.getContainerFlexoConcept().getName();
 			}
 			check.invalidBindingReason = "cannot instantiate " + instantiated.getName() + " in " + start.getName() + ": no container ("
 					+ expected + ") can be reached from " + start.getName() + " (looked at: " + resolution.describeClimbed() + ")";

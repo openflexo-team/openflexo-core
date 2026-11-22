@@ -610,7 +610,8 @@ As a result:
 - `getOwningVirtualModel()` / `getOwner()` climb the containers.
 - `VirtualModel.getAllFlexoConcepts()` is derived (the whole tree) and notified. Each `getFlexoConcepts()` call site (~142, ~25
   repositories) is reviewed and moved to the direct contents or to all concepts.
-- `getApplicableContainerFlexoConcept()` (the container inherited from parents) stays a derived computation, not a stored link.
+- `getApplicableContainerFlexoConcept()` (the container inherited from parents) stays a derived computation, not a stored link
+  (revised in step 4b: removed, the container is never inherited).
 - The `inside` clause leaves the grammar.
 
 **Not covered.** VirtualModel-in-VirtualModel containment stays resource-based (`getContainerVirtualModel`): a VirtualModel's
@@ -700,7 +701,14 @@ is a possible follow-up.
   is inherited, from its unit or another one, is shown nowhere and cannot be instantiated at the root (decided: kept hidden; `CORE-D-95`
   reports it, except in the cases of `CORE-D-96`). Specification updated (chapters 2, 5, 13, appendix A) and website pages regenerated.
   Step 4b (the inherited container) is deferred until `CORE-D-96` is fixed (decided with the user).
-- Next: phase 5, removing the deprecated aliases (4b waits for `CORE-D-96`) (`VirtualModel.getFlexoConcepts` and its family, `setContainerFlexoConcept`,
+- Step 4b done (2026-11-22). `getApplicableContainerFlexoConcept()`, `setApplicableContainerFlexoConcept()` and the
+  `applicableContainerFlexoConcept` notification are removed (decided with the user: no deprecated alias). The runtime resolvers
+  (`FMLContainerResolver`, `AbstractAddFlexoConceptInstance`, `NewFlexoConceptInstance`, `MatchFlexoConceptInstance`, the factory of
+  instances), `ContainerPathElement`, `CreationSchemePathElement`, `FlexoConceptBindingModel` (the type of `container`) and the
+  instance selector of openflexo-ui read the declared container. Decided with the user: a concept of an invalid model (declared at
+  the root, extending a nested concept) is a root concept as declared, listed by `getAllRootFlexoConcepts` and instantiable in the
+  VirtualModel instance; the validation error (`CORE-D-95`) is the only report. Specification §5.2.1 and chapter 14 updated.
+- Next: phase 5, removing the deprecated aliases (`VirtualModel.getFlexoConcepts` and its family, `setContainerFlexoConcept`,
   `add/removeFromEmbeddedFlexoConcepts`, `setEmbeddedFlexoConcepts`, `moveEmbeddedFlexoConceptToIndex`, `setOwner`), and rewriting
   the deprecated sequences of `TestConceptContainment`.
 

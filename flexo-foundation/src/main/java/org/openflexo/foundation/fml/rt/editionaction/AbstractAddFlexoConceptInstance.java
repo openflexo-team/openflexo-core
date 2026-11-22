@@ -289,7 +289,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				return true;
 			}
 			if (getFlexoConceptType() != null) {
-				return getFlexoConceptType().getApplicableContainerFlexoConcept() != null;
+				return getFlexoConceptType().getContainerFlexoConcept() != null;
 			}
 			return false;
 		}
@@ -322,8 +322,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container
-						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getApplicableContainerFlexoConcept() != null
-								? getFlexoConceptType().getApplicableContainerFlexoConcept().getInstanceType()
+						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
+								? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
 								: FlexoConceptInstance.class);
 			}
 			return container;
@@ -335,8 +335,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer
-						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getApplicableContainerFlexoConcept() != null
-								? getFlexoConceptType().getApplicableContainerFlexoConcept().getInstanceType()
+						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
+								? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
 								: FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
@@ -409,8 +409,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						setCreationScheme(null);
 					}
 				}
-				if (flexoConceptType != null && flexoConceptType.getApplicableContainerFlexoConcept() != null) {
-					getContainer().setDeclaredType(flexoConceptType.getApplicableContainerFlexoConcept().getInstanceType());
+				if (flexoConceptType != null && flexoConceptType.getContainerFlexoConcept() != null) {
+					getContainer().setDeclaredType(flexoConceptType.getContainerFlexoConcept().getInstanceType());
 				}
 				else {
 					getContainer().setDeclaredType(FlexoConceptInstance.class);
@@ -623,7 +623,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				throw new FMLNullReferenceError("The concept to instantiate is null: " + getDynamicFlexoConceptType());
 			}
 
-			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
+			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
 					throw new FMLNullReferenceError("Null container while creating a new instance of " + instantiatedFlexoConcept.getName());
@@ -639,7 +639,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			FCI newFCI = makeNewFlexoConceptInstance(evaluationContext);
 
-			if (instantiatedFlexoConcept.getApplicableContainerFlexoConcept() != null) {
+			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
 				container.addToEmbeddedFlexoConceptInstances(newFCI);
 			}
 
