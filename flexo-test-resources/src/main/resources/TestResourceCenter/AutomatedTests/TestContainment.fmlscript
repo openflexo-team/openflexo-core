@@ -45,12 +45,13 @@ assert fromAlpha.container == alpha;
 fromOtherBeta = beta.makeBetaFromBeta(sibling, "b5");
 assert fromOtherBeta.container == alpha;
 
-// The nearest host wins: a SubAlpha is an Alpha, so a Beta created from it is held by the SubAlpha, not by the Alpha around it
+// The climb skips a container that cannot hold the instance: a SubAlpha is not an Alpha, so a Beta created from it is held by the
+// Alpha around it (a specialization of Alpha nested in an Alpha, which would be a nearer host, is invalid: CORE-D-96)
 sub = alpha.new SubAlpha("s1");
 assert sub.container == alpha;
 nearest = sub.makeBetaNearest("b6");
-assert nearest.container == sub;
-assert nearest.container != alpha;
+assert nearest.container == alpha;
+assert nearest.container != sub;
 // ... while a Beta created from a Beta of that Alpha stays in the Alpha
 assert beta.makeBetaSibling("b7").container == alpha;
 
@@ -68,6 +69,27 @@ assert other.makeAlphaFromOther("a7").container == c;
 
 // An exception nested in a concept is thrown from a Beta and caught by its type
 assert alpha.catchVeto() == "from beta";
+// Its container is its host, the Alpha, already in its creation scheme; it is not stored in it
+assert alpha.vetoHost() == alpha;
+assert alpha.vetoHostName() == "a1";
+// A nested event as well, fired from a Beta of the Alpha
+beta.knock();
+assert c.knockedFrom == "a1";
+assert c.knockHost == alpha;
+// Neither is stored in the Alpha: it holds the 13 Betas, Specials and SubAlphas created above (b1-b8, sp1, s1, veto, vh, vn)
+assert alpha.embeddedFlexoConceptInstances.size == 13;
+// The climbs of the containment go through the host: a property of the Alpha read through the event, a new from the event
+k = alpha.new Knock();
+assert k.container == alpha;
+assert k.name == "a1";
+assert k.new Beta("kz").container == alpha;
+assert k.new Root("kr").container == c;
+// An event with no creation scheme
+t = alpha.new Tap();
+assert t.container == alpha;
+assert t.hostName == "a1";
+// Only the Beta kz was added to the Alpha
+assert alpha.embeddedFlexoConceptInstances.size == 14;
 
 // An event is fired from a concept in the model, an exception is thrown from a concept and caught by its type
 sender = c.new Sender();

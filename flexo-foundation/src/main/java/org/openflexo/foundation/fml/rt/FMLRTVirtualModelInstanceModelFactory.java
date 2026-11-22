@@ -240,18 +240,25 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 	 *            type of {@link FlexoEventInstance} to be instantiated
 	 * @param ownerVirtualModelInstance
 	 *            the {@link VirtualModelInstance} where the instance is to be initialized (cannot be null)
+	 * @param host
+	 *            the host found by the climb of the {@code new}, the {@code container} of the event, which is not registered in it; null
+	 *            for the owner virtual model instance
 	 * @param evaluationContext
 	 *            {@link RunTimeEvaluationContext} providing executing environment for default values calculation
 	 * @return
 	 * @throws FMLExecutionException
 	 */
 	public FlexoEventInstance makeNewEventInstance(FlexoEvent event, VirtualModelInstance<?, ?> ownerVirtualModelInstance,
-			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			FlexoConceptInstance host, AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext)
+			throws FMLExecutionException {
 
 		FlexoEventInstance returned = newInstance(FlexoEventInstance.class);
 		returned.setFlexoConcept(event);
 		returned.setSourceVirtualModelInstance(ownerVirtualModelInstance);
+		returned.setHost(host);
 
+		// As for any concept: the initial values of its properties, then its creation scheme
+		returned.initializeDefaultValues(evaluationContext);
 		executeCreationScheme(returned, creationScheme, evaluationContext);
 
 		return returned;
@@ -259,15 +266,20 @@ public class FMLRTVirtualModelInstanceModelFactory extends DefaultPamelaResource
 
 	/**
 	 * Instantiate a {@link FlexoExceptionInstance} conform to supplied {@link FlexoException}, not registered in any virtual model
-	 * instance, and run its creation scheme (CORE-F-11 phase 7)
+	 * instance, and run its creation scheme (CORE-F-11 phase 7). Its {@code container} is <code>host</code>, found by the climb of the
+	 * {@code new} (the owner virtual model instance when null), in which it is not registered either
 	 */
 	public FlexoExceptionInstance makeNewExceptionInstance(FlexoException exception, VirtualModelInstance<?, ?> ownerVirtualModelInstance,
-			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			FlexoConceptInstance host, AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext)
+			throws FMLExecutionException {
 
 		FlexoExceptionInstance returned = newInstance(FlexoExceptionInstance.class);
 		returned.setFlexoConcept(exception);
 		returned.setSourceVirtualModelInstance(ownerVirtualModelInstance);
+		returned.setHost(host);
 
+		// As for any concept: the initial values of its properties, then its creation scheme
+		returned.initializeDefaultValues(evaluationContext);
 		executeCreationScheme(returned, creationScheme, evaluationContext);
 
 		return returned;

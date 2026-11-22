@@ -67,7 +67,7 @@ import org.openflexo.pamela.validation.ValidationRule;
  * {@link #getAnalyzedType()} the type of the expression. The property is read-only unless its expression is settable.
  * <p>
  * An {@link ExpressionProperty} may implement an {@link AbstractProperty} of a parent concept (excerpt of {@code FML/Library.fml} in the
- * {@code flexo-test-resources} test resource center):
+ * {@code flexo-test-resources} test resource center, where both concepts are nested in {@code Shelf}):
  *
  * <pre>
  * public abstract concept Publication {

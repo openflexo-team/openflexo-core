@@ -633,6 +633,7 @@ is a possible follow-up.
    resolves the container of an instance (`FMLContainerResolver`, `AbstractAddFlexoConceptInstance`, `ContainerPathElement`) then
    reads the direct container. Only once `CORE-D-96` is fixed: until the validation reports every such model, a model it misses
    (a concept extending a root concept that extends a nested one) would change behaviour at run time without any message.
+   `CORE-D-96` is fixed (2026-11-21): every ancestor is checked, so 4b is no longer blocked.
 5. Remove the aliases.
 
 **Acceptance.**

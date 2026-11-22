@@ -72,9 +72,47 @@ At run time the instance of the contained model reports the instance of its cont
 
 The container of a concept (or event, exception, enum) is the declaration it is written in: the enclosing concept,
 or the model for a top-level declaration. There is no other way to declare a container: the `inside` clause of
-earlier versions is removed, and a concept cannot be contained in a concept of another compilation unit. A concept
-extending a nested concept must be declared in the container of its parent, or in a subtype of it; the validation
-reports a concept that extends a nested concept from another container.
+earlier versions is removed, and a concept cannot be contained in a concept of another compilation unit.
+
+A concept is declared in the container of each of its parents, or in a subtype of that container:
+
+* for a parent nested in a concept `K`, in `K` or in a concept extending `K`;
+* for a parent at the root of a model `M`, at the root of `M` or of a model extending `M`.
+
+The rule holds for every ancestor, not only for the direct parents, and for events and exceptions as for the other
+concepts. The validation reports a concept declared elsewhere. Two consequences:
+
+* a concept at the root cannot be the common parent of concepts at the root and of nested ones: a parent shared by
+  concepts of a container is declared in that container;
+* a concept cannot be nested in a concept it extends.
+
+```fml
+public model Shop {
+
+	public abstract concept Item {        // at the root of Shop
+	}
+
+	public concept Tool extends Item {    // valid: at the root, as Item
+	}
+
+	public concept Box {
+
+		public abstract concept Part {    // nested in Box
+		}
+
+		public concept Screw extends Part { // valid: in Box, as Part
+		}
+
+		public concept Nail extends Item {  // reported: Item is at the root of Shop
+		}
+
+		public concept SubBox extends Box { // reported: a Box cannot be nested in a Box
+		}
+	}
+}
+```
+
+`TestConceptContainment` (fml-parser) validates this example.
 
 ## 5.2 Concepts
 

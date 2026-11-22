@@ -3,8 +3,8 @@
  * designated by the container path of the new, or from this when there is none. See TestContainment.fmlscript and
  * TestContainmentValidation (fml-cli-test).
  *
- * Containment tree: Containment holds Root and Alpha, Alpha holds Beta and SubAlpha (a specialization of Alpha, nested in Alpha),
- * Beta holds Leaf; Special extends Beta, nested in Alpha.
+ * Containment tree: Containment holds Root and Alpha, Alpha holds Beta and SubAlpha (not an Alpha),
+ * Beta holds Leaf; Special extends Beta, nested in Alpha. Veto and Knock, nested in Alpha, have it as container but are not stored in it.
  */
 
 @URI("http://openflexo.org/test/TestResourceCenter/Containment.fml")
@@ -81,12 +81,49 @@ public model Containment {
 			return "none";
 		}
 
+		// A nested exception is a concept as the others: its container is its host, an Alpha, in which it is not stored
+		public Alpha vetoHost() {
+			Beta b = new Beta("vh");
+			try {
+				b.vetoFromBeta();
+			} catch (Veto v) {
+				return v.container;
+			}
+			return null;
+		}
+
+		public String vetoHostName() {
+			Beta b = new Beta("vn");
+			try {
+				b.vetoFromBeta();
+			} catch (Veto v) {
+				return v.hostName;
+			}
+			return "none";
+		}
+
 		exception Veto {
 			String why;
+			String hostName;
 
 			create(String why) {
 				this.why = why;
+				hostName = container.name;
 			}
+		}
+
+		// A nested event as well: its container is the Alpha that hosts it, already known by its creation scheme
+		event Knock {
+			String hostName;
+
+			create() {
+				hostName = container.name;
+			}
+		}
+
+		// With no creation scheme, still an event, hosted and not stored; the initial value of its property sees its container
+		event Tap {
+			String hostName = container.name;
 		}
 
 		public concept Beta {
@@ -114,6 +151,10 @@ public model Containment {
 			// Thrown from a Beta, held by an Alpha: the climb is the one of the concepts
 			public vetoFromBeta() throws Veto {
 				throw new Veto("from beta");
+			}
+
+			public knock() {
+				fire new Knock();
 			}
 
 			public Leaf makeLeaf(String name) {
@@ -172,8 +213,11 @@ public model Containment {
 			}
 		}
 
-		// A specialization of Alpha, nested in Alpha: an Alpha itself, so the nearest host of a Beta is the SubAlpha, not the Alpha around it
-		public concept SubAlpha extends Alpha {
+		// Nested in Alpha but not an Alpha: a Beta created from it climbs over it to the Alpha around it. A specialization of Alpha
+		// cannot be nested in an Alpha (CORE-D-96: it is declared in the model, as Alpha is), so a nearer host of the same type cannot occur
+		public concept SubAlpha {
+
+			String name;
 
 			create(String name) {
 				this.name = name;
@@ -239,5 +283,13 @@ public model Containment {
 
 	listen Ping from this {
 		received = evt.value;
+	}
+
+	String knockedFrom;
+	Alpha knockHost;
+
+	listen Knock from this {
+		knockedFrom = evt.hostName;
+		knockHost = evt.container;
 	}
 }

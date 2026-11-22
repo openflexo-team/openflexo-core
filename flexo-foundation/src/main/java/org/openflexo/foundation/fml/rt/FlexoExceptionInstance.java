@@ -50,7 +50,8 @@ import org.openflexo.pamela.annotations.Setter;
 /**
  * An instance of a {@link FlexoException}, created by {@code new ExceptionType(...)} and raised by {@code throw} (CORE-F-11 phase 7).
  * <p>
- * It is not registered in any virtual model instance. Once thrown, it knows the {@link FMLUserError} that carries it (with its FML stack):
+ * It is not registered in any virtual model instance. Like any concept instance, its container is its host, found by the climb of its
+ * {@code new} ({@link #setHost(FlexoConceptInstance)}), which does not hold it either. Once thrown, it knows the {@link FMLUserError} that carries it (with its FML stack):
  * throwing it again rethrows that very error.
  */
 @ModelEntity
@@ -89,9 +90,44 @@ public interface FlexoExceptionInstance extends FlexoConceptInstance {
 	 */
 	public void setThrownError(FMLUserError error);
 
+	/**
+	 * Set the host of this exception, found by the climb of its {@code new}: an instance of its container concept for a nested exception,
+	 * its source virtual model instance for a root one. It is the {@code container} of the exception, which is not registered in it (not
+	 * persistent). Set once, by the factory, before the creation scheme runs
+	 */
+	public void setHost(FlexoConceptInstance host);
+
 	public static abstract class FlexoExceptionInstanceImpl extends FlexoConceptInstanceImpl implements FlexoExceptionInstance {
 
 		private FMLUserError thrownError;
+
+		private FlexoConceptInstance host;
+
+		@Override
+		public void setHost(FlexoConceptInstance host) {
+			if (this.host != null && this.host != host) {
+				throw new IllegalStateException("The host of " + this + " is already set");
+			}
+			this.host = host;
+		}
+
+		// An exception is a concept as the others: its container is its host, although it is not stored in it. Its container instance is that
+		// host when it is a concept instance, so that every climb of the containment (property access, actors, new) goes through it
+		@Override
+		public FlexoConceptInstance getContainerFlexoConceptInstance() {
+			if (host != null && !(host instanceof VirtualModelInstance)) {
+				return host;
+			}
+			return (FlexoConceptInstance) performSuperGetter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY);
+		}
+
+		@Override
+		public FlexoConceptInstance getContainer() {
+			if (host != null) {
+				return host;
+			}
+			return super.getContainer();
+		}
 
 		@Override
 		public FlexoException getFlexoConcept() {

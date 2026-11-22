@@ -7,11 +7,11 @@ import [RC+"TestCrossReferences2.fml"];
 
 @URI("http://openflexo.org/test/TestResourceCenter/TestMetaData.fml")
 @Version("0.1")
-model TestMetaData {
+model TestMetaData extends TestCrossReferences1 {
 
 	concept MyConceptA extends ConceptA {
 	
-		concept MyConceptC extends ConceptC {
+		concept MyConceptC {
 			concept MyConceptE {
 			}
 		}

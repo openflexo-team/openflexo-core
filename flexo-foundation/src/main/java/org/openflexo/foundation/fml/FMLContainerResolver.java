@@ -55,8 +55,8 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * instance, starting with the starting instance itself, whose concept is that container concept or a specialization of it.</li>
  * <li>A root concept has no container concept: it is hosted by the nearest {@link VirtualModelInstance} whose {@link VirtualModel}
  * declares it, or inherits it.</li>
- * <li>A {@link FlexoEvent} and a {@link FlexoException} are concepts like the others: the same rules apply to them. The host is also
- * the {@link VirtualModelInstance} that is the source of the event or of the exception.</li>
+ * <li>A {@link FlexoEvent} and a {@link FlexoException} are concepts like the others: the same rules apply to them, and their instance
+ * has its host as container. It is not stored in it, and its source is the {@link VirtualModelInstance} of the host.</li>
  * <li>A {@link VirtualModel} that declares a container VirtualModel is hosted by the nearest {@link VirtualModelInstance} of that
  * VirtualModel. One that declares none is not hosted by an instance: its instantiation does not climb.</li>
  * </ul>
@@ -213,9 +213,20 @@ public final class FMLContainerResolver {
 	}
 
 	/**
+	 * The {@link VirtualModelInstance} from which the climb continues above <code>start</code>: the one it is registered in, or, for an
+	 * event or an exception, which is registered in none, the one of its host
+	 */
+	private static VirtualModelInstance<?, ?> virtualModelInstanceOf(FlexoConceptInstance start) {
+		if (start.getVirtualModelInstance() != null) {
+			return start.getVirtualModelInstance();
+		}
+		return start.getOwningVirtualModelInstance();
+	}
+
+	/**
 	 * Resolution on instances: return the nearest instance that can host an instance of <code>concept</code>, climbing from
-	 * <code>start</code> (itself included). The host is a {@link VirtualModelInstance} when the concept is a root concept, an event, an
-	 * exception or a {@link VirtualModel}. Return null when there is none, and also for a {@link VirtualModel} that declares no container
+	 * <code>start</code> (itself included). The host is a {@link VirtualModelInstance} when the concept is a root concept (an event or an
+	 * exception included) or a {@link VirtualModel}. Return null when there is none, and also for a {@link VirtualModel} that declares no container
 	 * VirtualModel, which is not hosted by an instance.
 	 */
 	public static FlexoConceptInstance findHost(FlexoConceptInstance start, FlexoConcept concept) {
@@ -229,7 +240,7 @@ public final class FMLContainerResolver {
 			if (containerVirtualModel == null) {
 				return null;
 			}
-			for (VirtualModelInstance<?, ?> vmi = start.getVirtualModelInstance(); vmi != null; vmi = vmi.getContainerVirtualModelInstance()) {
+			for (VirtualModelInstance<?, ?> vmi = virtualModelInstanceOf(start); vmi != null; vmi = vmi.getContainerVirtualModelInstance()) {
 				if (vmi.getVirtualModel() != null && containerVirtualModel.isAssignableFrom(vmi.getVirtualModel())) {
 					return vmi;
 				}
@@ -239,7 +250,7 @@ public final class FMLContainerResolver {
 
 		if (isHostedByVirtualModelInstance(concept)) {
 			VirtualModel declaring = getDeclaringVirtualModel(concept);
-			for (VirtualModelInstance<?, ?> vmi = start.getVirtualModelInstance(); vmi != null; vmi = vmi.getContainerVirtualModelInstance()) {
+			for (VirtualModelInstance<?, ?> vmi = virtualModelInstanceOf(start); vmi != null; vmi = vmi.getContainerVirtualModelInstance()) {
 				if (canHost(vmi.getVirtualModel(), declaring)) {
 					return vmi;
 				}

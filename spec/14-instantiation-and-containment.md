@@ -10,8 +10,8 @@ instances and their `container` are in §13.2.
   concept inherits the container of its parents when it declares none: its *applicable container* is the declared one,
   else the most specialized of those of its parents.
 * An **event** and an **exception** are concepts like the others: they may be nested in a concept, and everything in
-  this chapter holds for them. An instance of an event or of an exception is not stored in its container: it is a
-  signal, whose *source* is the model instance of its host.
+  this chapter holds for them. Their instances too have their host as `container`, already in their creation scheme;
+  being signals, they are not stored in it, nor saved with the model instance.
 * A virtual model is either a **root** model, or declares a **container model** (it is declared in the directory of
   another model, §5.1.4).
 * At run time, an instance of a nested concept is contained in an instance of its applicable container concept (or of a
@@ -41,8 +41,8 @@ the **nearest** object that can hold an `X`:
 
 The rules that follow hold for every form.
 
-* **The nearest wins.** There is no ambiguity error. When a concept can contain a specialization of itself, and
-  an instance of that specialization is the starting object, it is the host, and not the instance around it.
+* **The nearest wins.** There is no ambiguity error: the first host met on the way up is chosen. A nearer host of the
+  same type cannot occur, since a concept cannot be nested in a concept it extends (§5.1.5).
 * **The starting object is a candidate.** A `new X()` that was valid because `this` could hold an `X` keeps its
   meaning: the instance is created in `this`.
 * **A sibling is a climb.** From an instance of `B`, nested in `A`, `new B(…)` finds no `B` able to hold a `B`, climbs
@@ -117,5 +117,8 @@ The same rule is applied twice.
 > **Implementation note.** `FMLContainerResolver` implements both sides; `CreationSchemePathElement` calls it.
 > The checks of the instance factory, which require a container compatible with the concept, are kept: for a concept, they
 > see a host chosen by the climb; a virtual model with no container model has no host. The instance of an event or of an exception
-> is not stored in its host, which only gives its source model instance. `TestContainment.fmlscript` and `TestContainmentValidation` (fml-cli-test) run the
-> examples of this chapter on `FML/Containment.fml`.
+> keeps its host (`FlexoEventInstance.setHost`, `FlexoExceptionInstance.setHost`), returned by `getContainer()` and, when it is
+> a concept instance, by `getContainerFlexoConceptInstance()`, so that every climb goes through it; it is not added to the
+> instances of its host, and its source model instance is the one of its host. One with no creation scheme is created the same way.
+> `TestContainment.fmlscript` and `TestContainmentValidation` (fml-cli-test) run the examples of this chapter on
+> `FML/Containment.fml`.

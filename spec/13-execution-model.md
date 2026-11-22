@@ -142,8 +142,8 @@ none. These notifications keep the following current:
 A compilation unit and an instance can be **validated**. Validation checks the rules of the meta-model, among which
 
 * every binding in the unit is valid: its path resolves against the typing space (§4.8, §9.6);
-* the types of declarations resolve; the parents of a concept resolve; the container of a concept extending a nested
-  concept is consistent with the containers of its parents (§5.1.5);
+* the types of declarations resolve; the parents of a concept resolve; the container of a concept is consistent with the
+  containers of all its ancestors (§5.1.5);
 * the invariants of an instance hold (§5.7.1).
 
 Validation is the way to find, before execution, the errors that execution would raise: an unresolved path (§9.8), an

@@ -52,6 +52,8 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoEventInstance;
+import org.openflexo.foundation.fml.rt.FlexoExceptionInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
@@ -142,6 +144,10 @@ public class ContainerPathElement extends SimplePathElementImpl<FMLNativePropert
 		}
 		if (target instanceof VirtualModelInstance) {
 			return ((VirtualModelInstance<?, ?>) target).getContainerVirtualModelInstance();
+		}
+		else if (target instanceof FlexoEventInstance || target instanceof FlexoExceptionInstance) {
+			// Not stored in its container: an event or an exception knows its host as its container
+			return ((FlexoConceptInstance) target).getContainer();
 		}
 		else if (target instanceof FlexoConceptInstance) {
 			if (applicableFlexoConcept.getApplicableContainerFlexoConcept() != null) {

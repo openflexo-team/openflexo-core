@@ -194,11 +194,11 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 			if (getVirtualModelInstance() instanceof FMLRTVirtualModelInstance) {
 				if (getFlexoConceptBeingCreated() instanceof FlexoEvent) {
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
-							.makeNewEvent((FlexoEvent) getFlexoConceptBeingCreated(), getCreationScheme(), this);
+							.makeNewEvent((FlexoEvent) getFlexoConceptBeingCreated(), getContainer(), getCreationScheme(), this);
 				}
 				else if (getFlexoConceptBeingCreated() instanceof FlexoException) {
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())
-							.makeNewException((FlexoException) getFlexoConceptBeingCreated(), getCreationScheme(), this);
+							.makeNewException((FlexoException) getFlexoConceptBeingCreated(), getContainer(), getCreationScheme(), this);
 				}
 				else {
 					newFlexoConceptInstance = ((FMLRTVirtualModelInstance) getVirtualModelInstance())

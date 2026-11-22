@@ -43,11 +43,14 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Map;
@@ -3568,19 +3571,38 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		/**
 		 * A concept B nested in A has its instances in an instance of A. A concept C extending B is therefore declared in A, or in a
 		 * subtype of A, whatever the parent considered: declared at the root, it would have instances with no container to live in.
+		 * <p>
+		 * The container compared is the direct one ({@link FlexoConcept#getContainer()}): the enclosing concept, or the
+		 * {@link VirtualModel} for a root concept, a subtype of a {@link VirtualModel} being a {@link VirtualModel} extending it
+		 * (CORE-D-96). Every ancestor is checked, not only the direct parents: in a valid model this adds nothing, the property being
+		 * transitive, but a concept extending an invalid one is reported for itself, even when that parent is declared in a
+		 * compilation unit which is not validated.
 		 */
 		@Override
 		public ValidationIssue<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			FlexoConcept declaredContainer = flexoConcept.getContainerFlexoConcept();
-			for (FlexoConcept parent : flexoConcept.getParentFlexoConcepts()) {
-				// The direct container of the parent: a parent declared at the root has none, which is not checked here (CORE-D-96)
-				FlexoConcept parentContainer = parent != null ? parent.getContainerFlexoConcept() : null;
-				if (parentContainer != null && (declaredContainer == null || !parentContainer.isSuperConceptOf(declaredContainer))) {
+			FlexoConcept declaredContainer = flexoConcept.getContainer();
+			for (FlexoConcept ancestor : allAncestors(flexoConcept)) {
+				// The container of a VirtualModel is null: a VirtualModel extending another one is not concerned by this rule
+				FlexoConcept ancestorContainer = ancestor.getContainer();
+				if (ancestorContainer != null && !ancestorContainer.isSuperConceptOf(declaredContainer)) {
 					return new ValidationError<>(this, flexoConcept,
 							"concept_($validable.name)_must_be_contained_in_a_subtype_of_the_container_of_its_parents");
 				}
 			}
 			return null;
+		}
+
+		/** The parents of the concept, transitively, each once, without the concept itself (an inheritance cycle is not followed) */
+		private static Set<FlexoConcept> allAncestors(FlexoConcept flexoConcept) {
+			Set<FlexoConcept> ancestors = new LinkedHashSet<>();
+			Deque<FlexoConcept> toVisit = new ArrayDeque<>(flexoConcept.getParentFlexoConcepts());
+			while (!toVisit.isEmpty()) {
+				FlexoConcept concept = toVisit.pop();
+				if (concept != null && concept != flexoConcept && ancestors.add(concept)) {
+					toVisit.addAll(concept.getParentFlexoConcepts());
+				}
+			}
+			return ancestors;
 		}
 
 		/*@Override

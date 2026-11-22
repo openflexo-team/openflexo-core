@@ -82,11 +82,6 @@ public model Library {
 		}
 	}
 
-	public abstract concept Publication {
-
-		abstract String code;
-	}
-
 	public concept Shelf {
 
 		String label;
@@ -172,6 +167,11 @@ public model Library {
 		public removeBook(Book book) {
 			books.remove(book);
 			delete book;
+		}
+
+		public abstract concept Publication {
+
+			abstract String code;
 		}
 
 		public concept Book extends Publication {

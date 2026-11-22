@@ -1884,3 +1884,58 @@ parent: a parent declared at the root has none, so the concepts extending it are
 
 **Not done.** The loading is not refused (it is a validation error, as for the other consistency rules). The containment of a concept
 whose parent is a root concept is not checked: see `CORE-D-96`.
+
+### CORE-D-96 — The containment of a concept extending a root concept is not checked  ·  `DONE`
+
+**GitHub:** [openflexo-team/openflexo-core#138](https://github.com/openflexo-team/openflexo-core/issues/138)
+
+**Symptom (found 2026-11-19, review of `CORE-D-95`).** `ContainerFlexoConceptMustBeConsistentWithParents` only compares the declared
+container of a concept with the container of its parents when that container is a concept. A root concept has the VirtualModel as
+container, and `getContainerFlexoConcept()` returns null for it, so two cases are accepted:
+- a concept nested in `X` that extends a root concept `B` (its instances live in an `X`, those of `B` directly in the VirtualModel instance);
+- a root concept of a VirtualModel `M2` that extends a root concept of a VirtualModel `M1` which `M2` does not extend.
+- a concept extending a root concept that itself extends a nested one (`CORE-D-95` reports the parent, not the child, although at run time
+  the child still requires the inherited container: `getApplicableContainerFlexoConcept()` is read by the instance creation).
+
+**Semantics.** The direct container of C is a subtype of the direct container of each parent; for a VirtualModel container, a subtype is
+a VirtualModel extending it.
+
+**Measured (2026-11-21)** by a temporary test validating every unit of the resource centers: besides `TestMetaData` (case 2), the
+strict reading reports one pattern, a nested concept extending a root concept of its own VirtualModel: `Book`/`Novel` (Library),
+`SubAlpha in Alpha extends Alpha` (Containment), 12 concepts of multi-process-challenge `MetaModel` and 3 of `AcmeMetaModel` (only
+through them), `RequirementReference` (formod `DocumentAnnotationMethodology`, which made `FormodValidationTest` red).
+
+**Decision (2026-11-21).** The strict reading is kept: for a root parent, the child is declared at the root of the VirtualModel of
+the parent or of a VirtualModel extending it. Consequence: a root concept cannot be the common super-type of root and nested
+concepts, and a specialisation cannot be nested in the concept it extends.
+
+**Fix (2026-11-21).** `ContainerFlexoConceptMustBeConsistentWithParents` compares `getContainer()` (the VirtualModel for a root
+concept) instead of `getContainerFlexoConcept()`, and checks every ancestor of the concept, not only its direct parents (a concept
+extending an invalid one is reported for itself, even when that parent is in a unit nobody validates). Models migrated:
+- `TestMetaData` extends `TestCrossReferences1`; `MyConceptC` no longer extends `ConceptC`.
+- Library: `Publication` is nested in `Shelf`, next to `Book`.
+- Containment: `SubAlpha` is no longer an `Alpha`; `TestContainment.fmlscript` now pins that a `Beta` created from it climbs to the
+  `Alpha` around it (the former "nearer host of the same type" cannot occur in a valid model).
+- multi-process-challenge `MetaModel`: `TaskType`, `Gateway` and `Task` stay nested and no longer extend `Type` / `Instance`; they
+  redeclare `name`, `lastUpdated`, `update()` and the renderer. The stored instances reference roles by name and do not change.
+- formod `DocumentAnnotationMethodology`: `RequirementReference` moved to the root, still a `NamedReference` (drag and drop of
+  references relies on it), with an `elementReference` link replacing its nesting; deleting an `ElementReference` deletes the
+  references of its requirements, as the nesting did (`T3_DocumentAnnotation.fmlscript`). A formod project saved with the nested
+  version holds requirement references in their element references: not migrated (none in the repositories).
+
+Events and exceptions are concepts like the others, also at run time (decision 2026-11-21): the instance of an event or of an
+exception now has its host as `container` (it was the model instance, and `container` evaluated to null for a nested one), already in
+its creation scheme, but is still neither added to its host nor saved (`FlexoEventInstance` / `FlexoExceptionInstance.setHost`).
+`getContainerFlexoConceptInstance()` returns that host too, so the climbs of the containment go through it (a property of the
+container read through the event, a `new` from the event, `findHost` from an instance registered in no model instance), the initial
+values of its properties are now set, and one with no creation scheme is no longer created as a plain concept instance stored in its
+host.
+The specification is aligned: §5.1.5 states the rule (with an example pinned by `TestConceptContainment`), §13.8 and §14.2
+("the nearest wins": a nearer host of the same type cannot occur) follow it, appendix C shows the migrated `Library`, §14.1 gives
+events and exceptions their host as container; the website specification is regenerated.
+
+Tests: `TestConceptContainment` (fml-parser): every ancestor, nested extending a root concept, recursive nesting, root concept of
+another VirtualModel with and without the VirtualModel inheritance. `TestContainmentValidation` (flexo-foundation-test): the migrated
+fixtures are valid. `TestContainment.fmlscript`: the container of the exception `Veto` and of the event `Knock`, nested in `Alpha`,
+is that `Alpha`, in their creation scheme and after, and neither is stored in it; a property of `Alpha` read through `Knock`, a
+`new` from it, the event `Tap` with no creation scheme and an initial value reading `container`.

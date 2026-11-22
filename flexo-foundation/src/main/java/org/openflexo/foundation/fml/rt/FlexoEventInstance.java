@@ -52,7 +52,8 @@ import org.openflexo.pamela.annotations.XMLElement;
 /**
  * An instance of a {@link FlexoEvent}, created and fired with {@code fire new EventType(...)}.<br>
  * It knows the {@link VirtualModelInstance} from which it was fired ({@link #getSourceVirtualModelInstance()}), but is not registered in
- * any virtual model instance: its life is restricted to its propagation to the listeners.
+ * any virtual model instance: its life is restricted to its propagation to the listeners. Like any concept instance, its container is
+ * its host, found by the climb of its {@code new} ({@link #setHost(FlexoConceptInstance)}), which does not hold it either.
  *
  * @author sylvain
  *
@@ -81,9 +82,44 @@ public interface FlexoEventInstance extends FlexoConceptInstance {
 
 	public FlexoEvent getFlexoEvent();
 
+	/**
+	 * Set the host of this event, found by the climb of its {@code new}: an instance of its container concept for a nested event, its
+	 * source virtual model instance for a root one. It is the {@code container} of the event, which is not registered in it (not
+	 * persistent). Set once, by the factory, before the creation scheme runs
+	 */
+	public void setHost(FlexoConceptInstance host);
+
 	public static abstract class FlexoEventInstanceImpl extends FlexoConceptInstanceImpl implements FlexoEventInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoEventInstance.class.getPackage().toString());
+
+		private FlexoConceptInstance host;
+
+		@Override
+		public void setHost(FlexoConceptInstance host) {
+			if (this.host != null && this.host != host) {
+				throw new IllegalStateException("The host of " + this + " is already set");
+			}
+			this.host = host;
+		}
+
+		// An event is a concept as the others: its container is its host, although it is not stored in it. Its container instance is that
+		// host when it is a concept instance, so that every climb of the containment (property access, actors, new) goes through it
+		@Override
+		public FlexoConceptInstance getContainerFlexoConceptInstance() {
+			if (host != null && !(host instanceof VirtualModelInstance)) {
+				return host;
+			}
+			return (FlexoConceptInstance) performSuperGetter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY);
+		}
+
+		@Override
+		public FlexoConceptInstance getContainer() {
+			if (host != null) {
+				return host;
+			}
+			return super.getContainer();
+		}
 
 		@Override
 		public FlexoEvent getFlexoEvent() {

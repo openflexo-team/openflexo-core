@@ -90,18 +90,21 @@ public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVir
 	 * Instantiate and fire a new {@link FlexoConceptInstance} as a Flexo event
 	 *
 	 * @param event
+	 * @param host
+	 *            the host found by the climb of the {@code new}: the {@code container} of the event, which is not registered in it
 	 * @param creationScheme
 	 * @param evaluationContext
 	 * @return
 	 */
-	public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
+	public FlexoEventInstance makeNewEvent(FlexoEvent event, FlexoConceptInstance host, AbstractCreationScheme creationScheme,
 			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	/**
-	 * Instantiate a new {@link FlexoExceptionInstance}, not registered in this instance, to be thrown (CORE-F-11 phase 7)
+	 * Instantiate a new {@link FlexoExceptionInstance}, not registered in this instance nor in its host (its {@code container}), to be
+	 * thrown (CORE-F-11 phase 7)
 	 */
-	public FlexoExceptionInstance makeNewException(FlexoException exception, AbstractCreationScheme creationScheme,
-			RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
+	public FlexoExceptionInstance makeNewException(FlexoException exception, FlexoConceptInstance host,
+			AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException;
 
 	public static abstract class FMLRTVirtualModelInstanceImpl
 			extends VirtualModelInstanceImpl<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> implements FMLRTVirtualModelInstance {
@@ -145,17 +148,17 @@ public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVir
 		}
 
 		@Override
-		public FlexoEventInstance makeNewEvent(FlexoEvent event, AbstractCreationScheme creationScheme,
+		public FlexoEventInstance makeNewEvent(FlexoEvent event, FlexoConceptInstance host, AbstractCreationScheme creationScheme,
 				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
 
-			return getFactory().makeNewEventInstance(event, this, creationScheme, evaluationContext);
+			return getFactory().makeNewEventInstance(event, this, host, creationScheme, evaluationContext);
 
 		}
 
 		@Override
-		public FlexoExceptionInstance makeNewException(FlexoException exception, AbstractCreationScheme creationScheme,
-				RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
-			return getFactory().makeNewExceptionInstance(exception, this, creationScheme, evaluationContext);
+		public FlexoExceptionInstance makeNewException(FlexoException exception, FlexoConceptInstance host,
+				AbstractCreationScheme creationScheme, RunTimeEvaluationContext evaluationContext) throws FMLExecutionException {
+			return getFactory().makeNewExceptionInstance(exception, this, host, creationScheme, evaluationContext);
 		}
 
 	}

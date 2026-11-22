@@ -99,4 +99,16 @@ public class TestContainmentValidation extends OpenflexoTestCase {
 	public void childVM1IsValid() throws Exception {
 		assertEquals(List.of(), containmentIssues(BASE + "TestVirtualModelA2.fml/ChildVM1.fml"));
 	}
+
+	/**
+	 * The fixtures migrated for CORE-D-96, which extended a root concept from outside the root of its VirtualModel: TestMetaData (now
+	 * extending TestCrossReferences1), Library (Publication nested in Shelf with Book), Containment (SubAlpha no longer an Alpha)
+	 */
+	@Test
+	@TestOrder(4)
+	public void fixturesMigratedForCoreD96AreValid() throws Exception {
+		assertEquals(List.of(), containmentIssues(BASE + "TestMetaData.fml"));
+		assertEquals(List.of(), containmentIssues(BASE + "Library.fml"));
+		assertEquals(List.of(), containmentIssues(BASE + "Containment.fml"));
+	}
 }

@@ -27,7 +27,8 @@ import org.openflexo.foundation.fml.VirtualModel;
  * association). It pins what must stay true through that refactoring: containers, inherited containers, URIs, lookup, the pretty-print
  * round trip, adding, deleting and cloning, and the notifications the user interface listens to.
  * It also covers what CORE-F-19 fixed on the way: a root concept extending a nested one stays at the root and is reported by the
- * validation (CORE-D-91, CORE-D-95), and an event or an enum declared inside a concept is kept (CORE-D-86).
+ * validation (CORE-D-91, CORE-D-95), so is a concept extending a root one outside the root of its VirtualModel or of a
+ * VirtualModel extending it (CORE-D-96), and an event or an enum declared inside a concept is kept (CORE-D-86).
  * <p>
  * Some tests replay, on purpose, the call sequences of callers not migrated yet (the deprecated writes {@code addToFlexoConcepts},
  * {@code setContainerFlexoConcept}, {@code addToEmbeddedFlexoConcepts}...): they are rewritten when those aliases are removed, in the
@@ -421,13 +422,75 @@ public class TestConceptContainment {
 		assertTrue(isReported(inRoot1, "Delta"));
 	}
 
+	/**
+	 * CORE-D-96: every ancestor is checked, not only the direct parents. Gamma is reported (root, extends the nested Alpha); Delta extends
+	 * Gamma, declared at the root like Delta, but still inherits from Alpha, whose instances live in a Root1: Delta is reported too
+	 */
 	@Test
-	public void theRuleComparesWithTheDirectContainerOfTheParent() throws Exception {
-		// Gamma is reported (root, extends the nested Alpha). Delta extends Gamma, itself declared at the root: its parent has no direct
-		// container, so Delta is not reported by this rule (CORE-D-96 covers the parents declared at the root)
+	public void everyAncestorIsChecked() throws Exception {
 		VirtualModel vm = withGamma("", "", "	public concept Gamma extends Alpha {\n	}\n	public concept Delta extends Gamma {\n	}");
 		assertTrue(isReported(vm, "Gamma"));
-		assertFalse(isReported(vm, "Delta"));
+		assertTrue(isReported(vm, "Delta"));
+	}
+
+	/** CORE-D-96: the instances of a root concept live in the VirtualModel instance, so a concept extending it is declared at the root */
+	@Test
+	public void conceptNestedAndExtendingARootOneIsReported() throws Exception {
+		VirtualModel vm = withGamma("		public concept Gamma extends Root2 {\n		}", "", "");
+		assertTrue(isReported(vm, "Gamma"));
+		// Root1Sub, at the root, extends the root concept Root1
+		assertFalse(isReported(vm, "Root1Sub"));
+	}
+
+	/** CORE-D-96: a specialisation nested in the concept it extends (a recursive containment) is reported */
+	@Test
+	public void conceptNestedInTheRootConceptItExtendsIsReported() throws Exception {
+		VirtualModel vm = withGamma("", "", "	public concept Other {\n		public concept SubOther extends Other {\n		}\n	}");
+		assertTrue(isReported(vm, "SubOther"));
+	}
+
+	/** The example of §5.1.5 of the FML specification (openflexo-core/spec): keep both in line */
+	@Test
+	public void specificationExampleOfContainment() throws Exception {
+		VirtualModel vm = TestFMLReindent.parse(String.join("\n", //
+				"@URI(\"http://openflexo.org/test/Shop.fml\")", //
+				"public model Shop {", //
+				"	public abstract concept Item {", //
+				"	}", //
+				"	public concept Tool extends Item {", //
+				"	}", //
+				"	public concept Box {", //
+				"		public abstract concept Part {", //
+				"		}", //
+				"		public concept Screw extends Part {", //
+				"		}", //
+				"		public concept Nail extends Item {", //
+				"		}", //
+				"		public concept SubBox extends Box {", //
+				"		}", //
+				"	}", //
+				"}", "")).getVirtualModel();
+		assertFalse(isReported(vm, "Tool"));
+		assertFalse(isReported(vm, "Screw"));
+		assertTrue(isReported(vm, "Nail"));
+		assertTrue(isReported(vm, "SubBox"));
+	}
+
+	private static final String M1 = "@URI(\"http://openflexo.org/test/ModelOne.fml\")\nmodel ModelOne {\n	concept First {\n	}\n}\n";
+	private static final String M2 = "@URI(\"http://openflexo.org/test/ModelTwo.fml\")\nmodel ModelTwo {\n	concept Second {\n	}\n}\n";
+
+	/**
+	 * CORE-D-96: a root concept of M2 extending a root concept of M1 is valid only when M2 extends M1 (the parents are set by hand: the
+	 * two units are parsed apart)
+	 */
+	@Test
+	public void rootConceptExtendingARootConceptOfAnotherVirtualModel() throws Exception {
+		VirtualModel m1 = TestFMLReindent.parse(M1).getVirtualModel();
+		VirtualModel m2 = TestFMLReindent.parse(M2).getVirtualModel();
+		concept(m2, "Second").addToParentFlexoConcepts(concept(m1, "First"));
+		assertTrue(isReported(m2, "Second"));
+		m2.addToParentFlexoConcepts(m1);
+		assertFalse(isReported(m2, "Second"));
 	}
 
 	/**

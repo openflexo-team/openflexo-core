@@ -84,11 +84,6 @@ public model Library {
 		}
 	}
 
-	public abstract concept Publication {
-
-		abstract String code;
-	}
-
 	public concept Shelf {
 
 		String label;
@@ -176,6 +171,11 @@ public model Library {
 			delete book;
 		}
 
+		public abstract concept Publication {
+
+			abstract String code;
+		}
+
 		public concept Book extends Publication {
 
 			String title;
@@ -235,7 +235,7 @@ public model Library {
 | `while (filled < capacity)` | loop | §8.5 |
 | `book instanceof Novel` | type test | §9.9 |
 | `delete book;` | deletion | §10.4 |
-| `public concept Book extends Publication` | nesting and inheritance | §5.2.1, §5.3 |
+| `public concept Book extends Publication` | nesting and inheritance (`Publication` is nested in `Shelf`, as `Book`) | §5.1.5, §5.2.1, §5.3 |
 | `super(title)` | parent creation scheme | §5.3.2 |
 | `title` | argument access | §7.2.1 |
 

@@ -75,6 +75,8 @@ import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourArgument;
 import org.openflexo.foundation.fml.FMLContainerResolver;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoEvent;
+import org.openflexo.foundation.fml.FlexoException;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -950,6 +952,15 @@ public interface CreationSchemePathElement<CS extends AbstractCreationScheme>
 				FMLExecutionException, InvocationTargetTransformException {
 
 			if (getCreationScheme() == null) {
+				// An event or an exception with no creation scheme is still an event or an exception, not stored in its host
+				if (getFlexoConcept() instanceof FlexoEvent) {
+					return ((FMLRTVirtualModelInstance) vmInstance).makeNewEvent((FlexoEvent) getFlexoConcept(), containerFCI, null,
+							vmInstance);
+				}
+				if (getFlexoConcept() instanceof FlexoException) {
+					return ((FMLRTVirtualModelInstance) vmInstance).makeNewException((FlexoException) getFlexoConcept(), containerFCI, null,
+							vmInstance);
+				}
 				return ((FMLRTVirtualModelInstance) vmInstance).makeNewFlexoConceptInstance(getFlexoConcept(), containerFCI, null,
 						vmInstance);
 
