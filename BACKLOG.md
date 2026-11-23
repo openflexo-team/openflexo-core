@@ -584,7 +584,7 @@ is a dependency to take into account.
 
 > This has been analyzed as a design issue (for example for DropScheme management in Diagram TA) and should be refactored.
 
-### CORE-F-19 — A single container/contents association for FlexoConcepts  ·  `IN PROGRESS`
+### CORE-F-19 — A single container/contents association for FlexoConcepts  ·  `DONE`
 
 **GitHub:** [openflexo-team/openflexo-core#132](https://github.com/openflexo-team/openflexo-core/issues/132)
 
@@ -718,9 +718,17 @@ is a possible follow-up.
   `getContainerFlexoConcept()`, `getEmbeddedFlexoConcepts()`, `getEmbeddedFlexoConcept(String)`, read by many `.fib` bindings.
   The review of phase 5 proved the finding of phase 3b (`PAMELA-D-9`, fixed); `TestConceptContainment.aMovedConceptCanBeRemovedAndDeleted`
   covers it.
-- Left before `DONE` (decided with the user): a check in the application (browsers after creating a root and a nested concept, a move
-  with the inspector then a deletion and its undo, drag and drop, save, close and reopen). The container selector not applying the
-  rule of `CORE-D-95` is now `UI-F-4` (openflexo-ui).
+- Checked in the application by the user (2026-11-23, Maintainer): no defect left.
+
+**Resolution (2026-11-23).** A concept has one composite parent: `container` ↔ `contents`, lexical (its enclosing concept, or its
+VirtualModel for a root concept). The owner, the flat list (`VirtualModel.getAllFlexoConcepts()`), the enclosing concept and the
+nested concepts are derived from it; the former duplicated API, the `inside` clause and the inherited container are removed.
+Decided on the way: a concept extending a nested one is declared in the container of its parent (`CORE-D-95`, `CORE-D-96`, a
+validation error otherwise, the only report); the derived reads `getOwner()`, `getContainerFlexoConcept()`,
+`getEmbeddedFlexoConcepts()` stay. Found and fixed on the way: `CORE-D-86`, `CORE-D-91`..`CORE-D-93`, `CORE-D-95`, `CORE-D-96`,
+`PAMELA-D-7`, `PAMELA-D-8`, `PAMELA-D-9`, `DIAGRAM-D-5`. Left: `UI-F-4` (openflexo-ui, the container choice does not apply the
+containment rule), `CORE-D-97`; not covered, as planned: VirtualModel-in-VirtualModel containment and the runtime
+`FlexoConceptInstance` model.
 
 ## Resources
 

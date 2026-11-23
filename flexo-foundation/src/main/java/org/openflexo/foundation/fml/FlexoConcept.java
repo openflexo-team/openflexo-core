@@ -3410,29 +3410,78 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public ValidationIssue<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			FlexoConcept declaredContainer = flexoConcept.getContainer();
-			for (FlexoConcept ancestor : allAncestors(flexoConcept)) {
-				// The container of a VirtualModel is null: a VirtualModel extending another one is not concerned by this rule
-				FlexoConcept ancestorContainer = ancestor.getContainer();
-				if (ancestorContainer != null && !ancestorContainer.isSuperConceptOf(declaredContainer)) {
-					return new ValidationError<>(this, flexoConcept,
-							"concept_($validable.name)_must_be_contained_in_a_subtype_of_the_container_of_its_parents");
-				}
+			if (!acceptsContainer(allAncestors(flexoConcept.getParentFlexoConcepts(), flexoConcept), flexoConcept.getContainer())) {
+				return new ValidationError<>(this, flexoConcept,
+						"concept_($validable.name)_must_be_contained_in_a_subtype_of_the_container_of_its_parents");
 			}
 			return null;
 		}
 
-		/** The parents of the concept, transitively, each once, without the concept itself (an inheritance cycle is not followed) */
-		private static Set<FlexoConcept> allAncestors(FlexoConcept flexoConcept) {
+		/**
+		 * Tells whether a concept having the supplied parents may be declared in <code>container</code>: the container is a subtype of
+		 * the container of each ancestor (the parents, transitively). This is the rule this validation applies, for an editor choosing the
+		 * container of a concept still to be created (UI-F-4).
+		 */
+		public static boolean isAcceptableContainerForParents(Collection<? extends FlexoConcept> parents, FlexoConcept container) {
+			return acceptsContainer(allAncestors(parents, null), container);
+		}
+
+		/**
+		 * Tells whether the concept may be moved into <code>container</code> without breaking this rule: for the concept itself (see
+		 * {@link #isAcceptableContainerForParents(Collection, FlexoConcept)}), and for each concept extending it, transitively, whose container
+		 * must stay a subtype of the new container of its ancestor (UI-F-4)
+		 */
+		public static boolean isAcceptableContainer(FlexoConcept concept, FlexoConcept container) {
+			if (!acceptsContainer(allAncestors(concept.getParentFlexoConcepts(), concept), container)) {
+				return false;
+			}
+			for (FlexoConcept descendant : allDescendants(concept)) {
+				FlexoConcept descendantContainer = descendant.getContainer();
+				if (descendantContainer != null && (container == null || !container.isSuperConceptOf(descendantContainer))) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		private static boolean acceptsContainer(Set<FlexoConcept> ancestors, FlexoConcept container) {
+			for (FlexoConcept ancestor : ancestors) {
+				// The container of a VirtualModel is null: a VirtualModel extending another one is not concerned by this rule
+				FlexoConcept ancestorContainer = ancestor.getContainer();
+				if (ancestorContainer != null && (container == null || !ancestorContainer.isSuperConceptOf(container))) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		/** The supplied parents and their parents, transitively, each once, without <code>exclude</code> (an inheritance cycle is not followed) */
+		private static Set<FlexoConcept> allAncestors(Collection<? extends FlexoConcept> parents, FlexoConcept exclude) {
 			Set<FlexoConcept> ancestors = new LinkedHashSet<>();
-			Deque<FlexoConcept> toVisit = new ArrayDeque<>(flexoConcept.getParentFlexoConcepts());
+			Deque<FlexoConcept> toVisit = new ArrayDeque<>();
+			if (parents != null) {
+				toVisit.addAll(parents);
+			}
 			while (!toVisit.isEmpty()) {
 				FlexoConcept concept = toVisit.pop();
-				if (concept != null && concept != flexoConcept && ancestors.add(concept)) {
+				if (concept != null && concept != exclude && ancestors.add(concept)) {
 					toVisit.addAll(concept.getParentFlexoConcepts());
 				}
 			}
 			return ancestors;
+		}
+
+		/** The concepts extending the concept, transitively, each once, without the concept itself */
+		private static Set<FlexoConcept> allDescendants(FlexoConcept flexoConcept) {
+			Set<FlexoConcept> descendants = new LinkedHashSet<>();
+			Deque<FlexoConcept> toVisit = new ArrayDeque<>(flexoConcept.getChildFlexoConcepts());
+			while (!toVisit.isEmpty()) {
+				FlexoConcept concept = toVisit.pop();
+				if (concept != null && concept != flexoConcept && descendants.add(concept)) {
+					toVisit.addAll(concept.getChildFlexoConcepts());
+				}
+			}
+			return descendants;
 		}
 
 		/*@Override

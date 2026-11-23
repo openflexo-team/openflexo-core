@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConcept.ContainerFlexoConceptMustBeConsistentWithParents;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -459,6 +460,32 @@ public class TestConceptContainment {
 		VirtualModel vm = withGamma("", "", "	public concept Gamma extends Alpha {\n	}\n	public concept Delta extends Gamma {\n	}");
 		assertTrue(isReported(vm, "Gamma"));
 		assertTrue(isReported(vm, "Delta"));
+	}
+
+	/**
+	 * UI-F-4: the rule, offered to an editor choosing a container. For a concept to create extending Alpha (nested in Root1): Root1 or
+	 * Root1Sub. For a move: the ancestors and the descendants of the moved concept
+	 */
+	@Test
+	public void theRuleTellsWhichContainersAreAcceptable() throws Exception {
+		VirtualModel vm = withGamma("		public concept Gamma extends Alpha {\n		}", "", "");
+		FlexoConcept alpha = concept(vm, "Alpha");
+		FlexoConcept root1 = concept(vm, "Root1");
+		FlexoConcept root1Sub = concept(vm, "Root1Sub");
+		FlexoConcept root2 = concept(vm, "Root2");
+		assertTrue(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainerForParents(List.of(alpha), root1));
+		assertTrue(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainerForParents(List.of(alpha), root1Sub));
+		assertFalse(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainerForParents(List.of(alpha), root2));
+		assertFalse(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainerForParents(List.of(alpha), vm));
+		assertTrue(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainerForParents(List.of(), root2));
+		// Gamma extends Alpha: it may go into Root1Sub, not into Root2
+		FlexoConcept gamma = concept(vm, "Gamma");
+		assertTrue(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainer(gamma, root1Sub));
+		assertFalse(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainer(gamma, root2));
+		// Alpha has a descendant in Root1: it stays in Root1, and may not go into Root1Sub (a specialization of Root1) nor Root2
+		assertFalse(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainer(alpha, root1Sub));
+		assertFalse(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainer(alpha, root2));
+		assertTrue(ContainerFlexoConceptMustBeConsistentWithParents.isAcceptableContainer(alpha, root1));
 	}
 
 	/** CORE-D-96: the instances of a root concept live in the VirtualModel instance, so a concept extending it is declared at the root */

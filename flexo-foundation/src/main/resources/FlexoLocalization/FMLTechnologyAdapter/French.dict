@@ -309,6 +309,7 @@ target_role=R\u00f4le cible
 template=Mod\u00e8le
 template_diagram=Diagramme mod\u00e8le
 text_bindings=Liaisons de texte
+the_container_must_be_a_subtype_of_the_container_of_each_parent_concept=Le conteneur doit \u00EAtre celui de chaque concept parent, ou une sp\u00E9cialisation de celui-ci
 this_name_is_already_used_please_choose_an_other_one=Ce nom est d\u00e9j\u00e0 utilis\u00e9 : veuillez en choisir un autre
 this_type_is_already_defined=Ce type est d\u00e9j\u00e0 d\u00e9fini
 this_type_name_is_already_used=Ce nom de type est d\u00e9j\u00e0 utilis\u00e9

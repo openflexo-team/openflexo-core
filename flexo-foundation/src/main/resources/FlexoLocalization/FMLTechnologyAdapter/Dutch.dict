@@ -309,6 +309,7 @@ target_role=Doelrol
 template=Sjabloon
 template_diagram=Sjabloondiagram
 text_bindings=Tekstkoppelingen
+the_container_must_be_a_subtype_of_the_container_of_each_parent_concept=De container moet de container van elk ouderconcept zijn, of een specialisatie ervan
 this_name_is_already_used_please_choose_an_other_one=Deze naam is al in gebruik: kies een andere
 this_type_is_already_defined=Dit type is al gedefinieerd
 this_type_name_is_already_used=Deze typenaam is al in gebruik
