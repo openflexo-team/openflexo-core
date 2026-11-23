@@ -1,0 +1,57 @@
+/**
+ * A bare call to a behaviour (without `this.`), from a behaviour of the same concept, of a sub-concept, or of the model.
+ * See KnownDefects/CORE-D-80.fmlscript.
+ */
+@URI("http://openflexo.org/test/TestResourceCenter/KDBareCall.fml")
+public model KDBareCall {
+
+	public String modelFoo() {
+		return "model";
+	}
+
+	public String modelBare() {
+		return modelFoo();
+	}
+
+	public String modelThis() {
+		return this.modelFoo();
+	}
+
+	public Foo makeFoo() {
+		return new Foo();
+	}
+
+	public SubFoo makeSubFoo() {
+		return new SubFoo();
+	}
+
+	public concept Foo {
+
+		public String foo() {
+			return "foo";
+		}
+
+		public String echo(String s) {
+			return s;
+		}
+
+		public String bare() {
+			return foo();
+		}
+
+		public String bareWithArgument() {
+			return echo("x");
+		}
+
+		public String viaThis() {
+			return this.foo();
+		}
+	}
+
+	public concept SubFoo extends Foo {
+
+		public String bareInherited() {
+			return foo();
+		}
+	}
+}

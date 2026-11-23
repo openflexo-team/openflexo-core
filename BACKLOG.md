@@ -99,7 +99,7 @@ no longer falls back on the first action scheme.)
 
 **Related.** Fix together with `CORE-D-1` and `CORE-D-2` (see [`KNOWN_DEFECTS.md`](./KNOWN_DEFECTS.md)).
 
-### CORE-F-5 — Single identifier token in the FML grammar  ·  `DEFERRED`
+### CORE-F-5 — Single identifier token in the FML grammar  ·  `TODO`
 
 **GitHub:** [openflexo-team/openflexo-core#119](https://github.com/openflexo-team/openflexo-core/issues/119)
 
@@ -114,6 +114,9 @@ semantically (no generic/array casts, `(Foo) -x` not a cast), no assignment in c
 expression instead of a type, escaped identifiers as a single token.
 
 **Deferred to 3.0**, together with the Java adaptation (~17 files in `fml-parser`, plus `fml-cli`).
+
+**Taken up again (2026-11-23)** for 3.0. To be discussed before implementation: which of the four language changes are accepted, and the
+migration of existing `.fml`.
 
 **Acceptance criteria.**
 - `fml.sablecc` has a single identifier token; SableCC reports no conflict.
@@ -265,6 +268,100 @@ tree. `p.new X()` is as strict: the type of `p` must be compatible as it is.
 sibling, `p.new ConceptA()` with `p` typed `ConceptB` is valid; the nearest ancestor wins when a concept can contain itself; a concept with no
 reachable container is rejected with a message naming the types climbed; round trip of the pretty-print unchanged; a saved and reloaded
 instance keeps its container; the existing `.fml` and the tests of `fml-cli-test`, `flexo-foundation-test` and `fml-parser` unchanged in behaviour.
+
+### CORE-F-20 — Lambda expressions in FML  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#140](https://github.com/openflexo-team/openflexo-core/issues/140)
+
+**Problem.** FML has no way to write an anonymous function. Behaviour that depends on a small piece of logic (a predicate, a key
+extractor, a callback) must either be hard-wired into a dedicated construct such as `select … where`, or be written as a named behaviour
+and referred to by name. The language therefore cannot express, at the point of use, "apply this computation to each element" or "call
+this when it is done", and cannot pass logic as a value to a behaviour or to a technology-adapter action.
+
+Verified on the current `3.0` branch: `fml.sablecc` has no lambda syntax and no function type, and no existing backlog entry covers it.
+
+**Goal.** Integrate lambda expressions into FML: an anonymous function that can be written inline, typed, evaluated, and passed or
+stored like any other value.
+
+**Open questions.** Nothing is decided yet; the design is part of this entry.
+- Scope: expression lambdas only (`x -> x.age > 18`), or also block lambdas with several statements and `return`? Must this live in FML
+  only, or also in Connie expressions (in which case a linked `CONNIE-F-` entry is needed)?
+- Use cases to cover first: predicates and mappers over collections (`select … where`, filter, map, sort), callbacks passed to
+  behaviours or technology-adapter actions, function-typed variables and properties.
+- Syntax: Java-like `(a, b) -> expr`, or another form. Must not clash with existing tokens of `fml.sablecc`.
+- Typing: explicit or inferred parameter types; a function type in the FML type system, or reuse of Java functional interfaces with
+  implicit conversion; inference of the return type.
+- Capture: access to the variables, parameters and `this` of the enclosing behaviour; read-only or read/write.
+- Runtime errors: a failure inside a lambda should follow the rules of `CORE-F-11` (FML stack frames, `FMLFailureTunnel` where a
+  signature cannot declare the exception).
+- Persistence: a PAMELA entity for the lambda, and a stable round trip parse → pretty-print → parse.
+- Tooling: FML editor support (colouring, completion, validation) in this entry or a follow-up.
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- The grammar parses lambdas and the generated parser is regenerated.
+- A lambda evaluates correctly, with its captured variables.
+- Parameter and return types are checked, and a binding with a type error is reported as invalid.
+- The pretty-print round trip is stable.
+- An `fmlscript` test proves a representative example by running it.
+- Failures raised in a lambda carry their FML stack.
+
+**Related.** `CORE-F-11` (typed FML runtime errors).
+
+### CORE-F-21 — Anonymous element in the where clause of select, fetch requests and match  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#141](https://github.com/openflexo-team/openflexo-core/issues/141)
+
+**Problem.** In the `where` clause of a `select`, of a fetch request or of a `match`, the element being tested is designated by a predefined variable named `selected`:
+
+    select Foo from (container) where (selected.name == "x")
+
+The name is not discoverable. Nothing in the text introduces it: it denotes the lexical context of the candidate element being tested, and an author has to know it by heart. It reads as an ordinary variable while it is not one.
+
+Verified on the current `3.0` branch: `selected` is a binding variable created by `FetchRequestConditionSelectedBindingVariable` and `MatchConditionSelectedBindingVariable` (flexo-foundation), typed by the fetched type or by the matched concept. The grammar of the clause is `where_clause = kw_where l_par argument_list? r_par` (`fml.sablecc`). The test and example `.fml` files use `where (selected.name = "toto")` throughout.
+
+**Goal.** Let the author write the condition without naming the element: an anonymous way of referring to the candidate, so that nothing has to be guessed.
+
+**Open questions.** Nothing is decided yet; the design is part of this entry.
+- Syntax of the anonymous reference: a leading dot (`where (.name == "x")`), a bare property name (`where (name == "x")`, resolved on the candidate type), or another form. How is a leading dot disambiguated in the grammar, and how does a bare name interact with variables of the enclosing behaviour that have the same name?
+- Compatibility: does `selected` remain valid, or is it deprecated with a migration message (as `=` is in `CORE-F-17`)? Are the existing `.fml` migrated?
+- Scope: `select` and fetch requests only, or also `begin match … where`? The left-hand side of a `match` where is already a property of the matched concept (`where (w = wr)`), which this must not break.
+- Nesting: how to designate the outer candidate when a `where` contains another `select` (keep `selected` as the explicit name, or bind the anonymous reference to the nearest one).
+- Lexical context: `this`, parameters and local variables must stay accessible inside the clause.
+- Tooling and documentation: completion of the candidate's properties after the dot in the FML editor, and the page of the FML specification that describes `where`, in this entry or a follow-up.
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- The grammar parses the anonymous form; the generated parser is regenerated.
+- The anonymous reference is resolved on the type of the candidate, and an unknown property is reported as an invalid binding.
+- The existing form with `selected` keeps its meaning, or is deprecated with a documented migration, as decided.
+- The pretty-print round trip is stable.
+- An `fmlscript` test proves select, fetch request and match examples by running them.
+
+**Related.** `CORE-F-17` (align the syntax of `match` and `select`), which changes the same `where` clause.
+
+### CORE-F-22 — Evaluate edition actions as expressions of the FML grammar  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#142](https://github.com/openflexo-team/openflexo-core/issues/142)
+
+**Problem.** In the FML grammar, an edition action is not an expression. The actions (`TA::Action(...)`, `select`, `delete`, `connect`, `log`, `fire`, `notify`, `begin match` / `match` / `end match`) belong to a separate production, `fml_action_exp`, and are accepted only in a few places: as the right-hand side of an assignment, as the initializer of a variable, after `return`, as the iterated collection of `for (T x : …)`, and as a statement on their own. They cannot be composed with the rest of an expression, and cannot be an element of a binding path.
+
+Verified on the current `3.0` branch: `fml.sablecc` declares `fml_action_exp` apart from `expression`. In the expression grammar, `new_instance` is accepted, but the alternative `{fml_action_expression} fml_action_exp` is present and commented out. The reason it was disabled has not been established.
+
+**Goal.** Evaluate whether an edition action can be a valid expression, composable as a `BindingPathElement`, instead of being handled as a separate category, and decide whether to do it.
+
+This is an evaluation entry: the expected result is a decision backed by a study, then, if the answer is yes, follow-up entries for the work. The potential impact is large.
+
+**Open questions.** Nothing is decided yet.
+- Motivation and use cases: what expressions should become writable (composing a result, passing an action as an argument, simplifying the model with one hierarchy instead of two). A before/after FML example is to be written.
+- Scope: all actions, or only those that produce a value (technology adapter actions, `select`, `new`). Do the purely imperative ones (`log`, `fire`, `notify`, `delete`, `connect`, `match`) remain statements?
+- Metamodel: does `EditionAction` become a `BindingPathElement` (a change that reaches flexo-foundation and Connie), or does only the grammar change while the model stays as it is?
+- Evaluation semantics: an expression can be evaluated several times (listeners, validation, type checking) while an action has side effects (creation, deletion). How is an unwanted execution avoided?
+- Impacts to inventory: LALR(1) conflicts in the grammar, the pretty-print, persistence, validation and type inference of an action, the FML editor, `fml-cli`, the technology adapters (about 66 actions), and the migration of existing `.fml`.
+- Whether the change is breaking for existing FML.
+
+**Acceptance criteria.**
+- A report that states the feasibility, the options and a recommendation, with the list of impacts above filled in.
+- A prototype grammar that generates with no SableCC conflict and parses the corpus of `.fml` and `.fmlscript` files of the workspace as before, or the reasons why it cannot.
+- A decision recorded in this entry (go, no-go, or a scoped subset), with the follow-up entries created for the work.
 
 ---
 

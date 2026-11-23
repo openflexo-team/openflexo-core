@@ -523,21 +523,23 @@ Measured in the same model: with the string in a local variable, `String s = "ab
 
 ---
 
-### CORE-D-80 — A bare call to a behaviour of the virtual model, from a behaviour of the same virtual model, is not resolved  ·  `TODO`
+### CORE-D-80 — A bare call to a behaviour of the same concept or model is not resolved  ·  `TODO`
 
 **GitHub:** [openflexo-team/openflexo-core#47](https://github.com/openflexo-team/openflexo-core/issues/47)
 
-**Symptom (verified 2026-11-14 by execution, fixture `ExecutionFailures`, script `ExecutionStack/NestedFailure.fmlscript`).** In
-`public int nested() { return middle(); }`, with `middle()` a behaviour of the same model, the binding `middle()` stays invalid ("unresolved
-path element middle()", `cannot find parent for JavaInstanceMethodPathElement:middle()` at load). At runtime the call gives null without
-any error, so the caller goes on: here `nested()` returned without running `middle()`. The order of declaration does not matter (callee declared
-before or after the caller, same result). `return this.middle();` is resolved and runs. In a concept, a bare call to a behaviour of the
-same concept is resolved (`NameLookup`, `bareCall()` → `twin()`). Not checked: where the resolution of a bare call looks for the behaviour
-(binding model of a virtual model versus a concept). Since `CORE-F-11` phase 3 the call is no longer a silent null: evaluating the invalid
-binding is an `FMLResolutionError`. Seen then: in a concept too, `NameLookup.bareCall()` does not resolve (`ErrorKinds/BareCall`), contrary to
-what is written above.
+**Symptom (verified 2026-11-23 by execution, fixture `KDBareCall`, script `KnownDefects/CORE-D-80.fmlscript`).** A behaviour cannot call another behaviour of the same concept or of the same model without writing `this.`: the bare call `foo()` is an invalid binding, `unresolved path element foo()`, and evaluating it is an `FMLResolutionError` (since `CORE-F-11` phase 3; before, a silent null).
 
-**Workaround.** Write `this.middle()`.
+Fails, bare call:
+- in a concept, to a behaviour of the same concept: `bar() { return foo(); }`;
+- in a concept, with an argument: `echo("x")`;
+- in a sub-concept, to a behaviour inherited from its parent;
+- in a model, to a behaviour of the same model: `return middle();` (original case, verified 2026-11-14, `ExecutionStack/NestedFailure.fmlscript`).
+
+Works: the same calls written `this.foo()`; and the bare access to a property (`name` for `this.name`, fixture `NameLookup`).
+
+An earlier version of this entry said that a bare call is resolved in a concept: that was wrong (`ErrorKinds/BareCall` already showed the failure). Not checked: where the resolution of a bare call looks for the behaviour (binding model of a concept versus a model), and the priority between a local variable, a property and a behaviour of the same name.
+
+**Workaround.** Write `this.foo()`.
 
 ## FML-script
 

@@ -1,0 +1,17 @@
+// CORE-D-80: a bare call to a behaviour of the same concept, of a parent concept or of the same model is an invalid binding: foo() must read as this.foo().
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDBareCall.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDBareCall() with (name="kd");
+foo = vmi.makeFoo();
+sub = vmi.makeSubFoo();
+// the same calls written with this. work
+assert foo.viaThis() == "foo";
+assert vmi.modelThis() == "model";
+// bare call to a behaviour of the same concept
+assert foo.bare() == "foo";
+// ... with an argument
+assert foo.bareWithArgument() == "x";
+// ... to a behaviour inherited from the parent concept
+assert sub.bareInherited() == "foo";
+// bare call to a behaviour of the same model
+assert vmi.modelBare() == "model";
