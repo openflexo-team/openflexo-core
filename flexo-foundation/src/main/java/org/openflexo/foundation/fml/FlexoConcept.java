@@ -273,14 +273,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public VirtualModel getOwner();
 
-	/**
-	 * @deprecated CORE-F-19: the owner is derived from the container, use {@link #setContainer(FlexoConcept)}. Makes this concept a root
-	 *             concept of the supplied {@link VirtualModel}, or detaches it for null; does nothing when it is already declared in
-	 *             that {@link VirtualModel}, at any depth.
-	 */
-	@Deprecated
-	public void setOwner(VirtualModel virtualModel);
-
 	@Override
 	@Getter(value = NAME_KEY)
 	public String getName();
@@ -315,41 +307,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public FlexoConcept getContainerFlexoConcept();
 
 	/**
-	 * Moves this concept into the supplied concept, or, for null, to the root of its {@link VirtualModel}.
-	 *
-	 * A concept extending a nested concept is declared in the container of its parent, or in a subtype of it (see
-	 * {@link ContainerFlexoConceptMustBeConsistentWithParents}): declaring it at the root is a validation error.
-	 *
-	 * @deprecated CORE-F-19: use {@link #setContainer(FlexoConcept)}
-	 */
-	@Deprecated
-	public void setContainerFlexoConcept(FlexoConcept container);
-
-
-
-
-	/**
 	 * Return the concepts declared in this concept, whose {@link #getContainerFlexoConcept()} is this concept: its {@link #getContents()},
 	 * except for a {@link VirtualModel}, for which it is always empty (its root concepts have no enclosing concept). Derived from
 	 * {@link #getContents()}.
 	 */
 	public List<FlexoConcept> getEmbeddedFlexoConcepts();
-
-	/** @deprecated CORE-F-19: use {@link #setContents(List)} */
-	@Deprecated
-	public void setEmbeddedFlexoConcepts(List<FlexoConcept> flexoConcepts);
-
-	/** @deprecated CORE-F-19: use {@link #addToContents(FlexoConcept)} */
-	@Deprecated
-	public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
-
-	/** @deprecated CORE-F-19: use {@link #removeFromContents(FlexoConcept)} */
-	@Deprecated
-	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
-
-	/** @deprecated CORE-F-19: use {@link #moveContentToIndex(FlexoConcept, int)} */
-	@Deprecated
-	public void moveEmbeddedFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
 	/**
 	 * Return the concept of {@link #getEmbeddedFlexoConcepts()} with the supplied name, or null
@@ -2474,15 +2436,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return container.getOwner();
 		}
 
-		@Override
-		@Deprecated
-		public void setOwner(VirtualModel virtualModel) {
-			if (virtualModel == getOwner()) {
-				return;
-			}
-			setContainer(virtualModel);
-		}
-
 		// Not persisted: true while setContainer() runs, see below
 		private boolean isSettingContainer = false;
 
@@ -2581,48 +2534,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		@Deprecated
-		public void setContainerFlexoConcept(FlexoConcept aConcept) {
-			if (aConcept != null) {
-				setContainer(aConcept);
-			}
-			else if (getContainerFlexoConcept() != null) {
-				// Back to the root of its VirtualModel
-				setContainer(getOwner());
-			}
-		}
-
-		@Override
 		public List<FlexoConcept> getEmbeddedFlexoConcepts() {
 			return getContents();
-		}
-
-		@Override
-		@Deprecated
-		public void setEmbeddedFlexoConcepts(List<FlexoConcept> flexoConcepts) {
-			setContents(flexoConcepts);
-		}
-
-		@Override
-		@Deprecated
-		public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
-			if (!getContents().contains(aFlexoConcept)) {
-				addToContents(aFlexoConcept);
-			}
-		}
-
-		@Override
-		@Deprecated
-		public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
-			if (getContents().contains(aFlexoConcept)) {
-				removeFromContents(aFlexoConcept);
-			}
-		}
-
-		@Override
-		@Deprecated
-		public void moveEmbeddedFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index) {
-			moveContentToIndex(aFlexoConcept, index);
 		}
 
 		@Override

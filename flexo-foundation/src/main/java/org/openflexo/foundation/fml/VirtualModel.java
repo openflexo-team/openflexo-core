@@ -133,10 +133,6 @@ public interface VirtualModel extends FlexoConcept {
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String VERSION_KEY = "version";
 	/**
-	 * Not a stored property any more (CORE-F-19): still notified, when a concept is added to or removed from the tree of the concepts
-	 */
-	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
-	/**
 	 * Name of the derived property {@link #getAllFlexoConcepts()}: notified when a concept is added to or removed from the tree of the
 	 * concepts (the property "contents" of each container is notified by PAMELA)
 	 */
@@ -188,36 +184,6 @@ public interface VirtualModel extends FlexoConcept {
 	 * {@link #getContents()}) first, then the concepts nested in each of them, depth first. Derived: a new list at each call.
 	 */
 	public List<FlexoConcept> getAllFlexoConcepts();
-
-	/**
-	 * @deprecated CORE-F-19: use {@link #getAllFlexoConcepts()} for every concept, or {@link #getContents()} for the root ones
-	 */
-	@Deprecated
-	public List<FlexoConcept> getFlexoConcepts();
-
-	/** @deprecated CORE-F-19: use {@link #setContents(List)} */
-	@Deprecated
-	public void setFlexoConcepts(List<FlexoConcept> flexoConcepts);
-
-	/**
-	 * Adds the concept as a root concept of this {@link VirtualModel}, unless it is already declared in it (at any depth)
-	 * 
-	 * @deprecated CORE-F-19: use {@link #addToContents(FlexoConcept)}
-	 */
-	@Deprecated
-	public void addToFlexoConcepts(FlexoConcept aFlexoConcept);
-
-	/**
-	 * Removes the concept from its container, when it is declared in this {@link VirtualModel} (at any depth)
-	 * 
-	 * @deprecated CORE-F-19: use {@link #removeFromContents(FlexoConcept)} on its container
-	 */
-	@Deprecated
-	public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept);
-
-	/** @deprecated CORE-F-19: use {@link #moveContentToIndex(FlexoConcept, int)} */
-	@Deprecated
-	public void moveFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
 	// TODO: desambiguate this method while proposing two methods: getFlexoConceptNamed() and getFlexoConceptWithURI()
 	/**
@@ -771,45 +737,6 @@ public interface VirtualModel extends FlexoConcept {
 			}
 		}
 
-		@Override
-		@Deprecated
-		public List<FlexoConcept> getFlexoConcepts() {
-			return getAllFlexoConcepts();
-		}
-
-		@Override
-		@Deprecated
-		public void setFlexoConcepts(List<FlexoConcept> flexoConcepts) {
-			setContents(flexoConcepts);
-		}
-
-		@Override
-		@Deprecated
-		public void addToFlexoConcepts(FlexoConcept aFlexoConcept) {
-			if (aFlexoConcept.getOwner() == this && aFlexoConcept.getContainer() != null) {
-				// Already declared in this VirtualModel
-				return;
-			}
-			addToContents(aFlexoConcept);
-		}
-
-		@Override
-		@Deprecated
-		public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept) {
-			FlexoConcept container = aFlexoConcept.getContainer();
-			if (container != null && aFlexoConcept.getOwner() == this) {
-				container.removeFromContents(aFlexoConcept);
-			}
-		}
-
-		@Override
-		@Deprecated
-		public void moveFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index) {
-			if (aFlexoConcept.getContainer() == this) {
-				moveContentToIndex(aFlexoConcept, index);
-			}
-		}
-
 		/**
 		 * The concepts of a {@link VirtualModel} are its contents: no concept is embedded in a {@link VirtualModel} in the sense of
 		 * {@link FlexoConcept#getContainerFlexoConcept()}
@@ -821,7 +748,6 @@ public interface VirtualModel extends FlexoConcept {
 
 		@Override
 		protected void notifiedConceptsOfVirtualModelChanged(FlexoConcept removed, FlexoConcept added) {
-			getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPTS_KEY, removed, added);
 			getPropertyChangeSupport().firePropertyChange(ALL_FLEXO_CONCEPTS_KEY, removed, added);
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", removed, added);
 			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", removed, added);

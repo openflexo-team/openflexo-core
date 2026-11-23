@@ -30,9 +30,7 @@ import org.openflexo.foundation.fml.VirtualModel;
  * validation (CORE-D-91, CORE-D-95), so is a concept extending a root one outside the root of its VirtualModel or of a
  * VirtualModel extending it (CORE-D-96), and an event or an enum declared inside a concept is kept (CORE-D-86).
  * <p>
- * Some tests replay, on purpose, the call sequences of callers not migrated yet (the deprecated writes {@code addToFlexoConcepts},
- * {@code setContainerFlexoConcept}, {@code addToEmbeddedFlexoConcepts}...): they are rewritten when those aliases are removed, in the
- * last phase of CORE-F-19. {@link #allConcepts(VirtualModel)} is the one place that reads the list of all concepts.
+ * The tests write the containment as the callers do: {@code setContainer}, or {@code addToContents} of the container.
  */
 public class TestConceptContainment {
 
@@ -203,7 +201,7 @@ public class TestConceptContainment {
 		assertEquals(normalized, leaf, normalized.lastIndexOf("concept Leaf"));
 	}
 
-	/** What CreateFlexoConcept does: add to the VirtualModel, then set the container */
+	/** What CreateFlexoConcept does: add to the contents of the container */
 	@Test
 	public void addingANestedConcept() throws Exception {
 		FMLCompilationUnit unit = TestFMLReindent.parse(NESTED);
@@ -218,8 +216,7 @@ public class TestConceptContainment {
 		FMLModelFactory factory = unit.getFMLModelFactory();
 		FlexoConcept added = factory.newFlexoConcept();
 		added.setName("Added");
-		vm.addToFlexoConcepts(added);
-		added.setContainerFlexoConcept(alpha);
+		alpha.addToContents(added);
 
 		vm.getPropertyChangeSupport().removePropertyChangeListener(vmListener);
 		alpha.getPropertyChangeSupport().removePropertyChangeListener(alphaListener);
@@ -260,8 +257,8 @@ public class TestConceptContainment {
 		root2.getPropertyChangeSupport().addPropertyChangeListener(listener);
 		inner.getPropertyChangeSupport().addPropertyChangeListener(listener);
 
-		// root -> nested (the inspector, CreateFlexoConcept with a container)
-		root2.setContainerFlexoConcept(root1);
+		// root -> nested (the inspector)
+		root2.setContainer(root1);
 		assertSame(root1, root2.getContainer());
 		assertEquals(List.of(concept(vm, "Alpha"), concept(vm, "Beta"), root2), root1.getEmbeddedFlexoConcepts());
 		assertFalse(vm.getContents().contains(root2));
@@ -273,15 +270,13 @@ public class TestConceptContainment {
 
 		// nested -> nested (drag and drop: FMLFIBController.moveFlexoConcept)
 		FlexoConcept alpha = concept(vm, "Alpha");
-		vm.removeFromFlexoConcepts(root2);
-		vm.addToFlexoConcepts(root2);
-		alpha.addToEmbeddedFlexoConcepts(root2);
+		root2.setContainer(alpha);
 		assertSame(alpha, root2.getContainer());
 		assertEquals(List.of(alpha, concept(vm, "Beta")), root1.getEmbeddedFlexoConcepts());
 		assertSame(vm.getBindingModel(), root2.getBindingModel().getBaseBindingModel());
 
 		// nested -> root
-		root2.setContainerFlexoConcept(null);
+		root2.setContainer(vm);
 		assertSame(vm, root2.getContainer());
 		assertTrue(vm.getContents().contains(root2));
 		assertEquals(URI + "#Root2#Inner", inner.getURI());
@@ -292,6 +287,34 @@ public class TestConceptContainment {
 		inner.getPropertyChangeSupport().removePropertyChangeListener(listener);
 		assertFalse("owner events: " + ownerEvents, ownerEvents.contains(null));
 		assertEquals(set("Root1", "Alpha", "Leaf", "Beta", "Root2", "Inner", "Top", "Color"), names(allConcepts(vm)));
+	}
+
+	/**
+	 * After a move, the concept can still be removed from its new container and deleted (review of CORE-F-19 phase 3b: a stale
+	 * {@code scheduledSets} entry of PAMELA was suspected to keep the container after the removal)
+	 */
+	@Test
+	public void aMovedConceptCanBeRemovedAndDeleted() throws Exception {
+		VirtualModel vm = TestFMLReindent.parse(NESTED).getVirtualModel();
+		FlexoConcept alpha = concept(vm, "Alpha");
+		FlexoConcept root2 = concept(vm, "Root2");
+		FlexoConcept inner = concept(vm, "Inner");
+		root2.setContainer(concept(vm, "Root1"));
+		root2.setContainer(alpha);
+		assertSame(alpha, root2.getContainer());
+
+		alpha.removeFromContents(root2);
+		assertNull(root2.getContainer());
+		assertFalse(alpha.getContents().contains(root2));
+		assertFalse(names(allConcepts(vm)).contains("Root2"));
+
+		alpha.addToContents(root2);
+		assertSame(alpha, root2.getContainer());
+		root2.delete();
+		assertTrue(root2.isDeleted());
+		assertTrue(inner.isDeleted());
+		assertFalse(alpha.getContents().contains(root2));
+		assertEquals(set("Root1", "Alpha", "Leaf", "Beta", "Top", "Color"), names(allConcepts(vm)));
 	}
 
 	@Test

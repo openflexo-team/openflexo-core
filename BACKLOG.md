@@ -688,7 +688,8 @@ is a possible follow-up.
   containment rule of `CORE-D-95`, so it may offer a move the validation then reports.
 - Found by the review of phase 3b: after a move, `removeFromContents` no longer resets the container (a stale `scheduledSets` entry of
   PAMELA's `DefaultSinglePropertyImplementation.set` makes the inverse `set(null)` look like a loop); `delete()` of a moved concept is
-  affected too.
+  affected too. Recorded and fixed as `PAMELA-D-9` (2026-11-22): the deletion was not affected after all; detaching (`removeFromContents`,
+  `setContainer(null)`) was.
 - Phase 3c done (2026-11-20): openflexo-diagram, free-modelling-editor, openflexo-docx, openflexo-jdbc, openflexo-owl,
   openflexo-server, formod, modelers and openflexo-integration-tests no longer call the deprecated containment API; `.fib` bindings
   on `flexoConcepts` moved to `allFlexoConcepts` or `contents`. Found on the way: `DIAGRAM-D-5` (fixed). Outside openflexo-core, only
@@ -708,9 +709,18 @@ is a possible follow-up.
   instance selector of openflexo-ui read the declared container. Decided with the user: a concept of an invalid model (declared at
   the root, extending a nested concept) is a root concept as declared, listed by `getAllRootFlexoConcepts` and instantiable in the
   VirtualModel instance; the validation error (`CORE-D-95`) is the only report. Specification §5.2.1 and chapter 14 updated.
-- Next: phase 5, removing the deprecated aliases (`VirtualModel.getFlexoConcepts` and its family, `setContainerFlexoConcept`,
-  `add/removeFromEmbeddedFlexoConcepts`, `setEmbeddedFlexoConcepts`, `moveEmbeddedFlexoConceptToIndex`, `setOwner`), and rewriting
-  the deprecated sequences of `TestConceptContainment`.
+- Phase 5 done (2026-11-22): the deprecated aliases are removed: `VirtualModel.getFlexoConcepts`, `setFlexoConcepts`,
+  `addToFlexoConcepts`, `removeFromFlexoConcepts`, `moveFlexoConceptToIndex` and the `flexoConcepts` notification (`FLEXO_CONCEPTS_KEY`);
+  `FlexoConcept.setOwner`, `setContainerFlexoConcept`, `setEmbeddedFlexoConcepts`, `add/removeFromEmbeddedFlexoConcepts`,
+  `moveEmbeddedFlexoConceptToIndex`. No caller was left in the main sources of the workspace (only commented-out code, and methods
+  of the same name on other types: `VirtualModelInfo`, the `CreateFlexoConcept` action, `InnerConceptsFacet`); `TestConceptContainment`
+  now writes the containment with `setContainer` / `addToContents`. Kept, as decided: the derived reads `getOwner()`,
+  `getContainerFlexoConcept()`, `getEmbeddedFlexoConcepts()`, `getEmbeddedFlexoConcept(String)`, read by many `.fib` bindings.
+  The review of phase 5 proved the finding of phase 3b (`PAMELA-D-9`, fixed); `TestConceptContainment.aMovedConceptCanBeRemovedAndDeleted`
+  covers it.
+- Left before `DONE` (decided with the user): a check in the application (browsers after creating a root and a nested concept, a move
+  with the inspector then a deletion and its undo, drag and drop, save, close and reopen). The container selector not applying the
+  rule of `CORE-D-95` is now `UI-F-4` (openflexo-ui).
 
 ## Resources
 
