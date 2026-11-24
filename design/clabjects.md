@@ -1,6 +1,7 @@
 # Clabjects — a multi-level extension of FML (exploratory study)
 
-Status: **exploratory**, nothing implemented. Backlog entry: `CORE-F-7`.
+Status: **exploratory**, nothing implemented. Backlog entries: `CORE-F-7` (clabjects), blocked by `CORE-F-27` (textual
+FML@RT, §7).
 
 This note records the first analysis of a new language built as an extension of FML, where the separation between
 `FlexoConcept` and `FlexoConceptInstance` gives way to **clabjects**: elements that are at once a concept (they declare
@@ -208,7 +209,7 @@ Consequences:
 - a **multi-level resource**: `Clio` is both type and instance, so an FME model cannot be split into `.fml` and
   `.fml.rt`.
 
-## 7. Textual FML@RT (first milestone)
+## 7. Textual FML@RT (prerequisite, `CORE-F-27`)
 
 **[decided]** The `.fml.rt.xml` serialization (PAMELA XML, unreadable) is replaced by FML syntax with instances only.
 This milestone has value by itself (readability, git diffs, hand edits), it is a prerequisite of clabjects, and it can
@@ -277,7 +278,7 @@ Requirements found on this real file:
 
 ## 9. Proposed path
 
-1. **Milestone A — textual FML@RT**, framed on `digital-twin-demo`: instance entry point in the grammar, references
+1. **Milestone A — textual FML@RT** (`CORE-F-27`, which blocks `CORE-F-7`), framed on `digital-twin-demo`: instance entry point in the grammar, references
    contributed by technology adapters, converter, performance measure.
 2. **Milestone B — clabjects in the FME**, small models and immediate benefit (the two-level emulation disappears):
    valuations on concepts, `own`, delegation, value generalization and dissolution, multi-level resource.

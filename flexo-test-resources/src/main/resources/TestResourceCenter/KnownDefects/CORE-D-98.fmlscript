@@ -1,0 +1,13 @@
+// CORE-D-98: a concept with no creation scheme cannot be instantiated by `new Foo()`.
+// Fixture: KDDefaultConstructor. Expected once fixed: `new Foo()` gives an instance, as an implicit no-argument constructor.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/KDDefaultConstructor.fml"];
+service ResourceCenterService add_temp_rc;
+vmi = new KDDefaultConstructor() with (name="kd98");
+assert vmi.foo != null;
+assert vmi.foo.label == "foo";
+assert vmi.bar.label == "created";
+f = vmi.makeFoo();
+assert f != null;
+assert f.label == "foo";
+n = vmi.matchFoo();
+assert n >= 1;

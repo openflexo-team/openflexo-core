@@ -136,12 +136,12 @@ an extension of FML sharing its grammar (FML itself unchanged), whose elements a
 **Current state.** Exploratory study only, nothing implemented. Directions taken: no mandatory potency (optional, decremented at each refinement
 step), no declared levels;
 progressive refinement with values inherited by delegation; `.fml.rt.xml` replaced by textual FML (instances only) as a
-first milestone. Analysis, examples, hard points and proposed path: [`design/clabjects.md`](./design/clabjects.md).
+prerequisite, tracked by `CORE-F-27`, which blocks this entry. Analysis, examples, hard points and proposed path: [`design/clabjects.md`](./design/clabjects.md).
 
 **To decide.** Valuation operator (`:=`), own features and optional classification, conflict rule shared with behaviours,
 `select`/`match` semantics, deletion of an intermediate clabject, interoperability with FML.
 
-**Acceptance criteria.** To be written per milestone (textual FML@RT, then clabjects in the FME).
+**Acceptance criteria.** To be written per milestone (clabjects in the FME first). Textual FML@RT is `CORE-F-27`.
 
 ### CORE-F-10 — Decide the status of the specification against the implementation  ·  `TODO`
 
@@ -362,6 +362,244 @@ This is an evaluation entry: the expected result is a decision backed by a study
 - A report that states the feasibility, the options and a recommendation, with the list of impacts above filled in.
 - A prototype grammar that generates with no SableCC conflict and parses the corpus of `.fml` and `.fmlscript` files of the workspace as before, or the reasons why it cannot.
 - A decision recorded in this entry (go, no-go, or a scoped subset), with the follow-up entries created for the work.
+
+### CORE-F-23 — Generics in FML (type parameters on concepts, models and behaviours)  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#143](https://github.com/openflexo-team/openflexo-core/issues/143)
+
+**Problem.** FML can use parameterized types that come from Java (for example `MatchingSet<Target>`), but it cannot declare type parameters of its own. A concept, a virtual model or a behaviour cannot be written once and reused for several types: a reusable container, a patron of modeling or a helper has to be duplicated for each type, or typed loosely.
+
+Verified on the current `3.0` branch: the grammar reads type arguments in a type (`type_arguments`, `<…>`), but no production declares a type parameter on a concept, a model or a behaviour, and no existing backlog entry covers it.
+
+**Goal.** Bring the notion of generics to FML, with a Java-like syntax, at three levels:
+- a FlexoConcept: `concept Box<T> { T content; }`;
+- a VirtualModel;
+- a behaviour: `<T> T first(List<T> l)`.
+
+Motivations: reusable typed containers and collections; a generic concept specialized by inheritance (`concept IntBox extends Box<Integer>`); typing of `select` and `match` over a type variable; reuse of modeling patterns.
+
+The syntax must stay compatible: existing FML keeps its meaning and is not migrated.
+
+**Open questions.** The design is part of this entry.
+- Syntax details: bounds (`T extends Foo`), several parameters, wildcards, explicit type arguments at a call (`this.<String>first(l)`) versus inference only.
+- Resolution: erasure as in Java, or a type that exists at run time. Is `Box<String>` a distinct concept or an instantiation of the same one? What does `new Box<String>()` create and how is it persisted?
+- Typing: how Connie types a path through a type variable, inference of the type arguments, and the validation of a binding that uses `T`.
+- Interaction with the existing constructs: inheritance (`extends Box<Integer>`), containment, `select … from`, `match`, behaviour overriding and overload selection, property cardinality (`T[0,*]`).
+- Impacts to inventory: PAMELA metamodel of concepts and types, the pretty-print and its round trip, persistence, validation, the FML editor (completion, display), `fml-cli`, technology adapters, and the interaction with the grammar changes tracked in other entries.
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- The grammar parses type parameters on a concept, a model and a behaviour, and existing FML parses as before.
+- A generic concept can be instantiated with a type argument, specialized by inheritance, and its type variable is checked in bindings.
+- A generic behaviour is called with inferred type arguments, and a type error is reported as an invalid binding.
+- The pretty-print round trip is stable.
+- A generic concept and its instances survive a save and a reload.
+- `fmlscript` tests prove representative examples by running them.
+
+### CORE-F-24 — Extend the listen behaviour to objects outside FML (resources, technology adapter objects)  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#144](https://github.com/openflexo-team/openflexo-core/issues/144)
+
+**Problem.** The `listen` behaviour only reacts to events of FML itself. `listen EventType from expression { … }` is implemented (`EventListener` in flexo-foundation, started by `FMLRunTimeEngine`, exercised by the `PingPong` model), but the expression after `from` must designate a `VirtualModelInstance`, and the events are `FlexoEvent`s declared in FML and raised with `fire`. FML cannot listen to a resource, nor to an object of a technology adapter, and therefore cannot react to a change that comes from outside FML.
+
+Verified on the current `3.0` branch: `listen` is not only in the grammar, it runs between virtual model instances. The limit is the kind of object that can be listened to. No existing backlog entry covers it.
+
+**Goal.** Extend `listen` so that a behaviour can listen to an object that is not a `VirtualModelInstance`, typically a resource or an object managed by a technology adapter, in order to track the modifications and events that come from that object, usually from outside FML.
+
+**Open questions.** Nothing is decided yet; the design is part of this entry.
+- Listened objects: which first (a resource and its life cycle, a technology adapter object such as a cell, an XML element or a diagram shape, a `FlexoConceptInstance`). A before/after FML example is to be written.
+- Event mechanism: whether `listen` relies on the `PropertyChangeSupport` of the objects (`FlexoObservable` is to be deprecated). How the event is designated: a property name, an FML event type, or an event type declared by the technology adapter. Whether an adapter declares the events it emits.
+- Syntax: whether `listen EventType from expression` stays valid for a non-FML object, and whether a generic "property of this object changed" event is needed. The syntax is left open.
+- Life cycle: when listening starts and stops (registration of the instance, load or unload of the listened resource, release), and how leaks of listeners are avoided.
+- Threading: events of an adapter often arrive from another thread (for example the directory watcher). On which thread the behaviour runs, and how events are serialized.
+- Runtime errors: a failure inside a listener should follow the rules of `CORE-F-11` (`EventListenerFailedException`, reported once).
+- Tooling: editor support and validation of the listened type and event.
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- `listen` accepts an object that is not a virtual model instance, as decided, and existing `listen` over a virtual model instance keeps its behaviour.
+- A change on the listened object, including one made outside FML, runs the behaviour with the received event.
+- Listening stops when the instance or the listened object is released, and leaves no listener behind.
+- A failure in the behaviour is reported as an FML error with its stack.
+- The pretty-print round trip is stable.
+- A technology adapter test proves a representative example by running it.
+
+### CORE-F-25 — Declarative form of FML: inferred concepts maintained by rules  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#145](https://github.com/openflexo-team/openflexo-core/issues/145)
+
+**Problem.** To federate two models, FML requires writing the life cycle of the federated instances by hand, in an imperative behaviour. The two models need not be FML models: each can be a resource of any technology adapter. In the example below, `Model1` is a model of one technology adapter, whose elements of type `Foo1` can be fetched, and `Model2` a model of another technology adapter (possibly the same one), whose elements are of type `Foo2`:
+
+    model FederatedModel {
+        Model1 model1;      // model slot: a resource of a technology
+                            // adapter, holding Foo1 elements
+        Model2 model2;      // model slot: a resource of a technology
+                            // adapter, holding Foo2 elements
+
+        synchronize() {
+            MatchingSet ms = begin match FederatedConcept from this;
+            for (Foo1 foo1 : select Foo1 from model1) {
+                …
+            }
+        }
+
+        concept FederatedConcept {
+            Foo1 foo1;      // an element of model1
+            Foo2 foo2;      // an element of model2
+        }
+    }
+
+The author has to say how the instances are created, matched, and deleted (`begin match`, `match … unmatched`, `end match`, called from `synchronize()`), although what is wanted is only a statement of when two elements correspond.
+
+Verified on the current `3.0` branch: the grammar and the runtime have no declarative form. Matching exists only as the imperative statements `begin match` / `match` / `end match`, run by a behaviour called explicitly. No existing backlog entry covers it.
+
+**Goal.** A declarative form of FML, in which the author writes rules, and the platform maintains the instances. The author does not manage the life cycle of the instances of the virtual model explicitly.
+
+Intended shape (the syntax is a proposal, not decided), with the same `Model1` (elements `Foo1`) and `Model2` (elements `Foo2`):
+
+    model FederatedModel {
+
+        Model1 model1;      // a resource of a technology adapter,
+                            // holding Foo1 elements
+        Model2 model2;      // a resource of a technology adapter,
+                            // holding Foo2 elements
+
+        inferred concept FederatedConcept {
+            Foo1 foo1;      // an element of model1
+            Foo2 foo2;      // an element of model2
+        }
+        from (foo1 in model1, foo2 in model2)
+        where (similarity(foo1, foo2) >= 0.95);
+
+        double similarity(Foo1 t1, Foo2 t2) {
+            return …;
+        }
+    }
+
+An instance of `FederatedConcept` stands for a pair of elements, one `Foo1` taken in `model1` and one `Foo2` taken in `model2`, for which the rule holds. The roles `foo1` and `foo2` designate those elements.
+
+**Open questions.** Nothing else is decided; the design is part of this entry.
+- Keyword and syntax of the rule (`inferred` is the working name).
+- Sources of the rule: the elements come from model slots of any technology adapter, not only from FML models. How `from (… in …)` enumerates them (the fetch requests of the adapter, as in `select Foo1 from model1`), and how the types `Foo1` and `Foo2` are resolved when the two models belong to different adapters.
+- Semantics: one instance per tuple of the `from` clause that satisfies `where`. What happens when the condition stops holding or an element disappears (the instance disappears?).
+- When rules apply: on demand, at each `synchronize()`, or reactively at each change of a source model. A reactive rule depends on the changes that an adapter reports (see `CORE-F-24`).
+- Joins and ambiguity: an element with several candidates (similarity threshold), the choice rule (best candidate, one-to-one assignment), and elements with no match (partial instance, outer join, none).
+- Scope beyond instance creation: derived properties, propagation of values between the two models, deletion rules.
+- Relation with the existing engine: syntactic sugar compiled to `begin match` / `match` / `end match` and `synchronize`, or a new engine. Interaction with `CORE-F-2` (default deletion of a concept).
+- Persistence: inferred instances saved with the virtual model instance, or recomputed at load.
+- Expressions: the names introduced by `from (… in …)`, the call of behaviours of the model in `where`, and the alignment with the `where` of `select` and `match` (`CORE-F-17`, `CORE-F-21`).
+- Impacts to inventory: grammar and pretty-print, PAMELA metamodel, validation, the FML editor, and runtime errors (`CORE-F-11`).
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- The grammar parses the declarative rule, and existing FML parses as before.
+- For two source models of technology adapters, the inferred instances are created, updated and deleted according to the rule, with no hand-written life cycle.
+- A rule written declaratively gives the result of the equivalent imperative `begin match` code.
+- The pretty-print round trip is stable.
+- An `fmlscript` test proves a representative example by running it, including the disappearance of a source element.
+
+### CORE-F-26 — Two serializations for an FML resource: single file or directory, promoted on demand  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#146](https://github.com/openflexo-team/openflexo-core/issues/146)
+
+**Problem.** An FML resource has a single serialization: a directory `xxx.fml/` that holds the file `xxx.fml` (and, when there is any, the resources it contains: `.fib`, `.inspector`, `Localized/`...). Even a model with nothing but its own text needs a directory and a file of the same name, which is heavy for the simplest models: more entries in the repositories, and a layout that is harder to read and to handle with ordinary tools.
+
+Verified on the current `3.0` branch: `CompilationUnitResourceFactory` accepts as a valid artefact only a readable directory whose name ends with `.fml` and that holds its main file `xxx.fml` (`hasArtefactForm`, `hasMainFile`), and builds a directory-based IO delegate (`makeDirectoryBasedFlexoIODelegate`). A plain file `xxx.fml` is not recognized as a resource. No existing backlog entry covers it.
+
+**Goal.** Allow an FML resource to be serialized in two forms:
+- a directory `xxx.fml/` with the file `xxx.fml` and its possible content (the current form);
+- a plain file `xxx.fml`, when the resource has nothing else.
+
+The plain form can be extended to the directory form on demand, when the resource gets content of its own. The motivation is simplification.
+
+**Open questions.** Nothing is decided yet; the design is part of this entry.
+- Detection: a file and a directory `xxx.fml` cannot share a folder. The rule that tells the two forms apart, and what happens to a file `xxx.fml` found next to a directory `xxx.fml/` (conflict, priority, error).
+- Promotion: when the plain form becomes a directory (at the creation of the first piece of content, by an explicit action, or both), and whether the conversion is automatic and transparent (the file moved to `xxx.fml/xxx.fml`).
+- Demotion: whether a directory that has only its unit left goes back to a plain file, or the directory form is final once created.
+- Default form of a new resource, and whether existing resources are migrated or left as they are.
+- Impacts to inventory: the IO delegate and the detection of a valid artefact, the identity of the resource (its URI must not change), the loading of contained resources, saving and renaming, resources in a jar (`DirectoryBasedJarIODelegate`), the directory watcher, the tools (`fml-cli`, the editor, importers), the resources of technology adapters, and the tests.
+- Compatibility: existing projects in directory form stay readable; whether a client that only knows the directory form must be able to open a project that uses the plain form.
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- A plain file `xxx.fml` is loaded as an FML resource, with the same URI and the same behaviour as the directory form.
+- Adding content to a plain-file resource turns it into the directory form without changing its identity or breaking references to it.
+- Existing directory-form resources load and save as before.
+- A resource of either form is correctly found, loaded, saved, renamed and unloaded from a directory resource center and from a jar.
+- Tests cover both forms and the promotion.
+
+### CORE-F-27 — Textual serialization of FML instances (FML@RT) in FML syntax, replacing .fml.rt.xml  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#147](https://github.com/openflexo-team/openflexo-core/issues/147)
+
+**Problem.** FML instances (a `VirtualModelInstance` and its `FlexoConceptInstance`s) are stored in `xxx.fml.rt/xxx.fml.rt.xml`, a PAMELA XML serialization (`FMLRTVirtualModelInstanceResource`, `FMLRTVirtualModelInstanceModelFactory`). It cannot be read, diffed or edited by hand: one element per `ActorReference`, instances known only by their `flexoID`, references written as `objectReference="…lineL2.fml.rt#FLX_2"`, and about twenty technology-specific reference kinds (`XMLObjectActorReference`, `XLSObjectActorReference`, `ModelObjectActorReference`…), each with its own attributes. Types are written in textual FML while their instances are not.
+
+**Goal.** Serialize FML instances in FML syntax, in files that hold instances only (the types stay in the `.fml`). The same grammar (`fml-parser/src/main/sablecc/fml.sablecc`) is used, with only what is needed added: an entry point for an instance unit, an instance literal, and `:=` to value a property, a role or a model slot. It is independent of `CORE-F-7` (clabjects), which it blocks: an `instance` is a clabject at the leaf, so this entry must close no door to `CORE-F-7` without anticipating it beyond that. Sketch on `digital-twin-demo` (`INSTANCES/lineL2.fml.rt`):
+
+```fml
+instance lineL2 : ProductionLine {
+    ligneXml    := XML::Model(uri="http://openflexo.org/digital-twin-demo/production-line.xml");
+    maintenance := FMLRT::Reflected(uri="http://openflexo.org/digital-twin-demo/maintenance.xlsx");
+
+    instance DEP01 : Equipment #FLX_6 {
+        xmlElement    := XML::Ref(path="/0/1");
+        assetRecord   := maintenance.AssetRecord[5];
+        readings      := maintenance.Reading[2, 9, 15, 17, 24, 30, 32, 39, 45, 48];
+        interventions := maintenance.Intervention[4];
+    }
+    instance link1 : MaterialLink #FLX_80 {
+        source := EQ2;
+        target := EQ3;
+    }
+}
+```
+
+**Proposed (to confirm in the design).**
+- Literals and references only in an instance file: nothing is evaluated at load time.
+- A readable name per instance for references, plus a stable identifier (`#FLX_6`) since other resources (diagrams, FME) point to FCIs by `flexoID` / URI. A name generated from a key property is only a label: a derived key may be known only once a model slot is bound.
+- A generic reference form `Slot::Ref(args)`, parsed as is and handed over to the technology adapter, so that the grammar does not change for each adapter.
+- A two-pass resolution for forward references, as the parser already does for types (`unresolvedTypes`).
+- Files owned by the machine: formatting and comments are not preserved when the run time rewrites them.
+
+**Open questions.**
+- Inventory of what a `.fml.rt.xml` really holds: VMI, FCIs, all `ActorReference` kinds of all technology adapters, model slot instances, containment, enum values, multiple roles, `JavaActorReference` (how to write an arbitrary Java value as text).
+- Grammar entry point (next to `CustomLexer.EntryPointKind` CompilationUnit / Binding / Command / Script), read and write paths, where each technology adapter contributes its reference literal.
+- Coexistence with the XML form during the migration (read both, write text only?), and the converter of existing files, on the model of the `.fml.xml` → FML converter (which only runs in file-based resource centers, not in jars).
+- Performance: parse and semantic analysis against the PAMELA XML reader, on a VMI with thousands of instances.
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- Every `.fml.rt.xml` of the workspace (11 under `src/`, in `digital-twin-demo` and `multi-process-challenge` among others) converts to the textual form and back without loss.
+- The tests of `digital-twin-demo` and `multi-process-challenge` stay green when reading the converted files.
+- Other resources still resolve their references to FCIs after conversion.
+- Saving an instance writes the textual form; a project in the XML form stays readable.
+- A measure of load time on a large VMI is recorded, compared with the XML form.
+
+**Related.** Blocks `CORE-F-7`; design and examples in [`design/clabjects.md`](./design/clabjects.md) §7.
+
+### CORE-F-29 — Error-tolerant and incremental parsing and compilation of FML  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#149](https://github.com/openflexo-team/openflexo-core/issues/149)
+
+**Problem.** The FML parser analyses a whole file or nothing. A single syntax error aborts the analysis: the compilation unit that results is empty, and a unit with nothing in it reports no validation error at all. The rest of the file, which is correct, is lost for every tool that needs it (the editor, the completion, the language server). And each change makes the whole file to be parsed and compiled again, even when only one method has changed.
+
+Verified on the current `3.0` branch: the parser is generated by SableCC from `fml.sablecc` and works on a whole file; a `ParserException` stops the analysis and leaves an empty compilation unit. `fml-parser` has `FMLCompilationUnitParser`, `FMLExpressionParser`, `DetachedBindingAnalyzer` (analysis of a binding on its own) and `FragmentManager` (pretty-print that keeps the text); the editor parses the text again and merges the result into the model with `updateWith()`. No existing backlog entry covers error-tolerant or incremental parsing.
+
+**Vocabulary** (to settle the terms of this entry).
+- Error-tolerant (resilient) parsing: produce a usable tree in spite of a syntax error, by resynchronizing after it.
+- Incremental parsing: analyse again only the part of the text that changed.
+- Incremental compilation: redo the semantic analysis (typing, binding resolution) only for what changed.
+- Island parsing (structure first): recognize first the skeleton of a file (declarations, boundaries of the methods), then analyse the body of each piece on demand.
+
+**Goal.** Parse quickly the structure of an FML file so that the compiler can be used on a single piece (a method, for example), and so that the parts of a file that are correct can still be used when another part has a syntax error. This also opens the way to an optimization of the compilation: only what has changed is compiled again.
+
+**Open questions.** Nothing is decided yet; the design is part of this entry.
+- Priorities: error tolerance (editor, completion, language server), compiling a single piece, or the optimization by partial recompilation; and in which order.
+- Mechanism: error recovery in the SableCC grammar, a first pass for the structure and an analysis of each body on demand, a replacement of the parser generator, or another approach.
+- Error model: whether a piece in error appears in the model (a node that holds its text and its messages) so that the rest stays usable, and what `updateWith()` does then.
+- Impacts to inventory: grammar and generation, `FragmentManager` and the pretty-print, the PAMELA model (error nodes), validation (an error node must not be validated as correct code), `updateWith()`, the editor, the completion (`UI-F-5`), the language server `fml-lsp`, the loading of resources, and performance (to be measured before the work).
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- A file with a syntax error in one method gives a model that still holds the other declarations, and the error is reported with its position.
+- A single method can be parsed and compiled on its own.
+- A change in one method does not compile the others again, and this is shown by a measure.
+- A file without error gives the same model as before, and the pretty-print round trip is unchanged.
+- Tests cover a file with errors at several places, and the editor and the language server keep working on it.
 
 ---
 
@@ -855,6 +1093,33 @@ status bar of the main window shows them for the selected resource; `Validate pr
 **Acceptance criteria.** Opening a project whose VMI names an absent VirtualModel shows the red cross, the tooltip and the status bar
 with no dialog, and nothing is loaded; adding the resource center that holds the VirtualModel clears them; `TestResourceIssues`
 passes, including the late resolution of a pending dependency, a missing dependency and a missing technology adapter (not covered yet).
+
+### CORE-F-28 — Advanced search over a set of resources (FML or technology adapter)  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#148](https://github.com/openflexo-team/openflexo-core/issues/148)
+
+**Problem.** The platform has no way to search across resources. The only search tool is the text finder of the FML editor (`TextFinderPanel`, in `fml-technologyadapter-ui`), which looks for a text in the document being edited. The `select … from … where` of FML queries one model from FML code. There is nothing to find, across a set of resources, a text, an element of a given type, an element with a given property value, or the places that use an element, whether the resources are FML or belong to any technology adapter.
+
+Verified on the current `3.0` branch: no search engine, index or search API was found in `openflexo-core`, and no existing backlog entry covers it.
+
+**Goal.** An advanced search function that runs over a set of resources (FML resources and resources of any technology adapter). The scope is wide, from free text to advanced structured queries, and the entry covers both its design and its implementation.
+
+**Open questions.** Nothing is decided yet; the design is part of this entry.
+- Kinds of search: free text in the content of resources (names, values, FML text); structured queries by type of concept, by property, by value (`name == "x"`); search for the usages or references of an element; combinations of these.
+- Targets: a resource center, a selection of resources, a project, a resource repository. Whether a result can mix objects of several technology adapters (an Excel cell, an XML element, an FML concept).
+- Resources that are not loaded: search in loaded resources only, or also in unloaded ones (which requires an index or a loading on demand).
+- Mechanism: traversal on demand, a persistent index, or an extension of the FML query language. Whether each technology adapter provides its own search provider (an extension point).
+- Query language: how queries are written and typed, and whether it is related to the FML `select … from … where`.
+- Result model: what a result is (object, location, matching text), how it is ordered, how it designates the found object across technology adapters.
+- Interfaces: Java API, an `fml-cli` command, an FML statement, a graphical interface in `openflexo-ui` (possibly a separate entry).
+- Impacts to inventory: performance and memory (loading resources), threading and progress of a long search (see skill `long-task-progress`), persistence and freshness of an index, localization, technology adapters, and tests.
+
+**Acceptance criteria** (to be refined once the design is chosen).
+- A design note records the kinds of search, the targets, the mechanism and the query language that are chosen, with the open questions answered.
+- A search runs over a set of resources of at least two technology adapters, FML included, and returns results that designate the found objects.
+- Free-text and structured searches are supported as decided.
+- A long search reports its progress and can be cancelled.
+- Tests prove representative searches by running them.
 
 ## FML runtime errors
 

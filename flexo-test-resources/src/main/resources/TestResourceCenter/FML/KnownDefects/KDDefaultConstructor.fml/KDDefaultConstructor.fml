@@ -1,0 +1,28 @@
+@URI("http://openflexo.org/test/TestResourceCenter/KDDefaultConstructor.fml")
+public model KDDefaultConstructor {
+	public concept Foo {
+		String label = "foo";
+	}
+	public concept Bar {
+		String label = "bar";
+		create() {
+			label = "created";
+		}
+	}
+	Foo foo = new Foo();
+	Bar bar = new Bar();
+	public Foo makeFoo() {
+		Foo f = new Foo();
+		return f;
+	}
+	public int matchFoo() {
+		MatchingSet<Foo> foos = begin match Foo from this;
+		match Foo in foos from this where (label = "x") unmatched: new Foo();
+		end match Foo in foos;
+		int n = 0;
+		for (Foo t : select Foo from this) {
+			n = n + 1;
+		}
+		return n;
+	}
+}
