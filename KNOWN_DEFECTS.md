@@ -495,6 +495,8 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 
 ### CORE-D-99 — `super.<property>` gives null  ·  `TODO`
 
+**GitHub:** [openflexo-team/openflexo-core#150](https://github.com/openflexo-team/openflexo-core/issues/150)
+
 **Symptom (verified 2026-11-24 by execution, fixture `FML/TestLexicalContext.fml`, script `KnownDefects/CORE-D-99.fmlscript`).**
 In a concept with one parent, `super.inIB`, where `inIB` is a property the concept inherits and does not redeclare, evaluates to
 null inside a behaviour; so does `super.level` where the concept redeclares `level`. The binding is reported valid; at run time
