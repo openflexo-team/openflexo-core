@@ -220,7 +220,9 @@ public model Kennel {
 A concept has the properties and the behaviours of all its ancestors, and may add to them. A concept may
 **override** a behaviour by declaring one with the same signature; a call runs the body of the concept of the
 instance on which it is made (late binding), whichever concept the call is typed by. A property inherited from
-an ancestor is the same property in the descendant: it is declared once.
+an ancestor is the same property in the descendant, which need not declare it again. A concept may **redeclare** an
+inherited property, with a compatible type (an incompatible one is a validation error); the redeclaration is late bound too:
+every access to the property on an instance of the concept, from any concept of the hierarchy, reaches it (§9.6.5).
 
 A query on a concept returns the instances of that concept and of every concept that extends it (§10.2).
 
@@ -228,7 +230,8 @@ A query on a concept returns the instances of that concept and of every concept 
 
 * In a creation scheme, `super(args)` runs the anonymous creation scheme of the parent; `super.name(args)`
   runs a *named* one (`create::name`). The two spellings are not interchangeable.
-* In any other behaviour, `super.name(args)` calls the parent's version of `name`.
+* In any other behaviour, `super.name(args)` calls the parent's version of `name`, even when the concept of the instance
+  overrides it: the lookup starts at the parent, with no late binding (§9.6.5).
 
 > **Implementation note.** With several parents, `super.name()` does not resolve: an execution error when it runs, a `null`
 > without any report before 3.0 (`CORE-D-17`). Put the logic to reuse in a separate behaviour of the parent and call it on `this`.

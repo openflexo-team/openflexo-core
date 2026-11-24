@@ -493,6 +493,24 @@ works too. `Other` declares nothing: the second parent is enough. The properties
 **Workaround.** Put the logic to reuse in a separate behaviour of the parent and call it on `this`: with
 `public String baseHello() { return "hello"; }` in `Base`, `return "left " + this.baseHello();` gives `left hello` (verified).
 
+### CORE-D-99 — `super.<property>` gives null  ·  `TODO`
+
+**Symptom (verified 2026-11-24 by execution, fixture `FML/TestLexicalContext.fml`, script `KnownDefects/CORE-D-99.fmlscript`).**
+In a concept with one parent, `super.inIB`, where `inIB` is a property the concept inherits and does not redeclare, evaluates to
+null inside a behaviour; so does `super.level` where the concept redeclares `level`. The binding is reported valid; at run time
+the only trace is the warning `Please implement me, target=…SuperReference…`, and no error is raised although a behaviour
+evaluates strictly (`CORE-F-11`). `super.toto()` on a behaviour works in the same concept (`AutomatedTests/TestLexicalContext.fmlscript`).
+
+**Cause (read in the code, not fixed).** `super` evaluates to a `FlexoConceptInstanceImpl.SuperReference` (instance + parent
+concept). `FlexoBehaviourPathElement.getBindingValue` unwraps it and sets the declared conceptual level;
+`FlexoPropertyPathElement.getBindingValue` only handles a `FlexoConceptInstance` target and falls through to the warning and
+`return null`.
+
+**Open question.** What `super.level` should give when the concept redeclares `level` (the parent's declaration, its own initial
+value, or the same value as `this.level`) is not decided; the script asserts only the inherited, non-redeclared case.
+
+**Workaround.** Read the property with `this.inIB` (or the bare name).
+
 ## FML expressions
 
 ### CORE-D-19 — A method call on a string literal gives null  ·  `TODO`

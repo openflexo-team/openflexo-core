@@ -168,7 +168,8 @@ A call is an expression `target.name(arguments)` (§9.6.4). The behaviour called
 3. the **types** of the arguments, to choose among behaviours of the same name and number.
 
 The lookup starts at the concept of the instance the call is made on and goes up the inheritance graph; the most
-specific matching behaviour is called.
+specific matching behaviour is called. The receiver chooses the instance: `this`, `container` (the enclosing instance, never
+an ancestor), `super` (the same instance, looked up from the parent concept); §9.6.5 details the two steps with an example.
 
 **A behaviour of the same instance is called on `this`.** A bare call, `twin()`, does not resolve: it is an invalid
 binding, an execution error when it runs (§9.8):

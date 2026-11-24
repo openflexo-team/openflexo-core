@@ -256,6 +256,108 @@ of the same instance is `this.name(args)`. A call may be used as a value or as a
 
 An argument list is a comma-separated list of expressions.
 
+### 9.6.5 Lexical context: `this`, `container`, `super`
+
+Inside a behaviour of a nested concept, two independent structures determine what a name designates:
+
+* **containment**, which is the lexical nesting of the declarations (§5.2.1): a concept declared in a concept, declared in a model.
+  At run time each instance lives in an instance of its enclosing declaration, and `container` designates it;
+* **inheritance** (§5.3): a concept extending another one has its properties and behaviours, and may override them. `this` and
+  `super` designate the current instance, at the level of its own concept and at the level of its parent.
+
+The two never mix: what a concept *contains*, or what *contains* it, is not inherited, and a parent is not a container. The
+model `TestLexicalContext` declares a behaviour `toto()` at each of the four places where it can be (excerpt):
+
+```fml
+public model TestLexicalContext {
+
+	public concept ConceptA {
+
+		public String toto() {
+			log "toto() in A";
+			return "A";
+		}
+
+		public concept IConceptB {
+			public String toto() {
+				log "toto() in IB";
+				return "IB";
+			}
+		}
+
+		public concept ConceptB extends IConceptB {
+
+			public String toto() {
+				log "toto() in B";
+				return "B";
+			}
+
+			public String testToto() {
+				log "Case 1 :";
+				String r1 = this.toto(); // B
+				log "Case 2 :";
+				String r2 = container.toto(); // A
+				log "Case 3 :";
+				String r3 = super.toto(); // IB
+				log "Case 4 :";
+				String r4 = container.container.toto(); // root
+				return r1 + "/" + r2 + "/" + r3 + "/" + r4;
+			}
+		}
+	}
+
+	public String toto() {
+		log "toto() in root";
+		return "root";
+	}
+}
+```
+
+`ConceptB` is nested in `ConceptA`, which is nested in the model; `ConceptB` extends `IConceptB`, nested in `ConceptA` too.
+On an instance `b` of `ConceptB` created in an instance `a` of `ConceptA`, itself in the instance `root` of the model,
+`b.testToto()` logs the four cases in order and returns `"B/A/IB/root"`:
+
+| Call in `ConceptB` | Receiver | Behaviour run | Why |
+|---|---|---|---|
+| `this.toto()` | `b` | `toto()` of `ConceptB` | the concept of `b` declares it |
+| `container.toto()` | `a` | `toto()` of `ConceptA` | containment: one level up |
+| `super.toto()` | `b`, at the level of `IConceptB` | `toto()` of `IConceptB` | inheritance: the parent's version |
+| `container.container.toto()` | `root` | `toto()` of the model | containment: two levels up |
+
+A call is resolved in two steps.
+
+1. **When the unit is analysed**, the receiver is typed: `this` by the current concept; `container` by the enclosing concept,
+   or the model for a concept declared at its root (for a contained model, its container model, §5.1.4); `super` by the parent
+   concept (§5.3.2); `x.container` is the native property `container` of the instance `x` (§9.6.2). The behaviour named by the
+   call is looked up in that type and its ancestors (§7.4). This decides whether the call is valid and what type it has.
+2. **When it runs**, the receiver gives an instance, and the behaviour run is the most specialized version of the one found in
+   step 1 for the concept **of that instance** (late binding, §5.3.1). So `this.toto()`, written in `IConceptB` and called on a
+   `ConceptB`, runs the `toto()` of `ConceptB`. The one exception is `super`: it designates the same instance, but the lookup
+   starts at the parent concept, so `super.toto()` runs the `toto()` of `IConceptB` although `b` is a `ConceptB`.
+
+The `toto()` of `ConceptA` is not a behaviour of `ConceptB`: it is reached through `container` only, and `container.toto()`
+runs it whatever `ConceptB` declares. Each `container.` climbs one level of containment, whatever the inheritance of the
+concepts on the way.
+
+**Properties** follow the same rules with the same receivers. With a property `level` declared at each of the four places
+(`"root"`, `"A"`, `"IB"`, `"B"`), in a behaviour of `ConceptB`, `this.level` is `"B"`, `container.level` is `"A"` and
+`container.container.level` is `"root"`. A property is late bound like a behaviour: `ConceptB` redeclares the `level` of
+`IConceptB` (§5.3.1), and `this.level`, or `level`, written in `IConceptB` and read on a `ConceptB`, is `"B"`.
+
+Unlike a behaviour, a property is also reached by its **bare name**, which follows the scopes of §9.6.3 outward: the properties
+of the concept and its ancestors first, then those of the enclosing concepts, then those of the model. The value read is that of
+the instance that contains the current one, not of any instance of the enclosing concept: with a property `inA` of `ConceptA` and
+two instances `a1` and `a2` holding `"a1"` and `"a2"`, the bare `inA` is `"a1"` in a `ConceptB` of `a1` and `"a2"` in a
+`ConceptB` of `a2`. A property declared both in a concept and in one of its containers is reported by the validation as
+shadowing the other (a warning); the bare name then designates the nearest one, the concept's own or inherited.
+
+The model and its script are `FML/TestLexicalContext.fml` and `AutomatedTests/TestLexicalContext.fmlscript` of the test
+resource center, which assert every value given here.
+
+> **Implementation note.** `super.name`, where `name` is a property, evaluates to `null` with a warning and no error, even when
+> the concept does not redeclare the property (`CORE-D-99`). Read an inherited property with `this.name`. What `super.name` gives
+> when the concept redeclares the property is not specified by this document.
+
 ## 9.7 Creating instances: `new`
 
 ```ebnf

@@ -24,6 +24,7 @@ that leave a binding unresolved fail when they run instead of giving `null`. The
 | `CORE-D-4` | a default value of an argument does not let a call omit it | §7.2 | pass every argument; add a named creation scheme |
 | `CORE-D-13` | `new C::name()` with fewer arguments than the scheme declares does not resolve; a call must match in number | §7.4 | pass the arguments |
 | `CORE-D-17` | `super.name()` does not resolve when the concept has several parents: an error at run time | §5.3.2 | a helper behaviour called on `this` |
+| `CORE-D-99` | `super.name` on a property gives `null`, with no error | §9.6.5 | `this.name` |
 | `CORE-D-10` | `delete x` does not remove `x` from the multi-valued properties that hold it | §10.4 | remove, then delete |
 | `CORE-D-74` | the initializer of a property that also has a `with` clause is lost on save | §6.2 | initialize it in the creation scheme |
 | `CORE-D-73` | a creation run by a technology action, or through a technology factory, hides a failing creation scheme | §13.6 | assert the effects of the creation |

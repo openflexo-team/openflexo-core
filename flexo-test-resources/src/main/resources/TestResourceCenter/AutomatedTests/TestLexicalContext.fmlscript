@@ -1,0 +1,43 @@
+// Lexical context: what this, container, super and a bare name designate inside a behaviour of a nested concept, for a call and
+// for a property. See FML/TestLexicalContext.fml and the FML specification, §9.6.5.
+
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestLexicalContext.fml"];
+service ResourceCenterService add_temp_rc;
+root = new TestLexicalContext() with (name="root");
+a1 = root.newA("a1");
+a2 = root.newA("a2");
+b1 = a1.newB();
+b2 = a2.newB();
+assert b1.container == a1;
+assert a1.container == root;
+
+// Calls: the receiver chooses where the lookup starts
+assert b1.case1() == "B";
+assert b1.case2() == "A";
+assert b1.case3() == "IB";
+assert b1.case4() == "root";
+assert b1.testToto() == "B/A/IB/root";
+
+// this.toto() written in IConceptB runs the override of the instance's concept
+assert b1.totoFromIB() == "B";
+
+// Properties: the same receivers
+assert b1.levelBare() == "B";
+assert b1.levelThis() == "B";
+assert b1.levelContainer() == "A";
+assert b1.levelContainerContainer() == "root";
+
+// A property is virtual, as a behaviour is: read from IConceptB, on a ConceptB, level is the one ConceptB declares
+assert b1.levelFromIB() == "B";
+assert b1.levelBareFromIB() == "B";
+
+// super.<property> gives null (CORE-D-99, KnownDefects/CORE-D-99.fmlscript): b1.levelSuper() and b1.superInIB() are not asserted
+
+// A bare name: inherited property, then the enclosing concept's, then the model's; the values are those of the containing
+// instances of this very instance
+assert b1.bareInIB() == "inIB";
+assert b1.bareInA() == "a1";
+assert b2.bareInA() == "a2";
+assert b1.bareInRoot() == "r";
+
+log "Test PASSED: lexical context of calls and properties";

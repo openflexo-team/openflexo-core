@@ -62,7 +62,8 @@ the body.
 
 1. **Binding model.** The body is evaluated in a chain of scopes, innermost first: the control graph's own variables
    (locals, loop variables), the behaviour's (`parameters`), the concept's (its properties, `this`, `container`),
-   the virtual model's (§9.6.3).
+   the virtual model's (§9.6.3). The receiver of a call, `this`, `container` or `super`, chooses where the behaviour is
+   looked up (§9.6.5).
 2. **Order.** Statements run in order (§8). A block is a sequence; `if`, `while` and `for` choose and repeat;
    `return` ends the behaviour with a value.
 3. **Edition actions** are executed as statements: each does its work and may produce a value that is assigned or

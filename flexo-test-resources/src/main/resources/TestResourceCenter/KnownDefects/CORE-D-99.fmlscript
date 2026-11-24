@@ -1,0 +1,8 @@
+// CORE-D-99: super.<property> gives null, with a warning and no error, even for an inherited property the concept does not redeclare.
+// Fixture: FML/TestLexicalContext.fml. Expected once fixed: super.inIB reads the property inIB that ConceptB inherits from IConceptB.
+// What super.level gives when ConceptB redeclares level is not decided yet, and is not asserted.
+virtualModel = load -r ["http://openflexo.org/test/TestResourceCenter/TestLexicalContext.fml"];
+service ResourceCenterService add_temp_rc;
+root = new TestLexicalContext() with (name="kd99");
+b = root.newA("a").newB();
+assert b.superInIB() == "inIB";

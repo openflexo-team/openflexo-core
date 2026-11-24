@@ -1,0 +1,147 @@
+/**
+ * Lexical context: what this, container, super and a bare name designate inside a behaviour of a nested concept, for a
+ * behaviour call and for a property. Containment (ConceptB is declared in ConceptA, declared in the model) and inheritance
+ * (ConceptB extends IConceptB) are two independent axes. See TestLexicalContext.fmlscript and the FML specification, §9.6.5.
+ */
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestLexicalContext.fml")
+public model TestLexicalContext {
+
+	String level = "root";
+	String inRoot = "r";
+
+	create() {
+	}
+
+	public ConceptA newA(String inA) {
+		return new ConceptA(inA);
+	}
+
+	public concept ConceptA {
+
+		String level = "A";
+		String inA;
+
+		create(String inA) {
+			this.inA = inA;
+		}
+
+		public ConceptB newB() {
+			return new ConceptB();
+		}
+
+		public String toto() {
+			log "toto() in A";
+			return "A";
+		}
+
+		public concept IConceptB {
+
+			String level = "IB";
+			String inIB = "inIB";
+
+			create() {
+			}
+
+			public String toto() {
+				log "toto() in IB";
+				return "IB";
+			}
+
+			// Called on a ConceptB, this.toto() runs the override of ConceptB: the call is dispatched on the instance
+			public String totoFromIB() {
+				return this.toto();
+			}
+
+			public String levelFromIB() {
+				return this.level;
+			}
+
+			public String levelBareFromIB() {
+				return level;
+			}
+		}
+
+		public concept ConceptB extends IConceptB {
+
+			String level = "B";
+
+			create() {
+			}
+
+			public String toto() {
+				log "toto() in B";
+				return "B";
+			}
+
+			public String testToto() {
+				log "Case 1 :";
+				String r1 = this.toto(); // B
+				log "Case 2 :";
+				String r2 = container.toto(); // A
+				log "Case 3 :";
+				String r3 = super.toto(); // IB
+				log "Case 4 :";
+				String r4 = container.container.toto(); // root
+				return r1 + "/" + r2 + "/" + r3 + "/" + r4;
+			}
+
+			public String case1() {
+				return this.toto();
+			}
+
+			public String case2() {
+				return container.toto();
+			}
+
+			public String case3() {
+				return super.toto();
+			}
+
+			public String case4() {
+				return container.container.toto();
+			}
+
+			public String levelBare() {
+				return level;
+			}
+
+			public String levelThis() {
+				return this.level;
+			}
+
+			public String levelContainer() {
+				return container.level;
+			}
+
+			public String levelSuper() {
+				return super.level;
+			}
+
+			public String levelContainerContainer() {
+				return container.container.level;
+			}
+
+			public String superInIB() {
+				return super.inIB;
+			}
+
+			public String bareInIB() {
+				return inIB;
+			}
+
+			public String bareInA() {
+				return inA;
+			}
+
+			public String bareInRoot() {
+				return inRoot;
+			}
+		}
+	}
+
+	public String toto() {
+		log "toto() in root";
+		return "root";
+	}
+}
