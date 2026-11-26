@@ -99,7 +99,7 @@ no longer falls back on the first action scheme.)
 
 **Related.** Fix together with `CORE-D-1` and `CORE-D-2` (see [`KNOWN_DEFECTS.md`](./KNOWN_DEFECTS.md)).
 
-### CORE-F-5 — Single identifier token in the FML grammar  ·  `TODO`
+### CORE-F-5 — Single identifier token in the FML grammar  ·  `DONE`
 
 **GitHub:** [openflexo-team/openflexo-core#119](https://github.com/openflexo-team/openflexo-core/issues/119)
 
@@ -115,8 +115,32 @@ expression instead of a type, escaped identifiers as a single token.
 
 **Deferred to 3.0**, together with the Java adaptation (~17 files in `fml-parser`, plus `fml-cli`).
 
-**Taken up again (2026-11-23)** for 3.0. To be discussed before implementation: which of the four language changes are accepted, and the
-migration of existing `.fml`.
+**Taken up again (2026-11-23)** for 3.0. **Decided (2026-11-25):** all the language changes above are accepted; existing `.fml` are
+migrated in the workspace only (no migration tool), the changes documented in the specification and the changelog. The prototype is
+rebased on the 3.0 grammar (exceptions, `throws`, `try`): still 0 conflicts, corpus of 616 files parsed as by the current grammar,
+and no binding or fml-cli command accepted today is rejected.
+
+**Done (2026-11-25).** `fml.sablecc` has one `ident` token (0 conflicts); the Java side is adapted (fml-parser, fml-cli, the cast
+printing of flexo-foundation). Decided with the user on the way:
+- A cast to a type with arguments or wildcards is written `x as List<String>` (precedence of `instanceof`, any type, not in scripts,
+  like `instanceof`); `(T) x` stays for a name. The normalized print uses `as` only for a type written with `<` or `?`, and parenthesizes
+  an operand that has an operator of its own.
+- `Foo.bar()` follows the rule of Java: a visible variable hides a type of the same name, otherwise the call is static. The decision
+  is taken where the variables are known: again at the end of the parse of a unit (`BindingPathNode.reconsiderStaticCalls`, which
+  keeps the parsed text), and at each validation of the path (`FMLBindingPath`), which covers scripts (a variable exists once
+  assigned) and late-loaded units. The validation rule `VariableShouldNotHideAType` warns about such a variable.
+- A receiver that is neither a variable nor a type is an unresolved variable (it was a static call on an unresolved type). The
+  decision is taken again the other way at each validation: once no variable of that name is visible and the name resolves to a type
+  of the unit (an import added afterwards), the call becomes static (`FMLBindingPath.reconsiderCallOnUnresolvedVariable`). For that,
+  the typing space of a loaded unit (`FMLTypingSpace`) now looks in its Java imports, as the one of the parser does. A switch made at
+  validation changes the shape of the path: its text is then the normalized one (an import alias is printed as the class name).
+- Also lost, not used in the workspace: `(a)(b)` as a call, a generic iteration type in `assert (List<X> x : …)`, `(Foo()) x`,
+  `x = A<B>` in a qualified argument, an array cast to a reference type.
+
+Verified: fml-parser (TestStaticCallOrVariable, TestExpressionWithTypesParser, the `casts()` behaviour of TestExpressions.fml),
+fml-cli-test (TestStaticCallOrVariable.fmlscript), flexo-foundation-test, the four modelers, formod, integration tests and the test
+modules of the technology adapters: 0 failure (capella: CAPELLA-D-1 only, known before). Not measured: the cost, at parse time, of
+looking up the receiver of every call on a dotted name as a type.
 
 **Acceptance criteria.**
 - `fml.sablecc` has a single identifier token; SableCC reports no conflict.

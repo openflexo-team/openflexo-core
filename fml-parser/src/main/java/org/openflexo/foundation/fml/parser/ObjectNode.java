@@ -216,10 +216,8 @@ import org.openflexo.foundation.fml.parser.node.PQualifiedArgumentList;
 import org.openflexo.foundation.fml.parser.node.PQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
-import org.openflexo.foundation.fml.parser.node.TCidentifier;
-import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.foundation.fml.parser.node.TLitInteger;
-import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
@@ -691,11 +689,11 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return getFragment(node).getRawText();
 	}
 
-	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TIdent identifier) {
 		return semanticsAnalyzer.makeFullQualifiedIdentifierList(prefixes, identifier);
 	}
 
-	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TIdent identifier) {
 		return semanticsAnalyzer.makeFullQualifiedIdentifier(prefixes, identifier);
 	}
 
@@ -705,14 +703,6 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 
 	public String makeFullQualifiedIdentifier(PAnnotationTag annotationTag) {
 		return semanticsAnalyzer.makeFullQualifiedIdentifier(annotationTag);
-	}
-
-	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
-		return semanticsAnalyzer.makeFullQualifiedIdentifierList(prefixes, identifier);
-	}
-
-	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
-		return semanticsAnalyzer.makeFullQualifiedIdentifier(prefixes, identifier);
 	}
 
 	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
@@ -932,15 +922,15 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		};
 	}
 
-	protected TLidentifier getName(PVariableDeclarator variableDeclarator) {
+	protected TIdent getName(PVariableDeclarator variableDeclarator) {
 		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-			return ((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier();
+			return ((AIdentifierVariableDeclarator) variableDeclarator).getIdent();
 		}
 		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
-			return ((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier();
+			return ((AInitializerExpressionVariableDeclarator) variableDeclarator).getIdent();
 		}
 		if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
-			return ((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier();
+			return ((AInitializerFmlActionVariableDeclarator) variableDeclarator).getIdent();
 		}
 		return null;
 	}
@@ -1129,7 +1119,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return dynamicContents(prelude, () -> text.apply(false), null).derivedWith(() -> text.apply(true));
 	}
 
-	protected DataBindingNode makeDataBinding(PExpression expression, Bindable bindable) {
+	protected DataBindingNode makeDataBinding(Node expression, Bindable bindable) {
 
 		DataBindingNode dataBindingNode = getSemanticsAnalyzer().retrieveFMLNode(expression,
 				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer()));
@@ -1218,7 +1208,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		}
 	}
 
-	private void decodeSimpleFMLProperty(TLidentifier propertyName, PExpression expressionValue, FMLObject modelObject,
+	private void decodeSimpleFMLProperty(TIdent propertyName, PExpression expressionValue, FMLObject modelObject,
 			List<FMLPropertyValue> propertyValues) {
 
 		// logger.info("Decoding " + propertyName.getText() + "=" + expressionValue);
@@ -1274,16 +1264,16 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 
 	}
 
-	private <O extends FMLObject> O decodeInstanceFMLProperty(TLidentifier propertyName, PQualifiedInstance qualifiedInstance,
+	private <O extends FMLObject> O decodeInstanceFMLProperty(TIdent propertyName, PQualifiedInstance qualifiedInstance,
 			FMLObject modelObject, List<FMLPropertyValue> propertyValues) {
 		Class<O> objectClass = null;
 		if (qualifiedInstance instanceof ASimpleQualifiedInstance) {
-			TUidentifier instanceType = ((ASimpleQualifiedInstance) qualifiedInstance).getArgType();
+			TIdent instanceType = ((ASimpleQualifiedInstance) qualifiedInstance).getArgType();
 			objectClass = (Class<O>) getFMLFactory().getFMLObjectClass(instanceType);
 		}
 		else if (qualifiedInstance instanceof AFullQualifiedQualifiedInstance) {
-			TCidentifier taID = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getTaId();
-			TUidentifier instanceType = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getArgType();
+			TIdent taID = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getTaId();
+			TIdent instanceType = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getArgType();
 			objectClass = (Class<O>) getFMLFactory().getFMLObjectClass(taID, instanceType);
 		}
 

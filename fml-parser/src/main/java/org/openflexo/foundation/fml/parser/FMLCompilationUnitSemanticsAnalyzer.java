@@ -119,6 +119,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
@@ -218,6 +219,11 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	private Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
 
+	@Override
+	protected Map<Node, ObjectNode<?, ?, ?>> getFMLNodesForAST() {
+		return nodesForAST;
+	}
+
 	public void debugASTNodes() {
 		for (Node node : nodesForAST.keySet()) {
 			System.out.println(node.getClass().getSimpleName() + " -> " + nodesForAST.get(node) + " [" + node + "]");
@@ -292,10 +298,27 @@ public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	 * Called at the end of the first pass : initialize pretty print
 	 */
 	public void initializePrettyPrint() {
+		// The model is assembled: a call taken for a static call while its receiver is a variable is built again (CORE-F-5). Done before
+		// the pretty-print is prepared, which records the nodes of each path
+		reconsiderStaticCalls(compilationUnitNode);
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 		// The nodes of the expressions are not reached through the contents of the FML nodes, which print a binding as a text: their
 		// pretty-print is prepared here, so that this text keeps what the source said (CORE-D-33)
 		initializeDataBindingsPrettyPrint(compilationUnitNode);
+	}
+
+	private void reconsiderStaticCalls(P2PPNode<?, ?> node) {
+		if (node instanceof BindingPathNode && !((BindingPathNode) node).reconsiderStaticCalls().isEmpty()) {
+			// The binding holding the path was maybe validated with the former path
+			for (P2PPNode<?, ?> parent = node.getParent(); parent != null; parent = parent.getParent()) {
+				if (parent instanceof DataBindingNode && ((DataBindingNode) parent).getModelObject() != null) {
+					((DataBindingNode) parent).getModelObject().invalidate();
+				}
+			}
+		}
+		for (P2PPNode<?, ?> child : new ArrayList<>(node.getChildren())) {
+			reconsiderStaticCalls(child);
+		}
 	}
 
 	private void initializeDataBindingsPrettyPrint(P2PPNode<?, ?> node) {

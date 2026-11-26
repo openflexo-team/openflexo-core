@@ -57,7 +57,7 @@ From the tightest binding to the loosest:
 | 4 | `*` `/` `%` | left |
 | 5 | `+` `-` | left |
 | 6 | `<<` `>>` `>>>` | left |
-| 7 | `<` `>` `<=` `>=` `instanceof` | none |
+| 7 | `<` `>` `<=` `>=` `instanceof` `as` | none |
 | 8 | `==` `!=` | left |
 | 9 | `&` | left |
 | 10 | `^` | left |
@@ -159,27 +159,34 @@ A *path* designates a value by following properties and calls: `guest.name`, `fi
 ### 9.6.1 Syntax
 
 ```ebnf
-composite_ident = identifier_prefix* ( lidentifier | cidentifier | escaped_identifier | keyword5 )
-identifier_prefix = lidentifier "." | escaped_identifier "."
+composite_ident = identifier_prefix* ( ident | escaped_identifier | keyword5 )
+identifier_prefix = ident "." | escaped_identifier "."
 keyword5 = "concept" | "create" | "get" | "model" | "set"
 
-field_access = "super" "." lidentifier
-             | composite_ident "." "super" "." lidentifier
-             | primary_no_id "." ( lidentifier | keyword5 )
+field_access = "super" "." ident
+             | composite_ident "." "super" "." ident
+             | primary_no_id "." ( ident | keyword5 )
 
-method_invocation = primary "(" argument_list? ")"
+method_invocation = callee_primary "(" argument_list? ")"
                   | "super" "(" argument_list? ")"
-                  | type "." lidentifier "(" argument_list? ")"      (* static call *)
+callee_primary    = composite_ident | literal | field_access | method_invocation | new_instance
+argument_list     = conditional_exp ( "," conditional_exp )*
 ```
 
 Three consequences of this syntax:
 
-* every intermediate element of a dotted name is a `lidentifier` (property names start with a lowercase
-  letter or underscore); the **last** element may also be a constant identifier or one of the five keywords of
-  §2.3.2;
-* a call is applied to a *primary*, so `a.b(1).c` and `a.f().g()` are paths; a call may follow a call;
-* **a static call** is `Type.method(args)`, with the type in the typing space (§4.8) or fully qualified
-  (`java.lang.Double.parseDouble(x)`). There is no syntax to read a static **field**.
+* every element of a dotted name is an identifier or an escaped identifier; the **last** element may also be one
+  of the five keywords of §2.3.2;
+* a call is applied to a path, a literal, a call or a `new`, so `a.b(1).c` and `a.f().g()` are paths; a call
+  may follow a call. A parenthesed expression cannot be called: `(a)(b)` does not parse;
+* **a static call** `Type.method(args)` has the syntax of a call on a path: it is static when the receiver
+  `Type` is a name that resolves to a type of the typing space (§4.8), possibly fully qualified
+  (`java.lang.Double.parseDouble(x)`), and its first segment is not a variable in scope (§9.6.3), which hides a
+  type of the same name, as in Java. A variable named like a type is legal but reported by validation (*a variable
+  should not have the name of a type*). The decision follows the names in scope: it is taken again when a variable of
+  that name appears (the call is then on the variable) or when, with no such variable, the name comes to resolve to a type
+  (an import added; the call is then static). A generic receiver (`List<String>.m()`) cannot be written. There is no syntax to read a
+  static **field**.
 
 `select …` is not an expression: `(select T from x).size` does not parse. Assign the result, or put it in a
 behaviour (§10.2).
@@ -254,7 +261,8 @@ behaviour of `Item` named `Pen`:
 A call `target.name(args)` is resolved by name, number of arguments and types (§7.4). The call of a behaviour
 of the same instance is `this.name(args)`. A call may be used as a value or as a statement.
 
-An argument list is a comma-separated list of expressions.
+An argument list is a comma-separated list of expressions without assignment: `f(a = 1)` does not parse (the
+`where` clause of an action is the one list that takes assignments, §10.2.3).
 
 ### 9.6.5 Lexical context: `this`, `container`, `super`
 
@@ -362,7 +370,7 @@ resource center, which assert every value given here.
 
 ```ebnf
 new_instance = ( composite_ident "." )? "new" reference_type "(" argument_list? ")" with_clause?
-             | ( composite_ident "." )? "new" uidentifier "::" lidentifier "(" argument_list? ")" with_clause?
+             | ( composite_ident "." )? "new" ident "::" ident "(" argument_list? ")" with_clause?
 
 with_clause  = "with" fml_parameters
 ```
@@ -429,8 +437,24 @@ the condition: `p != null && p.name == "Ann"`.
 `e instanceof T` tests whether the value of `e` is an instance of `T`; `T` may be a concept (instances of
 sub-concepts satisfy it) or a Java type. `(T) e` is a cast: for a primitive target it converts the number
 (`(int) 3.7`); for a reference target it asserts the type for the binding analysis, which is how the members of a
-Java type are made available on an expression of a more general type. A cast may be followed by `[]` in the
-grammar; arrays are otherwise not a type of FML (§4.4).
+Java type are made available on an expression of a more general type.
+
+```ebnf
+cast = "(" primitive_type ( "[" "]" )* ")" unary_exp
+     | "(" expression ")" unary_exp_not_plus_minus                              (* the expression names a type *)
+     | "(" ident "(" qualified_argument_list ")" ")" unary_exp_not_plus_minus     (* technology-specific type *)
+     | shift_exp "as" type                                                      (* any type *)
+```
+
+The grammar does not separate a type from an expression in the parenthesed form: its expression must be a
+(possibly qualified) name, resolved as a type; anything else is reported (*Not a type*). A cast to a type with
+arguments or wildcards is therefore written with `as`: `x as List<String>`, `m as Map<? extends K, V>`. `as`
+accepts any type and has the precedence of `instanceof` (§9.2): `a + b as T` casts `a + b`, and a member of the
+result is reached through parentheses, `(x as List<String>).size()`. Like `instanceof`, it is not available in
+scripts (§12). The operand of the parenthesed form cannot start with a sign: `(Foo) -x` is a subtraction, written
+`(Foo) (-x)` for a cast. When an expression is written back in normalized form, a cast keeps the parenthesed form
+for a name and uses `as`, parenthesized, for a type with arguments. A primitive cast may be followed
+by `[]` in the grammar; arrays are otherwise not a type of FML (§4.4).
 
 ## 9.10 The `binding` entry point
 

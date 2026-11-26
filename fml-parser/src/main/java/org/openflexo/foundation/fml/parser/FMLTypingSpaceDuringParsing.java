@@ -408,7 +408,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		public void inAModelDecl(AModelDecl node) {
 			super.inAModelDecl(node);
 			// Found VirtualModel
-			foundVirtualModels.put(node.getUidentifier().getText(), node);
+			foundVirtualModels.put(node.getIdent().getText(), node);
 		}
 
 		@Override
@@ -420,7 +420,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		public void inAConceptDecl(AConceptDecl node) {
 			super.inAConceptDecl(node);
 			// Found FlexoConcept
-			foundConcepts.put(node.getUidentifier().getText(), node);
+			foundConcepts.put(node.getIdent().getText(), node);
 		}
 
 		@Override
@@ -432,7 +432,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		public void inAEventDecl(AEventDecl node) {
 			super.inAEventDecl(node);
 			// Found FlexoEvent
-			foundEvents.put(node.getUidentifier().getText(), node);
+			foundEvents.put(node.getIdent().getText(), node);
 		}
 
 		@Override
@@ -444,13 +444,13 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		public void inAExceptionDecl(AExceptionDecl node) {
 			super.inAExceptionDecl(node);
 			// Found FlexoException
-			foundExceptions.put(node.getUidentifier().getText(), node);
+			foundExceptions.put(node.getIdent().getText(), node);
 		}
 
 		@Override
 		public void inAEnumDecl(AEnumDecl node) {
 			super.inAEnumDecl(node);
-			foundEnums.put(node.getUidentifier().getText(), node);
+			foundEnums.put(node.getIdent().getText(), node);
 		}
 
 		@Override

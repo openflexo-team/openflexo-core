@@ -104,7 +104,7 @@ public class FMLScriptParser {
 			RawSource rawSource = readRawSource(rawSourceReader);
 
 			// Create a Parser instance.
-			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.Script));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(reader, CustomLexer.PUSHBACK_BUFFER_SIZE), EntryPointKind.Script));
 
 			// Parse the input.
 			Start tree = p.parse();

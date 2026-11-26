@@ -42,12 +42,11 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.TLidentifier;
-import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
- * Either a {@link TLidentifier} or a {@link TUidentifier}
+ * An identifier ({@link TIdent}), or for a path element an escaped identifier
  * 
  * @author sylvain
  * 
@@ -76,8 +75,9 @@ public class SimplePathElementNode extends AbstractBindingPathElementNode<Token,
 		if (parent != null && getBindable() != null) {
 			SimplePathElement<?> pathElement;
 			if (escapedSerialization) {
-				// In this cas token is a TLitString
-				String text = astNode.getText().substring(1, astNode.getText().length() - 1);
+				// In this case the token is an escaped identifier {"..."}: its name is the content of the string literal
+				String literal = FMLSemanticsAnalyzer.getEscapedLiteral(astNode.getText());
+				String text = literal.substring(1, literal.length() - 1);
 				pathElement = getBindingFactory().makeSimplePathElement(parent, text, getBindable());
 				pathElement.setEscapedSerialization(true);
 			}

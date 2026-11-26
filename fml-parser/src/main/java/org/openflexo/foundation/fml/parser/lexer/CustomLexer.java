@@ -7,6 +7,20 @@ import org.openflexo.foundation.fml.parser.node.Token;
 
 public class CustomLexer extends Lexer {
 
+	/**
+	 * The size of the pushback buffer a reader given to this lexer needs. The lexer reads ahead as long as a longer token may match, and
+	 * gives back what it read when none does: an escaped identifier <code>{"..."}</code> is one token (CORE-F-5), so a <code>{</code>
+	 * is followed by a read ahead up to the end of a string literal of the same line. The buffer must hold that line
+	 */
+	public static final int PUSHBACK_BUFFER_SIZE = 1 << 16;
+
+	/**
+	 * The pushback buffer for an input of known length: the lexer never gives back more than it read
+	 */
+	public static int pushbackBufferSize(int inputLength) {
+		return Math.max(1, Math.min(PUSHBACK_BUFFER_SIZE, inputLength + 1));
+	}
+
 	public enum EntryPointKind {
 		CompilationUnit {
 			@Override

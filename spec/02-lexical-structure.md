@@ -40,12 +40,11 @@ identifiers, keywords, literals, operators, separators, and — in the `command`
 directive tokens (§2.5).
 
 Tokens are recognised by the **longest match**. When two token definitions match the same longest prefix,
-the one that is declared first in `fml.sablecc` wins. Three consequences are used throughout this
+the one that is declared first in `fml.sablecc` wins. Two consequences are used throughout this
 specification:
 
 * a keyword beats an identifier of the same spelling (keywords are declared before identifiers);
-* an integer literal beats an identifier made of digits (§2.6);
-* an all-capitals word is a *constant identifier*, not a type name (§2.4).
+* an integer literal beats an identifier made of digits (§2.6).
 
 ## 2.3 Lexical states
 
@@ -107,32 +106,30 @@ The grammar admits five keywords as the last element of a dotted name in `normal
 
 ## 2.4 Identifiers
 
-Four token classes cover names.
+One token covers names.
 
 ```ebnf
-lidentifier = lowercase_letter letter_or_digit*            (* starts with a-z or _ *)
-uidentifier = 'A'..'Z' letter_or_digit*                    (* starts with A-Z *)
-cidentifier = ( 'A'..'Z' | '0'..'9' | '_' )*               (* only capitals, digits, underscore *)
+ident = ( 'a'..'z' | '_' | 'A'..'Z' ) letter_or_digit*
 ```
 
 where `letter_or_digit` is a Unicode letter, a Unicode decimal digit, `$` or `_`, and a Unicode letter is
 one of the ranges enumerated in the `unicode_letter` helper of the grammar (Latin, Greek, Cyrillic,
-Hebrew, Arabic, the Indic scripts, Thai, Hangul, CJK and others). For `lidentifier` and `uidentifier` only
-the first character is restricted to ASCII; a `cidentifier` is ASCII throughout.
+Hebrew, Arabic, the Indic scripts, Thai, Hangul, CJK and others). Only the first character is restricted
+to ASCII.
 
-The class decides the *role* of a name, and the grammar uses the three classes in distinct positions:
+The case of a name carries no meaning for the grammar: `Book`, `book`, `BOOK`, `A` and `_tmp` are all
+identifiers, and any of them may name a model, a concept, a property, a variable, an enum value or a
+technology-adapter alias. Upper-initial names for models, concepts, events, enums and types,
+lower-initial names for properties, behaviours and variables, and capitals for enum values and
+technology-adapter aliases are conventions, followed by the examples of this specification.
 
-| Class | Used for | Examples |
-|---|---|---|
-| `lidentifier` | properties, behaviours, local variables, parameters, namespace and import aliases, package segments | `title`, `newBook`, `_tmp` |
-| `uidentifier` | models, concepts, events, enums, type names, `typedef` aliases, behaviour kinds and role kinds | `Book`, `ShelfCreated` |
-| `cidentifier` | enum values, technology-adapter aliases introduced by `use`, constants | `FMLRT`, `ZERO_MANY` |
+Where a type and a value can both be written, the grammar parses a name and the semantic analysis
+decides what it is (§4.8):
 
-Because the longest match with the earliest declaration wins, a word that is all capitals, digits and
-underscores is a `cidentifier` **even when it could be read as a `uidentifier`**: `ABC`, `A`, `T1` and
-`FMLRT` are constant identifiers, `Abc` is a type identifier. Consequently a model, concept, event or enum
-cannot be named `UML` or `X`: the declaration `concept UML { }` does not parse. A name in that class
-is for constants and for aliases.
+* `Foo.bar(x)` is a static call when `Foo` names a type and is not a variable in scope, and a call on a
+  value otherwise (§9.6.4);
+* the type of a cast `(Foo) x` is a parenthesed expression that must be a (qualified) name of a type (§9.9);
+* the value of a qualified argument `x = Foo` is a type when the parameter takes a type (§10.10.1).
 
 The dollar sign may appear inside an identifier after its first character, and as a separator in
 the *nested type name* `Model$Concept` (§4.3).
@@ -140,7 +137,7 @@ the *nested type name* `Model$Concept` (§4.3).
 ### 2.4.1 Escaped identifiers
 
 A name that cannot be written as an identifier is written `{"text"}`: a left brace, a string literal and a
-right brace. The grammar accepts it as a *prefix* of a dotted name (`{"a b"}.x`) and as the last element
+right brace, read as one token (blanks may surround the literal; a comment or a line break may not). The grammar accepts it as a *prefix* of a dotted name (`{"a b"}.x`) and as the last element
 of a dotted name used as a left-hand side or a primary. It is meant for names that are not valid
 identifiers, for instance a name that comes from an external resource and contains a space.
 
@@ -163,7 +160,7 @@ Reserved in `normal` unless stated otherwise.
 
 The primitive-type keywords `boolean`, `char`, `short`, `int`, `long`, `byte`, `float`, `double` and `void`
 exist in all states. So do the literals `true`, `false` and `null`. `String`, `Date` and the other Java
-types are not keywords; they are `uidentifier`s resolved through the typing space (§4.8).
+types are not keywords; they are identifiers resolved through the typing space (§4.8).
 
 ### 2.5.2 Where each keyword is reserved
 
@@ -264,8 +261,6 @@ The lexer produces `>>` and `>>>` as single tokens. The grammar compensates in g
 
 * A property cannot be called `end`, `match`, `get`, `set`, `delete`, … in a declaration: these are
   keywords in `normal`. They are usable inside expression contexts (§2.3.1) and, for five of them, after a dot.
-* A concept or model name must not be made only of capitals, digits and underscores: `OBP` is a
-  constant identifier, `Obp` a type identifier.
 * `)` ends the `binding` state even when it closes an inner parenthesis.
 * There are no binary literals, digit separators, or `\u` escapes.
 * In a script, the directive words are reserved and `select` is not.

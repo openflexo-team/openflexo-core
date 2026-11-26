@@ -65,13 +65,13 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.ABytePrimitiveType;
+import org.openflexo.foundation.fml.parser.node.ACastFmlUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.ACharPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.ACompositeTidentSuffix;
 import org.openflexo.foundation.fml.parser.node.ADiamondTypeArguments;
 import org.openflexo.foundation.fml.parser.node.ADoublePrimitiveType;
-import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AExtendsWildcardBounds;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
@@ -102,7 +102,7 @@ import org.openflexo.foundation.fml.parser.node.PReferenceType;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
-import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.foundation.technologyadapter.SpecificTypeInfo;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -137,6 +137,59 @@ public class TypeFactory extends DepthFirstAdapter {
 		// System.out.println("Returning: " + bsa.getType(node) + " of " + (bsa.getType(node) != null ? bsa.getType(node).getClass() :
 		// null));
 		return bsa.getType(node);
+	}
+
+
+	/**
+	 * The qualified name written by an expression that is only a name ({@code Foo}, {@code java.util.List}), null for any other
+	 * expression. Where the grammar cannot tell a type from an expression (the type of a cast, a qualified argument {@code x = Foo}),
+	 * it parses an expression and the semantic layer reads it back as a type (CORE-F-5)
+	 */
+	public static String getTypeName(Node expression) {
+		if (expression == null) {
+			return null;
+		}
+		// SableCC prints the tokens of a node separated by spaces
+		String text = expression.toString().replaceAll("\\s+", "");
+		// The characters of the ident token: a letter or '_' first, then letters, digits, '$' and '_' (Unicode letters included)
+		for (String segment : text.split("\\.", -1)) {
+			if (segment.isEmpty() || !(Character.isLetter(segment.charAt(0)) || segment.charAt(0) == '_')) {
+				return null;
+			}
+			for (int i = 1; i < segment.length(); i++) {
+				char c = segment.charAt(i);
+				if (!Character.isLetterOrDigit(c) && c != '$' && c != '_') {
+					return null;
+				}
+			}
+		}
+		return text;
+	}
+
+	/**
+	 * The type named by an expression that is only a name (see {@link #getTypeName(Node)}), null when it is not a name
+	 */
+	public static Type makeTypeFromExpression(Node expression, AbstractFMLTypingSpace typingSpace) {
+		String typeName = getTypeName(expression);
+		if (typeName == null) {
+			return null;
+		}
+		return new TypeFactory(expression, typingSpace).makeType(typeName);
+	}
+
+	/**
+	 * The type a qualified name resolves to in the typing space, without importing it; null when it resolves to nothing (an
+	 * {@link UnresolvedType}). Used to decide whether a name is a type or a value
+	 */
+	public static Type lookupType(String typeName, AbstractFMLTypingSpace typingSpace) {
+		if (typeName == null || typingSpace == null) {
+			return null;
+		}
+		Type returned = typingSpace.resolveType(typeName);
+		if (returned == null || returned instanceof UnresolvedType) {
+			return null;
+		}
+		return returned;
 	}
 
 	public static VirtualModelInstanceType makeVirtualModelInstanceType(Node node, AbstractFMLTypingSpace typingSpace) {
@@ -196,8 +249,8 @@ public class TypeFactory extends DepthFirstAdapter {
 			Type returned = typeNodes.get(n);
 
 			if (returned == null) {
-				if (n instanceof TUidentifier) {
-					return makeType(((TUidentifier) n).getText());
+				if (n instanceof TIdent) {
+					return makeType(((TIdent) n).getText());
 				}
 				if (n instanceof APrimitiveType) {
 					return getType(((APrimitiveType) n).getPrimitiveType());
@@ -351,19 +404,16 @@ public class TypeFactory extends DepthFirstAdapter {
 			StringBuffer fullQualifiedName = new StringBuffer();
 			for (PIdentifierPrefix identifierPrefix : node.getPrefixes()) {
 				if (identifierPrefix instanceof ANormalIdentifierPrefix) {
-					fullQualifiedName.append(((ANormalIdentifierPrefix) identifierPrefix).getLidentifier().getText() + ".");
+					fullQualifiedName.append(((ANormalIdentifierPrefix) identifierPrefix).getIdent().getText() + ".");
 				}
 				if (identifierPrefix instanceof AEscapedIdentifierPrefix) {
-					AEscapedIdentifier escapedIdentifier = (AEscapedIdentifier) ((AEscapedIdentifierPrefix) identifierPrefix)
-							.getEscapedIdentifier();
-
-					// fullQualifiedName.append(((AEscapedIdentifierPrefix) identifierPrefix).getEscapedIdentifier().getText() + ".");
-					fullQualifiedName.append(escapedIdentifier.getLitString().getText());
+					fullQualifiedName.append(
+							FMLSemanticsAnalyzer.getEscapedLiteral(((AEscapedIdentifierPrefix) identifierPrefix).getEscapedIdentifier()));
 				}
 			}
 			fullQualifiedName.append(node.getIdentifier().getText());
 			for (PCompositeTidentSuffix pCompositeTidentSuffix : node.getSuffixes()) {
-				fullQualifiedName.append("$" + ((ACompositeTidentSuffix) pCompositeTidentSuffix).getUidentifier().getText());
+				fullQualifiedName.append("$" + ((ACompositeTidentSuffix) pCompositeTidentSuffix).getIdent().getText());
 			}
 			return makeType(fullQualifiedName.toString());
 		}
@@ -474,7 +524,7 @@ public class TypeFactory extends DepthFirstAdapter {
 	@Override
 	public void inATechnologySpecificType(ATechnologySpecificType node) {
 		super.inATechnologySpecificType(node);
-		SpecificTypeInfo newSpecificTypeInfo = new SpecificTypeInfo(retrieveTechnologySpecificType(node));
+		SpecificTypeInfo newSpecificTypeInfo = new SpecificTypeInfo(retrieveTechnologySpecificType(node.getIdent()));
 		specificTypesInfoStack.push(newSpecificTypeInfo);
 
 		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
@@ -488,17 +538,36 @@ public class TypeFactory extends DepthFirstAdapter {
 	public void outATechnologySpecificType(ATechnologySpecificType node) {
 		super.outATechnologySpecificType(node);
 
-		SpecificTypeInfo specificTypeInfo = specificTypesInfoStack.pop();
-
-		TechnologyAdapter<?> ta = typingSpace.getServiceManager().getTechnologyAdapterService()
-				.getTechnologyAdapter(specificTypeInfo.getTechnologyAdapterClass());
-
-		registerTypeNode(node, ta.instantiateType(specificTypeInfo));
+		registerTypeNode(node, instantiateType(specificTypesInfoStack.pop()));
 	}
 
-	private Class<? extends TechnologySpecificType<?>> retrieveTechnologySpecificType(ATechnologySpecificType tsType) {
+	private Type instantiateType(SpecificTypeInfo specificTypeInfo) {
+		TechnologyAdapter<?> ta = typingSpace.getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(specificTypeInfo.getTechnologyAdapterClass());
+		return ta.instantiateType(specificTypeInfo);
+	}
 
-		String identifier = tsType.getUidentifier().getText();
+	/**
+	 * The technology-specific type of a cast {@code (Foo(a=1)) o}: the grammar has a dedicated alternative for it (CORE-F-5), whose
+	 * type is not a {@link ATechnologySpecificType} node. Only the type is walked, not the operand
+	 */
+	public static Type makeTechnologySpecificType(ACastFmlUnaryExpNotPlusMinus node, AbstractFMLTypingSpace typingSpace) {
+		TypeFactory factory = new TypeFactory(node, typingSpace);
+		SpecificTypeInfo specificTypeInfo = new SpecificTypeInfo(factory.retrieveTechnologySpecificType(node.getType()));
+		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
+			FMLCompilationUnitSemanticsAnalyzer analyzer = ((FMLTypingSpaceDuringParsing) typingSpace).getAnalyzer();
+			specificTypeInfo.setSerializationForm(
+					node.getType().getText() + "(" + analyzer.getFragment(node.getQualifiedArgumentList()).getRawText() + ")");
+		}
+		factory.specificTypesInfoStack.push(specificTypeInfo);
+		node.getQualifiedArgumentList().apply(factory);
+		factory.specificTypesInfoStack.pop();
+		return factory.instantiateType(specificTypeInfo);
+	}
+
+	private Class<? extends TechnologySpecificType<?>> retrieveTechnologySpecificType(TIdent tsType) {
+
+		String identifier = tsType.getText();
 		for (UseModelSlotDeclaration useModelSlotDeclaration : typingSpace.getFMLCompilationUnit().getUseDeclarations()) {
 			Class<? extends TechnologySpecificType<?>> technologySpecificType = typingSpace.getServiceManager()
 					.getTechnologyAdapterService().getTechnologySpecificType(useModelSlotDeclaration.getModelSlotClass(), identifier);
@@ -514,6 +583,12 @@ public class TypeFactory extends DepthFirstAdapter {
 	public final void inASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
 		super.inASimpleQualifiedArgument(node);
 		if (!(typingSpace instanceof FMLTypingSpaceDuringParsing)) {
+			return;
+		}
+
+		// A parameter whose value names a type (x = Foo) was a distinct alternative of the grammar, never handled here: it is still left
+		// aside now that the grammar parses it as an expression (CORE-F-5)
+		if (lookupType(getTypeName(node.getExpression()), typingSpace) != null) {
 			return;
 		}
 

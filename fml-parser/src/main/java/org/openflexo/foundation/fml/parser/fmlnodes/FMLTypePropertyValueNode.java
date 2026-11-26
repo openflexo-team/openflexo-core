@@ -46,24 +46,27 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTypePropertyValue;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
-import org.openflexo.foundation.fml.parser.node.ATypeQualifiedArgument;
+import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * 
  * <pre>
-      {type}           [arg_name]:lidentifier assign reference_type
+      {simple}         [arg_name]:ident assign expression
+ * </pre>
+ * when the FML property takes a type and the expression is a (qualified) name, read back as a type (CORE-F-5)
+ * <pre>
  * </pre>
  * 
  * @author sylvain
  * 
  */
 public class FMLTypePropertyValueNode<M extends FMLObject, T extends Type>
-		extends AbstractFMLPropertyValueNode<ATypeQualifiedArgument, FMLTypePropertyValue<M, T>, M, T> {
+		extends AbstractFMLPropertyValueNode<ASimpleQualifiedArgument, FMLTypePropertyValue<M, T>, M, T> {
 
 	private static final Logger logger = Logger.getLogger(FMLTypePropertyValueNode.class.getPackage().getName());
 
-	public FMLTypePropertyValueNode(ATypeQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+	public FMLTypePropertyValueNode(ASimpleQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
 	}
 
@@ -85,14 +88,15 @@ public class FMLTypePropertyValueNode<M extends FMLObject, T extends Type>
 
 		getModelObject().setProperty(fmlProperty);
 
-		Type type = TypeFactory.makeType(getASTNode().getReferenceType(), getSemanticsAnalyzer().getTypingSpace());
+		// The grammar parses the value as an expression: it is a name, read back as a type (CORE-F-5)
+		Type type = TypeFactory.makeTypeFromExpression(getASTNode().getExpression(), getSemanticsAnalyzer().getTypingSpace());
 		getModelObject().setType((T) type);
 
 		return (FMLTypePropertyValueNode<M, T>) super.deserialize();
 	}
 
 	@Override
-	public FMLTypePropertyValue<M, T> buildModelObjectFromAST(ATypeQualifiedArgument astNode) {
+	public FMLTypePropertyValue<M, T> buildModelObjectFromAST(ASimpleQualifiedArgument astNode) {
 
 		return (FMLTypePropertyValue<M, T>) getFactory().newTypePropertyValue();
 	}
@@ -115,7 +119,7 @@ public class FMLTypePropertyValueNode<M extends FMLObject, T extends Type>
 
 	private RawSourceFragment getTypeFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getReferenceType());
+			return getFragment(getASTNode().getExpression());
 		}
 		return null;
 	}

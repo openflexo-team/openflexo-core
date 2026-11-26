@@ -176,7 +176,7 @@ public class ExpressionIterationActionNode extends ControlGraphNode<Node, Expres
 				: null;
 		PVariableDeclarator declarator = declaration != null ? declaration.getVariableDeclarator() : null;
 		if (declarator instanceof AInitializerExpressionVariableDeclarator) {
-			returned.setIteratorName(((AInitializerExpressionVariableDeclarator) declarator).getLidentifier().getText());
+			returned.setIteratorName(((AInitializerExpressionVariableDeclarator) declarator).getIdent().getText());
 			returned.setDeclaredType(TypeFactory.makeType(declaration.getType(), getSemanticsAnalyzer().getTypingSpace()));
 			returned.setInitExpression(ExpressionFactory.makeDataBinding(((AInitializerExpressionVariableDeclarator) declarator).getExpression(),
 					returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this));
@@ -257,7 +257,7 @@ public class ExpressionIterationActionNode extends ControlGraphNode<Node, Expres
 	protected RawSourceFragment getIteratorNameFragment() {
 		PVariableDeclarator variableDeclarator = getVariableDeclarator();
 		if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
-			return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier());
+			return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getIdent());
 		}
 		return null;
 	}

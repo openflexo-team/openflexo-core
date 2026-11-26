@@ -9,16 +9,16 @@ calls.
 
 ```ebnf
 fml_action_exp =
-    cidentifier "::" uidentifier fml_parameters in_clause? from_clause?      (* technology action *)
+    ident "::" ident fml_parameters in_clause? from_clause?      (* technology action *)
   | "delete" expression from_clause?
   | "select" "unique"? select_type with_clause? from_clause where_clause?
   | "connect" left_hand_side "using" expression
   | "log" expression
   | "fire" expression
   | "notify" expression in_clause?
-  | "begin" "match" uidentifier from_clause where_clause?
-  | "match" uidentifier in_clause? from_clause qualified_where_clause? "unmatched" ":" new_instance
-  | "end" "match" uidentifier in_clause ( "unmatched" ":" end_match_clause )?
+  | "begin" "match" ident from_clause where_clause?
+  | "match" ident in_clause? from_clause qualified_where_clause? "unmatched" ":" new_instance
+  | "end" "match" ident in_clause ( "unmatched" ":" end_match_clause )?
   | "(" fml_action_exp ")"
 
 in_clause    = "in" expression
@@ -26,7 +26,7 @@ from_clause  = "from" expression
 where_clause = "where" "(" argument_list? ")"
 qualified_where_clause = "where" "(" qualified_argument_list? ")"
 select_type  = reference_type | technology_specific_type
-with_clause  = "with" uidentifier fml_parameters
+with_clause  = "with" ident fml_parameters
 end_match_clause = "delete" "(" argument_list? ")" | method_invocation
 ```
 
@@ -304,18 +304,19 @@ object it starts from.
 
 ```ebnf
 fml_parameters         = "(" qualified_argument_list? ")"
-qualified_argument     = lidentifier "=" expression                          (* a value *)
-                       | lidentifier "=" reference_type                      (* a type *)
-                       | lidentifier "=" "$" ( lidentifier | uidentifier )   (* an enum value *)
-                       | lidentifier "=" qualified_instance                  (* a parameter object *)
-                       | lidentifier "=" "{" qualified_instance ( "," qualified_instance )* "}"   (* a list *)
-qualified_instance     = uidentifier ":" fml_parameters
-                       | cidentifier "::" uidentifier ":" fml_parameters
+qualified_argument     = ident "=" expression                          (* a value, or a type *)
+                       | ident "=" "$" ident                           (* an enum value *)
+                       | ident "=" qualified_instance                  (* a parameter object *)
+                       | ident "=" "{" qualified_instance ( "," qualified_instance )* "}"   (* a list *)
+qualified_instance     = ident ":" fml_parameters
+                       | ident "::" ident ":" fml_parameters
 ```
 
 Arguments are named: each is `name = value`, and the names are those of the action's parameters in the adapter.
 A value can be an expression, a type, an enum value written `$NAME`, an object built from nested parameters
-(`Type: (…)`), or a list of such objects.
+(`Type: (…)`), or a list of such objects. A type and an expression are written alike: `x = Foo` gives a type when the
+parameter takes a type and `Foo` is a (possibly qualified) name, a value otherwise. A generic type (`x = List<String>`)
+cannot be written there.
 
 The same form is used for role parameters (§6.5), for behaviour kinds (§7.8), for `select … with` and for the
 precise parameters of `new … with (…)`.

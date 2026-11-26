@@ -73,9 +73,9 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 	public VirtualModel buildModelObjectFromAST(AModelDecl astNode) {
 		VirtualModel returned = getFactory().newVirtualModel();
 		try {
-			returned.setName(astNode.getUidentifier().getText());
+			returned.setName(astNode.getIdent().getText());
 		} catch (InvalidNameException e) {
-			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
+			throwIssue("Invalid name: " + astNode.getIdent().getText());
 		}
 		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -174,7 +174,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 	@Override
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getUidentifier());
+			return getFragment(getASTNode().getIdent());
 		}
 		return null;
 	}

@@ -7,7 +7,7 @@ chapter describes the declarations that give a program its structure.
 ## 5.1 Models
 
 ```ebnf
-model_decl    = annotation* visibility? "abstract"? "model" uidentifier
+model_decl    = annotation* visibility? "abstract"? "model" ident
                 super_clause?
                 "{" member* "}"
 
@@ -117,7 +117,7 @@ public model Shop {
 ## 5.2 Concepts
 
 ```ebnf
-concept_decl = annotation* visibility? "abstract"? "concept" uidentifier
+concept_decl = annotation* visibility? "abstract"? "concept" ident
                super_clause?
                "{" member* "}"
 ```
@@ -247,8 +247,8 @@ called.
 ## 5.4 Enums
 
 ```ebnf
-enum_decl   = annotation* visibility? "enum" uidentifier "{" enum_value ( "," enum_value )* "}"
-enum_value  = cidentifier
+enum_decl   = annotation* visibility? "enum" ident "{" enum_value ( "," enum_value )* "}"
+enum_value  = ident
 ```
 
 An enum is a closed set of named values. It can be declared in a model or in a concept.
@@ -275,7 +275,7 @@ public model Colors {
 }
 ```
 
-The values are `cidentifier`s (§2.4), so each is written in capitals. An enum is a type (§4.3): a property,
+The values are identifiers (§2.4), written in capitals by convention. An enum is a type (§4.3): a property,
 a parameter or a local can be typed with it, and the value `null` belongs to it.
 
 The set of all values of an enum is available, from a property or a value typed with the enum, through the
@@ -289,7 +289,7 @@ technology-specific action or role, a value is written `$NAME` (§10.10.1).
 ## 5.5 Events
 
 ```ebnf
-event_decl = annotation* visibility? "abstract"? "event" uidentifier
+event_decl = annotation* visibility? "abstract"? "event" ident
              super_clause?
              "{" member* "}"
 ```
@@ -323,7 +323,7 @@ type of a `listen`.
 ## 5.6 Exceptions
 
 ```ebnf
-exception_decl = annotation* visibility? "abstract"? "exception" uidentifier
+exception_decl = annotation* visibility? "abstract"? "exception" ident
                  super_clause?
                  "{" member* "}"
 ```
@@ -371,7 +371,7 @@ that name.
 invariant_decl = simple_invariant | iteration_invariant
 simple_invariant     = "assert" expression ";"
                      | "assert" expression "onfailure" ":" statement
-iteration_invariant  = "assert" "(" type lidentifier ":" expression ")"
+iteration_invariant  = "assert" "(" iteration_type ident ":" expression ")"   (* no type arguments *)
                        "{" simple_invariant* "}"
 ```
 

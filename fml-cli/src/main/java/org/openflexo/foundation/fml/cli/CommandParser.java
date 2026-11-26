@@ -84,7 +84,7 @@ public class CommandParser {
 			RawSource rawSource = new RawSource(new StringReader(aCommand));
 
 			// Create a Parser instance.
-			Parser p = new Parser(new CustomLexer(new PushbackReader(new StringReader(aCommand)), EntryPointKind.Command));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(new StringReader(aCommand), CustomLexer.pushbackBufferSize(aCommand.length())), EntryPointKind.Command));
 
 			// Parse the input.
 			Start tree = p.parse();

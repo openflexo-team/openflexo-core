@@ -93,7 +93,7 @@ public class MethodCallBindingPathElementNode
 
 		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
-			String methodName = getLastPathIdentifier(astNode.getPrimary());
+			String methodName = getLastPathIdentifier(astNode.getCalleePrimary());
 			if (escapedSerialization) {
 				methodName = methodName.substring(1, methodName.length() - 1);
 			}
@@ -109,7 +109,7 @@ public class MethodCallBindingPathElementNode
 
 		/*if (getBindable() != null) {
 			handleArguments(astNode.getArgumentList());
-			String identifier = getLastPathIdentifier(astNode.getPrimary());
+			String identifier = getLastPathIdentifier(astNode.getCalleePrimary());
 			MethodCallBindingPathElement returned = new MethodCallBindingPathElement(identifier, getArguments());
 			return returned;
 		}

@@ -19,19 +19,19 @@ statement        = block
                  | "while" "(" expression ")" statement
                  | "do" statement "while" "(" expression ")" ";"
                  | "for" "(" for_init? ";" expression? ";" statement_expression? ")" statement
-                 | "for" "(" type lidentifier ":" ( expression | fml_action_exp ) ")" statement
+                 | "for" "(" type ident ":" ( expression | fml_action_exp ) ")" statement
                  | "return" ";"
                  | "return" ( expression | fml_action_exp ) ";"
                  | "throw" expression ";"
                  | "try" block catch_clause+
                  | "try" block catch_clause* "finally" block
 
-catch_clause        = "catch" "(" reference_type lidentifier ")" block
+catch_clause        = "catch" "(" reference_type ident ")" block
 
 for_init            = statement_expression | type variable_declarator
 statement_expression = assignment | pre_increment | pre_decrement | post_increment | post_decrement
                      | method_invocation | new_instance | fml_action_exp
-variable_declarator  = lidentifier | lidentifier "=" expression | lidentifier "=" fml_action_exp
+variable_declarator  = ident | ident "=" expression | ident "=" fml_action_exp
 ```
 
 `statement_no_short_if` is `statement` without an `if` lacking an `else`; it resolves the dangling `else` as in

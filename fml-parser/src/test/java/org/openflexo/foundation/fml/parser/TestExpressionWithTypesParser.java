@@ -128,62 +128,105 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 		tryToParse("(int)2+((float)2+(double)2)", "6.0", BinaryOperatorExpression.class, null, serviceManager, false);
 	}
 
+	// CORE-F-5: the type of '(T) x' is a parenthesed expression read back as a type, so it must be a (qualified) name; a cast to a type
+	// with arguments or wildcards is written 'x as T'. The normalized print keeps '(T) x' for a name and uses 'as' for the others
+
+	@Test
+	public void aGenericCastInParenthesesIsRejected() {
+		tryToParse("(List<Tutu>)toto", null, CastExpression.class, null, serviceManager, true);
+		tryToParse("(java.util.List<java.lang.String>)data.list", null, CastExpression.class, null, serviceManager, true);
+	}
+
 	@Test
 	public void testCast4() {
-		tryToParse("(java.util.List<Tutu>)toto", "(List<Tutu>)toto", CastExpression.class, null, serviceManager, false);
+		tryToParse("toto as java.util.List<Tutu>", "(toto as List<Tutu>)", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testCast5() {
-		CastExpression e = (CastExpression) (tryToParse("(List<Tutu>)toto", "(List<Tutu>)toto", CastExpression.class, null, serviceManager,
-				false));
+		CastExpression e = (CastExpression) (tryToParse("toto as List<Tutu>", "(toto as List<Tutu>)", CastExpression.class, null,
+				serviceManager, false));
 		assertEquals(((ParameterizedTypeImpl) e.getCastType()).getRawType(), List.class);
 	}
 
 	@Test
 	public void testCast6() {
-		tryToParse("(Foo<Tutu>)toto", "(Foo<Tutu>)toto", CastExpression.class, null, serviceManager, false);
+		tryToParse("toto as Foo<Tutu>", "(toto as Foo<Tutu>)", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testParameteredCast() {
-		tryToParse("(java.util.List<java.lang.String>)data.list", "(List<String>)data.list", CastExpression.class, null, serviceManager,
-				false);
+		tryToParse("data.list as java.util.List<java.lang.String>", "(data.list as List<String>)", CastExpression.class, null,
+				serviceManager, false);
 	}
 
 	@Test
 	public void testParameteredCast2() {
-		tryToParse("(java.util.Hashtable<java.lang.String,java.util.List<java.lang.String>, Boolean>)data.map",
-				"(Hashtable<String,List<String>,Boolean>)data.map", CastExpression.class, null, serviceManager, false);
+		tryToParse("data.map as java.util.Hashtable<java.lang.String,java.util.List<java.lang.String>, Boolean>",
+				"(data.map as Hashtable<String,List<String>,Boolean>)", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	// Test with Shr syntax
 	public void testParameteredCast3() {
-		tryToParse("(java.util.Hashtable<java.lang.String,java.util.List<java.lang.String>>)data.map",
-				"(Hashtable<String,List<String>>)data.map", CastExpression.class, null, serviceManager, false);
+		tryToParse("data.map as java.util.Hashtable<java.lang.String,java.util.List<java.lang.String>>",
+				"(data.map as Hashtable<String,List<String>>)", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	// Test with Ushr syntax
 	public void testParameteredCast4() {
-		tryToParse("(MyA<MyB<MyC<MyD>>>)a.path", "(MyA<MyB<MyC<MyD>>>)a.path", CastExpression.class, null, serviceManager, false);
+		tryToParse("a.path as MyA<MyB<MyC<MyD>>>", "(a.path as MyA<MyB<MyC<MyD>>>)", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testWilcardUpperBound() {
-		tryToParse("(List<? extends Tutu>)toto", "(List<? extends Tutu>)toto", CastExpression.class, null, serviceManager, false);
+		tryToParse("toto as List<? extends Tutu>", "(toto as List<? extends Tutu>)", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testWilcardLowerBound() {
-		tryToParse("(List<? extends Tutu>)toto", "(List<? extends Tutu>)toto", CastExpression.class, null, serviceManager, false);
+		// 'super' is not a keyword of the binding entry point: a lower bound is written in FML proper only
+		tryToParse("toto as List<? extends Tutu>", "(toto as List<? extends Tutu>)", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testWilcardUpperBounds() {
-		tryToParse("(Map<? extends Key, ? extends Value>)toto", "(Map<? extends Key,? extends Value>)toto", CastExpression.class, null,
+		tryToParse("toto as Map<? extends Key, ? extends Value>", "(toto as Map<? extends Key,? extends Value>)", CastExpression.class,
+				null, serviceManager, false);
+	}
+
+	@Test
+	public void aCastWithAsOfASimpleTypeIsPrintedInParentheses() {
+		tryToParse("toto as Foo", "(Foo)toto", CastExpression.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void theOperandOfACastKeepsItsParentheses() {
+		// '(AType)a + b' would cast 'a' only
+		tryToParse("(AType)(a + b)", "(AType)(a + b)", CastExpression.class, null, serviceManager, false);
+		tryToParse("(a + b) as AType", "(AType)(a + b)", CastExpression.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void asBindsLooserThanArithmetic() {
+		// 'a + b as T' casts 'a + b', as 'instanceof' would test it
+		CastExpression e = (CastExpression) tryToParse("a + b as List<Tutu>", "((a + b) as List<Tutu>)", CastExpression.class, null,
 				serviceManager, false);
+		assertTrue(e.getArgument() instanceof BinaryOperatorExpression);
+	}
+
+	@Test
+	public void aCastOfASignedOperandIsWrittenWithParentheses() {
+		// '(AType) -a' is a subtraction (CORE-F-5): the cast of a signed operand is written '(AType)(-a)'
+		tryToParse("(AType) -a", "AType - a", BinaryOperatorExpression.class, null, serviceManager, false);
+		tryToParse("(AType)(-a)", "(AType)(-a)", CastExpression.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void aOneLetterTypeCanBeCastTo() {
+		// 'A' was a constant identifier before CORE-F-5, not a type name
+		tryToParse("(A)a", "(A)a", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test

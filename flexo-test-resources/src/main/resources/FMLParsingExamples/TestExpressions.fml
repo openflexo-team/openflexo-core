@@ -39,6 +39,15 @@ model MyModel {
 			test9 = call().b.call();
 		}
 		
+		casts() {
+			test1 = (String) a.path;
+			test2 = (java.util.Date) a.path;
+			test3 = a.path as List<String>;
+			test4 = (a + b) as java.util.Map<String,List<String>>;
+			test5 = (Foo) (-a);
+			test6 = Integer.parseInt(a.path);
+		}
+		
 		conditionals() {
 			test1 = aTest ? 2 : 7;
 			test2 = aTest ? true : (7 != 8);

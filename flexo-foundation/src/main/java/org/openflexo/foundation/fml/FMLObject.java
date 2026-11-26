@@ -39,7 +39,11 @@
 package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
+import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -48,6 +52,9 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.BindingPath;
+import org.openflexo.connie.expr.VisitorException;
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -991,6 +998,101 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 	
 	}*/
+
+	/**
+	 * A variable hides a type of the same name (CORE-F-5): in <code>Foo.bar()</code>, <code>Foo</code> is the variable when one is visible,
+	 * the type otherwise, as in Java. Since the case of a name carries no meaning in FML, a variable can take the name of a type: legal, but
+	 * a reader is easily misled. Reported on any binding of an FML object whose path starts with a variable whose name is also a type of the
+	 * typing space of its unit.
+	 * 
+	 * @author sylvain
+	 */
+	@DefineValidationRule
+	public static class VariableShouldNotHideAType extends ValidationRule<VariableShouldNotHideAType, FMLObject> {
+
+		private static final Logger logger = Logger.getLogger(VariableShouldNotHideAType.class.getPackage().getName());
+
+		public VariableShouldNotHideAType() {
+			super(FMLObject.class, "variable_should_not_hide_a_type");
+		}
+
+		@Override
+		public ValidationIssue<VariableShouldNotHideAType, FMLObject> applyValidation(FMLObject object) {
+			FMLCompilationUnit unit = object.getDeclaringCompilationUnit();
+			if (unit == null || unit.getTypingSpace() == null) {
+				return null;
+			}
+			Set<String> hidingNames = new TreeSet<>();
+			// A name is looked up once: resolving it walks the imports and the Java packages
+			Set<String> checkedNames = new HashSet<>();
+			for (DataBinding<?> binding : getBindings(object)) {
+				if (binding.isSet() && binding.getExpression() != null) {
+					try {
+						binding.getExpression().visit(e -> {
+							if (e instanceof BindingPath && ((BindingPath) e).getBindingVariable() != null
+									&& ((BindingPath) e).getBindingPathElementCount() > 0) {
+								String name = ((BindingPath) e).getBindingVariable().getVariableName();
+								if (name != null && checkedNames.add(name)) {
+									Type type = unit.getTypingSpace().resolveType(name);
+									if (type != null && !(type instanceof UnresolvedType)) {
+										hidingNames.add(name);
+									}
+								}
+							}
+						});
+					} catch (VisitorException e) {
+						logger.fine("Cannot visit " + binding + ": " + e);
+					}
+				}
+			}
+			if (hidingNames.isEmpty()) {
+				return null;
+			}
+			return new VariableHidesATypeWarning(this, object, String.join(", ", hidingNames));
+		}
+
+		/** The bindings of the supplied object, read through its PAMELA properties */
+		private static List<DataBinding<?>> getBindings(FMLObject object) {
+			List<DataBinding<?>> returned = new ArrayList<>();
+			if (object.getFMLModelFactory() == null) {
+				return returned;
+			}
+			org.openflexo.pamela.model.ModelEntity<?> entity = object.getFMLModelFactory().getModelEntityForInstance(object);
+			if (entity == null) {
+				return returned;
+			}
+			try {
+				Iterator<? extends ModelProperty<?>> properties = entity.getProperties();
+				while (properties.hasNext()) {
+					ModelProperty<?> property = properties.next();
+					if (DataBinding.class.equals(property.getType()) && property.getGetterMethod() != null) {
+						Object value = property.getGetterMethod().invoke(object);
+						if (value instanceof DataBinding) {
+							returned.add((DataBinding<?>) value);
+						}
+					}
+				}
+			} catch (ModelDefinitionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				logger.fine("Cannot read the bindings of " + object + ": " + e);
+			}
+			return returned;
+		}
+
+		/** The warning, which names the variables in its message */
+		public static class VariableHidesATypeWarning extends ValidationWarning<VariableShouldNotHideAType, FMLObject> {
+
+			private final String hidingNames;
+
+			public VariableHidesATypeWarning(VariableShouldNotHideAType rule, FMLObject object, String hidingNames) {
+				super(rule, object, "variable_($hidingNames)_hides_a_type_of_the_same_name");
+				this.hidingNames = hidingNames;
+			}
+
+			public String getHidingNames() {
+				return hidingNames;
+			}
+		}
+	}
 
 	/**
 	 * The argument of a behaviour is designated by its name (<code>aValue</code>); <code>parameters.aValue</code> is the deprecated notation,

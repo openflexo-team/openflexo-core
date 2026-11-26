@@ -50,7 +50,10 @@ import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.AFieldCalleePrimary;
+import org.openflexo.foundation.fml.parser.node.AIdentifierCalleePrimary;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
+import org.openflexo.foundation.fml.parser.node.PCalleePrimary;
 import org.openflexo.foundation.fml.parser.node.AKwFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryNoIdPrimary;
@@ -137,6 +140,21 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 		return null;
 	}
 
+	protected String getLastPathIdentifier(PCalleePrimary primary) {
+		if (primary instanceof AIdentifierCalleePrimary) {
+			String fullQualifiedIdentifier = getSemanticsAnalyzer()
+					.makeFullQualifiedIdentifier(((AIdentifierCalleePrimary) primary).getCompositeIdent());
+			if (fullQualifiedIdentifier.contains(".")) {
+				return fullQualifiedIdentifier.substring(fullQualifiedIdentifier.lastIndexOf(".") + 1);
+			}
+			return fullQualifiedIdentifier;
+		}
+		else if (primary instanceof AFieldCalleePrimary) {
+			return getLastPathIdentifier(((AFieldCalleePrimary) primary).getFieldAccess());
+		}
+		return null;
+	}
+
 	protected String getLastPathIdentifier(PPrimaryNoId primary) {
 		if (primary instanceof AFieldPrimaryNoId) {
 			return getLastPathIdentifier(((AFieldPrimaryNoId) primary).getFieldAccess());
@@ -146,7 +164,7 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 
 	protected String getLastPathIdentifier(PFieldAccess fieldAccess) {
 		if (fieldAccess instanceof APrimaryFieldAccess) {
-			return (((APrimaryFieldAccess) fieldAccess).getLidentifier().getText());
+			return (((APrimaryFieldAccess) fieldAccess).getIdent().getText());
 		}
 		if (fieldAccess instanceof AKwFieldAccess) {
 			return BindingPathFactory.getKwToken(((AKwFieldAccess) fieldAccess).getAuthorizedKwInCompositeIdent()).getText();
@@ -155,7 +173,7 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 			return (((AReferenceSuperFieldAccess) fieldAccess).getIdentifier2().getText());
 		}
 		if (fieldAccess instanceof ASuperFieldAccess) {
-			return (((ASuperFieldAccess) fieldAccess).getLidentifier().getText());
+			return (((ASuperFieldAccess) fieldAccess).getIdent().getText());
 		}
 		return null;
 	}

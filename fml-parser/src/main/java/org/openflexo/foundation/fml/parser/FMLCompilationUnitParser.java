@@ -196,7 +196,7 @@ public class FMLCompilationUnitParser {
 			// System.out.println(rawSource.debug());
 
 			// Create a Parser instance.
-			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.CompilationUnit));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(reader, CustomLexer.PUSHBACK_BUFFER_SIZE), EntryPointKind.CompilationUnit));
 			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
 
 			// Parse the input.
@@ -272,7 +272,7 @@ public class FMLCompilationUnitParser {
 			// System.out.println("Parsing: " + anExpression);
 
 			// Create a Parser instance.
-			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.CompilationUnit));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(reader, CustomLexer.PUSHBACK_BUFFER_SIZE), EntryPointKind.CompilationUnit));
 			// Parser p = new Parser(new Lexer(new PushbackReader(reader)));
 			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
 

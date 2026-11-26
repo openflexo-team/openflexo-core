@@ -75,7 +75,7 @@ public class FlexoEnumValueNode extends FMLObjectNode<AEnumValue, FlexoEnumValue
 	public FlexoEnumValue buildModelObjectFromAST(AEnumValue astNode) {
 		FlexoEnumValue returned = getFactory().newFlexoEnumValue();
 		try {
-			returned.setName(astNode.getCidentifier().getText());
+			returned.setName(astNode.getIdent().getText());
 		} catch (InvalidNameException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,7 +94,7 @@ public class FlexoEnumValueNode extends FMLObjectNode<AEnumValue, FlexoEnumValue
 
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getCidentifier());
+			return getFragment(getASTNode().getIdent());
 		}
 		return null;
 	}

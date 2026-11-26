@@ -54,7 +54,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
 /**
  * 
  * <pre>
- *     iteration_assert_declaration = kw_assert l_par type lidentifier colon expression r_par l_brc [inner_assert_declarations]:simple_assert_declaration* r_brc;
+ *     iteration_assert_declaration = kw_assert l_par iteration_type ident colon expression r_par l_brc [inner_assert_declarations]:simple_assert_declaration* r_brc;
  *
  * </pre>
  * 
@@ -108,7 +108,7 @@ public class IterationAssertNode extends AbstractAssertNode<AIterationAssertDecl
 	}
 
 	private String getIteratorName(AIterationAssertDeclaration astNode) {
-		return astNode.getLidentifier().getText();
+		return astNode.getIdent().getText();
 	}
 
 	protected RawSourceFragment getAssertFragment() {
@@ -134,14 +134,14 @@ public class IterationAssertNode extends AbstractAssertNode<AIterationAssertDecl
 
 	protected RawSourceFragment getTypeFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getType());
+			return getFragment(getASTNode().getIterationType());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getIteratorNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getLidentifier());
+			return getFragment(getASTNode().getIdent());
 		}
 		return null;
 	}

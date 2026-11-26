@@ -173,7 +173,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAModelDecl(AModelDecl node) {
 		super.inAModelDecl(node);
-		info.setName(node.getUidentifier().getText());
+		info.setName(node.getIdent().getText());
 	}
 
 	private Stack<String> conceptsStack = new Stack<>();
@@ -181,7 +181,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAConceptDecl(AConceptDecl node) {
 		super.inAConceptDecl(node);
-		String conceptName = node.getUidentifier().getText();
+		String conceptName = node.getIdent().getText();
 		if (!conceptsStack.isEmpty()) {
 			conceptName = conceptsStack.peek() + "#" + conceptName;
 		}
@@ -198,7 +198,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAEventDecl(AEventDecl node) {
 		super.inAEventDecl(node);
-		String conceptName = node.getUidentifier().getText();
+		String conceptName = node.getIdent().getText();
 		if (!conceptsStack.isEmpty()) {
 			conceptName = conceptsStack.peek() + "#" + conceptName;
 		}
@@ -215,7 +215,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAExceptionDecl(AExceptionDecl node) {
 		super.inAExceptionDecl(node);
-		String conceptName = node.getUidentifier().getText();
+		String conceptName = node.getIdent().getText();
 		if (!conceptsStack.isEmpty()) {
 			conceptName = conceptsStack.peek() + "#" + conceptName;
 		}
@@ -232,7 +232,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAEnumDecl(AEnumDecl node) {
 		super.inAEnumDecl(node);
-		String conceptName = node.getUidentifier().getText();
+		String conceptName = node.getIdent().getText();
 		if (!conceptsStack.isEmpty()) {
 			conceptName = conceptsStack.peek() + "#" + conceptName;
 		}

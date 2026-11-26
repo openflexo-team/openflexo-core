@@ -8,21 +8,21 @@ cardinality; it comes in several kinds that differ in where the value comes from
 ```ebnf
 property_decl =
     annotation* visibility? type cardinality? variable_declarator ";"               (* typed *)
-  | annotation* visibility? type cardinality? lidentifier "with" role_ref fml_parameters? ";"   (* bound to a role *)
+  | annotation* visibility? type cardinality? ident "with" role_ref fml_parameters? ";"   (* bound to a role *)
   | annotation* visibility? "abstract" type variable_declarator ";"                 (* abstract *)
-  | annotation* visibility? type lidentifier "values" expression ";"                (* expression *)
-  | annotation* visibility? type lidentifier "{" get_decl set_decl? "}" ";"         (* get/set *)
+  | annotation* visibility? type ident "values" expression ";"                (* expression *)
+  | annotation* visibility? type ident "{" get_decl set_decl? "}" ";"         (* get/set *)
 
-variable_declarator = lidentifier
-                    | lidentifier "=" expression
-                    | lidentifier "=" fml_action_exp
+variable_declarator = ident
+                    | ident "=" expression
+                    | ident "=" fml_action_exp
 
-role_ref = uidentifier | cidentifier "::" uidentifier
+role_ref = ident | ident "::" ident
 get_decl = type "get" "(" ")" body
-set_decl = "set" "(" type lidentifier ")" body
+set_decl = "set" "(" type ident ")" body
 ```
 
-Every property has a name (a `lidentifier`), a visibility (§5.9) and may carry annotations (chapter 11).
+Every property has a name (a `ident`), a visibility (§5.9) and may carry annotations (chapter 11).
 
 A **typed property** is classified by its type, which selects the kind of property that is built:
 
@@ -107,7 +107,7 @@ The re-runnable way to fill a multi-valued property is to guard each addition:
 ## 6.4 Expression properties
 
 ```ebnf
-expression_property = type lidentifier "values" expression ";"
+expression_property = type ident "values" expression ";"
 ```
 
 An *expression property* has no storage: its value is the value of the expression, and follows the properties
@@ -142,7 +142,7 @@ Row[0,*] rows with XLS::RowRole(sheet = sheet);
 ```
 
 A property declared with `with` is **bound to an element of a resource** or to instances of a concept, instead
-of holding a value of its own. The role is named by a `uidentifier` resolved among the roles offered by the
+of holding a value of its own. The role is named by an identifier resolved among the roles offered by the
 technology adapters declared with `use` (§3.4), or by the fully qualified form `TA::Role`, where `TA` is the
 alias of a `use`. Its parameters are the *qualified arguments* of §10.10.1.
 

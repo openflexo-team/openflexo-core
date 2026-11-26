@@ -38,36 +38,43 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.SemanticAnalysisWarning;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLEnumPropertyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLTypePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
+import org.openflexo.foundation.fml.parser.node.ACastFmlUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.ACompositeCident;
-import org.openflexo.foundation.fml.parser.node.ACompositeCidentAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.ACompositeTidentAnnotationTag;
-import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AEnumQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AEscapedCompositeIdent;
-import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
@@ -81,18 +88,15 @@ import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.ATechnologySpecificType;
-import org.openflexo.foundation.fml.parser.node.ATypeQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.PAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PCompositeCident;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PCompositeTident;
-import org.openflexo.foundation.fml.parser.node.PEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
-import org.openflexo.foundation.fml.parser.node.TCidentifier;
-import org.openflexo.foundation.fml.parser.node.TLidentifier;
-import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.fml.parser.node.TEscapedIdentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
@@ -185,6 +189,35 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	 * @return
 	 */
 	public abstract <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function);
+
+	/**
+	 * The nodes this analyzer built, by AST node, when it keeps them ({@link #retrieveFMLNode(Node, Function)}); null otherwise
+	 */
+	protected Map<Node, ObjectNode<?, ?, ?>> getFMLNodesForAST() {
+		return null;
+	}
+
+	/**
+	 * Forget the supplied nodes and their descendants, so that their AST nodes are given new nodes when they are analyzed again (a path
+	 * built again, see {@link BindingPathNode#reconsiderStaticCalls()})
+	 */
+	public void forgetFMLNodes(Collection<? extends P2PPNode<?, ?>> nodes) {
+		Map<Node, ObjectNode<?, ?, ?>> nodesForAST = getFMLNodesForAST();
+		if (nodesForAST == null) {
+			return;
+		}
+		Set<P2PPNode<?, ?>> forgotten = new HashSet<>();
+		collectDescendants(nodes, forgotten);
+		nodesForAST.values().removeIf(forgotten::contains);
+	}
+
+	private static void collectDescendants(Collection<? extends P2PPNode<?, ?>> nodes, Set<P2PPNode<?, ?>> collected) {
+		for (P2PPNode<?, ?> node : nodes) {
+			if (collected.add(node)) {
+				collectDescendants(node.getChildren(), collected);
+			}
+		}
+	}
 
 	/**
 	 * Add supplied binding to the list of {@link DataBinding} which are flagged as invalid.
@@ -368,61 +401,60 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		return getFragment(node).getRawText();
 	}
 
-	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TIdent identifier) {
 		List<String> returned = new ArrayList<>();
 		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof ANormalIdentifierPrefix) {
-				returned.add(((ANormalIdentifierPrefix) p).getLidentifier().getText());
-			}
-			if (p instanceof AEscapedIdentifierPrefix) {
-				returned.add(getEscapedText((AEscapedIdentifierPrefix) p));
-			}
+			returned.add(getPrefixText(p));
 		}
 		returned.add(identifier.getText());
 		return returned;
 	}
 
-	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+	private static String getPrefixText(PIdentifierPrefix p) {
+		if (p instanceof ANormalIdentifierPrefix) {
+			return ((ANormalIdentifierPrefix) p).getIdent().getText();
+		}
+		if (p instanceof AEscapedIdentifierPrefix) {
+			return getEscapedLiteral(((AEscapedIdentifierPrefix) p).getEscapedIdentifier());
+		}
+		return null;
+	}
+
+	private static String makePrefix(List<PIdentifierPrefix> prefixes) {
 		StringBuffer returned = new StringBuffer();
 		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof ANormalIdentifierPrefix) {
-				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
-			}
-			if (p instanceof AEscapedIdentifierPrefix) {
-				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
-			}
+			returned.append(getPrefixText(p) + ".");
 		}
-		returned.append(identifier.getText());
 		return returned.toString();
+	}
+
+	/**
+	 * The string literal of an escaped identifier, quotes included: {@code {"a b"}} gives {@code "a b"} (the token also holds the braces
+	 * and the blanks around the literal)
+	 */
+	public static String getEscapedLiteral(TEscapedIdentifier escapedIdentifier) {
+		return getEscapedLiteral(escapedIdentifier.getText());
+	}
+
+	public static String getEscapedLiteral(String escapedIdentifierText) {
+		int first = escapedIdentifierText.indexOf('"');
+		int last = escapedIdentifierText.lastIndexOf('"');
+		if (escapedIdentifierText.startsWith("{") && first >= 0 && last > first) {
+			return escapedIdentifierText.substring(first, last + 1);
+		}
+		return escapedIdentifierText;
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TIdent identifier) {
+		return makePrefix(prefixes) + identifier.getText();
 	}
 
 	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, PAuthorizedKwInCompositeIdent identifier) {
-		StringBuffer returned = new StringBuffer();
-		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof ANormalIdentifierPrefix) {
-				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
-			}
-			if (p instanceof AEscapedIdentifierPrefix) {
-				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
-			}
-		}
-		returned.append(getText(identifier));
-		return returned.toString();
+		return makePrefix(prefixes) + getText(identifier);
 	}
 
-	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, PEscapedIdentifier identifier) {
-		StringBuffer returned = new StringBuffer();
-		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof ANormalIdentifierPrefix) {
-				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
-			}
-			if (p instanceof AEscapedIdentifierPrefix) {
-				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
-			}
-		}
-		returned.append(((AEscapedIdentifier) identifier).getLitString().getText());
-		// returned.append(identifier.getText());
-		return returned.toString();
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TEscapedIdentifier identifier) {
+		return makePrefix(prefixes) + getEscapedLiteral(identifier);
 	}
 
 	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
@@ -434,10 +466,6 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 			return makeFullQualifiedIdentifier(((AEscapedCompositeIdent) compositeIdentifier).getPrefixes(),
 					((AEscapedCompositeIdent) compositeIdentifier).getIdentifier());
 		}
-		if (compositeIdentifier instanceof AConstantCompositeIdent) {
-			return makeFullQualifiedIdentifier(((AConstantCompositeIdent) compositeIdentifier).getPrefixes(),
-					((AConstantCompositeIdent) compositeIdentifier).getIdentifier());
-		}
 		if (compositeIdentifier instanceof AKwCompositeIdent) {
 			return makeFullQualifiedIdentifier(((AKwCompositeIdent) compositeIdentifier).getPrefixes(),
 					((AKwCompositeIdent) compositeIdentifier).getIdentifier());
@@ -446,59 +474,10 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	public String makeFullQualifiedIdentifier(PAnnotationTag annotationTag) {
-		if (annotationTag instanceof ACompositeCidentAnnotationTag) {
-			return makeFullQualifiedIdentifier(((ACompositeCidentAnnotationTag) annotationTag).getCompositeCident());
-		}
 		if (annotationTag instanceof ACompositeTidentAnnotationTag) {
 			return makeFullQualifiedIdentifier(((ACompositeTidentAnnotationTag) annotationTag).getCompositeTident());
 		}
 		return null;
-	}
-
-	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
-		List<String> returned = new ArrayList<>();
-		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof ANormalIdentifierPrefix) {
-				returned.add(((ANormalIdentifierPrefix) p).getLidentifier().getText());
-			}
-			if (p instanceof AEscapedIdentifierPrefix) {
-				returned.add(getEscapedText((AEscapedIdentifierPrefix) p));
-			}
-		}
-		returned.add(identifier.getText());
-		return returned;
-	}
-
-	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
-		StringBuffer returned = new StringBuffer();
-		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof ANormalIdentifierPrefix) {
-				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
-			}
-			if (p instanceof AEscapedIdentifierPrefix) {
-				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
-			}
-		}
-		returned.append(identifier.getText());
-		return returned.toString();
-	}
-
-	private static String getEscapedText(AEscapedIdentifierPrefix p) {
-		return ((AEscapedIdentifier) (p.getEscapedIdentifier())).getLitString().getText();
-	}
-
-	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TCidentifier identifier) {
-		StringBuffer returned = new StringBuffer();
-		for (PIdentifierPrefix p : prefixes) {
-			if (p instanceof ANormalIdentifierPrefix) {
-				returned.append(((ANormalIdentifierPrefix) p).getLidentifier().getText() + ".");
-			}
-			if (p instanceof AEscapedIdentifierPrefix) {
-				returned.append(getEscapedText((AEscapedIdentifierPrefix) p) + ".");
-			}
-		}
-		returned.append(identifier.getText());
-		return returned.toString();
 	}
 
 	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
@@ -577,6 +556,25 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		insideTechnologySpecificType = false;
 	}
 
+	// The type of a cast '(Foo(a=1)) x' is a technology-specific type too, without a technology_specific_type node (CORE-F-5): its
+	// qualified arguments are parameters of the type, not values of FML properties
+	@Override
+	public void inACastFmlUnaryExpNotPlusMinus(ACastFmlUnaryExpNotPlusMinus node) {
+		super.inACastFmlUnaryExpNotPlusMinus(node);
+		insideTechnologySpecificType = true;
+	}
+
+	@Override
+	public void caseACastFmlUnaryExpNotPlusMinus(ACastFmlUnaryExpNotPlusMinus node) {
+		// The cast may itself be inside the parameters of a technology-specific type: the flag is restored, not cleared
+		boolean wasInsideTechnologySpecificType = insideTechnologySpecificType;
+		inACastFmlUnaryExpNotPlusMinus(node);
+		node.getQualifiedArgumentList().apply(this);
+		insideTechnologySpecificType = wasInsideTechnologySpecificType;
+		node.getUnaryExpNotPlusMinus().apply(this);
+		outACastFmlUnaryExpNotPlusMinus(node);
+	}
+
 	protected boolean handleFMLArgument() {
 		return !insideMatchAction && !insideNewInstance && !insideTechnologySpecificType;
 	}
@@ -586,8 +584,33 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inASimpleQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getCompilationUnitAnalyzer())));
+			if (isTypeValuedArgument(node)) {
+				push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLTypePropertyValueNode(n, getCompilationUnitAnalyzer())));
+			}
+			else {
+				push(getCompilationUnitAnalyzer().retrieveFMLNode(node,
+						n -> new FMLSimplePropertyValueNode(n, getCompilationUnitAnalyzer())));
+			}
 		}
+	}
+
+	/**
+	 * Tells if a qualified argument {@code x = Foo} names a type: the grammar does not separate a type from an expression there (CORE-F-5),
+	 * the FML property of the object being decorated does (a property whose values are types), with a value that is a (qualified) name
+	 */
+	private boolean isTypeValuedArgument(ASimpleQualifiedArgument node) {
+		ObjectNode<?, ?, ?> parent = peek();
+		if (parent == null || !(parent.getModelObject() instanceof FMLObject)) {
+			return false;
+		}
+		FMLProperty<?, ?> fmlProperty = ((FMLObject) parent.getModelObject()).getFMLProperty(node.getArgName().getText(),
+				getModelFactory());
+		if (fmlProperty == null || fmlProperty.getType() == null) {
+			return false;
+		}
+		Class<?> propertyClass = TypeUtils.getBaseClass(fmlProperty.getType());
+		return propertyClass != null && Type.class.isAssignableFrom(propertyClass)
+				&& TypeFactory.getTypeName(node.getExpression()) != null;
 	}
 
 	@Override
@@ -596,24 +619,6 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		if (handleFMLArgument()) {
 			// System.out.println("EXIT from " + peek() + " with " + node);
 			pop();
-		}
-	}
-
-	@Override
-	public void inATypeQualifiedArgument(ATypeQualifiedArgument node) {
-		super.inATypeQualifiedArgument(node);
-		if (handleFMLArgument()) {
-			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLTypePropertyValueNode(n, getCompilationUnitAnalyzer())));
-		}
-	}
-
-	@Override
-	public void outATypeQualifiedArgument(ATypeQualifiedArgument node) {
-		super.outATypeQualifiedArgument(node);
-		if (handleFMLArgument()) {
-			pop();
-			// System.out.println("EXIT from " + peek() + " with " + node);
 		}
 	}
 

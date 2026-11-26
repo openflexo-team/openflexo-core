@@ -58,7 +58,10 @@ import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ABarBarConditionalOrExp;
 import org.openflexo.foundation.fml.parser.node.ABarInclusiveOrExp;
 import org.openflexo.foundation.fml.parser.node.ACaretExclusiveOrExp;
-import org.openflexo.foundation.fml.parser.node.ACastUnaryExpNotPlusMinus;
+import org.openflexo.foundation.fml.parser.node.AAsRelationalExp;
+import org.openflexo.foundation.fml.parser.node.ACastFmlUnaryExpNotPlusMinus;
+import org.openflexo.foundation.fml.parser.node.ACastPrimitiveUnaryExpNotPlusMinus;
+import org.openflexo.foundation.fml.parser.node.ACastReferenceUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
 import org.openflexo.foundation.fml.parser.node.AEmarkUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.AEqEqualityExp;
@@ -739,6 +742,18 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 	}
 
 	@Override
+	public void inAAsRelationalExp(AAsRelationalExp node) {
+		super.inAAsRelationalExp(node);
+		push(retrieveFMLNode(node, n -> new FMLCastExpressionNode(n, this)));
+	}
+
+	@Override
+	public void outAAsRelationalExp(AAsRelationalExp node) {
+		super.outAAsRelationalExp(node);
+		pop();
+	}
+
+	@Override
 	public void inAInstanceofRelationalExp(AInstanceofRelationalExp node) {
 		super.inAInstanceofRelationalExp(node);
 		push(retrieveFMLNode(node, n -> new FMLInstanceOfExpressionNode(n, this)));
@@ -984,19 +999,28 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 		// registerExpressionNode(node, new FMLUnaryOperatorExpression(FMLBooleanUnaryOperator.NOT, getExpression(node.getUnaryExp())));
 	}
 
+	// A cast (CORE-F-5): only the operand is an expression. The type of '(Foo) x' is parsed as an expression and the one of
+	// '(Foo(a=1)) x' carries qualified arguments: neither is walked as an expression (FMLCastExpressionNode builds the type)
+
 	@Override
-	public void inACastUnaryExpNotPlusMinus(ACastUnaryExpNotPlusMinus node) {
-		super.inACastUnaryExpNotPlusMinus(node);
+	public void caseACastPrimitiveUnaryExpNotPlusMinus(ACastPrimitiveUnaryExpNotPlusMinus node) {
 		push(retrieveFMLNode(node, n -> new FMLCastExpressionNode(n, this)));
+		node.getUnaryExp().apply(this);
+		pop();
 	}
 
 	@Override
-	public void outACastUnaryExpNotPlusMinus(ACastUnaryExpNotPlusMinus node) {
-		super.outACastUnaryExpNotPlusMinus(node);
+	public void caseACastReferenceUnaryExpNotPlusMinus(ACastReferenceUnaryExpNotPlusMinus node) {
+		push(retrieveFMLNode(node, n -> new FMLCastExpressionNode(n, this)));
+		node.getUnaryExpNotPlusMinus().apply(this);
 		pop();
-		// Type type = TypeFactory.makeType(node.getType(), getTypingSpace());
-		// System.out.println("Found type " + type);
-		// registerExpressionNode(node, new FMLCastExpression(type, getExpression(node.getUnaryExp())));
+	}
+
+	@Override
+	public void caseACastFmlUnaryExpNotPlusMinus(ACastFmlUnaryExpNotPlusMinus node) {
+		push(retrieveFMLNode(node, n -> new FMLCastExpressionNode(n, this)));
+		node.getUnaryExpNotPlusMinus().apply(this);
+		pop();
 	}
 
 	// post_incr_exp = postfix_exp plus_plus;

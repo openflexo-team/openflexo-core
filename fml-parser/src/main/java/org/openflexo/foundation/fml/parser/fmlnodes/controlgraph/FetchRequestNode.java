@@ -59,13 +59,13 @@ import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlSelectType;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
-import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.AManyExpressionList;
 import org.openflexo.foundation.fml.parser.node.ANormalSelectType;
-import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
+import org.openflexo.foundation.fml.parser.node.AOneExpressionList;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AWhereClause;
 import org.openflexo.foundation.fml.parser.node.AWithClause;
-import org.openflexo.foundation.fml.parser.node.PArgumentList;
+import org.openflexo.foundation.fml.parser.node.PExpressionList;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
 import org.openflexo.foundation.fml.parser.node.PSelectType;
@@ -193,7 +193,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		}
 
 		if (astNode.getWhereClause() != null) {
-			handleConditions(((AWhereClause) astNode.getWhereClause()).getArgumentList(), returned);
+			handleConditions(((AWhereClause) astNode.getWhereClause()).getExpressionList(), returned);
 		}
 
 		return returned;
@@ -203,7 +203,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	private Class<? extends AbstractFetchRequest<?, ?, ?, ?>> getFetchRequestClass(Type type, boolean isUnique, PWithClause withClause) {
 		String identifier = null;
 		if (withClause instanceof AWithClause) {
-			identifier = ((AWithClause) withClause).getUidentifier().getText();
+			identifier = ((AWithClause) withClause).getIdent().getText();
 		}
 
 		Class<? extends AbstractFetchRequest<?, ?, ?, ?>> bestMatch = null;
@@ -240,14 +240,14 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		return null;
 	}
 
-	private void handleConditions(PArgumentList argumentList, FR modelObject) {
-		if (argumentList instanceof AManyArgumentList) {
-			AManyArgumentList l = (AManyArgumentList) argumentList;
-			handleConditions(l.getArgumentList(), modelObject);
+	private void handleConditions(PExpressionList expressionList, FR modelObject) {
+		if (expressionList instanceof AManyExpressionList) {
+			AManyExpressionList l = (AManyExpressionList) expressionList;
+			handleConditions(l.getExpressionList(), modelObject);
 			handleCondition(l.getExpression(), modelObject);
 		}
-		else if (argumentList instanceof AOneArgumentList) {
-			handleCondition(((AOneArgumentList) argumentList).getExpression(), modelObject);
+		else if (expressionList instanceof AOneExpressionList) {
+			handleCondition(((AOneExpressionList) expressionList).getExpression(), modelObject);
 		}
 	}
 
@@ -456,7 +456,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		if (getASTNode() != null) {
 			PWhereClause whereClause = getASTNode().getWhereClause();
 			if (whereClause instanceof AWhereClause) {
-				return getFragment(((AWhereClause) whereClause).getArgumentList());
+				return getFragment(((AWhereClause) whereClause).getExpressionList());
 			}
 		}
 		return null;

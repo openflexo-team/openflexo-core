@@ -73,9 +73,9 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		try {
-			returned.setName(astNode.getUidentifier().getText());
+			returned.setName(astNode.getIdent().getText());
 		} catch (InvalidNameException e) {
-			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
+			throwIssue("Invalid name: " + astNode.getIdent().getText());
 		}
 		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -171,7 +171,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	@Override
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getUidentifier());
+			return getFragment(getASTNode().getIdent());
 		}
 		return null;
 	}

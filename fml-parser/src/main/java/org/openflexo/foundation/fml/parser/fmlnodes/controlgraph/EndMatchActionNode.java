@@ -56,7 +56,7 @@ import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AComplexEndMatchActionClause;
-import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
+import org.openflexo.foundation.fml.parser.node.AIdentifierCalleePrimary;
 import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.PMethodInvocation;
@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.parser.node.AInClause;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.ASimpleEndMatchActionClause;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PEndMatchActionClause;
 import org.openflexo.foundation.fml.parser.node.PExpression;
@@ -116,14 +117,14 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		if (argumentList instanceof AManyArgumentList) {
 			AManyArgumentList l = (AManyArgumentList) argumentList;
 			handleArguments(l.getArgumentList(), modelObject);
-			handleArgument(l.getExpression(), modelObject);
+			handleArgument(l.getConditionalExp(), modelObject);
 		}
 		else if (argumentList instanceof AOneArgumentList) {
-			handleArgument(((AOneArgumentList) argumentList).getExpression(), modelObject);
+			handleArgument(((AOneArgumentList) argumentList).getConditionalExp(), modelObject);
 		}
 	}
 
-	private void handleArgument(PExpression expression, FinalizeMatching modelObject) {
+	private void handleArgument(Node expression, FinalizeMatching modelObject) {
 		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
 				getSemanticsAnalyzer(), this);
 
@@ -214,9 +215,12 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 			// 'unmatched: someBehaviour(args)': a behaviour of the matched concept, by its name, resolved in finalizeDeserialization
 			// (CORE-D-2). Anything else ('a.b()', 'super()', 'T.m()') is not a behaviour of the concept: no behaviour runs.
 			PMethodInvocation invocation = ((AComplexEndMatchActionClause) clause).getMethodInvocation();
-			if (invocation instanceof APrimaryMethodInvocation && ((APrimaryMethodInvocation) invocation).getPrimary() instanceof AIdentifierPrimary
-					&& ((AIdentifierPrimary) ((APrimaryMethodInvocation) invocation).getPrimary()).getCompositeIdent() instanceof ANormalCompositeIdent) {
-				ANormalCompositeIdent ident = (ANormalCompositeIdent) ((AIdentifierPrimary) ((APrimaryMethodInvocation) invocation).getPrimary())
+			if (invocation instanceof APrimaryMethodInvocation
+					&& ((APrimaryMethodInvocation) invocation).getCalleePrimary() instanceof AIdentifierCalleePrimary
+					&& ((AIdentifierCalleePrimary) ((APrimaryMethodInvocation) invocation).getCalleePrimary())
+							.getCompositeIdent() instanceof ANormalCompositeIdent) {
+				ANormalCompositeIdent ident = (ANormalCompositeIdent) ((AIdentifierCalleePrimary) ((APrimaryMethodInvocation) invocation)
+						.getCalleePrimary())
 						.getCompositeIdent();
 				if (ident.getPrefixes().isEmpty()) {
 					behaviourName = ident.getIdentifier().getText();

@@ -215,7 +215,7 @@ FML-script reserves its command names on top of the keywords of FML (§2.5): `he
 the options `-rc` `-r` `-d` `-f`. They are identifiers in FML proper and in expression contexts.
 
 A behaviour or a creation scheme whose name is one of these words parses inside FML proper but fails from a script
-(*expecting: lidentifier*): `open` is a legitimate behaviour name in a model and not a callable one in a script. Rename
+(*expecting: ident*): `open` is a legitimate behaviour name in a model and not a callable one in a script. Rename
 it if a script must call it.
 
 In the `script` state the only language keywords are `new`, `with`, `assert`, `return` and `log` (§2.5.2); every other word

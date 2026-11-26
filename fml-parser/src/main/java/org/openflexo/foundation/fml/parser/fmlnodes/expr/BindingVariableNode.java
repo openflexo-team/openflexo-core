@@ -42,12 +42,11 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.expr.UnresolvedBindingVariable;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.TLidentifier;
-import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
- * Either a {@link TLidentifier} or a {@link TUidentifier}
+ * An identifier ({@link TIdent}), or for a path element an escaped identifier
  * 
  * @author sylvain
  * 

@@ -81,14 +81,14 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 		if (argumentList instanceof AManyArgumentList) {
 			AManyArgumentList l = (AManyArgumentList) argumentList;
 			handleArguments(l.getArgumentList());
-			handleArgument(l.getExpression());
+			handleArgument(l.getConditionalExp());
 		}
 		else if (argumentList instanceof AOneArgumentList) {
-			handleArgument(((AOneArgumentList) argumentList).getExpression());
+			handleArgument(((AOneArgumentList) argumentList).getConditionalExp());
 		}
 	}
 
-	protected void handleArgument(PExpression expression) {
+	protected void handleArgument(Node expression) {
 
 		DataBindingNode dataBindingNode = makeDataBinding(expression, getBindable());
 		if (args == null) {

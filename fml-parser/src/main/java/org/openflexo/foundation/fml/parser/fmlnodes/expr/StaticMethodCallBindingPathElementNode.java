@@ -41,19 +41,28 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.StaticMethodPathElement;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.TypeFactory;
-import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
+import java.util.List;
+
+import org.openflexo.foundation.fml.parser.BindingPathFactory;
+import org.openflexo.foundation.fml.parser.node.AIdentifierCalleePrimary;
+import org.openflexo.foundation.fml.parser.node.AKwCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ANormalIdentifierPrefix;
+import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
+import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 
 /**
  * @author sylvain
  * 
  */
 public class StaticMethodCallBindingPathElementNode
-		extends AbstractCallBindingPathElementNode<AClassMethodMethodInvocation, StaticMethodPathElement<?>> {
+		extends AbstractCallBindingPathElementNode<APrimaryMethodInvocation, StaticMethodPathElement<?>> {
 
-	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+	public StaticMethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
 		super(astNode, analyzer, bindable);
 		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
@@ -66,16 +75,64 @@ public class StaticMethodCallBindingPathElementNode
 		super(bindingPathElement, analyzer, bindable);
 	}
 
+	/**
+	 * The first segment of the receiver ('Foo' in 'Foo.bar()', 'java' in 'java.lang.Math.max(1, 2)'), null when it cannot be read
+	 */
+	public String getReceiverFirstSegment() {
+		if (getASTNode() != null && getASTNode().getCalleePrimary() instanceof AIdentifierCalleePrimary) {
+			PCompositeIdent compositeIdent = ((AIdentifierCalleePrimary) getASTNode().getCalleePrimary()).getCompositeIdent();
+			List<PIdentifierPrefix> prefixes = null;
+			if (compositeIdent instanceof ANormalCompositeIdent) {
+				prefixes = ((ANormalCompositeIdent) compositeIdent).getPrefixes();
+			}
+			else if (compositeIdent instanceof AKwCompositeIdent) {
+				prefixes = ((AKwCompositeIdent) compositeIdent).getPrefixes();
+			}
+			if (prefixes != null && !prefixes.isEmpty() && prefixes.get(0) instanceof ANormalIdentifierPrefix) {
+				return ((ANormalIdentifierPrefix) prefixes.get(0)).getIdent().getText();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Tells if the receiver of this call, taken for a type when it was parsed, names a variable of the binding model of the bindable as it
+	 * is now. A variable hides a type of the same name (CORE-F-5): the call is then a call on that variable
+	 */
+	public boolean receiverIsAVariable() {
+		String firstSegment = getReceiverFirstSegment();
+		return firstSegment != null && getBindable() != null && getBindable().getBindingModel() != null
+				&& getBindable().getBindingModel().bindingVariableNamed(firstSegment) != null;
+	}
+
+	/**
+	 * Release what this node built, when the path holding it is built again (see {@link BindingPathNode#reconsiderStaticCalls()}): the
+	 * element stops listening, its arguments are deleted
+	 */
+	public void dispose() {
+		if (getModelObject() != null && getModelObject().isActivated()) {
+			getModelObject().desactivate();
+		}
+		if (getArguments() != null) {
+			for (DataBinding<?> argument : getArguments()) {
+				argument.delete();
+			}
+		}
+	}
+
 	@Override
-	public StaticMethodPathElement<?> buildModelObjectFromAST(AClassMethodMethodInvocation astNode) {
+	public StaticMethodPathElement<?> buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
 
 		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
-			Type type = TypeFactory.makeType(getASTNode().getType(), getSemanticsAnalyzer().getTypingSpace());
-
-			String methodName = astNode.getLidentifier().getText();
-			StaticMethodPathElement<?> pathElement = getBindingFactory().makeStaticMethodPathElement(type,
-					methodName, getArguments(), getBindable());
+			// 'Foo.bar(x)': a call whose receiver names a type (CORE-F-5, see BindingPathFactory)
+			Type type = BindingPathFactory.getStaticCallReceiverType(astNode, getBindable(), getSemanticsAnalyzer().getTypingSpace());
+			if (type != null && !getSemanticsAnalyzer().getTypingSpace().isTypeImported(type)) {
+				getSemanticsAnalyzer().getTypingSpace().importType(type);
+			}
+			String methodName = getLastPathIdentifier(astNode.getCalleePrimary());
+			StaticMethodPathElement<?> pathElement = getBindingFactory().makeStaticMethodPathElement(type, methodName, getArguments(),
+					getBindable());
 			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
 		}
@@ -84,7 +141,7 @@ public class StaticMethodCallBindingPathElementNode
 		/*if (getBindable() != null) {
 			Type type = TypeFactory.makeType(getASTNode().getType(), getanalyzer().getTypingSpace());
 			handleArguments(astNode.getArgumentList());
-			String method = astNode.getLidentifier().getText();
+			String method = astNode.getIdent().getText();
 			StaticMethodCallBindingPathElement returned = new StaticMethodCallBindingPathElement(type, method, getArguments());
 			return returned;
 		}

@@ -43,11 +43,13 @@ import java.util.List;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.foundation.fml.FMLPropertyValue;
+import org.openflexo.foundation.fml.expr.FMLBindingPath;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.BindingPathFactory;
@@ -88,6 +90,54 @@ public class BindingPathNode extends ExpressionNode<Node, BindingPath> {
 			// return new BindingPath(bindingPath, getExpressionFactory().getBindable(), JavaPrettyPrinter.getInstance());
 		}
 		return null;
+	}
+
+	/**
+	 * Build this path again when one of its calls was taken for a static call on a type while its receiver names a variable. While a
+	 * compilation unit is parsed, an expression is built before the object holding it is attached to the model: its binding model does not
+	 * know the variables yet (parameters, properties, locals), so 'Foo.bar()' is taken for a static call whenever 'Foo' names a type.
+	 * Called at the end of the parse, before the pretty-print is prepared, when the binding models are complete: the path is then built
+	 * with the rule of an expression typed in an inspector, a variable hides a type of the same name (CORE-F-5). The {@link BindingPath}
+	 * object is kept (an enclosing expression refers to it); its elements and the nodes of its elements are replaced
+	 * 
+	 * @return the nodes that were dropped (empty when nothing changed)
+	 */
+	public List<P2PPNode<?, ?>> reconsiderStaticCalls() {
+		List<P2PPNode<?, ?>> dropped = new ArrayList<>();
+		boolean rebuild = false;
+		for (P2PPNode<?, ?> child : getChildren()) {
+			if (child instanceof StaticMethodCallBindingPathElementNode && ((StaticMethodCallBindingPathElementNode) child).receiverIsAVariable()) {
+				rebuild = true;
+			}
+		}
+		BindingPath path = getModelObject();
+		if (!rebuild || path == null || getExpressionFactory() == null || getASTNode() == null) {
+			return dropped;
+		}
+		dropped.addAll(getChildren());
+		getChildren().clear();
+		parsedElements = null;
+		getExpressionFactory().forgetFMLNodes(dropped);
+		// What the dropped calls held listens to the model: their arguments are bindings of the owner
+		for (P2PPNode<?, ?> node : dropped) {
+			if (node instanceof StaticMethodCallBindingPathElementNode) {
+				((StaticMethodCallBindingPathElementNode) node).dispose();
+			}
+		}
+		BindingPath rebuilt = BindingPathFactory.makeBindingPath(getASTNode(), getExpressionFactory(), this);
+		List<BindingPathElement> elements = new ArrayList<>(rebuilt.getBindingPath());
+		BindingVariable bindingVariable = rebuilt.getBindingVariable();
+		// The path built is only a carrier: it stops listening to the variable, without touching the elements given to the kept path
+		rebuilt.getBindingPath().clear();
+		rebuilt.setBindingVariable(null);
+		path.clearBindingPathElements();
+		path.setBindingVariable(bindingVariable);
+		path.setBindingPath(elements);
+		if (path instanceof FMLBindingPath && rebuilt instanceof FMLBindingPath) {
+			((FMLBindingPath) path).setStaticCallReceiver(((FMLBindingPath) rebuilt).getStaticCallReceiver());
+		}
+		path.invalidate();
+		return dropped;
 	}
 
 	// ------------------------------------------------------------------------------------------------------------------------------

@@ -54,8 +54,8 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * <pre>
- *      | {for_enhanced_expression} kw_for l_par type lidentifier colon expression r_par statement
- *      | {for_enhanced_fml_action} kw_for l_par type lidentifier colon fml_action_exp r_par statement
+ *      | {for_enhanced_expression} kw_for l_par type ident colon expression r_par statement
+ *      | {for_enhanced_fml_action} kw_for l_par type ident colon fml_action_exp r_par statement
  * </pre>
  * 
  * @author sylvain
@@ -115,10 +115,10 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 
 	private String getIteratorName(PStatement astNode) {
 		if (astNode instanceof AForEnhancedExpressionStatement) {
-			return ((AForEnhancedExpressionStatement) astNode).getLidentifier().getText();
+			return ((AForEnhancedExpressionStatement) astNode).getIdent().getText();
 		}
 		if (astNode instanceof AForEnhancedFmlActionStatement) {
-			return ((AForEnhancedFmlActionStatement) astNode).getLidentifier().getText();
+			return ((AForEnhancedFmlActionStatement) astNode).getIdent().getText();
 		}
 		return null;
 	}
@@ -214,10 +214,10 @@ public class IterationActionNode extends ControlGraphNode<PStatement, IterationA
 
 	protected RawSourceFragment getIteratorNameFragment() {
 		if (getASTNode() instanceof AForEnhancedExpressionStatement) {
-			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getLidentifier());
+			return getFragment(((AForEnhancedExpressionStatement) getASTNode()).getIdent());
 		}
 		if (getASTNode() instanceof AForEnhancedFmlActionStatement) {
-			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getLidentifier());
+			return getFragment(((AForEnhancedFmlActionStatement) getASTNode()).getIdent());
 		}
 		return null;
 	}

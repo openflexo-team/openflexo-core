@@ -75,6 +75,11 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 
 	private Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
 
+	@Override
+	protected Map<Node, ObjectNode<?, ?, ?>> getFMLNodesForAST() {
+		return nodesForAST;
+	}
+
 	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, FMLSemanticsAnalyzer parentAnalyzer,
 			DataBindingNode dataBindingNode) {
 		super(parentAnalyzer.getModelFactory(), rootNode);

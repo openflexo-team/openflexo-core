@@ -71,7 +71,6 @@ import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.parser.node.ABindingPath;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
 import org.openflexo.foundation.fml.parser.node.AConcatenedSimplePath;
-import org.openflexo.foundation.fml.parser.node.AConstantIdentifier;
 import org.openflexo.foundation.fml.parser.node.ADirectoryPathDirectiveArgument;
 import org.openflexo.foundation.fml.parser.node.ADotPath;
 import org.openflexo.foundation.fml.parser.node.ADotPathPath;
@@ -85,7 +84,7 @@ import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
 import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
 import org.openflexo.foundation.fml.parser.node.ALiteralSimplePathTerminal;
 import org.openflexo.foundation.fml.parser.node.ALitteralUriExpressionPrimary;
-import org.openflexo.foundation.fml.parser.node.ALowerIdentifier;
+import org.openflexo.foundation.fml.parser.node.AIdentifier;
 import org.openflexo.foundation.fml.parser.node.AMinusSimplePathPrefix;
 import org.openflexo.foundation.fml.parser.node.AMinusdSimplePathPrefix;
 import org.openflexo.foundation.fml.parser.node.AMinusfSimplePathPrefix;
@@ -104,7 +103,6 @@ import org.openflexo.foundation.fml.parser.node.AResourcesSimplePathTerminal;
 import org.openflexo.foundation.fml.parser.node.ARootPathPath;
 import org.openflexo.foundation.fml.parser.node.AStringLiteral;
 import org.openflexo.foundation.fml.parser.node.ATrueLiteral;
-import org.openflexo.foundation.fml.parser.node.AUpperIdentifier;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PDirectiveArgument;
 import org.openflexo.foundation.fml.parser.node.PExpression;
@@ -406,14 +404,8 @@ public interface Directive<N extends Node> extends AbstractCommand<N> {
 		}
 
 		protected String getText(PIdentifier identifier) {
-			if (identifier instanceof ALowerIdentifier) {
-				return ((ALowerIdentifier) identifier).getLidentifier().getText();
-			}
-			else if (identifier instanceof AUpperIdentifier) {
-				return ((AUpperIdentifier) identifier).getUidentifier().getText();
-			}
-			else if (identifier instanceof AConstantIdentifier) {
-				return ((AConstantIdentifier) identifier).getCidentifier().getText();
+			if (identifier instanceof AIdentifier) {
+				return ((AIdentifier) identifier).getIdent().getText();
 			}
 			return null;
 		}

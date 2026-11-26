@@ -147,13 +147,13 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier());
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdent());
 			}
 			else if (variableDeclarator instanceof AInitializerExpressionVariableDeclarator) {
-				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getLidentifier());
+				return getFragment(((AInitializerExpressionVariableDeclarator) variableDeclarator).getIdent());
 			}
 			else if (variableDeclarator instanceof AInitializerFmlActionVariableDeclarator) {
-				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getLidentifier());
+				return getFragment(((AInitializerFmlActionVariableDeclarator) variableDeclarator).getIdent());
 			}
 		}
 		return null;

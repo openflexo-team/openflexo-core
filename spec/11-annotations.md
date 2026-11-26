@@ -12,11 +12,11 @@ annotation = "@" annotation_tag                                       (* flag *)
            | "@" annotation_tag "(" key_value ( "," key_value )* ")"  (* named values *)
            | "@" annotation_tag "(" annotation* ")"                   (* nested annotations *)
 
-annotation_tag = composite_tident | composite_cident
+annotation_tag = composite_tident
 key_value      = composite_ident "=" conditional_exp
 ```
 
-The tag is a `uidentifier` (`@Renderer`) or a `cidentifier` (`@URI`, `@UI`); it may be qualified by a package
+The tag is an identifier (`@Renderer`, `@URI`, `@UI`); it may be qualified by a package
 path. An annotation has one of four shapes:
 
 ```fml

@@ -68,6 +68,11 @@ public class DetachedBindingAnalyzer extends FMLSemanticsAnalyzer {
 	private final AbstractFMLTypingSpace typingSpace;
 	private final FMLBindingFactory bindingFactory;
 	private final Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
+
+	@Override
+	protected Map<Node, ObjectNode<?, ?, ?>> getFMLNodesForAST() {
+		return nodesForAST;
+	}
 	private final List<SemanticAnalysisIssue> issues = new ArrayList<>();
 
 	public DetachedBindingAnalyzer(FMLModelFactory modelFactory, Node rootNode, RawSource rawSource, AbstractFMLTypingSpace typingSpace,

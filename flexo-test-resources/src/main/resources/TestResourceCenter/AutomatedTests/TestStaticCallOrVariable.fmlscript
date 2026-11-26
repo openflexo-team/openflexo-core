@@ -1,0 +1,8 @@
+// CORE-F-5: in 'Foo.bar()', a variable hides a type of the same name; without a variable, the call is static
+Math = "abc";
+assert Math.length() == 3;
+n = Math.length();
+assert n == 3;
+m = java.lang.Math.max(1, 2);
+assert m == 2;
+log "Test PASSED: a variable hides a type of the same name";

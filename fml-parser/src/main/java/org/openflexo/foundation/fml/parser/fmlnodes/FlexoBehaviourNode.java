@@ -69,7 +69,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
-import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
@@ -358,7 +358,7 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		return null;
 	}
 
-	protected TLidentifier getName() {
+	protected TIdent getName() {
 		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
 			return ((ANamedConstructorBehaviourDecl) getASTNode()).getName();
 		}

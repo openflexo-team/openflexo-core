@@ -246,8 +246,22 @@ public class FMLPrettyPrinter extends ExpressionPrettyPrinter {
 
 	@Override
 	protected String makeStringRepresentation(CastExpression expression, Bindable context) {
-		return "(" + makeStringRepresentation(expression.getCastType(), context) + ")"
-				+ getStringRepresentation(expression.getArgument(), context);
+		String type = makeStringRepresentation(expression.getCastType(), context);
+		String argument = getStringRepresentation(expression.getArgument(), context);
+		// An operand with an operator of its own is parenthesized: '(Foo)a + b' casts 'a' only
+		if (expression.getArgument() instanceof BinaryOperatorExpression || expression.getArgument() instanceof ConditionalExpression) {
+			argument = "(" + argument + ")";
+		}
+		// '(List<A>) x' does not parse: a cast to a type written with arguments or wildcards (a Java generic type, a resource or a concept
+		// type with a parameter) is written 'x as List<A>' (CORE-F-5), parenthesized as a whole since 'as' binds like 'instanceof'
+		if (type.contains("<") || type.contains("?")) {
+			return "(" + argument + " as " + type + ")";
+		}
+		// '(Foo) -x' reads as a subtraction: only a primitive type casts a signed operand (CORE-F-5)
+		if ((argument.startsWith("-") || argument.startsWith("+")) && !TypeUtils.isPrimitive(expression.getCastType())) {
+			argument = "(" + argument + ")";
+		}
+		return "(" + type + ")" + argument;
 	}
 
 	private String makeStringRepresentation(FMLInstanceOfExpression expression, Bindable context) {

@@ -92,7 +92,7 @@ public class FMLExpressionParser {
 	 */
 	public static Expression parse(String data, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory)
 			throws ParseException {
-		return parse(new StringReader(data), new StringReader(data), bindable, typingSpace, modelFactory, null);
+		return parse(new StringReader(data), new StringReader(data), data.length(), bindable, typingSpace, modelFactory, null);
 	}
 
 	/**
@@ -101,14 +101,14 @@ public class FMLExpressionParser {
 	 */
 	public static Expression parse(String data, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory,
 			Consumer<DataBindingPrettyPrintDelegate> delegateReceiver) throws ParseException {
-		return parse(new StringReader(data), new StringReader(data), bindable, typingSpace, modelFactory, delegateReceiver);
+		return parse(new StringReader(data), new StringReader(data), data.length(), bindable, typingSpace, modelFactory, delegateReceiver);
 	}
 
-	private static Expression parse(Reader reader, Reader rawSourceReader, Bindable bindable, AbstractFMLTypingSpace typingSpace,
+	private static Expression parse(Reader reader, Reader rawSourceReader, int length, Bindable bindable, AbstractFMLTypingSpace typingSpace,
 			FMLModelFactory modelFactory, Consumer<DataBindingPrettyPrintDelegate> delegateReceiver) throws ParseException {
 		try {
 			// Create a Parser instance.
-			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.Binding));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(reader, CustomLexer.pushbackBufferSize(length)), EntryPointKind.Binding));
 			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
 
 			// Parse the input.

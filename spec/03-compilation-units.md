@@ -13,12 +13,12 @@ fml_compilation_unit = namespace_decl*
                        model_decl
 
 namespace_decl = "namespace" lit_string "as" identifier ";"
-use_decl       = "use" composite_tident "as" cidentifier ";"
+use_decl       = "use" composite_tident "as" ident ";"
 import_decl    = "import" composite_tident ";"                              (* Java import *)
                | "import" composite_tident "as" identifier ";"              (* named Java import *)
                | "import" reference_by_uri ";"                              (* URI import *)
                | "import" type_decl_type identifier "from" reference_by_uri ";"   (* named URI import *)
-type_decl      = "typedef" type_decl_type "as" uidentifier ";"
+type_decl      = "typedef" type_decl_type "as" ident ";"
 ```
 
 The four groups appear **in this order**, and each may be empty or repeated. A `use` after an `import`, or a
@@ -75,12 +75,12 @@ alias stands for the string it abbreviates.
 ## 3.4 Use declarations
 
 ```ebnf
-use_decl = "use" composite_tident "as" cidentifier ";"
+use_decl = "use" composite_tident "as" ident ";"
 ```
 
 A `use` declaration binds a **technology-adapter alias** to a model-slot class. The `composite_tident` is the
-fully qualified Java name of the model-slot class that the technology adapter provides; the alias, a
-`cidentifier` by convention capitalised, is the name by which the unit refers to what that model slot offers:
+fully qualified Java name of the model-slot class that the technology adapter provides; the alias, an
+identifier by convention capitalised, is the name by which the unit refers to what that model slot offers:
 
 ```fml
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
@@ -112,9 +112,8 @@ import java.lang.Double as JDouble;
 ```
 
 `import a.b.C;` makes the Java class `a.b.C` known by its simple name `C` (§4.8). The class must be nameable by
-a `composite_tident`: dotted lowercase package segments, then an uppercase-initial class name, optionally
-followed by nested classes `$Inner`. The second form gives the imported class a local name, which can be of any
-identifier class.
+a `composite_tident`: dotted package segments, then the class name, optionally
+followed by nested classes `$Inner`. The second form gives the imported class a local name.
 
 `java.lang.*` is not implicit for static calls: `Double.parseDouble(x)` needs `import java.lang.Double;` (or the
 fully qualified `java.lang.Double.parseDouble(x)`).
@@ -142,7 +141,7 @@ of `new`: after the import of `People.fml`, `Person` is a type of the importing 
 reference_by_uri    = "[" uri_expression "]"
                     | "[" uri_expression ":" uri_expression "]"
 uri_expression      = uri_primary { "+" uri_primary }
-uri_primary         = lidentifier | uidentifier | cidentifier | lit_string
+uri_primary         = ident | ident | ident | lit_string
 ```
 
 The first form designates a **resource** by its address, the second an **object inside a resource** by the
@@ -162,7 +161,7 @@ A named URI import gives a local name to the element it designates, with a decla
 ## 3.6 Type definitions
 
 ```ebnf
-type_decl = "typedef" type_decl_type "as" uidentifier ";"
+type_decl = "typedef" type_decl_type "as" ident ";"
 ```
 
 `typedef T as Name;` introduces `Name` as an alias of the type `T` in the whole unit, nested concepts
@@ -177,7 +176,7 @@ model Typed {
 }
 ```
 
-The alias is a `uidentifier`, with the restriction of §2.4. A `typedef` can alias a reference type or a
+The alias is an identifier. A `typedef` can alias a reference type or a
 technology-specific type (`typedef XMLType(…) as Doc;`). An alias hides nothing: it participates in the name
 resolution of §4.8 after the concepts of the unit and the model-slot types, and before plain Java types.
 

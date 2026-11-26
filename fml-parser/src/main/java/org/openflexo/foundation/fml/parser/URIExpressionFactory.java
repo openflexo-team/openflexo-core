@@ -13,11 +13,9 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConcatenationExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.URIStringConstantNode;
-import org.openflexo.foundation.fml.parser.node.ACidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AConcatenationUriExpression;
-import org.openflexo.foundation.fml.parser.node.ALidentifierUriExpressionPrimary;
+import org.openflexo.foundation.fml.parser.node.AIdentUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.ALitteralUriExpressionPrimary;
-import org.openflexo.foundation.fml.parser.node.AUidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.PUriExpression;
 
 /**
@@ -105,35 +103,14 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 	}
 
 	@Override
-	public void inAUidentifierUriExpressionPrimary(AUidentifierUriExpressionPrimary node) {
-		super.inAUidentifierUriExpressionPrimary(node);
+	public void inAIdentUriExpressionPrimary(AIdentUriExpressionPrimary node) {
+		super.inAIdentUriExpressionPrimary(node);
 		pushBindingPathNode(node);
 	}
 
 	@Override
-	public void outAUidentifierUriExpressionPrimary(AUidentifierUriExpressionPrimary node) {
-		super.outAUidentifierUriExpressionPrimary(node);
-		popBindingPathNode(node);
-	}
-
-	@Override
-	public void inALidentifierUriExpressionPrimary(ALidentifierUriExpressionPrimary node) {
-		pushBindingPathNode(node);
-	}
-
-	@Override
-	public void outALidentifierUriExpressionPrimary(ALidentifierUriExpressionPrimary node) {
-		super.outALidentifierUriExpressionPrimary(node);
-		popBindingPathNode(node);
-	}
-
-	@Override
-	public void inACidentifierUriExpressionPrimary(ACidentifierUriExpressionPrimary node) {
-		pushBindingPathNode(node);
-	}
-
-	@Override
-	public void outACidentifierUriExpressionPrimary(ACidentifierUriExpressionPrimary node) {
+	public void outAIdentUriExpressionPrimary(AIdentUriExpressionPrimary node) {
+		super.outAIdentUriExpressionPrimary(node);
 		popBindingPathNode(node);
 	}
 

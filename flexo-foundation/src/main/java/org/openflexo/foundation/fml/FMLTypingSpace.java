@@ -115,6 +115,15 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 				// Yes ! a concept was found
 				return lookedUpConcept.getInstanceType();
 			}
+			// The Java imports of the unit, as while it is parsed (FMLTypingSpaceDuringParsing): a name resolved after the load must be the
+			// one the parser would have found
+			for (JavaImportDeclaration javaImportDeclaration : compilationUnit.getJavaImports()) {
+				Class<?> javaClass = javaImportDeclaration.getJavaClass();
+				if (javaClass != null
+						&& (typeAsString.equals(javaImportDeclaration.getAbbrev()) || javaClass.getSimpleName().equals(typeAsString))) {
+					return javaClass;
+				}
+			}
 			Type foundInUseDeclarations = compilationUnit.lookupClassInUseDeclarations(typeAsString);
 			if (foundInUseDeclarations != null) {
 				return foundInUseDeclarations;

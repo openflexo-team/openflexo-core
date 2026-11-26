@@ -54,9 +54,11 @@ import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.binding.StaticMethodPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
 import org.openflexo.connie.expr.BindingPath;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
+import org.openflexo.foundation.fml.expr.FMLBindingPath;
 import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.NewClassInstanceNode;
@@ -68,13 +70,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathEl
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SimplePathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.StaticMethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
-import org.openflexo.foundation.fml.parser.node.ACidentifierUriExpressionPrimary;
-import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.AConceptAuthorizedKwInCompositeIdent;
-import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.ACreateAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AEscapedCompositeIdent;
-import org.openflexo.foundation.fml.parser.node.AEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.AEscapedIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
@@ -82,10 +80,14 @@ import org.openflexo.foundation.fml.parser.node.AFmlActionExpressionStatementExp
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AGetAuthorizedKwInCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
+import org.openflexo.foundation.fml.parser.node.AFieldCalleePrimary;
+import org.openflexo.foundation.fml.parser.node.AIdentifierCalleePrimary;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
+import org.openflexo.foundation.fml.parser.node.AMethodCalleePrimary;
+import org.openflexo.foundation.fml.parser.node.ANewInstanceCalleePrimary;
 import org.openflexo.foundation.fml.parser.node.AKwCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AKwFieldAccess;
-import org.openflexo.foundation.fml.parser.node.ALidentifierUriExpressionPrimary;
+import org.openflexo.foundation.fml.parser.node.AIdentUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.ALitteralUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
@@ -103,11 +105,10 @@ import org.openflexo.foundation.fml.parser.node.ASetAuthorizedKwInCompositeIdent
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASuperFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
-import org.openflexo.foundation.fml.parser.node.AUidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAuthorizedKwInCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PCalleePrimary;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
-import org.openflexo.foundation.fml.parser.node.PEscapedIdentifier;
 import org.openflexo.foundation.fml.parser.node.PFieldAccess;
 import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.PLeftHandSide;
@@ -118,10 +119,9 @@ import org.openflexo.foundation.fml.parser.node.PPrimary;
 import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.PStatementExpression;
 import org.openflexo.foundation.fml.parser.node.PUriExpressionPrimary;
-import org.openflexo.foundation.fml.parser.node.TCidentifier;
+import org.openflexo.foundation.fml.parser.node.TEscapedIdentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
-import org.openflexo.foundation.fml.parser.node.TLidentifier;
-import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
@@ -143,6 +143,9 @@ public class BindingPathFactory {
 	private List<BindingPathElement> bindingPathElements;
 
 	private final List<AbstractBindingPathElementNode<?, ?>> nodesPath;
+
+	/** The receiver of the first element of the path, when it is a call taken for a static call (see {@link FMLBindingPath}) */
+	private List<String> staticCallReceiver;
 	private final Node rootNode;
 
 	public static BindingPath makeBindingPath(Node node, AbstractExpressionFactory expressionFactory, BindingPathNode bindingPathNode) {
@@ -165,8 +168,10 @@ public class BindingPathFactory {
 		// System.out.println("bindingPathElements=" + bindingPathFactory.bindingPathElements);
 
 		// return bindingPathFactory.path;
-		return new BindingPath(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements, bindingPathFactory.getBindable(),
-				FMLPrettyPrinter.getInstance());
+		FMLBindingPath returned = new FMLBindingPath(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements,
+				bindingPathFactory.getBindable(), FMLPrettyPrinter.getInstance());
+		returned.setStaticCallReceiver(bindingPathFactory.staticCallReceiver);
+		return returned;
 	}
 
 	public static Token getKwToken(PAuthorizedKwInCompositeIdent node) {
@@ -261,7 +266,7 @@ public class BindingPathFactory {
 	private void appendBindingPath(PFieldAccess node) {
 		if (node instanceof APrimaryFieldAccess) {
 			appendBindingPath(((APrimaryFieldAccess) node).getPrimaryNoId());
-			appendBindingPath(((APrimaryFieldAccess) node).getLidentifier());
+			appendBindingPath(((APrimaryFieldAccess) node).getIdent());
 		}
 		else if (node instanceof AKwFieldAccess) {
 			appendBindingPath(((AKwFieldAccess) node).getPrimaryNoId());
@@ -274,7 +279,7 @@ public class BindingPathFactory {
 		}
 		else if (node instanceof ASuperFieldAccess) {
 			appendBindingPath(((ASuperFieldAccess) node).getKwSuper());
-			appendBindingPath(((ASuperFieldAccess) node).getLidentifier());
+			appendBindingPath(((ASuperFieldAccess) node).getIdent());
 		}
 	}
 
@@ -310,7 +315,12 @@ public class BindingPathFactory {
 
 	private void appendBindingPath(PMethodInvocation node) {
 		if (node instanceof APrimaryMethodInvocation) {
-			appendBindingPath(((APrimaryMethodInvocation) node).getPrimary());
+			// 'Foo.bar(x)' is a call on a path: a static call when the receiver names a type (CORE-F-5)
+			if (getStaticCallReceiverType((APrimaryMethodInvocation) node) != null) {
+				appendStaticMethodInvocation((APrimaryMethodInvocation) node);
+				return;
+			}
+			appendBindingPath(((APrimaryMethodInvocation) node).getCalleePrimary());
 			AbstractBindingPathElementNode<?, ?> lastElementNode = popBindingPath();
 			boolean escapedSerialization = false;
 			if (lastElementNode instanceof SimplePathElementNode) {
@@ -321,20 +331,11 @@ public class BindingPathFactory {
 		else if (node instanceof ASuperMethodInvocation) {
 			appendSuperMethodInvocation((ASuperMethodInvocation) node);
 		}
-		else if (node instanceof AClassMethodMethodInvocation) {
-			appendClassMethodInvocation((AClassMethodMethodInvocation) node);
-		}
 	}
 
 	private void appendBindingPath(PUriExpressionPrimary node) {
-		if (node instanceof AUidentifierUriExpressionPrimary) {
-			appendBindingPath(((AUidentifierUriExpressionPrimary) rootNode).getUidentifier());
-		}
-		if (node instanceof ALidentifierUriExpressionPrimary) {
-			appendBindingPath(((ALidentifierUriExpressionPrimary) rootNode).getLidentifier());
-		}
-		if (node instanceof ACidentifierUriExpressionPrimary) {
-			appendBindingPath(((ACidentifierUriExpressionPrimary) rootNode).getCidentifier());
+		if (node instanceof AIdentUriExpressionPrimary) {
+			appendBindingPath(((AIdentUriExpressionPrimary) rootNode).getIdent());
 		}
 		if (node instanceof ALitteralUriExpressionPrimary) {
 			makeNormalBindingPathElement(((ALitteralUriExpressionPrimary) rootNode).getLitString());
@@ -369,12 +370,6 @@ public class BindingPathFactory {
 			}
 			appendBindingPath(((AEscapedCompositeIdent) node).getIdentifier());
 		}
-		if (node instanceof AConstantCompositeIdent) {
-			for (PIdentifierPrefix pIdentifierPrefix : ((AConstantCompositeIdent) node).getPrefixes()) {
-				appendBindingPath(pIdentifierPrefix);
-			}
-			appendBindingPath(((AConstantCompositeIdent) node).getIdentifier());
-		}
 		if (node instanceof AKwCompositeIdent) {
 			// A keyword used as a path element (e.g. 'get', 'set', ...) reaches this {kw} alternative of
 			// composite_ident; the prefixes (the receiver, e.g. 'l' in 'l.get(1)') must be walked here too,
@@ -389,27 +384,34 @@ public class BindingPathFactory {
 
 	private void appendBindingPath(PIdentifierPrefix node) {
 		if (node instanceof ANormalIdentifierPrefix) {
-			appendBindingPath(((ANormalIdentifierPrefix) node).getLidentifier());
+			appendBindingPath(((ANormalIdentifierPrefix) node).getIdent());
 		}
 		if (node instanceof AEscapedIdentifierPrefix) {
 			appendBindingPath(((AEscapedIdentifierPrefix) node).getEscapedIdentifier());
 		}
 	}
 
-	private void appendBindingPath(TLidentifier node) {
+	private void appendBindingPath(TIdent node) {
 		makeNormalBindingPathElement(node);
 	}
 
-	private void appendBindingPath(PEscapedIdentifier node) {
-		makeNormalBindingPathElement(((AEscapedIdentifier) node).getLitString(), true);
+	private void appendBindingPath(TEscapedIdentifier node) {
+		makeNormalBindingPathElement(node, true);
 	}
 
-	private void appendBindingPath(TUidentifier node) {
-		makeNormalBindingPathElement(node);
-	}
-
-	private void appendBindingPath(TCidentifier node) {
-		makeNormalBindingPathElement(node);
+	private void appendBindingPath(PCalleePrimary node) {
+		if (node instanceof AIdentifierCalleePrimary) {
+			appendBindingPath(((AIdentifierCalleePrimary) node).getCompositeIdent());
+		}
+		else if (node instanceof AFieldCalleePrimary) {
+			appendBindingPath(((AFieldCalleePrimary) node).getFieldAccess());
+		}
+		else if (node instanceof AMethodCalleePrimary) {
+			appendBindingPath(((AMethodCalleePrimary) node).getMethodInvocation());
+		}
+		else if (node instanceof ANewInstanceCalleePrimary) {
+			appendBindingPath(((ANewInstanceCalleePrimary) node).getNewInstance());
+		}
 	}
 
 	private void appendBindingPath(TKwSuper node) {
@@ -566,7 +568,78 @@ public class BindingPathFactory {
 
 	}
 
-	private void appendClassMethodInvocation(AClassMethodMethodInvocation node) {
+	/**
+	 * The type a call {@code a.b.C.m(...)} is a static call on, null when it is a call on a value. The grammar has one form for both
+	 * (CORE-F-5): the call is static when its receiver {@code a.b.C} is a name that resolves to a type, and its first segment is not a
+	 * variable of the binding model (a variable hides a type of the same name, as in Java)
+	 */
+	private Type getStaticCallReceiverType(APrimaryMethodInvocation node) {
+		return getStaticCallReceiverType(node, expressionFactory.getBindable(), expressionFactory.getTypingSpace());
+	}
+
+	/** The segments of the receiver of a call on a dotted name ('a', 'b', 'C' in 'a.b.C.m()'), null for another call */
+	private static List<String> getReceiverSegments(APrimaryMethodInvocation node) {
+		if (!(node.getCalleePrimary() instanceof AIdentifierCalleePrimary)) {
+			return null;
+		}
+		PCompositeIdent compositeIdent = ((AIdentifierCalleePrimary) node.getCalleePrimary()).getCompositeIdent();
+		List<PIdentifierPrefix> prefixes;
+		if (compositeIdent instanceof ANormalCompositeIdent) {
+			prefixes = ((ANormalCompositeIdent) compositeIdent).getPrefixes();
+		}
+		else if (compositeIdent instanceof AKwCompositeIdent) {
+			prefixes = ((AKwCompositeIdent) compositeIdent).getPrefixes();
+		}
+		else {
+			return null;
+		}
+		List<String> returned = new ArrayList<>();
+		for (PIdentifierPrefix prefix : prefixes) {
+			if (!(prefix instanceof ANormalIdentifierPrefix)) {
+				return null;
+			}
+			returned.add(((ANormalIdentifierPrefix) prefix).getIdent().getText());
+		}
+		return returned.isEmpty() ? null : returned;
+	}
+
+	public static Type getStaticCallReceiverType(APrimaryMethodInvocation node, Bindable bindable, AbstractFMLTypingSpace typingSpace) {
+		if (!(node.getCalleePrimary() instanceof AIdentifierCalleePrimary)) {
+			return null;
+		}
+		PCompositeIdent compositeIdent = ((AIdentifierCalleePrimary) node.getCalleePrimary()).getCompositeIdent();
+		List<PIdentifierPrefix> prefixes;
+		if (compositeIdent instanceof ANormalCompositeIdent) {
+			prefixes = ((ANormalCompositeIdent) compositeIdent).getPrefixes();
+		}
+		else if (compositeIdent instanceof AKwCompositeIdent) {
+			prefixes = ((AKwCompositeIdent) compositeIdent).getPrefixes();
+		}
+		else {
+			return null;
+		}
+		if (prefixes.isEmpty()) {
+			return null;
+		}
+		StringBuffer receiver = new StringBuffer();
+		for (PIdentifierPrefix prefix : prefixes) {
+			if (!(prefix instanceof ANormalIdentifierPrefix)) {
+				return null;
+			}
+			String segment = ((ANormalIdentifierPrefix) prefix).getIdent().getText();
+			if (receiver.length() == 0 && bindable != null && bindable.getBindingModel() != null
+					&& bindable.getBindingModel().bindingVariableNamed(segment) != null) {
+				return null;
+			}
+			receiver.append(receiver.length() > 0 ? "." : "").append(segment);
+		}
+		return TypeFactory.lookupType(receiver.toString(), typingSpace);
+	}
+
+	private void appendStaticMethodInvocation(APrimaryMethodInvocation node) {
+		if (bindingVariable == null && bindingPathElements.isEmpty()) {
+			staticCallReceiver = getReceiverSegments(node);
+		}
 		StaticMethodCallBindingPathElementNode pathElementNode = expressionFactory.retrieveFMLNode(node,
 				n -> new StaticMethodCallBindingPathElementNode(n, expressionFactory, expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);

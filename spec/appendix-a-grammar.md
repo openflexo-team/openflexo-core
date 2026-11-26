@@ -5,7 +5,7 @@ This appendix gives the complete syntax of FML in one place. It is a transcripti
 of the source grammar dropped except where the label names a distinction the text relies on. Where this appendix and
 the grammar disagree, the grammar is right.
 
-Terminals in double quotes are keywords or punctuation; `lidentifier`, `uidentifier`, `cidentifier`, `lit_*` are the
+Terminals in double quotes are keywords or punctuation; `ident`, `escaped_identifier`, `lit_*` are the
 token classes of chapter 2. The four entry points are listed first.
 
 ## A.1 Entry points
@@ -26,35 +26,35 @@ lexical state (§1.2, §2.3).
 fml_compilation_unit = namespace_decl* use_decl* import_decl* type_decl* model_decl
 
 namespace_decl = "namespace" lit_string "as" identifier ";"
-use_decl       = "use" composite_tident "as" cidentifier ";"
+use_decl       = "use" composite_tident "as" ident ";"
 import_decl    = "import" composite_tident ";"
                | "import" composite_tident "as" identifier ";"
                | "import" reference_by_uri ";"
                | "import" type_decl_type identifier "from" reference_by_uri ";"
-type_decl      = "typedef" type_decl_type "as" uidentifier ";"
+type_decl      = "typedef" type_decl_type "as" ident ";"
 type_decl_type = reference_type | technology_specific_type      (* may be empty in the source grammar *)
 
-identifier     = lidentifier | uidentifier | cidentifier
+identifier     = ident
 
 reference_by_uri = "[" uri_expression "]"
                  | "[" uri_expression ":" uri_expression "]"
 uri_expression   = uri_primary | uri_expression "+" uri_primary
-uri_primary      = lidentifier | uidentifier | cidentifier | lit_string
+uri_primary      = ident | lit_string
 ```
 
 ## A.3 Declarations
 
 ```ebnf
-model_decl   = annotation* visibility? "abstract"? "model" uidentifier super_clause?
+model_decl   = annotation* visibility? "abstract"? "model" ident super_clause?
                "{" member* "}"
-concept_decl = annotation* visibility? "abstract"? "concept" uidentifier super_clause?
+concept_decl = annotation* visibility? "abstract"? "concept" ident super_clause?
                "{" member* "}"
-event_decl   = annotation* visibility? "abstract"? "event" uidentifier super_clause?
+event_decl   = annotation* visibility? "abstract"? "event" ident super_clause?
                "{" member* "}"
-exception_decl = annotation* visibility? "abstract"? "exception" uidentifier super_clause?
+exception_decl = annotation* visibility? "abstract"? "exception" ident super_clause?
                "{" member* "}"
-enum_decl    = annotation* visibility? "enum" uidentifier "{" enum_value ( "," enum_value )* "}"
-enum_value   = cidentifier
+enum_decl    = annotation* visibility? "enum" ident "{" enum_value ( "," enum_value )* "}"
+enum_value   = ident
 
 super_clause  = "extends" super_type_list
 super_type_list = composite_tident ( "," composite_tident )*
@@ -62,21 +62,21 @@ visibility    = "private" | "protected" | "public"
 
 member =
     annotation* visibility? type cardinality? variable_declarator ";"
-  | annotation* visibility? type cardinality? lidentifier "with" uidentifier fml_parameters? ";"
-  | annotation* visibility? type cardinality? lidentifier "with" cidentifier "::" uidentifier fml_parameters? ";"
+  | annotation* visibility? type cardinality? ident "with" ident fml_parameters? ";"
+  | annotation* visibility? type cardinality? ident "with" ident "::" ident fml_parameters? ";"
   | annotation* visibility? "abstract" type variable_declarator ";"
-  | annotation* visibility? type lidentifier "values" expression ";"
-  | annotation* visibility? type lidentifier "{" get_decl set_decl? "}" ";"
+  | annotation* visibility? type ident "values" expression ";"
+  | annotation* visibility? type ident "{" get_decl set_decl? "}" ";"
   | behaviour_decl
   | concept_decl | event_decl | exception_decl | enum_decl
   | assert_decl
 
 get_decl = type "get" "(" ")" flexo_behaviour_body
-set_decl = "set" "(" type lidentifier ")" flexo_behaviour_body
+set_decl = "set" "(" type ident ")" flexo_behaviour_body
 
-variable_declarator = lidentifier
-                    | lidentifier "=" expression
-                    | lidentifier "=" fml_action_exp
+variable_declarator = ident
+                    | ident "=" expression
+                    | ident "=" fml_action_exp
 ```
 
 ## A.4 Invariants
@@ -85,8 +85,9 @@ variable_declarator = lidentifier
 assert_decl = simple_assert_declaration | iteration_assert_declaration
 simple_assert_declaration = "assert" expression ";"
                           | "assert" expression failure_clause
-iteration_assert_declaration = "assert" "(" type lidentifier ":" expression ")"
+iteration_assert_declaration = "assert" "(" iteration_type ident ":" expression ")"
                                "{" simple_assert_declaration* "}"
+iteration_type = primitive_type | composite_tident        (* no type arguments: "(a < b" would be ambiguous *)
 failure_clause = "onfailure" ":" statement
 ```
 
@@ -95,21 +96,21 @@ failure_clause = "onfailure" ":" statement
 ```ebnf
 behaviour_decl =
     annotation* visibility? "create" "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
-  | annotation* visibility? "create" "::" lidentifier "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* visibility? "create" "::" ident "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
   | annotation* visibility? "delete" "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
-  | annotation* visibility? "delete" "::" lidentifier "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
-  | annotation* visibility? "abstract"? type? lidentifier "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* visibility? "delete" "::" ident "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
+  | annotation* visibility? "abstract"? type? ident "(" formal_arguments_list? ")" throws_clause? flexo_behaviour_body
   | annotation* "listen" reference_type "from" expression throws_clause? flexo_behaviour_body
-  | annotation* visibility? type? lidentifier "(" formal_arguments_list? ")"
-        "with" uidentifier fml_parameters? throws_clause? flexo_behaviour_body
-  | annotation* visibility? type? lidentifier "(" formal_arguments_list? ")"
-        "with" cidentifier "::" uidentifier fml_parameters? throws_clause? flexo_behaviour_body
+  | annotation* visibility? type? ident "(" formal_arguments_list? ")"
+        "with" ident fml_parameters? throws_clause? flexo_behaviour_body
+  | annotation* visibility? type? ident "(" formal_arguments_list? ")"
+        "with" ident "::" ident fml_parameters? throws_clause? flexo_behaviour_body
 
 throws_clause = "throws" reference_type ( "," reference_type )*
 
 formal_arguments_list = formal_argument ( "," formal_argument )*
-formal_argument = "required"? primitive_type lidentifier default_argument_value?
-                | "required"? reference_type lidentifier default_argument_value?
+formal_argument = "required"? primitive_type ident default_argument_value?
+                | "required"? reference_type ident default_argument_value?
 default_argument_value = "=" expression
 
 flexo_behaviour_body = block | ";"
@@ -128,8 +129,8 @@ statement =
   | "while" "(" expression ")" statement
   | "for" "(" for_init? ";" ";" statement_expression? ")" statement
   | "for" "(" for_init? ";" expression ";" statement_expression? ")" statement
-  | "for" "(" type lidentifier ":" expression ")" statement
-  | "for" "(" type lidentifier ":" fml_action_exp ")" statement
+  | "for" "(" type ident ":" expression ")" statement
+  | "for" "(" type ident ":" fml_action_exp ")" statement
 
 for_init = statement_expression | type variable_declarator
 
@@ -148,7 +149,7 @@ try_statement =
     "try" block catch_clause+
   | "try" block catch_clause* finally_clause
 
-catch_clause   = "catch" "(" reference_type lidentifier ")" block
+catch_clause   = "catch" "(" reference_type ident ")" block
 finally_clause = "finally" block
 
 statement_no_short_if =
@@ -184,33 +185,38 @@ equality_exp        = relational_exp      | equality_exp ( "==" | "!=" ) relatio
 relational_exp      = shift_exp
                     | shift_exp ( "<" | ">" | "<=" | ">=" ) shift_exp
                     | shift_exp "instanceof" type dim*
+                    | shift_exp "as" type                          (* cast to any type *)
 shift_exp           = add_exp  | shift_exp ( "<<" | ">>" | ">>>" ) add_exp
 add_exp             = mult_exp | add_exp ( "+" | "-" ) mult_exp
 mult_exp            = unary_exp | mult_exp ( "*" | "/" | "%" ) unary_exp
 
 unary_exp = "++" unary_exp | "--" unary_exp | "+" unary_exp | "-" unary_exp | unary_exp_not_plus_minus
-unary_exp_not_plus_minus = postfix_exp | "~" unary_exp | "!" unary_exp | "(" type dim* ")" unary_exp
+unary_exp_not_plus_minus = postfix_exp | "~" unary_exp | "!" unary_exp
+                         | "(" primitive_type dim* ")" unary_exp
+                         | "(" expression ")" unary_exp_not_plus_minus              (* the expression names a type *)
+                         | "(" ident "(" qualified_argument_list ")" ")" unary_exp_not_plus_minus
 postfix_exp = primary | postfix_exp "++" | postfix_exp "--"
 
 primary       = primary_no_id | composite_ident
 primary_no_id = literal | "(" expression ")" | field_access | method_invocation | new_instance
 
-field_access = "super" "." lidentifier
-             | composite_ident "." "super" "." lidentifier
-             | primary_no_id "." lidentifier
+field_access = "super" "." ident
+             | composite_ident "." "super" "." ident
+             | primary_no_id "." ident
              | primary_no_id "." authorized_kw
 authorized_kw = "concept" | "create" | "get" | "model" | "set"
 
-method_invocation = primary "(" argument_list? ")"
+method_invocation = callee_primary "(" argument_list? ")"     (* static when the receiver names a type *)
                   | "super" "(" argument_list? ")"
-                  | type "." lidentifier "(" argument_list? ")"
+callee_primary    = composite_ident | literal | field_access | method_invocation | new_instance
 
 new_instance = new_containment_clause? "new" reference_type "(" argument_list? ")" precise_clause?
-             | new_containment_clause? "new" uidentifier "::" lidentifier "(" argument_list? ")" precise_clause?
+             | new_containment_clause? "new" ident "::" ident "(" argument_list? ")" precise_clause?
 new_containment_clause = composite_ident "."
 precise_clause = "with" fml_parameters
 
-argument_list = expression ( "," expression )*
+argument_list = conditional_exp ( "," conditional_exp )*
+expression_list = expression ( "," expression )*
 
 literal = lit_integer | lit_float | "true" | "false" | lit_character | lit_string | "null"
 dim = "[" "]"
@@ -221,14 +227,13 @@ dim = "[" "]"
 ```ebnf
 composite_ident =
     identifier_prefix* authorized_kw
-  | identifier_prefix* lidentifier
+  | identifier_prefix* ident
   | identifier_prefix* escaped_identifier
-  | identifier_prefix* cidentifier
-composite_tident  = identifier_prefix* uidentifier composite_tident_suffix*
-composite_cident  = identifier_prefix* cidentifier
-composite_tident_suffix = "$" uidentifier
-identifier_prefix = lidentifier "." | escaped_identifier "."
-escaped_identifier = "{" lit_string "}"
+composite_tident  = identifier_prefix* ident composite_tident_suffix*
+composite_cident  = identifier_prefix* ident
+composite_tident_suffix = "$" ident
+identifier_prefix = ident "." | escaped_identifier "."
+escaped_identifier = "{" lit_string "}"          (* a single token, chapter 2 *)
 ```
 
 ## A.9 Types
@@ -237,7 +242,7 @@ escaped_identifier = "{" lit_string "}"
 type = primitive_type | "void" | reference_type at_version? | technology_specific_type at_version?
 primitive_type = "int" | "short" | "long" | "float" | "double" | "char" | "byte" | "boolean"
 reference_type = composite_tident type_arguments?
-technology_specific_type = uidentifier fml_parameters
+technology_specific_type = ident fml_parameters
 
 type_arguments = "<" ">" | "<" type_argument_list ">"
                  (* plus the two alternatives that close with ">>" and ">>>" *)
@@ -246,7 +251,7 @@ type_argument = reference_type | "?" wildcard_bounds?
 wildcard_bounds = "extends" reference_type | "super" reference_type
 
 at_version = "@" "(" version ")"
-version = lit_integer | lit_float | lit_float lit_float lidentifier?
+version = lit_integer | lit_float | lit_float lit_float ident?
 
 cardinality = "[" lit_integer "," lit_integer "]" | "[" lit_integer "," "*" "]"
             | "[" "*" "," lit_integer "]"         | "[" "*" "," "*" "]"
@@ -257,35 +262,34 @@ cardinality = "[" lit_integer "," lit_integer "]" | "[" lit_integer "," "*" "]"
 
 ```ebnf
 fml_action_exp =
-    cidentifier "::" uidentifier fml_parameters in_clause? from_clause?
+    ident "::" ident fml_parameters in_clause? from_clause?
   | "delete" expression from_clause?
   | "select" "unique"? select_type with_clause? from_clause where_clause?
   | "connect" left_hand_side "using" expression
   | "log" expression
   | "fire" expression
   | "notify" expression in_clause?
-  | "begin" "match" uidentifier from_clause where_clause?
-  | "match" uidentifier in_clause? from_clause qualified_where_clause? "unmatched" ":" new_instance
-  | "end" "match" uidentifier in_clause ( "unmatched" ":" end_match_action_clause )?
+  | "begin" "match" ident from_clause where_clause?
+  | "match" ident in_clause? from_clause qualified_where_clause? "unmatched" ":" new_instance
+  | "end" "match" ident in_clause ( "unmatched" ":" end_match_action_clause )?
   | "(" fml_action_exp ")"
 
 select_type = reference_type | technology_specific_type      (* may be empty in the source grammar *)
 end_match_action_clause = (* empty *) | "delete" "(" argument_list? ")" | method_invocation
-with_clause = "with" uidentifier fml_parameters
+with_clause = "with" ident fml_parameters
 in_clause = "in" expression
 from_clause = "from" expression
-where_clause = "where" "(" argument_list? ")"
+where_clause = "where" "(" expression_list? ")"
 qualified_where_clause = "where" "(" qualified_argument_list? ")"
 
 fml_parameters = "(" qualified_argument_list? ")"
 qualified_argument_list = qualified_argument ( "," qualified_argument )*
-qualified_argument = lidentifier "=" expression
-                   | lidentifier "=" reference_type
-                   | lidentifier "=" ( "$" lidentifier | "$" uidentifier )
-                   | lidentifier "=" qualified_instance
-                   | lidentifier "=" "{" ( qualified_instance ( "," qualified_instance )* )? "}"
-qualified_instance = uidentifier ":" fml_parameters
-                   | cidentifier "::" uidentifier ":" fml_parameters
+qualified_argument = ident "=" expression           (* a type when the parameter takes one *)
+                   | ident "=" "$" ident
+                   | ident "=" qualified_instance
+                   | ident "=" "{" ( qualified_instance ( "," qualified_instance )* )? "}"
+qualified_instance = ident ":" fml_parameters
+                   | ident "::" ident ":" fml_parameters
 ```
 
 ## A.11 Annotations
@@ -295,7 +299,7 @@ annotation = "@" annotation_tag
            | "@" annotation_tag "(" conditional_exp ")"
            | "@" annotation_tag "(" annotation_key_value_pairs ")"
            | "@" annotation_tag "(" annotation* ")"
-annotation_tag = composite_tident | composite_cident
+annotation_tag = composite_tident
 annotation_key_value_pairs = annotation_key_value_pair ( "," annotation_key_value_pair )*
 annotation_key_value_pair = composite_ident "=" conditional_exp
 ```

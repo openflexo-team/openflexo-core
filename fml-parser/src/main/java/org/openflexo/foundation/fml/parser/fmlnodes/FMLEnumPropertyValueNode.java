@@ -45,19 +45,17 @@ import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AEnumQualifiedArgument;
-import org.openflexo.foundation.fml.parser.node.ALowerEnumValueArgument;
-import org.openflexo.foundation.fml.parser.node.AUpperEnumValueArgument;
+import org.openflexo.foundation.fml.parser.node.APlainEnumValueArgument;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * 
  * <pre>
-    | {enum}           [arg_name]:lidentifier assign enum_value_argument
+    | {enum}           [arg_name]:ident assign enum_value_argument
 
     	enum_value_argument =
-		{lower} dollar lidentifier
-	 |	{upper} dollar uidentifier
+		{plain} dollar ident
 	 ;
  * </pre>
  * 
@@ -129,11 +127,8 @@ public class FMLEnumPropertyValueNode<M extends FMLObject, E extends Enum<E>>
 
 	private RawSourceFragment getDollarFragment() {
 		if (getASTNode() != null) {
-			if (getASTNode().getEnumValueArgument() instanceof ALowerEnumValueArgument) {
-				return getFragment(((ALowerEnumValueArgument) getASTNode().getEnumValueArgument()).getDollar());
-			}
-			if (getASTNode().getEnumValueArgument() instanceof AUpperEnumValueArgument) {
-				return getFragment(((AUpperEnumValueArgument) getASTNode().getEnumValueArgument()).getDollar());
+			if (getASTNode().getEnumValueArgument() instanceof APlainEnumValueArgument) {
+				return getFragment(((APlainEnumValueArgument) getASTNode().getEnumValueArgument()).getDollar());
 			}
 		}
 		return null;
@@ -148,11 +143,8 @@ public class FMLEnumPropertyValueNode<M extends FMLObject, E extends Enum<E>>
 
 	private Token getEnumValueNode() {
 		if (getASTNode() != null) {
-			if (getASTNode().getEnumValueArgument() instanceof ALowerEnumValueArgument) {
-				return ((ALowerEnumValueArgument) getASTNode().getEnumValueArgument()).getLidentifier();
-			}
-			if (getASTNode().getEnumValueArgument() instanceof AUpperEnumValueArgument) {
-				return ((AUpperEnumValueArgument) getASTNode().getEnumValueArgument()).getUidentifier();
+			if (getASTNode().getEnumValueArgument() instanceof APlainEnumValueArgument) {
+				return ((APlainEnumValueArgument) getASTNode().getEnumValueArgument()).getIdent();
 			}
 		}
 		return null;

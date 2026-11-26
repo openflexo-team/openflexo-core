@@ -96,9 +96,9 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		try {
-			returned.setName(astNode.getLidentifier().getText());
+			returned.setName(astNode.getIdent().getText());
 		} catch (InvalidNameException e) {
-			throwIssue("Invalid name: " + astNode.getLidentifier().getText());
+			throwIssue("Invalid name: " + astNode.getIdent().getText());
 		}
 		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 
@@ -111,7 +111,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 			ASetDecl setDeclaration = (ASetDecl) astNode.getSetDecl();
 			// The name of the value, as written: the body of the setter refers to it (CORE-D-68). Set before the body is built, whose
 			// binding model declares it
-			((GetSetProperty<?>) returned).setValueVariableName(setDeclaration.getLidentifier().getText());
+			((GetSetProperty<?>) returned).setValueVariableName(setDeclaration.getIdent().getText());
 			ControlGraphNode<?, ?> setCGNode = makeControlGraphNode(setDeclaration.getFlexoBehaviourBody());
 			((GetSetProperty<?>) returned).setSetControlGraph(setCGNode.getModelObject());
 			addToChildren(setCGNode);
@@ -202,7 +202,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 	private RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getLidentifier());
+			return getFragment(getASTNode().getIdent());
 		}
 		return null;
 	}
@@ -294,7 +294,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 	private RawSourceFragment getSetVariableValueFragment() {
 		if (getASTNode() != null && getASTNode().getSetDecl() != null) {
-			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getLidentifier());
+			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getIdent());
 		}
 		return null;
 	}

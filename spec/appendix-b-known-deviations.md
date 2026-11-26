@@ -71,5 +71,4 @@ for convenience.
 | `[2,8]` and other bounds are read as `[0,*]` with a warning | §4.6 |
 | a type version `@(1.2)` is accepted and ignored | §4.5 |
 | a concept instance exposes only its properties and behaviours to a path | §9.6.2 |
-| an all-capitals word is a constant identifier, not a type name | §2.4 |
 | a misspelled annotation is kept and does nothing | §11.2 |

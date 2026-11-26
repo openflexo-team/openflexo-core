@@ -66,9 +66,9 @@ public class FlexoEnumNode extends AbstractFlexoConceptNode<AEnumDecl, FlexoEnum
 	public FlexoEnum buildModelObjectFromAST(AEnumDecl astNode) {
 		FlexoEnum returned = getFactory().newFlexoEnum();
 		try {
-			returned.setName(astNode.getUidentifier().getText());
+			returned.setName(astNode.getIdent().getText());
 		} catch (InvalidNameException e) {
-			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
+			throwIssue("Invalid name: " + astNode.getIdent().getText());
 		}
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		return returned;
@@ -131,7 +131,7 @@ public class FlexoEnumNode extends AbstractFlexoConceptNode<AEnumDecl, FlexoEnum
 	@Override
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getUidentifier());
+			return getFragment(getASTNode().getIdent());
 		}
 		return null;
 	}

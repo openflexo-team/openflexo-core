@@ -8,20 +8,20 @@ body. Behaviours are declared in models, concepts and events.
 ```ebnf
 behaviour_decl =
     annotation* visibility? "create" "(" formal_arguments? ")" throws? body                     (* anonymous creation scheme *)
-  | annotation* visibility? "create" "::" lidentifier "(" formal_arguments? ")" throws? body    (* named creation scheme *)
+  | annotation* visibility? "create" "::" ident "(" formal_arguments? ")" throws? body    (* named creation scheme *)
   | annotation* visibility? "delete" "(" formal_arguments? ")" throws? body                     (* anonymous deletion scheme *)
-  | annotation* visibility? "delete" "::" lidentifier "(" formal_arguments? ")" throws? body    (* named deletion scheme *)
-  | annotation* visibility? "abstract"? type? lidentifier "(" formal_arguments? ")" throws? body  (* method *)
+  | annotation* visibility? "delete" "::" ident "(" formal_arguments? ")" throws? body    (* named deletion scheme *)
+  | annotation* visibility? "abstract"? type? ident "(" formal_arguments? ")" throws? body  (* method *)
   | annotation* "listen" reference_type "from" expression throws? body                          (* event listener *)
-  | annotation* visibility? type? lidentifier "(" formal_arguments? ")"
+  | annotation* visibility? type? ident "(" formal_arguments? ")"
         "with" behaviour_ref fml_parameters? throws? body                                       (* technology-specific *)
 
 throws = "throws" reference_type ( "," reference_type )*                                (* §8.10 *)
 
-behaviour_ref = uidentifier | cidentifier "::" uidentifier
+behaviour_ref = ident | ident "::" ident
 
 formal_arguments = formal_argument ( "," formal_argument )*
-formal_argument  = "required"? ( primitive_type | reference_type ) lidentifier ( "=" expression )?
+formal_argument  = "required"? ( primitive_type | reference_type ) ident ( "=" expression )?
 
 body  = block | ";"
 block = "{" block_statement* "}"

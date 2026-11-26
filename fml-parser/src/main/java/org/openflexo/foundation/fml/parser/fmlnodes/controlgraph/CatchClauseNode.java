@@ -63,7 +63,7 @@ public class CatchClauseNode extends ControlGraphNode<ACatchClause, CatchClause>
 	@Override
 	public CatchClause buildModelObjectFromAST(ACatchClause astNode) {
 		CatchClause returned = getFactory().newCatchClause();
-		returned.setVariableName(astNode.getLidentifier().getText());
+		returned.setVariableName(astNode.getIdent().getText());
 		returned.setCatchType(TypeFactory.makeType(astNode.getReferenceType(), getSemanticsAnalyzer().getTypingSpace()));
 		ControlGraphNode<?, ?> blockNode = ControlGraphFactory.makeControlGraphNode(astNode.getBlock(), getSemanticsAnalyzer());
 		if (blockNode != null) {
@@ -102,7 +102,7 @@ public class CatchClauseNode extends ControlGraphNode<ACatchClause, CatchClause>
 	}
 
 	protected RawSourceFragment getVariableNameFragment() {
-		return getASTNode() != null ? getFragment(getASTNode().getLidentifier()) : null;
+		return getASTNode() != null ? getFragment(getASTNode().getIdent()) : null;
 	}
 
 	protected RawSourceFragment getRParFragment() {

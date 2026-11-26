@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
-import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TIdent;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -161,12 +161,12 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 		return null;
 	}
 
-	protected TLidentifier getLidentifierName() {
+	protected TIdent getLidentifierName() {
 		if (getASTNode() instanceof AFmlInnerConceptDecl) {
-			return ((AFmlInnerConceptDecl) getASTNode()).getLidentifier();
+			return ((AFmlInnerConceptDecl) getASTNode()).getIdent();
 		}
 		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getLidentifier();
+			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getIdent();
 		}
 		if (getASTNode() instanceof AJavaInnerConceptDecl) {
 			PVariableDeclarator variableDeclarator = ((AJavaInnerConceptDecl) getASTNode()).getVariableDeclarator();

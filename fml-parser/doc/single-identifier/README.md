@@ -1,7 +1,8 @@
 # Single identifier token in the FML grammar (CORE-F-5)
 
-Status: **analysis done on the 2.99 grammar, implementation deferred to 3.0.** Nothing here is built:
-the prototype lives outside `src/main/sablecc`.
+Status: **implemented in 3.0 (2026-11-25), see CORE-F-5 in `openflexo-core/BACKLOG.md`.** The grammar of this directory
+is the 3.0 grammar it was rebased on; the grammar in force is `src/main/sablecc/fml.sablecc`, which also has the cast
+`x as Type` added afterwards. The harnesses stay usable to try a grammar change on the corpus.
 
 ## Problem
 `fml.sablecc` lexes three identifier kinds — `lidentifier` (lowercase start: properties, methods),
@@ -53,6 +54,15 @@ Generates in a temp dir, prints SableCC conflicts, compiles with the real `Custo
 (`Harness.java`), prints `OK=n FAIL=m`. The file list is any list of absolute `.fml`/`.fmlscript` paths, e.g.
 `find` over the workspace excluding `build/`, `bin/`. Compare the FAIL set with the one of the real grammar,
 not the counts (they move with the workspace).
+
+## Rebased on 3.0 (2026-11-25)
+`fml-single-ident.sablecc` now derives from the 3.0 grammar of `ce1314d09` (three-way merge of the 2.99 prototype: exceptions,
+`throws`, `try`/`catch`/`finally`, `return` in scripts, optional `unmatched` clause of `end match`, `inside` removed). Still
+**0 conflicts**, with no new resolution needed. Corpus of 616 files: same failing set, at the same positions, as the real grammar;
+the only difference is still `import aClass;` accepted. `Harness2.java` parses a list of `Kind<TAB>text` lines (entry points
+`Binding`, `Command`): over 6,712 strings taken from `.fib`/`.inspector` attributes and from the `CommandParser.parse("…")` calls
+of fml-cli, nothing accepted by the real grammar is rejected; 925 more are accepted (a capitalised name alone, `(Foo.bar != null)`).
+All five language changes listed above were accepted for 3.0; existing `.fml` are migrated in the workspace only, no tool.
 
 ## Resuming against the 3.0 API
 1. Re-base: diff `fml-single-ident.sablecc` against the 2.99 grammar it came from, replay the 9 changes on

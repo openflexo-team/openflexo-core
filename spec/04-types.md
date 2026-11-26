@@ -16,10 +16,10 @@ type              = primitive_type
 primitive_type    = "int" | "short" | "long" | "float" | "double" | "char" | "byte" | "boolean"
 
 reference_type    = composite_tident type_arguments?
-composite_tident  = identifier_prefix* uidentifier ( "$" uidentifier )*
-identifier_prefix = lidentifier "." | escaped_identifier "."
+composite_tident  = identifier_prefix* ident ( "$" ident )*
+identifier_prefix = ident "." | escaped_identifier "."
 
-technology_specific_type = uidentifier fml_parameters
+technology_specific_type = ident fml_parameters
 
 type_arguments    = "<" ">"
                   | "<" type_argument ( "," type_argument )* ">"
@@ -27,10 +27,10 @@ type_argument     = reference_type
                   | "?" ( ( "extends" | "super" ) reference_type )?
 
 at_version        = "@" "(" version ")"
-version           = lit_integer | lit_float | lit_float lit_float lidentifier?
+version           = lit_integer | lit_float | lit_float lit_float ident?
 ```
 
-`void` and the other keywords of the first group are the only types that are not `uidentifier`-based.
+`void` and the other keywords of the first group are the only types that are not names.
 
 ## 4.2 Primitive types
 
@@ -46,7 +46,7 @@ in a new instance, not `0`; `boolean flag;` holds `null`, not `false`. A value m
 
 ## 4.3 Reference types
 
-A reference type is a possibly qualified name that ends in a `uidentifier`:
+A reference type is a possibly qualified name:
 
 ```fml-member
 List<Task> tasks;
@@ -71,11 +71,10 @@ the address of a nested concept (`…/Library.fml#Shelf#Book`). Inside a unit, a
 simple name from anywhere in the unit; the `$` form is for naming a concept of another unit
 (`select AnOtherModel$AConcept from …`, §10.2).
 
-A `lidentifier.`-prefixed name is a package path (`java.util.List`). An escaped-identifier prefix `{"…"}.` may
+A dotted prefix is a package path (`java.util.List`). An escaped-identifier prefix `{"…"}.` may
 replace a segment whose text is not a valid identifier.
 
-A type name must end in a `uidentifier`: the all-capitals rule of §2.4 applies, so a concept cannot be
-named `UML`.
+Any identifier can name a type: `UML`, `X` and `book` are valid concept names (§2.4).
 
 ## 4.4 Generic types
 
@@ -167,7 +166,7 @@ not written in a parameter, a local variable or a return type.
 ## 4.7 Technology-specific types
 
 ```ebnf
-technology_specific_type = uidentifier fml_parameters
+technology_specific_type = ident fml_parameters
 fml_parameters           = "(" qualified_argument_list? ")"
 ```
 

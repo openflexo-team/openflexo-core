@@ -75,9 +75,9 @@ public class FlexoEventNode extends AbstractFlexoConceptNode<AEventDecl, FlexoEv
 	public FlexoEvent buildModelObjectFromAST(AEventDecl astNode) {
 		FlexoEvent returned = getFactory().newFlexoEvent();
 		try {
-			returned.setName(astNode.getUidentifier().getText());
+			returned.setName(astNode.getIdent().getText());
 		} catch (InvalidNameException e) {
-			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
+			throwIssue("Invalid name: " + astNode.getIdent().getText());
 		}
 		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -173,7 +173,7 @@ public class FlexoEventNode extends AbstractFlexoConceptNode<AEventDecl, FlexoEv
 	@Override
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getUidentifier());
+			return getFragment(getASTNode().getIdent());
 		}
 		return null;
 	}
