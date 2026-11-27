@@ -623,7 +623,10 @@ public abstract class CompilationUnitResourceImpl
 			if (getVirtualModelClass() != null) {
 				metaDataManager.setProperty("virtualModelClassName", getVirtualModelClass().getName(), file, false);
 			}
+			metaDataManager.setProperty(FML_LAST_MODIFIED_KEY, Long.toString(file.lastModified()), file, false);
 			metaDataManager.saveMetaDataProperties(file);
+			// The information kept in memory is the one of the previous contents
+			virtualModelInfo = null;
 		}
 	}
 
@@ -954,12 +957,19 @@ public abstract class CompilationUnitResourceImpl
 
 	@Override
 	public <I> void forceUpdateDependencies(FlexoResourceCenter<I> resourceCenter) {
-		virtualModelInfo = findVirtualModelInfo(resourceCenter, true);
+		// The metadata are used when they were written for the current contents of the file: parsing the whole file only to read its
+		// dependencies took as long as loading it (1.7 s for a unit of 9 KB at the first opening of a session)
+		virtualModelInfo = findVirtualModelInfo(resourceCenter, false);
 		if (virtualModelInfo != null) {
+			// An import may name a resource of a technology not activated yet, hence not registered yet: the technologies are activated
+			// before the dependencies are looked up (extracting the information from the file did it, metadata do not)
+			activateRequiredTechnologies();
 			for (String dependencyURI : virtualModelInfo.getDependencies()) {
 				FlexoResource dependency = resourceCenter.getServiceManager().getResourceManager().getResource(dependencyURI);
-				if (dependency != null && !getDependencies().contains(dependency)) {
-					this.addToDependencies(dependency);
+				if (dependency != null) {
+					if (!getDependencies().contains(dependency)) {
+						this.addToDependencies(dependency);
+					}
 				}
 				else {
 					// Dependency not yet found, register as pending
@@ -990,9 +1000,8 @@ public abstract class CompilationUnitResourceImpl
 			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
 			File file = (File) getIODelegate().getSerializationArtefact();
 
-			if (!forceRebuild && (file.lastModified() < metaDataManager.metaDataLastModified(file))) {
-				// OK, in this case the metadata file is there and more recent than the .fml file
-				// Attempt to retrieve metadata from cache
+			if (!forceRebuild && areMetaDataUpToDate(metaDataManager, file)) {
+				// The metadata were written for the current contents of the .fml file: take them from the cache
 				String uri = metaDataManager.getProperty("uri", file);
 				String name = metaDataManager.getProperty("name", file);
 				String version = metaDataManager.getProperty("version", file);
@@ -1028,12 +1037,27 @@ public abstract class CompilationUnitResourceImpl
 			metaDataManager.setProperty("dependenciesList", returned.getDependenciesListAsString(), file, false);
 			metaDataManager.setProperty("flexoConceptsList", returned.getFlexoConceptsListAsString(), file, false);
 			metaDataManager.setProperty("virtualModelClassName", returned.getVirtualModelClassName(), file, false);
+			metaDataManager.setProperty(FML_LAST_MODIFIED_KEY, Long.toString(file.lastModified()), file, false);
 
 			metaDataManager.saveMetaDataProperties(file);
-			// System.out.println("********* On sauve les infos pour " + this);
 		}
 
 		return returned;
+	}
+
+	/**
+	 * Key of the metadata holding the modification time of the .fml file they were written for
+	 */
+	private static final String FML_LAST_MODIFIED_KEY = "fmlLastModified";
+
+	/**
+	 * Tell whether the metadata of the .fml file were written for its current contents.<br>
+	 * The modification time of the file is stored with its metadata and compared for equality: the metadata file is shared by the
+	 * directory, so its own modification time says nothing of one of its entries, and a checkout or a copy may leave it older or newer
+	 * than the .fml file whatever their contents
+	 */
+	private static boolean areMetaDataUpToDate(FileSystemMetaDataManager metaDataManager, File file) {
+		return Long.toString(file.lastModified()).equals(metaDataManager.getProperty(FML_LAST_MODIFIED_KEY, file));
 	}
 
 	private <I> VirtualModelInfo retrieveInfoFromFML(FlexoResourceCenter<I> resourceCenter) {

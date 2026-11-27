@@ -434,6 +434,18 @@ only parsed by `TestFMLParser`, never loaded, so it does not exercise this.
 
 ---
 
+### CORE-D-100 — The metadata of a FML unit were trusted after an edit made outside the application  ·  `IN PROGRESS`
+
+**GitHub:** [openflexo-team/openflexo-core#151](https://github.com/openflexo-team/openflexo-core/issues/151)
+
+**Symptom.** The metadata of a FML unit (URI, dependencies, model slots, concepts, kept in the `.metadata` of its directory) could be used after the `.fml` was edited outside the application: the edit was not seen until something rewrote the metadata. Loading a unit also parsed the whole file once more, only to refresh these metadata.
+
+**Verified.** 2026-11-27, `CompilationUnitResourceImpl.findVirtualModelInfo`: the cache was taken when the `.fml` was older than the `.metadata` file. That file is shared by the whole directory (the `.fib`, `.inspector` and other resources of the directory write in it), and was rewritten at every loading, since `forceUpdateDependencies` always re-parsed the file (1.7 s for `SatAlpha` of mom-challenge). A checkout or a copy may also leave it newer than the `.fml` whatever their contents.
+
+**Cause.** The freshness of the entries of one file was judged on the modification time of the file holding the entries of the whole directory.
+
+**Fix.** The modification time of the `.fml` is stored with its metadata (`fmlLastModified`) and compared for equality: the metadata are used only when they were written for the current contents of the file. `forceUpdateDependencies` uses them when they are up to date (it activates the required technologies first, as the parsing did, so that an import of a resource of a technology not active yet is found). The first start after this change parses every `.fml` of the directory resource centers once, to write the new key.
+
 ## Inheritance
 
 ### CORE-D-17 — `super.<behaviour>()` gives null when the concept extends several concepts  ·  `TODO`
