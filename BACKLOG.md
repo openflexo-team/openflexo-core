@@ -1597,7 +1597,7 @@ technology-adapters (dsl, xx), kafka, oslc, gina, odt. pdf, java, rhapsody and f
   (decided with the user; to revisit with phase 7).
 - openflexo-docx: `DOCX-F-1` (its `BACKLOG.md`).
 - The other adapters in one batch (asked by the user, 2026-11-16), with the rules above, then reviewed once: `OWL-F-1`, `CSV-F-1`,
-  `DIAGRAM-F-1`, `EMF-F-1`, `JSON-F-1`, `MARKDOWN-F-1`, `PPTX-F-8`, `OPCUA-F-1`, `CAPELLA-F-1`, `TA-F-1` (dsl, xx; in `TA-BACKLOG.md`),
+  `DIAGRAM-F-1`, `EMF-F-1`, `JSON-F-1`, `MARKDOWN-F-1`, `PPTX-F-8`, `OPCUA-F-1`, `CAPELLA-F-1`, `TA-F-1` (dsl, xx; in the `BACKLOG.md` of openflexo-technology-adapters),
   `KAFKA-F-1`, `OSLC-F-1`, `GINATA-F-1` (openflexo-gina), `ODT-F-1`. Each entry lists what was chosen beyond the rules, to validate.
   Exceptions kept to avoid breaking existing behaviour: a `GraphicalAction` value computed from a representation that does not exist yet
   (headless diagrams) leaves the feature unchanged; a missing template of an FML-controlled FIB gives null; a text that is not B gives
