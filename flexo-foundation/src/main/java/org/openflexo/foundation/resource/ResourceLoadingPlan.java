@@ -45,10 +45,13 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
@@ -67,10 +70,11 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  * units to load (those it depends on first, the resource itself last).<br>
  *
  * The plan is computed from what the resources already know of their dependencies (the metadata of a unit: its imports and its model
- * slots), without parsing anything. {@link #execute()} then runs each step as a task of its own, in the current thread, shown by the
- * task manager (see {@link FlexoTaskManager#followTask(FlexoTask)}): one per technology adapter to activate, one per unit to load. A
- * dependency that only becomes known once the technologies are active (a resource of a technology that was not active) is found by a
- * second computation, made after the activations.<br>
+ * slots), without parsing anything. {@link #execute()} then runs each step as a task of its own, shown by the task manager (see
+ * {@link FlexoTaskManager#followTask(FlexoTask)}): one per technology adapter to activate, one per unit to load. The units are loaded
+ * in the current thread; the technologies are activated in the background meanwhile, and a unit waits only for the technologies it
+ * needs. A dependency that only becomes known once the technologies are active (a resource of a technology that was not active) is
+ * found by a second computation, made after the activations.<br>
  *
  * Only the compilation units get a step of their own: any other resource (a model of a technology, a VirtualModel instance) is loaded
  * within the step of the unit that needs it, as before.
@@ -84,11 +88,15 @@ public class ResourceLoadingPlan {
 	private final FlexoResource<?> resource;
 	private final List<TechnologyAdapter<?>> technologyAdapters;
 	private final List<FlexoResource<?>> resources;
+	// For each resource to load: the technologies needed by what its step loads (the unit and the units it imports)
+	private final Map<FlexoResource<?>, Set<TechnologyAdapter<?>>> needs;
 
-	private ResourceLoadingPlan(FlexoResource<?> resource, List<TechnologyAdapter<?>> technologyAdapters, List<FlexoResource<?>> resources) {
+	private ResourceLoadingPlan(FlexoResource<?> resource, List<TechnologyAdapter<?>> technologyAdapters, List<FlexoResource<?>> resources,
+			Map<FlexoResource<?>, Set<TechnologyAdapter<?>>> needs) {
 		this.resource = resource;
 		this.technologyAdapters = technologyAdapters;
 		this.resources = resources;
+		this.needs = needs;
 	}
 
 	/**
@@ -99,21 +107,38 @@ public class ResourceLoadingPlan {
 	 * @return the plan, empty when the resource is already loaded
 	 */
 	public static ResourceLoadingPlan compute(FlexoResource<?> resource) {
-		Set<TechnologyAdapter<?>> technologyAdapters = new LinkedHashSet<>();
 		List<FlexoResource<?>> resources = new ArrayList<>();
+		Map<FlexoResource<?>, Set<TechnologyAdapter<?>>> needs = new HashMap<>();
+		// The technologies to activate, in the order the steps need them
+		Set<TechnologyAdapter<?>> technologyAdapters = new LinkedHashSet<>();
 		if (!resource.isLoaded()) {
 			TechnologyAdapterService taService = resource.getServiceManager() != null
 					? resource.getServiceManager().getTechnologyAdapterService()
 					: null;
-			new Walk(resource, taService, technologyAdapters, resources).visit(resource);
-		}
-		List<TechnologyAdapter<?>> toActivate = new ArrayList<>();
-		for (TechnologyAdapter<?> ta : technologyAdapters) {
-			if (ta != null && !ta.isActivated()) {
-				toActivate.add(ta);
+			Walk walk = new Walk(resource, taService, resources);
+			walk.visit(resource);
+			List<FlexoResource<?>> waitingForAll = new ArrayList<>();
+			for (FlexoResource<?> step : resources) {
+				Set<TechnologyAdapter<?>> stepNeeds = new LinkedHashSet<>();
+				for (TechnologyAdapter<?> ta : walk.closure(step)) {
+					if (ta != null && !ta.isActivated()) {
+						stepNeeds.add(ta);
+					}
+				}
+				needs.put(step, stepNeeds);
+				technologyAdapters.addAll(stepNeeds);
+				if (walk.closureHasPendingDependencies(step)) {
+					waitingForAll.add(step);
+				}
+			}
+			// A unit importing a resource not registered yet (a resource of a technology not active yet, whatever its `use` lines say)
+			// may need any technology of the plan: its step waits for all of them, so that it never resolves its imports while one of
+			// them is being activated
+			for (FlexoResource<?> step : waitingForAll) {
+				needs.put(step, new LinkedHashSet<>(technologyAdapters));
 			}
 		}
-		return new ResourceLoadingPlan(resource, toActivate, resources);
+		return new ResourceLoadingPlan(resource, new ArrayList<>(technologyAdapters), resources, needs);
 	}
 
 	/**
@@ -128,18 +153,18 @@ public class ResourceLoadingPlan {
 	private static class Walk {
 		private final FlexoResource<?> root;
 		private final TechnologyAdapterService taService;
-		private final Set<TechnologyAdapter<?>> technologyAdapters;
 		private final List<FlexoResource<?>> resources;
 		private final Map<FlexoResource<?>, Integer> index = new HashMap<>();
 		private final Map<FlexoResource<?>, Integer> lowLink = new HashMap<>();
 		private final Deque<FlexoResource<?>> stack = new ArrayDeque<>();
 		private final Set<FlexoResource<?>> onStack = new HashSet<>();
+		// What each walked unit needs by itself, and the walked units it imports
+		private final Map<FlexoResource<?>, Set<TechnologyAdapter<?>>> ownNeeds = new HashMap<>();
+		private final Map<FlexoResource<?>, List<FlexoResource<?>>> walkedDependencies = new HashMap<>();
 
-		Walk(FlexoResource<?> root, TechnologyAdapterService taService, Set<TechnologyAdapter<?>> technologyAdapters,
-				List<FlexoResource<?>> resources) {
+		Walk(FlexoResource<?> root, TechnologyAdapterService taService, List<FlexoResource<?>> resources) {
 			this.root = root;
 			this.taService = taService;
-			this.technologyAdapters = technologyAdapters;
 			this.resources = resources;
 		}
 
@@ -152,19 +177,24 @@ public class ResourceLoadingPlan {
 			lowLink.put(r, index.get(r));
 			stack.push(r);
 			onStack.add(r);
+			Set<TechnologyAdapter<?>> own = new LinkedHashSet<>();
 			if (r instanceof CompilationUnitResource && taService != null) {
 				// What CompilationUnitResource.activateRequiredTechnologies() activates when the unit loads
-				technologyAdapters.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+				own.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 				for (Class<? extends ModelSlot<?, ?>> modelSlotClass : ((CompilationUnitResource) r).getUsedModelSlots()) {
-					technologyAdapters.add(taService.getTechnologyAdapterForModelSlot(modelSlotClass));
+					own.add(taService.getTechnologyAdapterForModelSlot(modelSlotClass));
 				}
 			}
+			ownNeeds.put(r, own);
+			List<FlexoResource<?>> walked = new ArrayList<>();
+			walkedDependencies.put(r, walked);
 			boolean importsItself = false;
 			for (FlexoResource<?> dependency : new ArrayList<>(r.getDependencies())) {
 				if (dependency == r) {
 					importsItself = true;
 				}
 				else if (isWalked(dependency)) {
+					walked.add(dependency);
 					if (!index.containsKey(dependency)) {
 						visit(dependency);
 						lowLink.put(r, Math.min(lowLink.get(r), lowLink.get(dependency)));
@@ -192,6 +222,51 @@ public class ResourceLoadingPlan {
 				// else: an import cycle without the resource, loaded within a later step
 			}
 		}
+
+		/**
+		 * Tell whether a unit, or a walked unit it imports, directly or not, waits for a resource not registered yet
+		 */
+		boolean closureHasPendingDependencies(FlexoResource<?> unit) {
+			if (unit.getServiceManager() == null || unit.getServiceManager().getResourceManager() == null) {
+				return false;
+			}
+			ResourceManager resourceManager = unit.getServiceManager().getResourceManager();
+			Set<FlexoResource<?>> seen = new HashSet<>();
+			Deque<FlexoResource<?>> toSee = new ArrayDeque<>();
+			toSee.push(unit);
+			while (!toSee.isEmpty()) {
+				FlexoResource<?> r = toSee.pop();
+				if (seen.add(r)) {
+					if (resourceManager.hasPendingDependencies(r)) {
+						return true;
+					}
+					for (FlexoResource<?> d : walkedDependencies.getOrDefault(r, Collections.emptyList())) {
+						toSee.push(d);
+					}
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * The technologies needed by a unit and by every walked unit it imports, directly or not: what its step may load
+		 */
+		Set<TechnologyAdapter<?>> closure(FlexoResource<?> unit) {
+			Set<TechnologyAdapter<?>> returned = new LinkedHashSet<>();
+			Set<FlexoResource<?>> seen = new HashSet<>();
+			Deque<FlexoResource<?>> toSee = new ArrayDeque<>();
+			toSee.push(unit);
+			while (!toSee.isEmpty()) {
+				FlexoResource<?> r = toSee.pop();
+				if (seen.add(r)) {
+					returned.addAll(ownNeeds.getOrDefault(r, Collections.emptySet()));
+					for (FlexoResource<?> d : walkedDependencies.getOrDefault(r, Collections.emptyList())) {
+						toSee.push(d);
+					}
+				}
+			}
+			return returned;
+		}
 	}
 
 	/**
@@ -202,7 +277,7 @@ public class ResourceLoadingPlan {
 	}
 
 	/**
-	 * Return the technology adapters to activate, not active when the plan was computed
+	 * Return the technology adapters to activate, not active when the plan was computed, in the order the steps need them
 	 */
 	public List<TechnologyAdapter<?>> getTechnologyAdapters() {
 		return Collections.unmodifiableList(technologyAdapters);
@@ -216,9 +291,21 @@ public class ResourceLoadingPlan {
 	}
 
 	/**
-	 * Activate the technology adapters and load the resources of this plan, each as a task run in the current thread and followed by
-	 * the task manager of the resource (shown in the task panel of the application). A step that fails stops the loading: the steps
-	 * left are cancelled and the failure is thrown.
+	 * Return the technologies, among {@link #getTechnologyAdapters()}, that the step loading supplied resource needs
+	 */
+	public Set<TechnologyAdapter<?>> getTechnologyAdaptersNeededBy(FlexoResource<?> resourceToLoad) {
+		return Collections.unmodifiableSet(needs.getOrDefault(resourceToLoad, Collections.emptySet()));
+	}
+
+	/**
+	 * Activate the technology adapters and load the resources of this plan, each as a task followed by the task manager of the resource
+	 * (shown in the task panel of the application).<br>
+	 * The units are loaded in the current thread, one after the other. The technologies are activated meanwhile by a task of the task
+	 * manager, in the order the units need them, and a unit waits only for those it needs. Each activation is run once, by whoever needs
+	 * it first: a unit does not wait for an activation the background task has not started (it runs it itself), so that a loading never
+	 * waits for a task queued behind it. Without a task manager, everything runs in the current thread.<br>
+	 * A loading step that fails stops the loading: the steps left are cancelled and the failure is thrown. A background activation that
+	 * fails is logged; the unit that needs it tries again when it loads.
 	 *
 	 * @return the data of the resource
 	 */
@@ -229,54 +316,79 @@ public class ResourceLoadingPlan {
 		FlexoServiceManager serviceManager = resource.getServiceManager();
 		FlexoTaskManager taskManager = serviceManager != null ? serviceManager.getTaskManager() : null;
 
-		List<FlexoTask> pending = new ArrayList<>();
-		List<ActivationStep> activations = new ArrayList<>();
+		List<FlexoTask> pending = Collections.synchronizedList(new ArrayList<>());
+		Map<TechnologyAdapter<?>, ActivationStep> activations = new LinkedHashMap<>();
 		for (TechnologyAdapter<?> ta : technologyAdapters) {
-			activations.add(new ActivationStep(ta, title(serviceManager, "activating_technology_($0)", ta.getName())));
+			activations.put(ta, new ActivationStep(ta, title(serviceManager, "activating_technology_($0)", ta.getName())));
 		}
 		List<LoadingStep> loadings = new ArrayList<>();
 		for (FlexoResource<?> r : resources) {
 			loadings.add(new LoadingStep(r, title(serviceManager, "loading_resource_($0)", r.getName())));
 		}
-		pending.addAll(activations);
+		follow(taskManager, new ArrayList<>(activations.values()));
 		pending.addAll(loadings);
-		follow(taskManager, pending);
+		follow(taskManager, loadings);
 
-		// A technology is activated once at most, even when it stays inactive (otherwise the plan would ask for it again forever)
-		Set<TechnologyAdapter<?>> attempted = new HashSet<>(technologyAdapters);
+		AtomicBoolean stopped = new AtomicBoolean(false);
+		if (taskManager != null && !activations.isEmpty()) {
+			taskManager.scheduleExecution(new BackgroundActivations(new ArrayList<>(activations.values()), stopped, taskManager));
+		}
 		try {
-			while (!activations.isEmpty()) {
-				for (ActivationStep step : activations) {
-					run(step, pending, taskManager);
-				}
-				// The resources of the technologies just activated are now registered: a dependency that was pending may be resolved,
-				// and it may need other technologies
-				ResourceLoadingPlan again = compute(resource);
-				activations = new ArrayList<>();
-				for (TechnologyAdapter<?> ta : again.technologyAdapters) {
-					if (!attempted.add(ta)) {
-						continue;
-					}
-					activations.add(new ActivationStep(ta, title(serviceManager, "activating_technology_($0)", ta.getName())));
-				}
-				List<LoadingStep> added = new ArrayList<>();
-				for (FlexoResource<?> r : again.resources) {
-					if (loadings.stream().noneMatch(step -> step.resource == r)) {
-						added.add(new LoadingStep(r, title(serviceManager, "loading_resource_($0)", r.getName())));
-					}
-				}
-				follow(taskManager, activations);
-				follow(taskManager, added);
-				pending.addAll(0, activations);
-				pending.addAll(added);
-				loadings.addAll(loadings.size() - 1, added);
-			}
-			for (LoadingStep step : loadings) {
+			// The units the resource depends on, each once the technologies it needs are active
+			LoadingStep root = loadings.get(loadings.size() - 1);
+			for (LoadingStep step : new ArrayList<>(loadings.subList(0, loadings.size() - 1))) {
+				activate(needs.get(step.resource), activations, pending, taskManager);
 				run(step, pending, taskManager);
 			}
+			// All of them before the resource itself, then what they brought (a dependency that was pending, maybe needing other
+			// technologies), activated here
+			activate(activations.keySet(), activations, pending, taskManager);
+			List<LoadingStep> added = new ArrayList<>();
+			ResourceLoadingPlan again = compute(resource);
+			while (true) {
+				List<ActivationStep> more = new ArrayList<>();
+				for (TechnologyAdapter<?> ta : again.technologyAdapters) {
+					if (!activations.containsKey(ta)) {
+						ActivationStep step = new ActivationStep(ta, title(serviceManager, "activating_technology_($0)", ta.getName()));
+						activations.put(ta, step);
+						more.add(step);
+					}
+				}
+				for (FlexoResource<?> r : again.resources) {
+					if (r != resource && loadings.stream().noneMatch(step -> step.resource == r)
+							&& added.stream().noneMatch(step -> step.resource == r)) {
+						LoadingStep step = new LoadingStep(r, title(serviceManager, "loading_resource_($0)", r.getName()));
+						added.add(step);
+						pending.add(step);
+						follow(taskManager, Collections.singletonList(step));
+					}
+				}
+				if (more.isEmpty()) {
+					break;
+				}
+				follow(taskManager, more);
+				for (ActivationStep step : more) {
+					activate(Collections.singleton(step.technologyAdapter), activations, pending, taskManager);
+				}
+				again = compute(resource);
+			}
+			for (LoadingStep step : added) {
+				run(step, pending, taskManager);
+			}
+			run(root, pending, taskManager);
 		} finally {
 			// What was not run because a step failed, or because the loading was interrupted
-			for (FlexoTask step : pending) {
+			stopped.set(true);
+			for (ActivationStep step : activations.values()) {
+				if (step.claim()) {
+					step.done.countDown();
+					step.abandon();
+					if (taskManager != null) {
+						taskManager.unfollowTask(step);
+					}
+				}
+			}
+			for (FlexoTask step : new ArrayList<>(pending)) {
 				step.abandon();
 				if (taskManager != null) {
 					taskManager.unfollowTask(step);
@@ -284,6 +396,30 @@ public class ResourceLoadingPlan {
 			}
 		}
 		return resource.getLoadedResourceData();
+	}
+
+	/**
+	 * Make sure supplied technologies are active: each one is activated here when nobody started it yet, or awaited when the background
+	 * task is activating it
+	 */
+	private static void activate(Set<TechnologyAdapter<?>> technologies, Map<TechnologyAdapter<?>, ActivationStep> activations,
+			List<FlexoTask> pending, FlexoTaskManager taskManager)
+			throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
+		if (technologies == null) {
+			return;
+		}
+		for (Map.Entry<TechnologyAdapter<?>, ActivationStep> entry : activations.entrySet()) {
+			if (!technologies.contains(entry.getKey())) {
+				continue;
+			}
+			ActivationStep step = entry.getValue();
+			if (step.claim()) {
+				step.runClaimed(pending, taskManager);
+			}
+			else {
+				step.awaitDone();
+			}
+		}
 	}
 
 	private static void follow(FlexoTaskManager taskManager, List<? extends FlexoTask> tasks) {
@@ -298,10 +434,17 @@ public class ResourceLoadingPlan {
 			throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
 		// The work running the plan (a task that may be cancelled) is interrupted: the steps left are not run
 		if (Thread.currentThread().isInterrupted()) {
+			// This step will not run: it is given up here, not left in the task panel (an activation claimed by this thread is in no
+			// list the caller cleans)
+			pending.remove(step);
+			step.abandon();
+			if (taskManager != null) {
+				taskManager.unfollowTask(step);
+			}
 			throw new ResourceLoadingCancelledException();
 		}
 		pending.remove(step);
-		// A milestone of the work running the plan, which shows its progress from one step to the next
+		// A milestone of the work running the step, which shows its progress from one step to the next
 		Progress.progress(step.getTaskTitle());
 		boolean failed = true;
 		boolean done = false;
@@ -332,7 +475,7 @@ public class ResourceLoadingPlan {
 	private interface Step {
 		/**
 		 * Do the work of the step
-		 * 
+		 *
 		 * @return false when there was nothing left to do
 		 */
 		boolean perform() throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException;
@@ -352,12 +495,49 @@ public class ResourceLoadingPlan {
 		}
 	}
 
+	/**
+	 * The activation of a technology, run once, by the first one that claims it: the background task, or the loading of a unit that
+	 * needs it
+	 */
 	private static class ActivationStep extends PlanStep {
 		private final TechnologyAdapter<?> technologyAdapter;
+		private final AtomicBoolean claimed = new AtomicBoolean(false);
+		private final CountDownLatch done = new CountDownLatch(1);
 
 		ActivationStep(TechnologyAdapter<?> technologyAdapter, String title) {
 			super("ActivateTechnologyAdapter", title);
 			this.technologyAdapter = technologyAdapter;
+		}
+
+		/**
+		 * Return true for the one that will run this activation
+		 */
+		boolean claim() {
+			return claimed.compareAndSet(false, true);
+		}
+
+		/**
+		 * Run this activation, claimed by the current thread
+		 */
+		void runClaimed(List<FlexoTask> pending, FlexoTaskManager taskManager)
+				throws ResourceLoadingCancelledException, FileNotFoundException, OpenflexoRuntimeException {
+			try {
+				ResourceLoadingPlan.run(this, pending, taskManager);
+			} finally {
+				done.countDown();
+			}
+		}
+
+		/**
+		 * Wait for the end of this activation, claimed by another thread: an interruption of this thread stops the loading
+		 */
+		void awaitDone() throws ResourceLoadingCancelledException {
+			try {
+				done.await();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new ResourceLoadingCancelledException();
+			}
 		}
 
 		@Override
@@ -366,18 +546,57 @@ public class ResourceLoadingPlan {
 				return false;
 			}
 			logger.info("Activating " + technologyAdapter.getName() + " before loading");
-			activate(technologyAdapter);
+			activateNow(technologyAdapter);
 			return true;
 		}
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		private static void activate(TechnologyAdapter technologyAdapter) {
+		private static void activateNow(TechnologyAdapter technologyAdapter) {
 			technologyAdapter.getTechnologyAdapterService().activateTechnologyAdapter(technologyAdapter, true);
 		}
 
 		@Override
 		public String getProgressHistoryKey() {
 			return "ActivateTechnologyAdapter." + technologyAdapter.getIdentifier();
+		}
+	}
+
+	/**
+	 * The task of the task manager that runs, in the background and in order, the activations nobody claimed yet. It is not shown: the
+	 * activations it runs are
+	 */
+	private static class BackgroundActivations extends FlexoTask {
+		private final List<ActivationStep> activations;
+		private final AtomicBoolean stopped;
+		private final FlexoTaskManager taskManager;
+
+		BackgroundActivations(List<ActivationStep> activations, AtomicBoolean stopped, FlexoTaskManager taskManager) {
+			super("ActivateTechnologyAdapters", "ActivateTechnologyAdapters");
+			this.activations = activations;
+			this.stopped = stopped;
+			this.taskManager = taskManager;
+		}
+
+		@Override
+		public boolean isShownInTaskPanel() {
+			return false;
+		}
+
+		@Override
+		public void performTask() {
+			for (ActivationStep step : activations) {
+				if (stopped.get()) {
+					return;
+				}
+				if (step.claim()) {
+					try {
+						step.runClaimed(new ArrayList<>(), taskManager);
+					} catch (Exception e) {
+						// The unit that needs it tries again when it loads, and reports the failure
+						logger.warning("Could not activate " + step.technologyAdapter.getName() + " in the background: " + e);
+					}
+				}
+			}
 		}
 	}
 

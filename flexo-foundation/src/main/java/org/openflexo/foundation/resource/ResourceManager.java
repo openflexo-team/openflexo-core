@@ -155,6 +155,21 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	/**
+	 * Tell whether supplied resource depends on a resource not registered yet (see
+	 * {@link #registerPendingDependencyResource(FlexoResource, String)}): typically a resource of a technology not activated yet
+	 */
+	public synchronized boolean hasPendingDependencies(FlexoResource<?> resource) {
+		for (List<PendingResourceDependency> l : pendingResourceDependencies.values()) {
+			for (PendingResourceDependency prd : l) {
+				if (prd.resource == resource) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * A resource that is unregistered waits for nothing any more: its pending dependencies are dropped, so that the manager does not keep
 	 * (and later resolve on) a resource that is gone
 	 */
@@ -227,12 +242,22 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	public void unregisterResource(FlexoResource<?> resource) {
 		forgetPendingDependencies(resource);
-		resources.remove(resource);
+		synchronized (this) {
+			resources.remove(resource);
+		}
 		getServiceManager().notify(this, new ResourceUnregistered(resource, null));
 	}
 
+	/**
+	 * Return the registered resources: a copy, since resources are registered from other threads (the activation of a technology scans
+	 * the resource centers while a resource is loading)
+	 */
 	public List<FlexoResource<?>> getRegisteredResources() {
-		return resources;
+		return snapshot();
+	}
+
+	private synchronized List<FlexoResource<?>> snapshot() {
+		return new ArrayList<>(resources);
 	}
 
 	public List<FlexoResource<?>> getRegisteredFileResources() {
@@ -252,7 +277,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	// TODO: optimize this
 	public List<FlexoResource<?>> getLoadedResources() {
 		List<FlexoResource<?>> returned = new ArrayList<>();
-		for (FlexoResource<?> r : resources) {
+		for (FlexoResource<?> r : snapshot()) {
 			if (r.isLoaded()) {
 				returned.add(r);
 			}
@@ -263,7 +288,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	// TODO: optimize this
 	public List<FlexoResource<?>> getUnsavedResources() {
 		List<FlexoResource<?>> returned = new ArrayList<>();
-		for (FlexoResource<?> r : new ArrayList<>(resources)) {
+		for (FlexoResource<?> r : snapshot()) {
 			if (r.isLoaded() && r.getLoadedResourceData().isModified()) {
 				returned.add(r);
 			}
@@ -288,7 +313,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
-		for (FlexoResource<?> r : new ArrayList<>(resources)) {
+		for (FlexoResource<?> r : snapshot()) {
 			if (resourceURI.equals(r.getURI())) {
 				return r;
 			}
@@ -359,7 +384,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			}
 
 			// Because we cannot be confident of #getAllResources() we proceed to iterate on all registered resources
-			for (FlexoResource<?> r : new ArrayList<>(resources)) {
+			for (FlexoResource<?> r : snapshot()) {
 				if (r.getResourceCenter() == removedRC) {
 					unregisterResource(r);
 				}
@@ -659,7 +684,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	public List<FlexoResource<?>> getResources(Object serializationArtefact) {
 		List<FlexoResource<?>> returned = new ArrayList<>();
-		for (FlexoResource<?> flexoResource : resources) {
+		for (FlexoResource<?> flexoResource : snapshot()) {
 			// System.out.println(" > " + flexoResource + " io=" + flexoResource.getIODelegate().getSerializationArtefact());
 			if (flexoResource.getIODelegate().getSerializationArtefact().equals(serializationArtefact)) {
 				returned.add(flexoResource);
