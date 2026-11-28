@@ -60,4 +60,9 @@ public abstract class LongRunningActionTask extends FlexoTask {
 		return action;
 	}
 
+	@Override
+	public boolean isShownInTaskPanel() {
+		return action.isShownInTaskPanel();
+	}
+
 }

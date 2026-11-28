@@ -58,4 +58,12 @@ public interface LongRunningAction {
 	public FlexoServiceManager getServiceManager();
 
 	public int getExpectedProgressSteps();
+
+	/**
+	 * Tell whether the task running this action is shown in the task panel (see {@link FlexoTask#isShownInTaskPanel()}): false when the
+	 * steps of the action are tasks of their own, shown instead
+	 */
+	public default boolean isShownInTaskPanel() {
+		return true;
+	}
 }

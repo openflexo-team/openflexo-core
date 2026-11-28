@@ -57,6 +57,7 @@ You\ might\ use\ wildcards\ (*\ \=\ any\ string)\ and\ press\ 'Search'=U kunt jo
 action_name=Naam van de actie
 activate_bug_report_service=Foutrapportageservice activeren
 activate_technology=Technologie activeren
+activating_technology_($0)=Activeren van ($0)
 activation_of_technology=Activering van de technologie
 actor=Actor
 actors=Actoren
@@ -223,6 +224,7 @@ loaded_inspector=Geladen inspecteur
 loading_component=Onderdeel laden
 loading_module=Bezig met laden van het module...
 loading_project=Bezig met laden van het project
+loading_resource_($0)=Laden van ($0)
 localization_editor=Vertaaleditor
 localize=Lokaliseren
 localized_editor=Editie van de vertalingen

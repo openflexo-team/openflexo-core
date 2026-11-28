@@ -358,6 +358,87 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		}
 	}
 
+	// What reported its progress in the current thread before beginInCurrentThread(), put back by endInCurrentThread()
+	private FlexoTask taskBeforeInCurrentThread;
+	private Thread threadInCurrentThread;
+
+	/**
+	 * Start running this task in the current thread, as a step of the work this thread is doing (possibly another task): what the code
+	 * executed by this thread reports through {@link Progress} goes to this task until {@link #endInCurrentThread(boolean)}, called by
+	 * the same thread. The task is not executed by a {@link FlexoTaskManager}: give it to {@link FlexoTaskManager#followTask(FlexoTask)}
+	 * to have it shown.
+	 */
+	public void beginInCurrentThread() {
+		synchronized (this) {
+			threadInCurrentThread = Thread.currentThread();
+			if (threadInCurrentThread instanceof FlexoTaskThread) {
+				taskBeforeInCurrentThread = ((FlexoTaskThread) threadInCurrentThread).getTask();
+				((FlexoTaskThread) threadInCurrentThread).setTask(this);
+			}
+			else {
+				taskBeforeInCurrentThread = Progress.getBoundTask();
+				Progress.bindToCurrentThread(this);
+			}
+			status = TaskStatus.RUNNING;
+			startProgressHistory();
+		}
+		getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.WAITING, TaskStatus.RUNNING);
+	}
+
+	/**
+	 * End a task started with {@link #beginInCurrentThread()}, in the same thread: what reported its progress before is put back
+	 *
+	 * @param failed
+	 *            true when the work of the task failed: its execution is then not stored as the history of the next one
+	 */
+	public void endInCurrentThread(boolean failed) {
+		TaskStatus newStatus;
+		synchronized (this) {
+			if (threadInCurrentThread instanceof FlexoTaskThread) {
+				((FlexoTaskThread) threadInCurrentThread).setTask(taskBeforeInCurrentThread);
+			}
+			else if (taskBeforeInCurrentThread != null) {
+				Progress.bindToCurrentThread(taskBeforeInCurrentThread);
+			}
+			else {
+				Progress.unbindFromCurrentThread();
+			}
+			taskBeforeInCurrentThread = null;
+			threadInCurrentThread = null;
+			if (failed) {
+				milestones = null;
+				status = TaskStatus.EXCEPTION_THROWN;
+			}
+			else {
+				storeProgressHistory();
+				status = TaskStatus.FINISHED;
+			}
+			newStatus = status;
+		}
+		getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.RUNNING, newStatus);
+	}
+
+	/**
+	 * Do not store the current execution as the history of the next one (an execution that had nothing to do, whose duration says
+	 * nothing of the next one)
+	 */
+	public synchronized void discardProgressHistory() {
+		milestones = null;
+	}
+
+	/**
+	 * Give up a task that never started (a step not run because an earlier one failed): it is then cancelled
+	 */
+	public void abandon() {
+		synchronized (this) {
+			if (status != TaskStatus.WAITING) {
+				return;
+			}
+			status = TaskStatus.CANCELLED;
+		}
+		getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.WAITING, TaskStatus.CANCELLED);
+	}
+
 	private synchronized void startProgressHistory() {
 		if (getProgressHistoryKey() != null) {
 			previousHistory = ProgressHistory.load(getProgressHistoryKey());

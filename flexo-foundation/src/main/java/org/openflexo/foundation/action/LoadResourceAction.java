@@ -47,7 +47,8 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.ResourceLoadingPlan;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.logging.FlexoLogger;
 
@@ -108,10 +109,13 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 			}
 			else if (!((FlexoResource<?>) getFocusedObject()).isLoaded()) {
 				logger.info("Loading resource " + getFocusedObject());
-				// FlexoProgress progress = getEditor().getFlexoProgressFactory().makeFlexoProgress("loading_resource", 3);
-				Progress.progress("loading_resource");
 				try {
-					((FlexoResource<?>) getFocusedObject()).getResourceData();
+					// What the resource needs (technologies to activate, units it depends on) is computed first, then each of them is a
+					// step of its own, shown in the task panel
+					ResourceLoadingPlan.compute((FlexoResource<?>) getFocusedObject()).execute();
+				} catch (ResourceLoadingCancelledException e) {
+					// Cancelled by the user: not a failure
+					logger.info("Loading of " + getFocusedObject() + " cancelled");
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new OpenflexoRuntimeException(e);
@@ -124,5 +128,14 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 	@Override
 	public int getExpectedProgressSteps() {
 		return 10;
+	}
+
+	/**
+	 * A resource other than a project is loaded through a {@link ResourceLoadingPlan}, whose steps (the technologies to activate, the
+	 * units to load, this resource last) are shown in the task panel: the task of this action would only repeat the last one
+	 */
+	@Override
+	public boolean isShownInTaskPanel() {
+		return getFocusedObject() instanceof FlexoProjectResource;
 	}
 }

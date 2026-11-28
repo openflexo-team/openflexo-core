@@ -58,6 +58,13 @@ public class Progress {
 		BOUND_TASK.remove();
 	}
 
+	/**
+	 * Return the task bound to the current thread by {@link #bindToCurrentThread(FlexoTask)}, null if none
+	 */
+	public static FlexoTask getBoundTask() {
+		return BOUND_TASK.get();
+	}
+
 	private static FlexoTask currentTask() {
 		Thread currentThread = Thread.currentThread();
 		if (currentThread instanceof FlexoTaskThread) {

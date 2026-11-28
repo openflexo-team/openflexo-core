@@ -220,6 +220,39 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 		return scheduledTasks;
 	}
 
+	/**
+	 * Tasks shown but not executed by this manager (never in {@link #scheduledTasks}, which it executes)
+	 */
+	private final List<FlexoTask> followedTasks = new ArrayList<>();
+
+	@Override
+	public void followTask(FlexoTask task) {
+		synchronized (followedTasks) {
+			if (followedTasks.contains(task)) {
+				return;
+			}
+			followedTasks.add(task);
+		}
+		getPropertyChangeSupport().firePropertyChange(FOLLOWED_TASKS_PROPERTY, null, task);
+	}
+
+	@Override
+	public void unfollowTask(FlexoTask task) {
+		synchronized (followedTasks) {
+			if (!followedTasks.remove(task)) {
+				return;
+			}
+		}
+		getPropertyChangeSupport().firePropertyChange(FOLLOWED_TASKS_PROPERTY, task, null);
+	}
+
+	@Override
+	public List<FlexoTask> getFollowedTasks() {
+		synchronized (followedTasks) {
+			return new ArrayList<>(followedTasks);
+		}
+	}
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		// logger.info(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);

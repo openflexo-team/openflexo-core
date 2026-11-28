@@ -78,6 +78,33 @@ public interface FlexoTaskManager extends FlexoService, HasPropertyChangeSupport
 	public List<FlexoTask> getScheduledTasks();
 
 	/**
+	 * Property fired when a task starts or stops being followed (see {@link #followTask(FlexoTask)})
+	 */
+	public static final String FOLLOWED_TASKS_PROPERTY = "followedTasks";
+
+	/**
+	 * Follow a task that this manager does not execute: a step of a longer work, run by the thread of that work (see
+	 * {@link FlexoTask#beginInCurrentThread()}). It is shown with the scheduled tasks until {@link #unfollowTask(FlexoTask)}.
+	 *
+	 * @param task
+	 */
+	public void followTask(FlexoTask task);
+
+	/**
+	 * Stop following a task given to {@link #followTask(FlexoTask)}
+	 *
+	 * @param task
+	 */
+	public void unfollowTask(FlexoTask task);
+
+	/**
+	 * Return the tasks followed by this manager, in the order they were given (see {@link #followTask(FlexoTask)})
+	 *
+	 * @return a copy of the list
+	 */
+	public List<FlexoTask> getFollowedTasks();
+
+	/**
 	 * Interrupts current thread until the task has finished<br>
 	 * (more exactely, when the status of task is either of TaskStatus.WAITING, TaskStatus.RUNNING, TaskStatus.READY_TO_EXECUTE)
 	 * 

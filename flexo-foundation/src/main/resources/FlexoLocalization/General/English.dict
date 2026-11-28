@@ -57,6 +57,7 @@ You\ might\ use\ wildcards\ (*\ \=\ any\ string)\ and\ press\ 'Search'=You might
 action_name=Action name
 activate_bug_report_service=Activate bug report service
 activate_technology=Activate technology
+activating_technology_($0)=Activating ($0)
 activation_of_technology=Activation of technology
 actor=Actor
 actors=Actors
@@ -223,6 +224,7 @@ loaded_inspector=Loaded inspector
 loading_component=Loading component
 loading_module=Loading module...
 loading_project=Loading project
+loading_resource_($0)=Loading ($0)
 localization_editor=Localization editor
 localize=Localize
 localized_editor=Localization Editor
