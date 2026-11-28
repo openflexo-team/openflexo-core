@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.P2PPNode;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
@@ -112,6 +113,15 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 */
 	public FMLPrettyPrintable getFMLObjectAtLocation(int row, int col) {
 		return getFMLObjectAtLocation(row, col, FMLPrettyPrintable.class);
+	}
+
+	/**
+	 * The fragment of text to highlight in the editor when the object is selected. By default the whole parsed fragment; a node whose
+	 * fragment spans several lines (concept, behaviour, ...) overrides it to return a short, significant part (identifier, signature).
+	 * Null means nothing to highlight.
+	 */
+	public RawSourceFragment getHighlightFragment() {
+		return getLastParsedFragment();
 	}
 
 	/**

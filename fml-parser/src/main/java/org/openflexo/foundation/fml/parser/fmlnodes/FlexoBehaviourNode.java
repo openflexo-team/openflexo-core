@@ -351,6 +351,47 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		return null;
 	}
 
+	/**
+	 * The signature: from the first of visibility, type, name or opening parenthesis, up to the closing parenthesis (or the thrown types).
+	 */
+	@Override
+	public RawSourceFragment getHighlightFragment() {
+		RawSourceFragment start = null;
+		for (RawSourceFragment f : new RawSourceFragment[] { getVisibilityFragment(), getCreateDeleteKeywordFragment(), getTypeFragment(),
+				getNameFragment(), getLParFragment() }) {
+			if (f != null) {
+				start = f;
+				break;
+			}
+		}
+		RawSourceFragment end = getThrowsTypeListFragment();
+		if (end == null) {
+			end = getRParFragment();
+		}
+		if (start == null || end == null) {
+			return super.getHighlightFragment();
+		}
+		return start.union(end);
+	}
+
+	/** The <code>create</code> or <code>delete</code> keyword of a constructor or a destructor (null for other behaviours) */
+	private RawSourceFragment getCreateDeleteKeywordFragment() {
+		N node = getASTNode();
+		if (node instanceof AAnonymousConstructorBehaviourDecl) {
+			return getFragment(((AAnonymousConstructorBehaviourDecl) node).getKwCreate());
+		}
+		if (node instanceof ANamedConstructorBehaviourDecl) {
+			return getFragment(((ANamedConstructorBehaviourDecl) node).getKwCreate());
+		}
+		if (node instanceof AAnonymousDestructorBehaviourDecl) {
+			return getFragment(((AAnonymousDestructorBehaviourDecl) node).getKwDelete());
+		}
+		if (node instanceof ANamedDestructorBehaviourDecl) {
+			return getFragment(((ANamedDestructorBehaviourDecl) node).getKwDelete());
+		}
+		return null;
+	}
+
 	protected RawSourceFragment getVisibilityFragment() {
 		if (getVisibility() != null) {
 			return getFragment(getVisibility());

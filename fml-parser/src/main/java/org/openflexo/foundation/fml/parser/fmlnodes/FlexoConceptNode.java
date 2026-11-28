@@ -136,6 +136,12 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());*/
 	}
 
+	@Override
+	public RawSourceFragment getHighlightFragment() {
+		RawSourceFragment name = getNameFragment();
+		return name != null ? name : super.getHighlightFragment();
+	}
+
 	public boolean isAbstract() {
 		if (getModelObject() != null) {
 			return getModelObject().isAbstract();

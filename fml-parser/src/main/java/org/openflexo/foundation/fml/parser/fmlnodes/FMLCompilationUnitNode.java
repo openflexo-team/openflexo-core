@@ -65,6 +65,15 @@ import org.openflexo.pamela.validation.Validable;
  */
 public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit, FMLCompilationUnitSemanticsAnalyzer> {
 
+	/**
+	 * Nothing is highlighted for a compilation unit: its fragment is the whole file.
+	 */
+	@Override
+	public RawSourceFragment getHighlightFragment() {
+		return null;
+	}
+
+
 	private static final Logger logger = Logger.getLogger(FMLCompilationUnitNode.class.getPackage().getName());
 
 	private RawSourcePosition startPosition;

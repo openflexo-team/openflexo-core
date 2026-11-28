@@ -434,6 +434,28 @@ only parsed by `TestFMLParser`, never loaded, so it does not exercise this.
 
 ---
 
+### CORE-D-101 — Loading first a unit that is itself in an import cycle leaves references unresolved  ·  `TODO`
+
+**GitHub:** [openflexo-team/openflexo-core#152](https://github.com/openflexo-team/openflexo-core/issues/152)
+
+**Symptom.** In `FML/CrossImports.fml`, Core types its members with DerivedA and DerivedB, which extend Base, and Base types its own member with a concept of Core: these four units import each other. When DerivedA is loaded first, by calling `getResourceData()` on it (what a double-click on it does), `selected.declaringElement` (a property inherited from Base) stays unresolved in Core. The `where` clause of `applicableDerivedA` then selects nothing: `Invalid binding 'selected.declaringElement == this' ... unresolved path element declaringElement`.
+
+**Verified.** 2026-11-28, on the 3.0 branch:
+- Loading the same units from `CrossImports.fml`, which is outside the cycle, is correct (`TestCrossImportsLoading`, `TestCrossImportsLoadingPlan`).
+- Loading them from Core or DerivedB is also correct.
+- Only DerivedA fails.
+- Loading DerivedA with the `load -r` command of a script does not reproduce it either, whereas `getResourceData()` does.
+- Not new: it already happened before the loading plans of UI-F-2, which now avoid loading a unit of a cycle alone (the plan loads a cycle within the step of the first unit outside it).
+
+**How to reproduce.** `KnownDefectsCrossImportsFromACycleTest` (fml-cli-test) calls `getResourceData()` on `CrossImports.fml/DerivedA.fml`, then runs `AutomatedTests/TestCrossImports.fmlscript`, which fails line 26:
+```
+OPENFLEXO_KNOWN_DEFECTS=1 ./gradlew :fml-cli-test:cleanTest :fml-cli-test:test --tests '*KnownDefectsCrossImportsFromACycle*'
+```
+
+**Hypothesis (not checked).** Rooted at DerivedA, the two-pass loading finalizes Core while DerivedA is not finalized, so DerivedA's parent concept from Base is not attached yet. Core's binding is analyzed against that partial type. The revalidation added by CORE-D-14 (`resourcesToRevalidateOnceFinalized` in `CompilationUnitResourceImpl.finalizeLoadResourceData`) should analyze it again once DerivedA is complete. It does not resolve it in this order, perhaps because Base, which declares `declaringElement`, is finalized after the revalidation runs.
+
+**Workaround.** Open the unit that imports the cycle (`CrossImports`), or any unit of the cycle other than DerivedA.
+
 ## Inheritance
 
 ### CORE-D-17 — `super.<behaviour>()` gives null when the concept extends several concepts  ·  `TODO`

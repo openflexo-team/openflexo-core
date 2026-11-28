@@ -140,6 +140,12 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 	}
 
 	@Override
+	public RawSourceFragment getHighlightFragment() {
+		RawSourceFragment name = getNameFragment();
+		return name != null ? name : super.getHighlightFragment();
+	}
+
+	@Override
 	protected RawSourceFragment getVisibilityFragment() {
 		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
